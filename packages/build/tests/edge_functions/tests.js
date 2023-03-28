@@ -96,8 +96,10 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
   await assertManifest(t, 'functions_internal')
   const manifestPath = join(FIXTURES_DIR, 'functions_internal/.netlify/edge-functions-dist/manifest.json')
 
-  const { routes } = await importJsonFile(manifestPath)
-  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', generator: 'internalFunc' }])
+  const { routes, function_config } = await importJsonFile(manifestPath)
+
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$' }])
+  t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
 test.serial('builds Edge Functions from both the user and the internal directories', async (t) => {
@@ -185,7 +187,7 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
 
   const { routes } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', generator: 'internalFunc' }])
+  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$' }])
 })
 
 test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
