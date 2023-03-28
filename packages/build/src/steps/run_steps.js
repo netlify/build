@@ -167,7 +167,7 @@ export const runSteps = async function ({
       redirectsPath,
       statuses: [],
       timers,
-      metrics: {},
+      metrics: [],
     },
   )
 
