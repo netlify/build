@@ -41,6 +41,19 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
   const fixture = await createFixture('pnpm-simple')
   ctx.cleanup = fixture.cleanup
   const { stdout } = await runBinary(fixture.cwd)
+  expect(stdout).toMatchInlineSnapshot(`
+    "{
+      \\"packageManager\\": {
+        \\"name\\": \\"pnpm\\",
+        \\"installCommand\\": \\"pnpm install\\",
+        \\"runCommand\\": \\"pnpm run\\",
+        \\"lockFile\\": \\"pnpm-lock.yaml\\",
+        \\"forceEnvironment\\": \\"NETLIFY_USE_PNPM\\"
+      },
+      \\"frameworks\\": [],
+      \\"buildSystems\\": []
+    }"
+  `)
   const { jsWorkspaces } = JSON.parse(stdout)
   expect(jsWorkspaces).toBe(undefined)
 })
@@ -58,6 +71,12 @@ test('CLI prints an empty array if no frameworks are found', async (ctx) => {
   const fixture = await createFixture('empty')
   ctx.cleanup = fixture.cleanup
   const { stdout } = await runBinary(fixture.cwd)
+  expect(JSON.parse(stdout)).toMatchInlineSnapshot(`
+    {
+      "buildSystems": [],
+      "frameworks": [],
+    }
+  `)
   const { frameworks } = JSON.parse(stdout)
   expect(frameworks).toEqual([])
 })

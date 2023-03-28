@@ -1,0 +1,6 @@
+{
+  "name": "components",
+  "sourceRoot": "packages/components/src",
+  "projectType": "library",
+  "tags": []
+}

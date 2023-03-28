@@ -4,11 +4,12 @@
   "description": "Build info utility",
   "type": "module",
   "exports": {
-    ".": "./lib/index.js"
+    ".": "./lib/src/index.js",
+    "./node": "./lib/src/node/index.js"
   },
-  "browser": "./lib/index.js",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "browser": "./lib/src/index.js",
+  "main": "./lib/src/index.js",
+  "types": "./lib/src/index.d.ts",
   "bin": {
     "build-info": "./bin.js"
   },
@@ -18,7 +19,7 @@
   ],
   "scripts": {
     "prebuild": "rm -rf lib",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
@@ -41,6 +42,7 @@
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
     "read-pkg": "^7.1.0",
+    "semver": "^7.3.8",
     "yaml": "^2.1.3",
     "yargs": "^17.6.0"
   },
@@ -54,7 +56,6 @@
     "execa": "^6.0.0",
     "memfs": "^3.4.7",
     "node-fetch": "^3.3.0",
-    "semver": "^7.3.8",
     "typescript": "^4.8.4",
     "unionfs": "^4.4.0",
     "vite": "^4.1.1",

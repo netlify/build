@@ -1,9 +1,11 @@
 import { join, resolve } from 'path'
 import { cwd } from 'process'
 
-import { afterEach, beforeEach, describe, expect, test } from 'vitest'
+import { parse } from 'semver'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
+import { mockFileSystem } from '../tests/mock-file-system.js'
 
 import { NodeFS } from './node/file-system.js'
 import { Project } from './project.js'
@@ -13,6 +15,69 @@ beforeEach((ctx) => {
 })
 
 afterEach(async ({ cleanup }) => await cleanup?.())
+
+describe('Setting the node.js version', () => {
+  test('should set the node version correctly by passing the process.version', async ({ fs }) => {
+    const project = new Project(fs)
+    expect(await project.getCurrentNodeVersion()).toBeNull()
+    await project.setNodeVersion('v18.0.1')
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 1 })
+  })
+
+  test('should set the node version correctly through an exact environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18.1.2' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 1, patch: 2 })
+  })
+
+  test('process node version should override environment variable', async ({ fs }) => {
+    const project = new Project(fs).setNodeVersion(process.version).setEnvironment({ NODE_VERSION: '1.2.3' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(process.version) || '')
+  })
+
+  test('should set the node version correctly through an fuzzy environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18.x' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+  })
+
+  test('should set the node version correctly through a coerced environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+    expect(readFileSpy).not.toHaveBeenCalled()
+  })
+
+  test('should get the node version through the .node_version file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.node_version': '18.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+    expect(readFileSpy).toHaveBeenCalledWith('.node_version')
+  })
+
+  test('should get the node version through the .nvmrc file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.nvmrc': '16.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 0, patch: 0 })
+    expect(readFileSpy).toHaveBeenCalledWith('.nvmrc')
+  })
+
+  test('should prefer the manual set node version over the file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.nvmrc': '16.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd).setNodeVersion('17.1.2')
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 17, minor: 1, patch: 2 })
+    expect(readFileSpy).not.toHaveBeenCalled()
+  })
+
+  // TODO: this test needs to be implemented
+  test.skip('should have a fallback node version if none is set', async ({ fs }) => {
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 1, patch: 2 })
+    expect(readFileSpy).not.toHaveBeenCalled()
+  })
+})
 
 describe.concurrent('should resolve paths correctly', () => {
   test('if no options are provided root dir should be undefined and base directory should be the cwd', async ({
@@ -99,4 +164,41 @@ test('extract the rootPackageJson from projectDir if no rootDir is provided', as
   const rootPackageJson = await project.getRootPackageJSON()
   expect(project.root).toBeUndefined()
   expect(rootPackageJson.name).toBe('js-workspaces')
+})
+
+describe('monorepo setup', () => {
+  test('should prefer accuracy of config files over root node modules in a monorepo', async (ctx) => {
+    const fixture = await createFixture('nx-integrated')
+    ctx.cleanup = fixture.cleanup
+    const project = new Project(ctx.fs, fixture.cwd)
+    await project.detectFrameworks()
+    expect([...project.frameworks.keys()]).toEqual([join('packages/astro'), join('packages/website')])
+    expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/astro'))).toEqual([
+      expect.objectContaining({
+        id: 'astro',
+      }),
+    ])
+    expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/website'))).toEqual([
+      expect.objectContaining({
+        id: 'next',
+      }),
+    ])
+  })
+
+  test('should prefer accuracy of config files over root node modules in a monorepo from a base directory', async (ctx) => {
+    const fixture = await createFixture('nx-integrated')
+    ctx.cleanup = fixture.cleanup
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/astro'))
+    await project.detectFrameworks()
+
+    expect([...project.frameworks.keys()]).toEqual([join('packages/astro')])
+    expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/astro'))).toEqual([
+      expect.objectContaining({
+        id: 'astro',
+      }),
+    ])
+  })
 })
