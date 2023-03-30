@@ -69,6 +69,13 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.9.0](https://github.com/netlify/build/compare/build-v29.8.0...build-v29.9.0) (2023-03-30)
+
+
+### Features
+
+* log number of user and generated functions for lambda to datadog ([#4963](https://github.com/netlify/build/issues/4963)) ([d8e81e3](https://github.com/netlify/build/commit/d8e81e34556224f30999c976b9c18afb2fe43074))
+
 ## [29.8.0](https://github.com/netlify/build/compare/build-v29.7.2...build-v29.8.0) (2023-03-28)
 
 
