@@ -6,10 +6,12 @@
   "exports": {
     ".": {
       "import": "./lib/index.js",
+      "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
     },
     "./node": {
       "import": "./lib/node/index.js",
+      "default": "./lib/node/index.js",
       "types": "./lib/node/index.d.ts"
     }
   },
