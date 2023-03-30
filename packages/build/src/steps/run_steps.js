@@ -92,7 +92,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB = redirectsPathA,
         newStatus,
         timers: timersB = timersA,
-        metrics: metricsB = metricsA,
+        metrics: metricsB = [],
       } = await runStep({
         event,
         childProcess,
@@ -154,7 +154,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB,
         statuses: statusesA,
         timers: timersB,
-        metrics: metricsB,
+        metrics: [...metricsA, ...metricsB],
       }
     },
     {
