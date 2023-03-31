@@ -122,10 +122,13 @@ const coreStep = async function ({
     repositoryRoot,
   })
 
+  const metrics = getMetrics(internalFunctions, userFunctions)
+
   return {
     tags: {
       bundler: bundlers,
     },
+    metrics,
   }
 }
 
@@ -163,4 +166,21 @@ export const zipItAndShipIt = {
   async zipFunctions(...args: Parameters<typeof zipFunctions>) {
     return await zipFunctions(...args)
   },
+}
+
+const getMetrics = (internalFunctions: string[], userFunctions: string[]) => {
+  return [
+    {
+      type: 'increment',
+      name: 'buildbot.build.functions',
+      value: internalFunctions.length,
+      tags: { type: 'lambda:generated' },
+    },
+    {
+      type: 'increment',
+      name: 'buildbot.build.functions',
+      value: userFunctions.length,
+      tags: { type: 'lambda:user' },
+    },
+  ]
 }
