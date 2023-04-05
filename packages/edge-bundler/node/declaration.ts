@@ -1,6 +1,7 @@
 import regexpAST from 'regexp-tree'
 
 import { FunctionConfig, Path } from './config.js'
+import { FeatureFlags } from './feature_flags.js'
 
 interface BaseDeclaration {
   cache?: string
@@ -27,16 +28,54 @@ export const mergeDeclarations = (
   userFunctionsConfig: Record<string, FunctionConfig>,
   internalFunctionsConfig: Record<string, FunctionConfig>,
   deployConfigDeclarations: Declaration[],
+  featureFlags: FeatureFlags = {},
+  // eslint-disable-next-line max-params
 ) => {
-  const declarations: Declaration[] = []
   const functionsVisited: Set<string> = new Set()
 
-  // We start by iterating over all the declarations in the TOML file and in
-  // the deploy configuration file. For any declaration for which we also have
-  // a function configuration object, we replace the path because that object
-  // takes precedence.
-  for (const declaration of [...tomlDeclarations, ...deployConfigDeclarations]) {
-    const config = userFunctionsConfig[declaration.function] || internalFunctionsConfig[declaration.function]
+  let declarations: Declaration[] = getDeclarationsFromInput(
+    deployConfigDeclarations,
+    internalFunctionsConfig,
+    functionsVisited,
+  )
+
+  // eslint-disable-next-line unicorn/prefer-ternary
+  if (featureFlags.edge_functions_correct_order) {
+    declarations = [
+      // INTEGRATIONS
+      // 1. Declarations from the integrations deploy config
+      ...getDeclarationsFromInput(deployConfigDeclarations, internalFunctionsConfig, functionsVisited),
+      // 2. Declarations from the integrations ISC
+      ...createDeclarationsFromFunctionConfigs(internalFunctionsConfig, functionsVisited),
+
+      // USER
+      // 3. Declarations from the users toml config
+      ...getDeclarationsFromInput(tomlDeclarations, userFunctionsConfig, functionsVisited),
+      // 4. Declarations from the users ISC
+      ...createDeclarationsFromFunctionConfigs(userFunctionsConfig, functionsVisited),
+    ]
+  } else {
+    declarations = [
+      ...getDeclarationsFromInput(tomlDeclarations, userFunctionsConfig, functionsVisited),
+      ...getDeclarationsFromInput(deployConfigDeclarations, internalFunctionsConfig, functionsVisited),
+      ...createDeclarationsFromFunctionConfigs(internalFunctionsConfig, functionsVisited),
+      ...createDeclarationsFromFunctionConfigs(userFunctionsConfig, functionsVisited),
+    ]
+  }
+
+  return declarations
+}
+
+const getDeclarationsFromInput = (
+  inputDeclarations: Declaration[],
+  functionConfigs: Record<string, FunctionConfig>,
+  functionsVisited: Set<string>,
+): Declaration[] => {
+  const declarations: Declaration[] = []
+  // For any declaration for which we also have a function configuration object,
+  // we replace the path because that object takes precedence.
+  for (const declaration of inputDeclarations) {
+    const config = functionConfigs[declaration.function]
 
     if (!config) {
       // If no config is found, add the declaration as is.
@@ -59,10 +98,17 @@ export const mergeDeclarations = (
     functionsVisited.add(declaration.function)
   }
 
-  // Finally, we must create declarations for functions that are not declared
-  // in the TOML at all.
-  for (const name in { ...internalFunctionsConfig, ...userFunctionsConfig }) {
-    const { cache, path } = internalFunctionsConfig[name] || userFunctionsConfig[name]
+  return declarations
+}
+
+const createDeclarationsFromFunctionConfigs = (
+  functionConfigs: Record<string, FunctionConfig>,
+  functionsVisited: Set<string>,
+): Declaration[] => {
+  const declarations: Declaration[] = []
+
+  for (const name in functionConfigs) {
+    const { cache, path } = functionConfigs[name]
 
     // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name) && path) {

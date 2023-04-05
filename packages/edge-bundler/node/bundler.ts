@@ -131,6 +131,7 @@ const bundle = async (
     userFunctionsWithConfig,
     internalFunctionsWithConfig,
     deployConfig.declarations,
+    featureFlags,
   )
 
   const internalFunctionConfig = createFunctionConfig({

@@ -1,37 +1,90 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Deploy config takes precedence over user config 1`] = `
+exports[`Ensure the order of edge functions with FF 1`] = `
 [
   {
-    "function": "user-a",
+    "function": "framework-manifest-a",
     "path": "/path1",
   },
   {
-    "function": "user-b",
+    "function": "framework-manifest-c",
+    "path": "/path3",
+  },
+  {
+    "function": "framework-manifest-b",
     "path": "/path2",
   },
   {
-    "function": "framework-a",
+    "function": "framework-isc-c",
     "path": "/path1",
   },
   {
-    "function": "framework-b",
+    "function": "framework-isc-c",
     "path": "/path2",
   },
   {
-    "function": "framework-c",
+    "function": "user-toml-a",
     "path": "/path1",
   },
   {
-    "function": "framework-c",
+    "function": "user-toml-c",
+    "path": "/path3",
+  },
+  {
+    "function": "user-toml-b",
     "path": "/path2",
   },
   {
-    "function": "user-c",
+    "function": "user-isc-c",
     "path": "/path1",
   },
   {
-    "function": "user-c",
+    "function": "user-isc-c",
+    "path": "/path2",
+  },
+]
+`;
+
+exports[`Ensure the order of edge functions without FF 1`] = `
+[
+  {
+    "function": "user-toml-a",
+    "path": "/path1",
+  },
+  {
+    "function": "user-toml-c",
+    "path": "/path3",
+  },
+  {
+    "function": "user-toml-b",
+    "path": "/path2",
+  },
+  {
+    "function": "framework-manifest-a",
+    "path": "/path1",
+  },
+  {
+    "function": "framework-manifest-c",
+    "path": "/path3",
+  },
+  {
+    "function": "framework-manifest-b",
+    "path": "/path2",
+  },
+  {
+    "function": "framework-isc-c",
+    "path": "/path1",
+  },
+  {
+    "function": "framework-isc-c",
+    "path": "/path2",
+  },
+  {
+    "function": "user-isc-c",
+    "path": "/path1",
+  },
+  {
+    "function": "user-isc-c",
     "path": "/path2",
   },
 ]
