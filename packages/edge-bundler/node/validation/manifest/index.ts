@@ -11,14 +11,14 @@ import edgeManifestSchema from './schema.js'
 
 let manifestValidator: ValidateFunction<Manifest>
 
-const initializeValidator = (featureFlags: FeatureFlags) => {
+const initializeValidator = () => {
   if (manifestValidator === undefined) {
     const ajv = new Ajv({ allErrors: true })
     ajvErrors(ajv)
 
     // regex pattern for manifest route pattern
     // checks if the pattern string starts with ^ and ends with $
-    const normalizedPatternRegex = featureFlags.edge_functions_manifest_validate_slash ? /^\^\/.*\$$/ : /^\^.*\$$/
+    const normalizedPatternRegex = /^\^.*\$$/
     ajv.addFormat('regexPattern', {
       validate: (data: string) => normalizedPatternRegex.test(data),
     })
@@ -30,8 +30,9 @@ const initializeValidator = (featureFlags: FeatureFlags) => {
 }
 
 // throws on validation error
-export const validateManifest = (manifestData: unknown, featureFlags: FeatureFlags = {}): void => {
-  const validate = initializeValidator(featureFlags)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const validateManifest = (manifestData: unknown, _featureFlags: FeatureFlags = {}): void => {
+  const validate = initializeValidator()
 
   const valid = validate(manifestData)
 
