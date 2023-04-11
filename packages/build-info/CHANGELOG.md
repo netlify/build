@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.7.0](https://github.com/netlify/build/compare/build-info-v6.6.1...build-info-v6.7.0) (2023-03-28)
+
+
+### Features
+
+* Integrate framework detection in build info ([#4876](https://github.com/netlify/build/issues/4876)) ([0df38c0](https://github.com/netlify/build/commit/0df38c0f2ccbd779296acf1fbc549cb08a119799))
+
 ## [6.6.1](https://github.com/netlify/build/compare/build-info-v6.6.0...build-info-v6.6.1) (2023-03-13)
 
 

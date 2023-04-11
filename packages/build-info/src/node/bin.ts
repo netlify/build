@@ -35,7 +35,15 @@ yargs(hideBin(argv))
       // start bugsnag reporting
       await initializeMetrics()
       try {
-        console.log(JSON.stringify(await getBuildInfo({ projectDir, rootDir, featureFlags }), null, 2))
+        console.log(
+          JSON.stringify(
+            await getBuildInfo({ projectDir, rootDir, featureFlags }),
+            // hide null values from the string output as we use null to identify it has already run but did not detect anything
+            // undefined marks that it was never run
+            (_, value) => (value !== null ? value : undefined),
+            2,
+          ),
+        )
       } catch (error) {
         report(error)
         exit(1)

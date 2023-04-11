@@ -9,10 +9,10 @@ import { WorkspaceInfo } from '../workspaces/detect-workspace.js'
 import { NodeFS } from './file-system.js'
 
 export type Info = {
-  jsWorkspaces?: WorkspaceInfo
-  packageManager?: PkgManagerFields
+  jsWorkspaces: WorkspaceInfo | null
+  packageManager: PkgManagerFields | null
   frameworks: unknown[]
-  buildSystems?: {
+  buildSystems: {
     name: string
     version?: string | undefined
   }[]
@@ -49,27 +49,24 @@ export async function getBuildInfo(
   // prevent logging in output as we use the stdout to capture the json
   fs.logger = new NoopLogger()
   const project = new Project(fs, config.projectDir, config.rootDir)
-  project.setEnvironment(process.env)
-  let frameworks: any[] = []
-  try {
-    // if the framework  detection is crashing we should not crash the build info and package-manager detection
-    frameworks = await listFrameworks({ projectDir: project.baseDirectory })
-  } catch (error) {
-    report(error)
-  }
+    .setEnvironment(process.env)
+    .setNodeVersion(process.version)
 
   const info: Info = {
-    frameworks,
+    packageManager: await project.detectPackageManager(),
+    jsWorkspaces: await project.detectWorkspaces(),
+    frameworks: [],
     buildSystems: await project.detectBuildSystem(),
   }
 
-  const pkgJSONPath = await project.getPackageJSON()
-  // only if we find a root package.json we know this is a javascript workspace
-  if (Object.keys(pkgJSONPath).length) {
-    info.packageManager = await project.detectPackageManager()
-    const workspaceInfo = await project.detectWorkspaces()
-    if (workspaceInfo) {
-      info.jsWorkspaces = workspaceInfo
+  if (config.featureFlags?.build_info_new_framework_detection) {
+    info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
+  } else {
+    try {
+      // if the framework  detection is crashing we should not crash the build info and package-manager detection
+      info.frameworks = await listFrameworks({ projectDir: project.baseDirectory })
+    } catch (error) {
+      report(error)
     }
   }
 

@@ -2,3 +2,15 @@ node_modules/
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+tsconfig*.tsbuildinfo
+
+dist
+
+# Local Netlify folder
+.netlify
+
+# These are mock node_modules folder for testing purposes
+!tests/fixtures/simple/node_modules
+!tests/fixtures/multiple/node_modules
+!tests/fixtures/monorepos/node_modules

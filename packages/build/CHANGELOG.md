@@ -69,6 +69,42 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.9.0](https://github.com/netlify/build/compare/build-v29.8.0...build-v29.9.0) (2023-03-30)
+
+
+### Features
+
+* log number of user and generated functions for lambda to datadog ([#4963](https://github.com/netlify/build/issues/4963)) ([d8e81e3](https://github.com/netlify/build/commit/d8e81e34556224f30999c976b9c18afb2fe43074))
+
+## [29.8.0](https://github.com/netlify/build/compare/build-v29.7.2...build-v29.8.0) (2023-03-28)
+
+
+### Features
+
+* expose edge function stats to datadog on amount of EF's and generated EF's ([#4954](https://github.com/netlify/build/issues/4954)) ([f042617](https://github.com/netlify/build/commit/f04261733c1c3ce7b74b52a36f6599860f74d4d1))
+
+## [29.7.2](https://github.com/netlify/build/compare/build-v29.7.1...build-v29.7.2) (2023-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.13.0 ([#4957](https://github.com/netlify/build/issues/4957)) ([04cae0d](https://github.com/netlify/build/commit/04cae0dc20237bc0ea3dc6a35d4f2d6c5cbc97ce))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.6 to ^20.3.7
+
+## [29.7.1](https://github.com/netlify/build/compare/build-v29.7.0...build-v29.7.1) (2023-03-20)
+
+
+### Bug Fixes
+
+* correctly tag edge function validation errors as user error ([#4953](https://github.com/netlify/build/issues/4953)) ([699beb2](https://github.com/netlify/build/commit/699beb2fa93a317656e60fe956fa08f3ba1b6e34))
+* **deps:** update dependency @netlify/edge-bundler to v8.12.3 ([#4951](https://github.com/netlify/build/issues/4951)) ([6615bd8](https://github.com/netlify/build/commit/6615bd8b95f35a49228744442f2eff4960afa276))
+
 ## [29.7.0](https://github.com/netlify/build/compare/build-v29.6.10...build-v29.7.0) (2023-03-17)
 
 

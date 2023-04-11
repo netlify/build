@@ -9,4 +9,4 @@ import { Pants } from './pants.js'
 import { Rush } from './rush.js'
 import { Turbo } from './turbo.js'
 
-export const buildSystems = [Bazel, Buck, Gradle, Lage, Lerna, Moon, Nix, Nx, Pants, Rush, Turbo]
+export const buildSystems = [Bazel, Buck, Gradle, Lage, Lerna, Moon, Nix, Nx, Pants, Rush, Turbo] as const
