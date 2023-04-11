@@ -135,8 +135,6 @@ export abstract class FileSystem {
       }
     }
 
-    console.log(fromParts, toParts)
-
     // calculate how many dirs we need to go up from the to path
     const toUp = toParts.length - matching.length
     const fromUp = fromParts.length - matching.length
