@@ -83,7 +83,7 @@
     "tmp-promise": "^3.0.2",
     "typescript": "^5.0.0",
     "vite": "^4.0.4",
-    "vitest": "^0.27.1"
+    "vitest": "^0.29.0"
   },
   "engines": {
     "node": "^14.14.0 || >=16.0.0"
