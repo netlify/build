@@ -55,7 +55,7 @@
   "devDependencies": {
     "@types/node": "^18.14.2",
     "semver": "^7.0.0",
-    "typescript": "^4.8.4",
+    "typescript": "^5.0.0",
     "vitest": "^0.24.1"
   },
   "engines": {
