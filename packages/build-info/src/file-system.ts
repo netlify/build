@@ -121,7 +121,7 @@ export abstract class FileSystem {
 
     if (absoluteTo.startsWith(absoluteFrom)) {
       // lazily matches a slash afterwards if it's a directory
-      return absoluteTo.replace(new RegExp(`^${absoluteFrom}/*`), '')
+      return this.join(absoluteTo.replace(new RegExp(`^${absoluteFrom}/*`), ''))
     }
 
     // split by / excluding the starting slash
