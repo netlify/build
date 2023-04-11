@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.7.1](https://github.com/netlify/build/compare/build-info-v6.7.0...build-info-v6.7.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* entrypoint for node with correct types ([#4962](https://github.com/netlify/build/issues/4962)) ([051812d](https://github.com/netlify/build/commit/051812ddb48873605759b7ca40420043d2c55489))
+
 ## [6.7.0](https://github.com/netlify/build/compare/build-info-v6.6.1...build-info-v6.7.0) (2023-03-28)
 
 
