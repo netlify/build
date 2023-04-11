@@ -119,6 +119,11 @@ export abstract class FileSystem {
 
     const matching: string[] = []
 
+    if (absoluteTo.startsWith(absoluteFrom)) {
+      // lazily matches a slash afterwards if it's a directory
+      return absoluteTo.replace(new RegExp(`^${absoluteFrom}/*`), '')
+    }
+
     // split by / excluding the starting slash
     const fromParts = this.join(absoluteFrom).split(/(?<!^)\//gm)
     const toParts = this.join(absoluteTo).split(/(?<!^)\//gm)
@@ -129,6 +134,8 @@ export abstract class FileSystem {
         break
       }
     }
+
+    console.log(fromParts, toParts)
 
     // calculate how many dirs we need to go up from the to path
     const toUp = toParts.length - matching.length

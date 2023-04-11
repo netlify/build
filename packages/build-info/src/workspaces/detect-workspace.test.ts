@@ -38,6 +38,26 @@ test('should detect workspace packages correctly for an npm workspace', async ({
   expect(project.packageManager).toMatchObject({ name: 'npm' })
 })
 
+test('should detect a workspace from within a workspace package', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({
+      workspaces: ['apps/**', '!apps/b/deep'],
+    }),
+    'apps/a/package.json': '{}',
+    'apps/b/package.json': '{}',
+    'apps/b/deep/package.json': '{}',
+    'apps/c/package.json': '{}',
+  })
+
+  const project = new Project(fs, join(cwd, 'apps/a'))
+
+  expect(await project.detectWorkspaces()).toEqual({
+    isRoot: false,
+    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    rootDir: cwd,
+  })
+})
+
 test('should not detect workspace from a nested ignored package', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({

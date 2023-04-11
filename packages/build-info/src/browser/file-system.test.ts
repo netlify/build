@@ -16,6 +16,7 @@ global.fetch = vi.fn(async (url): Promise<any> => {
         JSON.stringify([
           { path: 'package.json', type: 'file' },
           { path: 'pnpm-lock.yaml', type: 'file' },
+          { path: 'pnpm-workspace.yaml', type: 'file' },
           { path: 'packages', type: 'dir' },
           { path: 'tools', type: 'dir' },
           { path: 'nx.json', type: 'file' },
@@ -40,6 +41,8 @@ global.fetch = vi.fn(async (url): Promise<any> => {
       return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
+    case 'https://api.github.com/repos/netlify/build/contents/packages/build-info/package.json?ref=main':
+      return new Response(JSON.stringify({ name: '@netlify/build-info' }))
     case 'https://api.github.com/repos/netlify/build/contents/tools?ref=main':
       return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
@@ -52,10 +55,12 @@ global.fetch = vi.fn(async (url): Promise<any> => {
       return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
+    case 'https://api.github.com/repos/netlify/build/contents/packages/build/package.json?ref=main':
+      return new Response(JSON.stringify({ name: '@netlify/build' }))
     case 'https://api.github.com/repos/netlify/build/contents/package.json?ref=main':
       return new Response(JSON.stringify({ devDependencies: { nx: '^1.2.3' } }))
-    case 'https://api.github.com/repos/netlify/build/contents/packages/build-info/package.json?ref=main':
-      return new Response(JSON.stringify({}))
+    case 'https://api.github.com/repos/netlify/build/contents/pnpm-workspace.yaml?ref=main':
+      return new Response('packages:\n - packages/*\n - tools')
   }
 
   throw new Error(`404 ${url} not found!`)
@@ -94,5 +99,16 @@ describe('Test with a WebFS', () => {
     expect(
       await getWorkspacePackages(new Project(fs, '/'), ['tools', 'packages/*', '!packages/build-info']),
     ).toMatchObject(['tools', 'packages/build', 'packages/config'])
+  })
+
+  test('should analyze workspace information from a nested subpackage', async ({ fs }) => {
+    const project = new Project(fs, 'packages/build')
+    await project.detectWorkspaces()
+
+    expect(project.workspace).toEqual({
+      isRoot: false,
+      packages: ['packages/build-info', 'packages/build', 'packages/config', 'tools'],
+      rootDir: '/',
+    })
   })
 })
