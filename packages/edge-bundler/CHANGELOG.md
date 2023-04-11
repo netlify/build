@@ -1,5 +1,14 @@
 # Changelog
 
+## [8.13.1](https://github.com/netlify/edge-bundler/compare/v8.13.0...v8.13.1) (2023-04-10)
+
+
+### Bug Fixes
+
+* change the order of how edge functions are written to the manifest ([#357](https://github.com/netlify/edge-bundler/issues/357)) ([59d1c8c](https://github.com/netlify/edge-bundler/commit/59d1c8c38dd8858a00b9c033588e1be80c0a5515))
+* remove duplicate functions and let .js take precedence ([#359](https://github.com/netlify/edge-bundler/issues/359)) ([bc52282](https://github.com/netlify/edge-bundler/commit/bc52282cda391bdfcb95798c1283041430a28482))
+* revert slash validation and change validation message ([#343](https://github.com/netlify/edge-bundler/issues/343)) ([d032496](https://github.com/netlify/edge-bundler/commit/d0324960e241f02b39966ed14e9f7be9c089800f))
+
 ## [8.13.0](https://github.com/netlify/edge-bundler/compare/v8.12.3...v8.13.0) (2023-03-24)
 
 
