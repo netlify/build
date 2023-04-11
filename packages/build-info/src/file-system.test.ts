@@ -127,10 +127,10 @@ describe.concurrent('Test the platform independent base functionality', () => {
     fs.cwd = '/x'
     vi.spyOn(process, 'cwd').mockImplementation(() => '/x')
 
-    expect(relative('y', '/x/y/z')).toBe(join('z'))
-    expect(fs.relative('y', '/x/y/z')).toBe(join('z'))
+    expect(fs.relative('y', '/x/y/z')).toBe('z')
+    expect(relative('y', '/x/y/z')).toBe('z')
+    expect(fs.relative('/', '/a/b')).toBe('a/b')
     expect(relative('/', '/a/b')).toBe(join('a/b'))
-    expect(fs.relative('/', '/a/b')).toBe(join('a/b'))
     expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
     expect(relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
     expect(fs.relative('/a/b/c/d/e', '/a/b/c')).toBe('../..')
