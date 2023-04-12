@@ -1,6 +1,6 @@
-import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.37.0/mod.ts'
+import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.40.0/mod.ts'
 
-import * as path from 'https://deno.land/std@0.178.0/path/mod.ts'
+import * as path from 'https://deno.land/std@0.177.0/path/mod.ts'
 
 import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
 import { importMapSpecifier, virtualRoot } from '../../shared/consts.ts'

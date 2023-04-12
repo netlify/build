@@ -29,7 +29,7 @@ jobs:
           # Should match the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
           deno-version: v1.22.0
       - name: Setup Deno dependencies
-        run: deno cache https://deno.land/x/eszip@v0.37.0/eszip.ts
+        run: deno cache https://deno.land/x/eszip@v0.40.0/eszip.ts
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
