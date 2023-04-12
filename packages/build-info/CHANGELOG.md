@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.7.2](https://github.com/netlify/build/compare/build-info-v6.7.1...build-info-v6.7.2) (2023-04-12)
+
+
+### Bug Fixes
+
+* workspace detection from inside a nested package ([#4970](https://github.com/netlify/build/issues/4970)) ([248243e](https://github.com/netlify/build/commit/248243ed469bc0d6e6e6e54cdc28786a044abc43))
+
 ## [6.7.1](https://github.com/netlify/build/compare/build-info-v6.7.0...build-info-v6.7.1) (2023-04-11)
 
 
