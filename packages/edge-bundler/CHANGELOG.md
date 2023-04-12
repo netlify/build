@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.13.2](https://github.com/netlify/edge-bundler/compare/v8.13.1...v8.13.2) (2023-04-12)
+
+
+### Bug Fixes
+
+* update eszip + std ([#364](https://github.com/netlify/edge-bundler/issues/364)) ([4b78e4c](https://github.com/netlify/edge-bundler/commit/4b78e4c5de8c3ec236a21afe5f14522fc11e1708))
+
 ## [8.13.1](https://github.com/netlify/edge-bundler/compare/v8.13.0...v8.13.1) (2023-04-10)
 
 
