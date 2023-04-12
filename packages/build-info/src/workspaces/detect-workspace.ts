@@ -29,7 +29,7 @@ export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string
   }
 
   try {
-    const { packages } = parse(await project.fs.readFile(workspaceFile))
+    const { packages = [] } = parse(await project.fs.readFile(workspaceFile))
     return packages
   } catch {
     return []

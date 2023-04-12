@@ -119,6 +119,11 @@ export abstract class FileSystem {
 
     const matching: string[] = []
 
+    if (absoluteTo.startsWith(absoluteFrom)) {
+      // lazily matches a slash afterwards if it's a directory
+      return absoluteTo.replace(new RegExp(`^${absoluteFrom}/*`), '')
+    }
+
     // split by / excluding the starting slash
     const fromParts = this.join(absoluteFrom).split(/(?<!^)\//gm)
     const toParts = this.join(absoluteTo).split(/(?<!^)\//gm)
