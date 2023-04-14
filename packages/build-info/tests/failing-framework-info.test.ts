@@ -27,7 +27,7 @@ test('framework info should not crash build-info', async (ctx) => {
   const { frameworks, packageManager } = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(packageManager?.name).toBe('pnpm')
   expect(frameworks).toEqual([])
-  expect(metricsSpy).toHaveBeenCalledWith(new Error('Crashing hard 💣'))
+  expect(metricsSpy).toHaveBeenCalledWith(new Error('Crashing hard 💣'), { client: undefined })
 })
 
 test('framework info should not crash build-info and the detection should still work', async (ctx) => {
@@ -39,5 +39,5 @@ test('framework info should not crash build-info and the detection should still 
   const { frameworks, packageManager } = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(packageManager?.name).toBe('pnpm')
   expect(frameworks).toEqual([])
-  expect(metricsSpy).toHaveBeenCalledWith(new Error('Crashing hard 💣'))
+  expect(metricsSpy).toHaveBeenCalledWith(new Error('Crashing hard 💣'), { client: undefined })
 })
