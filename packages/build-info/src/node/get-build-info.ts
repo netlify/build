@@ -1,3 +1,4 @@
+import { Client } from '@bugsnag/js'
 import { listFrameworks } from '@netlify/framework-info'
 
 import { Logger } from '../file-system.js'
@@ -43,12 +44,14 @@ export async function getBuildInfo(
     projectDir?: string
     rootDir?: string
     featureFlags?: Record<string, boolean>
+    bugsnagClient?: Client
   } = { featureFlags: {} },
 ): Promise<Info> {
   const fs = new NodeFS()
   // prevent logging in output as we use the stdout to capture the json
   fs.logger = new NoopLogger()
   const project = new Project(fs, config.projectDir, config.rootDir)
+    .setBugsnag(config.bugsnagClient)
     .setEnvironment(process.env)
     .setNodeVersion(process.version)
 
@@ -66,7 +69,7 @@ export async function getBuildInfo(
       // if the framework  detection is crashing we should not crash the build info and package-manager detection
       info.frameworks = await listFrameworks({ projectDir: project.baseDirectory })
     } catch (error) {
-      report(error)
+      report(error, { client: config.bugsnagClient })
     }
   }
 

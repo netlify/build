@@ -1,4 +1,4 @@
-import type { NotifiableError } from '@bugsnag/js'
+import type { Client, NotifiableError } from '@bugsnag/js'
 import type { PackageJson } from 'read-pkg'
 import { SemVer, coerce, parse } from 'semver'
 
@@ -35,6 +35,8 @@ export class Project {
   frameworks: Map<string, DetectedFramework[]>
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
+  /** A bugsnag session */
+  bugsnag: Client
 
   /** The current nodeVersion (can be set by node.js environments) */
   private _nodeVersion: SemVer | null = null
@@ -85,6 +87,14 @@ export class Project {
     return this
   }
 
+  /** Set's a bugsnag client for the current session */
+  setBugsnag(client?: Client): this {
+    if (client) {
+      this.bugsnag = client
+    }
+    return this
+  }
+
   /** retrieves an environment variable */
   getEnv(key: string): string | undefined {
     return this.#environment[key]
@@ -99,6 +109,7 @@ export class Project {
           root: this.root,
         },
       },
+      client: this.bugsnag,
     })
   }
 

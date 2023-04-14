@@ -39,7 +39,7 @@ export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string
 /** Get the workspace globs from the package.json file */
 export async function detectNpmOrYarnWorkspaceGlobs(pkgJSON: PackageJson): Promise<string[]> {
   if (Array.isArray(pkgJSON.workspaces)) {
-    return pkgJSON.workspaces
+    return pkgJSON.workspaces || []
   }
   if (typeof pkgJSON.workspaces === 'object') {
     return pkgJSON.workspaces.packages || []
@@ -67,7 +67,7 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
       ? await detectPnpmWorkspaceGlobs(project)
       : await detectNpmOrYarnWorkspaceGlobs(pkgJSON)
 
-  if (workspaceGlobs.length === 0) {
+  if (!workspaceGlobs || workspaceGlobs.length === 0) {
     return null
   }
 
