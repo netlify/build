@@ -62,14 +62,14 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
       baseDirectory: 'packages/astro',
       buildCommand: 'nx run astro:build',
       devCommand: 'nx run astro:dev',
-      dist: 'dist/apps/astro/public',
+      dist: 'dist/packages/astro/public',
       frameworkPort: 3000,
     }),
     expect.objectContaining({
       baseDirectory: 'packages/website',
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: 'dist/apps/website/.next',
+      dist: 'dist/packages/website/.next',
       frameworkPort: 3000,
     }),
   ])

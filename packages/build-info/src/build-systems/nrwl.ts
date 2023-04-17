@@ -35,11 +35,11 @@ export class Nx extends BaseBuildTool {
   /** Retrieve the dist directory of a package */
   async getDist(packagePath: string): Promise<string | null> {
     const framework = this.project.frameworks.get(packagePath)?.[0]
-    const { name } = await this.project.fs.readJSON(this.project.fs.join(packagePath, 'project.json'))
 
     if (framework) {
       const dist = framework.staticAssetsDirectory || framework.build.directory
-      return `dist/apps/${name}/${dist}`
+      // TODO: make this smarter in the future by parsing the project.json
+      return this.project.fs.join('dist', packagePath, dist)
     }
 
     return null

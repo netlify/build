@@ -17,9 +17,11 @@ export interface BuildSystem {
   project: Project
   version?: string
 
+  /** A function that can be implemented to override the dev and build commands of a framework like `nx run ...` */
   getCommands?(path: string): Promise<Command[]>
+  /** A function that can be implemented to override the dist location of a framework */
   getDist?(path: string): Promise<string>
-
+  /** The detect function that is called to check if this build system is in use */
   detect(): Promise<BuildSystem | undefined>
 }
 
