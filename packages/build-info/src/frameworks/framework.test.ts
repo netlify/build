@@ -273,9 +273,16 @@ describe('workspace detection', () => {
     })
 
     expect(detection).toHaveLength(2)
-    expect(detection?.[0]).toMatchObject({
-      id: 'astro',
-    })
+    expect(detection).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'astro',
+        }),
+        expect.objectContaining({
+          id: 'next',
+        }),
+      ]),
+    )
     expect(project.frameworks.get(join('packages/blog'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/blog'))).toEqual(
       expect.arrayContaining([
@@ -285,9 +292,6 @@ describe('workspace detection', () => {
       ]),
     )
 
-    expect(detection?.[1]).toMatchObject({
-      id: 'next',
-    })
     expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/website'))).toEqual(
       expect.arrayContaining([
@@ -312,9 +316,16 @@ describe('workspace detection', () => {
     })
 
     expect(detection).toHaveLength(2)
-    expect(detection?.[0]).toMatchObject({
-      id: 'astro',
-    })
+    expect(detection).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'astro',
+        }),
+        expect.objectContaining({
+          id: 'next',
+        }),
+      ]),
+    )
     expect(project.frameworks.get(join('packages/blog'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/blog'))).toEqual(
       expect.arrayContaining([
@@ -324,9 +335,6 @@ describe('workspace detection', () => {
       ]),
     )
 
-    expect(detection?.[1]).toMatchObject({
-      id: 'next',
-    })
     expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/website'))).toEqual(
       expect.arrayContaining([

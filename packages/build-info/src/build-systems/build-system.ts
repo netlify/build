@@ -1,4 +1,3 @@
-import { PollingStrategy } from '../frameworks/framework.js'
 import { Project } from '../project.js'
 
 export type Command = {
@@ -6,24 +5,20 @@ export type Command = {
   command: string
 }
 
+/** A list of often used dev command names to identify if the command is a dev command */
+export const NPM_DEV_SCRIPTS = ['dev', 'serve', 'develop', 'start', 'run', 'web']
+
+/** A list of often used build command names to identify if the command is a build command */
+export const NPM_BUILD_SCRIPTS = ['build']
+
 export interface BuildSystem {
   id: string
   name: string
   project: Project
   version?: string
 
-  build?: {
-    command: string
-    directory?: string
-  }
-
-  dev?: {
-    command: string
-    port?: number
-    pollingStrategies?: PollingStrategy[]
-  }
-
   getCommands?(path: string): Promise<Command[]>
+  getDist?(path: string): Promise<string>
 
   detect(): Promise<BuildSystem | undefined>
 }

@@ -172,7 +172,7 @@ describe('monorepo setup', () => {
     ctx.cleanup = fixture.cleanup
     const project = new Project(ctx.fs, fixture.cwd)
     await project.detectFrameworks()
-    expect([...project.frameworks.keys()]).toEqual([join('packages/astro'), join('packages/website')])
+    expect([...project.frameworks.keys()].sort()).toEqual([join('packages/astro'), join('packages/website')])
     expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/astro'))).toEqual([
       expect.objectContaining({
@@ -200,5 +200,61 @@ describe('monorepo setup', () => {
         id: 'astro',
       }),
     ])
+  })
+})
+
+describe('event based detection', () => {
+  test('should notify an event when finished with a step', async (ctx) => {
+    const fixture = await createFixture('nx-integrated')
+    ctx.cleanup = fixture.cleanup
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/astro'))
+    const eventSpy = vi.fn()
+    const finished = new Promise<void>((resolve) => {
+      project.events.on('detectPackageManager', (data) => {
+        eventSpy('detectPackageManager', data)
+      })
+      project.events.on('detectBuildsystems', (data) => {
+        eventSpy('detectBuildsystems', data)
+      })
+      project.events.on('detectWorkspaces', (data) => {
+        eventSpy('detectWorkspaces', data)
+      })
+      project.events.on('detectFrameworks', (data) => {
+        eventSpy('detectFrameworks', data)
+      })
+      project.events.on('detectSettings', (data) => {
+        eventSpy('detectSettings', data)
+        resolve()
+      })
+    })
+
+    await project.getBuildSettings()
+    expect(eventSpy).toBeCalledTimes(6)
+    expect(eventSpy).toHaveBeenNthCalledWith(1, 'detectPackageManager', expect.objectContaining({ name: 'npm' }))
+    // nx integrated is per se no npm or pnpm workspace
+    expect(eventSpy).toHaveBeenNthCalledWith(2, 'detectWorkspaces', null)
+    // this emission is triggered through the build system detection of Nx
+    expect(eventSpy).toHaveBeenNthCalledWith(
+      3,
+      'detectWorkspaces',
+      expect.objectContaining({
+        isRoot: false,
+        packages: ['packages/astro', 'packages/website'],
+      }),
+    )
+    expect(eventSpy).toHaveBeenNthCalledWith(4, 'detectBuildsystems', [expect.objectContaining({ id: 'nx' })])
+    expect(eventSpy).toHaveBeenNthCalledWith(
+      5,
+      'detectFrameworks',
+      new Map([['packages/astro', expect.objectContaining({})]]),
+    )
+    expect(eventSpy).toHaveBeenNthCalledWith(6, 'detectSettings', [
+      expect.objectContaining({
+        baseDirectory: 'packages/astro',
+        buildCommand: 'nx run astro:build',
+        devCommand: 'nx run astro:dev',
+      }),
+    ])
+    await finished
   })
 })

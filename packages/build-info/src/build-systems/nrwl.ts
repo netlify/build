@@ -1,13 +1,11 @@
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
 
-import { BaseBuildTool, Command } from './build-system.js'
+import { BaseBuildTool, Command, NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from './build-system.js'
 
 export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
   configFiles = ['nx.json']
-
-  build = {}
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
@@ -17,11 +15,11 @@ export class Nx extends BaseBuildTool {
       return Object.keys(targets).map((target) => {
         let type: Command['type'] = 'unknown'
 
-        if (['dev', 'serve'].includes(target)) {
+        if (NPM_DEV_SCRIPTS.includes(target)) {
           type = 'dev'
         }
 
-        if (['build'].includes(target)) {
+        if (NPM_BUILD_SCRIPTS.includes(target)) {
           type = 'build'
         }
 
@@ -32,6 +30,19 @@ export class Nx extends BaseBuildTool {
       })
     }
     return []
+  }
+
+  /** Retrieve the dist directory of a package */
+  async getDist(packagePath: string): Promise<string | null> {
+    const framework = this.project.frameworks.get(packagePath)?.[0]
+    const { name } = await this.project.fs.readJSON(this.project.fs.join(packagePath, 'project.json'))
+
+    if (framework) {
+      const dist = framework.staticAssetsDirectory || framework.build.directory
+      return `dist/apps/${name}/${dist}`
+    }
+
+    return null
   }
 
   async detect(): Promise<this | undefined> {
@@ -68,6 +79,7 @@ export class Nx extends BaseBuildTool {
               packages,
               rootDir: this.project.jsWorkspaceRoot,
             }
+            this.project.events.emit('detectWorkspaces', this.project.workspace)
           }
         }
       } catch {

@@ -69,6 +69,7 @@ export interface Framework {
   env: Record<string, string>
 
   detect(): Promise<DetectedFramework | undefined>
+  getDevCommands(): string[]
   toJSON(): {
     id: string
     name: string
