@@ -1,3 +1,5 @@
+import { join } from 'path'
+
 import { beforeEach, expect, test } from 'vitest'
 
 import { createFixture } from '../../tests/helpers.js'
@@ -59,17 +61,17 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
 
   expect(settings).toEqual([
     expect.objectContaining({
-      baseDirectory: 'packages/astro',
+      baseDirectory: join('packages/astro'),
       buildCommand: 'nx run astro:build',
       devCommand: 'nx run astro:dev',
-      dist: 'dist/packages/astro/public',
+      dist: join('dist/packages/astro/public'),
       frameworkPort: 3000,
     }),
     expect.objectContaining({
-      baseDirectory: 'packages/website',
+      baseDirectory: join('packages/website'),
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: 'dist/packages/website/.next',
+      dist: join('dist/packages/website/.next'),
       frameworkPort: 3000,
     }),
   ])

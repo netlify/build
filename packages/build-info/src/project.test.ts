@@ -239,18 +239,18 @@ describe('event based detection', () => {
       'detectWorkspaces',
       expect.objectContaining({
         isRoot: false,
-        packages: ['packages/astro', 'packages/website'],
+        packages: [join('packages/astro'), join('packages/website')],
       }),
     )
     expect(eventSpy).toHaveBeenNthCalledWith(4, 'detectBuildsystems', [expect.objectContaining({ id: 'nx' })])
     expect(eventSpy).toHaveBeenNthCalledWith(
       5,
       'detectFrameworks',
-      new Map([['packages/astro', expect.objectContaining({})]]),
+      new Map([[join('packages/astro'), expect.objectContaining({})]]),
     )
     expect(eventSpy).toHaveBeenNthCalledWith(6, 'detectSettings', [
       expect.objectContaining({
-        baseDirectory: 'packages/astro',
+        baseDirectory: join('packages/astro'),
         buildCommand: 'nx run astro:build',
         devCommand: 'nx run astro:dev',
       }),

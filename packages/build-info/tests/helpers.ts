@@ -37,7 +37,11 @@ export const createFixture = async (fixture: string) => {
     cwd,
     cwdSpy,
     cleanup: async () => {
-      await fs.rm(cwd, { recursive: true })
+      try {
+        await fs.rm(cwd, { recursive: true })
+      } catch {
+        // noop
+      }
     },
   }
 }

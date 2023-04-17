@@ -128,12 +128,12 @@ describe('Nx monorepo', () => {
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 
-    const setting = settings.find((s) => s.baseDirectory === 'packages/website')
+    const setting = settings.find((s) => s.baseDirectory === join('packages/website'))
     expect(setting).toMatchObject({
-      baseDirectory: 'packages/website',
+      baseDirectory: join('packages/website'),
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: 'dist/packages/website/.next',
+      dist: join('dist/packages/website/.next'),
       frameworkPort: 3000,
       plugins: ['@netlify/plugin-nextjs'],
     })
@@ -147,12 +147,12 @@ describe('Nx turborepo', () => {
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 
-    const setting = settings.find((s) => s.baseDirectory === 'apps/web')
+    const setting = settings.find((s) => s.baseDirectory === join('apps/web'))
     expect(setting).toMatchObject({
-      baseDirectory: 'apps/web',
+      baseDirectory: join('apps/web'),
       buildCommand: 'turbo run build --scope web',
       devCommand: 'turbo run dev --scope web',
-      dist: 'apps/web/.next',
+      dist: join('apps/web/.next'),
       frameworkPort: 3000,
       plugins: ['@netlify/plugin-nextjs'],
     })
