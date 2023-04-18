@@ -52,7 +52,7 @@ jobs:
         node-version: ['*']
         include:
           - os: ubuntu-latest
-            node-version: '14.16.0'
+            node-version: '14.18.0'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -77,7 +77,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install npm@7
         run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ matrix.node-version == '14.18.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -106,19 +106,19 @@ jobs:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-latest
-            node-version: '14.16.0'
+            node-version: '14.18.0'
             install-command: npm ci
             machine: '0'
           - os: ubuntu-latest
-            node-version: '14.16.0'
+            node-version: '14.18.0'
             install-command: npm ci
             machine: '1'
           - os: ubuntu-latest
-            node-version: '14.16.0'
+            node-version: '14.18.0'
             install-command: npm ci
             machine: '2'
           - os: ubuntu-latest
-            node-version: '14.16.0'
+            node-version: '14.18.0'
             install-command: npm ci
             machine: '3'
           # The buildbot pins Netlify Build's dependencies, like `npm ci`.
@@ -168,7 +168,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install npm@7
         run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ matrix.node-version == '14.18.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
