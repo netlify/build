@@ -73,5 +73,8 @@ export async function getBuildInfo(
     }
   }
 
+  // some framework detection like NX can update the workspace in the project so assign it later on
+  info.jsWorkspaces = project.workspace
+
   return info
 }
