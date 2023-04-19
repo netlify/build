@@ -1,6 +1,6 @@
 import type { PackageJson } from 'read-pkg'
 
-import { BaseBuildTool, type Command } from './build-system.js'
+import { BaseBuildTool, NPM_BUILD_SCRIPTS, type Command, NPM_DEV_SCRIPTS } from './build-system.js'
 
 export class Turbo extends BaseBuildTool {
   id = 'turbo'
@@ -17,11 +17,11 @@ export class Turbo extends BaseBuildTool {
       return Object.keys(scripts).map((target) => {
         let type: Command['type'] = 'unknown'
 
-        if (['dev', 'serve'].includes(target)) {
+        if (NPM_DEV_SCRIPTS.includes(target)) {
           type = 'dev'
         }
 
-        if (['build'].includes(target)) {
+        if (NPM_BUILD_SCRIPTS.includes(target)) {
           type = 'build'
         }
 
