@@ -88,7 +88,7 @@ describe('Nx', () => {
     expect(detected[0]?.id).toBe('nx')
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: [join('packages/website')],
+      packages: [{ path: join('packages/website'), name: 'website' }],
       rootDir: join(cwd, 'frontend'),
     })
   })

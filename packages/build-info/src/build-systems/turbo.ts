@@ -6,6 +6,7 @@ export class Turbo extends BaseBuildTool {
   id = 'turbo'
   name = 'TurboRepo'
   configFiles = ['turbo.json']
+  runFromRoot = true
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {

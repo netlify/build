@@ -128,9 +128,9 @@ describe('Nx monorepo', () => {
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 
-    const setting = settings.find((s) => s.baseDirectory === join('packages/website'))
+    const setting = settings.find((s) => s.packagePath === join('packages/website'))
     expect(setting).toMatchObject({
-      baseDirectory: join('packages/website'),
+      packagePath: join('packages/website'),
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website/.next'),
@@ -147,9 +147,9 @@ describe('Nx turborepo', () => {
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 
-    const setting = settings.find((s) => s.baseDirectory === join('apps/web'))
+    const setting = settings.find((s) => s.packagePath === join('apps/web'))
     expect(setting).toMatchObject({
-      baseDirectory: join('apps/web'),
+      packagePath: join('apps/web'),
       buildCommand: 'turbo run build --scope web',
       devCommand: 'turbo run dev --scope web',
       dist: join('apps/web/.next'),

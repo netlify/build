@@ -16,6 +16,8 @@ export interface BuildSystem {
   name: string
   project: Project
   version?: string
+  /** If the command should be execute from the repository root */
+  runFromRoot?: boolean
 
   /** A function that can be implemented to override the dev and build commands of a framework like `nx run ...` */
   getCommands?(path: string): Promise<Command[]>
@@ -30,6 +32,8 @@ export abstract class BaseBuildTool {
   name: string
   version?: string
   configFiles: string[] = []
+  /** If the command should be execute from the repository root */
+  runFromRoot?: boolean
 
   constructor(public project: Project) {}
 

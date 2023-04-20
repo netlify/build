@@ -30,14 +30,14 @@ test('retrieve TurboRepo settings', async (ctx) => {
 
   expect(settings).toEqual([
     expect.objectContaining({
-      baseDirectory: join('apps/docs'),
+      packagePath: join('apps/docs'),
       buildCommand: 'turbo run build --scope docs',
       devCommand: 'turbo run dev --scope docs',
       dist: join('apps/docs/.next'),
       frameworkPort: 3000, // TODO: use bash parser from ocean to identify args from commands to switch to 3001
     }),
     expect.objectContaining({
-      baseDirectory: join('apps/web'),
+      packagePath: join('apps/web'),
       buildCommand: 'turbo run build --scope web',
       devCommand: 'turbo run dev --scope web',
       dist: join('apps/web/.next'),
@@ -54,7 +54,7 @@ test('retrieve TurboRepo settings for a package folder', async (ctx) => {
 
   expect(settings).toEqual([
     expect.objectContaining({
-      baseDirectory: join('apps/web'),
+      packagePath: join('apps/web'),
       buildCommand: 'turbo run build --scope web',
       devCommand: 'turbo run dev --scope web',
       dist: '.next',

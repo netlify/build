@@ -1,7 +1,10 @@
 import minimatch, { Minimatch } from 'minimatch'
+import { PackageJson } from 'read-pkg'
 
 import { DirType } from '../file-system.js'
 import type { Project } from '../project.js'
+
+import type { WorkspacePackage } from './detect-workspace.js'
 
 /** Get the base directory out of a glob pattern */
 function getDirFromPattern(pattern: Minimatch): {
@@ -23,12 +26,28 @@ function getDirFromPattern(pattern: Minimatch): {
 }
 
 export type identifyPackageFn = (options: {
+  project: Project
   entry: string
   type: DirType
+  packagePath: string
   directory: string
-}) => Promise<boolean> | boolean
+}) => Promise<WorkspacePackage | null>
 
-const defaultIdentifyPackage: identifyPackageFn = ({ entry }) => entry === 'package.json'
+const defaultIdentifyPackage: identifyPackageFn = async ({ entry, project, directory, packagePath }) => {
+  if (entry === 'package.json') {
+    const pkg: WorkspacePackage = { path: packagePath }
+
+    try {
+      const { name } = await project.fs.readJSON<PackageJson>(project.fs.join(directory, entry))
+      pkg.name = name
+    } catch {
+      // noop
+    }
+    return pkg
+  }
+
+  return null
+}
 
 /** Find all packages inside a provided directory */
 export async function findPackages(
@@ -43,7 +62,7 @@ export async function findPackages(
   /** The depth to look. It can be either a single star `*` for one directory depth or a `**` for deep checking */
   depth?: string,
 ) {
-  const found: string[] = []
+  const found: WorkspacePackage[] = []
   let content: Record<string, DirType> = {}
   const startDir = project.jsWorkspaceRoot
     ? project.fs.resolve(project.jsWorkspaceRoot, dir)
@@ -57,8 +76,9 @@ export async function findPackages(
   }
 
   for (const [part, type] of Object.entries(content)) {
-    if (await identifyPackage({ entry: part, type, directory: startDir })) {
-      found.push(dir)
+    const identified = await identifyPackage({ entry: part, type, packagePath: dir, directory: startDir, project })
+    if (identified) {
+      found.push(identified)
     }
 
     if (depth && type === 'directory') {
@@ -76,8 +96,8 @@ export async function findPackages(
 }
 
 /** Get a list of all workspace package paths (absolute paths) */
-export async function getWorkspacePackages(project: Project, patterns: string[]): Promise<string[]> {
-  const results: string[] = []
+export async function getWorkspacePackages(project: Project, patterns: string[]): Promise<WorkspacePackage[]> {
+  const results: WorkspacePackage[] = []
   if (!patterns.length) {
     return results
   }
@@ -94,19 +114,19 @@ export async function getWorkspacePackages(project: Project, patterns: string[])
 
   // initially add all results to the set
   // and filter out then the negated patterns
-  const filtered = new Set<string>()
+  const filtered = new Map<string, WorkspacePackage>()
 
   for (const result of results) {
     for (const pattern of patterns) {
       const matcher = new Minimatch(pattern)
-      if (minimatch(result, matcher.pattern)) {
-        filtered.add(project.fs.join(result))
+      if (minimatch(result.path, matcher.pattern)) {
+        filtered.set(project.fs.join(result.path), result)
         if (matcher.negate) {
-          filtered.delete(project.fs.join(result))
+          filtered.delete(project.fs.join(result.path))
         }
       }
     }
   }
 
-  return [...filtered]
+  return [...filtered.values()]
 }

@@ -17,7 +17,10 @@ export type Settings = {
   env: Record<string, string | undefined>
   plugins: string[]
   pollingStrategies: string[]
+  /** The baseDirectory for the UI to configure (used to run the command in this working directory) */
   baseDirectory?: string
+  /** the workspace package path of an app */
+  packagePath?: string
   tomlModifications?: string
 }
 
@@ -47,6 +50,11 @@ async function applyBuildSystemOverrides(
     if (dist) {
       updatedSettings.dist = dist
     }
+
+    // if the build system should be run from the root then set the base directory to an empty string
+    if (buildSystem.runFromRoot) {
+      updatedSettings.baseDirectory = ''
+    }
   }
 
   return updatedSettings
@@ -67,6 +75,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     plugins: framework.plugins || [],
     framework: framework.name,
     baseDirectory,
+    packagePath: baseDirectory,
     pollingStrategies: framework.dev?.pollingStrategies?.map(({ name }) => name) || [],
   }
 
@@ -89,7 +98,7 @@ export async function getBuildSettings(project: Project): Promise<Settings[]> {
   }
 
   const settings = await Promise.all(
-    project.workspace.packages.map(async (baseDirectory) => {
+    project.workspace.packages.map(async ({ path: baseDirectory }) => {
       const framework = project.frameworks.get(baseDirectory)
 
       if (framework?.length) {

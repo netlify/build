@@ -237,7 +237,7 @@ export class Project {
       if (this.workspace?.isRoot) {
         // parallelize in all workspaces
         await Promise.all(
-          this.workspace.packages.map(async (pkg) => {
+          this.workspace.packages.map(async ({ path: pkg }) => {
             if (this.workspace) {
               const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
               this.frameworks.set(pkg, result)
@@ -252,7 +252,7 @@ export class Project {
         if (this.workspace) {
           const relBaseDirectory = this.fs.relative(this.workspace.rootDir, this.baseDirectory)
 
-          if (this.workspace.packages.includes(relBaseDirectory)) {
+          if (this.workspace.hasPackage(relBaseDirectory)) {
             root = relBaseDirectory
           }
         }

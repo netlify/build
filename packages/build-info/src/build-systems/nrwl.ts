@@ -1,3 +1,4 @@
+import { WorkspaceInfo, WorkspacePackage } from '../workspaces/detect-workspace.js'
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
 
 import { BaseBuildTool, Command, NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from './build-system.js'
@@ -6,6 +7,7 @@ export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
   configFiles = ['nx.json']
+  runFromRoot = true
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
@@ -56,29 +58,30 @@ export class Nx extends BaseBuildTool {
           const { workspaceLayout } = await fs.readJSON<any>(fs.join(this.project.jsWorkspaceRoot, 'nx.json'))
           // if an apps dir is specified get it.
           if (workspaceLayout?.appsDir?.length) {
-            const identifyPkg: identifyPackageFn = async ({ entry, directory }) => {
+            const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
               if (entry === 'project.json') {
                 try {
                   // we need to check the project json for application types (we don't care about libraries)
-                  const { projectType } = await fs.readJSON(fs.join(directory, entry))
-                  return projectType === 'application'
+                  const { projectType, name } = await fs.readJSON(fs.join(directory, entry))
+                  if (projectType === 'application') {
+                    return { name, path: packagePath } as WorkspacePackage
+                  }
                 } catch {
-                  return false
+                  // noop
                 }
               }
-              return false
+              return null
             }
-            const packages = await findPackages(
+
+            this.project.workspace = new WorkspaceInfo()
+            this.project.workspace.isRoot = this.project.jsWorkspaceRoot === this.project.baseDirectory
+            this.project.workspace.rootDir = this.project.jsWorkspaceRoot
+            this.project.workspace.packages = await findPackages(
               this.project,
               workspaceLayout.appsDir,
               identifyPkg,
               '*', // only check for one level
             )
-            this.project.workspace = {
-              isRoot: this.project.jsWorkspaceRoot === this.project.baseDirectory,
-              packages,
-              rootDir: this.project.jsWorkspaceRoot,
-            }
             this.project.events.emit('detectWorkspaces', this.project.workspace)
           }
         }

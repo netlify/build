@@ -61,14 +61,14 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
 
   expect(settings).toEqual([
     expect.objectContaining({
-      baseDirectory: join('packages/astro'),
+      baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run astro:build',
       devCommand: 'nx run astro:dev',
       dist: join('dist/packages/astro/public'),
       frameworkPort: 3000,
     }),
     expect.objectContaining({
-      baseDirectory: join('packages/website'),
+      baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website/.next'),

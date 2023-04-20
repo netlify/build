@@ -19,7 +19,10 @@ describe('Yarn Workspaces with yarn berry', () => {
     const info = await getBuildInfo({ projectDir: 'packages/website', rootDir: cwd })
     expect(info.packageManager?.name).toBe('yarn')
     expect(info.jsWorkspaces?.isRoot).toBe(false)
-    expect(info.jsWorkspaces?.packages).toEqual([join('packages/blog'), join('packages/website')])
+    expect(info.jsWorkspaces?.packages).toEqual([
+      { path: join('packages/blog'), name: '@evilcorp/blog' },
+      { path: join('packages/website'), name: '@evilcorp/website' },
+    ])
     expect(info.jsWorkspaces?.rootDir).toBe(cwd)
   })
 
@@ -27,7 +30,10 @@ describe('Yarn Workspaces with yarn berry', () => {
     const info = await getBuildInfo({ projectDir: cwd })
     expect(info.packageManager?.name).toBe('yarn')
     expect(info.jsWorkspaces?.isRoot).toBe(true)
-    expect(info.jsWorkspaces?.packages).toEqual([join('packages/blog'), join('packages/website')])
+    expect(info.jsWorkspaces?.packages).toEqual([
+      { path: join('packages/blog'), name: '@evilcorp/blog' },
+      { path: join('packages/website'), name: '@evilcorp/website' },
+    ])
     expect(info.jsWorkspaces?.rootDir).toBe(cwd)
   })
 })

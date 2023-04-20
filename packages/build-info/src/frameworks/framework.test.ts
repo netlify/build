@@ -20,11 +20,13 @@ const PNPMWorkspace: Record<string, string> = {
   'pnpm-workspace.yaml': `packages:\n- packages/*`,
   'package.json': JSON.stringify({ packageManager: 'pnpm@7.14.2' }),
   'packages/blog/package.json': JSON.stringify({
+    name: 'blog',
     scripts: { dev: 'astro dev', build: 'astro build' },
     dependencies: { astro: '^1.5.1' },
   }),
   'packages/website/next.config.js': '',
   'packages/website/package.json': JSON.stringify({
+    name: 'website',
     scripts: { dev: 'next dev', build: 'next build' },
     dependencies: { next: '~12.3.1', react: '18.2.9', 'react-dom': '18.2.9' },
   }),
@@ -268,7 +270,10 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: [join('packages/blog'), join('packages/website')],
+      packages: [
+        { path: join('packages/blog'), name: 'blog' },
+        { path: join('packages/website'), name: 'website' },
+      ],
       rootDir: cwd,
     })
 
@@ -311,7 +316,10 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: [join('packages/blog'), join('packages/website')],
+      packages: [
+        { path: join('packages/blog'), name: 'blog' },
+        { path: join('packages/website'), name: 'website' },
+      ],
       rootDir: join(cwd, 'frontend'),
     })
 
@@ -354,7 +362,10 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: false,
-      packages: [join('packages/blog'), join('packages/website')],
+      packages: [
+        { path: join('packages/blog'), name: 'blog' },
+        { path: join('packages/website'), name: 'website' },
+      ],
       rootDir: cwd,
     })
 
@@ -380,7 +391,10 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: false,
-      packages: [join('packages/blog'), join('packages/website')],
+      packages: [
+        { path: join('packages/blog'), name: 'blog' },
+        { path: join('packages/website'), name: 'website' },
+      ],
       rootDir: join(cwd, 'frontend'), // The root of the js workspace is not the repo root
     })
 
