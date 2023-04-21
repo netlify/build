@@ -90,5 +90,12 @@ test('Should detect js workspaces', async ({ page }) => {
       await project.detectPackageManager()
       return project.detectWorkspaces()
     }),
-  ).toMatchObject({ isRoot: true, rootDir: '/', packages: ['packages/web', 'packages/docs'] })
+  ).toMatchObject({
+    isRoot: true,
+    rootDir: '/',
+    packages: [
+      { path: 'packages/web', name: undefined },
+      { path: 'packages/docs', name: undefined },
+    ],
+  })
 })
