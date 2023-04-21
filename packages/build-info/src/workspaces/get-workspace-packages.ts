@@ -97,20 +97,26 @@ export async function findPackages(
 
 /** Get a list of all workspace package paths (absolute paths) */
 export async function getWorkspacePackages(project: Project, patterns: string[]): Promise<WorkspacePackage[]> {
-  const results: WorkspacePackage[] = []
+  // const results: WorkspacePackage[] = []
   if (!patterns.length) {
-    return results
+    return []
   }
 
-  for (const pattern of patterns) {
-    const matcher = new Minimatch(pattern)
-    // skip negated pattern for exploring as we filter at the end
-    if (matcher.negate) {
-      continue
-    }
-    const { dir, depth } = getDirFromPattern(matcher)
-    results.push(...(await findPackages(project, dir, defaultIdentifyPackage, depth)))
-  }
+  // perform a parallel detection of all workspace packages
+  const results = (
+    await Promise.all(
+      patterns.map((pattern) => {
+        const matcher = new Minimatch(pattern)
+        if (matcher.negate) {
+          return
+        }
+        const { dir, depth } = getDirFromPattern(matcher)
+        return findPackages(project, dir, defaultIdentifyPackage, depth)
+      }),
+    )
+  )
+    .flat() // flatten the nested array
+    .filter(Boolean) as WorkspacePackage[] // filter out the negate patterns
 
   // initially add all results to the set
   // and filter out then the negated patterns

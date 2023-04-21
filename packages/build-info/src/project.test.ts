@@ -69,14 +69,6 @@ describe('Setting the node.js version', () => {
     expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 17, minor: 1, patch: 2 })
     expect(readFileSpy).not.toHaveBeenCalled()
   })
-
-  // TODO: this test needs to be implemented
-  test.skip('should have a fallback node version if none is set', async ({ fs }) => {
-    const readFileSpy = vi.spyOn(fs, 'readFile')
-    const project = new Project(fs)
-    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 1, patch: 2 })
-    expect(readFileSpy).not.toHaveBeenCalled()
-  })
 })
 
 describe.concurrent('should resolve paths correctly', () => {
