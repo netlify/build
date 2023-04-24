@@ -356,7 +356,7 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.basePath, fixtureDir)
   t.true(params1.config['*'].zipGo)
   t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
-  t.is(params1.config['*'].nodeVersion, undefined)
+  t.not(params1.config['*'].nodeVersion, undefined)
   t.is(params1.repositoryRoot, fixtureDir)
 
   const params2 = mockZipFunctions.secondCall.args[2]
