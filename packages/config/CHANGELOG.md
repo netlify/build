@@ -58,6 +58,13 @@
   * dependencies
     * netlify bumped from ^13.1.3 to ^13.1.4
 
+## [20.4.0](https://github.com/netlify/build/compare/config-v20.3.7...config-v20.4.0) (2023-04-24)
+
+
+### Features
+
+* support `none` bundler ([#4981](https://github.com/netlify/build/issues/4981)) ([eaf5191](https://github.com/netlify/build/commit/eaf51912c4d792f85e1fa58b8d56fe7acb475088))
+
 ## [20.3.5](https://github.com/netlify/build/compare/config-v20.3.4...config-v20.3.5) (2023-03-13)
 
 
