@@ -42,7 +42,7 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify/edge-bundler",
+  "repository": "https://github.com/netlify/edge-bundler",
   "bugs": {
     "url": "https://github.com/netlify/edge-bundler/issues"
   },
