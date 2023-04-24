@@ -5,12 +5,6 @@ export type Command = {
   command: string
 }
 
-/** A list of often used dev command names to identify if the command is a dev command */
-export const NPM_DEV_SCRIPTS = ['dev', 'serve', 'develop', 'start', 'run', 'web']
-
-/** A list of often used build command names to identify if the command is a build command */
-export const NPM_BUILD_SCRIPTS = ['build']
-
 export interface BuildSystem {
   id: string
   name: string

@@ -10,9 +10,7 @@ afterEach(async ({ cleanup }) => await cleanup?.())
 
 describe('PNPM Workspaces', () => {
   beforeEach(async (ctx) => {
-    const fixture = await createFixture('pnpm-workspace')
-    ctx.cwd = fixture.cwd
-    ctx.cleanup = fixture.cleanup
+    await createFixture('pnpm-workspace', ctx)
   })
 
   test('should detect a regular pnpm workspace from a package level', async ({ cwd }) => {
@@ -39,17 +37,13 @@ describe('PNPM Workspaces', () => {
 })
 
 test('should detect a regular pnpm project with a lock file in the root', async (ctx) => {
-  const fixture = await createFixture('pnpm-simple')
-  ctx.cleanup = fixture.cleanup
-
+  const fixture = await createFixture('pnpm-simple', ctx)
   const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('pnpm')
 })
 
 test('should detect a regular pnpm project that is nested in a sub-folder', async (ctx) => {
-  const fixture = await createFixture('pnpm-nested')
-  ctx.cleanup = fixture.cleanup
-
+  const fixture = await createFixture('pnpm-nested', ctx)
   const info = await getBuildInfo({ projectDir: `website`, rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('pnpm')
 })

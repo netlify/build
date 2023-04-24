@@ -10,9 +10,7 @@ afterEach(async ({ cleanup }) => await cleanup?.())
 
 describe('Yarn Workspaces with yarn berry', () => {
   beforeEach(async (ctx) => {
-    const fixture = await createFixture('yarn-berry-workspace')
-    ctx.cwd = fixture.cwd
-    ctx.cleanup = fixture.cleanup
+    await createFixture('yarn-berry-workspace', ctx)
   })
 
   test('should detect a regular yarn workspace from a package level', async ({ cwd }) => {
@@ -39,17 +37,13 @@ describe('Yarn Workspaces with yarn berry', () => {
 })
 
 test('should detect a regular yarn project with a lock file in the root', async (ctx) => {
-  const fixture = await createFixture('yarn-project')
-  ctx.cleanup = fixture.cleanup
-
+  const fixture = await createFixture('yarn-project', ctx)
   const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('yarn')
 })
 
 test('should detect a regular yarn project that is nested in a sub-folder', async (ctx) => {
-  const fixture = await createFixture('yarn-nested')
-  ctx.cleanup = fixture.cleanup
-
+  const fixture = await createFixture('yarn-nested', ctx)
   const info = await getBuildInfo({ projectDir: `projects${sep}website`, rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('yarn')
 })

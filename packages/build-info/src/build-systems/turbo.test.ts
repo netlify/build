@@ -23,8 +23,7 @@ test('detects turbo when turbo.json is present', async ({ fs }) => {
 })
 
 test('retrieve TurboRepo settings', async (ctx) => {
-  const fixture = await createFixture('turborepo')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('turborepo', ctx)
   const project = new Project(ctx.fs, fixture.cwd)
   const settings = await project.getBuildSettings()
 
@@ -47,8 +46,7 @@ test('retrieve TurboRepo settings', async (ctx) => {
 })
 
 test('retrieve TurboRepo settings for a package folder', async (ctx) => {
-  const fixture = await createFixture('turborepo')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('turborepo', ctx)
   const project = new Project(ctx.fs, join(fixture.cwd, 'apps/web'))
   const settings = await project.getBuildSettings()
 

@@ -19,6 +19,7 @@ import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.j
 
 type Events = {
   detectPackageManager: (data: PkgManagerFields | null) => void
+  detectedWorkspaceGlobs: () => void // indicates that we have packages and start detecting them
   detectWorkspaces: (data: WorkspaceInfo | null) => void
   detectBuildsystems: (data: BuildSystem[]) => void
   detectFrameworks: (data: Map<string, DetectedFramework[]>) => void
@@ -34,6 +35,8 @@ export class Project {
   root?: string
   /** An absolute path  */
   baseDirectory: string
+  /** a relative base directory (like the path to workspace packages)  */
+  relativeBaseDirectory?: string
   /** the detected package manager (if null it's not a javascript project, undefined indicates that id did not run yet) */
   packageManager: PkgManagerFields | null
   /** an absolute path of the root directory for js workspaces where the most top package.json is located */
@@ -92,6 +95,11 @@ export class Project {
     if (this.root === this.baseDirectory) {
       this.root = undefined
     }
+
+    this.relativeBaseDirectory =
+      baseDirectory !== undefined && !fs.isAbsolute(baseDirectory)
+        ? baseDirectory
+        : fs.relative(this.root || fs.cwd, this.baseDirectory)
 
     this.fs.cwd = this.baseDirectory
   }
@@ -234,8 +242,8 @@ export class Project {
       await this.detectBuildSystem()
       this.frameworks = new Map()
 
-      if (this.workspace?.isRoot) {
-        // parallelize in all workspaces
+      if (this.workspace) {
+        // if we have a workspace parallelize in all workspaces
         await Promise.all(
           this.workspace.packages.map(async ({ path: pkg }) => {
             if (this.workspace) {
@@ -245,18 +253,7 @@ export class Project {
           }),
         )
       } else {
-        // per default set on ''
-        let root = ''
-        // if the framework detection was run inside a baseDirectory of a workspace
-        // we still want to store the result in the correct package key of the frameworks map
-        if (this.workspace) {
-          const relBaseDirectory = this.fs.relative(this.workspace.rootDir, this.baseDirectory)
-
-          if (this.workspace.hasPackage(relBaseDirectory)) {
-            root = relBaseDirectory
-          }
-        }
-        this.frameworks.set(root, await this.detectFrameworksInPath())
+        this.frameworks.set('', await this.detectFrameworksInPath())
       }
 
       this.events.emit('detectFrameworks', this.frameworks)

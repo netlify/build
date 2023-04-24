@@ -1,8 +1,8 @@
+import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
 import { WorkspaceInfo, WorkspacePackage } from '../workspaces/detect-workspace.js'
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
 
-import { BaseBuildTool, Command, NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from './build-system.js'
-
+import { BaseBuildTool, type Command } from './build-system.js'
 export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'

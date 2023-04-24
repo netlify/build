@@ -38,20 +38,20 @@ test('CLI prints js-workspaces and frameworks in JSON format', async () => {
 })
 
 test('CLI does not print js-workspaces if given a project without it', async (ctx) => {
-  const fixture = await createFixture('pnpm-simple')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('pnpm-simple', ctx)
   const { stdout } = await runBinary(fixture.cwd)
   expect(stdout).toMatchInlineSnapshot(`
     "{
+      \\"frameworks\\": [],
+      \\"settings\\": [],
+      \\"buildSystems\\": [],
       \\"packageManager\\": {
         \\"name\\": \\"pnpm\\",
         \\"installCommand\\": \\"pnpm install\\",
         \\"runCommand\\": \\"pnpm run\\",
         \\"lockFile\\": \\"pnpm-lock.yaml\\",
         \\"forceEnvironment\\": \\"NETLIFY_USE_PNPM\\"
-      },
-      \\"frameworks\\": [],
-      \\"buildSystems\\": []
+      }
     }"
   `)
   const { jsWorkspaces } = JSON.parse(stdout)
@@ -59,8 +59,7 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
 })
 
 test('CLI works if given a relative path and no rootDir', async (ctx) => {
-  const fixture = await createFixture('js-workspaces')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('js-workspaces', ctx)
   const { stdout } = await runBinary(fixture.cwd)
   const { jsWorkspaces, frameworks } = JSON.parse(stdout)
   expect(jsWorkspaces).not.toBe(undefined)
@@ -68,13 +67,13 @@ test('CLI works if given a relative path and no rootDir', async (ctx) => {
 })
 
 test('CLI prints an empty array if no frameworks are found', async (ctx) => {
-  const fixture = await createFixture('empty')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('empty', ctx)
   const { stdout } = await runBinary(fixture.cwd)
   expect(JSON.parse(stdout)).toMatchInlineSnapshot(`
     {
       "buildSystems": [],
       "frameworks": [],
+      "settings": [],
     }
   `)
   const { frameworks } = JSON.parse(stdout)

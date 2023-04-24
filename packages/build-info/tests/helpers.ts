@@ -5,18 +5,23 @@ import { version } from 'process'
 import { fileURLToPath } from 'url'
 
 import { compare } from 'semver'
-import { vi } from 'vitest'
+import { TestContext, vi } from 'vitest'
 
 /**
  * Copies a fixture to a temp folder on the system and runs the tests inside.
  * This prevents side effects of having a package json below the fixture inside the file tree
  * @param fixture name of the folder inside the fixtures folder
  */
-export const createFixture = async (fixture: string) => {
+export const createFixture = async (fixture: string, ctx: TestContext) => {
   // we mocked the fs with unionfs but in this case we want the actual fs
   const { promises: fs } = (await vi.importActual('fs')) as typeof import('fs')
   const cwd = await fs.mkdtemp(join(tmpdir(), 'build-info-'))
   const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(cwd)
+  ctx.cwd = cwd
+  // set the cwd on the fs as well
+  if (ctx.fs) {
+    ctx.fs.cwd = cwd
+  }
 
   try {
     const src = fileURLToPath(new URL(`fixtures/${fixture}`, import.meta.url))
@@ -33,15 +38,19 @@ export const createFixture = async (fixture: string) => {
     // noop
   }
 
+  const cleanup = async () => {
+    try {
+      await fs.rm(cwd, { recursive: true })
+    } catch {
+      // noop
+    }
+  }
+  // set the cleanup on the context as well
+  ctx.cleanup = cleanup
+
   return {
     cwd,
     cwdSpy,
-    cleanup: async () => {
-      try {
-        await fs.rm(cwd, { recursive: true })
-      } catch {
-        // noop
-      }
-    },
+    cleanup,
   }
 }

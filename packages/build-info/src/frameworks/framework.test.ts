@@ -353,11 +353,10 @@ describe('workspace detection', () => {
     )
   })
 
-  test('should detect the frameworks correctly from a base directory, but only run detection inside base dir', async ({
-    fs,
-  }) => {
+  test('should detect the frameworks correctly from a base directory, but only run detection inside base dir', async (ctx) => {
     const cwd = mockFileSystem(PNPMWorkspace)
-    const project = new Project(fs, join(cwd, 'packages/website'))
+    ctx.fs.cwd = cwd
+    const project = new Project(ctx.fs, join(cwd, 'packages/website'))
     const detection = await project.detectFrameworks()
 
     expect(project.workspace).toMatchObject({
@@ -369,10 +368,13 @@ describe('workspace detection', () => {
       rootDir: cwd,
     })
 
-    expect(detection).toHaveLength(1)
+    expect(detection).toHaveLength(2)
 
     expect(detection?.[0]).toMatchObject({
       id: 'next',
+    })
+    expect(detection?.[1]).toMatchObject({
+      id: 'astro',
     })
     expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/website'))).toEqual(
@@ -398,10 +400,13 @@ describe('workspace detection', () => {
       rootDir: join(cwd, 'frontend'), // The root of the js workspace is not the repo root
     })
 
-    expect(detection).toHaveLength(1)
+    expect(detection).toHaveLength(2)
 
     expect(detection?.[0]).toMatchObject({
       id: 'next',
+    })
+    expect(detection?.[1]).toMatchObject({
+      id: 'astro',
     })
     expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/website'))).toEqual(
@@ -615,11 +620,7 @@ describe('dev commands', () => {
     const project = new Project(fs, cwd)
     const detection = await project.detectFrameworks()
     expect(detection).toHaveLength(1)
-    expect(detection?.[0].toJSON().dev.commands).toEqual([
-      'npm run site:dev',
-      'npm run site:start',
-      'npm run site:build',
-    ])
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run site:dev', 'npm run site:start'])
   })
 
   test('Should sort scripts when dev command is a substring of build command', async ({ fs }) => {
@@ -642,10 +643,24 @@ describe('dev commands', () => {
         devDependencies: { vite: '^2.1.5' },
       }),
     })
+    fs.cwd = cwd
     const project = new Project(fs, cwd)
     const detection = await project.detectFrameworks()
     expect(detection).toHaveLength(1)
     expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run dev', 'npm run serve', 'npm run build'])
+
+    const settings = await project.getBuildSettings()
+    expect(settings).toEqual([
+      expect.objectContaining({
+        buildCommand: 'npm run build',
+        devCommand: 'npm run dev',
+        dist: 'dist',
+        framework: {
+          id: 'vite',
+          name: 'Vite',
+        },
+      }),
+    ])
   })
 
   test(`Should exclude 'netlify dev' script`, async ({ fs }) => {
@@ -653,8 +668,8 @@ describe('dev commands', () => {
       'package.json': JSON.stringify({
         dependencies: { 'react-scripts': '*' },
         scripts: {
-          start: 'netlify dev',
-          build: 'react-scripts build',
+          dev: 'netlify dev',
+          start: 'react-scripts start',
           test: 'react-scripts test',
           eject: 'react-scripts eject',
         },
@@ -663,6 +678,6 @@ describe('dev commands', () => {
     const project = new Project(fs, cwd)
     const detection = await project.detectFrameworks()
     expect(detection).toHaveLength(1)
-    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run build'])
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run start'])
   })
 })

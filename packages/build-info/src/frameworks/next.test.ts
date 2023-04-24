@@ -123,8 +123,7 @@ describe('Next.js Monorepo using PNPM', () => {
 
 describe('Nx monorepo', () => {
   test('should get Next.js settings within a nx monorepo and the next.js plugin', async (ctx) => {
-    const fixture = await createFixture('nx-integrated')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('nx-integrated', ctx)
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 
@@ -142,8 +141,7 @@ describe('Nx monorepo', () => {
 
 describe('Nx turborepo', () => {
   test('should get Next.js settings within turborepo and the next.js plugin', async (ctx) => {
-    const fixture = await createFixture('turborepo')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('turborepo', ctx)
     const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
     const settings = await project.getBuildSettings()
 

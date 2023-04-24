@@ -15,6 +15,7 @@ test('should detect nothing in an empty project', async () => {
       "frameworks": [],
       "jsWorkspaces": null,
       "packageManager": null,
+      "settings": [],
     }
   `)
 })
@@ -31,13 +32,13 @@ test('should detect nothing in a simple golang project', async () => {
       "frameworks": [],
       "jsWorkspaces": null,
       "packageManager": null,
+      "settings": [],
     }
   `)
 })
 
 test('should not crash on invalid projects', async (ctx) => {
-  const fixture = await createFixture('invalid-project')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('invalid-project', ctx)
   const { frameworks, packageManager } = await getBuildInfo({ projectDir: fixture.cwd })
   expect(packageManager).toMatchInlineSnapshot
   expect(frameworks).toEqual([])
@@ -45,9 +46,7 @@ test('should not crash on invalid projects', async (ctx) => {
 
 describe('Golang', () => {
   test('should not detect anything inside a golang workspace', async (ctx) => {
-    const fixture = await createFixture('go-workspace')
-    ctx.cleanup = fixture.cleanup
-
+    const fixture = await createFixture('go-workspace', ctx)
     const info = await getBuildInfo({ projectDir: 'bar', rootDir: fixture.cwd })
     expect(info).toMatchInlineSnapshot(`
       {
@@ -55,6 +54,7 @@ describe('Golang', () => {
         "frameworks": [],
         "jsWorkspaces": null,
         "packageManager": null,
+        "settings": [],
       }
     `)
   })
@@ -62,23 +62,20 @@ describe('Golang', () => {
 
 describe('JavaScript Workspaces', () => {
   test('project without package.json does not return workspaces info', async (ctx) => {
-    const fixture = await createFixture('empty')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('empty', ctx)
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
 
     expect(jsWorkspaces).toBeNull()
   })
 
   test('project without workspaces in package.json does not return workspaces info', async (ctx) => {
-    const fixture = await createFixture('simple-package-json')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('simple-package-json', ctx)
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
     expect(jsWorkspaces).toBeNull()
   })
 
   test('projectDir set to workspaces root returns workspace info and isRoot flag set to true', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('js-workspaces', ctx)
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
     expect(jsWorkspaces).not.toBeNull()
     expect(jsWorkspaces?.isRoot).toBe(true)
@@ -86,8 +83,7 @@ describe('JavaScript Workspaces', () => {
   })
 
   test('projectDir set to workspace dir returns workspace info and isRoot flag set to false', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('js-workspaces', ctx)
     const { jsWorkspaces } = await getBuildInfo({ projectDir: 'packages/gatsby-site', rootDir: fixture.cwd })
     expect(jsWorkspaces).not.toBeNull()
     expect(jsWorkspaces?.isRoot).toBe(false)
@@ -95,15 +91,13 @@ describe('JavaScript Workspaces', () => {
   })
 
   test('if project is not part of a workspace return no workspace info', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('js-workspaces', ctx)
     const { jsWorkspaces } = await getBuildInfo({ projectDir: 'not-in-workspace', rootDir: fixture.cwd })
     expect(jsWorkspaces).toBeNull()
   })
 
   test('handles absolute paths correctly', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('js-workspaces', ctx)
     const { jsWorkspaces } = await getBuildInfo({
       projectDir: `${fixture.cwd}/packages/gatsby-site`,
       rootDir: fixture.cwd,
@@ -114,18 +108,14 @@ describe('JavaScript Workspaces', () => {
   })
 
   test('detects workspaces and frameworks when given a rootDir and an empty projectDir', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
-
+    const fixture = await createFixture('js-workspaces', ctx)
     const { frameworks, jsWorkspaces } = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
     expect(jsWorkspaces).not.toBeNull()
     expect(frameworks.length).toBe(1)
   })
 
   test('should detect workspaces and frameworks', async (ctx) => {
-    const fixture = await createFixture('js-workspaces')
-    ctx.cleanup = fixture.cleanup
-
+    const fixture = await createFixture('js-workspaces', ctx)
     const { frameworks, jsWorkspaces } = await getBuildInfo({
       projectDir: 'packages/gatsby-site',
       rootDir: fixture.cwd,
@@ -137,23 +127,20 @@ describe('JavaScript Workspaces', () => {
 
 describe('Frameworks', () => {
   test('return an empty array if no frameworks are detected', async (ctx) => {
-    const fixture = await createFixture('empty')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('empty', ctx)
     const { frameworks } = await getBuildInfo({ projectDir: fixture.cwd })
     expect(frameworks).toEqual([])
   })
 
   test('framework detection works correctly for npm pkg detected framework', async (ctx) => {
-    const fixture = await createFixture('next-project')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('next-project', ctx)
     const { frameworks } = await getBuildInfo({ projectDir: fixture.cwd })
     expect(frameworks).toHaveLength(1)
     expect(frameworks).toEqual([expect.objectContaining({ id: 'next' })])
   })
 
   test('framework detection works correctly for static file detected framework', async (ctx) => {
-    const fixture = await createFixture('jekyll-project')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('jekyll-project', ctx)
     const { frameworks } = await getBuildInfo({ projectDir: fixture.cwd })
     expect(frameworks).toHaveLength(1)
     expect(frameworks).toEqual([expect.objectContaining({ id: 'jekyll' })])

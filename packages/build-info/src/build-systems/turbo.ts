@@ -1,7 +1,8 @@
 import type { PackageJson } from 'read-pkg'
 
-import { BaseBuildTool, NPM_BUILD_SCRIPTS, type Command, NPM_DEV_SCRIPTS } from './build-system.js'
+import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
 
+import { BaseBuildTool, type Command } from './build-system.js'
 export class Turbo extends BaseBuildTool {
   id = 'turbo'
   name = 'TurboRepo'

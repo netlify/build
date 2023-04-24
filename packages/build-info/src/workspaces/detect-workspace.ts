@@ -23,6 +23,10 @@ export class WorkspaceInfo {
   hasPackage(relativePackagePath: string): boolean {
     return this.packages.findIndex(({ path }) => path === relativePackagePath) > -1
   }
+
+  getPackage(relativePackagePath: string): WorkspacePackage | undefined {
+    return this.packages.find(({ path }) => path === relativePackagePath)
+  }
 }
 
 /**
@@ -80,6 +84,9 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
   if (!workspaceGlobs || workspaceGlobs.length === 0) {
     return null
   }
+
+  // indicate that we have found some globs and starting to parse them
+  project.events.emit('detectedWorkspaceGlobs', undefined)
   const info = new WorkspaceInfo()
   info.rootDir = project.jsWorkspaceRoot
   info.packages = await getWorkspacePackages(project, workspaceGlobs)

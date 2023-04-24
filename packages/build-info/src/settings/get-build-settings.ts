@@ -10,8 +10,11 @@ export type Settings = {
   devCommand?: string
   /** The port that needs to be listened on the dev server */
   frameworkPort?: number
-  /** The name of the detected framework */
-  framework: string
+  /** the detected framework */
+  framework: {
+    id: string
+    name: string
+  }
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
@@ -52,7 +55,8 @@ async function applyBuildSystemOverrides(
     }
 
     // if the build system should be run from the root then set the base directory to an empty string
-    if (buildSystem.runFromRoot) {
+    // only applicable if we have a build or dev command for it
+    if (buildSystem.runFromRoot && build && dev) {
       updatedSettings.baseDirectory = ''
     }
   }
@@ -60,20 +64,24 @@ async function applyBuildSystemOverrides(
   return updatedSettings
 }
 
-async function getSettings(framework: Framework, project: Project, baseDirectory?: string): Promise<Settings> {
+async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
   const frameworkDist = framework.staticAssetsDirectory || framework.build.directory
 
   const devCommands = framework.getDevCommands()
+  const buildCommands = framework.getBuildCommands()
 
   const settings: Settings = {
     name: framework.name,
-    buildCommand: framework.build.command,
+    buildCommand: buildCommands[0],
     devCommand: devCommands[0],
     frameworkPort: framework.dev?.port,
     dist: frameworkDist,
     env: framework.env || {},
     plugins: framework.plugins || [],
-    framework: framework.name,
+    framework: {
+      id: framework.id,
+      name: framework.name,
+    },
     baseDirectory,
     packagePath: baseDirectory,
     pollingStrategies: framework.dev?.pollingStrategies?.map(({ name }) => name) || [],
@@ -83,7 +91,14 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     settings.dist = project.fs.join(baseDirectory, frameworkDist)
   }
 
-  return applyBuildSystemOverrides(settings, project, baseDirectory)
+  // 1. try to apply overrides for package managers (like npm, pnpm or yarn workspaces)
+  // 2. try to apply build system overrides
+  return applyBuildSystemOverrides(
+    settings,
+    // await applyPackageManagerOverrides(settings, project, baseDirectory),
+    project,
+    baseDirectory,
+  )
 }
 
 export async function getBuildSettings(project: Project): Promise<Settings[]> {
@@ -91,21 +106,23 @@ export async function getBuildSettings(project: Project): Promise<Settings[]> {
     throw new Error('Please run the framework detection before calling the build settings!')
   }
 
-  if (!project.workspace?.packages.length) {
-    const frameworks = project.frameworks.get('') || [] // get the frameworks for non workspace settings
-    const settings = await Promise.all(frameworks.map((framework) => getSettings(framework, project)))
-    return settings.filter(Boolean) as Settings[]
+  const baseDirectory = project.relativeBaseDirectory || ''
+  const settingsPromises: Promise<Settings>[] = []
+
+  // if we are in a workspace and trying to retrieve the settings from the root
+  if (project.workspace && project.workspace.packages.length > 0 && baseDirectory.length === 0) {
+    for (const [relPkg, frameworks] of [...project.frameworks.entries()]) {
+      for (const framework of frameworks) {
+        settingsPromises.push(getSettings(framework, project, relPkg))
+      }
+    }
+  } else {
+    // we can leverage the baseDirectory as either not running from the root of a workspace or it's not a workspace
+    for (const framework of project.frameworks.get(baseDirectory) || []) {
+      settingsPromises.push(getSettings(framework, project, baseDirectory))
+    }
   }
 
-  const settings = await Promise.all(
-    project.workspace.packages.map(async ({ path: baseDirectory }) => {
-      const framework = project.frameworks.get(baseDirectory)
-
-      if (framework?.length) {
-        return getSettings(framework[0], project, baseDirectory)
-      }
-    }),
-  )
-
+  const settings = await Promise.all(settingsPromises)
   return settings.filter(Boolean) as Settings[]
 }
