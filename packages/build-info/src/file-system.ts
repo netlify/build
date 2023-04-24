@@ -183,7 +183,11 @@ export abstract class FileSystem {
     try {
       return JSON.parse(await this.readFile(path))
     } catch (error) {
-      this.logger.error(`Could not parse JSON file ${path}\n${error}`)
+      let message = `Could not parse JSON file ${path}`
+      if (error instanceof Error) {
+        message += `\n${error.name}: ${error.message}\n${error.stack}`
+      }
+      this.logger.error(message)
       return {}
     }
   }
