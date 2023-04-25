@@ -69,6 +69,20 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.10.0](https://github.com/netlify/build/compare/build-v29.9.2...build-v29.10.0) (2023-04-24)
+
+
+### Features
+
+* support `none` bundler ([#4981](https://github.com/netlify/build/issues/4981)) ([eaf5191](https://github.com/netlify/build/commit/eaf51912c4d792f85e1fa58b8d56fe7acb475088))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.7 to ^20.4.0
+
 ## [29.9.2](https://github.com/netlify/build/compare/build-v29.9.1...build-v29.9.2) (2023-04-12)
 
 

@@ -41,6 +41,7 @@ export const runSteps = async function ({
   testOpts,
   featureFlags,
   quiet,
+  userNodeVersion,
 }) {
   const {
     index: stepsCount,
@@ -140,6 +141,7 @@ export const runSteps = async function ({
         testOpts,
         featureFlags,
         quiet,
+        userNodeVersion,
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })

@@ -31,6 +31,7 @@ export const fireCoreStep = async function ({
   debug,
   systemLog,
   saveConfig,
+  userNodeVersion,
 }) {
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -61,6 +62,7 @@ export const fireCoreStep = async function ({
       debug,
       systemLog,
       saveConfig,
+      userNodeVersion,
     })
     const {
       netlifyConfig: netlifyConfigA,
