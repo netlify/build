@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "lib" /* Specify an output folder for all emitted files. */,
-    "composite": true,
     "sourceMap": true
   },
-  "references": [{ "path": "tsconfig.build.json" }, { "path": "tsconfig.test.json" }]
+  "references": [{ "path": "./tsconfig.build.json" }, { "path": "./tsconfig.test.json" }]
 }

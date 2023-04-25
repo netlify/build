@@ -1,9 +1,10 @@
 import { join } from 'path'
 
-import { afterEach, beforeEach, describe, expect, test } from 'vitest'
+import { TestContext, afterEach, beforeEach, describe, expect, test } from 'vitest'
 
-import { createFixture } from '../../tests/helpers.js'
+import { createFixture, createWebFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'
+import { GithubProvider, WebFS } from '../browser/file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { NoopLogger } from '../node/get-build-info.js'
 import { Project } from '../project.js'
@@ -90,6 +91,21 @@ describe('Nx', () => {
       rootDir: join(cwd, 'frontend'),
     })
   })
+
+  test('detect build settings from a package sub path', async (ctx) => {
+    const fixture = await createFixture('nx-integrated', ctx)
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/website'))
+    const settings = await project.getBuildSettings()
+
+    expect(settings).toEqual([
+      expect.objectContaining({
+        baseDirectory: '',
+        buildCommand: 'nx run website:build',
+        devCommand: 'nx run website:serve',
+        dist: 'dist/packages/website/.next',
+      }),
+    ])
+  })
 })
 
 describe('Lerna', () => {
@@ -103,5 +119,69 @@ describe('Lerna', () => {
 
     expect(detected[0]?.name).toBe('Lerna')
     expect(detected[0]?.version).toBe('^5.5.2')
+  })
+})
+
+describe.each([
+  {
+    describeName: 'WebFS',
+    setup: async (ctx: TestContext, fixtureName = 'nx-integrated') => {
+      const fs = new WebFS(new GithubProvider('netlify/test', 'main'))
+      const fixture = await createWebFixture(fixtureName)
+      ctx.fs = fs
+      ctx.fs.cwd = fixture.cwd
+      ctx.cwd = fixture.cwd
+    },
+  },
+  {
+    describeName: 'NodeFS',
+    setup: async (ctx: TestContext, fixtureName = 'nx-integrated') => {
+      const fs = new NodeFS()
+      const fixture = await createFixture(fixtureName, ctx)
+      ctx.fs = fs
+      ctx.fs.cwd = fixture.cwd
+      ctx.cwd = fixture.cwd
+    },
+  },
+])('$describeName', ({ setup }) => {
+  describe('nx-integrated', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'nx-integrated')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          buildCommand: 'nx run website:build',
+          devCommand: 'nx run website:serve',
+          dist: 'dist/packages/website/.next',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          buildCommand: 'nx run astro:build',
+          devCommand: 'nx run astro:dev',
+          dist: 'dist/packages/astro/public',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'packages/website'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          buildCommand: 'nx run website:build',
+          devCommand: 'nx run website:serve',
+          dist: 'dist/packages/website/.next',
+        }),
+      ])
+    })
   })
 })

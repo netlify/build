@@ -1,4 +1,4 @@
-import { join, relative } from 'path'
+import { join, relative, resolve } from 'path'
 
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'

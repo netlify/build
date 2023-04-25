@@ -1,4 +1,5 @@
 import { execSync } from 'child_process'
+import { readFile, readdir, stat } from 'fs/promises'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { version } from 'process'
@@ -53,4 +54,40 @@ export const createFixture = async (fixture: string, ctx: TestContext) => {
     cwdSpy,
     cleanup,
   }
+}
+
+export const createWebFixture = async (fixture: string) => {
+  // This is a mock for the github api functionality to have consistent tests and no rate limiting
+  global.fetch = vi.fn(async (url): Promise<any> => {
+    const { pathname } = new URL(url as string)
+    const fileOrPath = pathname.replace(/(^.+\/contents)/, '')
+    const src = fileURLToPath(new URL(`fixtures/${fixture}${fileOrPath}`, import.meta.url))
+
+    try {
+      const info = await stat(src)
+      if (info.isDirectory()) {
+        const entries = await readdir(src, { withFileTypes: true })
+        return new Response(
+          JSON.stringify(
+            entries.map((entry) => ({
+              path: entry.name,
+              type: entry.isDirectory() ? 'dir' : 'file',
+            })),
+          ),
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
+      } else {
+        const file = await readFile(src, 'utf-8')
+        return new Response(file)
+      }
+    } catch {
+      // noop
+    }
+
+    throw new Error(`404 ${url} not found!`)
+  })
+
+  return { cwd: '/' }
 }
