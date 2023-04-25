@@ -451,6 +451,7 @@ const initAndRunBuild = async function ({
       packageJson,
       configPath,
       outputConfigPath,
+      userNodeVersion,
       headersPath,
       redirectsPath,
       buildDir,
@@ -515,6 +516,7 @@ const runBuild = async function ({
   packageJson,
   configPath,
   outputConfigPath,
+  userNodeVersion,
   headersPath,
   redirectsPath,
   buildDir,
@@ -599,6 +601,7 @@ const runBuild = async function ({
     testOpts,
     featureFlags,
     quiet,
+    userNodeVersion,
   })
 
   return {

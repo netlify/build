@@ -2,7 +2,7 @@ import isPlainObj from 'is-plain-obj'
 
 import { isDefined } from './utils/remove_falsy.js'
 
-export const bundlers = ['esbuild', 'nft', 'zisi']
+export const bundlers = ['esbuild', 'nft', 'zisi', 'none']
 export const WILDCARD_ALL = '*'
 
 // Removing the legacy `functions` from the `build` block.
