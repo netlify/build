@@ -62,7 +62,6 @@ export async function findPackages(
   /** The depth to look. It can be either a single star `*` for one directory depth or a `**` for deep checking */
   depth?: string,
 ) {
-  const found: WorkspacePackage[] = []
   let content: Record<string, DirType> = {}
   const startDir = project.jsWorkspaceRoot
     ? project.fs.resolve(project.jsWorkspaceRoot, dir)
@@ -75,24 +74,20 @@ export async function findPackages(
     // noop
   }
 
-  for (const [part, type] of Object.entries(content)) {
+  const foundPromises = Object.entries(content).map(async ([part, type]) => {
     const identified = await identifyPackage({ entry: part, type, packagePath: dir, directory: startDir, project })
     if (identified) {
-      found.push(identified)
+      return [identified]
     }
 
     if (depth && type === 'directory') {
-      found.push(
-        ...(await findPackages(
-          project,
-          project.fs.join(dir, part),
-          identifyPackage,
-          depth === '**' ? depth : undefined,
-        )),
-      )
+      return findPackages(project, project.fs.join(dir, part), identifyPackage, depth === '**' ? depth : undefined)
     }
-  }
-  return found
+    return []
+  }) as Promise<WorkspacePackage[]>[]
+
+  const found = await Promise.all(foundPromises)
+  return found.flat()
 }
 
 /** Get a list of all workspace package paths (absolute paths) */
