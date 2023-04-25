@@ -46,6 +46,20 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.8.1](https://github.com/netlify/build/compare/build-info-v6.8.0...build-info-v6.8.1) (2023-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9 ([#4982](https://github.com/netlify/build/issues/4982)) ([4a77bbc](https://github.com/netlify/build/commit/4a77bbcb6b1edb6f705282a8cece7963710e8e3e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.5 to ^9.8.6
+
 ## [6.8.0](https://github.com/netlify/build/compare/build-info-v6.7.2...build-info-v6.8.0) (2023-04-14)
 
 
