@@ -60,7 +60,8 @@ export class Nx extends BaseBuildTool {
           // if an apps dir is specified get it.
           if (workspaceLayout?.appsDir?.length) {
             const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
-              if (entry === 'project.json') {
+              // ignore e2e test applications as there is no need to deploy them
+              if (entry === 'project.json' && !packagePath.endsWith('-e2e')) {
                 try {
                   // we need to check the project json for application types (we don't care about libraries)
                   const { projectType, name } = await fs.readJSON(fs.join(directory, entry))

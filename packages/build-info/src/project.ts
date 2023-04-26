@@ -98,7 +98,7 @@ export class Project {
 
     this.relativeBaseDirectory =
       baseDirectory !== undefined && !fs.isAbsolute(baseDirectory)
-        ? baseDirectory
+        ? fs.join(baseDirectory)
         : fs.relative(this.root || fs.cwd, this.baseDirectory)
 
     this.fs.cwd = this.baseDirectory
