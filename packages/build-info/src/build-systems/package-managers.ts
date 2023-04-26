@@ -10,7 +10,9 @@ export class PNPM extends BaseBuildTool {
 
   // will be called after the framework detection has run
   async getCommands(packagePath: string): Promise<Command[]> {
-    const { name, scripts } = await this.project.fs.readJSON(this.project.fs.join(packagePath, 'package.json'))
+    const { name, scripts } = await this.project.fs.readJSON(
+      this.project.resolveFromPackage(packagePath, 'package.json'),
+    )
     if (scripts && Object.keys(scripts).length > 0) {
       return Object.entries(scripts).map(([scriptName, value]) => ({
         type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
@@ -26,14 +28,48 @@ export class PNPM extends BaseBuildTool {
   }
 }
 
-export class Npm extends BaseBuildTool {
+export class Yarn extends BaseBuildTool {
+  id = 'yarn'
+  name = 'Yarn'
+  runFromRoot = true
+
+  // will be called after the framework detection has run
+  async getCommands(packagePath: string): Promise<Command[]> {
+    const { name, scripts } = await this.project.fs.readJSON(
+      this.project.resolveFromPackage(packagePath, 'package.json'),
+    )
+    if (scripts && Object.keys(scripts).length > 0) {
+      return Object.entries(scripts).map(([scriptName, value]) => ({
+        type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
+        command: `yarn workspace ${name} ${scriptName}`,
+      }))
+    }
+    return []
+  }
+
+  async detect(): Promise<this | undefined> {
+    // only detect for yarn berry
+    if (
+      this.project.workspace &&
+      this.project.packageManager?.name === PkgManager.YARN &&
+      this.project.packageManager.version?.major &&
+      this.project.packageManager.version.major >= 3
+    ) {
+      return this
+    }
+  }
+}
+
+export class NPM extends BaseBuildTool {
   id = 'npm'
   name = 'NPM'
   runFromRoot = true
 
   // will be called after the framework detection has run
   async getCommands(packagePath: string): Promise<Command[]> {
-    const { name, scripts } = await this.project.fs.readJSON(this.project.fs.join(packagePath, 'package.json'))
+    const { name, scripts } = await this.project.fs.readJSON(
+      this.project.resolveFromPackage(packagePath, 'package.json'),
+    )
     if (scripts && Object.keys(scripts).length > 0) {
       return Object.entries(scripts).map(([scriptName, value]) => ({
         type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',

@@ -11,10 +11,7 @@ export class Nx extends BaseBuildTool {
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
-    const projectPath =
-      this.project.baseDirectory.endsWith(packagePath) && !this.project.workspace?.isRoot
-        ? this.project.fs.join(this.project.baseDirectory, 'project.json')
-        : this.project.fs.resolve(packagePath, 'project.json')
+    const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
     const { name, targets } = await this.project.fs.readJSON(projectPath)
 
     if (name && targets) {

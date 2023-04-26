@@ -1,9 +1,10 @@
 import { join } from 'path'
 
-import { beforeEach, expect, test } from 'vitest'
+import { beforeEach, expect, test, describe, TestContext } from 'vitest'
 
-import { createFixture } from '../../tests/helpers.js'
+import { createFixture, createWebFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'
+import { GithubProvider, WebFS } from '../browser/file-system.js'
 import { Bazel } from '../build-systems/bazel.js'
 import { NodeFS } from '../node/file-system.js'
 import { NoopLogger } from '../node/get-build-info.js'
@@ -123,4 +124,257 @@ test('get dev command from npm scripts if defined', async ({ fs }) => {
       dist: 'apps/next/.next',
     }),
   ])
+})
+
+describe.each([
+  {
+    describeName: 'WebFS',
+    setup: async (ctx: TestContext, fixtureName: string) => {
+      const fs = new WebFS(new GithubProvider('netlify/test', 'main'))
+      const fixture = await createWebFixture(fixtureName)
+      ctx.fs = fs
+      ctx.fs.cwd = fixture.cwd
+      ctx.cwd = fixture.cwd
+    },
+  },
+  {
+    describeName: 'NodeFS',
+    setup: async (ctx: TestContext, fixtureName: string) => {
+      const fs = new NodeFS()
+      const fixture = await createFixture(fixtureName, ctx)
+      ctx.fs = fs
+      ctx.fs.cwd = fixture.cwd
+      ctx.cwd = fixture.cwd
+    },
+  },
+])('$describeName', ({ setup }) => {
+  describe('npm-workspace', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'npm-workspace')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/blog',
+          buildCommand: 'npm run build --workspace @evilcorp/blog',
+          devCommand: 'npm run dev --workspace @evilcorp/blog',
+          dist: 'packages/blog/public',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'npm run build --workspace @evilcorp/website',
+          devCommand: 'npm run dev --workspace @evilcorp/website',
+          dist: 'packages/website/.next',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'packages/blog'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          buildCommand: 'npm run build --workspace @evilcorp/blog',
+          devCommand: 'npm run dev --workspace @evilcorp/blog',
+          dist: 'packages/blog/public',
+          packagePath: 'packages/blog',
+        }),
+      ])
+    })
+  })
+
+  describe('pnpm-workspace', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'pnpm-workspace')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/blog',
+          buildCommand: 'pnpm run build --filter @evilcorp/blog',
+          devCommand: 'pnpm run dev --filter @evilcorp/blog',
+          dist: 'packages/blog/public',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'pnpm run build --filter @evilcorp/website',
+          devCommand: 'pnpm run dev --filter @evilcorp/website',
+          dist: 'packages/website/.next',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'packages/blog'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          buildCommand: 'pnpm run build --filter @evilcorp/blog',
+          devCommand: 'pnpm run dev --filter @evilcorp/blog',
+          dist: 'packages/blog/public',
+          packagePath: 'packages/blog',
+        }),
+      ])
+    })
+  })
+
+  describe('yarn-berry-workspace', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'yarn-berry-workspace')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/blog',
+          buildCommand: 'yarn workspace @evilcorp/blog build',
+          devCommand: 'yarn workspace @evilcorp/blog dev',
+          dist: 'packages/blog/public',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'yarn workspace @evilcorp/website build',
+          devCommand: 'yarn workspace @evilcorp/website dev',
+          dist: 'packages/website/.next',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'packages/website'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'yarn workspace @evilcorp/website build',
+          devCommand: 'yarn workspace @evilcorp/website dev',
+          dist: 'packages/website/.next',
+        }),
+      ])
+    })
+  })
+
+  describe('turborepo', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'turborepo')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/docs',
+          buildCommand: 'turbo run build --scope docs',
+          devCommand: 'turbo run dev --scope docs',
+          dist: 'apps/docs/.next',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/web',
+          buildCommand: 'turbo run build --scope web',
+          devCommand: 'turbo run dev --scope web',
+          dist: 'apps/web/.next',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'apps/web'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/web',
+          buildCommand: 'turbo run build --scope web',
+          devCommand: 'turbo run dev --scope web',
+          dist: 'apps/web/.next',
+        }),
+      ])
+    })
+  })
+
+  describe('nx-integrated', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'nx-integrated')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/astro',
+          buildCommand: 'nx run astro:build',
+          devCommand: 'nx run astro:dev',
+          dist: 'dist/packages/astro/public',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'nx run website:build',
+          devCommand: 'nx run website:serve',
+          dist: 'dist/packages/website/.next',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'packages/website'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/website',
+          buildCommand: 'nx run website:build',
+          devCommand: 'nx run website:serve',
+          dist: 'dist/packages/website/.next',
+        }),
+      ])
+    })
+  })
 })

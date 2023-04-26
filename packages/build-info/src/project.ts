@@ -172,6 +172,13 @@ export class Project {
     return { pkgPath: null }
   }
 
+  /** Resolves a path correctly with a package path, independent of run from the workspace root or from a package */
+  resolveFromPackage(packagePath: string, ...parts: string[]) {
+    return this.baseDirectory.endsWith(packagePath) && !this.workspace?.isRoot
+      ? this.fs.join(this.baseDirectory, ...parts)
+      : this.fs.resolve(packagePath, ...parts)
+  }
+
   /** Detects the used package Manager */
   async detectPackageManager() {
     // if the packageManager is undefined, the detection was not run.

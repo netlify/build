@@ -75,7 +75,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     buildCommand: buildCommands[0],
     devCommand: devCommands[0],
     frameworkPort: framework.dev?.port,
-    dist: frameworkDist,
+    dist: project.fs.join(baseDirectory, frameworkDist),
     env: framework.env || {},
     plugins: framework.plugins || [],
     framework: {

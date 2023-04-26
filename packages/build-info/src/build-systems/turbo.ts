@@ -12,7 +12,7 @@ export class Turbo extends BaseBuildTool {
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
     const { scripts, name } = await this.project.fs.readJSON<PackageJson>(
-      this.project.fs.join(packagePath, 'package.json'),
+      this.project.resolveFromPackage(packagePath, 'package.json'),
     )
 
     if (name && scripts && Object.values(scripts).length) {
