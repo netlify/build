@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "6.8.0",
+  "version": "6.8.1",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -27,6 +27,7 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "build:logos": "vite build",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
@@ -45,7 +46,7 @@
   "author": "Netlify Inc.",
   "dependencies": {
     "@bugsnag/js": "^7.20.0",
-    "@netlify/framework-info": "^9.8.5",
+    "@netlify/framework-info": "^9.8.6",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
     "read-pkg": "^7.1.0",
