@@ -1,8 +1,42 @@
 import { join, resolve } from 'path'
 
+import { FunctionConfig, ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
 import mapObject from 'map-obj'
+import semver from 'semver'
+
+import type { FeatureFlags } from '../../core/feature_flags.js'
 
 import { getZisiFeatureFlags } from './feature_flags.js'
+
+type GetZisiParametersType = {
+  buildDir: string
+  childEnv: Record<string, string>
+  featureFlags: FeatureFlags
+  functionsConfig: Record<string, any>
+  functionsDist: string
+  internalFunctionsSrc: string
+  isRunningLocally: boolean
+  repositoryRoot: string
+  userNodeVersion: string
+}
+
+const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion: string): string | undefined => {
+  if (childEnv.AWS_LAMBDA_JS_RUNTIME) {
+    return childEnv.AWS_LAMBDA_JS_RUNTIME
+  }
+
+  // As of time of writing the default Lambda Node.js version is 16 and
+  // we do not want to take the risk and downgrade users from this default version on initial release
+  // of the dependency between user and lambda Node.js version.
+  // The check ensures that if the user version is lower than 16 we keep the default version.
+  //
+  // TODO: Remove this once Node.js 16 is deprecated. Do NOT change this if the default Lambda version is updated.
+  if (semver.gte(userNodeVersion, '16.0.0')) {
+    return userNodeVersion
+  }
+
+  return undefined
+}
 
 export const getZisiParameters = ({
   buildDir,
@@ -13,12 +47,13 @@ export const getZisiParameters = ({
   internalFunctionsSrc,
   isRunningLocally,
   repositoryRoot,
-}) => {
-  const nodeVersion = childEnv.AWS_LAMBDA_JS_RUNTIME
+  userNodeVersion,
+}: GetZisiParametersType): ZipFunctionsOptions => {
+  const nodeVersion = getLambdaNodeVersion(childEnv, userNodeVersion)
   const manifest = join(functionsDist, 'manifest.json')
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
-    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally, nodeVersion }),
+    normalizeFunctionConfig({ buildDir, functionConfig: object, isRunningLocally, nodeVersion }),
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
   // Only internal functions are allowed to have a json config file
@@ -37,7 +72,17 @@ export const getZisiParameters = ({
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-export const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally, nodeVersion }) => ({
+export const normalizeFunctionConfig = ({
+  buildDir,
+  functionConfig = {},
+  isRunningLocally,
+  nodeVersion,
+}: {
+  buildDir: string
+  functionConfig: Record<string, any>
+  isRunningLocally: boolean
+  nodeVersion: string | undefined
+}): FunctionConfig => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   name: functionConfig.name,

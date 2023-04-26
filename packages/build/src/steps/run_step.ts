@@ -56,6 +56,7 @@ export const runStep = async function ({
   testOpts,
   featureFlags,
   quiet,
+  userNodeVersion,
 }) {
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
@@ -129,6 +130,7 @@ export const runStep = async function ({
     headersPath,
     redirectsPath,
     featureFlags,
+    userNodeVersion,
   })
 
   const newValues = await getStepReturn({
@@ -264,6 +266,7 @@ const tFireStep = function ({
   headersPath,
   redirectsPath,
   featureFlags,
+  userNodeVersion,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -293,6 +296,7 @@ const tFireStep = function ({
       debug,
       systemLog,
       saveConfig,
+      userNodeVersion,
     })
   }
 

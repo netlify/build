@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { NodeBundlerType, RuntimeType, zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { log } from '../../log/logger.js'
@@ -15,8 +15,8 @@ const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
   // using a Set to filter duplicates
   new Set(
     results
-      .map((bundle) => (bundle.runtime === RuntimeType.JAVASCRIPT ? bundle.bundler : null))
-      .filter(Boolean) as NodeBundlerType[],
+      .map((bundle) => (bundle.runtime === RUNTIME.JAVASCRIPT ? bundle.bundler : null))
+      .filter(Boolean) as NodeBundlerName[],
   )
 
 const zipFunctionsAndLogResults = async ({
@@ -30,6 +30,7 @@ const zipFunctionsAndLogResults = async ({
   isRunningLocally,
   logs,
   repositoryRoot,
+  userNodeVersion,
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -40,6 +41,7 @@ const zipFunctionsAndLogResults = async ({
     internalFunctionsSrc,
     isRunningLocally,
     repositoryRoot,
+    userNodeVersion,
   })
 
   try {
@@ -74,6 +76,7 @@ const coreStep = async function ({
   netlifyConfig,
   featureFlags,
   repositoryRoot,
+  userNodeVersion,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -120,6 +123,7 @@ const coreStep = async function ({
     isRunningLocally,
     logs,
     repositoryRoot,
+    userNodeVersion,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
