@@ -179,7 +179,11 @@ export abstract class FileSystem {
   }
 
   /** Gracefully reads a file as JSON and parses it */
-  async readJSON<V = Record<string, unknown>>(path: string): Promise<Partial<V>> {
+  async readJSON<V = Record<string, unknown>>(path: string, options: { fail?: boolean } = {}): Promise<Partial<V>> {
+    if (options.fail === true) {
+      return JSON.parse(await this.readFile(path))
+    }
+
     try {
       return JSON.parse(await this.readFile(path))
     } catch (error) {

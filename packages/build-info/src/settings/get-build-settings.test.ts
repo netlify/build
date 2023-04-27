@@ -1,5 +1,6 @@
 import { join } from 'path'
 
+import { sort } from 'semver'
 import { beforeEach, expect, test, describe, TestContext } from 'vitest'
 
 import { createFixture, createWebFixture } from '../../tests/helpers.js'
@@ -373,6 +374,59 @@ describe.each([
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
           dist: 'dist/packages/website/.next',
+        }),
+      ])
+    })
+  })
+
+  describe('nx-package-based', () => {
+    beforeEach(async (ctx) => {
+      await setup(ctx, 'nx-package-based')
+    })
+
+    test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
+      const project = new Project(fs, cwd)
+      const settings = await project.getBuildSettings()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
+
+      expect(sorted).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/nuxt-app',
+          buildCommand: 'nx run nuxt-app:build',
+          devCommand: 'nx run nuxt-app:dev',
+          dist: 'dist/apps/nuxt-app/dist',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/svelte-app',
+          buildCommand: 'nx run svelte-app:build',
+          devCommand: 'nx run svelte-app:dev',
+          dist: 'dist/apps/svelte-app/static',
+        }),
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'packages/ui-components',
+          buildCommand: 'nx run @my-org/ui-components:build',
+          devCommand: 'nx run @my-org/ui-components:start',
+          dist: 'dist/packages/ui-components/www',
+        }),
+      ])
+    })
+
+    test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
+      const project = new Project(fs, fs.join(cwd, 'apps/nuxt-app'), cwd)
+      const settings = await project.getBuildSettings()
+
+      expect(settings).toHaveLength(1)
+      expect(settings).toEqual([
+        expect.objectContaining({
+          baseDirectory: '',
+          packagePath: 'apps/nuxt-app',
+          buildCommand: 'nx run nuxt-app:build',
+          devCommand: 'nx run nuxt-app:dev',
+          dist: 'dist/apps/nuxt-app/dist',
         }),
       ])
     })

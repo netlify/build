@@ -1,8 +1,11 @@
+import type { PackageJson } from 'read-pkg'
+
 import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
 import { WorkspaceInfo, WorkspacePackage } from '../workspaces/detect-workspace.js'
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
 
 import { BaseBuildTool, type Command } from './build-system.js'
+
 export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
@@ -12,10 +15,22 @@ export class Nx extends BaseBuildTool {
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
     const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
-    const { name, targets } = await this.project.fs.readJSON(projectPath)
+    const packageJSONPath = this.project.resolveFromPackage(packagePath, 'package.json')
+    let name: string
+    const targets: string[] = []
+    try {
+      const project = await this.project.fs.readJSON(projectPath, { fail: true })
+      targets.push(...Object.keys(project?.targets || {}))
+      name = (project.name as string) || ''
+    } catch {
+      // if no project.json exists it's probably a package based nx workspace and not a integrated one
+      const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath)
+      targets.push(...Object.keys(json?.scripts || {}))
+      name = json.name || ''
+    }
 
-    if (name && targets) {
-      return Object.keys(targets).map((target) => {
+    if (name.length && targets.length) {
+      return targets.map((target) => {
         let type: Command['type'] = 'unknown'
 
         if (NPM_DEV_SCRIPTS.includes(target)) {
