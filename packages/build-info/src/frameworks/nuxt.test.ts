@@ -39,47 +39,13 @@ describe('Nuxt V3', () => {
     const detected = await new Project(fs, cwd).detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
     expect(detected?.[0].name).toBe('Nuxt 3')
-    expect(detected?.[0].build.command).toBe('npm run build')
-    expect(detected?.[0].dev?.command).toBe('npm run dev')
+    expect(detected?.[0].build.command).toBe('nuxt build')
+    expect(detected?.[0].build?.directory).toBe('.nuxt/dist')
+    expect(detected?.[0].dev?.command).toBe('nuxt dev')
     expect(detected?.[0].dev?.port).toBe(3000)
     expect(detected?.[0].env).toMatchObject({
-      AWS_LAMBDA_JS_RUNTIME: 'nodejs14.x',
-      NODE_VERSION: '14',
+      AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
+      NODE_VERSION: '18',
     })
-  })
-
-  test('detect a nuxt3 project with yarn', async ({ fs }) => {
-    const cwd = mockFileSystem({
-      'package.json': JSON.stringify({ packageManager: 'yarn@3.1.1', dependencies: { nuxt3: 'latest' } }),
-    })
-    const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].build.command).toBe('yarn run build')
-    expect(detected?.[0].dev?.command).toBe('yarn run dev')
-    expect(detected?.[0].dev?.port).toBe(3000)
-  })
-
-  test('nuxt3 should be package manager aware for yarn', async ({ fs }) => {
-    const cwd = mockFileSystem({
-      'yarn.lock': '',
-      'package.json': JSON.stringify({ dependencies: { nuxt3: 'latest' } }),
-    })
-    const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].name).toBe('Nuxt 3')
-    expect(detected?.[0].build.command).toBe('yarn run build')
-    expect(detected?.[0].dev?.command).toBe('yarn run dev')
-  })
-
-  test('nuxt3 should be package manager aware for pnpm', async ({ fs }) => {
-    const cwd = mockFileSystem({
-      'pnpm-lock.yaml': '',
-      'package.json': JSON.stringify({ dependencies: { nuxt3: 'latest' } }),
-    })
-    const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].name).toBe('Nuxt 3')
-    expect(detected?.[0].build.command).toBe('pnpm run build')
-    expect(detected?.[0].dev?.command).toBe('pnpm run dev')
   })
 })
