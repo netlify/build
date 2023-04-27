@@ -11,6 +11,12 @@ export class Nx extends BaseBuildTool {
   name = 'Nx'
   configFiles = ['nx.json']
   runFromRoot = true
+  /**
+   * if it's an nx integrated setup
+   * We need to differentiate as the 'dist' folder is located differently
+   * @see https://nx.dev/concepts/integrated-vs-package-based
+   */
+  isIntegrated = false
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
@@ -20,6 +26,7 @@ export class Nx extends BaseBuildTool {
     const targets: string[] = []
     try {
       const project = await this.project.fs.readJSON(projectPath, { fail: true })
+      this.isIntegrated = true
       targets.push(...Object.keys(project?.targets || {}))
       name = (project.name as string) || ''
     } catch {
@@ -52,6 +59,10 @@ export class Nx extends BaseBuildTool {
 
   /** Retrieve the dist directory of a package */
   async getDist(packagePath: string): Promise<string | null> {
+    if (!this.isIntegrated) {
+      return null
+    }
+
     const framework = this.project.frameworks.get(packagePath)?.[0]
 
     if (framework) {

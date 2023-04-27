@@ -396,21 +396,21 @@ describe.each([
           packagePath: 'apps/nuxt-app',
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: 'dist/apps/nuxt-app/dist',
+          dist: 'apps/nuxt-app/dist',
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: 'apps/svelte-app',
           buildCommand: 'nx run svelte-app:build',
           devCommand: 'nx run svelte-app:dev',
-          dist: 'dist/apps/svelte-app/static',
+          dist: 'apps/svelte-app/static',
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: 'packages/ui-components',
           buildCommand: 'nx run @my-org/ui-components:build',
           devCommand: 'nx run @my-org/ui-components:start',
-          dist: 'dist/packages/ui-components/www',
+          dist: 'packages/ui-components/www',
         }),
       ])
     })
@@ -426,7 +426,7 @@ describe.each([
           packagePath: 'apps/nuxt-app',
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: 'dist/apps/nuxt-app/dist',
+          dist: 'apps/nuxt-app/dist',
         }),
       ])
     })
