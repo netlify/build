@@ -78,7 +78,7 @@ export const runStep = async function ({
   }
 
   if (!quiet) {
-    logStepStart({ logs, event, packageName, coreStepDescription, index, error, netlifyConfig })
+    logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
   }
 
   const fireStep = getFireStep(packageName, coreStepId, event)
