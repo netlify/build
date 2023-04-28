@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 
 import { FunctionConfig } from './config.js'
-import { Declaration, mergeDeclarations } from './declaration.js'
+import { Declaration, mergeDeclarations, parsePattern } from './declaration.js'
 
 const deployConfigDeclarations: Declaration[] = []
 
@@ -190,4 +190,20 @@ test('netlify.toml-defined excludedPath are respected', () => {
   const declarations = mergeDeclarations(tomlConfig, funcConfig, {}, deployConfigDeclarations)
 
   expect(declarations).toEqual(expectedDeclarations)
+})
+
+test('Does not escape front slashes in a regex pattern if they are already escaped', () => {
+  const regexPattern = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
+  const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
+  const actual = parsePattern(regexPattern)
+
+  expect(actual).toEqual(expected)
+})
+
+test('Escapes front slashes in a regex pattern', () => {
+  const regexPattern = '^(?:/(_next/data/[^/]{1,}))?(?:/([^/.]{1,}))/shows(?:/(.*))(.json)?[/#\\?]?$'
+  const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[/#\\?]?$'
+  const actual = parsePattern(regexPattern)
+
+  expect(actual).toEqual(expected)
 })

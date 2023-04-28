@@ -130,9 +130,8 @@ const createDeclarationsFromFunctionConfigs = (
 // Validates and normalizes a pattern so that it's a valid regular expression
 // in Go, which is the engine used by our edge nodes.
 export const parsePattern = (pattern: string) => {
-  // Escaping forward slashes with back slashes.
-  const normalizedPattern = pattern.replace(/\//g, '\\/')
-  const regex = regexpAST.transform(`/${normalizedPattern}/`, {
+  const regexp = new RegExp(pattern)
+  const newRegexp = regexpAST.transform(regexp, {
     Assertion(path) {
       // Lookaheads are not supported. If we find one, throw an error.
       if (path.node.kind === 'Lookahead') {
@@ -155,5 +154,5 @@ export const parsePattern = (pattern: string) => {
   })
 
   // Strip leading and forward slashes.
-  return regex.toString().slice(1, -1)
+  return newRegexp.toString().slice(1, -1)
 }
