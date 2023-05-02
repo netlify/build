@@ -32,6 +32,8 @@ export const firePluginStep = async function ({
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
 
+  const isTrustedPlugin = pluginPackageJson?.name?.startsWith('@netlify/')
+
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
@@ -45,7 +47,7 @@ export const firePluginStep = async function ({
         event,
         error,
         envChanges,
-        featureFlags,
+        featureFlags: isTrustedPlugin ? featureFlags : undefined,
         netlifyConfig,
         constants,
       },

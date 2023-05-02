@@ -160,6 +160,14 @@ test('Plugins are passed featureflags', async (t) => {
       }),
     ),
   )
+
+  const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
+    .withFlags({
+      featureFlags: { test_flag: true },
+    })
+    .runWithBuild()
+
+  t.true(outputUntrusted.includes('typeof featureflags: undefined'))
 })
 
 test('process.env changes are propagated to other plugins', async (t) => {
