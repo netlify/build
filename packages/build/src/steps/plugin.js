@@ -26,6 +26,7 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  featureFlags,
   debug,
   verbose,
 }) {
@@ -40,7 +41,14 @@ export const firePluginStep = async function ({
     } = await callChild({
       childProcess,
       eventName: 'run',
-      payload: { event, error, envChanges, netlifyConfig, constants },
+      payload: {
+        event,
+        error,
+        envChanges,
+        featureFlags,
+        netlifyConfig,
+        constants,
+      },
       logs,
       verbose,
     })

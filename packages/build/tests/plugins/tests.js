@@ -142,6 +142,15 @@ test('Plugins can have inputs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('Plugins are passed featureflags', async (t) => {
+  const output = await new Fixture('./fixtures/feature_flags')
+    .withFlags({
+      featureFlags: { test_flag: true },
+    })
+    .runWithBuild()
+  t.true(output.includes('test_flag'))
+})
+
 test('process.env changes are propagated to other plugins', async (t) => {
   const output = await new Fixture('./fixtures/env_changes_plugin').runWithBuild()
   t.snapshot(normalizeOutput(output))
