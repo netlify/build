@@ -1,3 +1,3 @@
 export const onBuild = function ({ featureFlags }) {
-  console.log(Object.keys(featureFlags))
+  console.log(JSON.stringify(featureFlags))
 }

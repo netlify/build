@@ -148,7 +148,18 @@ test('Plugins are passed featureflags', async (t) => {
       featureFlags: { test_flag: true },
     })
     .runWithBuild()
-  t.true(output.includes('test_flag'))
+
+  t.true(
+    output.includes(
+      JSON.stringify({
+        buildbot_zisi_trace_nft: false,
+        buildbot_zisi_esbuild_parser: false,
+        edge_functions_cache_cli: false,
+        edge_functions_system_logger: false,
+        test_flag: true,
+      }),
+    ),
+  )
 })
 
 test('process.env changes are propagated to other plugins', async (t) => {
