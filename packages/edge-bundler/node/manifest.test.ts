@@ -2,6 +2,8 @@ import { env } from 'process'
 
 import { test, expect, vi } from 'vitest'
 
+import { getRouteMatcher } from '../test/util.js'
+
 import { BundleFormat } from './bundle.js'
 import { Cache, FunctionConfig } from './config.js'
 import { Declaration } from './declaration.js'
@@ -73,24 +75,32 @@ test('Generates a manifest with excluded paths and patterns', () => {
   const functions = [
     { name: 'func-1', path: '/path/to/func-1.ts' },
     { name: 'func-2', path: '/path/to/func-2.ts' },
+    { name: 'func-3', path: '/path/to/func-3.ts' },
   ]
   const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1/*', excludedPath: '/f1/exclude' },
     { function: 'func-2', pattern: '^/f2/.*/?$', excludedPattern: '^/f2/exclude$' },
+    { function: 'func-3', path: '/*', excludedPath: '/**/*.html' },
   ]
   const manifest = generateManifest({ bundles: [], declarations, functions })
-
   const expectedRoutes = [
     { function: 'func-1', pattern: '^/f1/.*/?$' },
     { function: 'func-2', pattern: '^/f2/.*/?$' },
+    { function: 'func-3', pattern: '^/.*/?$' },
   ]
 
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.function_config).toEqual({
     'func-1': { excluded_patterns: ['^/f1/exclude/?$'] },
     'func-2': { excluded_patterns: ['^/f2/exclude$'] },
+    'func-3': { excluded_patterns: ['^/.*/.*\\.html/?$'] },
   })
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+
+  const matcher = getRouteMatcher(manifest)
+
+  expect(matcher('/f1/hello')?.function).toBe('func-1')
+  expect(matcher('/grandparent/parent/child/grandchild.html')?.function).toBeUndefined()
 })
 
 test('TOML-defined paths can be combined with ISC-defined excluded paths', () => {

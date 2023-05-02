@@ -7,6 +7,7 @@ import { execa } from 'execa'
 import tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
+import type { Manifest } from '../node/manifest.js'
 
 const testLogger = getLogger(() => {
   // no-op
@@ -42,6 +43,20 @@ const inspectFunction = (path: string) => `
   
   console.log(JSON.stringify(responses));
 `
+
+const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
+  manifest.routes.find((route) => {
+    const regex = new RegExp(route.pattern)
+
+    if (!regex.test(candidate)) {
+      return false
+    }
+
+    const excludedPattern = manifest.function_config[route.function].excluded_patterns
+    const isExcluded = excludedPattern.some((pattern) => new RegExp(pattern).test(candidate))
+
+    return !isExcluded
+  })
 
 const runESZIP = async (eszipPath: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
@@ -86,4 +101,4 @@ const runESZIP = async (eszipPath: string) => {
   return JSON.parse(result.stdout)
 }
 
-export { fixturesDir, testLogger, runESZIP, useFixture }
+export { fixturesDir, getRouteMatcher, testLogger, runESZIP, useFixture }

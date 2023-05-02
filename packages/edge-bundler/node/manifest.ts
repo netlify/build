@@ -243,4 +243,4 @@ const writeManifest = async ({ distDirectory, ...rest }: WriteManifestOptions) =
   return manifest
 }
 
-export { generateManifest, Manifest, writeManifest }
+export { generateManifest, Manifest, Route, writeManifest }
