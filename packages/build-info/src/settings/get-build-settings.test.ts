@@ -132,6 +132,7 @@ describe.each([
     describeName: 'WebFS',
     setup: async (ctx: TestContext, fixtureName: string) => {
       const fs = new WebFS(new GithubProvider('netlify/test', 'main'))
+      fs.logger = new NoopLogger()
       const fixture = await createWebFixture(fixtureName)
       ctx.fs = fs
       ctx.fs.cwd = fixture.cwd
@@ -142,6 +143,7 @@ describe.each([
     describeName: 'NodeFS',
     setup: async (ctx: TestContext, fixtureName: string) => {
       const fs = new NodeFS()
+      fs.logger = new NoopLogger()
       const fixture = await createFixture(fixtureName, ctx)
       ctx.fs = fs
       ctx.fs.cwd = fixture.cwd
