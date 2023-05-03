@@ -69,6 +69,18 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.11.0](https://github.com/netlify/build/compare/build-v29.10.1...build-v29.11.0) (2023-05-03)
+
+
+### Features
+
+* propagate featureflags to plugins ([#4992](https://github.com/netlify/build/issues/4992)) ([c4897b1](https://github.com/netlify/build/commit/c4897b1127c96f1ccd525180f6fdaed477f54501))
+
+
+### Bug Fixes
+
+* remove left padding and numbers from header ([#4993](https://github.com/netlify/build/issues/4993)) ([d94464e](https://github.com/netlify/build/commit/d94464edf1819ea09b300684729cd243564a454e))
+
 ## [29.10.1](https://github.com/netlify/build/compare/build-v29.10.0...build-v29.10.1) (2023-04-25)
 
 
