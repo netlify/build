@@ -1,5 +1,4 @@
-import { join } from 'path'
-import { join as posixJoin } from 'path/posix'
+import { join, posix } from 'path'
 
 import { beforeEach, expect, test, describe, TestContext } from 'vitest'
 
@@ -140,7 +139,7 @@ describe.each([
       ctx.fs.cwd = fixture.cwd
       ctx.cwd = fixture.cwd
     },
-    plaformJoin: posixJoin,
+    platformJoin: posix.join,
   },
   {
     describeName: 'NodeFS',
@@ -152,9 +151,9 @@ describe.each([
       ctx.fs.cwd = fixture.cwd
       ctx.cwd = fixture.cwd
     },
-    plaformJoin: join,
+    platformJoin: join,
   },
-])('$describeName', ({ setup, plaformJoin }) => {
+])('$describeName', ({ setup, platformJoin }) => {
   describe('npm-workspace', () => {
     beforeEach(async (ctx) => {
       await setup(ctx, 'npm-workspace')
@@ -165,21 +164,20 @@ describe.each([
       const settings = await project.getBuildSettings()
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
-
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/blog'),
+          packagePath: platformJoin('packages/blog'),
           buildCommand: 'npm run build --workspace @evilcorp/blog',
           devCommand: 'npm run dev --workspace @evilcorp/blog',
-          dist: plaformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/public'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'npm run build --workspace @evilcorp/website',
           devCommand: 'npm run dev --workspace @evilcorp/website',
-          dist: plaformJoin('packages/website/.next'),
+          dist: platformJoin('packages/website/.next'),
         }),
       ])
     })
@@ -194,8 +192,8 @@ describe.each([
           baseDirectory: '',
           buildCommand: 'npm run build --workspace @evilcorp/blog',
           devCommand: 'npm run dev --workspace @evilcorp/blog',
-          dist: plaformJoin('packages/blog/public'),
-          packagePath: plaformJoin('packages/blog'),
+          dist: platformJoin('packages/blog/public'),
+          packagePath: platformJoin('packages/blog'),
         }),
       ])
     })
@@ -215,17 +213,17 @@ describe.each([
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/blog'),
+          packagePath: platformJoin('packages/blog'),
           buildCommand: 'pnpm run build --filter @evilcorp/blog',
           devCommand: 'pnpm run dev --filter @evilcorp/blog',
-          dist: plaformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/public'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'pnpm run build --filter @evilcorp/website',
           devCommand: 'pnpm run dev --filter @evilcorp/website',
-          dist: plaformJoin('packages/website/.next'),
+          dist: platformJoin('packages/website/.next'),
         }),
       ])
     })
@@ -240,8 +238,8 @@ describe.each([
           baseDirectory: '',
           buildCommand: 'pnpm run build --filter @evilcorp/blog',
           devCommand: 'pnpm run dev --filter @evilcorp/blog',
-          dist: plaformJoin('packages/blog/public'),
-          packagePath: plaformJoin('packages/blog'),
+          dist: platformJoin('packages/blog/public'),
+          packagePath: platformJoin('packages/blog'),
         }),
       ])
     })
@@ -261,17 +259,17 @@ describe.each([
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/blog'),
+          packagePath: platformJoin('packages/blog'),
           buildCommand: 'yarn workspace @evilcorp/blog build',
           devCommand: 'yarn workspace @evilcorp/blog dev',
-          dist: plaformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/public'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'yarn workspace @evilcorp/website build',
           devCommand: 'yarn workspace @evilcorp/website dev',
-          dist: plaformJoin('packages/website/.next'),
+          dist: platformJoin('packages/website/.next'),
         }),
       ])
     })
@@ -284,10 +282,10 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'yarn workspace @evilcorp/website build',
           devCommand: 'yarn workspace @evilcorp/website dev',
-          dist: plaformJoin('packages/website/.next'),
+          dist: platformJoin('packages/website/.next'),
         }),
       ])
     })
@@ -307,17 +305,17 @@ describe.each([
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/docs'),
+          packagePath: platformJoin('apps/docs'),
           buildCommand: 'turbo run build --scope docs',
           devCommand: 'turbo run dev --scope docs',
-          dist: plaformJoin('apps/docs/.next'),
+          dist: platformJoin('apps/docs/.next'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/web'),
+          packagePath: platformJoin('apps/web'),
           buildCommand: 'turbo run build --scope web',
           devCommand: 'turbo run dev --scope web',
-          dist: plaformJoin('apps/web/.next'),
+          dist: platformJoin('apps/web/.next'),
         }),
       ])
     })
@@ -330,10 +328,10 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/web'),
+          packagePath: platformJoin('apps/web'),
           buildCommand: 'turbo run build --scope web',
           devCommand: 'turbo run dev --scope web',
-          dist: plaformJoin('apps/web/.next'),
+          dist: platformJoin('apps/web/.next'),
         }),
       ])
     })
@@ -353,17 +351,17 @@ describe.each([
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/astro'),
+          packagePath: platformJoin('packages/astro'),
           buildCommand: 'nx run astro:build',
           devCommand: 'nx run astro:dev',
-          dist: plaformJoin('dist/packages/astro/public'),
+          dist: platformJoin('dist/packages/astro/public'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: plaformJoin('dist/packages/website/.next'),
+          dist: platformJoin('dist/packages/website/.next'),
         }),
       ])
     })
@@ -376,10 +374,10 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/website'),
+          packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: plaformJoin('dist/packages/website/.next'),
+          dist: platformJoin('dist/packages/website/.next'),
         }),
       ])
     })
@@ -399,24 +397,24 @@ describe.each([
       expect(sorted).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/nuxt-app'),
+          packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: plaformJoin('apps/nuxt-app/dist'),
+          dist: platformJoin('apps/nuxt-app/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/svelte-app'),
+          packagePath: platformJoin('apps/svelte-app'),
           buildCommand: 'nx run svelte-app:build',
           devCommand: 'nx run svelte-app:dev',
-          dist: plaformJoin('apps/svelte-app/static'),
+          dist: platformJoin('apps/svelte-app/static'),
         }),
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('packages/ui-components'),
+          packagePath: platformJoin('packages/ui-components'),
           buildCommand: 'nx run @my-org/ui-components:build',
           devCommand: 'nx run @my-org/ui-components:start',
-          dist: plaformJoin('packages/ui-components/www'),
+          dist: platformJoin('packages/ui-components/www'),
         }),
       ])
     })
@@ -429,10 +427,10 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          packagePath: plaformJoin('apps/nuxt-app'),
+          packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: plaformJoin('apps/nuxt-app/dist'),
+          dist: platformJoin('apps/nuxt-app/dist'),
         }),
       ])
     })
