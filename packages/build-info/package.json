@@ -27,6 +27,7 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "build:logos": "vite build",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
