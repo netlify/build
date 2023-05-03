@@ -6,8 +6,6 @@ import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
 
-import { getWorkspacePackages } from './get-workspace-packages.js'
-
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
@@ -37,13 +35,13 @@ describe('PNPM workspaces', () => {
         baseDirectory: '', // executed from root
         buildCommand: 'pnpm run build --filter astro-app',
         devCommand: 'pnpm run dev --filter astro-app',
-        dist: 'apps/astro/public',
+        dist: join('apps/astro/public'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
         buildCommand: 'pnpm run build --filter next-app',
         devCommand: 'pnpm run dev --filter next-app',
-        dist: 'apps/next/.next',
+        dist: join('apps/next/.next'),
       }),
     ])
   })
@@ -74,13 +72,13 @@ describe('NPM workspaces', () => {
         baseDirectory: '', // executed from root
         buildCommand: 'npm run build --workspace astro-app',
         devCommand: 'npm run dev --workspace astro-app',
-        dist: 'apps/astro/public',
+        dist: join('apps/astro/public'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
         buildCommand: 'npm run build --workspace next-app',
         devCommand: 'npm run dev --workspace next-app',
-        dist: 'apps/next/.next',
+        dist: join('apps/next/.next'),
       }),
     ])
   })

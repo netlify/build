@@ -5,6 +5,7 @@ import { join } from 'path'
 import { version } from 'process'
 import { fileURLToPath } from 'url'
 
+import { Response } from 'node-fetch'
 import { compare } from 'semver'
 import { TestContext, vi } from 'vitest'
 

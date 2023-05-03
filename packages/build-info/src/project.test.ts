@@ -83,7 +83,7 @@ describe.concurrent('should resolve paths correctly', () => {
   test('given a relative projectDir and a rootDir, resolve projectDir from rootDir', async ({ fs }) => {
     const project = new Project(fs, 'some/relative/path', '/root')
     expect(project.baseDirectory).toBe(resolve('/root', 'some/relative/path'))
-    expect(project.relativeBaseDirectory).toBe(join('some/relative/path'))
+    expect(project.relativeBaseDirectory).toBe('some/relative/path')
     expect(project.root).toBe(resolve('/root'))
     expect(await project.getRootPackageJSON()).toEqual({})
   })
@@ -99,7 +99,7 @@ describe.concurrent('should resolve paths correctly', () => {
   test('given a relative rootDir resolve from cwd', async ({ fs }) => {
     const project = new Project(fs, 'some/relative/path', 'root')
     expect(project.baseDirectory).toBe(resolve(cwd(), 'root', 'some/relative/path'))
-    expect(project.relativeBaseDirectory).toBe(join('some/relative/path'))
+    expect(project.relativeBaseDirectory).toBe('some/relative/path')
     expect(project.root).toBe(resolve(cwd(), 'root'))
     expect(await project.getRootPackageJSON()).toEqual({})
   })

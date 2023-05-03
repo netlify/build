@@ -101,7 +101,7 @@ describe('Nx', () => {
         baseDirectory: '',
         buildCommand: 'nx run website:build',
         devCommand: 'nx run website:serve',
-        dist: 'dist/packages/website/.next',
+        dist: join('dist/packages/website/.next'),
       }),
     ])
   })

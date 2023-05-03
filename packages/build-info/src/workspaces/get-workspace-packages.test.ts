@@ -24,8 +24,8 @@ test('should map explicit directories', async ({ fs }) => {
   expect(
     await getWorkspacePackages(new Project(fs, cwd), ['apps/a', 'apps/b', '!apps/c', 'not-existing/*']),
   ).toMatchObject([
-    { path: join('apps/a'), name: 'a' },
-    { path: join('apps/b'), name: 'b' },
+    { path: 'apps/a', name: 'a' },
+    { path: 'apps/b', name: 'b' },
   ])
 })
 
