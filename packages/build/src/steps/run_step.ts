@@ -318,6 +318,7 @@ const tFireStep = function ({
     steps,
     error,
     logs,
+    featureFlags,
     debug,
     verbose,
   })
