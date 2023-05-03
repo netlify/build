@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.9.0](https://github.com/netlify/build/compare/build-info-v6.8.1...build-info-v6.9.0) (2023-05-03)
+
+
+### Features
+
+* move framework logos over to build-info ([#4988](https://github.com/netlify/build/issues/4988)) ([35cee2a](https://github.com/netlify/build/commit/35cee2a55e736af2c36dbca34bb1313e806527c4))
+
 ## [6.8.1](https://github.com/netlify/build/compare/build-info-v6.8.0...build-info-v6.8.1) (2023-04-25)
 
 
