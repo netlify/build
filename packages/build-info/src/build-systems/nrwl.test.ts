@@ -17,8 +17,7 @@ afterEach(async ({ cleanup }) => await cleanup?.())
 
 describe('Nx', () => {
   test('Get no commands for a non existing package', async (ctx) => {
-    const fixture = await createFixture('nx-integrated')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('nx-integrated', ctx)
     const project = new Project(ctx.fs, fixture.cwd)
     const [nx] = await project.detectBuildSystem()
 
@@ -26,8 +25,7 @@ describe('Nx', () => {
   })
 
   test('Get the commands for a package', async (ctx) => {
-    const fixture = await createFixture('nx-integrated')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('nx-integrated', ctx)
     const project = new Project(ctx.fs, fixture.cwd)
     const [nx] = await project.detectBuildSystem()
 
@@ -81,16 +79,31 @@ describe('Nx', () => {
         tags: [],
       }),
     })
-
+    fs.cwd = cwd
     const project = new Project(fs, join(cwd, 'frontend'), cwd)
     const detected = await project.detectBuildSystem()
     expect(detected).toHaveLength(1)
     expect(detected[0]?.id).toBe('nx')
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: [join('packages/website')],
+      packages: [{ path: join('packages/website'), name: 'website' }],
       rootDir: join(cwd, 'frontend'),
     })
+  })
+
+  test('detect build settings from a package sub path', async (ctx) => {
+    const fixture = await createFixture('nx-integrated', ctx)
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/website'))
+    const settings = await project.getBuildSettings()
+
+    expect(settings).toEqual([
+      expect.objectContaining({
+        baseDirectory: '',
+        buildCommand: 'nx run website:build',
+        devCommand: 'nx run website:serve',
+        dist: join('dist/packages/website/.next'),
+      }),
+    ])
   })
 })
 

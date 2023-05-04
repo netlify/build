@@ -62,7 +62,6 @@ test('Should detect nx on the root', async ({ page }) => {
   await page.pause()
   expect(
     await page.evaluate(async () => {
-      console.log('here', window)
       return new window.project(window.fs, '/').detectBuildSystem()
     }),
   ).toMatchObject([
@@ -71,6 +70,7 @@ test('Should detect nx on the root', async ({ page }) => {
       name: 'Nx',
       version: '^1.2.3',
     },
+    { id: 'pnpm' },
   ])
 })
 
@@ -90,5 +90,12 @@ test('Should detect js workspaces', async ({ page }) => {
       await project.detectPackageManager()
       return project.detectWorkspaces()
     }),
-  ).toMatchObject({ isRoot: true, rootDir: '/', packages: ['packages/web', 'packages/docs'] })
+  ).toMatchObject({
+    isRoot: true,
+    rootDir: '/',
+    packages: [
+      { path: 'packages/web', name: undefined },
+      { path: 'packages/docs', name: undefined },
+    ],
+  })
 })

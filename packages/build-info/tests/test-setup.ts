@@ -13,8 +13,12 @@ vi.mock('fs', async () => {
   return { default: united, ...united }
 })
 
-// cleanup after each test
-afterEach(() => {
+// cleanup after each test as a fallback if someone forgot to call it
+afterEach(async ({ cleanup }) => {
+  if (typeof cleanup === 'function') {
+    await cleanup()
+  }
+
   if ('reset' in fs) {
     ;(fs as any).reset()
   }

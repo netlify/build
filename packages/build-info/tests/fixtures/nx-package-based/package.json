@@ -1,0 +1,16 @@
+{
+  "name": "nx-package-based",
+  "packageManager": "pnpm@7.13.4",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nx run-many --target dev",
+    "build": "nx affected --target build"
+  },
+  "private": true,
+  "devDependencies": {
+    "@nrwl/nx-cloud": "latest",
+    "nx": "15.9.2",
+    "typescript": "^5.0.0"
+  }
+}

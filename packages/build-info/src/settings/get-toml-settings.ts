@@ -3,6 +3,8 @@ import { parse } from 'toml'
 
 import { FileSystem } from '../file-system.js'
 
+import { NetlifyTOML } from './netlify-toml.js'
+
 const {
   default: { notify },
 } = Bugsnag
@@ -37,7 +39,7 @@ export async function getNetlifyTomlSettings(fs: FileSystem, directory: string) 
 
   try {
     const settings: Partial<BuildSettings> = {}
-    const { build, functions, template } = gracefulParseToml<any>(await fs.readFile(tomlFilePath))
+    const { build, functions, template } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
 
     if (build) {
       settings.cmd = build?.command
