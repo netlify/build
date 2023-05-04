@@ -92,7 +92,6 @@ export async function findPackages(
 
 /** Get a list of all workspace package paths (absolute paths) */
 export async function getWorkspacePackages(project: Project, patterns: string[]): Promise<WorkspacePackage[]> {
-  // const results: WorkspacePackage[] = []
   if (!patterns.length) {
     return []
   }

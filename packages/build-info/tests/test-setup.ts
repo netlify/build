@@ -16,7 +16,6 @@ vi.mock('fs', async () => {
 // cleanup after each test as a fallback if someone forgot to call it
 afterEach(async ({ cleanup }) => {
   if (typeof cleanup === 'function') {
-    // if cleanup exists run it
     await cleanup()
   }
 

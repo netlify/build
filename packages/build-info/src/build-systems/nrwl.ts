@@ -36,7 +36,7 @@ export class Nx extends BaseBuildTool {
       name = json.name || ''
     }
 
-    if (name.length && targets.length) {
+    if (name.length !== 0 && targets.length !== 0) {
       return targets.map((target) => {
         let type: Command['type'] = 'unknown'
 

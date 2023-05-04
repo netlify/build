@@ -48,13 +48,7 @@ export class Yarn extends BaseBuildTool {
   }
 
   async detect(): Promise<this | undefined> {
-    // only detect for yarn berry
-    if (
-      this.project.workspace &&
-      this.project.packageManager?.name === PkgManager.YARN &&
-      this.project.packageManager.version?.major &&
-      this.project.packageManager.version.major >= 3
-    ) {
+    if (this.project.workspace && this.project.packageManager?.name === PkgManager.YARN) {
       return this
     }
   }
