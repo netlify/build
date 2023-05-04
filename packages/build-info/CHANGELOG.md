@@ -46,6 +46,17 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [7.0.0](https://github.com/netlify/build/compare/build-info-v6.9.0...build-info-v7.0.0) (2023-05-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977))
+
+### Features
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977)) ([e7f3361](https://github.com/netlify/build/commit/e7f3361c38ffee5304f4b010068a4e8603a4cbb0))
+
 ## [6.9.0](https://github.com/netlify/build/compare/build-info-v6.8.1...build-info-v6.9.0) (2023-05-03)
 
 
