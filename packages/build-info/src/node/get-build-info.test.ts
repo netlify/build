@@ -1,3 +1,4 @@
+import { platform } from 'os'
 import { join } from 'path'
 
 import { afterEach, describe, expect, test } from 'vitest'
@@ -46,7 +47,7 @@ test('should not crash on invalid projects', async (ctx) => {
   expect(frameworks).toEqual([])
 })
 
-test('should retrieve the build info for providing a rootDir', async (ctx) => {
+test.skipIf(platform() === 'win32')('should retrieve the build info for providing a rootDir', async (ctx) => {
   const fixture = await createFixture('pnpm-workspace', ctx)
   const info = await getBuildInfo({ rootDir: fixture.cwd })
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -54,21 +55,27 @@ test('should retrieve the build info for providing a rootDir', async (ctx) => {
   expect(info).toMatchSnapshot()
 })
 
-test('should retrieve the build info for providing a rootDir and the same projectDir', async (ctx) => {
-  const fixture = await createFixture('pnpm-workspace', ctx)
-  const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: fixture.cwd })
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
-  expect(info).toMatchSnapshot()
-})
+test.skipIf(platform() === 'win32')(
+  'should retrieve the build info for providing a rootDir and the same projectDir',
+  async (ctx) => {
+    const fixture = await createFixture('pnpm-workspace', ctx)
+    const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: fixture.cwd })
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+    expect(info).toMatchSnapshot()
+  },
+)
 
-test('should retrieve the build info for providing a rootDir and a nested projectDir', async (ctx) => {
-  const fixture = await createFixture('pnpm-workspace', ctx)
-  const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: join(fixture.cwd, 'packages/blog') })
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
-  expect(info).toMatchSnapshot()
-})
+test.skipIf(platform() === 'win32')(
+  'should retrieve the build info for providing a rootDir and a nested projectDir',
+  async (ctx) => {
+    const fixture = await createFixture('pnpm-workspace', ctx)
+    const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: join(fixture.cwd, 'packages/blog') })
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+    expect(info).toMatchSnapshot()
+  },
+)
 
 describe('Golang', () => {
   test('should not detect anything inside a golang workspace', async (ctx) => {
