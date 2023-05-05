@@ -87,7 +87,7 @@ const prepareServer = ({
     let functionsConfig: FunctionConfig[] = []
 
     if (options.getFunctionsConfig) {
-      functionsConfig = await Promise.all(functions.map((func) => getFunctionConfig(func, importMap, deno, logger, {})))
+      functionsConfig = await Promise.all(functions.map((func) => getFunctionConfig(func, importMap, deno, logger)))
     }
 
     const success = await waitForServer(port, processRef.ps)

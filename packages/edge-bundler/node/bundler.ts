@@ -113,11 +113,11 @@ const bundle = async (
   // Retrieving a configuration object for each function.
   // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
   const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig(func, importMap, deno, logger, featureFlags)] as const,
+    async (func) => [func.name, await getFunctionConfig(func, importMap, deno, logger)] as const,
   )
 
   const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig(func, importMap, deno, logger, featureFlags)] as const,
+    async (func) => [func.name, await getFunctionConfig(func, importMap, deno, logger)] as const,
   )
 
   // Creating a hash of function names to configuration objects.

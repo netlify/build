@@ -7,7 +7,6 @@ import tmp from 'tmp-promise'
 import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'
 import { EdgeFunction } from './edge_function.js'
-import { FeatureFlags } from './feature_flags.js'
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
@@ -53,14 +52,7 @@ const getConfigExtractor = () => {
   return configExtractorPath
 }
 
-export const getFunctionConfig = async (
-  func: EdgeFunction,
-  importMap: ImportMap,
-  deno: DenoBridge,
-  log: Logger,
-  featureFlags: FeatureFlags,
-  // eslint-disable-next-line max-params
-) => {
+export const getFunctionConfig = async (func: EdgeFunction, importMap: ImportMap, deno: DenoBridge, log: Logger) => {
   // The extractor is a Deno script that will import the function and run its
   // `config` export, if one exists.
   const extractorPath = getConfigExtractor()
@@ -93,7 +85,7 @@ export const getFunctionConfig = async (
   )
 
   if (exitCode !== ConfigExitCode.Success) {
-    handleConfigError(func, exitCode, stderr, log, featureFlags)
+    handleConfigError(func, exitCode, stderr, log)
 
     return {}
   }
@@ -108,7 +100,7 @@ export const getFunctionConfig = async (
     const collectorDataJSON = await fs.readFile(collector.path, 'utf8')
     collectorData = JSON.parse(collectorDataJSON) as FunctionConfig
   } catch {
-    handleConfigError(func, ConfigExitCode.UnhandledError, stderr, log, featureFlags)
+    handleConfigError(func, ConfigExitCode.UnhandledError, stderr, log)
   } finally {
     await collector.cleanup()
   }
@@ -124,26 +116,16 @@ export const getFunctionConfig = async (
   return collectorData
 }
 
-const handleConfigError = (
-  func: EdgeFunction,
-  exitCode: number,
-  stderr: string,
-  log: Logger,
-  featureFlags: FeatureFlags,
-  // eslint-disable-next-line max-params
-) => {
+const handleConfigError = (func: EdgeFunction, exitCode: number, stderr: string, log: Logger) => {
   switch (exitCode) {
     case ConfigExitCode.ImportError:
       log.user(stderr)
-      if (featureFlags.edge_functions_invalid_config_throw) {
-        throw new BundleError(
-          new Error(
-            `Could not load edge function at '${func.path}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
-          ),
-        )
-      } else {
-        log.user(`Could not load edge function at '${func.path}'`)
-      }
+      throw new BundleError(
+        new Error(
+          `Could not load edge function at '${func.path}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+        ),
+      )
+
       break
 
     case ConfigExitCode.NoConfig:
@@ -152,27 +134,20 @@ const handleConfigError = (
       break
 
     case ConfigExitCode.InvalidExport:
-      if (featureFlags.edge_functions_invalid_config_throw) {
-        throw new BundleError(
-          new Error(
-            `The 'config' export in edge function at '${func.path}' must be an object. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
-          ),
-        )
-      } else {
-        log.user(`'config' export in edge function at '${func.path}' must be an object`)
-      }
+      throw new BundleError(
+        new Error(
+          `The 'config' export in edge function at '${func.path}' must be an object. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+        ),
+      )
+
       break
 
     case ConfigExitCode.SerializationError:
-      if (featureFlags.edge_functions_invalid_config_throw) {
-        throw new BundleError(
-          new Error(
-            `The 'config' object in the edge function at '${func.path}' must contain primitive values only. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
-          ),
-        )
-      } else {
-        log.user(`'config' object in edge function at '${func.path}' must contain primitive values only`)
-      }
+      throw new BundleError(
+        new Error(
+          `The 'config' object in the edge function at '${func.path}' must contain primitive values only. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+        ),
+      )
       break
 
     case ConfigExitCode.InvalidDefaultExport:

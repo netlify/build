@@ -10,7 +10,7 @@ import { fixturesDir, useFixture } from '../test/util.js'
 
 import { DenoBridge } from './bridge.js'
 import { bundle } from './bundler.js'
-import { getFunctionConfig } from './config.js'
+import { FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
 
@@ -24,7 +24,16 @@ const importMapFile = {
 const invalidDefaultExportErr = (path: string) =>
   `Default export in '${path}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`
 
-const functions = [
+interface TestFunctions {
+  error?: RegExp
+  expectedConfig?: FunctionConfig
+  name: string
+  source: string
+  testName: string
+  userLog?: string
+}
+
+const functions: TestFunctions[] = [
   {
     testName: 'no config',
     expectedConfig: {},
@@ -42,8 +51,7 @@ const functions = [
       `,
   },
   {
-    testName: 'config with wrong type (throw)',
-    expectedConfig: {},
+    testName: 'config with wrong type',
     name: 'func3',
     source: `
       export default async () => new Response("Hello from function two")
@@ -52,27 +60,9 @@ const functions = [
     `,
     error:
       /^The 'config' export in edge function at '(.*)' must be an object\. More on the Edge Functions API at https:\/\/ntl\.fyi\/edge-api\.$/,
-    featureFlags: {
-      edge_functions_invalid_config_throw: true,
-    },
   },
   {
-    testName: 'config with wrong type (log)',
-    expectedConfig: {},
-    name: 'func3',
-    source: `
-      export default async () => new Response("Hello from function two")
-
-      export const config = () => ({})
-    `,
-    userLog: /^'config' export in edge function at '(.*)' must be an object$/,
-    featureFlags: {
-      edge_functions_invalid_config_throw: false,
-    },
-  },
-  {
-    testName: 'config with syntax error (throw)',
-    expectedConfig: {},
+    testName: 'config with syntax error',
     name: 'func4',
     source: `
       export default async () => new Response("Hello from function two")
@@ -81,23 +71,6 @@ const functions = [
     `,
     error:
       /^Could not load edge function at '(.*)'\. More on the Edge Functions API at https:\/\/ntl\.fyi\/edge-api\.$/,
-    featureFlags: {
-      edge_functions_invalid_config_throw: true,
-    },
-  },
-  {
-    testName: 'config with syntax error (log)',
-    expectedConfig: {},
-    name: 'func4',
-    source: `
-      export default async () => new Response("Hello from function two")
-
-      export const config
-    `,
-    userLog: /^Could not load edge function at '(.*)'$/,
-    featureFlags: {
-      edge_functions_invalid_config_throw: false,
-    },
   },
   {
     testName: 'config with correct onError',
@@ -171,7 +144,6 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
         new ImportMap([importMapFile]),
         deno,
         logger,
-        func.featureFlags || {},
       )
 
     if (func.error) {
@@ -270,7 +242,6 @@ test('Passes validation if default export exists and is a function', async () =>
       new ImportMap([importMapFile]),
       deno,
       logger,
-      {},
     ),
   ).resolves.not.toThrow()
 
@@ -307,7 +278,6 @@ test('Fails validation if default export is not function', async () => {
     new ImportMap([importMapFile]),
     deno,
     logger,
-    {},
   )
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
@@ -344,7 +314,6 @@ test('Fails validation if default export is not present', async () => {
     new ImportMap([importMapFile]),
     deno,
     logger,
-    {},
   )
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
