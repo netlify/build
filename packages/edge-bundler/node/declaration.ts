@@ -28,40 +28,25 @@ export const mergeDeclarations = (
   userFunctionsConfig: Record<string, FunctionConfig>,
   internalFunctionsConfig: Record<string, FunctionConfig>,
   deployConfigDeclarations: Declaration[],
-  featureFlags: FeatureFlags = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _featureFlags: FeatureFlags = {},
   // eslint-disable-next-line max-params
 ) => {
   const functionsVisited: Set<string> = new Set()
 
-  let declarations: Declaration[] = getDeclarationsFromInput(
-    deployConfigDeclarations,
-    internalFunctionsConfig,
-    functionsVisited,
-  )
+  const declarations: Declaration[] = [
+    // INTEGRATIONS
+    // 1. Declarations from the integrations deploy config
+    ...getDeclarationsFromInput(deployConfigDeclarations, internalFunctionsConfig, functionsVisited),
+    // 2. Declarations from the integrations ISC
+    ...createDeclarationsFromFunctionConfigs(internalFunctionsConfig, functionsVisited),
 
-  // eslint-disable-next-line unicorn/prefer-ternary
-  if (featureFlags.edge_functions_correct_order) {
-    declarations = [
-      // INTEGRATIONS
-      // 1. Declarations from the integrations deploy config
-      ...getDeclarationsFromInput(deployConfigDeclarations, internalFunctionsConfig, functionsVisited),
-      // 2. Declarations from the integrations ISC
-      ...createDeclarationsFromFunctionConfigs(internalFunctionsConfig, functionsVisited),
-
-      // USER
-      // 3. Declarations from the users toml config
-      ...getDeclarationsFromInput(tomlDeclarations, userFunctionsConfig, functionsVisited),
-      // 4. Declarations from the users ISC
-      ...createDeclarationsFromFunctionConfigs(userFunctionsConfig, functionsVisited),
-    ]
-  } else {
-    declarations = [
-      ...getDeclarationsFromInput(tomlDeclarations, userFunctionsConfig, functionsVisited),
-      ...getDeclarationsFromInput(deployConfigDeclarations, internalFunctionsConfig, functionsVisited),
-      ...createDeclarationsFromFunctionConfigs(internalFunctionsConfig, functionsVisited),
-      ...createDeclarationsFromFunctionConfigs(userFunctionsConfig, functionsVisited),
-    ]
-  }
+    // USER
+    // 3. Declarations from the users toml config
+    ...getDeclarationsFromInput(tomlDeclarations, userFunctionsConfig, functionsVisited),
+    // 4. Declarations from the users ISC
+    ...createDeclarationsFromFunctionConfigs(userFunctionsConfig, functionsVisited),
+  ]
 
   return declarations
 }

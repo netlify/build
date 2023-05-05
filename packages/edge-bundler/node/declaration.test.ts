@@ -26,39 +26,7 @@ test('Ensure the order of edge functions with FF', () => {
     'framework-isc-c': { path: ['/path1', '/path2'] },
   } as Record<string, FunctionConfig>
 
-  expect(
-    mergeDeclarations(tomlConfig, userFuncConfig, internalFuncConfig, deployConfigDeclarations, {
-      edge_functions_correct_order: true,
-    }),
-  ).toMatchSnapshot()
-})
-
-test('Ensure the order of edge functions without FF', () => {
-  const deployConfigDeclarations: Declaration[] = [
-    { function: 'framework-manifest-a', path: '/path1' },
-    { function: 'framework-manifest-c', path: '/path3' },
-    { function: 'framework-manifest-b', path: '/path2' },
-  ]
-
-  const tomlConfig: Declaration[] = [
-    { function: 'user-toml-a', path: '/path1' },
-    { function: 'user-toml-c', path: '/path3' },
-    { function: 'user-toml-b', path: '/path2' },
-  ]
-
-  const userFuncConfig = {
-    'user-isc-c': { path: ['/path1', '/path2'] },
-  } as Record<string, FunctionConfig>
-
-  const internalFuncConfig = {
-    'framework-isc-c': { path: ['/path1', '/path2'] },
-  } as Record<string, FunctionConfig>
-
-  expect(
-    mergeDeclarations(tomlConfig, userFuncConfig, internalFuncConfig, deployConfigDeclarations, {
-      edge_functions_correct_order: false,
-    }),
-  ).toMatchSnapshot()
+  expect(mergeDeclarations(tomlConfig, userFuncConfig, internalFuncConfig, deployConfigDeclarations)).toMatchSnapshot()
 })
 
 test('In-source config takes precedence over netlify.toml config', () => {
