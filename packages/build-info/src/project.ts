@@ -91,11 +91,6 @@ export class Project {
     this.baseDirectory = fs.resolve(root || '', baseDirectory !== undefined ? baseDirectory : fs.cwd)
     this.root = root ? fs.resolve(fs.cwd, root) : undefined
 
-    // if the root and the base directory are the same unset the root again as it's not a workspace
-    if (this.root === this.baseDirectory) {
-      this.root = undefined
-    }
-
     this.relativeBaseDirectory =
       baseDirectory !== undefined && !fs.isAbsolute(baseDirectory)
         ? baseDirectory
