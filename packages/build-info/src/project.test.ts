@@ -92,7 +92,7 @@ describe.concurrent('should resolve paths correctly', () => {
     const project = new Project(fs, '', '/root')
     expect(project.baseDirectory).toBe(resolve('/root'))
     expect(project.relativeBaseDirectory).toBe('')
-    expect(project.root).toBeUndefined()
+    expect(project.root).toBe(fs.cwd)
     expect(await project.getRootPackageJSON()).toEqual({})
   })
 
