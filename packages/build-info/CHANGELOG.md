@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [7.0.1](https://github.com/netlify/build/compare/build-info-v7.0.0...build-info-v7.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* fixes an issue where it could not retrieve the settings for the same root as projectdir ([#4996](https://github.com/netlify/build/issues/4996)) ([dc220cb](https://github.com/netlify/build/commit/dc220cbb4619e88310ca704b3e5d6bb60aa0776c))
+
 ## [7.0.0](https://github.com/netlify/build/compare/build-info-v6.9.0...build-info-v7.0.0) (2023-05-04)
 
 
