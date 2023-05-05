@@ -1,5 +1,20 @@
 # Changelog
 
+## [8.14.0](https://github.com/netlify/edge-bundler/compare/v8.13.2...v8.14.0) (2023-05-02)
+
+
+### Features
+
+* add npm provenance ([#373](https://github.com/netlify/edge-bundler/issues/373)) ([9d798de](https://github.com/netlify/edge-bundler/commit/9d798de1bc646e64770c98e8c1720ba13b886e15))
+
+
+### Bug Fixes
+
+* add repro for customer case ([#366](https://github.com/netlify/edge-bundler/issues/366)) ([c91593f](https://github.com/netlify/edge-bundler/commit/c91593f5e7f0831e4cfe3c69d240d6044c8869c8))
+* **deps:** update dependency regexp-tree to v0.1.25 ([#370](https://github.com/netlify/edge-bundler/issues/370)) ([29f8a89](https://github.com/netlify/edge-bundler/commit/29f8a89976263138e7ed42a4f192dd476f027557))
+* ensure regular expressions are properly escaped ([#378](https://github.com/netlify/edge-bundler/issues/378)) ([214c3fb](https://github.com/netlify/edge-bundler/commit/214c3fbce7f425ad866f0ef737ea92eccc993aa2))
+* types ([c91593f](https://github.com/netlify/edge-bundler/commit/c91593f5e7f0831e4cfe3c69d240d6044c8869c8))
+
 ## [8.13.2](https://github.com/netlify/edge-bundler/compare/v8.13.1...v8.13.2) (2023-04-12)
 
 
