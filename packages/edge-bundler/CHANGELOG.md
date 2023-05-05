@@ -1,5 +1,15 @@
 # Changelog
 
+## [8.14.1](https://github.com/netlify/edge-bundler/compare/v8.14.0...v8.14.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency regexp-tree to v0.1.27 ([#383](https://github.com/netlify/edge-bundler/issues/383)) ([0bec897](https://github.com/netlify/edge-bundler/commit/0bec897b48e96bf8da0a4374d95e6d7b66d5460c))
+* **deps:** update dependency semver to v7.5.0 ([#385](https://github.com/netlify/edge-bundler/issues/385)) ([4c4e2df](https://github.com/netlify/edge-bundler/commit/4c4e2dfe14ecfb0fb2244dc0093cd2a9d1777c93))
+* remove feature flag for execution order ([#381](https://github.com/netlify/edge-bundler/issues/381)) ([125c82c](https://github.com/netlify/edge-bundler/commit/125c82c56380bcdf36094408fa5b42da5698ebaa))
+* remove FF edge_functions_invalid_config_throw ([#374](https://github.com/netlify/edge-bundler/issues/374)) ([8b4e65e](https://github.com/netlify/edge-bundler/commit/8b4e65e52ad24c75398050ac041f0a03b2b721a5))
+
 ## [8.14.0](https://github.com/netlify/edge-bundler/compare/v8.13.2...v8.14.0) (2023-05-02)
 
 
