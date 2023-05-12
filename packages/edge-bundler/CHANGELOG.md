@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.14.2](https://github.com/netlify/edge-bundler/compare/v8.14.1...v8.14.2) (2023-05-12)
+
+
+### Bug Fixes
+
+* remove del package ([e913e46](https://github.com/netlify/edge-bundler/commit/e913e4602cc3fa8d6931159280a24bf6986b782c))
+
 ## [8.14.1](https://github.com/netlify/edge-bundler/compare/v8.14.0...v8.14.1) (2023-05-05)
 
 
