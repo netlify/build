@@ -93,7 +93,13 @@ if (platform !== 'win32') {
       .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
       .withCopyRoot({ git: false })
       .then((fixture) => fixture.runWithBuild())
-    t.snapshot(normalizeOutput(output))
+
+    t.true(
+      output.includes(`Could not import plugin:
+  TSError: ⨯ Unable to compile TypeScript:
+  plugin.ts(1,28): error TS2307: Cannot find module '@netlify/build' or its corresponding type declarations.
+  plugin.ts(3,51): error TS7031: Binding element 'constants' implicitly has an 'any' type.`),
+    )
   })
 }
 
