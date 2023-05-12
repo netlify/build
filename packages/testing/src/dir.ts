@@ -1,4 +1,5 @@
-import del from 'del'
+import { rm } from 'fs/promises'
+
 import { execaCommandSync } from 'execa'
 
 import { getTempDir } from './temp.js'
@@ -25,12 +26,13 @@ const createGit = (cwd: string) => {
 }
 
 // Removing a directory sometimes fails on Windows in CI due to Windows
-// directory locking.
+// directory locking. For that reason we retry up to 10 times with 100ms
+// linear backoff.
 // This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
-export const removeDir = async function (dir: string | string[]) {
-  try {
-    await del(dir, { force: true })
-  } catch {
-    // continue regardless error
+export const removeDir = async function (dirs: string | string[]) {
+  const dirArray = Array.isArray(dirs) ? dirs : [dirs]
+
+  for (const dir of dirArray) {
+    await rm(dir, { force: true, recursive: true, maxRetries: 10 })
   }
 }

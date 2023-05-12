@@ -1,9 +1,8 @@
-import { promises as fs } from 'fs'
+import { readdir, rm, writeFile } from 'fs/promises'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
 import test from 'ava'
-import del from 'del'
 import { pathExists } from 'path-exists'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
@@ -43,12 +42,12 @@ test('Functions: invalid package.json', async (t) => {
   const packageJsonPath = `${FIXTURES_DIR}/functions_package_json_invalid/package.json`
   // We need to create that file during tests. Otherwise, ESLint fails when
   // detecting an invalid *.json file.
-  await fs.writeFile(packageJsonPath, '{{}')
+  await writeFile(packageJsonPath, '{{}')
   try {
     const output = await new Fixture('./fixtures/functions_package_json_invalid').runWithBuild()
     t.snapshot(normalizeOutput(output))
   } finally {
-    await del(packageJsonPath)
+    await rm(packageJsonPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -60,7 +59,7 @@ test('Functions: --functionsDistDir', async (t) => {
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
     t.true(await pathExists(functionsDistDir))
-    const files = await fs.readdir(functionsDistDir)
+    const files = await readdir(functionsDistDir)
     // We're expecting two files: the function ZIP and the manifest.
     t.is(files.length, 2)
   } finally {

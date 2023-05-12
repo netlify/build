@@ -1,7 +1,6 @@
-import { promises as fs } from 'fs'
+import { mkdir, readFile, rm, writeFile } from 'fs/promises'
 import { dirname } from 'path'
 
-import del from 'del'
 import { pathExists } from 'path-exists'
 
 import { getExpires, checkExpires } from './expire.js'
@@ -25,24 +24,25 @@ const isIdentical = async function ({ hash, manifestPath, manifestString }) {
     return false
   }
 
-  const oldManifestString = await fs.readFile(manifestPath, 'utf8')
+  const oldManifestString = await readFile(manifestPath, 'utf8')
   return oldManifestString === manifestString
 }
 
 // Persist the cache manifest to filesystem
 export const writeManifest = async function ({ manifestPath, manifestString }) {
-  await fs.mkdir(dirname(manifestPath), { recursive: true })
-  await fs.writeFile(manifestPath, manifestString)
+  await mkdir(dirname(manifestPath), { recursive: true })
+  await writeFile(manifestPath, manifestString)
 }
 
 // Remove the cache manifest from filesystem
-export const removeManifest = async function (cachePath) {
+export const removeManifest = async function (cachePath: string): Promise<void> {
   const manifestPath = getManifestPath(cachePath)
-  await del(manifestPath, { force: true })
+
+  await rm(manifestPath, { force: true, recursive: true, maxRetries: 3 })
 }
 
 // Retrieve the cache manifest filepath
-const getManifestPath = function (cachePath) {
+const getManifestPath = function (cachePath: string): string {
   return `${cachePath}${CACHE_EXTENSION}`
 }
 
@@ -65,7 +65,7 @@ export const isExpired = async function (cachePath) {
 
 const readManifest = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
-  const manifestString = await fs.readFile(manifestPath, 'utf-8')
+  const manifestString = await readFile(manifestPath, 'utf-8')
   const manifest = JSON.parse(manifestString)
   return manifest
 }
