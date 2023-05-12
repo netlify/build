@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.4](https://github.com/netlify/build/compare/cache-utils-v5.1.3...cache-utils-v5.1.4) (2023-05-12)
+
+
+### Bug Fixes
+
+* remove `del` package ([#5006](https://github.com/netlify/build/issues/5006)) ([f2c7df3](https://github.com/netlify/build/commit/f2c7df35019fa8f356ff8c13874760e8fbebc381))
+
 ## [5.1.3](https://github.com/netlify/build/compare/cache-utils-v5.1.2...cache-utils-v5.1.3) (2023-03-13)
 
 

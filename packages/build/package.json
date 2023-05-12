@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "29.11.2",
+  "version": "29.11.3",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/core/main.js",
@@ -64,11 +64,11 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/cache-utils": "^5.1.3",
-    "@netlify/config": "^20.4.1",
+    "@netlify/cache-utils": "^5.1.4",
+    "@netlify/config": "^20.4.2",
     "@netlify/edge-bundler": "8.14.2",
-    "@netlify/framework-info": "^9.8.6",
-    "@netlify/functions-utils": "^5.2.5",
+    "@netlify/framework-info": "^9.8.7",
+    "@netlify/functions-utils": "^5.2.6",
     "@netlify/git-utils": "^5.1.1",
     "@netlify/plugins-list": "^6.68.0",
     "@netlify/run-utils": "^5.1.0",
