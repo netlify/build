@@ -1,8 +1,6 @@
-import { promises as fs } from 'fs'
+import { mkdir, rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
-
-import { deleteAsync } from 'del'
 
 import { EdgeFunction } from '../edge_function.js'
 import type { FormatFunction } from '../server/server.js'
@@ -29,13 +27,13 @@ const generateStage2 = async ({
   formatImportError,
   functions,
 }: GenerateStage2Options) => {
-  await deleteAsync(distDirectory, { force: true })
-  await fs.mkdir(distDirectory, { recursive: true })
+  await rm(distDirectory, { force: true, recursive: true, maxRetries: 3 })
+  await mkdir(distDirectory, { recursive: true })
 
   const entryPoint = getLocalEntryPoint(functions, { bootstrapURL, formatExportTypeError, formatImportError })
   const stage2Path = join(distDirectory, fileName)
 
-  await fs.writeFile(stage2Path, entryPoint)
+  await writeFile(stage2Path, entryPoint)
 
   return stage2Path
 }

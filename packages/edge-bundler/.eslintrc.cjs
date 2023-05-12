@@ -14,6 +14,7 @@ module.exports = {
     'max-lines': 'off',
     'max-statements': 'off',
     'node/no-missing-import': 'off',
+    'no-magic-numbers': 'off',
     'no-shadow': 'off',
     'no-use-before-define': 'off',
     'unicorn/prefer-json-parse-buffer': 'off',

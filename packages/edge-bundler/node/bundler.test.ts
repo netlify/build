@@ -1,9 +1,8 @@
-import { promises as fs } from 'fs'
+import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
@@ -31,12 +30,12 @@ test('Produces an ESZIP bundle', async () => {
     configPath: join(internalDirectory, 'config.json'),
     importMapPaths: [join(userDirectory, 'import_map.json')],
   })
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   expect(() => validateManifest(manifest)).not.toThrowError()
   const { bundles, import_map: importMapURL } = manifest
@@ -71,12 +70,12 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
     basePath,
     configPath: join(sourceDirectory, 'config.json'),
   })
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles } = manifest
 
@@ -193,12 +192,12 @@ test('Uses the cache directory as the `DENO_DIR` value', async () => {
   }
 
   const result = await bundle([sourceDirectory], distPath, declarations, options)
-  const outFiles = await fs.readdir(distPath)
+  const outFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(1)
   expect(outFiles.length).toBe(2)
 
-  const denoDir = await fs.readdir(join(cacheDir.path, 'deno_dir'))
+  const denoDir = await readdir(join(cacheDir.path, 'deno_dir'))
 
   expect(denoDir.includes('gen')).toBe(true)
 
@@ -218,12 +217,12 @@ test('Supports import maps with relative paths', async () => {
     basePath,
     configPath: join(sourceDirectory, 'config.json'),
   })
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles } = manifest
 
@@ -253,7 +252,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
     },
   }
 
-  await fs.writeFile(importMapFile.path, JSON.stringify(importMap))
+  await writeFile(importMapFile.path, JSON.stringify(importMap))
 
   // Deno configuration files need to be in the current working directory.
   // There's not a great way for us to set the working directory of the `deno`
@@ -265,7 +264,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
   }
 
   try {
-    await fs.access(denoConfigPath)
+    await access(denoConfigPath)
 
     throw new Error(
       `The file at '${denoConfigPath} would be overwritten by this test. Please move the file to a different location and try again.'`,
@@ -276,7 +275,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
     }
   }
 
-  await fs.writeFile(denoConfigPath, JSON.stringify(denoConfig))
+  await writeFile(denoConfigPath, JSON.stringify(denoConfig))
 
   expect(() =>
     bundle([sourceDirectory], distPath, declarations, {
@@ -286,7 +285,8 @@ test('Ignores any user-defined `deno.json` files', async () => {
   ).not.toThrow()
 
   await cleanup()
-  await deleteAsync([denoConfigPath, importMapFile.path], { force: true })
+  await rm(denoConfigPath, { force: true, recursive: true, maxRetries: 10 })
+  await rm(importMapFile.path, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Processes a function that imports a custom layer', async () => {
@@ -303,12 +303,12 @@ test('Processes a function that imports a custom layer', async () => {
     basePath,
     configPath: join(sourceDirectory, 'config.json'),
   })
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles, layers } = manifest
 
@@ -335,12 +335,12 @@ test('Loads declarations and import maps from the deploy configuration and in-so
     configPath: join(basePath, '.netlify', 'edge-functions', 'manifest.json'),
     internalSrcFolder: directories[1],
   })
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles, function_config: functionConfig } = manifest
   expect(bundles.length).toBe(1)
@@ -382,7 +382,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
     },
   }
 
-  await fs.writeFile(importMap.path, JSON.stringify(importMapContents))
+  await writeFile(importMap.path, JSON.stringify(importMapContents))
 
   const nonExistingImportMapPath = join(distPath, 'some-file-that-does-not-exist.json')
   const result = await bundle(
@@ -400,7 +400,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
       systemLogger,
     },
   )
-  const generatedFiles = await fs.readdir(distPath)
+  const generatedFiles = await readdir(distPath)
 
   expect(result.functions.length).toBe(2)
   expect(generatedFiles.length).toBe(2)

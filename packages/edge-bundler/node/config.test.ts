@@ -1,8 +1,8 @@
 import { promises as fs } from 'fs'
+import { rm } from 'fs/promises'
 import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
 
-import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
@@ -157,7 +157,7 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
       expect(logger.user).not.toHaveBeenCalled()
     }
 
-    await deleteAsync(tmpDir, { force: true })
+    await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
   })
 })
 
@@ -245,7 +245,7 @@ test('Passes validation if default export exists and is a function', async () =>
     ),
   ).resolves.not.toThrow()
 
-  await deleteAsync(tmpDir, { force: true })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Fails validation if default export is not function', async () => {
@@ -282,7 +282,7 @@ test('Fails validation if default export is not function', async () => {
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
 
-  await deleteAsync(tmpDir, { force: true })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Fails validation if default export is not present', async () => {
@@ -318,5 +318,5 @@ test('Fails validation if default export is not present', async () => {
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
 
-  await deleteAsync(tmpDir, { force: true })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })

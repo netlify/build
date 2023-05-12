@@ -1,8 +1,7 @@
-import { promises as fs } from 'fs'
+import { rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
-import { deleteAsync } from 'del'
 import { execa } from 'execa'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
@@ -28,7 +27,7 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
   const printerPath = join(tmpDir, 'printer.mjs')
   const bootstrapURL = pathToFileURL(printerPath).toString()
 
-  await fs.writeFile(printerPath, printer)
+  await writeFile(printerPath, printer)
 
   const functions = [
     { name: 'func1', path: join(tmpDir, 'func1.mjs'), response: 'Hello from function 1' },
@@ -38,7 +37,7 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
   for (const func of functions) {
     const contents = `export default () => ${JSON.stringify(func.response)}`
 
-    await fs.writeFile(func.path, contents)
+    await writeFile(func.path, contents)
   }
 
   const stage2 = getLocalEntryPoint(
@@ -47,7 +46,7 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
   )
   const stage2Path = join(tmpDir, 'stage2.mjs')
 
-  await fs.writeFile(stage2Path, stage2)
+  await writeFile(stage2Path, stage2)
 
   const { stdout, stderr } = await execa('deno', ['run', '--allow-all', stage2Path])
 
@@ -60,5 +59,5 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
     expect(metadata.functions[func.name].url).toBe(pathToFileURL(func.path).toString())
   }
 
-  await deleteAsync(tmpDir, { force: true })
+  await rm(tmpDir, { force: true, recursive: true })
 })

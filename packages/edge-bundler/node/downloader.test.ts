@@ -45,7 +45,7 @@ beforeEach(async (ctx: TestContext) => {
 })
 
 afterEach(async (ctx: TestContext) => {
-  await rm(ctx.tmpDir, { force: true, recursive: true })
+  await rm(ctx.tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('tries downloading binary up to 4 times', async (ctx: TestContext) => {

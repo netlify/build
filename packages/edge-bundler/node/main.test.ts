@@ -51,5 +51,5 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   expect(beforeDownload).toHaveBeenCalledTimes(1)
   expect(afterDownload).toHaveBeenCalledTimes(1)
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })

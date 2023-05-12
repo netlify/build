@@ -35,7 +35,7 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('`ensureLatestTypes` does not update the Deno CLI cache if the local version of types is up-to-date', async () => {
@@ -63,7 +63,7 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('`ensureLatestTypes` does not throw if the types URL is not available', async () => {
@@ -86,5 +86,5 @@ test('`ensureLatestTypes` does not throw if the types URL is not available', asy
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })

@@ -68,7 +68,7 @@ test('Does not inherit environment variables if `extendEnv` is false', async () 
 
   expect(output).toBe('LULU=LALA')
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Does inherit environment variables if `extendEnv` is true', async () => {
@@ -101,7 +101,7 @@ test('Does inherit environment variables if `extendEnv` is true', async () => {
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Does inherit environment variables if `extendEnv` is not set', async () => {
@@ -134,5 +134,5 @@ test('Does inherit environment variables if `extendEnv` is not set', async () =>
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await rm(tmpDir.path, { force: true, recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })

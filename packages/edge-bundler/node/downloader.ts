@@ -52,7 +52,6 @@ const downloadVersion = async (versionRange: string) => {
   const url = getReleaseURL(version)
   const res = await fetch(url)
 
-  // eslint-disable-next-line no-magic-numbers
   if (res.body === null || res.status < 200 || res.status > 299) {
     throw new Error(`Download failed with status code ${res.status}`)
   }

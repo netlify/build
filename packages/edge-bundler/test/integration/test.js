@@ -1,5 +1,6 @@
 import assert from 'assert'
 import childProcess from 'child_process'
+import { rm } from 'fs/promises'
 import { createRequire } from 'module'
 import { join, resolve } from 'path'
 import process from 'process'
@@ -7,7 +8,6 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import cpy from 'cpy'
-import { deleteAsync } from 'del'
 import tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -97,11 +97,11 @@ const runAssertions = ({ basePath, bundleOutput }) => {
 }
 
 const cleanup = async () => {
-  const directories = [...pathsToCleanup]
-
   console.log(`Cleaning up temporary files...`)
 
-  await deleteAsync(directories, { force: true })
+  for (const folder of pathsToCleanup) {
+    await rm(folder, { force: true, recursive: true, maxRetries: 10 })
+  }
 }
 
 installPackage()
