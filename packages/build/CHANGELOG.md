@@ -69,6 +69,21 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.11.4](https://github.com/netlify/build/compare/build-v29.11.3...build-v29.11.4) (2023-05-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v9 ([#5011](https://github.com/netlify/build/issues/5011)) ([3f3a720](https://github.com/netlify/build/commit/3f3a7202dc47798abd91ab2031c6f8b72ad3035d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.4 to ^5.1.5
+    * @netlify/functions-utils bumped from ^5.2.6 to ^5.2.7
+
 ## [29.11.3](https://github.com/netlify/build/compare/build-v29.11.2...build-v29.11.3) (2023-05-12)
 
 
