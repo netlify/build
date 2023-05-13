@@ -147,7 +147,7 @@ export class Fixture {
     } = { git: true },
   ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
-    await cpy('**', this.copyRootDir, { cwd: this.repositoryRoot, parents: true })
+    await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
 
     if (copyRoot.branch !== undefined) {
       await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
