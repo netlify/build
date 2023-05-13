@@ -64,6 +64,20 @@
   * dependencies
     * netlify bumped from ^13.1.4 to ^13.1.5
 
+## [20.4.2](https://github.com/netlify/build/compare/config-v20.4.1...config-v20.4.2) (2023-05-12)
+
+
+### Bug Fixes
+
+* remove `del` package ([#5006](https://github.com/netlify/build/issues/5006)) ([f2c7df3](https://github.com/netlify/build/commit/f2c7df35019fa8f356ff8c13874760e8fbebc381))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.5 to ^13.1.6
+
 ## [20.4.0](https://github.com/netlify/build/compare/config-v20.3.7...config-v20.4.0) (2023-04-24)
 
 
