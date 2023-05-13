@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.7](https://github.com/netlify/build/compare/functions-utils-v5.2.6...functions-utils-v5.2.7) (2023-05-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v9 ([#5011](https://github.com/netlify/build/issues/5011)) ([3f3a720](https://github.com/netlify/build/commit/3f3a7202dc47798abd91ab2031c6f8b72ad3035d))
+
 ## [5.2.6](https://github.com/netlify/build/compare/functions-utils-v5.2.5...functions-utils-v5.2.6) (2023-05-12)
 
 
