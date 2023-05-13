@@ -50,7 +50,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cpy": "^8.1.0",
+    "cpy": "^9.0.0",
     "get-stream": "^6.0.0",
     "globby": "^13.0.0",
     "junk": "^4.0.0",

@@ -71,7 +71,7 @@ test('Use plugins cached in .netlify/plugins/', async (t) => {
 test('Do not use plugins cached in .netlify/plugins/ if outdated', async (t) => {
   const pluginsDir = `${FIXTURES_DIR}/plugins_cache_outdated/.netlify/plugins`
   await removeDir(pluginsDir)
-  await cpy('**', '../plugins', { cwd: `${pluginsDir}-old`, parents: true })
+  await cpy('**', '../plugins', { cwd: `${pluginsDir}-old` })
   try {
     await runWithApiMock(t, 'plugins_cache_outdated')
   } finally {
