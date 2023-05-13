@@ -1,8 +1,7 @@
-import { promises as fs } from 'fs'
+import { rm, writeFile } from 'fs/promises'
 import { join, basename } from 'path'
 import { promisify } from 'util'
 
-import del from 'del'
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 const PREFIX = 'test-cache-utils-'
 
@@ -34,13 +33,17 @@ export const createTmpFiles = async function (files: any[], opts = {}): Promise<
     files.map(async ({ name }) => {
       const filename = name || basename(await tmpName())
       const tmpFile = join(tmpDir, filename)
-      await fs.writeFile(tmpFile, '')
+      await writeFile(tmpFile, '')
       return tmpFile
     }),
   )
   return [tmpFiles, tmpDir]
 }
 
-export const removeFiles = function (paths) {
-  return del(paths, { force: true })
+export const removeFiles = async function (paths: string | string[]): Promise<void> {
+  const dirs = Array.isArray(paths) ? paths : [paths]
+
+  for (const dir of dirs) {
+    await rm(dir, { force: true, recursive: true, maxRetries: 10 })
+  }
 }
