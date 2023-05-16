@@ -1,4 +1,4 @@
-import del from 'del'
+import { rm } from 'fs/promises'
 
 import { getCacheDir } from './dir.js'
 import { moveCacheFile, hasFiles } from './fs.js'
@@ -37,7 +37,7 @@ const saveOne = async function (
     return true
   }
 
-  await del(cachePath, { force: true })
+  await rm(cachePath, { force: true, recursive: true, maxRetries: 3 })
   await moveCacheFile(srcPath, cachePath, move)
   await writeManifest(manifestInfo)
 
@@ -67,7 +67,7 @@ const restoreOne = async function (
     return false
   }
 
-  await del(srcPath, { force: true })
+  await rm(srcPath, { force: true, recursive: true, maxRetries: 3 })
   await moveCacheFile(cachePath, srcPath, move)
 
   return true
@@ -90,7 +90,7 @@ const removeOne = async function (
     return false
   }
 
-  await del(cachePath, { force: true })
+  await rm(cachePath, { force: true, recursive: true, maxRetries: 3 })
   await removeManifest(cachePath)
 
   return true

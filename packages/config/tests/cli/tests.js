@@ -1,10 +1,9 @@
-import { promises as fs } from 'fs'
+import { readFile, rm, writeFile } from 'fs/promises'
 import { normalize } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import del from 'del'
 import isCI from 'is-ci'
 import { tmpName as getTmpName } from 'tmp-promise'
 
@@ -49,11 +48,11 @@ test('Write on file with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
     await new Fixture('./fixtures/empty').withFlags({ output }).runConfigBinary()
-    const content = await fs.readFile(output)
+    const content = await readFile(output)
     const { context } = JSON.parse(content)
     t.is(context, 'production')
   } finally {
-    await fs.unlink(output)
+    await rm(output, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -63,7 +62,7 @@ test('Do not write on stdout with the --output flag', async (t) => {
     const result = await new Fixture('./fixtures/empty').withFlags({ output }).runConfigBinary()
     t.is(result.output, '')
   } finally {
-    await fs.unlink(output)
+    await rm(output, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -77,16 +76,17 @@ if (isCI) {
   test('Handles big outputs', async (t) => {
     const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)
     const bigNetlify = `${fixturesDir}/big/netlify.toml`
-    await del(bigNetlify, { force: true })
+
+    await rm(bigNetlify, { force: true, recursive: true, maxRetries: 10 })
     try {
       const bigContent = getBigNetlifyContent()
-      await fs.writeFile(bigNetlify, bigContent)
+      await writeFile(bigNetlify, bigContent)
       const { output } = await new Fixture('./fixtures/big').withFlags({ output: '-' }).runConfigBinary()
       t.notThrows(() => {
         JSON.parse(output)
       })
     } finally {
-      await del(bigNetlify, { force: true })
+      await rm(bigNetlify, { force: true, recursive: true, maxRetries: 10 })
     }
   })
 

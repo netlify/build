@@ -1,5 +1,6 @@
+import { rm } from 'fs/promises'
+
 import cpy from 'cpy'
-import del from 'del'
 import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
@@ -19,7 +20,7 @@ test('Should work without a package.json', async () => {
     const frameworks = await listFrameworks({ projectDir: tmpDir })
     expect(frameworks).toHaveLength(1)
   } finally {
-    del(tmpDir, { force: true })
+    rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 

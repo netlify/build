@@ -1,9 +1,9 @@
-import { existsSync, promises as fs } from 'fs'
+import { existsSync } from 'fs'
+import { copyFile, rm } from 'fs/promises'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import del from 'del'
 
 import { updateConfig } from '../../lib/index.js'
 
@@ -50,12 +50,12 @@ const initFixtureDir = async function (fixtureName) {
 // directory to use in tests
 const copyIfExists = async function (fixturePath, tempPath) {
   if (existsSync(fixturePath)) {
-    await fs.copyFile(fixturePath, tempPath)
+    await copyFile(fixturePath, tempPath)
     return
   }
 
   if (existsSync(tempPath)) {
-    await del(tempPath)
+    await rm(tempPath, { force: true, recursive: true, maxRetries: 10 })
   }
 }
 
