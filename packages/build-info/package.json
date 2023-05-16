@@ -49,7 +49,7 @@
     "@netlify/framework-info": "^9.8.7",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
-    "read-pkg": "^7.1.0",
+    "read-pkg": "^8.0.0",
     "semver": "^7.3.8",
     "yaml": "^2.1.3",
     "yargs": "^17.6.0"
