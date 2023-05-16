@@ -1,3 +1,1 @@
-.github/CODEOWNERS @netlify/pillar-dev-workflow @netlify/core-pod-accounts
-/packages/build/src/plugins_core/functions/ @netlify/runtime-pod-compute @netlify/ecosystem-pod-developer-foundations
-/packages/build/src/plugins_core/edge_functions/ @netlify/runtime-pod-compute @netlify/ecosystem-pod-developer-foundations
+* @netlify/ecosystem-pod-developer-foundations
