@@ -13,12 +13,12 @@ interface BaseDeclaration {
 
 type DeclarationWithPath = BaseDeclaration & {
   path: Path
-  excludedPath?: Path
+  excludedPath?: Path | Path[]
 }
 
 type DeclarationWithPattern = BaseDeclaration & {
   pattern: string
-  excludedPattern?: string
+  excludedPattern?: string | string[]
 }
 
 export type Declaration = DeclarationWithPath | DeclarationWithPattern

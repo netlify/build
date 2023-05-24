@@ -8,6 +8,16 @@ const bundlesSchema = {
   additionalProperties: false,
 }
 
+const excludedPatternsSchema = {
+  type: 'array',
+  items: {
+    type: 'string',
+    format: 'regexPattern',
+    errorMessage:
+      'excluded_patterns must be an array of regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)',
+  },
+}
+
 const routesSchema = {
   type: 'object',
   required: ['function', 'pattern'],
@@ -19,6 +29,7 @@ const routesSchema = {
       format: 'regexPattern',
       errorMessage: 'pattern must be a regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)',
     },
+    excluded_patterns: excludedPatternsSchema,
     generator: { type: 'string' },
   },
   additionalProperties: false,
@@ -28,15 +39,7 @@ const functionConfigSchema = {
   type: 'object',
   required: [],
   properties: {
-    excluded_patterns: {
-      type: 'array',
-      items: {
-        type: 'string',
-        format: 'regexPattern',
-        errorMessage:
-          'excluded_patterns must be an array of regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)',
-      },
-    },
+    excluded_patterns: excludedPatternsSchema,
     on_error: { type: 'string' },
   },
 }

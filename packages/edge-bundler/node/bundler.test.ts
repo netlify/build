@@ -342,14 +342,15 @@ test('Loads declarations and import maps from the deploy configuration and in-so
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const { bundles, function_config: functionConfig } = manifest
+  const { bundles, function_config: functionConfig, routes } = manifest
   expect(bundles.length).toBe(1)
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   // respects excludedPath from deploy config
+  expect(routes[0].excluded_patterns).toEqual(['^/func2/skip/?$'])
+
   expect(functionConfig.func2).toEqual({
-    excluded_patterns: ['^/func2/skip/?$'],
     name: 'Function two',
     generator: '@netlify/fake-plugin@1.0.0',
   })

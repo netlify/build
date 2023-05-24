@@ -52,8 +52,12 @@ const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
       return false
     }
 
-    const excludedPattern = manifest.function_config[route.function].excluded_patterns
-    const isExcluded = excludedPattern.some((pattern) => new RegExp(pattern).test(candidate))
+    if (route.excluded_patterns.some((pattern) => new RegExp(pattern).test(candidate))) {
+      return false
+    }
+
+    const excludedPatterns = manifest.function_config[route.function]?.excluded_patterns ?? []
+    const isExcluded = excludedPatterns.some((pattern) => new RegExp(pattern).test(candidate))
 
     return !isExcluded
   })
