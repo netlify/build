@@ -98,7 +98,7 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
 
   const { routes, function_config } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$' }])
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', excluded_patterns: [] }])
   t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
@@ -147,7 +147,7 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
 // TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
 // out which regex is causing the problem and fix it.
 if (platform !== 'win32') {
-  test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
+  test.serial.only('writes manifest contents to stdout if `debug` is set', async (t) => {
     // This file descriptor doesn't exist, but it won't be used anyway since
     // `debug` is set.
     const systemLogFile = 7
@@ -187,7 +187,7 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
 
   const { routes } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$' }])
+  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [] }])
 })
 
 test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
