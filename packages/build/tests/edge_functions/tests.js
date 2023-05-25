@@ -147,7 +147,7 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
 // TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
 // out which regex is causing the problem and fix it.
 if (platform !== 'win32') {
-  test.serial.only('writes manifest contents to stdout if `debug` is set', async (t) => {
+  test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
     // This file descriptor doesn't exist, but it won't be used anyway since
     // `debug` is set.
     const systemLogFile = 7
