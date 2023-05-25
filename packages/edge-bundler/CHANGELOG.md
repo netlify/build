@@ -1,5 +1,17 @@
 # Changelog
 
+## [8.15.0](https://github.com/netlify/edge-bundler/compare/v8.14.2...v8.15.0) (2023-05-24)
+
+
+### Features
+
+* add support for excludedPattern ([#403](https://github.com/netlify/edge-bundler/issues/403)) ([39b29d5](https://github.com/netlify/edge-bundler/commit/39b29d5676432786dd83971fcc8e7cff00bea649))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semver to v7.5.1 ([#397](https://github.com/netlify/edge-bundler/issues/397)) ([0858b14](https://github.com/netlify/edge-bundler/commit/0858b14c49fa958935e20284dda46f4f0c3fc795))
+
 ## [8.14.2](https://github.com/netlify/edge-bundler/compare/v8.14.1...v8.14.2) (2023-05-12)
 
 
