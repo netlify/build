@@ -410,3 +410,39 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
   await cleanup()
   await importMap.cleanup()
 })
+
+test('Handles imports with the `node:` prefix', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('imports_node_specifier')
+  const userDirectory = join(basePath, 'netlify', 'edge-functions')
+  const result = await bundle([userDirectory], distPath, [], {
+    basePath,
+    importMapPaths: [join(userDirectory, 'import_map.json')],
+  })
+  const generatedFiles = await readdir(distPath)
+
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+
+  expect(() => validateManifest(manifest)).not.toThrowError()
+
+  const { bundles, import_map: importMapURL, routes } = manifest
+
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+  expect(importMapURL).toBe(importMapSpecifier)
+  expect(routes.length).toBe(1)
+  expect(routes[0].function).toBe('func1')
+  expect(routes[0].pattern).toBe('^/func1/?$')
+
+  const bundlePath = join(distPath, bundles[0].asset)
+
+  const { func1 } = await runESZIP(bundlePath)
+
+  expect(func1).toBe('ok')
+
+  await cleanup()
+})

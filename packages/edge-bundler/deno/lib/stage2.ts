@@ -75,7 +75,7 @@ const stage2Loader = (basePath: string, functions: InputFunction[], externals: S
       return inlineModule(specifier, importMapData)
     }
 
-    if (specifier === PUBLIC_SPECIFIER || externals.has(specifier)) {
+    if (specifier === PUBLIC_SPECIFIER || externals.has(specifier) || specifier.startsWith('node:')) {
       return {
         kind: 'external',
         specifier,

@@ -12,7 +12,7 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-const DENO_VERSION_RANGE = '^1.22.0'
+const DENO_VERSION_RANGE = '^1.30.0'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>

@@ -33,7 +33,7 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           # Should match the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-          deno-version: v1.22.0
+          deno-version: v1.30.0
       - name: Install dependencies
         run: npm ci
       - name: Tests
