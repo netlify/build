@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.16.0](https://github.com/netlify/edge-bundler/compare/v8.15.0...v8.16.0) (2023-05-30)
+
+
+### Features
+
+* support `node:` prefix ([#406](https://github.com/netlify/edge-bundler/issues/406)) ([0f7413f](https://github.com/netlify/edge-bundler/commit/0f7413f3e4921922ba82d1331cfb6d50ccafc2a6))
+
 ## [8.15.0](https://github.com/netlify/edge-bundler/compare/v8.14.2...v8.15.0) (2023-05-24)
 
 
