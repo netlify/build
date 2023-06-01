@@ -26,7 +26,7 @@ export const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, c
 
 /** --config CLI flag */
 const searchConfigOpt = function (cwd: string, configOpt?: string) {
-  if (configOpt === undefined) {
+  if (configOpt === undefined || configOpt.length === 0) {
     return
   }
 

@@ -132,6 +132,20 @@ test('--config', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('nested --config', async (t) => {
+  const output = await new Fixture('./fixtures/toml')
+    .withFlags({ config: `${FIXTURES_DIR}/toml/apps/nested/netlify.toml` })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('empty --config', async (t) => {
+  const output = await new Fixture('./fixtures/toml')
+    .withFlags({ config: '', cwd: `${FIXTURES_DIR}/toml/apps/nested` })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('--defaultConfig CLI flag', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({
