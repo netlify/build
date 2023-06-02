@@ -216,7 +216,6 @@ const getFullConfig = async function ({
   featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
-
   try {
     const config = await parseConfig(configPath)
     const configA = mergeAndNormalizeConfig({
