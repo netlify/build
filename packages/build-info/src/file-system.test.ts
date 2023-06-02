@@ -1,5 +1,4 @@
-import { join, relative } from 'path'
-import { join as posixJoin } from 'path/posix'
+import { join, relative, posix } from 'path'
 
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -9,6 +8,7 @@ import { GithubProvider, WebFS } from './browser/file-system.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import { Project } from './project.js'
 
+const { join: posixJoin } = posix
 // This is a mock for the github api functionality to have consistent tests and no rate limiting
 global.fetch = vi.fn(async (url): Promise<any> => {
   switch (url) {
