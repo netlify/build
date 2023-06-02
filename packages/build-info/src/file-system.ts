@@ -51,34 +51,68 @@ export type findUpOptions = {
   stopAt?: string
 }
 
-/** A platform independent version of path.join() */
-export function join(...segments: string[]): string {
-  let parts: string[] = []
-  for (let i = 0, max = segments.length; i < max; i++) {
-    // split the segments to parts by all kind of separator (forward and backward)
-    parts = parts.concat(segments[i].split(/[\\/]/g))
-  }
+/**
+ * helper function to normalize path segments for a platform independent join
+ * resolves . and .. elements in a path array with directory names
+ */
+function normalizePathSegments(parts: string[], allowAboveRoot: boolean) {
+  const res: string[] = []
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i]
 
-  // resolve .. inside path segments
-  const resolvedParts: string[] = []
-  for (let i = 0, max = parts.length; i < max; i++) {
-    const part = parts[i]
-    // Remove leading and trailing slashes
-    // Also remove "." segments
-    if (!part || part === '.') continue
-    // Interpret ".." to pop the last segment
-    if (part === '..') {
-      resolvedParts.pop()
+    // ignore empty parts
+    if (!p || p === '.') continue
+
+    if (p === '..') {
+      if (res.length && res[res.length - 1] !== '..') {
+        res.pop()
+      } else if (allowAboveRoot) {
+        res.push('..')
+      }
     } else {
-      resolvedParts.push(part)
+      res.push(p)
     }
   }
-  // Preserve the initial slash if there was one.
-  if (parts[0] === '') {
-    resolvedParts.unshift('')
+
+  return res
+}
+
+/** A platform independent version of path.normalize()  */
+export function normalize(path: string): string {
+  const isAbsolute = path.startsWith('/')
+  const trailingSlash = path && path[path.length - 1] === '/'
+
+  // Normalize the path
+  path = normalizePathSegments(path.split('/'), !isAbsolute).join('/')
+
+  if (!path && !isAbsolute) {
+    path = '.'
+  }
+  if (path && trailingSlash) {
+    path += '/'
   }
 
-  return resolvedParts.join('/') || (resolvedParts.length ? '/' : '.')
+  return (isAbsolute ? '/' : '') + path
+}
+
+/** A platform independent version of path.join() */
+export function join(...segments: string[]): string {
+  let path = ''
+  for (let i = 0, max = segments.length; i < max; i++) {
+    if (typeof segments[i] !== 'string') {
+      throw new TypeError('Arguments to join must be strings')
+    }
+    // replace all backslashes to forward slashes
+    const segment = segments[i].replace(/\\/gm, '/')
+    if (segment) {
+      if (!path.length) {
+        path += segment
+      } else {
+        path += '/' + segment
+      }
+    }
+  }
+  return normalize(path)
 }
 
 export abstract class FileSystem {

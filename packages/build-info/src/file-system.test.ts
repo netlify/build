@@ -1,4 +1,5 @@
 import { join, relative } from 'path'
+import { join as posixJoin } from 'path/posix'
 
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -85,14 +86,28 @@ describe.concurrent('Test the platform independent base functionality', () => {
   })
 
   test('join should join path segments and always replace to posix style', ({ fs }) => {
+    expect(fs.join('/', 'package.json')).toBe('/package.json')
+    expect(posixJoin('/', 'package.json')).toBe('/package.json')
+    expect(fs.join('', 'package.json')).toBe('package.json')
+    expect(posixJoin('', 'package.json')).toBe('package.json')
+    expect(fs.join('', '', '', 'package.json')).toBe('package.json')
+    expect(posixJoin('', '', '', 'package.json')).toBe('package.json')
     expect(fs.join('a', 'b', 'c')).toBe('a/b/c')
+    expect(posixJoin('a', 'b', 'c')).toBe('a/b/c')
     expect(fs.join('a', 'b/cd', 'e')).toBe('a/b/cd/e')
+    expect(posixJoin('a', 'b/cd', 'e')).toBe('a/b/cd/e')
     expect(fs.join('a')).toBe('a')
-    expect(fs.join('a\\b')).toBe('a/b')
-    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
-    expect(fs.join('/foo', 'bar', 'baz\\asdf', 'quux', '..')).toBe('/foo/bar/baz/asdf')
+    expect(posixJoin('a')).toBe('a')
     expect(fs.join('a/../b')).toBe('b')
+    expect(posixJoin('a/../b')).toBe('b')
     expect(fs.join('a/../b', 'cd')).toBe('b/cd')
+    expect(posixJoin('a/../b', 'cd')).toBe('b/cd')
+  })
+
+  test('join should replace backslashes to forward slashes', ({ fs }) => {
+    expect(fs.join('a\\b')).toBe('a/b')
+    expect(fs.join('/foo', 'bar', 'baz\\asdf', 'quux', '..')).toBe('/foo/bar/baz/asdf')
+    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
   })
 
   test('basename should return the last path segment', ({ fs }) => {
