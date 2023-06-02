@@ -1,6 +1,6 @@
 {
   "name": "@netlify/framework-info",
-  "version": "9.8.7",
+  "version": "9.8.8",
   "description": "Framework detection utility",
   "type": "module",
   "main": "./dist/index.umd.cjs",
@@ -68,8 +68,7 @@
     "p-locate": "^6.0.0",
     "process": "^0.11.10",
     "read-pkg-up": "^9.0.0",
-    "semver": "^7.3.4",
-    "url": "^0.11.0"
+    "semver": "^7.3.4"
   },
   "devDependencies": {
     "babel-loader": "^8.2.2",
