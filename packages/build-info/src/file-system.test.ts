@@ -86,22 +86,20 @@ describe.concurrent('Test the platform independent base functionality', () => {
   })
 
   test('join should join path segments and always replace to posix style', ({ fs }) => {
-    expect(fs.join('/', 'package.json')).toBe('/package.json')
-    expect(posixJoin('/', 'package.json')).toBe('/package.json')
-    expect(fs.join('', 'package.json')).toBe('package.json')
-    expect(posixJoin('', 'package.json')).toBe('package.json')
-    expect(fs.join('', '', '', 'package.json')).toBe('package.json')
-    expect(posixJoin('', '', '', 'package.json')).toBe('package.json')
-    expect(fs.join('a', 'b', 'c')).toBe('a/b/c')
-    expect(posixJoin('a', 'b', 'c')).toBe('a/b/c')
-    expect(fs.join('a', 'b/cd', 'e')).toBe('a/b/cd/e')
-    expect(posixJoin('a', 'b/cd', 'e')).toBe('a/b/cd/e')
-    expect(fs.join('a')).toBe('a')
-    expect(posixJoin('a')).toBe('a')
-    expect(fs.join('a/../b')).toBe('b')
-    expect(posixJoin('a/../b')).toBe('b')
-    expect(fs.join('a/../b', 'cd')).toBe('b/cd')
-    expect(posixJoin('a/../b', 'cd')).toBe('b/cd')
+    // test that the fs.join behaves exactly like the official node/posix join functionality
+    ;[fs.join, posixJoin].forEach((joinFn) => {
+      expect(joinFn('/', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '..', 'package.json')).toBe('/package.json')
+      expect(joinFn('..', 'package.json')).toBe('../package.json')
+      expect(joinFn('', 'package.json')).toBe('package.json')
+      expect(joinFn('', '', '', 'package.json')).toBe('package.json')
+      expect(joinFn('a', 'b', 'c')).toBe('a/b/c')
+      expect(joinFn('a', 'b/cd', 'e')).toBe('a/b/cd/e')
+      expect(joinFn('a')).toBe('a')
+      expect(joinFn('a/../b')).toBe('b')
+      expect(joinFn('a/../b', 'cd')).toBe('b/cd')
+    })
   })
 
   test('join should replace backslashes to forward slashes', ({ fs }) => {
