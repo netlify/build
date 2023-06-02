@@ -1,4 +1,4 @@
-import { join, relative } from 'path'
+import { join, relative, posix } from 'path'
 
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -8,6 +8,7 @@ import { GithubProvider, WebFS } from './browser/file-system.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import { Project } from './project.js'
 
+const { join: posixJoin } = posix
 // This is a mock for the github api functionality to have consistent tests and no rate limiting
 global.fetch = vi.fn(async (url): Promise<any> => {
   switch (url) {
@@ -85,14 +86,26 @@ describe.concurrent('Test the platform independent base functionality', () => {
   })
 
   test('join should join path segments and always replace to posix style', ({ fs }) => {
-    expect(fs.join('a', 'b', 'c')).toBe('a/b/c')
-    expect(fs.join('a', 'b/cd', 'e')).toBe('a/b/cd/e')
-    expect(fs.join('a')).toBe('a')
+    // test that the fs.join behaves exactly like the official node/posix join functionality
+    ;[fs.join, posixJoin].forEach((joinFn) => {
+      expect(joinFn('/', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '..', 'package.json')).toBe('/package.json')
+      expect(joinFn('..', 'package.json')).toBe('../package.json')
+      expect(joinFn('', 'package.json')).toBe('package.json')
+      expect(joinFn('', '', '', 'package.json')).toBe('package.json')
+      expect(joinFn('a', 'b', 'c')).toBe('a/b/c')
+      expect(joinFn('a', 'b/cd', 'e')).toBe('a/b/cd/e')
+      expect(joinFn('a')).toBe('a')
+      expect(joinFn('a/../b')).toBe('b')
+      expect(joinFn('a/../b', 'cd')).toBe('b/cd')
+    })
+  })
+
+  test('join should replace backslashes to forward slashes', ({ fs }) => {
     expect(fs.join('a\\b')).toBe('a/b')
-    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
     expect(fs.join('/foo', 'bar', 'baz\\asdf', 'quux', '..')).toBe('/foo/bar/baz/asdf')
-    expect(fs.join('a/../b')).toBe('b')
-    expect(fs.join('a/../b', 'cd')).toBe('b/cd')
+    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
   })
 
   test('basename should return the last path segment', ({ fs }) => {
