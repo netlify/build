@@ -69,6 +69,20 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.11.8](https://github.com/netlify/build/compare/build-v29.11.7...build-v29.11.8) (2023-06-02)
+
+
+### Bug Fixes
+
+* **config:** ignores an empty config file path ([#5037](https://github.com/netlify/build/issues/5037)) ([4ac2c5b](https://github.com/netlify/build/commit/4ac2c5b1ad10d0fb34aa727cf2bc8deaa6d0ec73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.3 to ^20.4.4
+
 ## [29.11.7](https://github.com/netlify/build/compare/build-v29.11.6...build-v29.11.7) (2023-06-01)
 
 

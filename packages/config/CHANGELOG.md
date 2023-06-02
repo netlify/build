@@ -70,6 +70,13 @@
   * dependencies
     * netlify bumped from ^13.1.6 to ^13.1.7
 
+## [20.4.4](https://github.com/netlify/build/compare/config-v20.4.3...config-v20.4.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* **config:** ignores an empty config file path ([#5037](https://github.com/netlify/build/issues/5037)) ([4ac2c5b](https://github.com/netlify/build/commit/4ac2c5b1ad10d0fb34aa727cf2bc8deaa6d0ec73))
+
 ## [20.4.2](https://github.com/netlify/build/compare/config-v20.4.1...config-v20.4.2) (2023-05-12)
 
 
