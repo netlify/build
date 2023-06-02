@@ -18,6 +18,7 @@ type GetZisiParametersType = {
   isRunningLocally: boolean
   repositoryRoot: string
   userNodeVersion: string
+  systemLog: ZipFunctionsOptions['systemLog']
 }
 
 const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion: string): string | undefined => {
@@ -48,6 +49,7 @@ export const getZisiParameters = ({
   isRunningLocally,
   repositoryRoot,
   userNodeVersion,
+  systemLog,
 }: GetZisiParametersType): ZipFunctionsOptions => {
   const nodeVersion = getLambdaNodeVersion(childEnv, userNodeVersion)
   const manifest = join(functionsDist, 'manifest.json')
@@ -66,6 +68,7 @@ export const getZisiParameters = ({
     repositoryRoot,
     configFileDirectories,
     internalSrcFolder: internalFunctionsSrc,
+    systemLog: featureFlags.buildbot_zisi_system_log ? systemLog : undefined,
   }
 }
 
