@@ -54,6 +54,8 @@ export type findUpOptions = {
 /**
  * helper function to normalize path segments for a platform independent join
  * resolves . and .. elements in a path array with directory names
+ *
+ * @param allowAboveRoot is used for non absolute paths to go up
  */
 function normalizePathSegments(parts: string[], allowAboveRoot: boolean) {
   const res: string[] = []
@@ -92,7 +94,7 @@ export function normalize(path: string): string {
     path += '/'
   }
 
-  return (isAbsolute ? '/' : '') + path
+  return `${isAbsolute ? '/' : ''}${path}`
 }
 
 /** A platform independent version of path.join() */
