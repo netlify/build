@@ -154,6 +154,7 @@ test('Plugins are passed featureflags', async (t) => {
       JSON.stringify({
         buildbot_zisi_trace_nft: false,
         buildbot_zisi_esbuild_parser: false,
+        buildbot_zisi_system_log: false,
         edge_functions_cache_cli: false,
         edge_functions_system_logger: false,
         test_flag: true,
