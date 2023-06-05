@@ -1,9 +1,12 @@
+import { context, trace } from '@opentelemetry/api'
+
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
 import { getSystemLogger } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
+import { setRootExecutionAttributes } from '../tracing/main.js'
 
 import { execBuild, startBuild } from './build.js'
 import { reportMetrics } from './report_metrics.js'
@@ -12,6 +15,8 @@ import { BuildFlags } from './types.js'
 
 export { startDev } from './dev.js'
 export { runCoreSteps } from '../steps/run_core_steps.js'
+
+const tracer = trace.getTracer('core-build')
 
 /**
  * Main entry point of Netlify Build.
@@ -44,77 +49,87 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
   const systemLog = getSystemLogger(logs, debug, systemLogFile)
 
-  try {
-    const {
-      pluginsOptions,
-      netlifyConfig: netlifyConfigA,
-      siteInfo,
-      userNodeVersion,
-      stepsCount,
-      timers,
-      durationNs,
-      configMutations,
-      metrics,
-    } = await execBuild({
-      ...flagsA,
-      buildId,
-      systemLogFile,
-      deployId,
-      dry,
-      errorMonitor,
-      mode,
-      logs,
-      debug,
-      testOpts,
-      errorParams,
-      framework,
-    })
-    await handleBuildSuccess({
-      framework,
-      dry,
-      logs,
-      timers,
-      durationNs,
-      statsdOpts,
-      systemLog,
-      metrics,
-    })
-    const { success, severityCode, status } = getSeverity('success')
-    await telemetryReport({
-      buildId,
-      deployId,
-      status,
-      stepsCount,
-      pluginsOptions,
-      durationNs,
-      siteInfo,
-      telemetry,
-      userNodeVersion,
-      framework,
-      testOpts,
-      errorParams,
-    })
-    return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
-  } catch (error) {
-    const { severity } = await handleBuildError(error, errorParams as any)
-    const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
-    const { success, severityCode, status } = getSeverity(severity)
-    await telemetryReport({
-      buildId,
-      deployId,
-      status,
-      pluginsOptions,
-      siteInfo,
-      telemetry,
-      userNodeVersion,
-      framework,
-      testOpts,
-      errorParams,
-    })
-    await reportError(error, statsdOpts, framework)
+  setRootExecutionAttributes({
+    'deploy.id': deployId,
+    'build.id': buildId,
+    'deploy.context': flagsA.context,
+    'site.id': flagsA.siteId,
+  })
+  return tracer.startActiveSpan('execBuild', async (span) => {
+    try {
+      const {
+        pluginsOptions,
+        netlifyConfig: netlifyConfigA,
+        siteInfo,
+        userNodeVersion,
+        stepsCount,
+        timers,
+        durationNs,
+        configMutations,
+        metrics,
+      } = await execBuild({
+        ...flagsA,
+        buildId,
+        systemLogFile,
+        deployId,
+        dry,
+        errorMonitor,
+        mode,
+        logs,
+        debug,
+        testOpts,
+        errorParams,
+        framework,
+      })
+      await handleBuildSuccess({
+        framework,
+        dry,
+        logs,
+        timers,
+        durationNs,
+        statsdOpts,
+        systemLog,
+        metrics,
+      })
+      const { success, severityCode, status } = getSeverity('success')
+      await telemetryReport({
+        buildId,
+        deployId,
+        status,
+        stepsCount,
+        pluginsOptions,
+        durationNs,
+        siteInfo,
+        telemetry,
+        userNodeVersion,
+        framework,
+        testOpts,
+        errorParams,
+      })
+      return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
+    } catch (error) {
+      const { severity } = await handleBuildError(error, errorParams as any)
+      const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
+      const { success, severityCode, status } = getSeverity(severity)
+      await telemetryReport({
+        buildId,
+        deployId,
+        status,
+        pluginsOptions,
+        siteInfo,
+        telemetry,
+        userNodeVersion,
+        framework,
+        testOpts,
+        errorParams,
+      })
+      await reportError(error, statsdOpts, framework)
 
-    return { success, severityCode, logs }
-  }
+      return { success, severityCode, logs }
+    } finally {
+      span.end()
+    }
+  })
 }
 
 // Logs and reports that a build successfully ended
