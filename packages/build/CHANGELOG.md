@@ -69,6 +69,13 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.12.0](https://github.com/netlify/build/compare/build-v29.11.8...build-v29.12.0) (2023-06-05)
+
+
+### Features
+
+* expose system logger to zip-it-and-ship-it ([#5045](https://github.com/netlify/build/issues/5045)) ([553b550](https://github.com/netlify/build/commit/553b55056a5f7951b78a3849773185b0fa4f87ea))
+
 ## [29.11.8](https://github.com/netlify/build/compare/build-v29.11.7...build-v29.11.8) (2023-06-02)
 
 
