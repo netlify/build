@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.16.1](https://github.com/netlify/edge-bundler/compare/v8.16.0...v8.16.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* update minimum version of semver to be ESM compatible ([#412](https://github.com/netlify/edge-bundler/issues/412)) ([f5f2695](https://github.com/netlify/edge-bundler/commit/f5f269552804b07754b1cb97d0f348d2a334f614))
+
 ## [8.16.0](https://github.com/netlify/edge-bundler/compare/v8.15.0...v8.16.0) (2023-05-30)
 
 
