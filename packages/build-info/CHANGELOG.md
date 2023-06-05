@@ -58,6 +58,12 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.7 to ^9.8.8
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+
 ## [7.0.4](https://github.com/netlify/build/compare/build-info-v7.0.3...build-info-v7.0.4) (2023-06-02)
 
 

@@ -69,6 +69,24 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.12.1](https://github.com/netlify/build/compare/build-v29.12.0...build-v29.12.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.16.1 ([#5052](https://github.com/netlify/build/issues/5052)) ([b0f0554](https://github.com/netlify/build/commit/b0f05548c7cd737c15247ef0bd3250dc8927b98d))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.8.0 ([#5053](https://github.com/netlify/build/issues/5053)) ([30ba73b](https://github.com/netlify/build/commit/30ba73baff99949ced44d12c80cf08e7679da879))
+* update minimum version of semver to be ESM compatible ([#5049](https://github.com/netlify/build/issues/5049)) ([6454437](https://github.com/netlify/build/commit/6454437dbbc54de309c2a7dbeb59149e1b7d02ca))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+    * @netlify/functions-utils bumped from ^5.2.9 to ^5.2.10
+    * @netlify/run-utils bumped from ^5.1.0 to ^5.1.1
+
 ## [29.12.0](https://github.com/netlify/build/compare/build-v29.11.8...build-v29.12.0) (2023-06-05)
 
 
