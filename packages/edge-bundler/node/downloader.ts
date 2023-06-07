@@ -27,9 +27,9 @@ const download = async (targetDirectory: string, versionRange: string) => {
 
   try {
     await new Promise((resolve, reject) => {
-      data.pipe(file)
       data.on('error', reject)
       file.on('finish', resolve)
+      data.pipe(file)
     })
 
     await extractBinaryFromZip(zipPath, binaryPath, binaryName)
