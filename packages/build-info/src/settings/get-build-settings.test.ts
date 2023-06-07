@@ -306,15 +306,15 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('apps/docs'),
-          buildCommand: 'turbo run build --scope docs',
-          devCommand: 'turbo run dev --scope docs',
+          buildCommand: 'turbo run build --filter docs',
+          devCommand: 'turbo run dev --filter docs',
           dist: platformJoin('apps/docs/.next'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('apps/web'),
-          buildCommand: 'turbo run build --scope web',
-          devCommand: 'turbo run dev --scope web',
+          buildCommand: 'turbo run build --filter web',
+          devCommand: 'turbo run dev --filter web',
           dist: platformJoin('apps/web/.next'),
         }),
       ])
@@ -329,8 +329,8 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('apps/web'),
-          buildCommand: 'turbo run build --scope web',
-          devCommand: 'turbo run dev --scope web',
+          buildCommand: 'turbo run build --filter web',
+          devCommand: 'turbo run dev --filter web',
           dist: platformJoin('apps/web/.next'),
         }),
       ])
