@@ -29,7 +29,7 @@ export class Turbo extends BaseBuildTool {
 
         return {
           type,
-          command: `turbo run ${target} --scope ${name}`,
+          command: `turbo run ${target} --filter ${name}`,
         }
       })
     }
