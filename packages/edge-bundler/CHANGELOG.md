@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.16.2](https://github.com/netlify/edge-bundler/compare/v8.16.1...v8.16.2) (2023-06-07)
+
+
+### Bug Fixes
+
+* improvements to download process of deno ([#414](https://github.com/netlify/edge-bundler/issues/414)) ([8e1ecec](https://github.com/netlify/edge-bundler/commit/8e1ecec398f6588d6e6ede042168fc4df62cf0fd))
+
 ## [8.16.1](https://github.com/netlify/edge-bundler/compare/v8.16.0...v8.16.1) (2023-06-05)
 
 
