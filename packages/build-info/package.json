@@ -48,7 +48,7 @@
     "@bugsnag/js": "^7.20.0",
     "@netlify/framework-info": "^9.8.9",
     "find-up": "^6.3.0",
-    "minimatch": "^6.2.0",
+    "minimatch": "^9.0.0",
     "read-pkg": "^7.1.0",
     "semver": "^7.3.8",
     "yaml": "^2.1.3",
