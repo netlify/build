@@ -78,7 +78,7 @@
     "chalk": "^5.0.0",
     "clean-stack": "^4.0.0",
     "execa": "^6.0.0",
-    "figures": "^4.0.0",
+    "figures": "^5.0.0",
     "filter-obj": "^3.0.0",
     "got": "^12.0.0",
     "hot-shots": "9.3.0",

@@ -63,7 +63,7 @@
     "dot-prop": "^7.0.0",
     "execa": "^6.0.0",
     "fast-safe-stringify": "^2.0.7",
-    "figures": "^4.0.0",
+    "figures": "^5.0.0",
     "filter-obj": "^3.0.0",
     "find-up": "^6.0.0",
     "indent-string": "^5.0.0",
