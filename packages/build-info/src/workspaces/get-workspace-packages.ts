@@ -1,4 +1,4 @@
-import minimatch, { Minimatch } from 'minimatch'
+import { minimatch, Minimatch } from 'minimatch'
 import { PackageJson } from 'read-pkg'
 
 import { DirType } from '../file-system.js'
