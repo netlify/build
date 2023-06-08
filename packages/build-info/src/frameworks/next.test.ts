@@ -148,8 +148,8 @@ describe('Nx turborepo', () => {
     const setting = settings.find((s) => s.packagePath === join('apps/web'))
     expect(setting).toMatchObject({
       packagePath: join('apps/web'),
-      buildCommand: 'turbo run build --scope web',
-      devCommand: 'turbo run dev --scope web',
+      buildCommand: 'turbo run build --filter web',
+      devCommand: 'turbo run dev --filter web',
       dist: join('apps/web/.next'),
       frameworkPort: 3000,
       plugins: ['@netlify/plugin-nextjs'],

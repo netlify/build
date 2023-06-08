@@ -69,6 +69,61 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.12.1](https://github.com/netlify/build/compare/build-v29.12.0...build-v29.12.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.16.1 ([#5052](https://github.com/netlify/build/issues/5052)) ([b0f0554](https://github.com/netlify/build/commit/b0f05548c7cd737c15247ef0bd3250dc8927b98d))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.8.0 ([#5053](https://github.com/netlify/build/issues/5053)) ([30ba73b](https://github.com/netlify/build/commit/30ba73baff99949ced44d12c80cf08e7679da879))
+* update minimum version of semver to be ESM compatible ([#5049](https://github.com/netlify/build/issues/5049)) ([6454437](https://github.com/netlify/build/commit/6454437dbbc54de309c2a7dbeb59149e1b7d02ca))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+    * @netlify/functions-utils bumped from ^5.2.9 to ^5.2.10
+    * @netlify/run-utils bumped from ^5.1.0 to ^5.1.1
+
+## [29.12.0](https://github.com/netlify/build/compare/build-v29.11.8...build-v29.12.0) (2023-06-05)
+
+
+### Features
+
+* expose system logger to zip-it-and-ship-it ([#5045](https://github.com/netlify/build/issues/5045)) ([553b550](https://github.com/netlify/build/commit/553b55056a5f7951b78a3849773185b0fa4f87ea))
+
+## [29.11.8](https://github.com/netlify/build/compare/build-v29.11.7...build-v29.11.8) (2023-06-02)
+
+
+### Bug Fixes
+
+* **config:** ignores an empty config file path ([#5037](https://github.com/netlify/build/issues/5037)) ([4ac2c5b](https://github.com/netlify/build/commit/4ac2c5b1ad10d0fb34aa727cf2bc8deaa6d0ec73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.3 to ^20.4.4
+
+## [29.11.7](https://github.com/netlify/build/compare/build-v29.11.6...build-v29.11.7) (2023-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.16.0 ([#5038](https://github.com/netlify/build/issues/5038)) ([70594d3](https://github.com/netlify/build/commit/70594d3a8af27cae11962f828620407ffb6c9b18))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.7.0 ([#5041](https://github.com/netlify/build/issues/5041)) ([92ef573](https://github.com/netlify/build/commit/92ef5733fb297d027b69a89617d3472be153cc47))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.7 to ^9.8.8
+    * @netlify/functions-utils bumped from ^5.2.8 to ^5.2.9
+
 ## [29.11.6](https://github.com/netlify/build/compare/build-v29.11.5...build-v29.11.6) (2023-05-25)
 
 

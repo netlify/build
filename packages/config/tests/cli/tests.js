@@ -8,6 +8,7 @@ import isCI from 'is-ci'
 import { tmpName as getTmpName } from 'tmp-promise'
 
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('--help', async (t) => {
   const { output } = await new Fixture().withFlags({ help: true }).runConfigBinary()
@@ -68,6 +69,23 @@ test('Do not write on stdout with the --output flag', async (t) => {
 
 test('Write on stdout with the --output=- flag', async (t) => {
   const { output } = await new Fixture('./fixtures/empty').withFlags({ output: '-' }).runConfigBinary()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Ignores nonspecified config', async (t) => {
+  const { output } = await new Fixture().withFlags({ cwd: `${FIXTURES_DIR}/toml` }).runConfigBinary()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Ignores empty config', async (t) => {
+  const { output } = await new Fixture('./fixtures/toml').withFlags({ config: '' }).runConfigBinary()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Check --config for toml', async (t) => {
+  const { output } = await new Fixture('./fixtures/toml')
+    .withFlags({ cwd: `${FIXTURES_DIR}/toml`, config: `apps/nested/netlify.toml` })
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 

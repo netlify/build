@@ -52,6 +52,25 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.6 to ^9.8.7
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.7 to ^9.8.8
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+
+## [7.0.4](https://github.com/netlify/build/compare/build-info-v7.0.3...build-info-v7.0.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* **build-info:** fixes a bug in the platform independent join function ([#5042](https://github.com/netlify/build/issues/5042)) ([1fde7c9](https://github.com/netlify/build/commit/1fde7c95f43e5a473bf077ab9f48445789992187))
+
 ## [7.0.1](https://github.com/netlify/build/compare/build-info-v7.0.0...build-info-v7.0.1) (2023-05-05)
 
 
