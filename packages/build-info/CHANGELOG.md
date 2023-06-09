@@ -64,6 +64,21 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.0.6](https://github.com/netlify/build/compare/build-info-v7.0.5...build-info-v7.0.6) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency minimatch to v9 ([#5021](https://github.com/netlify/build/issues/5021)) ([f825645](https://github.com/netlify/build/commit/f825645da38b7104118571a29c95e9e05b0ef636))
+* use turbo --filter instead of deprecated --scope ([#5057](https://github.com/netlify/build/issues/5057)) ([58e45b8](https://github.com/netlify/build/commit/58e45b86b8eb5d8e59cb3828287f7858f6303015))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.9 to ^9.8.10
+
 ## [7.0.4](https://github.com/netlify/build/compare/build-info-v7.0.3...build-info-v7.0.4) (2023-06-02)
 
 
