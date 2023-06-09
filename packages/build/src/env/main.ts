@@ -1,6 +1,6 @@
 import { env } from 'process'
 
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 
 import { getParentColorEnv } from '../log/colors.js'
 
@@ -9,7 +9,7 @@ import { getParentColorEnv } from '../log/colors.js'
 export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   const parentColorEnv = getParentColorEnv()
   const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
-  return filterObj(parentEnv, shouldKeepEnv)
+  return includeKeys(parentEnv, shouldKeepEnv)
 }
 
 const shouldKeepEnv = function (key) {

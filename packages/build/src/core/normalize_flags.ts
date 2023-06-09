@@ -4,7 +4,7 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import type { BuildCLIFlags, Mode, TestOptions } from './types.js'
+import type { BuildFlags, Mode, TestOptions } from './types.js'
 
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
@@ -37,12 +37,12 @@ export type ResolvedFlags = {
   siteId: string
   dry: false
   context: 'production' | string
-  statsdOpts: { port: 8125 }
+  statsdOpts: { host?: number; port: number }
   bugsnagKey?: string
 }
 
 /** Normalize CLI flags  */
-export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): ResolvedFlags {
+export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): ResolvedFlags {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env

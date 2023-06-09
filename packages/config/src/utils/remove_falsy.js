@@ -1,12 +1,12 @@
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 
 // Remove falsy values from object
 export const removeFalsy = function (obj) {
-  return filterObj(obj, (key, value) => isTruthy(value))
+  return includeKeys(obj, (key, value) => isTruthy(value))
 }
 
 export const removeUndefined = function (obj) {
-  return filterObj(obj, (key, value) => isDefined(value))
+  return includeKeys(obj, (key, value) => isDefined(value))
 }
 
 export const isTruthy = function (value) {

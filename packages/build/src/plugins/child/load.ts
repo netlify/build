@@ -1,4 +1,4 @@
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 
 import { getLogic } from './logic.js'
 import { registerTypeScript } from './typescript.js'
@@ -15,7 +15,7 @@ export const load = async function ({ pluginPath, inputs, packageJson, verbose }
 
   validatePlugin(logic)
 
-  const methods = filterObj(logic, isEventHandler)
+  const methods = includeKeys(logic, isEventHandler)
   const events = Object.keys(methods)
 
   // Context passed to every event handler
@@ -24,6 +24,6 @@ export const load = async function ({ pluginPath, inputs, packageJson, verbose }
   return { events, context }
 }
 
-const isEventHandler = function (event, value) {
+const isEventHandler = function (_event: unknown, value: unknown): boolean {
   return typeof value === 'function'
 }
