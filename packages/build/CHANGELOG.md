@@ -69,6 +69,20 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.12.3](https://github.com/netlify/build/compare/build-v29.12.2...build-v29.12.3) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v9 ([83c6ce9](https://github.com/netlify/build/commit/83c6ce978365c7e2b805587c36cfc95498593815))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.5 to ^20.4.6
+
 ## [29.12.2](https://github.com/netlify/build/compare/build-v29.12.1...build-v29.12.2) (2023-06-09)
 
 
