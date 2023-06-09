@@ -1,4 +1,4 @@
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 
 import { simplifyConfig } from '../simplify.js'
 
@@ -72,7 +72,7 @@ const BUILDBOT_ENVIRONMENT = new Set([
 ])
 
 const cleanupPlugin = function ({ package: packageName, origin, inputs = {} }) {
-  const inputsA = filterObj(inputs, isPublicInput)
+  const inputsA = includeKeys(inputs, isPublicInput)
   return { package: packageName, origin, inputs: inputsA }
 }
 

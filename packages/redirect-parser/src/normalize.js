@@ -1,4 +1,4 @@
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 import isPlainObj from 'is-plain-obj'
 
 import { normalizeConditions } from './conditions.js'
@@ -139,7 +139,7 @@ const isProxy = function (status, to) {
 }
 
 const removeUndefinedValues = function (object) {
-  return filterObj(object, isDefined)
+  return includeKeys(object, isDefined)
 }
 
 const isDefined = function (key, value) {

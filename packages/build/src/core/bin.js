@@ -2,7 +2,7 @@
 
 import process from 'process'
 
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
@@ -18,7 +18,7 @@ import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 // sense only in CLI, such as CLI flags parsing and exit code.
 const runCli = async function () {
   const flags = parseFlags()
-  const flagsA = filterObj(flags, isUserFlag)
+  const flagsA = includeKeys(flags, isUserFlag)
 
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
