@@ -70,6 +70,21 @@
   * dependencies
     * netlify bumped from ^13.1.6 to ^13.1.7
 
+## [20.4.5](https://github.com/netlify/build/compare/config-v20.4.4...config-v20.4.5) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency filter-obj to v5 ([#4482](https://github.com/netlify/build/issues/4482)) ([24ec285](https://github.com/netlify/build/commit/24ec285a83e189d99d2ac29af2d67ac9ba23efe5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.7 to ^13.1.8
+    * netlify-redirect-parser bumped from ^14.1.2 to ^14.1.3
+
 ## [20.4.4](https://github.com/netlify/build/compare/config-v20.4.3...config-v20.4.4) (2023-06-02)
 
 
