@@ -18,7 +18,7 @@ jobs:
 
       - name: 🔎 Get changed JavaScript files
         id: changed-javascript-files
-        uses: tj-actions/changed-files@v32
+        uses: tj-actions/changed-files@v36
         with:
           base_sha: ${{ github.event.pull_request.base.sha }}
           files: |
