@@ -111,7 +111,6 @@
     "strip-ansi": "^7.0.0",
     "supports-color": "^9.0.0",
     "terminal-link": "^3.0.0",
-    "tmp-promise": "^3.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
     "uuid": "^8.0.0",
@@ -135,6 +134,7 @@
     "path-key": "^4.0.0",
     "process-exists": "^5.0.0",
     "sinon": "^13.0.0",
+    "tmp-promise": "^3.0.2",
     "tsd": "^0.24.1",
     "yarn": "^1.22.4"
   },
