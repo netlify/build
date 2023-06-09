@@ -46,7 +46,7 @@ jobs:
           message: |
             This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files.
             Consider converting them to TypeScript.
-          comment_includes: 'Consider converting them to TypeScript'
+          comment_tag: tsnudge
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Add a label to the PR to help track how many pull requests adds or modifies JavaScript files
@@ -67,7 +67,7 @@ jobs:
           message: |
             ~This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files. Consider converting them to TypeScript.~
             Thank you for converting JavaScript files to TypeScript 🎉"
-          comment_includes: 'Consider converting them to TypeScript'
+          comment_tag: tsnudge
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Remove the label if JavaScript was converted
