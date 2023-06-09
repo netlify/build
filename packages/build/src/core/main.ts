@@ -8,7 +8,7 @@ import { reportTimers } from '../time/report.js'
 import { execBuild, startBuild } from './build.js'
 import { reportMetrics } from './report_metrics.js'
 import { getSeverity } from './severity.js'
-import { BuildCLIFlags } from './types.js'
+import { BuildFlags } from './types.js'
 
 export { startDev } from './dev.js'
 export { runCoreSteps } from '../steps/run_core_steps.js'
@@ -19,7 +19,7 @@ export { runCoreSteps } from '../steps/run_core_steps.js'
  *
  * @param flags - build configuration CLI flags
  */
-export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Promise<{
+export default async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   success: boolean
   severityCode: number
   logs: any
