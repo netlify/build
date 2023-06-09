@@ -24,6 +24,6 @@ export const load = async function ({ pluginPath, inputs, packageJson, verbose }
   return { events, context }
 }
 
-const isEventHandler = function (event, value) {
+const isEventHandler = function (_event: unknown, value: unknown): boolean {
   return typeof value === 'function'
 }
