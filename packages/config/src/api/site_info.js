@@ -14,7 +14,7 @@ export const getSiteInfo = async function ({
   api,
   siteId,
   mode,
-  featureFlagPrefix,
+  siteFeatureFlagPrefix,
   testOpts: { env: testEnv = true } = {},
 }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
@@ -23,7 +23,7 @@ export const getSiteInfo = async function ({
   }
 
   const [siteInfo, accounts, addons] = await Promise.all([
-    getSite(api, siteId, featureFlagPrefix),
+    getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
   ])
@@ -37,13 +37,13 @@ export const getSiteInfo = async function ({
   return { siteInfo, accounts, addons }
 }
 
-const getSite = async function (api, siteId, featureFlagPrefix = null) {
+const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
   if (siteId === undefined) {
     return {}
   }
 
   try {
-    const site = await api.getSite({ siteId, feature_flag: featureFlagPrefix })
+    const site = await api.getSite({ siteId, feature_flag: siteFeatureFlagPrefix })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)

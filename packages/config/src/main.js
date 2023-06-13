@@ -31,7 +31,7 @@ export const resolveConfig = async function (opts) {
     testOpts,
     token,
     offline,
-    featureFlagPrefix,
+    siteFeatureFlagPrefix,
     ...optsA
   } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
@@ -62,7 +62,7 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts, featureFlagPrefix })
+  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts, siteFeatureFlagPrefix })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
