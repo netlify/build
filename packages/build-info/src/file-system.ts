@@ -157,12 +157,11 @@ export abstract class FileSystem {
 
     if (absoluteTo.startsWith(absoluteFrom)) {
       // lazily matches a slash afterwards if it's a directory
-      return absoluteTo.replace(new RegExp(`^${absoluteFrom}/*`), '')
+      return absoluteTo.substring(absoluteFrom.length).replace(/^\//, '')
     }
 
-    // split by / excluding the starting slash
-    const fromParts = this.join(absoluteFrom).split(/(?<!^)\//gm)
-    const toParts = this.join(absoluteTo).split(/(?<!^)\//gm)
+    const fromParts = this.join(absoluteFrom).split('/')
+    const toParts = this.join(absoluteTo).split('/')
     for (let i = 0, max = toParts.length; i < max; i++) {
       if (toParts[i] === fromParts?.[i]) {
         matching.push(toParts[i])
@@ -178,7 +177,7 @@ export abstract class FileSystem {
     const up = Math.max(toUp, fromUp)
 
     // if we have something from the 'from' to go up the max difference
-    const result = fromUp > 0 ? [...new Array<string>(up).fill('..')] : []
+    const result = fromUp > 0 ? Array<string>(up).fill('..') : []
 
     // if we have some parts left add them to the going up
     if (toUp > 0) {
