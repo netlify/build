@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.5.1](https://github.com/netlify/build/compare/config-v20.5.0...config-v20.5.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* fix typo ([#5079](https://github.com/netlify/build/issues/5079)) ([620c155](https://github.com/netlify/build/commit/620c155c6d03d1bf9bffa7ad2d3e9084e600922d))
+
 ## [20.5.0](https://github.com/netlify/build/compare/config-v20.4.6...config-v20.5.0) (2023-06-14)
 
 
