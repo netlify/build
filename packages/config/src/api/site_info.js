@@ -43,7 +43,7 @@ const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
   }
 
   try {
-    const site = await api.getSite({ siteId, feature_flag: siteFeatureFlagPrefix })
+    const site = await api.getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
