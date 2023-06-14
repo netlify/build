@@ -160,8 +160,8 @@ export abstract class FileSystem {
       return absoluteTo.substring(absoluteFrom.length).replace(/^\//, '')
     }
 
-    const fromParts = join(absoluteFrom).split('/')
-    const toParts = join(absoluteTo).split('/')
+    const fromParts = this.join(absoluteFrom).split('/')
+    const toParts = this.join(absoluteTo).split('/')
     for (let i = 0, max = toParts.length; i < max; i++) {
       if (toParts[i] === fromParts?.[i]) {
         matching.push(toParts[i])
