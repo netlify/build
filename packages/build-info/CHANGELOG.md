@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.0.7](https://github.com/netlify/build/compare/build-info-v7.0.6...build-info-v7.0.7) (2023-06-14)
+
+
+### Bug Fixes
+
+* remove RegEx negative lookbehind in file system ([#5078](https://github.com/netlify/build/issues/5078)) ([6b7ac05](https://github.com/netlify/build/commit/6b7ac05120a1a9b9bd7752054e8375f7c87ecabe))
+
 ## [7.0.6](https://github.com/netlify/build/compare/build-info-v7.0.5...build-info-v7.0.6) (2023-06-09)
 
 
