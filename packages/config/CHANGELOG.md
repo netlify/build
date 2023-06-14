@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.5.0](https://github.com/netlify/build/compare/config-v20.4.6...config-v20.5.0) (2023-06-14)
+
+
+### Features
+
+* pass through siteFeatureFlagPrefix to API ([#5076](https://github.com/netlify/build/issues/5076)) ([c68b54f](https://github.com/netlify/build/commit/c68b54fd190d312d235b46768af13add8b6c869d))
+
 ## [20.4.5](https://github.com/netlify/build/compare/config-v20.4.4...config-v20.4.5) (2023-06-09)
 
 
