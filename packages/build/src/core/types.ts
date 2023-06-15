@@ -33,6 +33,12 @@ export type BuildCLIFlags = {
    * @default false
    */
   quiet?: boolean
+
+  statsd?: { host?: string; port?: number }
+}
+
+export type BuildFlags = BuildCLIFlags & {
+  env?: Record<string, unknown>
 }
 
 export type BuildResult = {

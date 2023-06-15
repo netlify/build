@@ -69,6 +69,66 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.6 to ^20.5.0
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.5.0 to ^20.5.1
+
+## [29.12.4](https://github.com/netlify/build/compare/build-v29.12.3...build-v29.12.4) (2023-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.9.1 ([#5074](https://github.com/netlify/build/issues/5074)) ([b86111b](https://github.com/netlify/build/commit/b86111bfb1d5bb8a123ef3064fcdedcaca7f0482))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.11 to ^5.2.12
+
+## [29.12.3](https://github.com/netlify/build/compare/build-v29.12.2...build-v29.12.3) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v9 ([83c6ce9](https://github.com/netlify/build/commit/83c6ce978365c7e2b805587c36cfc95498593815))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.5 to ^20.4.6
+
+## [29.12.2](https://github.com/netlify/build/compare/build-v29.12.1...build-v29.12.2) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.16.2 ([#5059](https://github.com/netlify/build/issues/5059)) ([c385d46](https://github.com/netlify/build/commit/c385d46d36a5723be588e62939cbe6e4a5cb20bf))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.8.1 ([#5065](https://github.com/netlify/build/issues/5065)) ([d36b311](https://github.com/netlify/build/commit/d36b311bffaf4772a270ff1473df82c89b9c661f))
+* **deps:** update dependency filter-obj to v5 ([#4482](https://github.com/netlify/build/issues/4482)) ([24ec285](https://github.com/netlify/build/commit/24ec285a83e189d99d2ac29af2d67ac9ba23efe5))
+* **deps:** update dependency hot-shots to v10 ([#5061](https://github.com/netlify/build/issues/5061)) ([167c17d](https://github.com/netlify/build/commit/167c17d91b42be6f818d457f88be2657d35f29c8))
+* **deps:** update dependency pkg-dir to v7 ([#4483](https://github.com/netlify/build/issues/4483)) ([13f4536](https://github.com/netlify/build/commit/13f4536d233d3fed6d7fa697ac2c1c18e662bf7c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.4.4 to ^20.4.5
+    * @netlify/framework-info bumped from ^9.8.9 to ^9.8.10
+    * @netlify/functions-utils bumped from ^5.2.10 to ^5.2.11
+
 ## [29.12.1](https://github.com/netlify/build/compare/build-v29.12.0...build-v29.12.1) (2023-06-05)
 
 
