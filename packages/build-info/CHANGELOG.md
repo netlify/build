@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.0.8](https://github.com/netlify/build/compare/build-info-v7.0.7...build-info-v7.0.8) (2023-06-15)
+
+
+### Bug Fixes
+
+* fixes an issue where it broke if no patterns are provided ([#5081](https://github.com/netlify/build/issues/5081)) ([7ac1567](https://github.com/netlify/build/commit/7ac15679ebcf11d3cf9eb52832d3c719c2c9fc8a))
+
 ## [7.0.7](https://github.com/netlify/build/compare/build-info-v7.0.6...build-info-v7.0.7) (2023-06-14)
 
 
