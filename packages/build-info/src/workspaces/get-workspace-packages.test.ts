@@ -12,6 +12,15 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
+test('should return an empty array if no patterns are provided', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+  })
+  const packages = await getWorkspacePackages(new Project(fs, cwd), undefined)
+  expect(packages).toHaveLength(0)
+  expect(packages).toEqual([])
+})
+
 test('should map explicit directories', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': '{}',
