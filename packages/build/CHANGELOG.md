@@ -81,6 +81,13 @@
   * dependencies
     * @netlify/config bumped from ^20.5.0 to ^20.5.1
 
+## [29.12.7](https://github.com/netlify/build/compare/build-v29.12.6...build-v29.12.7) (2023-06-15)
+
+
+### Bug Fixes
+
+* move tmp-promise to dev dependencies ([#5064](https://github.com/netlify/build/issues/5064)) ([5a5a5ed](https://github.com/netlify/build/commit/5a5a5edee1a3af8a13643ab16596a1af98fbebd2))
+
 ## [29.12.4](https://github.com/netlify/build/compare/build-v29.12.3...build-v29.12.4) (2023-06-13)
 
 
