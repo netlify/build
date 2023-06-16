@@ -6,7 +6,7 @@ import { getSystemLogger } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
-import { setMultiSpanAttributes, RootExecutionAttributes } from '../tracing/main.js'
+import { stopTracing, setMultiSpanAttributes, RootExecutionAttributes } from '../tracing/main.js'
 
 import { execBuild, startBuild } from './build.js'
 import { reportMetrics } from './report_metrics.js'
@@ -141,7 +141,7 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
     } finally {
       span.end()
       // Ensure we flush the resulting spans
-      await tracingService.shutdown()
+      await stopTracing()
     }
   })
 }

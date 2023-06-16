@@ -6,10 +6,14 @@ import { NodeSDK } from '@opentelemetry/sdk-node'
 import type { TracingOptions } from '../core/types.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
+let sdk: NodeSDK
+
+/** Starts the tracing SDK, if there's already a tracing service this will be a no-op */
 export const startTracing = function (options: TracingOptions) {
   if (!options.enabled) return
+  if (sdk) return
 
-  const sdk: NodeSDK = new HoneycombSDK({
+  sdk = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
     endpoint: `http://${options.host}:${options.port}`,
     instrumentations: [new HttpInstrumentation()],
@@ -25,8 +29,12 @@ export const startTracing = function (options: TracingOptions) {
     traceFlags: options.traceFlags,
     isRemote: true,
   })
+}
 
-  return sdk
+/** Stops the tracing service if there's one running. This will flush any ongoing events */
+export const stopTracing = async function () {
+  if (!sdk) return
+  return sdk.shutdown()
 }
 
 /** Sets attributes to be propagated across child spans under the current context */
