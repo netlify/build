@@ -33,7 +33,6 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
 }> {
   const {
     errorMonitor,
-    tracingService,
     framework,
     mode,
     logs,
