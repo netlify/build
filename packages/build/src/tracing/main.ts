@@ -1,6 +1,6 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { context, trace, propagation } from '@opentelemetry/api'
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
+import { context, trace, propagation, SpanStatusCode } from '@opentelemetry/api'
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 import type { TracingOptions } from '../core/types.js'
@@ -12,18 +12,7 @@ export const startTracing = function (options: TracingOptions) {
   const sdk: NodeSDK = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
     endpoint: `http://${options.host}:${options.port}`,
-    instrumentations: [
-      getNodeAutoInstrumentations({
-        // disabling fs autoinstrumentation since it can be noisy
-        // and expensive during startup
-        '@opentelemetry/instrumentation-fs': {
-          enabled: false,
-        },
-        '@opentelemetry/instrumentation-http': {
-          enabled: true,
-        },
-      }),
-    ],
+    instrumentations: [new HttpInstrumentation()],
   })
 
   sdk.start()
@@ -36,18 +25,33 @@ export const startTracing = function (options: TracingOptions) {
     traceFlags: options.traceFlags,
     isRemote: true,
   })
+
+  return sdk
 }
 
 /** Sets attributes to be propagated across child spans under the current context */
 export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
   const currentBaggage = propagation.getBaggage(context.active())
-  const baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
+  let baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
   Object.entries(attributes).forEach((entry) => {
-    baggage.setEntry(entry[0], { value: entry[1] })
+    baggage = baggage.setEntry(entry[0], { value: entry[1] })
   })
   return propagation.setBaggage(context.active(), baggage)
 }
 
+/** Add error information to the current active span (if any) */
+export const addErrorToActiveSpan = function (error: Error) {
+  const span = trace.getActiveSpan()
+  if (!span) return
+
+  span.recordException(error)
+  span.setStatus({
+    code: SpanStatusCode.ERROR,
+    message: error.message,
+  })
+}
+
+/** Attributes used for the root span of our execution */
 export type RootExecutionAttributes = {
   'build.id': string
   'site.id': string
@@ -55,6 +59,13 @@ export type RootExecutionAttributes = {
   'deploy.context': string
 }
 
-export const setRootExecutionAttributes = function (attributes: RootExecutionAttributes) {
-  setRootExecutionAttributes(attributes)
+/** Attributes used for the execution of each build step  */
+export type StepExecutionAttributes = {
+  'build.execution.step.name': string
+  'build.execution.step.description': string
+  'build.execution.step.package_name': string
+  'build.execution.step.id': string
+  'build.execution.step.loaded_from': string
+  'build.execution.step.origin': string
+  'build.execution.step.event': string
 }
