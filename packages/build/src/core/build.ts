@@ -36,10 +36,10 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
   }
 
   const { bugsnagKey, tracing, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
-  startTracing(tracing)
+  const errorMonitor = startErrorMonitor({ flags: { tracing, ...flagsA }, logs, bugsnagKey })
+  const tracingService = startTracing(tracing)
 
-  return { ...flagsA, errorMonitor, logs, timers }
+  return { ...flagsA, tracingService, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({

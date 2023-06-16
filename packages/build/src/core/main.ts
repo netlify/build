@@ -1,4 +1,4 @@
-import { context, trace } from '@opentelemetry/api'
+import { trace } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
@@ -6,7 +6,7 @@ import { getSystemLogger } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
-import { setRootExecutionAttributes } from '../tracing/main.js'
+import { setMultiSpanAttributes, RootExecutionAttributes } from '../tracing/main.js'
 
 import { execBuild, startBuild } from './build.js'
 import { reportMetrics } from './report_metrics.js'
@@ -16,7 +16,7 @@ import { BuildFlags } from './types.js'
 export { startDev } from './dev.js'
 export { runCoreSteps } from '../steps/run_core_steps.js'
 
-const tracer = trace.getTracer('core-build')
+const tracer = trace.getTracer('core')
 
 /**
  * Main entry point of Netlify Build.
@@ -33,6 +33,7 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
 }> {
   const {
     errorMonitor,
+    tracingService,
     framework,
     mode,
     logs,
@@ -49,13 +50,14 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
   const systemLog = getSystemLogger(logs, debug, systemLogFile)
 
-  setRootExecutionAttributes({
+  const attributes: RootExecutionAttributes = {
     'deploy.id': deployId,
     'build.id': buildId,
     'deploy.context': flagsA.context,
     'site.id': flagsA.siteId,
-  })
-  return tracer.startActiveSpan('execBuild', async (span) => {
+  }
+  const rootCtx = setMultiSpanAttributes(attributes)
+  return await tracer.startActiveSpan('exec-build', {}, rootCtx, async (span) => {
     try {
       const {
         pluginsOptions,
@@ -92,6 +94,11 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
         metrics,
       })
       const { success, severityCode, status } = getSeverity('success')
+      span.setAttributes({
+        'build.execution.success': success,
+        'build.execution.code': severityCode,
+        'build.execution.status': status,
+      })
       await telemetryReport({
         buildId,
         deployId,
@@ -111,6 +118,11 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
       const { severity } = await handleBuildError(error, errorParams as any)
       const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
       const { success, severityCode, status } = getSeverity(severity)
+      span.setAttributes({
+        'build.execution.success': success,
+        'build.execution.code': severityCode,
+        'build.execution.status': status,
+      })
       await telemetryReport({
         buildId,
         deployId,
@@ -128,6 +140,8 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
       return { success, severityCode, logs }
     } finally {
       span.end()
+      // Ensure we flush the resulting spans
+      await tracingService.shutdown()
     }
   })
 }
