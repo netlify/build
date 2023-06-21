@@ -232,7 +232,7 @@ export class Project {
     }
   }
 
-  /** Detects all used build systems */
+  /** Detects all used frameworks */
   async detectFrameworks() {
     // if the workspace is undefined, the detection was not run.
     if (this.frameworks !== undefined) {
