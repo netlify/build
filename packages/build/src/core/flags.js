@@ -205,4 +205,9 @@ Default: false`,
     describe: 'The sequence of lifecycle events to run',
     hidden: true,
   },
+  explicitSecretKeys: {
+    type: 'string',
+    describe: 'Env var keys that are marked as secret explicitly.',
+    hidden: true,
+  },
 }
