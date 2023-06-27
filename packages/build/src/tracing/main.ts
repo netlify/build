@@ -22,7 +22,7 @@ export const startTracing = function (options: TracingOptions) {
   sdk.start()
 
   // Sets the current trace ID and span ID based on the options received
-  // this is used a way to propagate trace context from Buildbot
+  // this is used as a way to propagate trace context from Buildbot
   trace.setSpanContext(context.active(), {
     traceId: options.traceId,
     spanId: options.parentSpanId,
