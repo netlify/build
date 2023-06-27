@@ -54,6 +54,7 @@ const INTERNAL_FLAGS = [
   'cacheDir',
   'systemLogFile',
   'timeline',
+  'explicitSecretKeys',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]

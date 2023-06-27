@@ -57,6 +57,7 @@ export const runStep = async function ({
   featureFlags,
   quiet,
   userNodeVersion,
+  explicitSecretKeys,
 }) {
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
@@ -72,6 +73,7 @@ export const runStep = async function ({
       buildbotServerSocket,
       buildDir,
       saveConfig,
+      explicitSecretKeys,
     }))
   ) {
     return {}
@@ -131,6 +133,7 @@ export const runStep = async function ({
     redirectsPath,
     featureFlags,
     userNodeVersion,
+    explicitSecretKeys,
   })
 
   const newValues = await getStepReturn({
@@ -204,11 +207,12 @@ const shouldRunStep = async function ({
   buildbotServerSocket,
   buildDir,
   saveConfig,
+  explicitSecretKeys,
 }) {
   if (
     failedPlugins.includes(packageName) ||
     (condition !== undefined &&
-      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig })))
+      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig, explicitSecretKeys })))
   ) {
     return false
   }
@@ -267,6 +271,7 @@ const tFireStep = function ({
   redirectsPath,
   featureFlags,
   userNodeVersion,
+  explicitSecretKeys,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -297,6 +302,7 @@ const tFireStep = function ({
       systemLog,
       saveConfig,
       userNodeVersion,
+      explicitSecretKeys,
     })
   }
 
