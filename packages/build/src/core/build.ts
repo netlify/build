@@ -13,6 +13,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -34,8 +35,9 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { bugsnagKey, tracing, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { tracing, ...flagsA }, logs, bugsnagKey })
+  startTracing(tracing)
 
   return { ...flagsA, errorMonitor, logs, timers }
 }
