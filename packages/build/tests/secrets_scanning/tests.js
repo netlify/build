@@ -27,9 +27,9 @@ test('secrets scanning, should skip when secrets passed but no env vars set', as
   t.snapshot(normalizeOutput(output))
 })
 
-test('secrets scanning, should skip when secrets passed but no non-empty env vars set', async (t) => {
+test('secrets scanning, should skip when secrets passed but no non-empty/trivial env vars set', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_set_empty')
-    .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
+    .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_,2ENV_VAR_3,ENV_VAR_4,ENV_VAR_5' })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
@@ -50,7 +50,11 @@ test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PA
 
 test('secrets scanning, should fail build when it finds secrets in the src and build output', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
-    .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2,ENV_VAR_3' })
+    .withFlags({
+      debug: false,
+      explicitSecretKeys:
+        'ENV_VAR_MULTILINE_A,ENV_VAR_1,ENV_VAR_2,ENV_VAR_3,ENV_VAR_4,ENV_VAR_5,ENV_VAR_6,ENV_VAR_MULTILINE_B',
+    })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
@@ -63,4 +67,3 @@ test('secrets scanning, should not fail if the secrets values are not detected i
 })
 
 test.todo('secrets scanning, env var value is multiline')
-test.todo('secrets scanning, base64 and url encoded versions of secrets')

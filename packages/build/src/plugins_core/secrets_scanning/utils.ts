@@ -4,6 +4,28 @@ import { promises as readline } from 'node:readline'
 
 import { fdir } from 'fdir'
 
+interface ScanResults {
+  matches: MatchResult[]
+}
+
+interface ScanArgs {
+  env: Record<string, unknown>
+  keys: string[]
+  base: string
+  filePaths: string[]
+}
+
+interface MatchResult {
+  lineNumber: number
+  key: string
+  file: string
+}
+
+/**
+ * Determine if the user disabled scanning via env var
+ * @param env current envars
+ * @returns
+ */
 export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean {
   if (env.SECRETS_SCAN_ENABLED === false || env.SECRETS_SCAN_ENABLED === 'false') {
     return false
@@ -12,8 +34,13 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
 }
 
 /**
- * given the explicit secret keys and evn vars, return the list of secret keys which have non-empty values. This
+ * given the explicit secret keys and evn vars, return the list of secret keys which have non-empty or non-trivial values. This
  * will also filter out keys passed in the SECRETS_SCAN_OMIT_KEYS env var.
+ *
+ * non-trivial values are values that are:
+ *  - >4 characters/digits
+ *  - not booleans
+ *
  * @param env env vars list
  * @param secretKeys
  * @returns string[]
@@ -33,12 +60,31 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
 
     const val = env[key]
     if (typeof val === 'string') {
-      return !!val.trim()
+      // string forms of booleans
+      if (val === 'true' || val === 'false') {
+        return false
+      }
+
+      // non-trivial/non-empty values only
+      return val.trim().length > 4
+    } else if (typeof val === 'boolean') {
+      // booleans are trivial values
+      return false
+    } else if (typeof val === 'number' || typeof val === 'object') {
+      return JSON.stringify(val).length > 4
     }
+
     return !!val
   })
 }
 
+/**
+ * Given the env and base directory, find all file paths to scan. It will look at the
+ * env vars to decide if it should omit certain paths.
+ *
+ * @param options
+ * @returns string[] of relative paths from base of files that should be searched
+ */
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   let files = await new fdir().withRelativePaths().crawl(base).withPromise()
 
@@ -59,33 +105,34 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
 // omit paths are relative path substrings.
 const omitPathMatches = (relativePath, omitPaths) => omitPaths.some((oPath) => relativePath.startsWith(oPath))
 
-interface ScanResults {
-  matches: MatchResult[]
-}
-
-interface ScanArgs {
-  env: Record<string, unknown>
-  keys: string[]
-  base: string
-  filePaths: string[]
-}
-
-export interface MatchResult {
-  lineNumber: number
-  key: string
-  file: string
-}
-
+/**
+ * Given the env vars, the current keys, paths, etc. Look across the provided files to find the values
+ * of the secrets based on the keys provided. It will process files separately in different read streams.
+ * The values that it looks for will be a unique set of plaintext, base64 encoded, and uri encoded permutations
+ * of each value - to catch common permutations that occur post build.
+ *
+ * @param scanArgs {ScanArgs} scan options
+ * @returns promise with all of the scan results, if any
+ */
 export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
   }
 
   const keyValues: Record<string, string[]> = keys.reduce((kvs, key) => {
-    const val = env[key]
+    let val = env[key]
+
+    if (typeof val === 'number' || typeof val === 'object') {
+      val = JSON.stringify(val)
+    }
 
     if (typeof val === 'string') {
-      kvs[key] = Array.from(new Set([val, btoa(val), encodeURIComponent(val)]))
+      // to detect the secrets effectively
+      // normalize the value so that we remove leading and
+      // ending whitespace and newline characters
+      const normalizedVal = val.replace(/^\s*/, '').replace(/\s*$/, '')
+
+      kvs[key] = Array.from(new Set([normalizedVal, btoa(normalizedVal), encodeURIComponent(normalizedVal)]))
     }
     return kvs
   }, {})
@@ -115,25 +162,100 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
 
     const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
 
+    function getKeyForValue(val) {
+      let key = ''
+      for (const [secretKeyName, valuePermutations] of Object.entries(keyValues)) {
+        if (valuePermutations.includes(val)) {
+          key = secretKeyName
+        }
+      }
+      return key
+    }
+
+    // how many lines is the largest multiline string
+    let maxMultiLineCount = 1
+
+    keyVals.forEach((valVariant) => {
+      maxMultiLineCount = Math.max(maxMultiLineCount, valVariant.split('\n').length)
+    })
+
+    // search if not multi line or current accumulated lines length is less than num of lines
+
+    const lines: string[] = []
+
     let lineNumber = 0
+
     rl.on('line', function (line) {
+      // iterating here so the first line will always appear as line 1 to be human friendly
+      // and match what an IDE would show for a line number.
       lineNumber++
-      if (line) {
-        keyVals.some((s) => {
-          if (line.search(new RegExp(s)) >= 0) {
-            let key
+      if (typeof line === 'string') {
+        if (maxMultiLineCount > 1) {
+          lines.push(line)
+        }
 
-            for (const [k, v] of Object.entries(keyValues)) {
-              if (v.includes(s)) {
-                key = k
-              }
-            }
+        // only track the max number of lines needed to match our largest
+        // multiline value. If we get above that remove the first value from the list
+        if (lines.length > maxMultiLineCount) {
+          lines.shift()
+        }
 
+        keyVals.forEach((valVariant) => {
+          // matching of single/whole values
+          if (line.search(new RegExp(valVariant)) >= 0) {
             matches.push({
               file,
               lineNumber,
-              key,
+              key: getKeyForValue(valVariant),
             })
+            return
+          }
+
+          // matching of multiline values
+          if (isMultiLineVal(valVariant)) {
+            // drop empty values at beginning and end
+            const multiStringLines = valVariant.split('\n')
+
+            // drop early if we don't have enough lines for all values
+            if (lines.length < multiStringLines.length) {
+              return
+            }
+
+            let stillMatches = true
+            let fullMatch = false
+
+            multiStringLines.forEach((valLine, valIndex) => {
+              if (valIndex === 0) {
+                // first lines have to end with the line value
+                if (!lines[valIndex].endsWith(valLine)) {
+                  stillMatches = false
+                }
+              } else if (valIndex !== multiStringLines.length - 1) {
+                // middle lines have to have full line match
+                // middle lines
+                if (lines[valIndex] !== valLine) {
+                  stillMatches = false
+                }
+              } else {
+                // last lines have start with the value
+                if (!lines[valIndex].startsWith(valLine)) {
+                  stillMatches = false
+                }
+
+                if (stillMatches === true) {
+                  fullMatch = true
+                }
+              }
+            })
+
+            if (fullMatch) {
+              matches.push({
+                file,
+                lineNumber: lineNumber - lines.length + 1,
+                key: getKeyForValue(valVariant),
+              })
+              return
+            }
           }
         })
       }
@@ -145,6 +267,14 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
   })
 }
 
+/**
+ * ScanResults are all of the finds for all keys and their disparate locations. Scanning is
+ * async in streams so order can change a lot. This function groups the results into an object
+ * where the keys are the env var keys and the values are all match results for that key
+ *
+ * @param scanResults
+ * @returns
+ */
 export function groupScanResultsByKey(scanResults: ScanResults): { [key: string]: MatchResult[] } {
   const matchesByKeys: { [key: string]: MatchResult[] } = {}
   scanResults.matches.forEach((matchResult) => {
@@ -153,5 +283,31 @@ export function groupScanResultsByKey(scanResults: ScanResults): { [key: string]
     }
     matchesByKeys[matchResult.key].push(matchResult)
   })
+
+  // sort results to get a consistent output and logically ordered match results
+  Object.keys(matchesByKeys).forEach((key) => {
+    matchesByKeys[key].sort((a, b) => {
+      // sort by file name first
+      if (a.file > b.file) {
+        return 1
+      }
+
+      // sort by line number second
+      if (a.file === b.file) {
+        if (a.lineNumber > b.lineNumber) {
+          return 1
+        }
+        if (a.lineNumber === b.lineNumber) {
+          return 0
+        }
+        return -1
+      }
+      return -1
+    })
+  })
   return matchesByKeys
+}
+
+function isMultiLineVal(v) {
+  return typeof v === 'string' && v.includes('\n')
 }

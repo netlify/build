@@ -1,3 +1,6 @@
 [build.environment]
   ENV_VAR_1 = ""
   ENV_VAR_2 = "  "
+  ENV_VAR_3 = false # trivial value
+  ENV_VAR_4 = "A" # trivial value
+  ENV_VAR_5 = 100 # trivial value

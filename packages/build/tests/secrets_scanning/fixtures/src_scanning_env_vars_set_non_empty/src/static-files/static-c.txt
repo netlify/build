@@ -1,8 +1,40 @@
 ,,val,with,commas,,,,,,
 
 
+start line 1 end,
 
+start line 1 end,
+start line 1 end,
+start line 2 end,
+
+start line 1 end,
+start line 1 end,
+start line 2 end,
+start line 2 end,
+start line 3 end
 
 start line 1 end,
 start line 2 end,
+start line 3 end
+start line 3 end
+
+shouldn't match below because the middle values are indented.
+start line 1 end,
+      start line 1 end,
+      start line 2 end,
+      start line 3 end
+start line 3 end
+
+shouldn't match because first match line has a comma at the end of the value
+start line 1 end,
+      start line 1 end,,
+start line 2 end,
+start line 3 end
+start line 3 end
+
+matches this - even with the spaces after the last line
+start line 1 end,
+      start line 1 end,
+start line 2 end,
+start line 3 end
 start line 3 end

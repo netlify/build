@@ -13,11 +13,15 @@ import {
   scanFilesForKeyValues,
 } from './utils.js'
 
-const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys }) {
+const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, debug }) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
+
+  if (debug) {
+    console.log({ envVars, passedSecretKeys })
+  }
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
@@ -26,10 +30,14 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
+  if (debug) {
+    console.log({ keysToSearchFor })
+  }
+
   if (keysToSearchFor.length === 0) {
     logSecretsScanSkipMessage(
       logs,
-      'Secrets scanning skipped because no env vars marked as secret are set to non-empty values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
+      'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
     )
     return stepResults
   }

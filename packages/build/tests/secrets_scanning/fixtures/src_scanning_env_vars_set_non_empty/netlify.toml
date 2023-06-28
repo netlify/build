@@ -6,9 +6,21 @@
   ENV_VAR_1 = "val1-val1-val1"
   ENV_VAR_2 = "val2-val2-val2"
   ENV_VAR_3 = "val,with,commas"
+  ENV_VAR_4 = 754321  # non-trivial number value
+  ENV_VAR_5 = true # trivial value
+  ENV_VAR_6 = "A" # trivial value
+  ENV_VAR_7 = 100 # trivial value
   NOT_SECRET_VAL = "alsdkfj"
-  ENV_VAR_MULTILINE = '''
-  start line 1 end,
-  start line 2 end,
-  start line 3 end
+  ENV_VAR_MULTILINE_A = '''
+start line 1 end,
+start line 2 end,
+start line 3 end
+'''
+  ENV_VAR_MULTILINE_B = '''
+
+line 1,
+line 2,
+line 3  '''
+  ENV_VAR_MULTI_NOT_SECRET = '''
+  val
   '''
