@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs'
 import path from 'node:path'
-import { promises as readline } from 'node:readline'
+import { createInterface } from 'node:readline'
 
 import { fdir } from 'fdir'
 
@@ -157,7 +157,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
     const filePath = path.resolve(basePath, file)
 
     const inStream = createReadStream(filePath)
-    const rl = readline.createInterface(inStream)
+    const rl = createInterface(inStream)
     const matches: MatchResult[] = []
 
     const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
