@@ -1,5 +1,5 @@
-import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { context, trace, propagation, SpanStatusCode } from '@opentelemetry/api'
+import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
@@ -8,16 +8,36 @@ import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 let sdk: NodeSDK
 
+/** Given a simple logging function return a `DiagLogger`. Used to setup our system logger as the diag logger.*/
+const getOtelLogger = function (logger: (...args: any[]) => void): DiagLogger {
+  const otelLogger = (...args: any[]) => logger('[otel-traces]', ...args)
+  return {
+    debug: otelLogger,
+    info: otelLogger,
+    error: otelLogger,
+    verbose: otelLogger,
+    warn: otelLogger,
+  }
+}
+
 /** Starts the tracing SDK, if there's already a tracing service this will be a no-op */
-export const startTracing = function (options: TracingOptions) {
+export const startTracing = function (options: TracingOptions, logger: (...args: any[]) => void) {
   if (!options.enabled) return
   if (sdk) return
 
-  sdk = new HoneycombSDK({
+  const traceExporter = new OTLPTraceExporter({
+    url: `http://${options.host}:${options.port}`,
+  })
+
+  sdk = new NodeSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
-    endpoint: `http://${options.host}:${options.port}`,
+    traceExporter,
     instrumentations: [new HttpInstrumentation()],
   })
+
+  // Set the diagnostics logger to our system logger. We also need to suppress the override msg
+  // in case there's a default console logger already registered (it would log a msg to it)
+  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.INFO, suppressOverrideMessage: true })
 
   sdk.start()
 
@@ -34,7 +54,13 @@ export const startTracing = function (options: TracingOptions) {
 /** Stops the tracing service if there's one running. This will flush any ongoing events */
 export const stopTracing = async function () {
   if (!sdk) return
-  return sdk.shutdown()
+  try {
+    // The shutdown method might return an error if we fail to flush the traces
+    // We handle it and use our diagnostics logger
+    await sdk.shutdown()
+  } catch (e) {
+    diag.error(e)
+  }
 }
 
 /** Sets attributes to be propagated across child spans under the current context */
