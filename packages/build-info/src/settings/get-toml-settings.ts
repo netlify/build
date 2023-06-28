@@ -1,25 +1,17 @@
+import { dirname } from 'path'
+
 import Bugsnag from '@bugsnag/js'
 import { parse } from 'toml'
 
 import { FileSystem } from '../file-system.js'
+import { Project } from '../project.js'
 
+import { Settings } from './get-build-settings.js'
 import { NetlifyTOML } from './netlify-toml.js'
 
 const {
   default: { notify },
 } = Bugsnag
-
-export type BuildSettings = {
-  cmd: string
-  dir: string
-  framework: string
-  frameworkName: string
-  functions_dir?: string
-  plugins: { package: string }[]
-  plugins_installed?: undefined
-  plugins_recommended: string[]
-  template?: string
-}
 
 /** Gracefully parses a toml file and reports errors to bugsnag */
 function gracefulParseToml<T>(content: string): T {
@@ -34,22 +26,60 @@ function gracefulParseToml<T>(content: string): T {
   }
 }
 
-export async function getNetlifyTomlSettings(fs: FileSystem, directory: string) {
+/** Mutates the provided settings by setting the property if the value is not undefined  */
+function addProperty<P extends keyof Settings>(
+  settings: Partial<Settings>,
+  property: P,
+  value?: Settings[P],
+): Partial<Settings> {
+  if (value) {
+    settings[property] = value
+  }
+  return settings
+}
+
+export async function getTomlSettingsFromPath(
+  fs: FileSystem,
+  directory: string,
+): Promise<Partial<Settings> | undefined> {
   const tomlFilePath = fs.join(directory, 'netlify.toml')
 
   try {
-    const settings: Partial<BuildSettings> = {}
-    const { build, functions, template } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
+    const settings: Partial<Settings> = {}
+    const { build, dev, functions, template, plugins } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
 
-    if (build) {
-      settings.cmd = build?.command
-      settings.dir = build.publish
-    }
+    addProperty(settings, 'buildCommand', build?.command)
+    addProperty(settings, 'dist', build?.publish)
+    addProperty(settings, 'devCommand', dev?.command)
+    addProperty(settings, 'frameworkPort', dev?.port)
+    addProperty(
+      settings,
+      'plugins_installed',
+      plugins?.map((p) => p.package),
+    )
+    addProperty(settings, 'functionsDir', build?.functions || functions?.directory)
+    addProperty(settings, 'template', template)
 
-    settings.functions_dir = build?.functions || functions?.directory
-    settings.template = template
+    return settings
   } catch {
-    // no toml found
-    return {}
+    // no toml found or issue while parsing it
   }
+}
+
+export async function getTomlSettings(project: Project, configFilePath?: string): Promise<Partial<Settings>> {
+  if (configFilePath?.length) {
+    return (await getTomlSettingsFromPath(project.fs, dirname(configFilePath))) || {}
+  }
+
+  const baseDirSettings = await getTomlSettingsFromPath(project.fs, project.baseDirectory)
+  if (baseDirSettings) {
+    return baseDirSettings
+  }
+
+  if (project.root) {
+    const rootSettings = await getTomlSettingsFromPath(project.fs, project.root)
+    return rootSettings || {}
+  }
+
+  return {}
 }
