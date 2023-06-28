@@ -81,6 +81,20 @@
   * dependencies
     * @netlify/config bumped from ^20.5.0 to ^20.5.1
 
+## [29.14.0](https://github.com/netlify/build/compare/build-v29.13.0...build-v29.14.0) (2023-06-27)
+
+
+### Features
+
+* setup open telemetry tracing ([#5083](https://github.com/netlify/build/issues/5083)) ([1d66a80](https://github.com/netlify/build/commit/1d66a80185f820e3ad463a63134719f1b22052ee))
+
+## [29.13.0](https://github.com/netlify/build/compare/build-v29.12.8...build-v29.13.0) (2023-06-27)
+
+
+### Features
+
+* Passthrough explicitSecretKeys field ([#5094](https://github.com/netlify/build/issues/5094)) ([d741c92](https://github.com/netlify/build/commit/d741c9210dceca41505209f1a467d2b7073ffc49))
+
 ## [29.12.8](https://github.com/netlify/build/compare/build-v29.12.7...build-v29.12.8) (2023-06-23)
 
 

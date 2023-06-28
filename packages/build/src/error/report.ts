@@ -9,6 +9,7 @@ import {
   startClient,
   validateStatsDOptions,
 } from '../report/statsd.js'
+import { addErrorToActiveSpan } from '../tracing/main.js'
 
 import { getErrorInfo } from './info.js'
 
@@ -23,6 +24,7 @@ export const reportError = async function (
   statsdOpts: InputStatsDOptions,
   framework?: string,
 ): Promise<void> {
+  addErrorToActiveSpan(error)
   if (!validateStatsDOptions(statsdOpts)) {
     return
   }
