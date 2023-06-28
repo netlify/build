@@ -65,5 +65,3 @@ test('secrets scanning, should not fail if the secrets values are not detected i
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
-
-test.todo('secrets scanning, env var value is multiline')
