@@ -13,6 +13,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -34,8 +35,9 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { bugsnagKey, tracing, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { tracing, ...flagsA }, logs, bugsnagKey })
+  startTracing(tracing)
 
   return { ...flagsA, errorMonitor, logs, timers }
 }
@@ -80,6 +82,7 @@ const tExecBuild = async function ({
   devCommand,
   quiet,
   framework,
+  explicitSecretKeys,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -203,6 +206,7 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    explicitSecretKeys,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -256,6 +260,7 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   try {
     const {
@@ -304,6 +309,7 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
     await Promise.all([
       reportStatuses({
@@ -402,6 +408,7 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -479,6 +486,7 @@ const initAndRunBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
 
     await Promise.all([
@@ -544,6 +552,7 @@ const runBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -602,6 +611,7 @@ const runBuild = async function ({
     featureFlags,
     quiet,
     userNodeVersion,
+    explicitSecretKeys,
   })
 
   return {

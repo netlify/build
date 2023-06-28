@@ -191,6 +191,40 @@ Default: false`,
     describe: 'Statsd port',
     hidden: true,
   },
+  tracing: {
+    describe: 'Tracing related options',
+    hidden: true,
+  },
+  'tracing.enabled': {
+    boolean: true,
+    describe: 'Enable distributed tracing for build',
+    hidden: true,
+  },
+  'tracing.host': {
+    string: true,
+    describe: 'Traces backend host',
+    hidden: true,
+  },
+  'tracing.port': {
+    number: true,
+    describe: 'Traces backend port',
+    hidden: true,
+  },
+  'tracing.traceId': {
+    string: true,
+    describe: 'Trace ID used to stitch the emited traces to',
+    hidden: true,
+  },
+  'tracing.parentSpanId': {
+    string: true,
+    describe: 'Parent Span ID used to stitch the root parent span to',
+    hidden: true,
+  },
+  'tracing.traceFlags': {
+    number: true,
+    describe: 'Trace flags containing the trace settings for the given trace ID',
+    hidden: true,
+  },
   offline: {
     boolean: true,
     describe: `Do not send requests to the Netlify API to retrieve site settings.
@@ -203,6 +237,11 @@ Default: false`,
   timeline: {
     string: true,
     describe: 'The sequence of lifecycle events to run',
+    hidden: true,
+  },
+  explicitSecretKeys: {
+    type: 'string',
+    describe: 'Env var keys that are marked as secret explicitly.',
     hidden: true,
   },
 }
