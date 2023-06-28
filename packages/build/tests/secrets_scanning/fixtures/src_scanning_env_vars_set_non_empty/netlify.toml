@@ -1,0 +1,14 @@
+[build]
+  command = 'cp -r ./src/static-files ./dist'
+  publish = "./dist"
+
+[build.environment]
+  ENV_VAR_1 = "val1-val1-val1"
+  ENV_VAR_2 = "val2-val2-val2"
+  ENV_VAR_3 = "val,with,commas"
+  NOT_SECRET_VAL = "alsdkfj"
+  ENV_VAR_MULTILINE = '''
+  start line 1 end,
+  start line 2 end,
+  start line 3 end
+  '''

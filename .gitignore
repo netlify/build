@@ -21,6 +21,7 @@ packages/*/lib/
 **/fixtures/**/manifest.json
 **/fixtures/**/edge-functions-dist
 **/fixtures/**/edge-functions-import-map.json
+**/**/secrets_scanning/fixtures/**/dist
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
