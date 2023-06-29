@@ -107,7 +107,7 @@ package = "@netlify/plugin-nextjs"
       dist: '.next',
       frameworkPort: 3000,
       functionsDir: 'api',
-      plugins_installed: ['@netlify/plugin-nextjs'],
+      plugins_from_config_file: ['@netlify/plugin-nextjs'],
     }),
   )
 })

@@ -28,7 +28,7 @@ test('get the settings for a next project', async (ctx) => {
       env: {},
       frameworkPort: 3000,
       plugins_recommended: [],
-      plugins_installed: [],
+      plugins_from_config_file: [],
       pollingStrategies: ['TCP'],
     }),
   ])
@@ -48,7 +48,7 @@ test('get the settings for a next project if a build system has no commands and 
       env: {},
       frameworkPort: 3000,
       plugins_recommended: [],
-      plugins_installed: [],
+      plugins_from_config_file: [],
       pollingStrategies: ['TCP'],
     }),
   ])

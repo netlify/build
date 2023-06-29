@@ -26,18 +26,6 @@ function gracefulParseToml<T>(content: string): T {
   }
 }
 
-/** Mutates the provided settings by setting the property if the value is not undefined  */
-function addProperty<P extends keyof Settings>(
-  settings: Partial<Settings>,
-  property: P,
-  value?: Settings[P],
-): Partial<Settings> {
-  if (value) {
-    settings[property] = value
-  }
-  return settings
-}
-
 export async function getTomlSettingsFromPath(
   fs: FileSystem,
   directory: string,
@@ -48,17 +36,13 @@ export async function getTomlSettingsFromPath(
     const settings: Partial<Settings> = {}
     const { build, dev, functions, template, plugins } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
 
-    addProperty(settings, 'buildCommand', build?.command)
-    addProperty(settings, 'dist', build?.publish)
-    addProperty(settings, 'devCommand', dev?.command)
-    addProperty(settings, 'frameworkPort', dev?.port)
-    addProperty(
-      settings,
-      'plugins_installed',
-      plugins?.map((p) => p.package),
-    )
-    addProperty(settings, 'functionsDir', build?.functions || functions?.directory)
-    addProperty(settings, 'template', template)
+    settings.buildCommand = build?.command ?? settings.buildCommand
+    settings.dist = build?.publish ?? settings.dist
+    settings.devCommand = dev?.command ?? settings.devCommand
+    settings.frameworkPort = dev?.port ?? settings.frameworkPort
+    settings.plugins_from_config_file = plugins?.map((p) => p.package) ?? settings.plugins_from_config_file
+    settings.functionsDir = (build?.functions || functions?.directory) ?? settings.functionsDir
+    settings.template = template ?? settings.template
 
     return settings
   } catch {
