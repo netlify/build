@@ -1,8 +1,7 @@
-import { BaseRuntime } from './runtime.js'
+import { LangRuntime } from './runtime.js'
 
-export class Node extends BaseRuntime {
+export class Node extends LangRuntime {
   id = 'node'
   name = 'NodeJS'
-  version = process.env['NODE_VERSION']
   configFiles = ['.node-version', '.nvmrc', 'package.json']
 }

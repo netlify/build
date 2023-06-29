@@ -20,6 +20,7 @@ export type Info = {
     name: string
     version?: string | undefined
   }[]
+  langRuntimes: { name: string }[]
 }
 
 /** A noop logger that is used to not log anything (we use the stdout for parsing the json output) */
@@ -66,6 +67,7 @@ export async function getBuildInfo(
     try {
       // if the framework  detection is crashing we should not crash the build info and package-manager detection
       info.frameworks = (await listFrameworks({ projectDir: project.baseDirectory })) as unknown as DetectedFramework[]
+      info.langRuntimes = await project.detectRuntime()
     } catch (error) {
       report(error, { client: config.bugsnagClient })
       info.frameworks = []

@@ -15,7 +15,7 @@ import {
   detectPackageManager,
 } from './package-managers/detect-package-manager.js'
 import { runtimes } from './runtime/index.js'
-import { Runtime } from './runtime/runtime.js'
+import { LangRuntime } from './runtime/runtime.js'
 import { Settings, getBuildSettings } from './settings/get-build-settings.js'
 import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.js'
 
@@ -26,7 +26,7 @@ type Events = {
   detectBuildsystems: (data: BuildSystem[]) => void
   detectFrameworks: (data: Map<string, DetectedFramework[]>) => void
   detectSettings: (data: Settings[]) => void
-  detectRuntimes: (data: Runtime[]) => void
+  detectRuntimes: (data: LangRuntime[]) => void
 }
 
 /**
@@ -53,7 +53,7 @@ export class Project {
   /** The detected frameworks for each path in a project */
   frameworks: Map<string, DetectedFramework[]>
   /** The detected language runtimes */
-  runtimes: Runtime[]
+  runtimes: LangRuntime[]
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
   /** A bugsnag session */
@@ -239,7 +239,7 @@ export class Project {
 
   async detectRuntime() {
     try {
-      this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))) as Runtime[]
+      this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))) as LangRuntime[]
       this.events.emit('detectRuntimes', this.runtimes)
       return this.runtimes
     } catch (error) {

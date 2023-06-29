@@ -1,12 +1,11 @@
 import { Project } from '../project.js'
 
-export interface Runtime {
+export interface LangRuntime {
   id: string
   name: string
-  version?: string
 }
 
-export abstract class BaseRuntime {
+export abstract class LangRuntime {
   id: string
   name: string
   version?: string
