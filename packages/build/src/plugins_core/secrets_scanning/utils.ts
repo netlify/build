@@ -132,7 +132,9 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
       // ending whitespace and newline characters
       const normalizedVal = val.replace(/^\s*/, '').replace(/\s*$/, '')
 
-      kvs[key] = Array.from(new Set([normalizedVal, btoa(normalizedVal), encodeURIComponent(normalizedVal)]))
+      kvs[key] = Array.from(
+        new Set([normalizedVal, Buffer.from(normalizedVal).toString('base64'), encodeURIComponent(normalizedVal)]),
+      )
     }
     return kvs
   }, {})

@@ -51,7 +51,7 @@ test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PA
 test('secrets scanning, should fail build when it finds secrets in the src and build output', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
     .withFlags({
-      debug: true,
+      debug: false,
       explicitSecretKeys:
         'ENV_VAR_MULTILINE_A,ENV_VAR_1,ENV_VAR_2,ENV_VAR_3,ENV_VAR_4,ENV_VAR_5,ENV_VAR_6,ENV_VAR_MULTILINE_B',
     })
