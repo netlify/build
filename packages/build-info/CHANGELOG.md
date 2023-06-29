@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.1.1](https://github.com/netlify/build/compare/build-info-v7.1.0...build-info-v7.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* remove node specific dirname ([#5103](https://github.com/netlify/build/issues/5103)) ([bc5f991](https://github.com/netlify/build/commit/bc5f991955571f5e0b8a135cfa09ac1c01eff9c8))
+
 ## [7.1.0](https://github.com/netlify/build/compare/build-info-v7.0.8...build-info-v7.1.0) (2023-06-29)
 
 
