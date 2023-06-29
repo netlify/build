@@ -17,9 +17,9 @@ test('should detect nothing in an empty project', async () => {
       "buildSystems": [],
       "frameworks": [],
       "jsWorkspaces": null,
+      "langRuntimes": [],
       "packageManager": null,
       "settings": [],
-      "langRuntimes": [],
     }
   `)
 })
