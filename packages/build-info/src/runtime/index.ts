@@ -9,4 +9,4 @@ import { Ruby } from './ruby.js'
 import { Rust } from './rust.js'
 import { Swift } from './swift.js'
 
-export const runtimes = [Node, Ruby, Brew, Emacs, Go, Java, Node, Php, Rust, Swift, Python]
+export const runtimes = [Node, Ruby, Brew, Emacs, Go, Java, Php, Rust, Swift, Python]

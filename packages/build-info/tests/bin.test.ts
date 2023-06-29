@@ -47,10 +47,6 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
         {
           \\"id\\": \\"node\\",
           \\"name\\": \\"NodeJS\\"
-        },
-        {
-          \\"id\\": \\"node\\",
-          \\"name\\": \\"NodeJS\\"
         }
       ],
       \\"settings\\": [],
