@@ -1,5 +1,5 @@
 [build]
-  command = 'cp -r ./src/static-files ./dist'
+  command = 'cp -r ./src/. ./dist'
   publish = "./dist"
 
 [build.environment]
