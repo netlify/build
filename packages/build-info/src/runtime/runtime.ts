@@ -8,7 +8,6 @@ export interface LangRuntime {
 export abstract class LangRuntime {
   id: string
   name: string
-  version?: string
 
   configFiles: string[] = []
 
@@ -29,7 +28,6 @@ export abstract class LangRuntime {
     return {
       id: this.id,
       name: this.name,
-      version: this.version,
     }
   }
 }

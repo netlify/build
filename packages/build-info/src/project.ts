@@ -239,7 +239,9 @@ export class Project {
 
   async detectRuntime() {
     try {
-      this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))) as LangRuntime[]
+      this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))).filter(
+        Boolean,
+      ) as LangRuntime[]
       this.events.emit('detectRuntimes', this.runtimes)
       return this.runtimes
     } catch (error) {
