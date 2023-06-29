@@ -17,9 +17,9 @@ export class EventEmitter<Events extends EventsMap = EventsMap> {
     e?.push(callback)
   }
 
-  emit<EventName extends keyof Events>(event: EventName, data: Parameters<Events[EventName]>[0]) {
+  async emit<EventName extends keyof Events>(event: EventName, data: Parameters<Events[EventName]>[0]) {
     for (const cb of this.callbacks.get(event) || []) {
-      cb(data)
+      await cb(data)
     }
   }
 }
