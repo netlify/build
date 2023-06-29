@@ -1,5 +1,3 @@
-import { dirname } from 'path'
-
 import Bugsnag from '@bugsnag/js'
 import { parse } from 'toml'
 
@@ -52,7 +50,7 @@ export async function getTomlSettingsFromPath(
 
 export async function getTomlSettings(project: Project, configFilePath?: string): Promise<Partial<Settings>> {
   if (configFilePath?.length) {
-    return (await getTomlSettingsFromPath(project.fs, dirname(configFilePath))) || {}
+    return (await getTomlSettingsFromPath(project.fs, project.fs.dirname(configFilePath))) || {}
   }
 
   const baseDirSettings = await getTomlSettingsFromPath(project.fs, project.baseDirectory)
