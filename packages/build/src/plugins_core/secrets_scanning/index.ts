@@ -47,6 +47,10 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
   // and post build files
   const filePaths = await getFilePathsToScan({ env: envVars, base: buildDir })
 
+  if (debug) {
+    console.log({ buildDir, filePaths })
+  }
+
   if (filePaths.length === 0) {
     logSecretsScanSkipMessage(
       logs,
