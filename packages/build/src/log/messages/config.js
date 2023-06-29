@@ -40,6 +40,7 @@ const INTERNAL_FLAGS = [
   'sendStatus',
   'saveConfig',
   'statsd',
+  'tracing',
   'framework',
   'featureFlags',
   'buildbotServerSocket',

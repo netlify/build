@@ -40,7 +40,8 @@ export type ResolvedFlags = {
   context: 'production' | string
   statsdOpts: { host?: number; port: number }
   bugsnagKey?: string
-  tracing: TracingOptions
+  systemLogFile?: number
+  tracingOpts: TracingOptions
 }
 
 /** Normalize CLI flags  */
