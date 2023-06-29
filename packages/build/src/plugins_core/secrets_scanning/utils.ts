@@ -88,6 +88,10 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   let files = await new fdir().withRelativePaths().crawl(base).withPromise()
 
+  // normalize the path separators to all use the forward slash
+  // this is needed for windows machines and snapshot tests consistency.
+  files = files.map((f) => f.split(path.sep).join('/'))
+
   let omitPaths: string[] = []
   if (typeof env.SECRETS_SCAN_OMIT_PATHS === 'string') {
     omitPaths = env.SECRETS_SCAN_OMIT_PATHS.split(',')
