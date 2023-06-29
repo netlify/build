@@ -19,6 +19,7 @@ test('should detect nothing in an empty project', async () => {
       "jsWorkspaces": null,
       "packageManager": null,
       "settings": [],
+      "langRuntimes": [],
     }
   `)
 })
@@ -36,6 +37,7 @@ test('should detect nothing in a simple golang project', async () => {
       "jsWorkspaces": null,
       "packageManager": null,
       "settings": [],
+      "langRuntimes": [],
     }
   `)
 })
@@ -88,6 +90,7 @@ describe('Golang', () => {
         "jsWorkspaces": null,
         "packageManager": null,
         "settings": [],
+        "langRuntimes": [],
       }
     `)
   })
