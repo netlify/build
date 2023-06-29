@@ -188,7 +188,7 @@ export class Project {
     }
     try {
       this.packageManager = await detectPackageManager(this)
-      this.events.emit('detectPackageManager', this.packageManager)
+      await this.events.emit('detectPackageManager', this.packageManager)
       return this.packageManager
     } catch {
       return null
@@ -207,7 +207,7 @@ export class Project {
 
     try {
       this.workspace = await detectWorkspaces(this)
-      this.events.emit('detectWorkspaces', this.workspace)
+      await this.events.emit('detectWorkspaces', this.workspace)
       return this.workspace
     } catch (error) {
       this.report(error)
@@ -228,7 +228,7 @@ export class Project {
       this.buildSystems = (await Promise.all(buildSystems.map((BuildSystem) => new BuildSystem(this).detect()))).filter(
         Boolean,
       ) as BuildSystem[]
-      this.events.emit('detectBuildsystems', this.buildSystems)
+      await this.events.emit('detectBuildsystems', this.buildSystems)
 
       return this.buildSystems
     } catch (error) {
@@ -276,7 +276,7 @@ export class Project {
         this.frameworks.set('', await this.detectFrameworksInPath())
       }
 
-      this.events.emit('detectFrameworks', this.frameworks)
+      await this.events.emit('detectFrameworks', this.frameworks)
       return [...this.frameworks.values()].flat()
     } catch (error) {
       this.report(error)
@@ -314,7 +314,7 @@ export class Project {
       await this.detectFrameworks()
 
       this.settings = await getBuildSettings(this)
-      this.events.emit('detectSettings', this.settings)
+      await this.events.emit('detectSettings', this.settings)
     } catch (error) {
       this.report(error)
     }

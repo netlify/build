@@ -64,6 +64,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.2.0](https://github.com/netlify/build/compare/build-info-v7.1.1...build-info-v7.2.0) (2023-06-29)
+
+
+### Features
+
+* make events async ([#5106](https://github.com/netlify/build/issues/5106)) ([6fa5220](https://github.com/netlify/build/commit/6fa5220bc6d9f9e390564cd2f1a3a4c5bc9cd206))
+
+## [7.1.1](https://github.com/netlify/build/compare/build-info-v7.1.0...build-info-v7.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* remove node specific dirname ([#5103](https://github.com/netlify/build/issues/5103)) ([bc5f991](https://github.com/netlify/build/commit/bc5f991955571f5e0b8a135cfa09ac1c01eff9c8))
+
+## [7.1.0](https://github.com/netlify/build/compare/build-info-v7.0.8...build-info-v7.1.0) (2023-06-29)
+
+
+### Features
+
+* **build-info:** add detection for toml files and settings collection ([#5102](https://github.com/netlify/build/issues/5102)) ([fcf221a](https://github.com/netlify/build/commit/fcf221a57da89b9b7888a929aa0f978ce716ed9d))
+
 ## [7.0.8](https://github.com/netlify/build/compare/build-info-v7.0.7...build-info-v7.0.8) (2023-06-15)
 
 
