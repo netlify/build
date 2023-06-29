@@ -18,13 +18,17 @@ export type Settings = {
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
-  plugins: string[]
+  /** Plugins installed via the netlify.toml */
+  plugins_from_config_file: string[]
+  /** Plugins that are detected via the framework detection and therefore recommended */
+  plugins_recommended: string[]
   pollingStrategies: string[]
   /** The baseDirectory for the UI to configure (used to run the command in this working directory) */
   baseDirectory?: string
+  functionsDir?: string
   /** the workspace package path of an app */
   packagePath?: string
-  tomlModifications?: string
+  template?: string
 }
 
 async function applyBuildSystemOverrides(
@@ -77,7 +81,8 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     frameworkPort: framework.dev?.port,
     dist: project.fs.join(baseDirectory, frameworkDist),
     env: framework.env || {},
-    plugins: framework.plugins || [],
+    plugins_from_config_file: [],
+    plugins_recommended: framework.plugins || [],
     framework: {
       id: framework.id,
       name: framework.name,
