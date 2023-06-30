@@ -43,6 +43,12 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
   expect(stdout).toMatchInlineSnapshot(`
     "{
       \\"frameworks\\": [],
+      \\"langRuntimes\\": [
+        {
+          \\"id\\": \\"node\\",
+          \\"name\\": \\"NodeJS\\"
+        }
+      ],
       \\"settings\\": [],
       \\"buildSystems\\": [],
       \\"packageManager\\": {
@@ -73,6 +79,7 @@ test('CLI prints an empty array if no frameworks are found', async (ctx) => {
     {
       "buildSystems": [],
       "frameworks": [],
+      "langRuntimes": [],
       "settings": [],
     }
   `)
