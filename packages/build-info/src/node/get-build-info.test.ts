@@ -17,13 +17,14 @@ test('should detect nothing in an empty project', async () => {
       "buildSystems": [],
       "frameworks": [],
       "jsWorkspaces": null,
+      "langRuntimes": [],
       "packageManager": null,
       "settings": [],
     }
   `)
 })
 
-test('should detect nothing in a simple golang project', async () => {
+test('should only detect go in a simple golang project', async () => {
   const cwd = mockFileSystem({
     'go.mod': '',
     'main.go': '',
@@ -34,6 +35,12 @@ test('should detect nothing in a simple golang project', async () => {
       "buildSystems": [],
       "frameworks": [],
       "jsWorkspaces": null,
+      "langRuntimes": [
+        {
+          "id": "go",
+          "name": "Go",
+        },
+      ],
       "packageManager": null,
       "settings": [],
     }
@@ -78,7 +85,7 @@ test.skipIf(platform() === 'win32')(
 )
 
 describe('Golang', () => {
-  test('should not detect anything inside a golang workspace', async (ctx) => {
+  test('should only detect Go inside a golang workspace', async (ctx) => {
     const fixture = await createFixture('go-workspace', ctx)
     const info = await getBuildInfo({ projectDir: 'bar', rootDir: fixture.cwd })
     expect(info).toMatchInlineSnapshot(`
@@ -86,6 +93,12 @@ describe('Golang', () => {
         "buildSystems": [],
         "frameworks": [],
         "jsWorkspaces": null,
+        "langRuntimes": [
+          {
+            "id": "go",
+            "name": "Go",
+          },
+        ],
         "packageManager": null,
         "settings": [],
       }

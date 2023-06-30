@@ -24,6 +24,12 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
@@ -113,6 +119,12 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
@@ -181,6 +193,12 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
