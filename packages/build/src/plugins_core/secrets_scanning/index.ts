@@ -61,7 +61,10 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
   })
 
   if (scanResults.matches.length === 0) {
-    logSecretsScanSuccessMessage(logs, 'Secrets scanning complete. No secrets detected in build output or repo code.')
+    logSecretsScanSuccessMessage(
+      logs,
+      `Secrets scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
+    )
     return stepResults
   }
 

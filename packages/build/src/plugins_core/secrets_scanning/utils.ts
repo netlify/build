@@ -6,6 +6,7 @@ import { fdir } from 'fdir'
 
 interface ScanResults {
   matches: MatchResult[]
+  scannedFilesCount: number
 }
 
 interface ScanArgs {
@@ -121,6 +122,7 @@ const omitPathMatches = (relativePath, omitPaths) => omitPaths.some((oPath) => r
 export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
+    scannedFilesCount: 0,
   }
 
   const keyValues: Record<string, string[]> = keys.reduce((kvs, key) => {
@@ -142,6 +144,8 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
     }
     return kvs
   }, {})
+
+  scanResults.scannedFilesCount = filePaths.length
 
   const settledPromises = await Promise.allSettled(
     filePaths.map((file) => {

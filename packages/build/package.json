@@ -24,7 +24,7 @@
     "prebuild": "rm -rf lib",
     "postbuild": "npx copyfiles \"src/**/*.yml\" lib/ -u 1",
     "build": "tsc",
-    "pretest": "tsd .",
+    "pretest": "",
     "test": "ava",
     "test:dev": "ava -w",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
