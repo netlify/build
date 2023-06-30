@@ -81,6 +81,13 @@
   * dependencies
     * @netlify/config bumped from ^20.5.0 to ^20.5.1
 
+## [29.15.0](https://github.com/netlify/build/compare/build-v29.14.1...build-v29.15.0) (2023-06-30)
+
+
+### Features
+
+* Support Secrets Scanning ([#5097](https://github.com/netlify/build/issues/5097)) ([ae812a8](https://github.com/netlify/build/commit/ae812a8f8f8f9fd539d00a79e74317f07bd1ff23))
+
 ## [29.14.1](https://github.com/netlify/build/compare/build-v29.14.0...build-v29.14.1) (2023-06-29)
 
 
