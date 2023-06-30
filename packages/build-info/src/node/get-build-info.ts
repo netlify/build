@@ -67,7 +67,6 @@ export async function getBuildInfo(
     try {
       // if the framework  detection is crashing we should not crash the build info and package-manager detection
       info.frameworks = (await listFrameworks({ projectDir: project.baseDirectory })) as unknown as DetectedFramework[]
-      info.langRuntimes = await project.detectRuntime()
     } catch (error) {
       report(error, { client: config.bugsnagClient })
       info.frameworks = []
@@ -75,6 +74,7 @@ export async function getBuildInfo(
   }
 
   info.settings = await project.getBuildSettings()
+  info.langRuntimes = await project.detectRuntime()
 
   // some framework detection like NX can update the workspace in the project so assign it later on
   info.jsWorkspaces = project.workspace
