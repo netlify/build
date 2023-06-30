@@ -13,15 +13,13 @@ import {
   scanFilesForKeyValues,
 } from './utils.js'
 
-const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, debug }) {
+const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
 
-  if (debug) {
-    console.log({ envVars, passedSecretKeys })
-  }
+  systemLog({ envVars, passedSecretKeys })
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
@@ -30,9 +28,7 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
-  if (debug) {
-    console.log({ keysToSearchFor })
-  }
+  systemLog({ keysToSearchFor })
 
   if (keysToSearchFor.length === 0) {
     logSecretsScanSkipMessage(
@@ -47,9 +43,7 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
   // and post build files
   const filePaths = await getFilePathsToScan({ env: envVars, base: buildDir })
 
-  if (debug) {
-    console.log({ buildDir, filePaths })
-  }
+  systemLog({ buildDir, filePaths })
 
   if (filePaths.length === 0) {
     logSecretsScanSkipMessage(

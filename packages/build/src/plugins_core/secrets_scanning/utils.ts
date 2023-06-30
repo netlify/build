@@ -34,7 +34,7 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
 }
 
 /**
- * given the explicit secret keys and evn vars, return the list of secret keys which have non-empty or non-trivial values. This
+ * given the explicit secret keys and env vars, return the list of secret keys which have non-empty or non-trivial values. This
  * will also filter out keys passed in the SECRETS_SCAN_OMIT_KEYS env var.
  *
  * non-trivial values are values that are:
