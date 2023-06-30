@@ -43,13 +43,13 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
   expect(stdout).toMatchInlineSnapshot(`
     "{
       \\"frameworks\\": [],
+      \\"settings\\": [],
       \\"langRuntimes\\": [
         {
           \\"id\\": \\"node\\",
           \\"name\\": \\"NodeJS\\"
         }
       ],
-      \\"settings\\": [],
       \\"buildSystems\\": [],
       \\"packageManager\\": {
         \\"name\\": \\"pnpm\\",
