@@ -1,5 +1,8 @@
+import {
+  configureHoneycombGrpcTraceExporter,
+  configureBatchWithBaggageSpanProcessor,
+} from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
@@ -25,13 +28,12 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
   if (!options.enabled) return
   if (sdk) return
 
-  const traceExporter = new OTLPTraceExporter({
-    url: `http://${options.host}:${options.port}`,
-  })
-
   sdk = new NodeSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
-    traceExporter,
+    spanProcessor: configureBatchWithBaggageSpanProcessor(),
+    traceExporter: configureHoneycombGrpcTraceExporter({
+      endpoint: `http://${options.host}:${options.port}`,
+    }),
     instrumentations: [new HttpInstrumentation()],
   })
 
@@ -43,7 +45,7 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from Buildbot
-  trace.setSpanContext(context.active(), {
+  return trace.setSpanContext(context.active(), {
     traceId: options.traceId,
     spanId: options.parentSpanId,
     traceFlags: options.traceFlags,
