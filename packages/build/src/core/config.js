@@ -82,6 +82,7 @@ const tLoadConfig = async function ({
     api,
     siteInfo,
     env,
+    integrations,
   } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
 
   if (!quiet) {
@@ -107,6 +108,7 @@ const tLoadConfig = async function ({
     token: tokenA,
     api: apiA,
     siteInfo,
+    integrations,
   }
 }
 

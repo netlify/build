@@ -116,6 +116,7 @@ const tExecBuild = async function ({
     api,
     siteInfo,
     timers: timersA,
+    integrations,
   } = await loadConfig({
     configOpts,
     cachedConfig,
@@ -202,6 +203,7 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    integrations,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -254,6 +256,7 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
 }) {
   try {
     const {
@@ -301,6 +304,7 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      integrations,
     })
     await Promise.all([
       reportStatuses({
@@ -398,6 +402,7 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -415,6 +420,7 @@ const initAndRunBuild = async function ({
     timers,
     testOpts,
     featureFlags,
+    integrations,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA

@@ -1,5 +1,6 @@
 import { addErrorInfo } from '../error/info.js'
-import { installMissingPlugins } from '../install/missing.js'
+import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
+import { log } from '../log/logger.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
 import { addExpectedVersions } from './expected_version.js'
@@ -25,6 +26,7 @@ export const resolvePluginsPath = async function ({
   sendStatus,
   testOpts,
   featureFlags,
+  integrations,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
@@ -53,7 +55,10 @@ export const resolvePluginsPath = async function ({
     mode,
     logs,
   })
-  return pluginsOptionsE
+
+  const integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs })
+
+  return [...pluginsOptionsE, ...integrationPluginOptions]
 }
 
 // Find the path to the directory used to install plugins automatically.
@@ -135,6 +140,26 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   return await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
+}
+
+const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs }) {
+  const toInstall = integrations.filter((integration) => integration.has_build)
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs })
+
+  return await Promise.all(
+    toInstall.map((integration) =>
+      resolveIntegration({
+        integration,
+        autoPluginsDir,
+      }),
+    ),
+  )
+}
+
+const resolveIntegration = async function ({ integration, autoPluginsDir }) {
+  const pluginPath = await resolvePath(`${integration.slug}-buildhooks`, autoPluginsDir)
+
+  return { pluginPath, packageName: `${integration.slug}-buildhooks`, isIntegration: true, integration }
 }
 
 // Resolve the plugins that just got automatically installed

@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
@@ -16,10 +18,11 @@ export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env:
     return { siteInfo, accounts: [], addons: [] }
   }
 
-  const [siteInfo, accounts, addons] = await Promise.all([
+  const [siteInfo, accounts, addons, integrations] = await Promise.all([
     getSite(api, siteId),
     getAccounts(api),
     getAddons(api, siteId),
+    getIntegrations(api, siteId),
   ])
 
   if (siteInfo.use_envelope) {
@@ -28,7 +31,7 @@ export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env:
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons }
+  return { siteInfo, accounts, addons, integrations }
 }
 
 const getSite = async function (api, siteId) {
@@ -64,4 +67,32 @@ const getAddons = async function (api, siteId) {
   } catch (error) {
     throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
+}
+
+const getIntegrations = async function (api, siteId) {
+  if (siteId === undefined) {
+    return []
+  }
+
+  return [
+    {
+      slug: 'sentry',
+      version: 'http://localhost:8888',
+      has_build: true,
+    },
+  ]
+
+  //   try {
+  //     const token = api.accessToken()
+  //     const response = await fetch(`https://app.netlify.com/sites/${siteId}/integrations`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+
+  //     const integrations = await response.json()
+  //     return Array.isArray(integrations) ? integrations : []
+  //   } catch (error) {
+  //     throwUserError(`Failed retrieving integrations for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  //   }
 }

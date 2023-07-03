@@ -17,6 +17,16 @@ export const logInstallMissingPlugins = function (logs, packages) {
   }
 }
 
+export const logInstallIntegrations = function (logs, integrations) {
+  if (integrations.length !== 0) {
+    logSubHeader(logs, 'Installing integrations')
+    logArray(
+      logs,
+      integrations.map((integration) => integration.slug),
+    )
+  }
+}
+
 export const logInstallLocalPluginsDeps = function (logs, localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackageName)
   logSubHeader(logs, 'Installing local plugins dependencies')
