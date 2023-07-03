@@ -17,7 +17,7 @@ type FunctionsObject = {
       /**
        * the function bundling method used in [`@netlify/zip-it-and-ship-it`](https://github.com/netlify/zip-it-and-ship-it).
        */
-      node_bundler?: 'esbuild'
+      node_bundler?: 'esbuild' | 'none'
 
       /**
        * a list of Node.js modules that are copied to the bundled artifact without adjusting their source or references during the bundling process.

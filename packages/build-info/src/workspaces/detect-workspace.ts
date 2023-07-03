@@ -6,13 +6,27 @@ import { Project } from '../project.js'
 
 import { getWorkspacePackages } from './get-workspace-packages.js'
 
-export type WorkspaceInfo = {
+export type WorkspacePackage = {
+  path: string
+  name?: string
+}
+
+export class WorkspaceInfo {
   /** if we are in the current workspace root or not */
   isRoot: boolean
   /** the workspace root directory */
   rootDir: string
   /** list of relative package paths inside the workspace */
-  packages: string[]
+  packages: WorkspacePackage[] = []
+
+  /** Detects if a workspace has a sub package */
+  hasPackage(relativePackagePath: string): boolean {
+    return this.packages.findIndex(({ path }) => path === relativePackagePath) > -1
+  }
+
+  getPackage(relativePackagePath: string): WorkspacePackage | undefined {
+    return this.packages.find(({ path }) => path === relativePackagePath)
+  }
 }
 
 /**
@@ -28,14 +42,18 @@ export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string
     return []
   }
 
-  const { packages } = parse(await project.fs.readFile(workspaceFile))
-  return packages
+  try {
+    const { packages = [] } = parse(await project.fs.readFile(workspaceFile))
+    return packages
+  } catch {
+    return []
+  }
 }
 
 /** Get the workspace globs from the package.json file */
 export async function detectNpmOrYarnWorkspaceGlobs(pkgJSON: PackageJson): Promise<string[]> {
   if (Array.isArray(pkgJSON.workspaces)) {
-    return pkgJSON.workspaces
+    return pkgJSON.workspaces || []
   }
   if (typeof pkgJSON.workspaces === 'object') {
     return pkgJSON.workspaces.packages || []
@@ -47,32 +65,38 @@ export async function detectNpmOrYarnWorkspaceGlobs(pkgJSON: PackageJson): Promi
  * If it's a javascript workspace (npm, pnpm, yarn) it will retrieve a list of all
  * package paths and will indicate if it's the root of the workspace
  */
-export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo | undefined> {
-  if (!project.packageManager) {
+export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo | null> {
+  if (project.packageManager === undefined) {
     throw new Error('Please run the packageManager detection before calling the workspace detection!')
   }
+
+  // if it's null it indicates it was already run without any result so we can omit this here as well
+  if (project.packageManager === null) {
+    return null
+  }
+
   const pkgJSON = await project.getRootPackageJSON()
   const workspaceGlobs =
     project.packageManager.name === PkgManager.PNPM
       ? await detectPnpmWorkspaceGlobs(project)
       : await detectNpmOrYarnWorkspaceGlobs(pkgJSON)
 
-  if (workspaceGlobs.length === 0) {
-    return
+  if (!workspaceGlobs || workspaceGlobs.length === 0) {
+    return null
   }
 
-  const packages = await getWorkspacePackages(project, workspaceGlobs)
-  const isRoot = project.baseDirectory === project.jsWorkspaceRoot
+  // indicate that we have found some globs and starting to parse them
+  project.events.emit('detectedWorkspaceGlobs', undefined)
+  const info = new WorkspaceInfo()
+  info.rootDir = project.jsWorkspaceRoot
+  info.packages = await getWorkspacePackages(project, workspaceGlobs)
+  info.isRoot = project.baseDirectory === project.jsWorkspaceRoot
   const relBaseDirectory = project.fs.relative(project.jsWorkspaceRoot, project.baseDirectory)
   // if the current base directory is not part of the detected workspace packages it's not part of this workspace
   // and therefore return no workspace info
-  if (!isRoot && !packages.includes(relBaseDirectory)) {
-    return
+  if (!info.isRoot && !info.hasPackage(relBaseDirectory)) {
+    return null
   }
 
-  return {
-    rootDir: project.jsWorkspaceRoot,
-    isRoot,
-    packages,
-  }
+  return info
 }

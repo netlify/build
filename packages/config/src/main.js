@@ -22,8 +22,18 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 export const resolveConfig = async function (opts) {
-  const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
-    addDefaultOpts(opts)
+  const {
+    cachedConfig,
+    cachedConfigPath,
+    host,
+    scheme,
+    pathPrefix,
+    testOpts,
+    token,
+    offline,
+    siteFeatureFlagPrefix,
+    ...optsA
+  } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
@@ -52,7 +62,13 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons, integrations } = await getSiteInfo({ api, siteId, mode, testOpts })
+  const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
+    api,
+    siteId,
+    mode,
+    testOpts,
+    siteFeatureFlagPrefix,
+  })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
@@ -217,7 +233,6 @@ const getFullConfig = async function ({
   featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
-
   try {
     const config = await parseConfig(configPath)
     const configA = mergeAndNormalizeConfig({

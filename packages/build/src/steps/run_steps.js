@@ -41,6 +41,8 @@ export const runSteps = async function ({
   testOpts,
   featureFlags,
   quiet,
+  userNodeVersion,
+  explicitSecretKeys,
 }) {
   const {
     index: stepsCount,
@@ -50,6 +52,7 @@ export const runSteps = async function ({
     failedPlugins: failedPluginsA,
     timers: timersC,
     configMutations: configMutationsB,
+    metrics: metricsC,
   } = await pReduce(
     steps,
     async (
@@ -64,6 +67,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathA,
         statuses,
         timers: timersA,
+        metrics: metricsA,
       },
       {
         event,
@@ -90,6 +94,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB = redirectsPathA,
         newStatus,
         timers: timersB = timersA,
+        metrics: metricsB = [],
       } = await runStep({
         event,
         childProcess,
@@ -137,7 +142,10 @@ export const runSteps = async function ({
         testOpts,
         featureFlags,
         quiet,
+        userNodeVersion,
+        explicitSecretKeys,
       })
+
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
       return {
         index: newIndex,
@@ -150,6 +158,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB,
         statuses: statusesA,
         timers: timersB,
+        metrics: [...metricsA, ...metricsB],
       }
     },
     {
@@ -162,6 +171,7 @@ export const runSteps = async function ({
       redirectsPath,
       statuses: [],
       timers,
+      metrics: [],
     },
   )
 
@@ -179,5 +189,6 @@ export const runSteps = async function ({
     failedPlugins: failedPluginsA,
     timers: timersC,
     configMutations: configMutationsB,
+    metrics: metricsC,
   }
 }

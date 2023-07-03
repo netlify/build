@@ -1,0 +1,8 @@
+{
+  "workspaceLayout": {
+    "appsDir": "packages",
+    "libsDir": "packages"
+  },
+  "defaultProject": "website",
+  "plugins": ["@nxtensions/astro"]
+}

@@ -1,12 +1,17 @@
+import { trace } from '@opentelemetry/api'
+
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
+import { setMultiSpanAttributes, StepExecutionAttributes } from '../tracing/main.js'
 
 import { fireCoreStep } from './core_step.js'
 import { firePluginStep } from './plugin.js'
 import { getStepReturn } from './return.js'
+
+const tracer = trace.getTracer('steps')
 
 // Run a step (core, build command or plugin)
 export const runStep = async function ({
@@ -56,11 +61,25 @@ export const runStep = async function ({
   testOpts,
   featureFlags,
   quiet,
+  userNodeVersion,
+  explicitSecretKeys,
 }) {
-  const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
+  // Add relevant attributes to the upcoming span context
+  const attributes: StepExecutionAttributes = {
+    'build.execution.step.name': coreStepName,
+    'build.execution.step.description': coreStepDescription,
+    'build.execution.step.package_name': packageName,
+    'build.execution.step.id': coreStepId,
+    'build.execution.step.loaded_from': loadedFrom,
+    'build.execution.step.origin': origin,
+    'build.execution.step.event': event,
+  }
+  const spanCtx = setMultiSpanAttributes(attributes)
 
-  if (
-    !(await shouldRunStep({
+  return tracer.startActiveSpan(`run-step-${coreStepId}`, {}, spanCtx, async (span) => {
+    const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
+
+    const shouldRun = await shouldRunStep({
       event,
       packageName,
       error,
@@ -71,91 +90,101 @@ export const runStep = async function ({
       buildbotServerSocket,
       buildDir,
       saveConfig,
-    }))
-  ) {
-    return {}
-  }
+      explicitSecretKeys,
+    })
+    span.setAttribute('build.execution.step.should_run', shouldRun)
+    if (!shouldRun) {
+      span.end()
+      return {}
+    }
 
-  if (!quiet) {
-    logStepStart({ logs, event, packageName, coreStepDescription, index, error, netlifyConfig })
-  }
+    if (!quiet) {
+      logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+    }
 
-  const fireStep = getFireStep(packageName, coreStepId, event)
-  const {
-    newEnvChanges,
-    netlifyConfig: netlifyConfigA = netlifyConfig,
-    configMutations: configMutationsA = configMutations,
-    headersPath: headersPathA = headersPath,
-    redirectsPath: redirectsPathA = redirectsPath,
-    newError,
-    newStatus,
-    timers: timersA,
-    durationNs,
-  } = await fireStep({
-    event,
-    childProcess,
-    packageName,
-    pluginPackageJson,
-    loadedFrom,
-    origin,
-    coreStep,
-    coreStepId,
-    coreStepName,
-    configPath,
-    outputConfigPath,
-    buildDir,
-    repositoryRoot,
-    nodePath,
-    childEnv,
-    context,
-    branch,
-    envChanges,
-    constants: constantsA,
-    steps,
-    buildbotServerSocket,
-    events,
-    error,
-    logs,
-    debug,
-    systemLog,
-    verbose,
-    saveConfig,
-    timers,
-    errorParams,
-    configOpts,
-    netlifyConfig,
-    configMutations,
-    headersPath,
-    redirectsPath,
-    featureFlags,
+    const fireStep = getFireStep(packageName, coreStepId, event)
+    const {
+      newEnvChanges,
+      netlifyConfig: netlifyConfigA = netlifyConfig,
+      configMutations: configMutationsA = configMutations,
+      headersPath: headersPathA = headersPath,
+      redirectsPath: redirectsPathA = redirectsPath,
+      newError,
+      newStatus,
+      timers: timersA,
+      durationNs,
+      metrics,
+    } = await fireStep({
+      event,
+      childProcess,
+      packageName,
+      pluginPackageJson,
+      loadedFrom,
+      origin,
+      coreStep,
+      coreStepId,
+      coreStepName,
+      configPath,
+      outputConfigPath,
+      buildDir,
+      repositoryRoot,
+      nodePath,
+      childEnv,
+      context,
+      branch,
+      envChanges,
+      constants: constantsA,
+      steps,
+      buildbotServerSocket,
+      events,
+      error,
+      logs,
+      debug,
+      systemLog,
+      verbose,
+      saveConfig,
+      timers,
+      errorParams,
+      configOpts,
+      netlifyConfig,
+      configMutations,
+      headersPath,
+      redirectsPath,
+      featureFlags,
+      userNodeVersion,
+      explicitSecretKeys,
+    })
+
+    const newValues = await getStepReturn({
+      event,
+      packageName,
+      newError,
+      newEnvChanges,
+      newStatus,
+      coreStep,
+      coreStepName,
+      childEnv,
+      mode,
+      api,
+      errorMonitor,
+      deployId,
+      netlifyConfig: netlifyConfigA,
+      configMutations: configMutationsA,
+      headersPath: headersPathA,
+      redirectsPath: redirectsPathA,
+      logs,
+      debug,
+      timers: timersA,
+      durationNs,
+      testOpts,
+      systemLog,
+      quiet,
+      metrics,
+    })
+
+    span.end()
+    return { ...newValues, newIndex: index + 1 }
   })
-
-  const newValues = await getStepReturn({
-    event,
-    packageName,
-    newError,
-    newEnvChanges,
-    newStatus,
-    coreStep,
-    coreStepName,
-    childEnv,
-    mode,
-    api,
-    errorMonitor,
-    deployId,
-    netlifyConfig: netlifyConfigA,
-    configMutations: configMutationsA,
-    headersPath: headersPathA,
-    redirectsPath: redirectsPathA,
-    logs,
-    debug,
-    timers: timersA,
-    durationNs,
-    testOpts,
-    systemLog,
-    quiet,
-  })
-  return { ...newValues, newIndex: index + 1 }
 }
 
 // A plugin fails _without making the build fail_ when either:
@@ -200,11 +229,12 @@ const shouldRunStep = async function ({
   buildbotServerSocket,
   buildDir,
   saveConfig,
+  explicitSecretKeys,
 }) {
   if (
     failedPlugins.includes(packageName) ||
     (condition !== undefined &&
-      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig })))
+      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig, explicitSecretKeys })))
   ) {
     return false
   }
@@ -262,6 +292,8 @@ const tFireStep = function ({
   headersPath,
   redirectsPath,
   featureFlags,
+  userNodeVersion,
+  explicitSecretKeys,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -291,6 +323,8 @@ const tFireStep = function ({
       debug,
       systemLog,
       saveConfig,
+      userNodeVersion,
+      explicitSecretKeys,
     })
   }
 
@@ -312,6 +346,7 @@ const tFireStep = function ({
     steps,
     error,
     logs,
+    featureFlags,
     debug,
     verbose,
   })

@@ -8,8 +8,7 @@ export const getHeader = function (message: string) {
   const messageWidth = stringWidth(message)
   const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth)
   const line = '─'.repeat(headerWidth + PADDING_WIDTH * 2)
-  const paddingLeft = ' '.repeat(PADDING_WIDTH)
   const paddingRight = ' '.repeat(PADDING_WIDTH + headerWidth - messageWidth)
-  return `${paddingLeft}${message}${paddingRight}
+  return `${message}${paddingRight}
 ${line}`
 }

@@ -1,0 +1,33 @@
+{
+  "name": "astro",
+  "projectType": "application",
+  "sourceRoot": "packages/astro/src",
+  "targets": {
+    "build": {
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "executor": "@nxtensions/astro:build",
+      "options": {}
+    },
+    "dev": {
+      "executor": "@nxtensions/astro:dev",
+      "options": {}
+    },
+    "preview": {
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ],
+      "executor": "@nxtensions/astro:preview",
+      "options": {}
+    },
+    "check": {
+      "executor": "@nxtensions/astro:check"
+    },
+    "sync": {
+      "executor": "@nxtensions/astro:sync"
+    }
+  },
+  "tags": []
+}

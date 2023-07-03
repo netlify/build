@@ -46,6 +46,155 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.6 to ^9.8.7
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.7 to ^9.8.8
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+
+## [7.3.0](https://github.com/netlify/build/compare/build-info-v7.2.0...build-info-v7.3.0) (2023-06-30)
+
+
+### Features
+
+* detect lang runtime ([#5105](https://github.com/netlify/build/issues/5105)) ([7242ddd](https://github.com/netlify/build/commit/7242dddef6307f1c673ba94f7026a85eb5a0fb59))
+
+## [7.2.0](https://github.com/netlify/build/compare/build-info-v7.1.1...build-info-v7.2.0) (2023-06-29)
+
+
+### Features
+
+* make events async ([#5106](https://github.com/netlify/build/issues/5106)) ([6fa5220](https://github.com/netlify/build/commit/6fa5220bc6d9f9e390564cd2f1a3a4c5bc9cd206))
+
+## [7.1.1](https://github.com/netlify/build/compare/build-info-v7.1.0...build-info-v7.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* remove node specific dirname ([#5103](https://github.com/netlify/build/issues/5103)) ([bc5f991](https://github.com/netlify/build/commit/bc5f991955571f5e0b8a135cfa09ac1c01eff9c8))
+
+## [7.1.0](https://github.com/netlify/build/compare/build-info-v7.0.8...build-info-v7.1.0) (2023-06-29)
+
+
+### Features
+
+* **build-info:** add detection for toml files and settings collection ([#5102](https://github.com/netlify/build/issues/5102)) ([fcf221a](https://github.com/netlify/build/commit/fcf221a57da89b9b7888a929aa0f978ce716ed9d))
+
+## [7.0.8](https://github.com/netlify/build/compare/build-info-v7.0.7...build-info-v7.0.8) (2023-06-15)
+
+
+### Bug Fixes
+
+* fixes an issue where it broke if no patterns are provided ([#5081](https://github.com/netlify/build/issues/5081)) ([7ac1567](https://github.com/netlify/build/commit/7ac15679ebcf11d3cf9eb52832d3c719c2c9fc8a))
+
+## [7.0.7](https://github.com/netlify/build/compare/build-info-v7.0.6...build-info-v7.0.7) (2023-06-14)
+
+
+### Bug Fixes
+
+* remove RegEx negative lookbehind in file system ([#5078](https://github.com/netlify/build/issues/5078)) ([6b7ac05](https://github.com/netlify/build/commit/6b7ac05120a1a9b9bd7752054e8375f7c87ecabe))
+
+## [7.0.6](https://github.com/netlify/build/compare/build-info-v7.0.5...build-info-v7.0.6) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency minimatch to v9 ([#5021](https://github.com/netlify/build/issues/5021)) ([f825645](https://github.com/netlify/build/commit/f825645da38b7104118571a29c95e9e05b0ef636))
+* use turbo --filter instead of deprecated --scope ([#5057](https://github.com/netlify/build/issues/5057)) ([58e45b8](https://github.com/netlify/build/commit/58e45b86b8eb5d8e59cb3828287f7858f6303015))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.9 to ^9.8.10
+
+## [7.0.4](https://github.com/netlify/build/compare/build-info-v7.0.3...build-info-v7.0.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* **build-info:** fixes a bug in the platform independent join function ([#5042](https://github.com/netlify/build/issues/5042)) ([1fde7c9](https://github.com/netlify/build/commit/1fde7c95f43e5a473bf077ab9f48445789992187))
+
+## [7.0.1](https://github.com/netlify/build/compare/build-info-v7.0.0...build-info-v7.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* fixes an issue where it could not retrieve the settings for the same root as projectdir ([#4996](https://github.com/netlify/build/issues/4996)) ([dc220cb](https://github.com/netlify/build/commit/dc220cbb4619e88310ca704b3e5d6bb60aa0776c))
+
+## [7.0.0](https://github.com/netlify/build/compare/build-info-v6.9.0...build-info-v7.0.0) (2023-05-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977))
+
+### Features
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977)) ([e7f3361](https://github.com/netlify/build/commit/e7f3361c38ffee5304f4b010068a4e8603a4cbb0))
+
+## [6.9.0](https://github.com/netlify/build/compare/build-info-v6.8.1...build-info-v6.9.0) (2023-05-03)
+
+
+### Features
+
+* move framework logos over to build-info ([#4988](https://github.com/netlify/build/issues/4988)) ([35cee2a](https://github.com/netlify/build/commit/35cee2a55e736af2c36dbca34bb1313e806527c4))
+
+## [6.8.1](https://github.com/netlify/build/compare/build-info-v6.8.0...build-info-v6.8.1) (2023-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9 ([#4982](https://github.com/netlify/build/issues/4982)) ([4a77bbc](https://github.com/netlify/build/commit/4a77bbcb6b1edb6f705282a8cece7963710e8e3e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.5 to ^9.8.6
+
+## [6.8.0](https://github.com/netlify/build/compare/build-info-v6.7.2...build-info-v6.8.0) (2023-04-14)
+
+
+### Features
+
+* improve bugsnag reporting and fix error ([#4974](https://github.com/netlify/build/issues/4974)) ([530eebf](https://github.com/netlify/build/commit/530eebfc79e823125766dd50fc724e2f42d0ff62))
+
+## [6.7.2](https://github.com/netlify/build/compare/build-info-v6.7.1...build-info-v6.7.2) (2023-04-12)
+
+
+### Bug Fixes
+
+* workspace detection from inside a nested package ([#4970](https://github.com/netlify/build/issues/4970)) ([248243e](https://github.com/netlify/build/commit/248243ed469bc0d6e6e6e54cdc28786a044abc43))
+
+## [6.7.1](https://github.com/netlify/build/compare/build-info-v6.7.0...build-info-v6.7.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* entrypoint for node with correct types ([#4962](https://github.com/netlify/build/issues/4962)) ([051812d](https://github.com/netlify/build/commit/051812ddb48873605759b7ca40420043d2c55489))
+
+## [6.7.0](https://github.com/netlify/build/compare/build-info-v6.6.1...build-info-v6.7.0) (2023-03-28)
+
+
+### Features
+
+* Integrate framework detection in build info ([#4876](https://github.com/netlify/build/issues/4876)) ([0df38c0](https://github.com/netlify/build/commit/0df38c0f2ccbd779296acf1fbc549cb08a119799))
+
 ## [6.6.1](https://github.com/netlify/build/compare/build-info-v6.6.0...build-info-v6.6.1) (2023-03-13)
 
 

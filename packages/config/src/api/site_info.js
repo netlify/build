@@ -12,14 +12,20 @@ import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 // Silently ignore API errors. For example the network connection might be down,
 // but local builds should still work regardless.
 
-export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
+export const getSiteInfo = async function ({
+  api,
+  siteId,
+  mode,
+  siteFeatureFlagPrefix,
+  testOpts: { env: testEnv = true } = {},
+}) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
   }
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all([
-    getSite(api, siteId),
+    getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
     getIntegrations(api, siteId),
@@ -34,13 +40,13 @@ export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env:
   return { siteInfo, accounts, addons, integrations }
 }
 
-const getSite = async function (api, siteId) {
+const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
   if (siteId === undefined) {
     return {}
   }
 
   try {
-    const site = await api.getSite({ siteId })
+    const site = await api.getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)

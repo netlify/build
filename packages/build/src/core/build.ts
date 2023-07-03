@@ -13,6 +13,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -20,12 +21,12 @@ import { doDryRun } from './dry.js'
 import { warnOnLingeringProcesses } from './lingering.js'
 import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
-import type { BuildCLIFlags } from './types.js'
+import type { BuildFlags } from './types.js'
 
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
-export const startBuild = function (flags: Partial<BuildCLIFlags>) {
+export const startBuild = function (flags: Partial<BuildFlags>) {
   const timers = initTimers()
 
   const logs = getBufferLogs(flags)
@@ -34,10 +35,11 @@ export const startBuild = function (flags: Partial<BuildCLIFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { bugsnagKey, tracingOpts, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { tracingOpts, debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
+  startTracing(tracingOpts, getSystemLogger(logs, debug, systemLogFile))
 
-  return { ...flagsA, errorMonitor, logs, timers }
+  return { ...flagsA, debug, systemLogFile, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({
@@ -80,6 +82,7 @@ const tExecBuild = async function ({
   devCommand,
   quiet,
   framework,
+  explicitSecretKeys,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -166,6 +169,7 @@ const tExecBuild = async function ({
     stepsCount,
     timers: timersB,
     configMutations,
+    metrics,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -204,6 +208,7 @@ const tExecBuild = async function ({
     devCommand,
     quiet,
     integrations,
+    explicitSecretKeys,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -213,6 +218,7 @@ const tExecBuild = async function ({
     stepsCount,
     timers: timersB,
     configMutations,
+    metrics,
   }
 }
 
@@ -257,6 +263,7 @@ export const runAndReportBuild = async function ({
   devCommand,
   quiet,
   integrations,
+  explicitSecretKeys,
 }) {
   try {
     const {
@@ -267,6 +274,7 @@ export const runAndReportBuild = async function ({
       failedPlugins,
       timers: timersA,
       configMutations,
+      metrics,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -305,6 +313,7 @@ export const runAndReportBuild = async function ({
       devCommand,
       quiet,
       integrations,
+      explicitSecretKeys,
     })
     await Promise.all([
       reportStatuses({
@@ -343,6 +352,7 @@ export const runAndReportBuild = async function ({
       stepsCount,
       timers: timersA,
       configMutations,
+      metrics,
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
@@ -403,6 +413,7 @@ const initAndRunBuild = async function ({
   devCommand,
   quiet,
   integrations,
+  explicitSecretKeys,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -444,6 +455,7 @@ const initAndRunBuild = async function ({
       failedPlugins,
       timers: timersC,
       configMutations,
+      metrics,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -452,6 +464,7 @@ const initAndRunBuild = async function ({
       packageJson,
       configPath,
       outputConfigPath,
+      userNodeVersion,
       headersPath,
       redirectsPath,
       buildDir,
@@ -479,6 +492,7 @@ const initAndRunBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
 
     await Promise.all([
@@ -494,6 +508,7 @@ const initAndRunBuild = async function ({
       failedPlugins,
       timers: timersC,
       configMutations,
+      metrics,
     }
   } finally {
     // Terminate the child processes of plugins so that they don't linger after
@@ -515,6 +530,7 @@ const runBuild = async function ({
   packageJson,
   configPath,
   outputConfigPath,
+  userNodeVersion,
   headersPath,
   redirectsPath,
   buildDir,
@@ -542,6 +558,7 @@ const runBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -567,6 +584,7 @@ const runBuild = async function ({
     failedPlugins,
     timers: timersB,
     configMutations,
+    metrics,
   } = await runSteps({
     steps,
     buildbotServerSocket,
@@ -598,7 +616,17 @@ const runBuild = async function ({
     testOpts,
     featureFlags,
     quiet,
+    userNodeVersion,
+    explicitSecretKeys,
   })
 
-  return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
+  return {
+    stepsCount,
+    netlifyConfig: netlifyConfigA,
+    statuses,
+    failedPlugins,
+    timers: timersB,
+    configMutations,
+    metrics,
+  }
 }

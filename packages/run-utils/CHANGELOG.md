@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/netlify/build/compare/run-utils-v5.1.0...run-utils-v5.1.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* update minimum version of semver to be ESM compatible ([#5049](https://github.com/netlify/build/issues/5049)) ([6454437](https://github.com/netlify/build/commit/6454437dbbc54de309c2a7dbeb59149e1b7d02ca))
+
 ## [5.1.0](https://github.com/netlify/build/compare/run-utils-v5.0.2...run-utils-v5.1.0) (2022-12-13)
 
 

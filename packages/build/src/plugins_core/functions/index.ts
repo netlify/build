@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { NodeBundlerType, RuntimeType, zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { log } from '../../log/logger.js'
@@ -15,8 +15,8 @@ const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
   // using a Set to filter duplicates
   new Set(
     results
-      .map((bundle) => (bundle.runtime === RuntimeType.JAVASCRIPT ? bundle.bundler : null))
-      .filter(Boolean) as NodeBundlerType[],
+      .map((bundle) => (bundle.runtime === RUNTIME.JAVASCRIPT ? bundle.bundler : null))
+      .filter(Boolean) as NodeBundlerName[],
   )
 
 const zipFunctionsAndLogResults = async ({
@@ -30,6 +30,8 @@ const zipFunctionsAndLogResults = async ({
   isRunningLocally,
   logs,
   repositoryRoot,
+  userNodeVersion,
+  systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -40,6 +42,8 @@ const zipFunctionsAndLogResults = async ({
     internalFunctionsSrc,
     isRunningLocally,
     repositoryRoot,
+    userNodeVersion,
+    systemLog,
   })
 
   try {
@@ -74,6 +78,8 @@ const coreStep = async function ({
   netlifyConfig,
   featureFlags,
   repositoryRoot,
+  userNodeVersion,
+  systemLog,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -120,12 +126,17 @@ const coreStep = async function ({
     isRunningLocally,
     logs,
     repositoryRoot,
+    userNodeVersion,
+    systemLog,
   })
+
+  const metrics = getMetrics(internalFunctions, userFunctions)
 
   return {
     tags: {
       bundler: bundlers,
     },
+    metrics,
   }
 }
 
@@ -163,4 +174,21 @@ export const zipItAndShipIt = {
   async zipFunctions(...args: Parameters<typeof zipFunctions>) {
     return await zipFunctions(...args)
   },
+}
+
+const getMetrics = (internalFunctions: string[], userFunctions: string[]) => {
+  return [
+    {
+      type: 'increment',
+      name: 'buildbot.build.functions',
+      value: internalFunctions.length,
+      tags: { type: 'lambda:generated' },
+    },
+    {
+      type: 'increment',
+      name: 'buildbot.build.functions',
+      value: userFunctions.length,
+      tags: { type: 'lambda:user' },
+    },
+  ]
 }

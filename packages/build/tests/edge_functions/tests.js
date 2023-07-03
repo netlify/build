@@ -96,11 +96,13 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
   await assertManifest(t, 'functions_internal')
   const manifestPath = join(FIXTURES_DIR, 'functions_internal/.netlify/edge-functions-dist/manifest.json')
 
-  const { routes } = await importJsonFile(manifestPath)
-  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', generator: 'internalFunc' }])
+  const { routes, function_config } = await importJsonFile(manifestPath)
+
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', excluded_patterns: [] }])
+  t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
-test.serial('builds Edge Functions from both the user and the internal directoriws', async (t) => {
+test.serial('builds Edge Functions from both the user and the internal directories', async (t) => {
   const output = await new Fixture('./fixtures/functions_user_internal')
     .withFlags({ debug: false, mode: 'buildbot' })
     .runWithBuild()
@@ -116,6 +118,15 @@ if (platform !== 'win32') {
     t.snapshot(normalizeOutput(output))
   })
 }
+
+// Does not work because the validator is memoized in edge-bundler and the ff has no effect during runtime.
+// Enable test once removing FF
+test.serial.skip('handles failure when validating Edge Functions', async (t) => {
+  const output = await new Fixture('./fixtures/functions_validation_failed')
+    .withFlags({ debug: false, featureFlags: { edge_functions_manifest_validate_slash: true } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
 
 test('bundles Edge Functions via runCoreSteps function', async (t) => {
   const output = await new Fixture('./fixtures/functions_user')
@@ -176,7 +187,7 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
 
   const { routes } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', generator: 'internalFunc' }])
+  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [] }])
 })
 
 test.serial('cleans up the edge functions dist directory before bundling', async (t) => {

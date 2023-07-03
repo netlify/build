@@ -19,6 +19,8 @@ export type BuildCLIFlags = {
   /** The invoking service of netlify build */
   mode: Mode
   telemetry: boolean
+  /** Distributed tracing properties for this build*/
+  tracing: TracingOptions
   /**
    * Buffer output instead of printing it
    * @default false
@@ -33,6 +35,12 @@ export type BuildCLIFlags = {
    * @default false
    */
   quiet?: boolean
+
+  statsd?: { host?: string; port?: number }
+}
+
+export type BuildFlags = BuildCLIFlags & {
+  env?: Record<string, unknown>
 }
 
 export type BuildResult = {
@@ -63,4 +71,14 @@ export type ErrorParam = {
   testOpts?: TestOptions
   childEnv?: any
   netlifyConfig?: NetlifyConfig
+}
+
+export type TracingOptions = {
+  enabled: boolean
+  host: string
+  port: number
+  /** Properties of the root span and trace id used to stitch context */
+  traceId: string
+  traceFlags: number
+  parentSpanId: string
 }

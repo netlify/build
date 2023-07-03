@@ -31,6 +31,8 @@ export const fireCoreStep = async function ({
   debug,
   systemLog,
   saveConfig,
+  userNodeVersion,
+  explicitSecretKeys,
 }) {
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -39,6 +41,7 @@ export const fireCoreStep = async function ({
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
       tags,
+      metrics,
     } = await coreStep({
       configPath,
       outputConfigPath,
@@ -60,6 +63,8 @@ export const fireCoreStep = async function ({
       debug,
       systemLog,
       saveConfig,
+      userNodeVersion,
+      explicitSecretKeys,
     })
     const {
       netlifyConfig: netlifyConfigA,
@@ -85,6 +90,7 @@ export const fireCoreStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       tags,
+      metrics,
     }
   } catch (newError) {
     if (!isBuildError(newError)) {

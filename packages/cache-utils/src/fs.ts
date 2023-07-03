@@ -1,5 +1,5 @@
 import { promises as fs, Stats } from 'fs'
-import { basename, dirname } from 'path'
+import { basename, dirname, join } from 'path'
 
 import cpy from 'cpy'
 import { Options, globby } from 'globby'
@@ -18,9 +18,9 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
     return moveFile(src, dest, { overwrite: false })
   }
 
-  const { srcGlob, ...options } = await getSrcGlob(src)
-  if (srcGlob) {
-    return cpy(srcGlob, dirname(dest), { ...options, parents: true, overwrite: false })
+  const { srcGlob, dest: matchedDest, ...options } = await getSrcAndDest(src, dirname(dest))
+  if (srcGlob && matchedDest) {
+    return cpy(srcGlob, matchedDest, { ...options, overwrite: false })
   }
 }
 
@@ -28,7 +28,8 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
  * Non-existing files and empty directories are always skipped
  */
 export const hasFiles = async function (src: string): Promise<boolean> {
-  const { srcGlob, isDir, ...options } = await getSrcGlob(src)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { srcGlob, isDir, dest, ...options } = await getSrcAndDest(src, '')
   return srcGlob !== undefined && !(await isEmptyDir(srcGlob, isDir, options))
 }
 
@@ -45,6 +46,7 @@ const isEmptyDir = async function (globPattern: string, isDir: boolean, options:
 
 type GlobOptions = {
   srcGlob?: string
+  dest?: string
   isDir: boolean
   cwd: string
   dot?: boolean
@@ -53,7 +55,7 @@ type GlobOptions = {
 /**
  * Get globbing pattern with files to move/copy
  */
-const getSrcGlob = async function (src: string): Promise<GlobOptions> {
+const getSrcAndDest = async function (src: string, dest: string): Promise<GlobOptions> {
   const srcStat = await getStat(src)
 
   if (srcStat === undefined) {
@@ -66,13 +68,14 @@ const getSrcGlob = async function (src: string): Promise<GlobOptions> {
 
   const baseOptions: GlobOptions = {
     srcGlob: srcBasename,
+    dest,
     isDir,
     cwd,
     dot: true, // collect .dot directories as well
   }
 
   if (isDir) {
-    return { ...baseOptions, srcGlob: `${srcBasename}/**` }
+    return { ...baseOptions, srcGlob: `${srcBasename}/**`, dest: join(dest, srcBasename) }
   }
 
   return baseOptions

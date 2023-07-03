@@ -1,21 +1,26 @@
+import { Client } from '@bugsnag/js'
 import { listFrameworks } from '@netlify/framework-info'
 
 import { Logger } from '../file-system.js'
+import { DetectedFramework } from '../frameworks/framework.js'
 import { report } from '../metrics.js'
 import { PkgManagerFields } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
+import { Settings } from '../settings/get-build-settings.js'
 import { WorkspaceInfo } from '../workspaces/detect-workspace.js'
 
 import { NodeFS } from './file-system.js'
 
 export type Info = {
-  jsWorkspaces?: WorkspaceInfo
-  packageManager?: PkgManagerFields
-  frameworks: unknown[]
-  buildSystems?: {
+  jsWorkspaces: WorkspaceInfo | null
+  packageManager: PkgManagerFields | null
+  frameworks: DetectedFramework[]
+  settings: Settings[]
+  buildSystems: {
     name: string
     version?: string | undefined
   }[]
+  langRuntimes: { name: string }[]
 }
 
 /** A noop logger that is used to not log anything (we use the stdout for parsing the json output) */
@@ -43,35 +48,38 @@ export async function getBuildInfo(
     projectDir?: string
     rootDir?: string
     featureFlags?: Record<string, boolean>
+    bugsnagClient?: Client
   } = { featureFlags: {} },
 ): Promise<Info> {
   const fs = new NodeFS()
   // prevent logging in output as we use the stdout to capture the json
   fs.logger = new NoopLogger()
   const project = new Project(fs, config.projectDir, config.rootDir)
-  project.setEnvironment(process.env)
-  let frameworks: any[] = []
-  try {
-    // if the framework  detection is crashing we should not crash the build info and package-manager detection
-    frameworks = await listFrameworks({ projectDir: project.baseDirectory })
-  } catch (error) {
-    report(error)
-  }
+    .setBugsnag(config.bugsnagClient)
+    .setEnvironment(process.env)
+    .setNodeVersion(process.version)
 
-  const info: Info = {
-    frameworks,
-    buildSystems: await project.detectBuildSystem(),
-  }
+  const info = {} as Info
 
-  const pkgJSONPath = await project.getPackageJSON()
-  // only if we find a root package.json we know this is a javascript workspace
-  if (Object.keys(pkgJSONPath).length) {
-    info.packageManager = await project.detectPackageManager()
-    const workspaceInfo = await project.detectWorkspaces()
-    if (workspaceInfo) {
-      info.jsWorkspaces = workspaceInfo
+  if (config.featureFlags?.build_info_new_framework_detection) {
+    info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
+  } else {
+    try {
+      // if the framework  detection is crashing we should not crash the build info and package-manager detection
+      info.frameworks = (await listFrameworks({ projectDir: project.baseDirectory })) as unknown as DetectedFramework[]
+    } catch (error) {
+      report(error, { client: config.bugsnagClient })
+      info.frameworks = []
     }
   }
+
+  info.settings = await project.getBuildSettings()
+  info.langRuntimes = await project.detectRuntime()
+
+  // some framework detection like NX can update the workspace in the project so assign it later on
+  info.jsWorkspaces = project.workspace
+  info.buildSystems = project.buildSystems
+  info.packageManager = project.packageManager
 
   return info
 }

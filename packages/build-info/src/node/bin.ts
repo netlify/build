@@ -33,11 +33,19 @@ yargs(hideBin(argv))
       }),
     async ({ projectDir, rootDir, featureFlags }: Args) => {
       // start bugsnag reporting
-      await initializeMetrics()
+      const bugsnagClient = await initializeMetrics()
       try {
-        console.log(JSON.stringify(await getBuildInfo({ projectDir, rootDir, featureFlags }), null, 2))
+        console.log(
+          JSON.stringify(
+            await getBuildInfo({ projectDir, rootDir, featureFlags, bugsnagClient }),
+            // hide null values from the string output as we use null to identify it has already run but did not detect anything
+            // undefined marks that it was never run
+            (_, value) => (value !== null ? value : undefined),
+            2,
+          ),
+        )
       } catch (error) {
-        report(error)
+        report(error, { client: bugsnagClient })
         exit(1)
       }
     },

@@ -52,6 +52,87 @@
   * dependencies
     * netlify bumped from ^13.1.2 to ^13.1.3
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.3 to ^13.1.4
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.4 to ^13.1.5
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.6 to ^13.1.7
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.8 to ^13.1.9
+
+## [20.5.1](https://github.com/netlify/build/compare/config-v20.5.0...config-v20.5.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* fix typo ([#5079](https://github.com/netlify/build/issues/5079)) ([620c155](https://github.com/netlify/build/commit/620c155c6d03d1bf9bffa7ad2d3e9084e600922d))
+
+## [20.5.0](https://github.com/netlify/build/compare/config-v20.4.6...config-v20.5.0) (2023-06-14)
+
+
+### Features
+
+* pass through siteFeatureFlagPrefix to API ([#5076](https://github.com/netlify/build/issues/5076)) ([c68b54f](https://github.com/netlify/build/commit/c68b54fd190d312d235b46768af13add8b6c869d))
+
+## [20.4.5](https://github.com/netlify/build/compare/config-v20.4.4...config-v20.4.5) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency filter-obj to v5 ([#4482](https://github.com/netlify/build/issues/4482)) ([24ec285](https://github.com/netlify/build/commit/24ec285a83e189d99d2ac29af2d67ac9ba23efe5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.7 to ^13.1.8
+    * netlify-redirect-parser bumped from ^14.1.2 to ^14.1.3
+
+## [20.4.4](https://github.com/netlify/build/compare/config-v20.4.3...config-v20.4.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* **config:** ignores an empty config file path ([#5037](https://github.com/netlify/build/issues/5037)) ([4ac2c5b](https://github.com/netlify/build/commit/4ac2c5b1ad10d0fb34aa727cf2bc8deaa6d0ec73))
+
+## [20.4.2](https://github.com/netlify/build/compare/config-v20.4.1...config-v20.4.2) (2023-05-12)
+
+
+### Bug Fixes
+
+* remove `del` package ([#5006](https://github.com/netlify/build/issues/5006)) ([f2c7df3](https://github.com/netlify/build/commit/f2c7df35019fa8f356ff8c13874760e8fbebc381))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.5 to ^13.1.6
+
+## [20.4.0](https://github.com/netlify/build/compare/config-v20.3.7...config-v20.4.0) (2023-04-24)
+
+
+### Features
+
+* support `none` bundler ([#4981](https://github.com/netlify/build/issues/4981)) ([eaf5191](https://github.com/netlify/build/commit/eaf51912c4d792f85e1fa58b8d56fe7acb475088))
+
 ## [20.3.5](https://github.com/netlify/build/compare/config-v20.3.4...config-v20.3.5) (2023-03-13)
 
 

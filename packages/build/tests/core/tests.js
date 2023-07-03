@@ -8,6 +8,7 @@ import test from 'ava'
 import getNode from 'get-node'
 import moize from 'moize'
 import { pathExists } from 'path-exists'
+import semver from 'semver'
 import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 
@@ -128,6 +129,20 @@ test('--repository-root', async (t) => {
 
 test('--config', async (t) => {
   const output = await new Fixture().withFlags({ config: `${FIXTURES_DIR}/empty/netlify.toml` }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('nested --config', async (t) => {
+  const output = await new Fixture('./fixtures/toml')
+    .withFlags({ config: `${FIXTURES_DIR}/toml/apps/nested/netlify.toml` })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('empty --config', async (t) => {
+  const output = await new Fixture('./fixtures/toml')
+    .withFlags({ config: '', cwd: `${FIXTURES_DIR}/toml/apps/nested` })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -356,8 +371,14 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.basePath, fixtureDir)
   t.true(params1.config['*'].zipGo)
   t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
-  t.is(params1.config['*'].nodeVersion, undefined)
   t.is(params1.repositoryRoot, fixtureDir)
+
+  const testNodeVersion = process.versions.node
+  if (semver.gte(testNodeVersion, '16.0.0')) {
+    t.is(params1.config['*'].nodeVersion, testNodeVersion)
+  } else {
+    t.is(params1.config['*'].nodeVersion, undefined)
+  }
 
   const params2 = mockZipFunctions.secondCall.args[2]
 

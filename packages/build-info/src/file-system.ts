@@ -1,3 +1,8 @@
+export const enum Environment {
+  Browser = 'browser',
+  Node = 'node',
+}
+
 export interface Logger {
   debug(...any: any[]): void
   log(...any: any[]): void
@@ -46,18 +51,79 @@ export type findUpOptions = {
   stopAt?: string
 }
 
+/**
+ * helper function to normalize path segments for a platform independent join
+ * resolves . and .. elements in a path array with directory names
+ *
+ * @param allowAboveRoot is used for non absolute paths to go up
+ */
+function normalizePathSegments(parts: string[], allowAboveRoot: boolean) {
+  const res: string[] = []
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i]
+
+    // ignore empty parts
+    if (!p || p === '.') continue
+
+    if (p === '..') {
+      if (res.length && res[res.length - 1] !== '..') {
+        res.pop()
+      } else if (allowAboveRoot) {
+        res.push('..')
+      }
+    } else {
+      res.push(p)
+    }
+  }
+
+  return res
+}
+
+/** A platform independent version of path.normalize()  */
+export function normalize(path: string): string {
+  const isAbsolute = path.startsWith('/')
+  const trailingSlash = path && path[path.length - 1] === '/'
+
+  // Normalize the path
+  path = normalizePathSegments(path.split('/'), !isAbsolute).join('/')
+
+  if (!path && !isAbsolute) {
+    path = '.'
+  }
+  if (path && trailingSlash) {
+    path += '/'
+  }
+
+  return `${isAbsolute ? '/' : ''}${path}`
+}
+
+/** A platform independent version of path.join() */
+export function join(...segments: string[]): string {
+  let path = ''
+  for (let i = 0, max = segments.length; i < max; i++) {
+    if (typeof segments[i] !== 'string') {
+      throw new TypeError('Arguments to join must be strings')
+    }
+    // replace all backslashes to forward slashes
+    const segment = segments[i].replace(/\\/gm, '/')
+    if (segment) {
+      if (!path.length) {
+        path += segment
+      } else {
+        path += '/' + segment
+      }
+    }
+  }
+  return normalize(path)
+}
+
 export abstract class FileSystem {
   logger: Logger = new DefaultLogger()
 
-  /**
-   * This is an in memory representation of the parsed files
-   * The keys are always stored in posix style
-   * If the value is null then the file did not get read up in memory yet.
-   * If the value is a string it already got read up in mem.
-   */
-  files = new Map<string, File | null>()
   /** The current working directory will be set by the project */
   cwd = '/'
+
+  abstract getEnvironment(): Environment
 
   abstract fileExists(path: string): Promise<boolean>
 
@@ -89,9 +155,13 @@ export abstract class FileSystem {
 
     const matching: string[] = []
 
-    // split by / excluding the starting slash
-    const fromParts = this.join(absoluteFrom).split(/(?<!^)\//gm)
-    const toParts = this.join(absoluteTo).split(/(?<!^)\//gm)
+    if (absoluteTo.startsWith(absoluteFrom)) {
+      // lazily matches a slash afterwards if it's a directory
+      return absoluteTo.substring(absoluteFrom.length).replace(/^\//, '')
+    }
+
+    const fromParts = this.join(absoluteFrom).split('/')
+    const toParts = this.join(absoluteTo).split('/')
     for (let i = 0, max = toParts.length; i < max; i++) {
       if (toParts[i] === fromParts?.[i]) {
         matching.push(toParts[i])
@@ -107,7 +177,7 @@ export abstract class FileSystem {
     const up = Math.max(toUp, fromUp)
 
     // if we have something from the 'from' to go up the max difference
-    const result = fromUp > 0 ? [...new Array<string>(up).fill('..')] : []
+    const result = fromUp > 0 ? Array<string>(up).fill('..') : []
 
     // if we have some parts left add them to the going up
     if (toUp > 0) {
@@ -131,78 +201,32 @@ export abstract class FileSystem {
 
   /** A platform independent version of path.join() */
   join(...segments: string[]): string {
-    let parts: string[] = []
-    for (let i = 0, max = segments.length; i < max; i++) {
-      // split the segments to parts by all kind of separator (forward and backward)
-      parts = parts.concat(segments[i].split(/[\\/]/g))
-    }
-
-    // resolve .. inside path segments
-    const resolvedParts: string[] = []
-    for (let i = 0, max = parts.length; i < max; i++) {
-      const part = parts[i]
-      // Remove leading and trailing slashes
-      // Also remove "." segments
-      if (!part || part === '.') continue
-      // Interpret ".." to pop the last segment
-      if (part === '..') {
-        resolvedParts.pop()
-      } else {
-        resolvedParts.push(part)
-      }
-    }
-    // Preserve the initial slash if there was one.
-    if (parts[0] === '') {
-      resolvedParts.unshift('')
-    }
-
-    return resolvedParts.join('/') || (resolvedParts.length ? '/' : '.')
+    return join(...segments)
   }
 
-  /** adds a file to the file map */
-  setFile(path: string, content: File): void {
-    this.files.set(path, content)
-  }
-
-  /** get a file from the file map */
-  getFile(path: string): File | null {
-    return this.files.get(path) || null
-  }
-
-  /** get a json file from the file map */
-  getJSONFile<T = Record<string, any>>(path: string): JSONFile<T> | null {
-    const file = this.files.get(path) || null
-    if (file?.type === 'json') {
-      return file as JSONFile<T>
+  /** Gracefully reads the file and returns null if it does not exist */
+  async gracefullyReadFile(path: string): Promise<string | null> {
+    try {
+      return await this.readFile(path)
+    } catch {
+      return null
     }
-    return null
-  }
-
-  /** get a toml file from the file map */
-  getTOMLFile(path: string): TOMLFile | null {
-    const file = this.files.get(path) || null
-    if (file?.type === 'toml') {
-      return file
-    }
-    return null
-  }
-
-  /** Checks if a file is already in our in memory representation */
-  hasFile(path): boolean {
-    const resolvedPath = path
-    const file = this.files.get(resolvedPath)
-
-    return Boolean(file?.content)
   }
 
   /** Gracefully reads a file as JSON and parses it */
-  async readJSON<V = Record<string, unknown>>(path: string): Promise<Partial<V>> {
+  async readJSON<V = Record<string, unknown>>(path: string, options: { fail?: boolean } = {}): Promise<Partial<V>> {
     try {
-      const content = JSON.parse(await this.readFile(path))
-      this.files.set(path, { content, type: 'json' })
-      return content
+      return JSON.parse(await this.readFile(path))
     } catch (error) {
-      this.logger.error(`Could not parse JSON file ${path}\n${error}`)
+      if (options.fail) {
+        throw error
+      }
+
+      let message = `Could not parse JSON file ${path}`
+      if (error instanceof Error) {
+        message += `\n${error.name}: ${error.message}\n${error.stack}`
+      }
+      this.logger.error(message)
       return {}
     }
   }

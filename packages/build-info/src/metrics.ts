@@ -1,4 +1,4 @@
-import bugsnag, { NotifiableError } from '@bugsnag/js'
+import bugsnag, { type Client, NotifiableError } from '@bugsnag/js'
 
 const { default: Bugsnag } = bugsnag
 
@@ -9,9 +9,10 @@ export function report(
     context?: 'string'
     severity?: 'info' | 'warning' | 'error'
     metadata?: Record<string, Record<string, any>>
+    client?: Client
   } = {},
 ) {
-  Bugsnag.notify(error, (event) => {
+  ;(options.client || Bugsnag).notify(error, (event) => {
     for (const [section, values] of Object.entries(options.metadata || {})) {
       event.addMetadata(section, values)
     }

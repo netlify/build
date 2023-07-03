@@ -6,14 +6,14 @@ import { getUtils } from './utils.js'
 
 // Run a specific plugin event handler
 export const run = async function (
-  { event, error, constants, envChanges, netlifyConfig },
+  { event, error, constants, envChanges, featureFlags, netlifyConfig },
   { methods, inputs, packageJson, verbose },
 ) {
   const method = methods[event]
   const runState = {}
   const utils = getUtils({ event, constants, runState })
   const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
-  const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigCopy, packageJson, error }
+  const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigCopy, packageJson, error, featureFlags }
 
   const envBefore = setEnvChanges(envChanges)
 

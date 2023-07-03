@@ -1,0 +1,265 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should retrieve the build info for providing a rootDir 1`] = `
+{
+  "buildSystems": [
+    {
+      "id": "pnpm",
+      "name": "PNPM",
+      "version": undefined,
+    },
+  ],
+  "frameworks": [],
+  "jsWorkspaces": WorkspaceInfo {
+    "isRoot": true,
+    "packages": [
+      {
+        "name": "@evilcorp/blog",
+        "path": "packages/blog",
+      },
+      {
+        "name": "@evilcorp/website",
+        "path": "packages/website",
+      },
+    ],
+    "rootDir": "/cleaned-for-snapshot",
+  },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
+  "packageManager": {
+    "forceEnvironment": "NETLIFY_USE_PNPM",
+    "installCommand": "pnpm install",
+    "lockFile": "pnpm-lock.yaml",
+    "name": "pnpm",
+    "runCommand": "pnpm run",
+    "version": SemVer {
+      "build": [],
+      "includePrerelease": false,
+      "loose": false,
+      "major": 6,
+      "minor": 32,
+      "options": {},
+      "patch": 18,
+      "prerelease": [],
+      "raw": "6.32.18",
+      "version": "6.32.18",
+    },
+  },
+  "settings": [
+    {
+      "baseDirectory": "",
+      "buildCommand": "pnpm run build --filter @evilcorp/blog",
+      "devCommand": "pnpm run dev --filter @evilcorp/blog",
+      "dist": "packages/blog/public",
+      "env": {},
+      "framework": {
+        "id": "astro",
+        "name": "Astro",
+      },
+      "frameworkPort": 3000,
+      "name": "PNPM + Astro packages/blog",
+      "packagePath": "packages/blog",
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
+      "pollingStrategies": [
+        "TCP",
+        "HTTP",
+      ],
+    },
+    {
+      "baseDirectory": "",
+      "buildCommand": "pnpm run build --filter @evilcorp/website",
+      "devCommand": "pnpm run dev --filter @evilcorp/website",
+      "dist": "packages/website/.next",
+      "env": {},
+      "framework": {
+        "id": "next",
+        "name": "Next.js",
+      },
+      "frameworkPort": 3000,
+      "name": "PNPM + Next.js packages/website",
+      "packagePath": "packages/website",
+      "plugins_from_config_file": [],
+      "plugins_recommended": [
+        "@netlify/plugin-nextjs",
+      ],
+      "pollingStrategies": [
+        "TCP",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`should retrieve the build info for providing a rootDir and a nested projectDir 1`] = `
+{
+  "buildSystems": [
+    {
+      "id": "pnpm",
+      "name": "PNPM",
+      "version": undefined,
+    },
+  ],
+  "frameworks": [],
+  "jsWorkspaces": WorkspaceInfo {
+    "isRoot": false,
+    "packages": [
+      {
+        "name": "@evilcorp/blog",
+        "path": "packages/blog",
+      },
+      {
+        "name": "@evilcorp/website",
+        "path": "packages/website",
+      },
+    ],
+    "rootDir": "/cleaned-for-snapshot",
+  },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
+  "packageManager": {
+    "forceEnvironment": "NETLIFY_USE_PNPM",
+    "installCommand": "pnpm install",
+    "lockFile": "pnpm-lock.yaml",
+    "name": "pnpm",
+    "runCommand": "pnpm run",
+    "version": SemVer {
+      "build": [],
+      "includePrerelease": false,
+      "loose": false,
+      "major": 6,
+      "minor": 32,
+      "options": {},
+      "patch": 18,
+      "prerelease": [],
+      "raw": "6.32.18",
+      "version": "6.32.18",
+    },
+  },
+  "settings": [
+    {
+      "baseDirectory": "",
+      "buildCommand": "pnpm run build --filter @evilcorp/blog",
+      "devCommand": "pnpm run dev --filter @evilcorp/blog",
+      "dist": "packages/blog/public",
+      "env": {},
+      "framework": {
+        "id": "astro",
+        "name": "Astro",
+      },
+      "frameworkPort": 3000,
+      "name": "PNPM + Astro packages/blog",
+      "packagePath": "packages/blog",
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
+      "pollingStrategies": [
+        "TCP",
+        "HTTP",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`should retrieve the build info for providing a rootDir and the same projectDir 1`] = `
+{
+  "buildSystems": [
+    {
+      "id": "pnpm",
+      "name": "PNPM",
+      "version": undefined,
+    },
+  ],
+  "frameworks": [],
+  "jsWorkspaces": WorkspaceInfo {
+    "isRoot": true,
+    "packages": [
+      {
+        "name": "@evilcorp/blog",
+        "path": "packages/blog",
+      },
+      {
+        "name": "@evilcorp/website",
+        "path": "packages/website",
+      },
+    ],
+    "rootDir": "/cleaned-for-snapshot",
+  },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
+  "packageManager": {
+    "forceEnvironment": "NETLIFY_USE_PNPM",
+    "installCommand": "pnpm install",
+    "lockFile": "pnpm-lock.yaml",
+    "name": "pnpm",
+    "runCommand": "pnpm run",
+    "version": SemVer {
+      "build": [],
+      "includePrerelease": false,
+      "loose": false,
+      "major": 6,
+      "minor": 32,
+      "options": {},
+      "patch": 18,
+      "prerelease": [],
+      "raw": "6.32.18",
+      "version": "6.32.18",
+    },
+  },
+  "settings": [
+    {
+      "baseDirectory": "",
+      "buildCommand": "pnpm run build --filter @evilcorp/blog",
+      "devCommand": "pnpm run dev --filter @evilcorp/blog",
+      "dist": "packages/blog/public",
+      "env": {},
+      "framework": {
+        "id": "astro",
+        "name": "Astro",
+      },
+      "frameworkPort": 3000,
+      "name": "PNPM + Astro packages/blog",
+      "packagePath": "packages/blog",
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
+      "pollingStrategies": [
+        "TCP",
+        "HTTP",
+      ],
+    },
+    {
+      "baseDirectory": "",
+      "buildCommand": "pnpm run build --filter @evilcorp/website",
+      "devCommand": "pnpm run dev --filter @evilcorp/website",
+      "dist": "packages/website/.next",
+      "env": {},
+      "framework": {
+        "id": "next",
+        "name": "Next.js",
+      },
+      "frameworkPort": 3000,
+      "name": "PNPM + Next.js packages/website",
+      "packagePath": "packages/website",
+      "plugins_from_config_file": [],
+      "plugins_recommended": [
+        "@netlify/plugin-nextjs",
+      ],
+      "pollingStrategies": [
+        "TCP",
+      ],
+    },
+  ],
+}
+`;

@@ -1,4 +1,4 @@
-import { join, relative } from 'path'
+import { join, relative, posix } from 'path'
 
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -8,6 +8,7 @@ import { GithubProvider, WebFS } from './browser/file-system.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import { Project } from './project.js'
 
+const { join: posixJoin } = posix
 // This is a mock for the github api functionality to have consistent tests and no rate limiting
 global.fetch = vi.fn(async (url): Promise<any> => {
   switch (url) {
@@ -40,6 +41,8 @@ global.fetch = vi.fn(async (url): Promise<any> => {
       })
     case 'https://api.github.com/repos/netlify/build/contents/package.json?ref=main':
       return new Response(JSON.stringify({ devDependencies: { nx: '^1.2.3' } }))
+    case 'https://api.github.com/repos/netlify/build/contents/nx.json?ref=main':
+      return new Response(JSON.stringify({}))
     case 'https://api.github.com/repos/netlify/build/contents/packages/build-info/package.json?ref=main':
       return new Response(JSON.stringify({ name: '@netlify/build-info' }))
   }
@@ -82,31 +85,27 @@ describe.concurrent('Test the platform independent base functionality', () => {
     ctx.fs = new WebFS(new GithubProvider('netlify/build', 'main'))
   })
 
-  test('hasFile should check if the file exists', async ({ fs }) => {
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-    // just discover the file
-    fs.files.set('path/to/my/file', null)
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-
-    fs.files.set('path/to/my/file', { content: 'hello', type: 'text' })
-    expect(fs.hasFile('path/to/my/file')).toBe(true)
-  })
-
-  test('setFile should add a file to the fs', async ({ fs }) => {
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-    fs.setFile('path/to/my/file', { content: {}, type: 'json' })
-    expect(fs.hasFile('path/to/my/file')).toBe(true)
-  })
-
   test('join should join path segments and always replace to posix style', ({ fs }) => {
-    expect(fs.join('a', 'b', 'c')).toBe('a/b/c')
-    expect(fs.join('a', 'b/cd', 'e')).toBe('a/b/cd/e')
-    expect(fs.join('a')).toBe('a')
+    // test that the fs.join behaves exactly like the official node/posix join functionality
+    ;[fs.join, posixJoin].forEach((joinFn) => {
+      expect(joinFn('/', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '', 'package.json')).toBe('/package.json')
+      expect(joinFn('/', '..', 'package.json')).toBe('/package.json')
+      expect(joinFn('..', 'package.json')).toBe('../package.json')
+      expect(joinFn('', 'package.json')).toBe('package.json')
+      expect(joinFn('', '', '', 'package.json')).toBe('package.json')
+      expect(joinFn('a', 'b', 'c')).toBe('a/b/c')
+      expect(joinFn('a', 'b/cd', 'e')).toBe('a/b/cd/e')
+      expect(joinFn('a')).toBe('a')
+      expect(joinFn('a/../b')).toBe('b')
+      expect(joinFn('a/../b', 'cd')).toBe('b/cd')
+    })
+  })
+
+  test('join should replace backslashes to forward slashes', ({ fs }) => {
     expect(fs.join('a\\b')).toBe('a/b')
-    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
     expect(fs.join('/foo', 'bar', 'baz\\asdf', 'quux', '..')).toBe('/foo/bar/baz/asdf')
-    expect(fs.join('a/../b')).toBe('b')
-    expect(fs.join('a/../b', 'cd')).toBe('b/cd')
+    expect(fs.join('a\\b', 'other_ space')).toBe('a/b/other_ space')
   })
 
   test('basename should return the last path segment', ({ fs }) => {
@@ -140,6 +139,11 @@ describe.concurrent('Test the platform independent base functionality', () => {
 
     fs.cwd = '/x'
     vi.spyOn(process, 'cwd').mockImplementation(() => '/x')
+
+    expect(fs.relative('y', '/x/y/z')).toBe('z')
+    expect(relative('y', '/x/y/z')).toBe('z')
+    expect(fs.relative('/', '/a/b')).toBe('a/b')
+    expect(relative('/', '/a/b')).toBe(join('a/b'))
     expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
     expect(relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
     expect(fs.relative('/a/b/c/d/e', '/a/b/c')).toBe('../..')

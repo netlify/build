@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+  root: '.',
+  publicDir: 'assets',
   test: {
     restoreMocks: true,
     clearMocks: true,
