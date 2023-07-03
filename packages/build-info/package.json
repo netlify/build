@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "7.0.8",
+  "version": "7.3.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -51,6 +51,7 @@
     "minimatch": "^9.0.0",
     "read-pkg": "^7.1.0",
     "semver": "^7.3.8",
+    "toml": "^3.0.0",
     "yaml": "^2.1.3",
     "yargs": "^17.6.0"
   },

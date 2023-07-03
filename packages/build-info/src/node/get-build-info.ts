@@ -20,6 +20,7 @@ export type Info = {
     name: string
     version?: string | undefined
   }[]
+  langRuntimes: { name: string }[]
 }
 
 /** A noop logger that is used to not log anything (we use the stdout for parsing the json output) */
@@ -73,6 +74,7 @@ export async function getBuildInfo(
   }
 
   info.settings = await project.getBuildSettings()
+  info.langRuntimes = await project.detectRuntime()
 
   // some framework detection like NX can update the workspace in the project so assign it later on
   info.jsWorkspaces = project.workspace
