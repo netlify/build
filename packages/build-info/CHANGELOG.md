@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.3.1](https://github.com/netlify/build/compare/build-info-v7.3.0...build-info-v7.3.1) (2023-07-04)
+
+
+### Bug Fixes
+
+* place outside ff ([0898cf6](https://github.com/netlify/build/commit/0898cf6ceb6467fc1cbca3985f45457a720ffb24))
+
 ## [7.3.0](https://github.com/netlify/build/compare/build-info-v7.2.0...build-info-v7.3.0) (2023-06-30)
 
 
