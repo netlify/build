@@ -67,7 +67,6 @@ export const runStep = async function ({
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,
-    'build.execution.step.description': coreStepDescription,
     'build.execution.step.package_name': packageName,
     'build.execution.step.id': coreStepId,
     'build.execution.step.loaded_from': loadedFrom,
