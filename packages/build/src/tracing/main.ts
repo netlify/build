@@ -1,6 +1,5 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 import type { TracingOptions } from '../core/types.js'
@@ -10,7 +9,11 @@ let sdk: NodeSDK
 
 /** Given a simple logging function return a `DiagLogger`. Used to setup our system logger as the diag logger.*/
 const getOtelLogger = function (logger: (...args: any[]) => void): DiagLogger {
-  const otelLogger = (...args: any[]) => logger('[otel-traces]', ...args)
+  const otelLogger = (...args: any[]) => {
+    // Debug log msgs can be an array of 1 or 2 elements with the second element being an array fo multiple elements
+    const msgs = args.flat(1)
+    logger('[otel-traces]', ...msgs)
+  }
   return {
     debug: otelLogger,
     info: otelLogger,
@@ -30,12 +33,11 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
     protocol: 'grpc',
     apiKey: options.apiKey,
     endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
-    instrumentations: [new HttpInstrumentation()],
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
   // in case there's a default console logger already registered (it would log a msg to it)
-  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.INFO, suppressOverrideMessage: true })
+  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.VERBOSE, suppressOverrideMessage: true })
 
   sdk.start()
 
