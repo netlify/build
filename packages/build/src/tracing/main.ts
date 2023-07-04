@@ -27,6 +27,7 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   sdk = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
+    protocol: 'grpc',
     apiKey: options.apiKey,
     endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
     instrumentations: [new HttpInstrumentation()],
