@@ -1,7 +1,4 @@
-import {
-  configureHoneycombGrpcTraceExporter,
-  configureBatchWithBaggageSpanProcessor,
-} from '@honeycombio/opentelemetry-node'
+import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
@@ -28,12 +25,10 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
   if (!options.enabled) return
   if (sdk) return
 
-  sdk = new NodeSDK({
+  sdk = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
-    spanProcessor: configureBatchWithBaggageSpanProcessor(),
-    traceExporter: configureHoneycombGrpcTraceExporter({
-      endpoint: `http://${options.host}:${options.port}`,
-    }),
+    apiKey: options.apiKey,
+    endpoint: `http://${options.host}:${options.port}`,
     instrumentations: [new HttpInstrumentation()],
   })
 
@@ -98,7 +93,6 @@ export type RootExecutionAttributes = {
 /** Attributes used for the execution of each build step  */
 export type StepExecutionAttributes = {
   'build.execution.step.name': string
-  'build.execution.step.description': string
   'build.execution.step.package_name': string
   'build.execution.step.id': string
   'build.execution.step.loaded_from': string
