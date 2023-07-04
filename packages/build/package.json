@@ -123,7 +123,7 @@
   },
   "devDependencies": {
     "@netlify/nock-udp": "^3.1.2",
-    "@types/node": "^18.14.2",
+    "@types/node": "^20.3.2",
     "atob": "^2.1.2",
     "ava": "^4.0.0",
     "c8": "^7.12.0",
