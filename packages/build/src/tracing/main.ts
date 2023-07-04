@@ -37,7 +37,7 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
   // in case there's a default console logger already registered (it would log a msg to it)
-  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.VERBOSE, suppressOverrideMessage: true })
+  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.INFO, suppressOverrideMessage: true })
 
   sdk.start()
 
