@@ -115,7 +115,7 @@ updating `@netlify/build` and let Renovate bundle those two changes together whe
 
 ### Buildbot
 
-When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a _release PR_ in
+When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a **release PR** in
 Buildbot after a short while.
 
 Unless the release does not contain any production code changes, that PR should be directly tested and merged by the
