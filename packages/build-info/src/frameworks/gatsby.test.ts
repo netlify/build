@@ -30,7 +30,7 @@ test('should detect a simple Gatsby project and add the plugin if the node versi
   expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-gatsby'])
 })
 
-test.only('should detect a simple Gatsby 4 project', async ({ fs }) => {
+test('should detect a simple Gatsby 4 project', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
     'gatsby-config.js': '',
