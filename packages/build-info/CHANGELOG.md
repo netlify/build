@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.3.2](https://github.com/netlify/build/compare/build-info-v7.3.1...build-info-v7.3.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue where the wrong dist was used for frameworks with… ([#5122](https://github.com/netlify/build/issues/5122)) ([4533a61](https://github.com/netlify/build/commit/4533a61da4f40c302fedf8185ae8b85ac3e39fa6))
+
 ## [7.3.1](https://github.com/netlify/build/compare/build-info-v7.3.0...build-info-v7.3.1) (2023-07-04)
 
 
