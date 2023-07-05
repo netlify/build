@@ -10,6 +10,11 @@ export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
   configFiles = ['nx.json']
+  logo = {
+    default: '/logos/nx/light.svg',
+    light: '/logos/nx/light.svg',
+    dark: '/logos/nx/dark.svg',
+  }
   runFromRoot = true
   /**
    * if it's an nx integrated setup
@@ -125,4 +130,9 @@ export class Lerna extends BaseBuildTool {
   id = 'lerna'
   name = 'Lerna'
   configFiles = ['lerna.json']
+  logo = {
+    default: '/logos/lerna/light.svg',
+    light: '/logos/lerna/light.svg',
+    dark: '/logos/lerna/dark.svg',
+  }
 }
