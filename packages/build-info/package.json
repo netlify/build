@@ -47,6 +47,7 @@
   "dependencies": {
     "@bugsnag/js": "^7.20.0",
     "@netlify/framework-info": "^9.8.10",
+    "dot-prop": "^8.0.1",
     "find-up": "^6.3.0",
     "minimatch": "^9.0.0",
     "read-pkg": "^7.1.0",
