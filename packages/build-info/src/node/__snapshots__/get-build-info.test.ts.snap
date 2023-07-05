@@ -54,7 +54,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "baseDirectory": "",
       "buildCommand": "pnpm run build --filter @evilcorp/blog",
       "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",
@@ -149,7 +149,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "baseDirectory": "",
       "buildCommand": "pnpm run build --filter @evilcorp/blog",
       "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",
@@ -223,7 +223,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "baseDirectory": "",
       "buildCommand": "pnpm run build --filter @evilcorp/blog",
       "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",

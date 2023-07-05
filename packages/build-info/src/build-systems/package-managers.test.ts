@@ -35,7 +35,7 @@ describe('PNPM workspaces', () => {
         baseDirectory: '', // executed from root
         buildCommand: 'pnpm run build --filter astro-app',
         devCommand: 'pnpm run dev --filter astro-app',
-        dist: join('apps/astro/public'),
+        dist: join('apps/astro/dist'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
@@ -72,7 +72,7 @@ describe('NPM workspaces', () => {
         baseDirectory: '', // executed from root
         buildCommand: 'npm run build --workspace astro-app',
         devCommand: 'npm run dev --workspace astro-app',
-        dist: join('apps/astro/public'),
+        dist: join('apps/astro/dist'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root

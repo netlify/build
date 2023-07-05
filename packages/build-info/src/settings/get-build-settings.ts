@@ -69,8 +69,6 @@ async function applyBuildSystemOverrides(
 }
 
 async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
-  const frameworkDist = framework.staticAssetsDirectory || framework.build.directory
-
   const devCommands = framework.getDevCommands()
   const buildCommands = framework.getBuildCommands()
 
@@ -79,7 +77,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     buildCommand: buildCommands[0],
     devCommand: devCommands[0],
     frameworkPort: framework.dev?.port,
-    dist: project.fs.join(baseDirectory, frameworkDist),
+    dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
     plugins_from_config_file: [],
     plugins_recommended: framework.plugins || [],
@@ -93,7 +91,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
   }
 
   if (baseDirectory?.length && project.workspace?.isRoot) {
-    settings.dist = project.fs.join(baseDirectory, frameworkDist)
+    settings.dist = project.fs.join(baseDirectory, framework.build.directory)
   }
 
   // 1. try to apply overrides for package managers (like npm, pnpm or yarn workspaces)
