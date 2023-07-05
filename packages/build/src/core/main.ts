@@ -1,4 +1,4 @@
-import { trace } from '@opentelemetry/api'
+import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
@@ -44,6 +44,7 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
     telemetry,
     buildId,
     deployId,
+    rootTracingContext,
     ...flagsA
   }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
@@ -55,7 +56,8 @@ export default async function buildSite(flags: Partial<BuildFlags> = {}): Promis
     'deploy.context': flagsA.context,
     'site.id': flagsA.siteId,
   }
-  const rootCtx = setMultiSpanAttributes(attributes)
+  const rootCtx = context.with(rootTracingContext, () => setMultiSpanAttributes(attributes))
+
   return await tracer.startActiveSpan('exec-build', {}, rootCtx, async (span) => {
     try {
       const {

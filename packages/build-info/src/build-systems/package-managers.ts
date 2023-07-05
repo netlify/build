@@ -16,7 +16,7 @@ export class PNPM extends BaseBuildTool {
     if (scripts && Object.keys(scripts).length > 0) {
       return Object.entries(scripts).map(([scriptName, value]) => ({
         type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
-        command: `pnpm run ${scriptName} --filter ${name}`,
+        command: `pnpm --filter ${name} run ${scriptName}`,
       }))
     }
     return []
@@ -67,7 +67,7 @@ export class NPM extends BaseBuildTool {
     if (scripts && Object.keys(scripts).length > 0) {
       return Object.entries(scripts).map(([scriptName, value]) => ({
         type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
-        command: `npm run ${scriptName} --workspace ${name}`,
+        command: `npm --workspace ${name} run ${scriptName}`,
       }))
     }
     return []
