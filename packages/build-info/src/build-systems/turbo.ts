@@ -9,6 +9,12 @@ export class Turbo extends BaseBuildTool {
   configFiles = ['turbo.json']
   runFromRoot = true
 
+  logo = {
+    default: '/logos/turbo/light.svg',
+    light: '/logos/turbo/light.svg',
+    dark: '/logos/turbo/dark.svg',
+  }
+
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
     const { scripts, name } = await this.project.fs.readJSON<PackageJson>(
