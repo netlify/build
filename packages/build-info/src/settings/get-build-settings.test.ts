@@ -125,7 +125,7 @@ test('get dev command from npm scripts if defined inside a workspace setup', asy
       baseDirectory: '', // executed via npm run so no base directory needed we can run from the root
       buildCommand: 'npm run site:build --workspace svelte-app',
       devCommand: 'npm run site:start --workspace svelte-app',
-      dist: join('apps/svelte/static'),
+      dist: join('apps/svelte/public'),
     }),
   ])
 })
@@ -172,7 +172,7 @@ describe.each([
           packagePath: platformJoin('packages/blog'),
           buildCommand: 'npm run build --workspace @evilcorp/blog',
           devCommand: 'npm run dev --workspace @evilcorp/blog',
-          dist: platformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
@@ -194,7 +194,7 @@ describe.each([
           baseDirectory: '',
           buildCommand: 'npm run build --workspace @evilcorp/blog',
           devCommand: 'npm run dev --workspace @evilcorp/blog',
-          dist: platformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
         }),
       ])
@@ -218,7 +218,7 @@ describe.each([
           packagePath: platformJoin('packages/blog'),
           buildCommand: 'pnpm run build --filter @evilcorp/blog',
           devCommand: 'pnpm run dev --filter @evilcorp/blog',
-          dist: platformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
@@ -240,7 +240,7 @@ describe.each([
           baseDirectory: '',
           buildCommand: 'pnpm run build --filter @evilcorp/blog',
           devCommand: 'pnpm run dev --filter @evilcorp/blog',
-          dist: platformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
         }),
       ])
@@ -264,7 +264,7 @@ describe.each([
           packagePath: platformJoin('packages/blog'),
           buildCommand: 'yarn workspace @evilcorp/blog build',
           devCommand: 'yarn workspace @evilcorp/blog dev',
-          dist: platformJoin('packages/blog/public'),
+          dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
@@ -409,7 +409,7 @@ describe.each([
           packagePath: platformJoin('apps/svelte-app'),
           buildCommand: 'nx run svelte-app:build',
           devCommand: 'nx run svelte-app:dev',
-          dist: platformJoin('apps/svelte-app/static'),
+          dist: platformJoin('apps/svelte-app/build'),
         }),
         expect.objectContaining({
           baseDirectory: '',
