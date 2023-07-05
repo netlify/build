@@ -4,7 +4,7 @@ import { createInterface } from 'node:readline'
 
 import { fdir } from 'fdir'
 
-interface ScanResults {
+export interface ScanResults {
   matches: MatchResult[]
   scannedFilesCount: number
 }

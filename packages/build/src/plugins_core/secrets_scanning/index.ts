@@ -1,3 +1,5 @@
+import { trace } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import {
@@ -7,12 +9,15 @@ import {
 } from '../../log/messages/core_steps.js'
 
 import {
+  ScanResults,
   getFilePathsToScan,
   getSecretKeysToScanFor,
   groupScanResultsByKey,
   isSecretsScanningEnabled,
   scanFilesForKeyValues,
 } from './utils.js'
+
+const tracer = trace.getTracer('secrets-scanning')
 
 const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
   const stepResults = {}
@@ -58,24 +63,36 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
     return stepResults
   }
 
-  const scanResults = await scanFilesForKeyValues({
-    env: envVars,
-    keys: keysToSearchFor,
-    base: buildDir as string,
-    filePaths,
-  })
+  let scanResults: ScanResults | undefined
 
-  systemLog({
-    secretsScanFoundSecrets: scanResults.matches.length > 0,
-    secretsScanMatchesCount: scanResults.matches.length,
-    secretsFilesCount: scanResults.scannedFilesCount,
-    keysToSearchFor,
-  })
+  await tracer.startActiveSpan(
+    'scanning-files',
+    { attributes: { keysToSearchFor, totalFiles: filePaths.length } },
+    async (span) => {
+      scanResults = await scanFilesForKeyValues({
+        env: envVars,
+        keys: keysToSearchFor,
+        base: buildDir as string,
+        filePaths,
+      })
 
-  if (scanResults.matches.length === 0) {
+      const attributesForLogsAndSpan = {
+        secretsScanFoundSecrets: scanResults.matches.length > 0,
+        secretsScanMatchesCount: scanResults.matches.length,
+        secretsFilesCount: scanResults.scannedFilesCount,
+        keysToSearchFor,
+      }
+
+      systemLog(attributesForLogsAndSpan)
+      span.setAttributes(attributesForLogsAndSpan)
+      span.end()
+    },
+  )
+
+  if (!scanResults || scanResults.matches.length === 0) {
     logSecretsScanSuccessMessage(
       logs,
-      `Secrets scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
+      `Secrets scanning complete. ${scanResults?.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
     )
     return stepResults
   }
