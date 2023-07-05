@@ -1,4 +1,5 @@
 import { addErrorInfo } from '../../error/info.js'
+import { log } from '../../log/logger.js'
 import {
   logSecretsScanFailBuildMessage,
   logSecretsScanSkipMessage,
@@ -24,6 +25,14 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
     return stepResults
+  }
+
+  // transparently log if there are scanning values being omitted
+  if (envVars['SECRETS_SCAN_OMIT_KEYS'] !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_KEYS override option set to: ${envVars['SECRETS_SCAN_OMIT_KEYS']}\n`)
+  }
+  if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
   }
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
