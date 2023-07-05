@@ -11,7 +11,9 @@ const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125
+
 const DEFAULT_OTEL_TRACING_PORT = 4317
+const DEFAULT_OTEL_ENDPOINT_PROTOCOL = 'http'
 
 export type ResolvedFlags = {
   env: Record<string, unknown>
@@ -95,7 +97,14 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
-    tracing: { enabled: false, port: DEFAULT_OTEL_TRACING_PORT },
+    // tracing.apiKey defaults to '-' else we'll get warning logs if not using
+    // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
+    tracing: {
+      enabled: false,
+      apiKey: '-',
+      httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
+      port: DEFAULT_OTEL_TRACING_PORT,
+    },
     timeline: 'build',
     quiet: false,
   }

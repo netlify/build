@@ -1,6 +1,5 @@
+import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 import type { TracingOptions } from '../core/types.js'
@@ -10,7 +9,11 @@ let sdk: NodeSDK
 
 /** Given a simple logging function return a `DiagLogger`. Used to setup our system logger as the diag logger.*/
 const getOtelLogger = function (logger: (...args: any[]) => void): DiagLogger {
-  const otelLogger = (...args: any[]) => logger('[otel-traces]', ...args)
+  const otelLogger = (...args: any[]) => {
+    // Debug log msgs can be an array of 1 or 2 elements with the second element being an array fo multiple elements
+    const msgs = args.flat(1)
+    logger('[otel-traces]', ...msgs)
+  }
   return {
     debug: otelLogger,
     info: otelLogger,
@@ -25,14 +28,11 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
   if (!options.enabled) return
   if (sdk) return
 
-  const traceExporter = new OTLPTraceExporter({
-    url: `http://${options.host}:${options.port}`,
-  })
-
-  sdk = new NodeSDK({
+  sdk = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
-    traceExporter,
-    instrumentations: [new HttpInstrumentation()],
+    protocol: 'grpc',
+    apiKey: options.apiKey,
+    endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
@@ -43,7 +43,7 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from Buildbot
-  trace.setSpanContext(context.active(), {
+  return trace.setSpanContext(context.active(), {
     traceId: options.traceId,
     spanId: options.parentSpanId,
     traceFlags: options.traceFlags,
@@ -96,7 +96,6 @@ export type RootExecutionAttributes = {
 /** Attributes used for the execution of each build step  */
 export type StepExecutionAttributes = {
   'build.execution.step.name': string
-  'build.execution.step.description': string
   'build.execution.step.package_name': string
   'build.execution.step.id': string
   'build.execution.step.loaded_from': string
