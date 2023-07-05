@@ -64,6 +64,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.3.3](https://github.com/netlify/build/compare/build-info-v7.3.2...build-info-v7.3.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue with npm workspace filtering in the command ([#5125](https://github.com/netlify/build/issues/5125)) ([d161c0c](https://github.com/netlify/build/commit/d161c0c6d00a4be77864356c66a2f82af19c076a)), closes [#5123](https://github.com/netlify/build/issues/5123)
+
+## [7.3.2](https://github.com/netlify/build/compare/build-info-v7.3.1...build-info-v7.3.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue where the wrong dist was used for frameworks with… ([#5122](https://github.com/netlify/build/issues/5122)) ([4533a61](https://github.com/netlify/build/commit/4533a61da4f40c302fedf8185ae8b85ac3e39fa6))
+
+## [7.3.1](https://github.com/netlify/build/compare/build-info-v7.3.0...build-info-v7.3.1) (2023-07-04)
+
+
+### Bug Fixes
+
+* place outside ff ([0898cf6](https://github.com/netlify/build/commit/0898cf6ceb6467fc1cbca3985f45457a720ffb24))
+
 ## [7.3.0](https://github.com/netlify/build/compare/build-info-v7.2.0...build-info-v7.3.0) (2023-06-30)
 
 

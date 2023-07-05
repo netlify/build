@@ -29,6 +29,12 @@ export abstract class BaseBuildTool {
   /** If the command should be executed from the repository root */
   runFromRoot?: boolean
 
+  logo?: {
+    default: string
+    light?: string
+    dark?: string
+  }
+
   constructor(public project: Project) {}
 
   async detect(): Promise<this | undefined> {
@@ -50,6 +56,12 @@ export abstract class BaseBuildTool {
       id: this.id,
       name: this.name,
       version: this.version,
+      logo: this.logo
+        ? Object.entries(this.logo).reduce(
+            (prev, [key, value]) => ({ ...prev, [key]: `https://framework-info.netlify.app${value}` }),
+            {},
+          )
+        : undefined,
     }
   }
 }

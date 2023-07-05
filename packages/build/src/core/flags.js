@@ -200,6 +200,16 @@ Default: false`,
     describe: 'Enable distributed tracing for build',
     hidden: true,
   },
+  'tracing.apiKey': {
+    string: true,
+    describe: 'API Key for the tracing backend provider',
+    hidden: true,
+  },
+  'tracing.httpProtocol': {
+    string: true,
+    describe: 'Traces backend protocol. HTTP or HTTPS.',
+    hidden: true,
+  },
   'tracing.host': {
     string: true,
     describe: 'Traces backend host',

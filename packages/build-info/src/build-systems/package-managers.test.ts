@@ -33,14 +33,14 @@ describe('PNPM workspaces', () => {
     expect(settings).toEqual([
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'pnpm run build --filter astro-app',
-        devCommand: 'pnpm run dev --filter astro-app',
-        dist: join('apps/astro/public'),
+        buildCommand: 'pnpm --filter astro-app run build',
+        devCommand: 'pnpm --filter astro-app run dev',
+        dist: join('apps/astro/dist'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'pnpm run build --filter next-app',
-        devCommand: 'pnpm run dev --filter next-app',
+        buildCommand: 'pnpm --filter next-app run build',
+        devCommand: 'pnpm --filter next-app run dev',
         dist: join('apps/next/.next'),
       }),
     ])
@@ -70,14 +70,14 @@ describe('NPM workspaces', () => {
     expect(settings).toEqual([
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'npm run build --workspace astro-app',
-        devCommand: 'npm run dev --workspace astro-app',
-        dist: join('apps/astro/public'),
+        buildCommand: 'npm --workspace astro-app run build',
+        devCommand: 'npm --workspace astro-app run dev',
+        dist: join('apps/astro/dist'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'npm run build --workspace next-app',
-        devCommand: 'npm run dev --workspace next-app',
+        buildCommand: 'npm --workspace next-app run build',
+        devCommand: 'npm --workspace next-app run dev',
         dist: join('apps/next/.next'),
       }),
     ])
