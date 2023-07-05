@@ -67,7 +67,6 @@ export const runStep = async function ({
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,
-    'build.execution.step.description': coreStepDescription,
     'build.execution.step.package_name': packageName,
     'build.execution.step.id': coreStepId,
     'build.execution.step.loaded_from': loadedFrom,
@@ -75,8 +74,10 @@ export const runStep = async function ({
     'build.execution.step.event': event,
   }
   const spanCtx = setMultiSpanAttributes(attributes)
+  // If there's no `coreStepId` then this is a plugin execution
+  const spanName = `run-step-${coreStepId || 'plugin'}`
 
-  return tracer.startActiveSpan(`run-step-${coreStepId}`, {}, spanCtx, async (span) => {
+  return tracer.startActiveSpan(spanName, {}, spanCtx, async (span) => {
     const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
     const shouldRun = await shouldRunStep({

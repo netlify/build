@@ -75,8 +75,11 @@ export type ErrorParam = {
 
 export type TracingOptions = {
   enabled: boolean
+  httpProtocol: string
   host: string
   port: number
+  /** API Key used for a dedicated trace provider */
+  apiKey: string
   /** Properties of the root span and trace id used to stitch context */
   traceId: string
   traceFlags: number
