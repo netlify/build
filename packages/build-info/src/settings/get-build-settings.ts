@@ -15,6 +15,10 @@ export type Settings = {
     id: string
     name: string
   }
+  buildSystem?: {
+    id: string
+    name: string
+  }
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>

@@ -123,8 +123,8 @@ test('get dev command from npm scripts if defined inside a workspace setup', asy
     }),
     expect.objectContaining({
       baseDirectory: '', // executed via npm run so no base directory needed we can run from the root
-      buildCommand: 'npm run site:build --workspace svelte-app',
-      devCommand: 'npm run site:start --workspace svelte-app',
+      buildCommand: 'npm --workspace svelte-app run site:build',
+      devCommand: 'npm --workspace svelte-app run site:start',
       dist: join('apps/svelte/public'),
     }),
   ])
@@ -170,15 +170,15 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/blog'),
-          buildCommand: 'npm run build --workspace @evilcorp/blog',
-          devCommand: 'npm run dev --workspace @evilcorp/blog',
+          buildCommand: 'npm --workspace @evilcorp/blog run build',
+          devCommand: 'npm --workspace @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/website'),
-          buildCommand: 'npm run build --workspace @evilcorp/website',
-          devCommand: 'npm run dev --workspace @evilcorp/website',
+          buildCommand: 'npm --workspace @evilcorp/website run build',
+          devCommand: 'npm --workspace @evilcorp/website run dev',
           dist: platformJoin('packages/website/.next'),
         }),
       ])
@@ -192,8 +192,8 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          buildCommand: 'npm run build --workspace @evilcorp/blog',
-          devCommand: 'npm run dev --workspace @evilcorp/blog',
+          buildCommand: 'npm --workspace @evilcorp/blog run build',
+          devCommand: 'npm --workspace @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
         }),
@@ -216,15 +216,15 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/blog'),
-          buildCommand: 'pnpm run build --filter @evilcorp/blog',
-          devCommand: 'pnpm run dev --filter @evilcorp/blog',
+          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/website'),
-          buildCommand: 'pnpm run build --filter @evilcorp/website',
-          devCommand: 'pnpm run dev --filter @evilcorp/website',
+          buildCommand: 'pnpm --filter @evilcorp/website run build',
+          devCommand: 'pnpm --filter @evilcorp/website run dev',
           dist: platformJoin('packages/website/.next'),
         }),
       ])
@@ -238,8 +238,8 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          buildCommand: 'pnpm run build --filter @evilcorp/blog',
-          devCommand: 'pnpm run dev --filter @evilcorp/blog',
+          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
         }),
