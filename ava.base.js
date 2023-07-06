@@ -26,7 +26,7 @@ const getOrder = (file) => {
 const sortTestFiles = (file1, file2) => getOrder(file1) - getOrder(file2)
 
 const config = {
-  files: ['packages/**/tests/*.{cjs,mjs,js}', 'packages/**/tests/**/tests.{cjs,mjs,js}'],
+  files: ['packages/**/tests/*.{cjs,mjs,ts,js}', 'packages/**/tests/**/tests.{cjs,mjs,ts,js}'],
   verbose: true,
   timeout: '240s',
   workerThreads: false,
@@ -34,6 +34,11 @@ const config = {
   environmentVariables: {
     FORCE_COLOR: '1',
   },
+  extensions: {
+    ts: 'module',
+    js: true,
+  },
+  nodeArguments: ['--loader=tsx'],
   // we only sort in CI to split efficiently across machines
   ...(isCI && { sortTestFiles }),
 }
