@@ -72,7 +72,8 @@ async function applyBuildSystemOverrides(
   return updatedSettings
 }
 
-async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
+/** Retrieve the settings for a framework, used inside the CLI in conjunction with getFramework */
+export async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
   const devCommands = framework.getDevCommands()
   const buildCommands = framework.getBuildCommands()
 
