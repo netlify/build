@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
+  merge_group:
 jobs:
   e2e:
     runs-on: ubuntu-latest
