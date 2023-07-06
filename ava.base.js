@@ -37,6 +37,8 @@ const config = {
   extensions: {
     ts: 'module',
     js: true,
+    cjs: true,
+    mjs: true,
   },
   nodeArguments: ['--loader=tsx'],
   // we only sort in CI to split efficiently across machines
