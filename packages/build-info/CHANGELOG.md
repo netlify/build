@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.3.5](https://github.com/netlify/build/compare/build-info-v7.3.4...build-info-v7.3.5) (2023-07-06)
+
+
+### Bug Fixes
+
+* export PollingStrategies and getSettings as part of the public api ([#5140](https://github.com/netlify/build/issues/5140)) ([0500193](https://github.com/netlify/build/commit/0500193686b715bf58cfb5204cdb1a754092c1bf))
+
 ## [7.3.4](https://github.com/netlify/build/compare/build-info-v7.3.3...build-info-v7.3.4) (2023-07-06)
 
 
