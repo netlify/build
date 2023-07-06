@@ -1,4 +1,5 @@
 export * from './file-system.js'
+export * from './logger.js'
 export { DetectedFramework, FrameworkInfo } from './frameworks/framework.js'
 export * from './get-framework.js'
 export * from './project.js'
