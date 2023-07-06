@@ -87,9 +87,11 @@ export class Nx extends BaseBuildTool {
       if (target) {
         const pattern = project?.targets?.build?.outputs?.[0]
         if (pattern) {
-          return pattern
-            .replace('{workspaceRoot}/', '')
-            .replace(/\{(.+)\}/g, (_match, group) => getProperty({ ...target, projectRoot: packagePath }, group))
+          return this.project.fs.join(
+            pattern
+              .replace('{workspaceRoot}/', '')
+              .replace(/\{(.+)\}/g, (_match, group) => getProperty({ ...target, projectRoot: packagePath }, group)),
+          )
         }
       }
     } catch {
