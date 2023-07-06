@@ -121,7 +121,7 @@ describe('getDist', () => {
     const project = new Project(fs, cwd)
     const nx = new Nx(project)
     nx.isIntegrated = true
-    expect(await nx.getDist('packages/vue-app')).toBe('dist/packages/vue-app-from-option')
+    expect(await nx.getDist('packages/vue-app')).toBe(join('dist/packages/vue-app-from-option'))
   })
 
   test('retrieve the package path as fallback ', async ({ fs }) => {
@@ -137,7 +137,7 @@ describe('getDist', () => {
     const project = new Project(fs, cwd)
     const nx = new Nx(project)
     nx.isIntegrated = true
-    expect(await nx.getDist('packages/vue-app')).toBe('dist/packages/vue-app')
+    expect(await nx.getDist('packages/vue-app')).toBe(join('dist/packages/vue-app'))
   })
 })
 
@@ -152,10 +152,10 @@ describe('nx-integrated', () => {
           baseDirectory: '',
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: 'dist/packages/website',
+          dist: join('dist/packages/website'),
           framework: { id: 'next', name: 'Next.js' },
-          name: 'Nx + Next.js packages/website',
-          packagePath: 'packages/website',
+          name: `Nx + Next.js ${join('packages/website')}`,
+          packagePath: join('packages/website'),
           plugins_recommended: ['@netlify/plugin-nextjs'],
         }),
       ]),
@@ -166,10 +166,10 @@ describe('nx-integrated', () => {
           baseDirectory: '',
           buildCommand: 'nx run astro:build',
           devCommand: 'nx run astro:dev',
-          dist: 'dist/packages/astro',
+          dist: join('dist/packages/astro'),
           framework: { id: 'astro', name: 'Astro' },
-          name: 'Nx + Astro packages/astro',
-          packagePath: 'packages/astro',
+          name: `Nx + Astro ${join('packages/astro')}`,
+          packagePath: join('packages/astro'),
         }),
       ]),
     )
