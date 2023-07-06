@@ -8,6 +8,7 @@ import { EventEmitter } from './events.js'
 import { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
+import { Logger } from './logger.js'
 import { report } from './metrics.js'
 import {
   AVAILABLE_PACKAGE_MANAGERS,
@@ -58,6 +59,8 @@ export class Project {
   #environment: Record<string, string | undefined> = {}
   /** A bugsnag session */
   bugsnag: Client
+  /** A logging instance  */
+  logger: Logger
 
   events = new EventEmitter<Events>()
 
@@ -102,6 +105,7 @@ export class Project {
         : fs.relative(this.root || fs.cwd, this.baseDirectory)
 
     this.fs.cwd = this.baseDirectory
+    this.logger = fs.logger
   }
 
   /** Set's the environment for the project */
@@ -174,6 +178,10 @@ export class Project {
 
   /** Resolves a path correctly with a package path, independent of run from the workspace root or from a package */
   resolveFromPackage(packagePath: string, ...parts: string[]) {
+    if (this.jsWorkspaceRoot) {
+      return this.fs.join(this.jsWorkspaceRoot, packagePath, ...parts)
+    }
+
     return this.baseDirectory.endsWith(packagePath) && !this.workspace?.isRoot
       ? this.fs.join(this.baseDirectory, ...parts)
       : this.fs.resolve(packagePath, ...parts)
@@ -181,6 +189,7 @@ export class Project {
 
   /** Detects the used package Manager */
   async detectPackageManager() {
+    this.logger.debug('[project.ts]: detectPackageManager')
     // if the packageManager is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.packageManager !== undefined) {
@@ -197,6 +206,7 @@ export class Project {
 
   /** Detects the javascript workspace settings */
   async detectWorkspaces() {
+    this.logger.debug('[project.ts]: detectWorkspaces')
     // if the workspace is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.workspace !== undefined) {
@@ -217,6 +227,7 @@ export class Project {
 
   /** Detects all used build systems */
   async detectBuildSystem() {
+    this.logger.debug('[project.ts]: detectBuildSystem')
     // if the workspace is undefined, the detection was not run.
     if (this.buildSystems !== undefined) {
       return this.buildSystems
@@ -238,6 +249,7 @@ export class Project {
   }
 
   async detectRuntime() {
+    this.logger.debug('[project.ts]: detectRuntime')
     try {
       this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))).filter(
         Boolean,
@@ -252,6 +264,7 @@ export class Project {
 
   /** Detects all used build systems */
   async detectFrameworks() {
+    this.logger.debug('[project.ts]: detectFrameworks')
     // if the workspace is undefined, the detection was not run.
     if (this.frameworks !== undefined) {
       return [...this.frameworks.values()].flat()
@@ -285,6 +298,7 @@ export class Project {
   }
 
   async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
+    this.logger.debug(`[project.ts]: detectFrameworksInPath - ${path}`)
     try {
       const detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
         Boolean,
@@ -302,6 +316,7 @@ export class Project {
   }
 
   async getBuildSettings(): Promise<Settings[]> {
+    this.logger.debug('[project.ts]: getBuildSettings')
     // if the settings is undefined, the detection was not run.
     // if it is an array it has already run
     if (this.settings !== undefined) {

@@ -109,6 +109,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
 }
 
 export async function getBuildSettings(project: Project): Promise<Settings[]> {
+  project.logger.debug('[get-build-settings.ts] getBuildSettings')
   if (project.frameworks === undefined) {
     throw new Error('Please run the framework detection before calling the build settings!')
   }
