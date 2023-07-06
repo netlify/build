@@ -87,6 +87,25 @@
   * dependencies
     * @netlify/config bumped from ^20.5.1 to ^20.5.2
 
+## [29.15.3](https://github.com/netlify/build/compare/build-v29.15.2...build-v29.15.3) (2023-07-06)
+
+
+### Features
+
+* Improvements to secrets scanning perf and observability ([#5132](https://github.com/netlify/build/issues/5132)) ([be45a8a](https://github.com/netlify/build/commit/be45a8abb28abcdee0c248bbdd5a4ae51d2af744))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.12.1 ([#5130](https://github.com/netlify/build/issues/5130)) ([55293df](https://github.com/netlify/build/commit/55293df75b8875fd006ea59a1f8ad036c7915a6e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.15 to ^5.2.16
+
 ## [29.15.1](https://github.com/netlify/build/compare/build-v29.15.0...build-v29.15.1) (2023-07-05)
 
 
