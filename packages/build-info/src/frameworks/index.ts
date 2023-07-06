@@ -100,4 +100,4 @@ export const frameworks = [
 type Frameworks = typeof frameworks
 // To get a list of the names it's required that ALL Frameworks have the id property as `readonly`
 export type FrameworkName = InstanceType<Frameworks[number]>['id']
-export type { FrameworkInfo } from './framework.js'
+export type { FrameworkInfo, PollingStrategy } from './framework.js'
