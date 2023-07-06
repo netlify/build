@@ -286,6 +286,11 @@ test('edge_functions.any.path: invalid path', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('edge_functions.any.excludedPath: invalid path', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_excluded_path_invalid').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('edge_functions.any.function: not a string', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_not_a_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
