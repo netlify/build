@@ -1,40 +1,8 @@
+import { DefaultLogger, Logger } from './logger.js'
+
 export const enum Environment {
   Browser = 'browser',
   Node = 'node',
-}
-
-export interface Logger {
-  debug(...any: any[]): void
-  log(...any: any[]): void
-  error(...any: any[]): void
-  info(...any: any[]): void
-  warn(...any: any[]): void
-}
-
-class DefaultLogger implements Logger {
-  debug(...data: any[]) {
-    // TODO: add reporting
-    console.debug(...data)
-  }
-
-  log(...data: any[]) {
-    console.log(...data)
-  }
-
-  error(...data: any[]) {
-    // TODO: on error add reporting
-    console.error(...data)
-  }
-
-  info(...data: any[]) {
-    // TODO: on error add reporting
-    console.info(...data)
-  }
-
-  warn(...data: any[]) {
-    // TODO: on error add reporting
-    console.warn(...data)
-  }
 }
 
 export type DirType = 'directory' | 'file'
@@ -118,7 +86,7 @@ export function join(...segments: string[]): string {
 }
 
 export abstract class FileSystem {
-  logger: Logger = new DefaultLogger()
+  logger: Logger = new DefaultLogger('error')
 
   /** The current working directory will be set by the project */
   cwd = '/'

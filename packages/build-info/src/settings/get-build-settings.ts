@@ -72,7 +72,8 @@ async function applyBuildSystemOverrides(
   return updatedSettings
 }
 
-async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
+/** Retrieve the settings for a framework, used inside the CLI in conjunction with getFramework */
+export async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
   const devCommands = framework.getDevCommands()
   const buildCommands = framework.getBuildCommands()
 
@@ -109,6 +110,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
 }
 
 export async function getBuildSettings(project: Project): Promise<Settings[]> {
+  project.logger.debug('[get-build-settings.ts] getBuildSettings')
   if (project.frameworks === undefined) {
     throw new Error('Please run the framework detection before calling the build settings!')
   }

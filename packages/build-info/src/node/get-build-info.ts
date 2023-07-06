@@ -1,8 +1,8 @@
 import { Client } from '@bugsnag/js'
 import { listFrameworks } from '@netlify/framework-info'
 
-import { Logger } from '../file-system.js'
 import { DetectedFramework } from '../frameworks/framework.js'
+import { Logger } from '../logger.js'
 import { report } from '../metrics.js'
 import { PkgManagerFields } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
