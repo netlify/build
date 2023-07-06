@@ -81,6 +81,12 @@
   * dependencies
     * @netlify/config bumped from ^20.5.0 to ^20.5.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.5.1 to ^20.5.2
+
 ## [29.15.1](https://github.com/netlify/build/compare/build-v29.15.0...build-v29.15.1) (2023-07-05)
 
 

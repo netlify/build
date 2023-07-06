@@ -76,6 +76,14 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.5.2](https://github.com/netlify/build/compare/config-v20.5.1...config-v20.5.2) (2023-07-06)
+
+
+### Bug Fixes
+
+* support edge_functions `excludedPath` ([#5135](https://github.com/netlify/build/issues/5135)) ([74edbee](https://github.com/netlify/build/commit/74edbee82cc811f54ec5b47e9db6b17f783dcd30))
+* support edge_functions.pattern ([#5136](https://github.com/netlify/build/issues/5136)) ([a04905b](https://github.com/netlify/build/commit/a04905b5fc325824a76b71e9b48e9dc1597548bf))
+
 ## [20.5.1](https://github.com/netlify/build/compare/config-v20.5.0...config-v20.5.1) (2023-06-14)
 
 

@@ -291,6 +291,11 @@ test('edge_functions.any.excludedPath: invalid path', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('edge_functions.any.test: pattern and path are exclusive', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_pattern_path_exclusive').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('edge_functions.any.function: not a string', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_not_a_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
