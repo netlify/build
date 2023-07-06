@@ -1,0 +1,4 @@
+[[edge_functions]]
+path = '/products/*'
+excludedPath = [42]
+function = 'test'

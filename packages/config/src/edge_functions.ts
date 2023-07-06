@@ -5,7 +5,7 @@ const cacheValues = ['manual', 'off']
 export const validations = [
   {
     property: 'edge_functions.*',
-    ...validProperties(['path', 'function', 'cache'], []),
+    ...validProperties(['path', 'excludedPath', 'function', 'cache'], []),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
@@ -25,6 +25,14 @@ export const validations = [
     check: isString,
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.excludedPath',
+    check: (value) => isString(value) || (Array.isArray(value) && value.every(isString)),
+    message: 'must be a string or array of strings.',
+    example: () => ({
+      edge_functions: [{ path: '/products/*', excludedPath: ['/products/*.jpg'], function: 'customise' }],
+    }),
   },
   {
     property: 'edge_functions.*.function',
