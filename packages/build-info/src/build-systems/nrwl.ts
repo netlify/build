@@ -27,7 +27,7 @@ export class Nx extends BaseBuildTool {
   async getCommands(packagePath: string): Promise<Command[]> {
     const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
     const packageJSONPath = this.project.resolveFromPackage(packagePath, 'package.json')
-    let name: string
+    let name = ''
     const targets: string[] = []
     try {
       const project = await this.project.fs.readJSON(projectPath, { fail: true })
@@ -36,9 +36,13 @@ export class Nx extends BaseBuildTool {
       name = (project.name as string) || ''
     } catch {
       // if no project.json exists it's probably a package based nx workspace and not a integrated one
-      const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath)
-      targets.push(...Object.keys(json?.scripts || {}))
-      name = json.name || ''
+      try {
+        const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath, { fail: true })
+        targets.push(...Object.keys(json?.scripts || {}))
+        name = json.name || ''
+      } catch {
+        // noop
+      }
     }
 
     if (name.length !== 0 && targets.length !== 0) {
