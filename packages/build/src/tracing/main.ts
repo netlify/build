@@ -33,6 +33,7 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
     protocol: 'grpc',
     apiKey: options.apiKey,
     endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
+    sampleRate: options.sampleRate,
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
