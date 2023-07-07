@@ -56,7 +56,11 @@ export const resolvePluginsPath = async function ({
     logs,
   })
 
-  const integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs })
+  let integrationPluginOptions = []
+
+  if (featureFlags.build_fetch_integrations) {
+    integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs })
+  }
 
   return [...pluginsOptionsE, ...integrationPluginOptions]
 }

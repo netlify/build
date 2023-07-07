@@ -17,19 +17,27 @@ export const getSiteInfo = async function ({
   siteId,
   mode,
   siteFeatureFlagPrefix,
+  featureFlags = {},
   testOpts: { env: testEnv = true } = {},
 }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
   }
+  const fetchIntegrations = featureFlags.buildbot_fetch_integrations
 
-  const [siteInfo, accounts, addons, integrations] = await Promise.all([
-    getSite(api, siteId, siteFeatureFlagPrefix),
-    getAccounts(api),
-    getAddons(api, siteId),
-    getIntegrations(api, siteId),
-  ])
+  const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
+
+  if (fetchIntegrations) {
+    promises.push(getIntegrations(api, 'site', siteId))
+  }
+
+  const [siteInfo, accounts, addons, ...rest] = await Promise.all(promises)
+  let integrations = []
+
+  if (fetchIntegrations) {
+    integrations = rest[0]
+  }
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
@@ -75,8 +83,8 @@ const getAddons = async function (api, siteId) {
   }
 }
 
-const getIntegrations = async function (api, siteId) {
-  if (siteId === undefined) {
+const getIntegrations = async function (api, ownerType, ownerId) {
+  if (ownerId === undefined) {
     return []
   }
 
