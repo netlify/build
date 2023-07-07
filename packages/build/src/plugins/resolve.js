@@ -1,6 +1,5 @@
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
-import { log } from '../log/logger.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
 import { addExpectedVersions } from './expected_version.js'
