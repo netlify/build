@@ -64,6 +64,14 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* downgrade dot-prop to support Node.js 14 ([#5147](https://github.com/netlify/build/issues/5147)) ([ff26375](https://github.com/netlify/build/commit/ff26375933e369c99add77c6f2f1a7e207a5c50a))
+* fix return type of get framework to return the class ([#5145](https://github.com/netlify/build/issues/5145)) ([8a1083e](https://github.com/netlify/build/commit/8a1083e08db98f345b1d7816c44458f9a702c3ce))
+
 ## [7.4.0](https://github.com/netlify/build/compare/build-info-v7.3.5...build-info-v7.4.0) (2023-07-07)
 
 
