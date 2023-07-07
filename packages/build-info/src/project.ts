@@ -68,7 +68,7 @@ export class Project {
   private _nodeVersion: SemVer | null = null
 
   setNodeVersion(version: string): this {
-    this._nodeVersion = parse(version)
+    this._nodeVersion = parse(coerce(version), { loose: true })
     return this
   }
 

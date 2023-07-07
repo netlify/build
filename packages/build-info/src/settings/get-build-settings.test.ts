@@ -64,14 +64,14 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
       baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: join('dist/packages/website/.next'),
+      dist: join('dist/packages/website'),
       frameworkPort: 3000,
     }),
     expect.objectContaining({
       baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run astro:build',
       devCommand: 'nx run astro:dev',
-      dist: join('dist/packages/astro/public'),
+      dist: join('dist/packages/astro'),
       frameworkPort: 3000,
     }),
   ])
@@ -356,14 +356,14 @@ describe.each([
           packagePath: platformJoin('packages/astro'),
           buildCommand: 'nx run astro:build',
           devCommand: 'nx run astro:dev',
-          dist: platformJoin('dist/packages/astro/public'),
+          dist: platformJoin('dist/packages/astro'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: platformJoin('dist/packages/website/.next'),
+          dist: platformJoin('dist/packages/website'),
         }),
       ])
     })
@@ -379,7 +379,7 @@ describe.each([
           packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: platformJoin('dist/packages/website/.next'),
+          dist: platformJoin('dist/packages/website'),
         }),
       ])
     })
