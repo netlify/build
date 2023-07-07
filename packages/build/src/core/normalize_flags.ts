@@ -4,13 +4,16 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import type { BuildCLIFlags, Mode, TestOptions } from './types.js'
+import type { BuildFlags, Mode, TestOptions, TracingOptions } from './types.js'
 
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125
+
+const DEFAULT_OTEL_TRACING_PORT = 4317
+const DEFAULT_OTEL_ENDPOINT_PROTOCOL = 'http'
 
 export type ResolvedFlags = {
   env: Record<string, unknown>
@@ -37,12 +40,14 @@ export type ResolvedFlags = {
   siteId: string
   dry: false
   context: 'production' | string
-  statsdOpts: { port: 8125 }
+  statsdOpts: { host?: number; port: number }
   bugsnagKey?: string
+  systemLogFile?: number
+  tracingOpts: TracingOptions
 }
 
 /** Normalize CLI flags  */
-export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): ResolvedFlags {
+export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): ResolvedFlags {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env
@@ -57,6 +62,7 @@ export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): Re
     ...rawFlags,
     ...telemetryFlag,
     statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
+    tracingOpts: { ...defaultFlags.tracing, ...rawFlags.tracing },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags) as any
@@ -91,6 +97,14 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
+    // tracing.apiKey defaults to '-' else we'll get warning logs if not using
+    // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
+    tracing: {
+      enabled: false,
+      apiKey: '-',
+      httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
+      port: DEFAULT_OTEL_TRACING_PORT,
+    },
     timeline: 'build',
     quiet: false,
   }

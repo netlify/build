@@ -26,10 +26,13 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  featureFlags,
   debug,
   verbose,
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
+
+  const isTrustedPlugin = pluginPackageJson?.name?.startsWith('@netlify/')
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -40,7 +43,14 @@ export const firePluginStep = async function ({
     } = await callChild({
       childProcess,
       eventName: 'run',
-      payload: { event, error, envChanges, netlifyConfig, constants },
+      payload: {
+        event,
+        error,
+        envChanges,
+        featureFlags: isTrustedPlugin ? featureFlags : undefined,
+        netlifyConfig,
+        constants,
+      },
       logs,
       verbose,
     })

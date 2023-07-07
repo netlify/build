@@ -3,6 +3,7 @@ import { handleBuildError } from '../error/handle.js'
 import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
 import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { isSoftFailEvent } from '../plugins/events.js'
+import { addErrorToActiveSpan } from '../tracing/main.js'
 
 // Handle build command errors and plugin errors:
 //  - usually, propagate the error to make the build stop.
@@ -25,6 +26,7 @@ export const handleStepError = function ({
   debug,
   testOpts,
 }) {
+  addErrorToActiveSpan(newError)
   // Core steps do not report error statuses
   if (coreStep !== undefined) {
     return { newError }

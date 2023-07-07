@@ -31,6 +31,7 @@ const zipFunctionsAndLogResults = async ({
   logs,
   repositoryRoot,
   userNodeVersion,
+  systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -42,6 +43,7 @@ const zipFunctionsAndLogResults = async ({
     isRunningLocally,
     repositoryRoot,
     userNodeVersion,
+    systemLog,
   })
 
   try {
@@ -77,6 +79,7 @@ const coreStep = async function ({
   featureFlags,
   repositoryRoot,
   userNodeVersion,
+  systemLog,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -124,6 +127,7 @@ const coreStep = async function ({
     logs,
     repositoryRoot,
     userNodeVersion,
+    systemLog,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)

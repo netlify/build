@@ -1,5 +1,8 @@
 {
-  "extends": "./tsconfig.build.json",
-  "compilerOptions": {},
-  "include": ["types.d.ts", "tests/**/*.ts", "src/**/*.test.ts"]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "types.d.ts", "tests/**/*.ts", "src/**/*.test.ts"]
 }

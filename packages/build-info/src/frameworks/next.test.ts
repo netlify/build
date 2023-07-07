@@ -2,12 +2,15 @@ import { join } from 'path'
 
 import { beforeEach, describe, expect, test } from 'vitest'
 
+import { createFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
+import { NoopLogger } from '../node/get-build-info.js'
 import { Project } from '../project.js'
 
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
+  ctx.fs.logger = new NoopLogger()
 })
 
 describe('Next.js Plugin', () => {
@@ -115,5 +118,41 @@ describe('Next.js Monorepo using PNPM', () => {
   test('should detect Next.js from the root of a monorepo', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).detectFrameworks()
     expect(detected?.[0].id).toBe('next')
+  })
+})
+
+describe('Nx monorepo', () => {
+  test('should get Next.js settings within a nx monorepo and the next.js plugin', async (ctx) => {
+    const fixture = await createFixture('nx-integrated', ctx)
+    const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
+    const settings = await project.getBuildSettings()
+
+    const setting = settings.find((s) => s.packagePath === join('packages/website'))
+    expect(setting).toMatchObject({
+      packagePath: join('packages/website'),
+      buildCommand: 'nx run website:build',
+      devCommand: 'nx run website:serve',
+      dist: join('dist/packages/website'),
+      frameworkPort: 3000,
+      plugins_recommended: ['@netlify/plugin-nextjs'],
+    })
+  })
+})
+
+describe('Nx turborepo', () => {
+  test('should get Next.js settings within turborepo and the next.js plugin', async (ctx) => {
+    const fixture = await createFixture('turborepo', ctx)
+    const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('v10.13.0')
+    const settings = await project.getBuildSettings()
+
+    const setting = settings.find((s) => s.packagePath === join('apps/web'))
+    expect(setting).toMatchObject({
+      packagePath: join('apps/web'),
+      buildCommand: 'turbo run build --filter web',
+      devCommand: 'turbo run dev --filter web',
+      dist: join('apps/web/.next'),
+      frameworkPort: 3000,
+      plugins_recommended: ['@netlify/plugin-nextjs'],
+    })
   })
 })

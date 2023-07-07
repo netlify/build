@@ -1,3 +1,5 @@
+import { SemVer, parse } from 'semver'
+
 import type { Project } from '../project.js'
 
 // the value of the enum should match the values that can be specified inside the `packageManager` field of a `package.json`
@@ -22,6 +24,7 @@ export type PkgManagerFields = {
   installFlags?: string[]
   /** A list of all cache locations for the package manager */
   cacheLocations?: string[]
+  version?: SemVer
 }
 
 /** The definition of all available package managers */
@@ -78,9 +81,11 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
     for (const pkgPath of pkgPaths) {
       const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
       if (packageManager) {
-        const [parsed] = packageManager.split('@')
+        const [parsed, version] = packageManager.split('@')
         if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-          return AVAILABLE_PACKAGE_MANAGERS[parsed]
+          const pkgManager = AVAILABLE_PACKAGE_MANAGERS[parsed] as PkgManagerFields
+          pkgManager.version = parse(version) || undefined
+          return pkgManager
         }
       }
     }

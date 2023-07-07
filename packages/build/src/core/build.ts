@@ -13,6 +13,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -20,12 +21,12 @@ import { doDryRun } from './dry.js'
 import { warnOnLingeringProcesses } from './lingering.js'
 import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
-import type { BuildCLIFlags } from './types.js'
+import type { BuildFlags } from './types.js'
 
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
-export const startBuild = function (flags: Partial<BuildCLIFlags>) {
+export const startBuild = function (flags: Partial<BuildFlags>) {
   const timers = initTimers()
 
   const logs = getBufferLogs(flags)
@@ -34,10 +35,11 @@ export const startBuild = function (flags: Partial<BuildCLIFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { bugsnagKey, tracingOpts, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { tracingOpts, debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
+  const rootTracingContext = startTracing(tracingOpts, getSystemLogger(logs, debug, systemLogFile))
 
-  return { ...flagsA, errorMonitor, logs, timers }
+  return { ...flagsA, rootTracingContext, debug, systemLogFile, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({
@@ -80,6 +82,7 @@ const tExecBuild = async function ({
   devCommand,
   quiet,
   framework,
+  explicitSecretKeys,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -203,6 +206,7 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    explicitSecretKeys,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -256,6 +260,7 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   try {
     const {
@@ -304,6 +309,7 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
     await Promise.all([
       reportStatuses({
@@ -402,6 +408,7 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -479,6 +486,7 @@ const initAndRunBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
 
     await Promise.all([
@@ -544,6 +552,7 @@ const runBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -602,6 +611,7 @@ const runBuild = async function ({
     featureFlags,
     quiet,
     userNodeVersion,
+    explicitSecretKeys,
   })
 
   return {

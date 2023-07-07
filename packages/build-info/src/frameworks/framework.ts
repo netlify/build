@@ -2,7 +2,7 @@ import type { PackageJson } from 'read-pkg'
 import { SemVer, coerce, parse } from 'semver'
 
 import { Environment } from '../file-system.js'
-import { getDevCommands } from '../get-dev-commands.js'
+import { getBuildCommands, getDevCommands } from '../get-commands.js'
 import { Project } from '../project.js'
 
 export enum Category {
@@ -69,6 +69,8 @@ export interface Framework {
   env: Record<string, string>
 
   detect(): Promise<DetectedFramework | undefined>
+  getDevCommands(): string[]
+  getBuildCommands(): string[]
   toJSON(): {
     id: string
     name: string
@@ -281,7 +283,7 @@ export abstract class BaseFramework implements Framework {
     this.detected = mergeDetections([npm, config])
 
     if (this.detected) {
-      return this as DetectedFramework
+      return this as unknown as DetectedFramework
     }
     // nothing detected
   }
@@ -305,6 +307,18 @@ export abstract class BaseFramework implements Framework {
     }
 
     return [this.dev.command]
+  }
+
+  getBuildCommands() {
+    const buildCommands = getBuildCommands(
+      this.build.command,
+      this.detected?.packageJSON?.scripts as Record<string, string>,
+    )
+    if (buildCommands.length > 0) {
+      return buildCommands.map((command) => this.project.getNpmScriptCommand(command))
+    }
+
+    return [this.build.command]
   }
 
   /** This method will be called by the JSON.stringify */

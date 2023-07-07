@@ -142,6 +142,35 @@ test('Plugins can have inputs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('Plugins are passed featureflags', async (t) => {
+  const output = await new Fixture('./fixtures/feature_flags')
+    .withFlags({
+      featureFlags: { test_flag: true },
+    })
+    .runWithBuild()
+
+  t.true(
+    output.includes(
+      JSON.stringify({
+        buildbot_zisi_trace_nft: false,
+        buildbot_zisi_esbuild_parser: false,
+        buildbot_zisi_system_log: false,
+        edge_functions_cache_cli: false,
+        edge_functions_system_logger: false,
+        test_flag: true,
+      }),
+    ),
+  )
+
+  const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
+    .withFlags({
+      featureFlags: { test_flag: true },
+    })
+    .runWithBuild()
+
+  t.true(outputUntrusted.includes('typeof featureflags: undefined'))
+})
+
 test('process.env changes are propagated to other plugins', async (t) => {
   const output = await new Fixture('./fixtures/env_changes_plugin').runWithBuild()
   t.snapshot(normalizeOutput(output))

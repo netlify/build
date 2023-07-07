@@ -2,7 +2,7 @@ import { startBuild } from '../core/build.js'
 import { getConfigOpts, loadConfig } from '../core/config.js'
 import { getConstants } from '../core/constants.js'
 import { getSeverity } from '../core/severity.js'
-import type { BuildCLIFlags, BuildResult } from '../core/types.js'
+import type { BuildFlags, BuildResult } from '../core/types.js'
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { getSystemLogger } from '../log/logger.js'
@@ -14,7 +14,7 @@ import { runSteps } from './run_steps.js'
 /**
  * Runs specific core steps for a build and returns whether it succeeded or not.
  */
-export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildCLIFlags> = {}): Promise<BuildResult> => {
+export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildFlags> = {}): Promise<BuildResult> => {
   const { errorMonitor, mode, logs, debug, ...flagsA }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug }
   const systemLog = getSystemLogger(logs, debug)

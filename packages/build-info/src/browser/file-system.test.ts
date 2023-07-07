@@ -2,6 +2,7 @@ import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 // Once we only support node18 we can remove node-fetch
 
+import { NoopLogger } from '../node/get-build-info.js'
 import { detectPackageManager } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
 import { getWorkspacePackages } from '../workspaces/get-workspace-packages.js'
@@ -69,6 +70,7 @@ global.fetch = vi.fn(async (url): Promise<any> => {
 describe('Test with a WebFS', () => {
   beforeEach((ctx) => {
     ctx.fs = new WebFS(new GithubProvider('netlify/build', 'main'))
+    ctx.fs.logger = new NoopLogger()
   })
 
   test('should detect a build system from the base', async ({ fs }) => {
@@ -98,7 +100,11 @@ describe('Test with a WebFS', () => {
   test('should get a list of all workspace packages', async ({ fs }) => {
     expect(
       await getWorkspacePackages(new Project(fs, '/'), ['tools', 'packages/*', '!packages/build-info']),
-    ).toMatchObject(['tools', 'packages/build', 'packages/config'])
+    ).toMatchObject([
+      { path: 'tools', name: undefined },
+      { path: 'packages/build', name: '@netlify/build' },
+      { path: 'packages/config', name: undefined },
+    ])
   })
 
   test('should analyze workspace information from a nested subpackage', async ({ fs }) => {
@@ -107,7 +113,12 @@ describe('Test with a WebFS', () => {
 
     expect(project.workspace).toEqual({
       isRoot: false,
-      packages: ['packages/build-info', 'packages/build', 'packages/config', 'tools'],
+      packages: [
+        { path: 'packages/build-info', name: '@netlify/build-info' },
+        { path: 'packages/build', name: '@netlify/build' },
+        { path: 'packages/config', name: undefined },
+        { path: 'tools', name: undefined },
+      ],
       rootDir: '/',
     })
   })

@@ -101,6 +101,12 @@ const TYPES = {
     severity: 'info',
   },
 
+  secretScanningFoundSecrets: {
+    title: 'Secrets scanning detected secrets in files during build.',
+    stackType: 'none',
+    severity: 'error',
+  },
+
   // Plugin called `utils.build.failBuild()`
   failBuild: {
     title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,

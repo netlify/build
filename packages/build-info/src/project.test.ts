@@ -1,7 +1,7 @@
 import { join, resolve } from 'path'
 import { cwd } from 'process'
 
-import { parse } from 'semver'
+import { coerce, parse } from 'semver'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
@@ -31,7 +31,7 @@ describe('Setting the node.js version', () => {
 
   test('process node version should override environment variable', async ({ fs }) => {
     const project = new Project(fs).setNodeVersion(process.version).setEnvironment({ NODE_VERSION: '1.2.3' })
-    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(process.version) || '')
+    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(coerce(process.version)) || '')
   })
 
   test('should set the node version correctly through an fuzzy environment variable', async ({ fs }) => {
@@ -69,14 +69,6 @@ describe('Setting the node.js version', () => {
     expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 17, minor: 1, patch: 2 })
     expect(readFileSpy).not.toHaveBeenCalled()
   })
-
-  // TODO: this test needs to be implemented
-  test.skip('should have a fallback node version if none is set', async ({ fs }) => {
-    const readFileSpy = vi.spyOn(fs, 'readFile')
-    const project = new Project(fs)
-    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 1, patch: 2 })
-    expect(readFileSpy).not.toHaveBeenCalled()
-  })
 })
 
 describe.concurrent('should resolve paths correctly', () => {
@@ -91,6 +83,7 @@ describe.concurrent('should resolve paths correctly', () => {
   test('given a relative projectDir and a rootDir, resolve projectDir from rootDir', async ({ fs }) => {
     const project = new Project(fs, 'some/relative/path', '/root')
     expect(project.baseDirectory).toBe(resolve('/root', 'some/relative/path'))
+    expect(project.relativeBaseDirectory).toBe('some/relative/path')
     expect(project.root).toBe(resolve('/root'))
     expect(await project.getRootPackageJSON()).toEqual({})
   })
@@ -98,13 +91,15 @@ describe.concurrent('should resolve paths correctly', () => {
   test('given an empty projectDir and a rootDir, resolve projectDir to rootDir', async ({ fs }) => {
     const project = new Project(fs, '', '/root')
     expect(project.baseDirectory).toBe(resolve('/root'))
-    expect(project.root).toBeUndefined()
+    expect(project.relativeBaseDirectory).toBe('')
+    expect(project.root).toBe(fs.cwd)
     expect(await project.getRootPackageJSON()).toEqual({})
   })
 
   test('given a relative rootDir resolve from cwd', async ({ fs }) => {
     const project = new Project(fs, 'some/relative/path', 'root')
     expect(project.baseDirectory).toBe(resolve(cwd(), 'root', 'some/relative/path'))
+    expect(project.relativeBaseDirectory).toBe('some/relative/path')
     expect(project.root).toBe(resolve(cwd(), 'root'))
     expect(await project.getRootPackageJSON()).toEqual({})
   })
@@ -112,54 +107,50 @@ describe.concurrent('should resolve paths correctly', () => {
   test('given absolute dirs rely on them', async ({ fs }) => {
     const project = new Project(fs, '/root/dir/sub/project/dir', '/root/dir')
     expect(project.baseDirectory).toBe(resolve('/root/dir/sub/project/dir'))
+    expect(project.relativeBaseDirectory).toBe(join('sub/project/dir'))
     expect(project.root).toBe(resolve('/root/dir'))
     expect(await project.getRootPackageJSON()).toEqual({})
   })
 })
 
 test('get the package.json from a simple project', async (ctx) => {
-  const fixture = await createFixture('yarn-project')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('yarn-project', ctx)
   const project = new Project(ctx.fs, fixture.cwd)
+  expect(project.relativeBaseDirectory).toBe('')
   const rootPackageJson = await project.getRootPackageJSON()
   expect(rootPackageJson.name).toBe('yarn-project')
 })
 
 test('get the package.json from a simple project without projectDir', async (ctx) => {
-  const fixture = await createFixture('pnpm-simple')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('pnpm-simple', ctx)
   const project = new Project(ctx.fs, '', fixture.cwd)
   const rootPackageJson = await project.getRootPackageJSON()
   expect(rootPackageJson.name).toBe('pnpm-simple')
 })
 
 test('get the package.json from a nested project', async (ctx) => {
-  const fixture = await createFixture('yarn-nested')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('yarn-nested', ctx)
   const project = new Project(ctx.fs, 'projects/website', fixture.cwd)
   const rootPackageJson = await project.getRootPackageJSON()
   expect(rootPackageJson.name).toBe('yarn-nested')
 })
 
 test('work in non js workspaces as well', async (ctx) => {
-  const fixture = await createFixture('go-workspace')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('go-workspace', ctx)
   const project = new Project(ctx.fs, 'foo', fixture.cwd)
   const rootPackageJson = await project.getRootPackageJSON()
   expect(rootPackageJson).toMatchInlineSnapshot('{}')
 })
 
 test('extract the rootPackageJson if there is one within rootDir', async (ctx) => {
-  const fixture = await createFixture('js-workspaces')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('js-workspaces', ctx)
   const project = new Project(ctx.fs, 'packages/package-2', fixture.cwd)
   const rootPackageJson = await project.getRootPackageJSON()
   expect(rootPackageJson.name).toBe('js-workspaces')
 })
 
 test('extract the rootPackageJson from projectDir if no rootDir is provided', async (ctx) => {
-  const fixture = await createFixture('js-workspaces')
-  ctx.cleanup = fixture.cleanup
+  const fixture = await createFixture('js-workspaces', ctx)
   const project = new Project(ctx.fs, join(fixture.cwd, 'packages/package-2'))
   const rootPackageJson = await project.getRootPackageJSON()
   expect(project.root).toBeUndefined()
@@ -168,11 +159,10 @@ test('extract the rootPackageJson from projectDir if no rootDir is provided', as
 
 describe('monorepo setup', () => {
   test('should prefer accuracy of config files over root node modules in a monorepo', async (ctx) => {
-    const fixture = await createFixture('nx-integrated')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('nx-integrated', ctx)
     const project = new Project(ctx.fs, fixture.cwd)
     await project.detectFrameworks()
-    expect([...project.frameworks.keys()]).toEqual([join('packages/astro'), join('packages/website')])
+    expect([...project.frameworks.keys()].sort()).toEqual([join('packages/astro'), join('packages/website')])
     expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/astro'))).toEqual([
       expect.objectContaining({
@@ -188,17 +178,70 @@ describe('monorepo setup', () => {
   })
 
   test('should prefer accuracy of config files over root node modules in a monorepo from a base directory', async (ctx) => {
-    const fixture = await createFixture('nx-integrated')
-    ctx.cleanup = fixture.cleanup
+    const fixture = await createFixture('nx-integrated', ctx)
     const project = new Project(ctx.fs, join(fixture.cwd, 'packages/astro'))
     await project.detectFrameworks()
 
-    expect([...project.frameworks.keys()]).toEqual([join('packages/astro')])
+    expect([...project.frameworks.keys()].sort()).toEqual([join('packages/astro'), join('packages/website')])
     expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
     expect(project.frameworks.get(join('packages/astro'))).toEqual([
       expect.objectContaining({
         id: 'astro',
       }),
     ])
+  })
+})
+
+describe('event based detection', () => {
+  test('should notify an event when finished with a step', async (ctx) => {
+    const fixture = await createFixture('nx-integrated', ctx)
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/astro'))
+    const eventSpy = vi.fn()
+    const finished = new Promise<void>((resolve) => {
+      project.events.on('detectPackageManager', (data) => {
+        eventSpy('detectPackageManager', data)
+      })
+      project.events.on('detectBuildsystems', (data) => {
+        eventSpy('detectBuildsystems', data)
+      })
+      project.events.on('detectWorkspaces', (data) => {
+        eventSpy('detectWorkspaces', data)
+      })
+      project.events.on('detectFrameworks', (data) => {
+        eventSpy('detectFrameworks', data)
+      })
+      project.events.on('detectSettings', (data) => {
+        eventSpy('detectSettings', data)
+        resolve()
+      })
+    })
+
+    await project.getBuildSettings()
+    expect(eventSpy).toBeCalledTimes(6)
+    expect(eventSpy).toHaveBeenNthCalledWith(1, 'detectPackageManager', expect.objectContaining({ name: 'npm' }))
+    // nx integrated is per se no npm or pnpm workspace
+    expect(eventSpy).toHaveBeenNthCalledWith(2, 'detectWorkspaces', null)
+    // this emission is triggered through the build system detection of Nx
+    expect(eventSpy).toHaveBeenNthCalledWith(
+      3,
+      'detectWorkspaces',
+      expect.objectContaining({
+        isRoot: false,
+        packages: [
+          { path: join('packages/astro'), name: 'astro' },
+          { path: join('packages/website'), name: 'website' },
+        ],
+      }),
+    )
+    expect(eventSpy).toHaveBeenNthCalledWith(4, 'detectBuildsystems', [expect.objectContaining({ id: 'nx' })])
+    expect(eventSpy).toHaveBeenNthCalledWith(5, 'detectFrameworks', expect.objectContaining({}))
+    expect(eventSpy).toHaveBeenNthCalledWith(6, 'detectSettings', [
+      expect.objectContaining({
+        baseDirectory: '', // nx should run from the root
+        buildCommand: 'nx run astro:build',
+        devCommand: 'nx run astro:dev',
+      }),
+    ])
+    await finished
   })
 })

@@ -1,4 +1,3 @@
-import { PollingStrategy } from '../frameworks/framework.js'
 import { Project } from '../project.js'
 
 export type Command = {
@@ -11,20 +10,14 @@ export interface BuildSystem {
   name: string
   project: Project
   version?: string
+  /** If the command should be executed from the repository root */
+  runFromRoot?: boolean
 
-  build?: {
-    command: string
-    directory?: string
-  }
-
-  dev?: {
-    command: string
-    port?: number
-    pollingStrategies?: PollingStrategy[]
-  }
-
+  /** A function that can be implemented to override the dev and build commands of a framework like `nx run ...` */
   getCommands?(path: string): Promise<Command[]>
-
+  /** A function that can be implemented to override the dist location of a framework */
+  getDist?(path: string): Promise<string>
+  /** The detect function that is called to check if this build system is in use */
   detect(): Promise<BuildSystem | undefined>
 }
 
@@ -33,6 +26,14 @@ export abstract class BaseBuildTool {
   name: string
   version?: string
   configFiles: string[] = []
+  /** If the command should be executed from the repository root */
+  runFromRoot?: boolean
+
+  logo?: {
+    default: string
+    light?: string
+    dark?: string
+  }
 
   constructor(public project: Project) {}
 
@@ -55,6 +56,12 @@ export abstract class BaseBuildTool {
       id: this.id,
       name: this.name,
       version: this.version,
+      logo: this.logo
+        ? Object.entries(this.logo).reduce(
+            (prev, [key, value]) => ({ ...prev, [key]: `https://framework-info.netlify.app${value}` }),
+            {},
+          )
+        : undefined,
     }
   }
 }

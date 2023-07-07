@@ -2,7 +2,7 @@ import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Stencil extends BaseFramework implements Framework {
   readonly id = 'stencil'
-  name = 'SolidJS'
+  name = 'Stencil'
   npmDependencies = ['@stencil/core']
   configFiles = ['stencil.config.ts']
   category = Category.SSG

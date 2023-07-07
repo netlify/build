@@ -24,16 +24,20 @@ test('should detect workspace packages correctly for an npm workspace', async ({
     'package.json': JSON.stringify({
       workspaces: ['apps/*'],
     }),
-    'apps/a/package.json': '',
-    'apps/b/package.json': '',
-    'apps/b/deep/package.json': '',
-    'apps/c/package.json': '',
+    'apps/a/package.json': '{}',
+    'apps/b/package.json': '{}',
+    'apps/b/deep/package.json': '{}',
+    'apps/c/package.json': '{}',
   })
 
   const project = new Project(fs, cwd)
   expect(await project.detectWorkspaces()).toMatchObject({
     isRoot: true,
-    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    packages: [
+      { path: join('apps/a'), name: undefined },
+      { path: join('apps/b'), name: undefined },
+      { path: join('apps/c'), name: undefined },
+    ],
   })
   expect(project.packageManager).toMatchObject({ name: 'npm' })
 })
@@ -53,7 +57,11 @@ test('should detect a workspace from within a workspace package', async ({ fs })
 
   expect(await project.detectWorkspaces()).toEqual({
     isRoot: false,
-    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    packages: [
+      { path: join('apps/a'), name: undefined },
+      { path: join('apps/b'), name: undefined },
+      { path: join('apps/c'), name: undefined },
+    ],
     rootDir: cwd,
   })
 })
@@ -90,7 +98,11 @@ test('should detect workspace packages correctly for an npm workspace from a nes
   const project = new Project(fs, 'apps/b', cwd)
   expect(await project.detectWorkspaces()).toMatchObject({
     isRoot: false,
-    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    packages: [
+      { path: join('apps/a'), name: undefined },
+      { path: join('apps/b'), name: undefined },
+      { path: join('apps/c'), name: undefined },
+    ],
   })
   expect(project.packageManager).toMatchObject({ name: 'npm' })
 })
@@ -126,7 +138,11 @@ test('should detect pnpm workspace correctly from a nested directory', async ({ 
   const project = new Project(fs, 'apps/b', cwd)
   expect(await project.detectWorkspaces()).toMatchObject({
     isRoot: false,
-    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    packages: [
+      { path: join('apps/a'), name: undefined },
+      { path: join('apps/b'), name: undefined },
+      { path: join('apps/c'), name: undefined },
+    ],
   })
   expect(project.packageManager).toMatchObject({ name: 'pnpm' })
 })
@@ -145,7 +161,11 @@ test('should detect pnpm workspace correctly', async ({ fs }) => {
   const project = new Project(fs, cwd)
   expect(await project.detectWorkspaces()).toMatchObject({
     isRoot: true,
-    packages: [join('apps/a'), join('apps/b'), join('apps/c')],
+    packages: [
+      { path: join('apps/a'), name: undefined },
+      { path: join('apps/b'), name: undefined },
+      { path: join('apps/c'), name: undefined },
+    ],
   })
   expect(project.packageManager).toMatchObject({ name: 'pnpm' })
 })

@@ -4,16 +4,32 @@ import { SemVer, coerce, parse } from 'semver'
 
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
-import { Environment, FileSystem } from './file-system.js'
+import { EventEmitter } from './events.js'
+import { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
+import { Logger } from './logger.js'
 import { report } from './metrics.js'
 import {
   AVAILABLE_PACKAGE_MANAGERS,
   PkgManagerFields,
   detectPackageManager,
 } from './package-managers/detect-package-manager.js'
+import { runtimes } from './runtime/index.js'
+import { LangRuntime } from './runtime/runtime.js'
+import { Settings, getBuildSettings } from './settings/get-build-settings.js'
 import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.js'
+
+type Events = {
+  detectPackageManager: (data: PkgManagerFields | null) => void
+  detectedWorkspaceGlobs: () => void // indicates that we have packages and start detecting them
+  detectWorkspaces: (data: WorkspaceInfo | null) => void
+  detectBuildsystems: (data: BuildSystem[]) => void
+  detectFrameworks: (data: Map<string, DetectedFramework[]>) => void
+  detectSettings: (data: Settings[]) => void
+  detectRuntimes: (data: LangRuntime[]) => void
+}
+
 /**
  * The Project represents a Site in Netlify
  * The only configuration here needed is the path to the repository root and the optional baseDirectory
@@ -23,6 +39,8 @@ export class Project {
   root?: string
   /** An absolute path  */
   baseDirectory: string
+  /** a relative base directory (like the path to workspace packages)  */
+  relativeBaseDirectory?: string
   /** the detected package manager (if null it's not a javascript project, undefined indicates that id did not run yet) */
   packageManager: PkgManagerFields | null
   /** an absolute path of the root directory for js workspaces where the most top package.json is located */
@@ -31,18 +49,26 @@ export class Project {
   workspace: WorkspaceInfo | null
   /** The detected build-systems */
   buildSystems: BuildSystem[]
+  /** The combined build settings for a project, in a workspace there can be multiple settings per package */
+  settings: Settings[]
   /** The detected frameworks for each path in a project */
   frameworks: Map<string, DetectedFramework[]>
+  /** The detected language runtimes */
+  runtimes: LangRuntime[]
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
   /** A bugsnag session */
   bugsnag: Client
+  /** A logging instance  */
+  logger: Logger
+
+  events = new EventEmitter<Events>()
 
   /** The current nodeVersion (can be set by node.js environments) */
   private _nodeVersion: SemVer | null = null
 
   setNodeVersion(version: string): this {
-    this._nodeVersion = parse(version)
+    this._nodeVersion = parse(coerce(version), { loose: true })
     return this
   }
 
@@ -73,12 +99,13 @@ export class Project {
     this.baseDirectory = fs.resolve(root || '', baseDirectory !== undefined ? baseDirectory : fs.cwd)
     this.root = root ? fs.resolve(fs.cwd, root) : undefined
 
-    // if the root and the base directory are the same unset the root again as it's not a workspace
-    if (this.root === this.baseDirectory) {
-      this.root = undefined
-    }
+    this.relativeBaseDirectory =
+      baseDirectory !== undefined && !fs.isAbsolute(baseDirectory)
+        ? baseDirectory
+        : fs.relative(this.root || fs.cwd, this.baseDirectory)
 
     this.fs.cwd = this.baseDirectory
+    this.logger = fs.logger
   }
 
   /** Set's the environment for the project */
@@ -102,6 +129,7 @@ export class Project {
 
   /** Reports an error with additional metadata */
   report(error: NotifiableError) {
+    this.fs.logger.error(error)
     report(error, {
       metadata: {
         build: {
@@ -148,8 +176,20 @@ export class Project {
     return { pkgPath: null }
   }
 
+  /** Resolves a path correctly with a package path, independent of run from the workspace root or from a package */
+  resolveFromPackage(packagePath: string, ...parts: string[]) {
+    if (this.jsWorkspaceRoot) {
+      return this.fs.join(this.jsWorkspaceRoot, packagePath, ...parts)
+    }
+
+    return this.baseDirectory.endsWith(packagePath) && !this.workspace?.isRoot
+      ? this.fs.join(this.baseDirectory, ...parts)
+      : this.fs.resolve(packagePath, ...parts)
+  }
+
   /** Detects the used package Manager */
   async detectPackageManager() {
+    this.logger.debug('[project.ts]: detectPackageManager')
     // if the packageManager is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.packageManager !== undefined) {
@@ -157,6 +197,7 @@ export class Project {
     }
     try {
       this.packageManager = await detectPackageManager(this)
+      await this.events.emit('detectPackageManager', this.packageManager)
       return this.packageManager
     } catch {
       return null
@@ -165,6 +206,7 @@ export class Project {
 
   /** Detects the javascript workspace settings */
   async detectWorkspaces() {
+    this.logger.debug('[project.ts]: detectWorkspaces')
     // if the workspace is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.workspace !== undefined) {
@@ -175,6 +217,7 @@ export class Project {
 
     try {
       this.workspace = await detectWorkspaces(this)
+      await this.events.emit('detectWorkspaces', this.workspace)
       return this.workspace
     } catch (error) {
       this.report(error)
@@ -184,6 +227,7 @@ export class Project {
 
   /** Detects all used build systems */
   async detectBuildSystem() {
+    this.logger.debug('[project.ts]: detectBuildSystem')
     // if the workspace is undefined, the detection was not run.
     if (this.buildSystems !== undefined) {
       return this.buildSystems
@@ -192,27 +236,26 @@ export class Project {
     await this.detectWorkspaces()
 
     try {
-      // on node we can parallelize more
-      if (this.fs.getEnvironment() === Environment.Node) {
-        const detected = (await Promise.all(buildSystems.map((BuildSystem) => new BuildSystem(this).detect()))).filter(
-          Boolean,
-        ) as BuildSystem[]
+      this.buildSystems = (await Promise.all(buildSystems.map((BuildSystem) => new BuildSystem(this).detect()))).filter(
+        Boolean,
+      ) as BuildSystem[]
+      await this.events.emit('detectBuildsystems', this.buildSystems)
 
-        this.buildSystems = detected
-      } else {
-        // In the browser perform the detection in series to avoid having the same HTTP request in parallel.
-        // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
-        // on consecutive runs.
-        const detected: BuildSystem[] = []
-        for (const BuildSystem of buildSystems) {
-          const res = await new BuildSystem(this).detect()
-          if (res) {
-            detected.push(res)
-          }
-        }
-        this.buildSystems = detected
-      }
       return this.buildSystems
+    } catch (error) {
+      this.report(error)
+      return []
+    }
+  }
+
+  async detectRuntime() {
+    this.logger.debug('[project.ts]: detectRuntime')
+    try {
+      this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))).filter(
+        Boolean,
+      ) as LangRuntime[]
+      this.events.emit('detectRuntimes', this.runtimes)
+      return this.runtimes
     } catch (error) {
       this.report(error)
       return []
@@ -221,6 +264,7 @@ export class Project {
 
   /** Detects all used build systems */
   async detectFrameworks() {
+    this.logger.debug('[project.ts]: detectFrameworks')
     // if the workspace is undefined, the detection was not run.
     if (this.frameworks !== undefined) {
       return [...this.frameworks.values()].flat()
@@ -231,25 +275,21 @@ export class Project {
       await this.detectBuildSystem()
       this.frameworks = new Map()
 
-      if (this.workspace?.isRoot) {
-        for (const pkg of this.workspace.packages) {
-          this.frameworks.set(pkg, await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg)))
-        }
+      if (this.workspace) {
+        // if we have a workspace parallelize in all workspaces
+        await Promise.all(
+          this.workspace.packages.map(async ({ path: pkg }) => {
+            if (this.workspace) {
+              const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
+              this.frameworks.set(pkg, result)
+            }
+          }),
+        )
       } else {
-        // per default set on ''
-        let root = ''
-        // if the framework detection was run inside a baseDirectory of a workspace
-        // we still want to store the result in the correct package key of the frameworks map
-        if (this.workspace) {
-          const relBaseDirectory = this.fs.relative(this.workspace.rootDir, this.baseDirectory)
-
-          if (this.workspace.packages.includes(relBaseDirectory)) {
-            root = relBaseDirectory
-          }
-        }
-        this.frameworks.set(root, await this.detectFrameworksInPath())
+        this.frameworks.set('', await this.detectFrameworksInPath())
       }
 
+      await this.events.emit('detectFrameworks', this.frameworks)
       return [...this.frameworks.values()].flat()
     } catch (error) {
       this.report(error)
@@ -258,24 +298,11 @@ export class Project {
   }
 
   async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
+    this.logger.debug(`[project.ts]: detectFrameworksInPath - ${path}`)
     try {
-      let detected: DetectedFramework[] = []
-      // on node we can parallelize more
-      if (this.fs.getEnvironment() === Environment.Node) {
-        detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
-          Boolean,
-        ) as DetectedFramework[]
-      } else {
-        // In the browser perform the detection in series to avoid having the same HTTP request in parallel.
-        // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
-        // on consecutive runs.
-        for (const Framework of frameworks) {
-          const res = await new Framework(this, path).detect()
-          if (res) {
-            detected.push(res)
-          }
-        }
-      }
+      const detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
+        Boolean,
+      ) as DetectedFramework[]
       // sort based on the accuracy and drop un accurate results if something more accurate was found
       // from most accurate to least accurate
       // 1. a npm dependency was specified and matched
@@ -286,5 +313,26 @@ export class Project {
     } catch {
       return []
     }
+  }
+
+  async getBuildSettings(): Promise<Settings[]> {
+    this.logger.debug('[project.ts]: getBuildSettings')
+    // if the settings is undefined, the detection was not run.
+    // if it is an array it has already run
+    if (this.settings !== undefined) {
+      return this.settings
+    }
+    this.settings = []
+
+    try {
+      // This needs to be run first
+      await this.detectFrameworks()
+
+      this.settings = await getBuildSettings(this)
+      await this.events.emit('detectSettings', this.settings)
+    } catch (error) {
+      this.report(error)
+    }
+    return this.settings
   }
 }

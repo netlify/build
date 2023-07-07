@@ -6,13 +6,27 @@ import { Project } from '../project.js'
 
 import { getWorkspacePackages } from './get-workspace-packages.js'
 
-export type WorkspaceInfo = {
+export type WorkspacePackage = {
+  path: string
+  name?: string
+}
+
+export class WorkspaceInfo {
   /** if we are in the current workspace root or not */
   isRoot: boolean
   /** the workspace root directory */
   rootDir: string
   /** list of relative package paths inside the workspace */
-  packages: string[]
+  packages: WorkspacePackage[] = []
+
+  /** Detects if a workspace has a sub package */
+  hasPackage(relativePackagePath: string): boolean {
+    return this.packages.findIndex(({ path }) => path === relativePackagePath) > -1
+  }
+
+  getPackage(relativePackagePath: string): WorkspacePackage | undefined {
+    return this.packages.find(({ path }) => path === relativePackagePath)
+  }
 }
 
 /**
@@ -71,18 +85,18 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
     return null
   }
 
-  const packages = await getWorkspacePackages(project, workspaceGlobs)
-  const isRoot = project.baseDirectory === project.jsWorkspaceRoot
+  // indicate that we have found some globs and starting to parse them
+  project.events.emit('detectedWorkspaceGlobs', undefined)
+  const info = new WorkspaceInfo()
+  info.rootDir = project.jsWorkspaceRoot
+  info.packages = await getWorkspacePackages(project, workspaceGlobs)
+  info.isRoot = project.baseDirectory === project.jsWorkspaceRoot
   const relBaseDirectory = project.fs.relative(project.jsWorkspaceRoot, project.baseDirectory)
   // if the current base directory is not part of the detected workspace packages it's not part of this workspace
   // and therefore return no workspace info
-  if (!isRoot && !packages.includes(relBaseDirectory)) {
+  if (!info.isRoot && !info.hasPackage(relBaseDirectory)) {
     return null
   }
 
-  return {
-    rootDir: project.jsWorkspaceRoot,
-    isRoot,
-    packages,
-  }
+  return info
 }

@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { log, logArray, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
+import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
 const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
@@ -101,4 +101,41 @@ const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
   Visit https://ntl.fyi/dynamic-imports for more information.
   `,
   )
+}
+
+export const logSecretsScanSkipMessage = function (logs, msg) {
+  log(logs, msg, { color: THEME.warningHighlightWords })
+}
+
+export const logSecretsScanSuccessMessage = function (logs, msg) {
+  log(logs, msg, { color: THEME.highlightWords })
+}
+
+export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
+  logErrorSubHeader(
+    logs,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
+  )
+
+  Object.keys(groupedResults).forEach((key) => {
+    logError(logs, `Secret env var "${key}"'s value detected:`)
+
+    groupedResults[key]
+      .sort((a, b) => {
+        return a.file > b.file ? 0 : 1
+      })
+      .forEach(({ lineNumber, file }) => {
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
+
+  logError(
+    logs,
+    `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
+  )
+  logError(
+    logs,
+    `If these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
+  )
+  logError(logs, `See the Netlify Docs for more information on secrets scanning.`)
 }

@@ -46,6 +46,148 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.6 to ^9.8.7
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.7 to ^9.8.8
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
+
+## [7.3.5](https://github.com/netlify/build/compare/build-info-v7.3.4...build-info-v7.3.5) (2023-07-06)
+
+
+### Bug Fixes
+
+* export PollingStrategies and getSettings as part of the public api ([#5140](https://github.com/netlify/build/issues/5140)) ([0500193](https://github.com/netlify/build/commit/0500193686b715bf58cfb5204cdb1a754092c1bf))
+
+## [7.3.4](https://github.com/netlify/build/compare/build-info-v7.3.3...build-info-v7.3.4) (2023-07-06)
+
+
+### Bug Fixes
+
+* fixes an issue where package paths where not correctly resolved ([#5134](https://github.com/netlify/build/issues/5134)) ([48d9db2](https://github.com/netlify/build/commit/48d9db260a6f57f4a7dbd96504b369e2b3b2c9d2))
+
+## [7.3.3](https://github.com/netlify/build/compare/build-info-v7.3.2...build-info-v7.3.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue with npm workspace filtering in the command ([#5125](https://github.com/netlify/build/issues/5125)) ([d161c0c](https://github.com/netlify/build/commit/d161c0c6d00a4be77864356c66a2f82af19c076a)), closes [#5123](https://github.com/netlify/build/issues/5123)
+
+## [7.3.2](https://github.com/netlify/build/compare/build-info-v7.3.1...build-info-v7.3.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue where the wrong dist was used for frameworks with… ([#5122](https://github.com/netlify/build/issues/5122)) ([4533a61](https://github.com/netlify/build/commit/4533a61da4f40c302fedf8185ae8b85ac3e39fa6))
+
+## [7.3.1](https://github.com/netlify/build/compare/build-info-v7.3.0...build-info-v7.3.1) (2023-07-04)
+
+
+### Bug Fixes
+
+* place outside ff ([0898cf6](https://github.com/netlify/build/commit/0898cf6ceb6467fc1cbca3985f45457a720ffb24))
+
+## [7.3.0](https://github.com/netlify/build/compare/build-info-v7.2.0...build-info-v7.3.0) (2023-06-30)
+
+
+### Features
+
+* detect lang runtime ([#5105](https://github.com/netlify/build/issues/5105)) ([7242ddd](https://github.com/netlify/build/commit/7242dddef6307f1c673ba94f7026a85eb5a0fb59))
+
+## [7.2.0](https://github.com/netlify/build/compare/build-info-v7.1.1...build-info-v7.2.0) (2023-06-29)
+
+
+### Features
+
+* make events async ([#5106](https://github.com/netlify/build/issues/5106)) ([6fa5220](https://github.com/netlify/build/commit/6fa5220bc6d9f9e390564cd2f1a3a4c5bc9cd206))
+
+## [7.1.1](https://github.com/netlify/build/compare/build-info-v7.1.0...build-info-v7.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* remove node specific dirname ([#5103](https://github.com/netlify/build/issues/5103)) ([bc5f991](https://github.com/netlify/build/commit/bc5f991955571f5e0b8a135cfa09ac1c01eff9c8))
+
+## [7.1.0](https://github.com/netlify/build/compare/build-info-v7.0.8...build-info-v7.1.0) (2023-06-29)
+
+
+### Features
+
+* **build-info:** add detection for toml files and settings collection ([#5102](https://github.com/netlify/build/issues/5102)) ([fcf221a](https://github.com/netlify/build/commit/fcf221a57da89b9b7888a929aa0f978ce716ed9d))
+
+## [7.0.8](https://github.com/netlify/build/compare/build-info-v7.0.7...build-info-v7.0.8) (2023-06-15)
+
+
+### Bug Fixes
+
+* fixes an issue where it broke if no patterns are provided ([#5081](https://github.com/netlify/build/issues/5081)) ([7ac1567](https://github.com/netlify/build/commit/7ac15679ebcf11d3cf9eb52832d3c719c2c9fc8a))
+
+## [7.0.7](https://github.com/netlify/build/compare/build-info-v7.0.6...build-info-v7.0.7) (2023-06-14)
+
+
+### Bug Fixes
+
+* remove RegEx negative lookbehind in file system ([#5078](https://github.com/netlify/build/issues/5078)) ([6b7ac05](https://github.com/netlify/build/commit/6b7ac05120a1a9b9bd7752054e8375f7c87ecabe))
+
+## [7.0.6](https://github.com/netlify/build/compare/build-info-v7.0.5...build-info-v7.0.6) (2023-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency minimatch to v9 ([#5021](https://github.com/netlify/build/issues/5021)) ([f825645](https://github.com/netlify/build/commit/f825645da38b7104118571a29c95e9e05b0ef636))
+* use turbo --filter instead of deprecated --scope ([#5057](https://github.com/netlify/build/issues/5057)) ([58e45b8](https://github.com/netlify/build/commit/58e45b86b8eb5d8e59cb3828287f7858f6303015))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.9 to ^9.8.10
+
+## [7.0.4](https://github.com/netlify/build/compare/build-info-v7.0.3...build-info-v7.0.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* **build-info:** fixes a bug in the platform independent join function ([#5042](https://github.com/netlify/build/issues/5042)) ([1fde7c9](https://github.com/netlify/build/commit/1fde7c95f43e5a473bf077ab9f48445789992187))
+
+## [7.0.1](https://github.com/netlify/build/compare/build-info-v7.0.0...build-info-v7.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* fixes an issue where it could not retrieve the settings for the same root as projectdir ([#4996](https://github.com/netlify/build/issues/4996)) ([dc220cb](https://github.com/netlify/build/commit/dc220cbb4619e88310ca704b3e5d6bb60aa0776c))
+
+## [7.0.0](https://github.com/netlify/build/compare/build-info-v6.9.0...build-info-v7.0.0) (2023-05-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977))
+
+### Features
+
+* retrieve build and dev settings for frameworks with build systems ([#4977](https://github.com/netlify/build/issues/4977)) ([e7f3361](https://github.com/netlify/build/commit/e7f3361c38ffee5304f4b010068a4e8603a4cbb0))
+
+## [6.9.0](https://github.com/netlify/build/compare/build-info-v6.8.1...build-info-v6.9.0) (2023-05-03)
+
+
+### Features
+
+* move framework logos over to build-info ([#4988](https://github.com/netlify/build/issues/4988)) ([35cee2a](https://github.com/netlify/build/commit/35cee2a55e736af2c36dbca34bb1313e806527c4))
+
 ## [6.8.1](https://github.com/netlify/build/compare/build-info-v6.8.0...build-info-v6.8.1) (2023-04-25)
 
 

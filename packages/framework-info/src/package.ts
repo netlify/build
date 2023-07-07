@@ -1,4 +1,4 @@
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 import isPlainObj from 'is-plain-obj'
 import type { PackageJson } from 'read-pkg-up'
 
@@ -32,7 +32,7 @@ const getScripts = function ({ scripts }: PackageJson): Record<string, string> {
     return {}
   }
 
-  return filterObj(scripts, isValidScript) as Record<string, string>
+  return includeKeys(scripts, isValidScript) as Record<string, string>
 }
 
 const isValidScript = function (_key: unknown, value: any): value is string {

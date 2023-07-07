@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { basename, dirname } from 'path'
+import { basename, dirname, join } from 'path'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
@@ -21,18 +21,18 @@ export const add = async function (src?: string, dist?: string, { fail = default
   }
 
   const srcBasename = basename(src)
-  const srcGlob = await getSrcGlob(src, srcBasename)
-  await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: true })
+  const [srcGlob, dest] = await getSrcAndDest(src, srcBasename, dist)
+  await cpy(srcGlob, dest, { cwd: dirname(src), overwrite: true })
 }
 
-const getSrcGlob = async function (src, srcBasename) {
+const getSrcAndDest = async function (src: string, srcBasename: string, dist: string): Promise<[string, string]> {
   const srcStat = await fs.stat(src)
 
   if (srcStat.isDirectory()) {
-    return `${srcBasename}/**`
+    return [`${srcBasename}/**`, join(dist, srcBasename)]
   }
 
-  return srcBasename
+  return [srcBasename, dist]
 }
 
 export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {

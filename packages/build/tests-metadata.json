@@ -94,5 +94,9 @@
   "tests/steps/tests.js": {
     "order": 23,
     "machine": 3
+  },
+  "tests/secrets_scanning/tests.js": {
+    "order": 24,
+    "machine": 3
   }
 }
