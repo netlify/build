@@ -88,25 +88,18 @@ const getIntegrations = async function (api, ownerType, ownerId) {
     return []
   }
 
-  return [
-    {
-      slug: 'sentry',
-      version: 'http://localhost:8888',
-      has_build: true,
-    },
-  ]
+  try {
+    const token = api.accessToken()
+    const response = await fetch(`https://app.netlify.com/${ownerType}/${ownerId}/integrations`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-  //   try {
-  //     const token = api.accessToken()
-  //     const response = await fetch(`https://app.netlify.com/sites/${siteId}/integrations`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-
-  //     const integrations = await response.json()
-  //     return Array.isArray(integrations) ? integrations : []
-  //   } catch (error) {
-  //     throwUserError(`Failed retrieving integrations for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  //   }
+    const integrations = await response.json()
+    return Array.isArray(integrations) ? integrations : []
+  } catch (error) {
+    // for now, we'll just ignore errors, as this is early days
+    return []
+  }
 }
