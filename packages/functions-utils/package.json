@@ -55,7 +55,7 @@
     "path-exists": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.14.2",
+    "@types/node": "^20.4.1",
     "sort-on": "^5.0.0",
     "tmp-promise": "^3.0.0",
     "typescript": "^5.0.0",
