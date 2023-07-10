@@ -114,7 +114,7 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
 export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
   logErrorSubHeader(
     logs,
-    `Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
   )
 
   Object.keys(groupedResults).forEach((key) => {

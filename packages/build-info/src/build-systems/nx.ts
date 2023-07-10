@@ -68,19 +68,38 @@ export class Nx extends BaseBuildTool {
 
   /** Retrieve the dist directory of a package */
   async getDist(packagePath: string): Promise<string | null> {
+    // only nx integrated has the `project.json`
     if (!this.isIntegrated) {
       return null
     }
 
-    const framework = this.project.frameworks.get(packagePath)?.[0]
+    return this.getOutputDirFromProjectJSON(packagePath)
+  }
 
-    if (framework) {
-      const dist = framework.staticAssetsDirectory || framework.build.directory
-      // TODO: make this smarter in the future by parsing the project.json
-      return this.project.fs.join('dist', packagePath, dist)
+  async getOutputDirFromProjectJSON(packagePath: string): Promise<string | null> {
+    // dynamic import out of performance reasons on the react UI
+    const { getProperty } = await import('dot-prop')
+    try {
+      const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
+      const project = await this.project.fs.readJSON<Record<string, any>>(projectPath, { fail: true })
+
+      const target = project?.targets?.build
+      if (target) {
+        const pattern = project?.targets?.build?.outputs?.[0]
+        if (pattern) {
+          return this.project.fs.join(
+            pattern
+              .replace('{workspaceRoot}/', '')
+              .replace(/\{(.+)\}/g, (_match, group) => getProperty({ ...target, projectRoot: packagePath }, group)),
+          )
+        }
+      }
+    } catch {
+      //noop
     }
 
-    return null
+    // As a fallback use the convention of the dist combined with the package path
+    return this.project.fs.join('dist', packagePath)
   }
 
   async detect(): Promise<this | undefined> {
@@ -127,16 +146,5 @@ export class Nx extends BaseBuildTool {
       }
       return this
     }
-  }
-}
-
-export class Lerna extends BaseBuildTool {
-  id = 'lerna'
-  name = 'Lerna'
-  configFiles = ['lerna.json']
-  logo = {
-    default: '/logos/lerna/light.svg',
-    light: '/logos/lerna/light.svg',
-    dark: '/logos/lerna/dark.svg',
   }
 }

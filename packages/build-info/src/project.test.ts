@@ -1,7 +1,7 @@
 import { join, resolve } from 'path'
 import { cwd } from 'process'
 
-import { parse } from 'semver'
+import { coerce, parse } from 'semver'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
@@ -31,7 +31,7 @@ describe('Setting the node.js version', () => {
 
   test('process node version should override environment variable', async ({ fs }) => {
     const project = new Project(fs).setNodeVersion(process.version).setEnvironment({ NODE_VERSION: '1.2.3' })
-    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(process.version) || '')
+    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(coerce(process.version)) || '')
   })
 
   test('should set the node version correctly through an fuzzy environment variable', async ({ fs }) => {
