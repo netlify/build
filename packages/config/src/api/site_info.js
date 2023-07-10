@@ -34,7 +34,7 @@ export const getSiteInfo = async function ({
     promises.push(getIntegrations({ api, owner: 'site', ownerId: siteId, logs }))
   }
 
-  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+  const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
