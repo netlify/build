@@ -2,6 +2,7 @@ import fetch from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
+import { logWarning } from '../log/logger.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 
 // Retrieve Netlify Site information, if available.
@@ -19,6 +20,7 @@ export const getSiteInfo = async function ({
   siteFeatureFlagPrefix,
   featureFlags = {},
   testOpts: { env: testEnv = true } = {},
+  logs,
 }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
@@ -29,15 +31,10 @@ export const getSiteInfo = async function ({
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
   if (fetchIntegrations) {
-    promises.push(getIntegrations(api, 'site', siteId))
+    promises.push(getIntegrations({ api, owner: 'site', ownerId: siteId, logs }))
   }
 
-  const [siteInfo, accounts, addons, ...rest] = await Promise.all(promises)
-  let integrations = []
-
-  if (fetchIntegrations) {
-    integrations = rest[0]
-  }
+  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
@@ -45,7 +42,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations }
+  return { siteInfo, accounts, addons, integrations: integrations ?? [] }
 }
 
 const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
@@ -83,7 +80,7 @@ const getAddons = async function (api, siteId) {
   }
 }
 
-const getIntegrations = async function (api, ownerType, ownerId) {
+const getIntegrations = async function ({ api, ownerType, ownerId, logs }) {
   if (ownerId === undefined) {
     return []
   }
@@ -99,6 +96,7 @@ const getIntegrations = async function (api, ownerType, ownerId) {
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
+    logWarning(logs, `Failed retrieving integrations for ${ownerType} ${ownerId}: ${error.message}.`)
     // for now, we'll just ignore errors, as this is early days
     return []
   }
