@@ -7,7 +7,7 @@
   "author": "Lukas Holzer <lukas.holzer@netlify.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.4.1",
+    "@types/node": "^14.18.53",
     "execa": "^6.1.0",
     "globby": "^13.1.2",
     "typescript": "^5.0.0"
