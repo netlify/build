@@ -10,6 +10,11 @@ export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
   configFiles = ['nx.json']
+  logo = {
+    default: '/logos/nx/light.svg',
+    light: '/logos/nx/light.svg',
+    dark: '/logos/nx/dark.svg',
+  }
   runFromRoot = true
   /**
    * if it's an nx integrated setup
@@ -22,7 +27,7 @@ export class Nx extends BaseBuildTool {
   async getCommands(packagePath: string): Promise<Command[]> {
     const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
     const packageJSONPath = this.project.resolveFromPackage(packagePath, 'package.json')
-    let name: string
+    let name = ''
     const targets: string[] = []
     try {
       const project = await this.project.fs.readJSON(projectPath, { fail: true })
@@ -31,9 +36,13 @@ export class Nx extends BaseBuildTool {
       name = (project.name as string) || ''
     } catch {
       // if no project.json exists it's probably a package based nx workspace and not a integrated one
-      const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath)
-      targets.push(...Object.keys(json?.scripts || {}))
-      name = json.name || ''
+      try {
+        const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath, { fail: true })
+        targets.push(...Object.keys(json?.scripts || {}))
+        name = json.name || ''
+      } catch {
+        // noop
+      }
     }
 
     if (name.length !== 0 && targets.length !== 0) {
@@ -59,19 +68,38 @@ export class Nx extends BaseBuildTool {
 
   /** Retrieve the dist directory of a package */
   async getDist(packagePath: string): Promise<string | null> {
+    // only nx integrated has the `project.json`
     if (!this.isIntegrated) {
       return null
     }
 
-    const framework = this.project.frameworks.get(packagePath)?.[0]
+    return this.getOutputDirFromProjectJSON(packagePath)
+  }
 
-    if (framework) {
-      const dist = framework.staticAssetsDirectory || framework.build.directory
-      // TODO: make this smarter in the future by parsing the project.json
-      return this.project.fs.join('dist', packagePath, dist)
+  async getOutputDirFromProjectJSON(packagePath: string): Promise<string | null> {
+    // dynamic import out of performance reasons on the react UI
+    const { getProperty } = await import('dot-prop')
+    try {
+      const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
+      const project = await this.project.fs.readJSON<Record<string, any>>(projectPath, { fail: true })
+
+      const target = project?.targets?.build
+      if (target) {
+        const pattern = project?.targets?.build?.outputs?.[0]
+        if (pattern) {
+          return this.project.fs.join(
+            pattern
+              .replace('{workspaceRoot}/', '')
+              .replace(/\{(.+)\}/g, (_match, group) => getProperty({ ...target, projectRoot: packagePath }, group)),
+          )
+        }
+      }
+    } catch {
+      //noop
     }
 
-    return null
+    // As a fallback use the convention of the dist combined with the package path
+    return this.project.fs.join('dist', packagePath)
   }
 
   async detect(): Promise<this | undefined> {
@@ -119,10 +147,4 @@ export class Nx extends BaseBuildTool {
       return this
     }
   }
-}
-
-export class Lerna extends BaseBuildTool {
-  id = 'lerna'
-  name = 'Lerna'
-  configFiles = ['lerna.json']
 }

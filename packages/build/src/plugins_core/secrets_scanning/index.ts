@@ -1,4 +1,7 @@
+import { trace } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../../error/info.js'
+import { log } from '../../log/logger.js'
 import {
   logSecretsScanFailBuildMessage,
   logSecretsScanSkipMessage,
@@ -6,6 +9,7 @@ import {
 } from '../../log/messages/core_steps.js'
 
 import {
+  ScanResults,
   getFilePathsToScan,
   getSecretKeysToScanFor,
   groupScanResultsByKey,
@@ -13,22 +17,30 @@ import {
   scanFilesForKeyValues,
 } from './utils.js'
 
+const tracer = trace.getTracer('secrets-scanning')
+
 const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
 
-  systemLog({ envVars, passedSecretKeys })
+  systemLog({ passedSecretKeys, buildDir })
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
     return stepResults
   }
 
-  const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
+  // transparently log if there are scanning values being omitted
+  if (envVars['SECRETS_SCAN_OMIT_KEYS'] !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_KEYS override option set to: ${envVars['SECRETS_SCAN_OMIT_KEYS']}\n`)
+  }
+  if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
+  }
 
-  systemLog({ keysToSearchFor })
+  const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
   if (keysToSearchFor.length === 0) {
     logSecretsScanSkipMessage(
@@ -43,8 +55,6 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
   // and post build files
   const filePaths = await getFilePathsToScan({ env: envVars, base: buildDir })
 
-  systemLog({ buildDir, filePaths })
-
   if (filePaths.length === 0) {
     logSecretsScanSkipMessage(
       logs,
@@ -53,15 +63,37 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
     return stepResults
   }
 
-  const scanResults = await scanFilesForKeyValues({
-    env: envVars,
-    keys: keysToSearchFor,
-    base: buildDir as string,
-    filePaths,
-  })
+  let scanResults: ScanResults | undefined
 
-  if (scanResults.matches.length === 0) {
-    logSecretsScanSuccessMessage(logs, 'Secrets scanning complete. No secrets detected in build output or repo code.')
+  await tracer.startActiveSpan(
+    'scanning-files',
+    { attributes: { keysToSearchFor, totalFiles: filePaths.length } },
+    async (span) => {
+      scanResults = await scanFilesForKeyValues({
+        env: envVars,
+        keys: keysToSearchFor,
+        base: buildDir as string,
+        filePaths,
+      })
+
+      const attributesForLogsAndSpan = {
+        secretsScanFoundSecrets: scanResults.matches.length > 0,
+        secretsScanMatchesCount: scanResults.matches.length,
+        secretsFilesCount: scanResults.scannedFilesCount,
+        keysToSearchFor,
+      }
+
+      systemLog(attributesForLogsAndSpan)
+      span.setAttributes(attributesForLogsAndSpan)
+      span.end()
+    },
+  )
+
+  if (!scanResults || scanResults.matches.length === 0) {
+    logSecretsScanSuccessMessage(
+      logs,
+      `Secrets scanning complete. ${scanResults?.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
+    )
     return stepResults
   }
 

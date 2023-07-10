@@ -81,6 +81,81 @@
   * dependencies
     * @netlify/config bumped from ^20.5.0 to ^20.5.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.5.1 to ^20.5.2
+
+## [29.15.6](https://github.com/netlify/build/compare/build-v29.15.5...build-v29.15.6) (2023-07-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.16.3 ([#5157](https://github.com/netlify/build/issues/5157)) ([24be5cd](https://github.com/netlify/build/commit/24be5cd7de155d6c11b7c7226ae0af61dd670238))
+
+## [29.15.5](https://github.com/netlify/build/compare/build-v29.15.4...build-v29.15.5) (2023-07-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.13.0 ([#5155](https://github.com/netlify/build/issues/5155)) ([4044aa2](https://github.com/netlify/build/commit/4044aa2e862465e44c175f1534307522308f93c6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.17 to ^5.2.18
+
+## [29.15.4](https://github.com/netlify/build/compare/build-v29.15.3...build-v29.15.4) (2023-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.12.2 ([#5144](https://github.com/netlify/build/issues/5144)) ([9f8ad3b](https://github.com/netlify/build/commit/9f8ad3b69bbcb457dae0301692fcbcdfbad1c970))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.16 to ^5.2.17
+
+## [29.15.3](https://github.com/netlify/build/compare/build-v29.15.2...build-v29.15.3) (2023-07-06)
+
+
+### Features
+
+* Improvements to secrets scanning perf and observability ([#5132](https://github.com/netlify/build/issues/5132)) ([be45a8a](https://github.com/netlify/build/commit/be45a8abb28abcdee0c248bbdd5a4ae51d2af744))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.12.1 ([#5130](https://github.com/netlify/build/issues/5130)) ([55293df](https://github.com/netlify/build/commit/55293df75b8875fd006ea59a1f8ad036c7915a6e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.15 to ^5.2.16
+
+## [29.15.1](https://github.com/netlify/build/compare/build-v29.15.0...build-v29.15.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.12.0 ([#5107](https://github.com/netlify/build/issues/5107)) ([bff7945](https://github.com/netlify/build/commit/bff7945577b07a071dd53cacd22b0ec0ba152f50))
+* **tracing:** actually set the tracing options in the root context ([#5118](https://github.com/netlify/build/issues/5118)) ([6353314](https://github.com/netlify/build/commit/6353314bf201798eb66acaf694ee3d6ba7d3870c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.14 to ^5.2.15
+
 ## [29.15.0](https://github.com/netlify/build/compare/build-v29.14.1...build-v29.15.0) (2023-06-30)
 
 

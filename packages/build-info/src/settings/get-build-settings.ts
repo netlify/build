@@ -15,6 +15,10 @@ export type Settings = {
     id: string
     name: string
   }
+  buildSystem?: {
+    id: string
+    name: string
+  }
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
@@ -68,9 +72,8 @@ async function applyBuildSystemOverrides(
   return updatedSettings
 }
 
-async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
-  const frameworkDist = framework.staticAssetsDirectory || framework.build.directory
-
+/** Retrieve the settings for a framework, used inside the CLI in conjunction with getFramework */
+export async function getSettings(framework: Framework, project: Project, baseDirectory: string): Promise<Settings> {
   const devCommands = framework.getDevCommands()
   const buildCommands = framework.getBuildCommands()
 
@@ -79,7 +82,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
     buildCommand: buildCommands[0],
     devCommand: devCommands[0],
     frameworkPort: framework.dev?.port,
-    dist: project.fs.join(baseDirectory, frameworkDist),
+    dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
     plugins_from_config_file: [],
     plugins_recommended: framework.plugins || [],
@@ -93,7 +96,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
   }
 
   if (baseDirectory?.length && project.workspace?.isRoot) {
-    settings.dist = project.fs.join(baseDirectory, frameworkDist)
+    settings.dist = project.fs.join(baseDirectory, framework.build.directory)
   }
 
   // 1. try to apply overrides for package managers (like npm, pnpm or yarn workspaces)
@@ -107,6 +110,7 @@ async function getSettings(framework: Framework, project: Project, baseDirectory
 }
 
 export async function getBuildSettings(project: Project): Promise<Settings[]> {
+  project.logger.debug('[get-build-settings.ts] getBuildSettings')
   if (project.frameworks === undefined) {
     throw new Error('Please run the framework detection before calling the build settings!')
   }

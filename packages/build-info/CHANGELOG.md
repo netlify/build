@@ -64,6 +64,56 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* downgrade dot-prop to support Node.js 14 ([#5147](https://github.com/netlify/build/issues/5147)) ([ff26375](https://github.com/netlify/build/commit/ff26375933e369c99add77c6f2f1a7e207a5c50a))
+* fix return type of get framework to return the class ([#5145](https://github.com/netlify/build/issues/5145)) ([8a1083e](https://github.com/netlify/build/commit/8a1083e08db98f345b1d7816c44458f9a702c3ce))
+
+## [7.4.0](https://github.com/netlify/build/compare/build-info-v7.3.5...build-info-v7.4.0) (2023-07-07)
+
+
+### Features
+
+* improve nx-integrated dist directory ([#5133](https://github.com/netlify/build/issues/5133)) ([3e99d21](https://github.com/netlify/build/commit/3e99d21e1369b7a2216746c241f6395ef226bdcc))
+
+## [7.3.5](https://github.com/netlify/build/compare/build-info-v7.3.4...build-info-v7.3.5) (2023-07-06)
+
+
+### Bug Fixes
+
+* export PollingStrategies and getSettings as part of the public api ([#5140](https://github.com/netlify/build/issues/5140)) ([0500193](https://github.com/netlify/build/commit/0500193686b715bf58cfb5204cdb1a754092c1bf))
+
+## [7.3.4](https://github.com/netlify/build/compare/build-info-v7.3.3...build-info-v7.3.4) (2023-07-06)
+
+
+### Bug Fixes
+
+* fixes an issue where package paths where not correctly resolved ([#5134](https://github.com/netlify/build/issues/5134)) ([48d9db2](https://github.com/netlify/build/commit/48d9db260a6f57f4a7dbd96504b369e2b3b2c9d2))
+
+## [7.3.3](https://github.com/netlify/build/compare/build-info-v7.3.2...build-info-v7.3.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue with npm workspace filtering in the command ([#5125](https://github.com/netlify/build/issues/5125)) ([d161c0c](https://github.com/netlify/build/commit/d161c0c6d00a4be77864356c66a2f82af19c076a)), closes [#5123](https://github.com/netlify/build/issues/5123)
+
+## [7.3.2](https://github.com/netlify/build/compare/build-info-v7.3.1...build-info-v7.3.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixes an issue where the wrong dist was used for frameworks with… ([#5122](https://github.com/netlify/build/issues/5122)) ([4533a61](https://github.com/netlify/build/commit/4533a61da4f40c302fedf8185ae8b85ac3e39fa6))
+
+## [7.3.1](https://github.com/netlify/build/compare/build-info-v7.3.0...build-info-v7.3.1) (2023-07-04)
+
+
+### Bug Fixes
+
+* place outside ff ([0898cf6](https://github.com/netlify/build/commit/0898cf6ceb6467fc1cbca3985f45457a720ffb24))
+
 ## [7.3.0](https://github.com/netlify/build/compare/build-info-v7.2.0...build-info-v7.3.0) (2023-06-30)
 
 
