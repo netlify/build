@@ -58,7 +58,7 @@
     "@types/node": "^14.18.32",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^9.0.0",
-    "@vitest/coverage-c8": "^0.32.0",
+    "@vitest/coverage-c8": "^0.33.0",
     "archiver": "^5.3.1",
     "chalk": "^4.1.2",
     "cpy": "^9.0.1",
@@ -67,7 +67,7 @@
     "nock": "^13.2.4",
     "tar": "^6.1.11",
     "typescript": "^5.0.0",
-    "vitest": "^0.32.0"
+    "vitest": "^0.33.0"
   },
   "engines": {
     "node": "^14.16.0 || >=16.0.0"
