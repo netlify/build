@@ -90,7 +90,7 @@ const getIntegrations = async function (api, ownerType, ownerId) {
 
   try {
     const token = api.accessToken()
-    const response = await fetch(`https://app.netlify.com/${ownerType}/${ownerId}/integrations`, {
+    const response = await fetch(`https://api.netlifysdk.com/${ownerType}/${ownerId}/integrations`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
