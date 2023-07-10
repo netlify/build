@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.16.3](https://github.com/netlify/edge-bundler/compare/v8.16.2...v8.16.3) (2023-07-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency semver to v7.5.3 ([#424](https://github.com/netlify/edge-bundler/issues/424)) ([364eefe](https://github.com/netlify/edge-bundler/commit/364eefeb7eff5dd76e613d553c4cb6e0b1410489))
+* **deps:** update dependency semver to v7.5.4 ([#430](https://github.com/netlify/edge-bundler/issues/430)) ([30bd647](https://github.com/netlify/edge-bundler/commit/30bd647fade7407adbcb80aa65741a5c159a4e07))
+
 ## [8.16.2](https://github.com/netlify/edge-bundler/compare/v8.16.1...v8.16.2) (2023-06-07)
 
 
