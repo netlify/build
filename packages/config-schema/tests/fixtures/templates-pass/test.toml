@@ -1,0 +1,5 @@
+[template]
+incoming-hooks = ["Contentful"]
+
+[template.environment]
+ASDFG = "STRING"
