@@ -62,7 +62,14 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts, siteFeatureFlagPrefix })
+  const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
+    api,
+    siteId,
+    mode,
+    testOpts,
+    siteFeatureFlagPrefix,
+    featureFlags,
+  })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
@@ -106,6 +113,7 @@ export const resolveConfig = async function (opts) {
 
   const result = {
     siteInfo,
+    integrations,
     accounts,
     addons,
     env,

@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
@@ -15,18 +17,22 @@ export const getSiteInfo = async function ({
   siteId,
   mode,
   siteFeatureFlagPrefix,
+  featureFlags = {},
   testOpts: { env: testEnv = true } = {},
 }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
   }
+  const fetchIntegrations = featureFlags.buildbot_fetch_integrations
 
-  const [siteInfo, accounts, addons] = await Promise.all([
-    getSite(api, siteId, siteFeatureFlagPrefix),
-    getAccounts(api),
-    getAddons(api, siteId),
-  ])
+  const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
+
+  if (fetchIntegrations) {
+    promises.push(getIntegrations({ api, ownerType: 'site', ownerId: siteId }))
+  }
+
+  const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
@@ -34,7 +40,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons }
+  return { siteInfo, accounts, addons, integrations: integrations ?? [] }
 }
 
 const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
@@ -69,5 +75,26 @@ const getAddons = async function (api, siteId) {
     return Array.isArray(addons) ? addons : []
   } catch (error) {
     throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  }
+}
+
+const getIntegrations = async function ({ api, ownerType, ownerId }) {
+  if (ownerId === undefined) {
+    return []
+  }
+
+  try {
+    const token = api.accessToken()
+    const response = await fetch(`https://api.netlifysdk.com/${ownerType}/${ownerId}/integrations`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    const integrations = await response.json()
+    return Array.isArray(integrations) ? integrations : []
+  } catch (error) {
+    // for now, we'll just ignore errors, as this is early days
+    return []
   }
 }

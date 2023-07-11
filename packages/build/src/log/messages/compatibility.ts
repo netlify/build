@@ -17,11 +17,25 @@ export const logRuntime = (logs, pluginOptions) => {
   }
 }
 
+export const logLoadingIntegration = (logs, pluginOptions) => {
+  const loadingPlugins = pluginOptions
+    .filter((plugin) => plugin.isIntegration)
+    .map((pluginOptions) => pluginOptions.integration?.slug ?? 'no-slug')
+
+  if (loadingPlugins.length === 0) {
+    return
+  }
+
+  logSubHeader(logs, 'Loading integrations')
+  logArray(logs, loadingPlugins)
+}
+
 export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
   const loadingPlugins = pluginsOptions
     .filter(isNotCorePlugin)
     // We don't want to show runtimes as plugins
     .filter((plugin) => !isRuntime(plugin))
+    .filter((p) => !p.isIntegration)
     .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
 
   if (loadingPlugins.length === 0) {

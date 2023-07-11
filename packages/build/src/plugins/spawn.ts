@@ -8,6 +8,7 @@ import {
   logLoadingPlugins,
   logOutdatedPlugins,
   logIncompatiblePlugins,
+  logLoadingIntegration,
 } from '../log/messages/compatibility.js'
 import { measureDuration } from '../time/main.js'
 
@@ -26,6 +27,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
     logLoadingPlugins(logs, pluginsOptions, debug)
+    logLoadingIntegration(logs, pluginsOptions)
   }
 
   logOutdatedPlugins(logs, pluginsOptions)
