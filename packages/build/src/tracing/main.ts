@@ -28,17 +28,28 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
   if (!options.enabled) return
   if (sdk) return
 
+  const diagLogger = getOtelLogger(logger)
+  const endpoint = `${options.httpProtocol}://${options.host}:${options.port}`
+
   sdk = new HoneycombSDK({
     serviceName: ROOT_PACKAGE_JSON.name,
     protocol: 'grpc',
     apiKey: options.apiKey,
-    endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
     sampleRate: options.sampleRate,
+    endpoint,
+  })
+
+  diagLogger.info('tracing init', {
+    endpoint,
+    sampleRate: options.sampleRate,
+    traceId: options.traceId,
+    spanId: options.parentSpanId,
+    traceFlags: options.traceFlags,
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
   // in case there's a default console logger already registered (it would log a msg to it)
-  diag.setLogger(getOtelLogger(logger), { logLevel: DiagLogLevel.INFO, suppressOverrideMessage: true })
+  diag.setLogger(diagLogger, { logLevel: DiagLogLevel.INFO, suppressOverrideMessage: true })
 
   sdk.start()
 
