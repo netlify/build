@@ -29,7 +29,7 @@ export const getSiteInfo = async function ({
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
   if (fetchIntegrations) {
-    promises.push(getIntegrations({ api, owner: 'site', ownerId: siteId }))
+    promises.push(getIntegrations({ api, ownerType: 'site', ownerId: siteId }))
   }
 
   const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
