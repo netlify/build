@@ -19,7 +19,6 @@ export const getSiteInfo = async function ({
   siteFeatureFlagPrefix,
   featureFlags = {},
   testOpts: { env: testEnv = true } = {},
-  logs,
 }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
@@ -30,7 +29,7 @@ export const getSiteInfo = async function ({
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
   if (fetchIntegrations) {
-    promises.push(getIntegrations({ api, owner: 'site', ownerId: siteId, logs }))
+    promises.push(getIntegrations({ api, owner: 'site', ownerId: siteId }))
   }
 
   const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
@@ -79,7 +78,7 @@ const getAddons = async function (api, siteId) {
   }
 }
 
-const getIntegrations = async function ({ api, ownerType, ownerId, logs }) {
+const getIntegrations = async function ({ api, ownerType, ownerId }) {
   if (ownerId === undefined) {
     return []
   }
