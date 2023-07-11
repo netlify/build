@@ -2,7 +2,6 @@ import fetch from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
-import { logWarning } from '../log/logger.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 
 // Retrieve Netlify Site information, if available.
@@ -96,7 +95,6 @@ const getIntegrations = async function ({ api, ownerType, ownerId, logs }) {
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    logWarning(logs, `Failed retrieving integrations for ${ownerType} ${ownerId}: ${error.message}.`)
     // for now, we'll just ignore errors, as this is early days
     return []
   }
