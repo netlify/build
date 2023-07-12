@@ -87,6 +87,20 @@
   * dependencies
     * @netlify/config bumped from ^20.5.1 to ^20.5.2
 
+## [29.16.0](https://github.com/netlify/build/compare/build-v29.15.6...build-v29.16.0) (2023-07-12)
+
+
+### Features
+
+* install integrations alongside plugins ([#5116](https://github.com/netlify/build/issues/5116)) ([8982903](https://github.com/netlify/build/commit/8982903b7724d736c9f9514aed8f6c960c6378ba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.5.2 to ^20.6.0
+
 ## [29.15.6](https://github.com/netlify/build/compare/build-v29.15.5...build-v29.15.6) (2023-07-10)
 
 
