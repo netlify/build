@@ -14,7 +14,7 @@ import { getBinaryExtension } from './platform.js'
 const DENO_VERSION_FILE = 'version.txt'
 // When updating DENO_VERSION_RANGE, ensure that the deno version installed in the
 // build-image/buildbot does satisfy this range!
-const DENO_VERSION_RANGE = '^1.30.0'
+const DENO_VERSION_RANGE = '^1.32.5'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
