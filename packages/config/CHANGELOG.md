@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.1](https://github.com/netlify/build/compare/config-v20.6.0...config-v20.6.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* references to token in fetch integrations and include some tests ([#5164](https://github.com/netlify/build/issues/5164)) ([9fe7880](https://github.com/netlify/build/commit/9fe78807ebd3e56c6e58e0dd2591a8a0598d6327))
+
 ## [20.6.0](https://github.com/netlify/build/compare/config-v20.5.2...config-v20.6.0) (2023-07-12)
 
 
