@@ -76,6 +76,20 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.0](https://github.com/netlify/build/compare/config-v20.5.2...config-v20.6.0) (2023-07-12)
+
+
+### Features
+
+* install integrations alongside plugins ([#5116](https://github.com/netlify/build/issues/5116)) ([8982903](https://github.com/netlify/build/commit/8982903b7724d736c9f9514aed8f6c960c6378ba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.9 to ^13.1.10
+
 ## [20.5.2](https://github.com/netlify/build/compare/config-v20.5.1...config-v20.5.2) (2023-07-06)
 
 
