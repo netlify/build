@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.16.4](https://github.com/netlify/edge-bundler/compare/v8.16.3...v8.16.4) (2023-07-12)
+
+
+### Bug Fixes
+
+* set minimum deno version to `1.32.5` to support latest features in netlify bootstrap ([140b46d](https://github.com/netlify/edge-bundler/commit/140b46d4868a76645017264e3e1b74c646abe0d6))
+
 ## [8.16.3](https://github.com/netlify/edge-bundler/compare/v8.16.2...v8.16.3) (2023-07-10)
 
 
