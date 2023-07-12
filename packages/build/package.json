@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "29.16.1",
+  "version": "29.16.2",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/core/main.js",
@@ -65,7 +65,7 @@
     "@bugsnag/js": "^7.0.0",
     "@honeycombio/opentelemetry-node": "^0.4.0",
     "@netlify/cache-utils": "^5.1.5",
-    "@netlify/config": "^20.6.0",
+    "@netlify/config": "^20.6.1",
     "@netlify/edge-bundler": "8.16.4",
     "@netlify/framework-info": "^9.8.10",
     "@netlify/functions-utils": "^5.2.18",
