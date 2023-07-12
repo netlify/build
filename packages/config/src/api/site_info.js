@@ -18,8 +18,10 @@ export const getSiteInfo = async function ({
   mode,
   siteFeatureFlagPrefix,
   featureFlags = {},
-  testOpts: { env: testEnv = true } = {},
+  testOpts = {},
 }) {
+  const { env: testEnv = true } = testOpts
+
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
@@ -29,7 +31,7 @@ export const getSiteInfo = async function ({
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
   if (fetchIntegrations) {
-    promises.push(getIntegrations({ api, ownerType: 'site', ownerId: siteId }))
+    promises.push(getIntegrations({ api, ownerType: 'site', ownerId: siteId, testOpts }))
   }
 
   const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
@@ -40,7 +42,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations: integrations ?? [] }
+  return { siteInfo, accounts, addons, integrations: integrations }
 }
 
 const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
@@ -78,14 +80,17 @@ const getAddons = async function (api, siteId) {
   }
 }
 
-const getIntegrations = async function ({ api, ownerType, ownerId }) {
+const getIntegrations = async function ({ api, ownerType, ownerId, testOpts }) {
   if (ownerId === undefined) {
     return []
   }
 
+  const { host } = testOpts
+  const baseUrl = host ? `http://${host}` : `https://api.netlifysdk.com`
+
   try {
-    const token = api.accessToken()
-    const response = await fetch(`https://api.netlifysdk.com/${ownerType}/${ownerId}/integrations`, {
+    const token = api.accessToken
+    const response = await fetch(`${baseUrl}/${ownerType}/${ownerId}/integrations`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
