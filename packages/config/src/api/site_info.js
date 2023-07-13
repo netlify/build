@@ -49,7 +49,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations: integrations }
+  return { siteInfo, accounts, addons, integrations }
 }
 
 const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {
