@@ -4,7 +4,7 @@ import { normalize } from 'path'
 import { pathExists } from 'path-exists'
 import { isFile } from 'path-type'
 
-import { logInstallMissingPlugins } from '../log/messages/install.js'
+import { logInstallMissingPlugins, logInstallIntegrations } from '../log/messages/install.js'
 
 import { addExactDependencies } from './main.js'
 
@@ -19,6 +19,18 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
 
   await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+}
+
+export const installIntegrationPlugins = async function ({ integrations, autoPluginsDir, mode, logs }) {
+  const packages = integrations.map(getIntegrationPackage)
+  logInstallIntegrations(logs, integrations)
+
+  await createAutoPluginsDir(logs, autoPluginsDir)
+  await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+}
+
+const getIntegrationPackage = function ({ version }) {
+  return `${version}/packages/buildhooks.tgz`
 }
 
 // We pin the version without using semver ranges ^ nor ~

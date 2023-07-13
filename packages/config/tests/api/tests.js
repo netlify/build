@@ -15,6 +15,16 @@ const SITE_INFO_ERROR = {
   status: 400,
 }
 
+const SITE_INTEGRATIONS_RESPONSE = {
+  path: '/site/test/integrations',
+  response: [
+    {
+      slug: 'test',
+      has_build: true,
+    },
+  ],
+}
+
 const SITE_INFO_BUILD_SETTINGS = {
   path: SITE_INFO_PATH,
   response: {
@@ -157,6 +167,18 @@ test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
     .runConfigServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Integrations are returned if feature flag is true', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      token: 'test',
+      siteId: 'test',
+      featureFlags: { buildbot_fetch_integrations: true },
+    })
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE])
+
   t.snapshot(normalizeOutput(output))
 })
 
