@@ -1,4 +1,4 @@
-# Snapshot report for `packages/config/tests/mutate/tests.js`
+# Snapshot report for `tests/mutate/tests.js`
 
 The actual snapshot is saved in `tests.js.snap`.
 
