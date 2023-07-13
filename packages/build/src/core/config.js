@@ -68,6 +68,7 @@ const tLoadConfig = async function ({
   logs,
   nodePath,
   quiet,
+  featureFlags,
 }) {
   const {
     configPath,
@@ -83,7 +84,7 @@ const tLoadConfig = async function ({
     siteInfo,
     env,
     integrations,
-  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
+  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath, featureFlags)
 
   if (!quiet) {
     logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
@@ -117,8 +118,8 @@ export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
-const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
-  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
+const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath, featureFlags) {
+  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath, featureFlags })
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
