@@ -87,8 +87,6 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
  * @returns string[] of relative paths from base of files that should be searched
  */
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
-  const omitPathsAlways = ['.git']
-
   // node modules is dense and is only useful to scan if the repo itself commits these
   // files. As a simple check to understand if the repo would commit these files, we expect
   // that they would not ignore them from their git settings. So if gitignore includes
@@ -118,10 +116,10 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   // this is needed for windows machines and snapshot tests consistency.
   files = files.map((f) => f.split(path.sep).join('/'))
 
-  let omitPaths: string[] = []
+  // always omit .git directories as they can be massive and are not the current version of the code or build output
+  let omitPaths: string[] = ['.git']
   if (typeof env.SECRETS_SCAN_OMIT_PATHS === 'string') {
     omitPaths = env.SECRETS_SCAN_OMIT_PATHS.split(',')
-      .concat(omitPathsAlways)
       .map((s) => s.trim())
       .filter(Boolean)
   }
