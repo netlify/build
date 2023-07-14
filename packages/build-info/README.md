@@ -1,9 +1,9 @@
 # Build Info
 
-Build info is the heuristics and core part of detecting settings and heuristics about the users code. The library is
-platform agnostic to be used in our React UI, Node.js CLI and build system.
+Build info is the core part of detecting settings and heuristics about the users code. The library is platform agnostic
+to be used in our React UI, Node.js CLI and build system.
 
-It provides a layered approach to detecting the following information's:
+It provides a layered approach to detecting the following information:
 
 1. Package Manager
 2. Workspaces (pnpm, yarn, npm)
