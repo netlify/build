@@ -117,7 +117,7 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   files = files.map((f) => f.split(path.sep).join('/'))
 
   // always omit .git directories as they can be massive and are not the current version of the code or build output
-  let omitPaths: string[] = ['.git']
+  let omitPaths: string[] = ['.git/']
   if (typeof env.SECRETS_SCAN_OMIT_PATHS === 'string') {
     omitPaths = env.SECRETS_SCAN_OMIT_PATHS.split(',')
       .map((s) => s.trim())
