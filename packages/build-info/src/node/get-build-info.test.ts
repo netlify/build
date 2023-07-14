@@ -50,7 +50,14 @@ test('should only detect go in a simple golang project', async () => {
 test('should not crash on invalid projects', async (ctx) => {
   const fixture = await createFixture('invalid-project', ctx)
   const { frameworks, packageManager } = await getBuildInfo({ projectDir: fixture.cwd })
-  expect(packageManager).toMatchInlineSnapshot
+  expect(packageManager).toMatchInlineSnapshot(`
+    {
+      "installCommand": "npm install",
+      "lockFile": "package-lock.json",
+      "name": "npm",
+      "runCommand": "npm run",
+    }
+  `)
   expect(frameworks).toEqual([])
 })
 
