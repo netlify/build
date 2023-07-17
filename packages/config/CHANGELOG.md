@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.2](https://github.com/netlify/build/compare/config-v20.6.1...config-v20.6.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* do not allow excluded path and pattern together ([#5142](https://github.com/netlify/build/issues/5142)) ([4c9aefe](https://github.com/netlify/build/commit/4c9aefe0e512abcd44ec963cd37cd8b4afb1aaf8))
+
 ## [20.6.1](https://github.com/netlify/build/compare/config-v20.6.0...config-v20.6.1) (2023-07-12)
 
 

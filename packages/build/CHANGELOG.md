@@ -93,6 +93,20 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+## [29.16.3](https://github.com/netlify/build/compare/build-v29.16.2...build-v29.16.3) (2023-07-17)
+
+
+### Bug Fixes
+
+* omit the git path even if no other omit paths provided ([#5170](https://github.com/netlify/build/issues/5170)) ([29c76c5](https://github.com/netlify/build/commit/29c76c5857d92ce322c804f61c877888ad4cfb80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.1 to ^20.6.2
+
 ## [29.16.1](https://github.com/netlify/build/compare/build-v29.16.0...build-v29.16.1) (2023-07-12)
 
 
