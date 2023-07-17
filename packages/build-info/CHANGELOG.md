@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.4.2](https://github.com/netlify/build/compare/build-info-v7.4.1...build-info-v7.4.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* cleanup feature flag for new framework detection as already rolled out to 100% ([#5169](https://github.com/netlify/build/issues/5169)) ([2858d70](https://github.com/netlify/build/commit/2858d70341a2632e41bb683d0ca200008ee6d0ba))
+
 ## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
 
 
