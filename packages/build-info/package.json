@@ -1,21 +1,21 @@
 {
   "name": "@netlify/build-info",
-  "version": "7.4.1",
+  "version": "7.4.2",
   "description": "Build info utility",
   "type": "module",
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
-      "default": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "browser": "./lib/index.js",
+      "default": "./lib/index.js"
     },
     "./node": {
+      "types": "./lib/node/index.d.ts",
       "import": "./lib/node/index.js",
-      "default": "./lib/node/index.js",
-      "types": "./lib/node/index.d.ts"
+      "default": "./lib/node/index.js"
     }
   },
-  "browser": "./lib/index.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
@@ -46,7 +46,6 @@
   "author": "Netlify Inc.",
   "dependencies": {
     "@bugsnag/js": "^7.20.0",
-    "@netlify/framework-info": "^9.8.10",
     "dot-prop": "^7.2.0",
     "find-up": "^6.3.0",
     "minimatch": "^9.0.0",

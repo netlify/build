@@ -1,106 +1,49 @@
 # Build Info
 
-Build information detection utility.
+Build info is the core part of detecting settings and heuristics about the users code. The library is platform agnostic
+to be used in our React UI, Node.js CLI and build system.
 
-The purpose of this lib is to, given a project and a configuration, return a set of useful data for our build system.
-Currently it's used to detect:
+It provides a layered approach to detecting the following information:
 
-- [`jsWorkspaces`](https://docs.npmjs.com/cli/v7/using-npm/workspaces)
-- [`frameworks`](https://github.com/netlify/framework-info)
+1. Package Manager
+2. Workspaces (pnpm, yarn, npm)
+3. Build Systems
+4. Frameworks
+5. Build Settings
 
-But it's possible to extend it in the future to extract other bits of information, such as the heuristics present in the
-[`build-image`](https://github.com/netlify/build-image/blob/xenial/run-build-functions.sh#L214).
+How to use it: First of all, you need to create a `FileSystem` that works for your platform. For Node.js we ship already
+one that can be used: For other platforms, a file system needs to implement the `FileSystem` interface:
 
-# Example (Node.js)
+```typescript
+import { FileSystem } from '@netlify/build-info'
 
-```js
-import { getBuildInfo } from '@netlify/build-info'
-
-console.log(await getBuildInfo({ projectDir: 'path/to/site', rootDir: '/project/root/dir' }))
-// {
-//   jsWorkspaces: {
-//     isRoot: false,
-//     packages: [
-//       'path/to/site',
-//       'path/to/component/library'
-//       'path/to/utility/library'
-//     ]
-//   },
-//   frameworks: [
-//     {
-//        name: 'gatsby',
-//        category: 'static_site_generator',
-//        dev: {
-//          commands: ['gatsby develop'],
-//          port: 8000
-//        },
-//        build: {
-//          commands: ['gatsby build'],
-//          directory: 'public'
-//        },
-//        env: { GATSBY_LOGGER: 'yurnalist' },
-//        plugins: []
-//      }
-//    ]
-// }
-
-console.log(await getBuildInfo({ projectDir: '/project/root/dir' }))
-// {
-//   jsWorkspaces: {
-//     isRoot: true,
-//     packages: [
-//       'path/to/site',
-//       'path/to/component/library'
-//       'path/to/utility/library'
-//     ]
-//   },
-//   frameworks: []
-// }
+export class WebFS extends FileSystem {
+  // ...
+}
 ```
+
+After that the core piece is the Project that needs to be initialized with a file system, the base directory and an
+optional repository root.
+
+It is important to note that setting a node version is important for some frameworks to load the correct plugins.
+
+```typescript
+const project = new Project(fs, baseDir, root).setEnvironment(process.env).setNodeVersion(process.version)
+```
+
+after that on the project, we can call multiple methods like `getBuildSettings` which is running all the other steps as
+well.
 
 # Example (CLI)
 
 ```bash
+# will use the current working directory as base directory
+$ build-info
+
 $ build-info /project/root/dir
-{
-  jsWorkspaces: {
-    isRoot: true,
-    packages: [
-      'path/to/site',
-      'path/to/component/library'
-      'path/to/utility/library'
-    ]
-  },
-  frameworks: []
-}
 
 $ build-info path/to/site --rootDir /project/root/dir
-{
-  jsWorkspaces: {
-    isRoot: false,
-    packages: [
-      'path/to/site',
-      'path/to/component/library'
-      'path/to/utility/library'
-    ]
-  },
-  frameworks: [
-    {
-       name: 'gatsby',
-       category: 'static_site_generator',
-       dev: {
-         commands: ['gatsby develop'],
-         port: 8000
-       },
-       build: {
-         commands: ['gatsby build'],
-         directory: 'public'
-       },
-       env: { GATSBY_LOGGER: 'yurnalist' },
-       plugins: []
-     }
-  ]
-}
+
 ```
 
 ## Contributors
