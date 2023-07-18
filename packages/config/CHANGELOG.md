@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.3](https://github.com/netlify/build/compare/config-v20.6.2...config-v20.6.3) (2023-07-18)
+
+
+### Bug Fixes
+
+* pull integrations in buildy botty mode ([#5168](https://github.com/netlify/build/issues/5168)) ([0650bda](https://github.com/netlify/build/commit/0650bda48b6749b14e6026e9d3c1d446b1d85675))
+
 ## [20.6.2](https://github.com/netlify/build/compare/config-v20.6.1...config-v20.6.2) (2023-07-17)
 
 
