@@ -183,9 +183,12 @@ export class Nx extends BaseBuildTool {
   async detectProjectJson(): Promise<WorkspacePackage[]> {
     const fs = this.project.fs
     try {
-      const { workspaceLayout } = await fs.readJSON<any>(fs.join(this.project.jsWorkspaceRoot, 'nx.json'), {
-        fail: true,
-      })
+      const { workspaceLayout = { appsDir: 'apps' } } = await fs.readJSON<any>(
+        fs.join(this.project.jsWorkspaceRoot, 'nx.json'),
+        {
+          fail: true,
+        },
+      )
       // if an apps dir is specified get it.
       if (workspaceLayout?.appsDir?.length) {
         const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
