@@ -48,6 +48,7 @@ async function applyBuildSystemOverrides(
     const build = cmds.find((cmd) => cmd.type === 'build')
     const dev = cmds.find((cmd) => cmd.type === 'dev')
     const dist = await buildSystem.getDist?.(baseDirectory)
+    const port = await buildSystem.getPort?.(baseDirectory)
 
     updatedSettings.name = `${buildSystem.name} + ${settings.name} ${baseDirectory}`
     if (build) {
@@ -60,6 +61,10 @@ async function applyBuildSystemOverrides(
 
     if (dist) {
       updatedSettings.dist = dist
+    }
+
+    if (port !== undefined && port !== null) {
+      updatedSettings.frameworkPort = port
     }
 
     // if the build system should be run from the root then set the base directory to an empty string

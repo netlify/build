@@ -17,6 +17,8 @@ export interface BuildSystem {
   getCommands?(path: string): Promise<Command[]>
   /** A function that can be implemented to override the dist location of a framework */
   getDist?(path: string): Promise<string>
+  /** A function that can be implemented to override the framework port */
+  getPort?(path: string): Promise<number | null>
   /** The detect function that is called to check if this build system is in use */
   detect(): Promise<BuildSystem | undefined>
 }

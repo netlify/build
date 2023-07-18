@@ -1,0 +1,34 @@
+{
+  "npmScope": "evilcorp",
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "projects": {
+    "astro": {
+      "tags": [],
+      "implicitDependencies": ["components"]
+    },
+    "astro-e2e": {
+      "tags": [],
+      "implicitDependencies": ["astro"]
+    },
+    "website": {
+      "tags": [],
+      "implicitDependencies": ["components"]
+    },
+    "components": {
+      "tags": []
+    }
+  }
+}
