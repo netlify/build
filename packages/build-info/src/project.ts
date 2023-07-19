@@ -123,7 +123,7 @@ export class Project {
     return this
   }
 
-  /** Set's a bugsnag client for the current session */
+  /** Sets a bugsnag client for the current session */
   setBugsnag(client?: Client): this {
     if (client) {
       this.bugsnag = client
