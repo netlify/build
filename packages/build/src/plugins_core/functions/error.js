@@ -22,6 +22,10 @@ export const getZipError = async function (error, functionsSrc) {
     return getGoVersionError(error)
   }
 
+  if (isGoMissingDependencyError(error)) {
+    return getGoMissingDependencyError(error)
+  }
+
   return error
 }
 
@@ -172,5 +176,17 @@ const isGoVersionError = function (error) {
 
 const getGoVersionError = function (error) {
   addErrorInfo(error, { type: 'resolveConfig' })
+  return error
+}
+
+const isGoMissingDependencyError = function (error) {
+  return (
+    error.message.includes('missing go.sum entry for module providing package') ||
+    error.message.includes('no required module provides package')
+  )
+}
+
+const getGoMissingDependencyError = function (error) {
+  addErrorInfo(error, { type: 'dependencies' })
   return error
 }
