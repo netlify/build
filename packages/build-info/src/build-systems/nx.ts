@@ -167,10 +167,10 @@ export class Nx extends BaseBuildTool {
             return
           }
           this.targets.set(
-            root,
+            fs.join(root),
             Object.entries(architect || {}).map(([name, target]) => ({ ...target, name })),
           )
-          return { name: key, path: root } as WorkspacePackage
+          return { name: key, path: fs.join(root) } as WorkspacePackage
         })
         .filter(Boolean) as WorkspacePackage[]
     } catch {
@@ -199,10 +199,10 @@ export class Nx extends BaseBuildTool {
               const { projectType, name, targets } = await fs.readJSON(fs.join(directory, entry))
               if (projectType === 'application') {
                 this.targets.set(
-                  packagePath,
+                  fs.join(packagePath),
                   Object.entries(targets || {}).map(([name, target]) => ({ ...target, name })),
                 )
-                return { name, path: packagePath } as WorkspacePackage
+                return { name, path: fs.join(packagePath) } as WorkspacePackage
               }
             } catch {
               // noop
