@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.5.0](https://github.com/netlify/build/compare/build-info-v7.4.3...build-info-v7.5.0) (2023-07-19)
+
+
+### Features
+
+* update pnpm build command for workspaces to build dependents ([#5183](https://github.com/netlify/build/issues/5183)) ([aa9e363](https://github.com/netlify/build/commit/aa9e363e6a2d52c356e3f503cd2ee0a119aa03d8))
+
 ## [7.4.3](https://github.com/netlify/build/compare/build-info-v7.4.2...build-info-v7.4.3) (2023-07-19)
 
 
