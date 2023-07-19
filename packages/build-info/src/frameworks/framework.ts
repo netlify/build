@@ -12,7 +12,7 @@ export enum Category {
 }
 
 export enum Accuracy {
-  Forced = 5, // forced framework
+  Forced = 5, // Forced framework, this means that we don't detect the framework instead it get's set either through the user inside the toml or through the build system like nx-integrated
   NPM = 4, // Matched the npm dependency (highest accuracy on detecting it)
   ConfigOnly = 3, // Only a config file was specified and matched
   Config = 2, // Has npm dependencies specified as well but there it did not match (least resort)
