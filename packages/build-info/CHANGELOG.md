@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.6.1](https://github.com/netlify/build/compare/build-info-v7.6.0...build-info-v7.6.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* add correct 11ty logos for light and dark ([#5190](https://github.com/netlify/build/issues/5190)) ([c54f5c0](https://github.com/netlify/build/commit/c54f5c0556c317727f3529dd3effad2f0cc21329)), closes [#5187](https://github.com/netlify/build/issues/5187)
+
 ## [7.6.0](https://github.com/netlify/build/compare/build-info-v7.5.0...build-info-v7.6.0) (2023-07-19)
 
 
