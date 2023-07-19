@@ -20,16 +20,16 @@ export const getSiteInfo = async function ({
   featureFlags = {},
   testOpts = {},
 }) {
-  const { env: testEnv = true } = testOpts
+  const { env: testEnv = false } = testOpts
   const fetchIntegrations = featureFlags.buildbot_fetch_integrations
 
-  if (api === undefined || mode === 'buildbot' || !testEnv) {
+  if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
     let integrations = []
     // testEnv is a weird misnomer here, but testing it to be _true_ ensures
     // we're not running in test environments
-    if (fetchIntegrations && api !== undefined && testEnv) {
+    if (fetchIntegrations && api !== undefined && !testEnv) {
       // we still want to fetch integrations within buildbot
       integrations = await getIntegrations({ api, ownerType: 'site', ownerId: siteId, testOpts })
     }
