@@ -93,6 +93,20 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+## [29.17.1](https://github.com/netlify/build/compare/build-v29.17.0...build-v29.17.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* correctly reference env from testOpts to install integrations ([#5193](https://github.com/netlify/build/issues/5193)) ([bda6ff5](https://github.com/netlify/build/commit/bda6ff583e963ebbbe87ec4c78e3608b9c2c2cd8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.3 to ^20.6.4
+
 ## [29.17.0](https://github.com/netlify/build/compare/build-v29.16.5...build-v29.17.0) (2023-07-19)
 
 
