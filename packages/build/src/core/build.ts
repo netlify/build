@@ -13,6 +13,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -34,10 +35,11 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { bugsnagKey, tracingOpts, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { tracingOpts, debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
+  const rootTracingContext = startTracing(tracingOpts, getSystemLogger(logs, debug, systemLogFile))
 
-  return { ...flagsA, errorMonitor, logs, timers }
+  return { ...flagsA, rootTracingContext, debug, systemLogFile, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({
@@ -80,6 +82,7 @@ const tExecBuild = async function ({
   devCommand,
   quiet,
   framework,
+  explicitSecretKeys,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -100,6 +103,7 @@ const tExecBuild = async function ({
     testOpts,
     featureFlags,
   })
+
   const {
     netlifyConfig,
     configPath,
@@ -116,6 +120,7 @@ const tExecBuild = async function ({
     api,
     siteInfo,
     timers: timersA,
+    integrations,
   } = await loadConfig({
     configOpts,
     cachedConfig,
@@ -126,6 +131,7 @@ const tExecBuild = async function ({
     nodePath,
     timers,
     quiet,
+    featureFlags,
   })
 
   if (featureFlags.build_automatic_runtime && framework) {
@@ -203,6 +209,8 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    integrations,
+    explicitSecretKeys,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -256,6 +264,8 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
+  explicitSecretKeys,
 }) {
   try {
     const {
@@ -304,6 +314,8 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      integrations,
+      explicitSecretKeys,
     })
     await Promise.all([
       reportStatuses({
@@ -402,6 +414,8 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
+  explicitSecretKeys,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -419,6 +433,7 @@ const initAndRunBuild = async function ({
     timers,
     testOpts,
     featureFlags,
+    integrations,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA
@@ -479,6 +494,7 @@ const initAndRunBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      explicitSecretKeys,
     })
 
     await Promise.all([
@@ -544,6 +560,7 @@ const runBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  explicitSecretKeys,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -602,6 +619,7 @@ const runBuild = async function ({
     featureFlags,
     quiet,
     userNodeVersion,
+    explicitSecretKeys,
   })
 
   return {

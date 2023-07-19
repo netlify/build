@@ -14,10 +14,16 @@ export class PNPM extends BaseBuildTool {
       this.project.resolveFromPackage(packagePath, 'package.json'),
     )
     if (scripts && Object.keys(scripts).length > 0) {
-      return Object.entries(scripts).map(([scriptName, value]) => ({
-        type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
-        command: `pnpm run ${scriptName} --filter ${name}`,
-      }))
+      return Object.entries(scripts).map(([scriptName, value]) => {
+        const isBuild = isNpmBuildScript(scriptName, value)
+        const isDev = isNpmDevScript(scriptName, value)
+        return {
+          type: isDev ? 'dev' : isBuild ? 'build' : 'unknown',
+          // the ... in the command is telling pnpm to run all dependents first.
+          // but we should only do it for building
+          command: `pnpm --filter ${name}${isBuild ? '...' : ''} run ${scriptName}`,
+        }
+      })
     }
     return []
   }
@@ -67,7 +73,7 @@ export class NPM extends BaseBuildTool {
     if (scripts && Object.keys(scripts).length > 0) {
       return Object.entries(scripts).map(([scriptName, value]) => ({
         type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
-        command: `npm run ${scriptName} --workspace ${name}`,
+        command: `npm --workspace ${name} run ${scriptName}`,
       }))
     }
     return []

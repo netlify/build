@@ -5,6 +5,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "buildSystems": [
     {
       "id": "pnpm",
+      "logo": undefined,
       "name": "PNPM",
       "version": undefined,
     },
@@ -24,6 +25,12 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
@@ -46,9 +53,9 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm run build --filter @evilcorp/blog",
-      "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
+      "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",
@@ -57,7 +64,8 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins": [],
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -65,8 +73,8 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm run build --filter @evilcorp/website",
-      "devCommand": "pnpm run dev --filter @evilcorp/website",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
+      "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},
       "framework": {
@@ -76,7 +84,8 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "frameworkPort": 3000,
       "name": "PNPM + Next.js packages/website",
       "packagePath": "packages/website",
-      "plugins": [
+      "plugins_from_config_file": [],
+      "plugins_recommended": [
         "@netlify/plugin-nextjs",
       ],
       "pollingStrategies": [
@@ -92,11 +101,51 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "buildSystems": [
     {
       "id": "pnpm",
+      "logo": undefined,
       "name": "PNPM",
       "version": undefined,
     },
   ],
-  "frameworks": [],
+  "frameworks": [
+    {
+      "build": {
+        "commands": [
+          "astro build",
+        ],
+        "directory": "dist",
+      },
+      "category": "static_site_generator",
+      "dev": {
+        "commands": [
+          "pnpm run dev",
+          "pnpm run start",
+        ],
+        "pollingStrategies": [
+          {
+            "name": "TCP",
+          },
+          {
+            "name": "HTTP",
+          },
+        ],
+        "port": 3000,
+      },
+      "env": {},
+      "id": "astro",
+      "logo": {
+        "dark": "https://framework-info.netlify.app/logos/astro/dark.svg",
+        "default": "https://framework-info.netlify.app/logos/astro/light.svg",
+        "light": "https://framework-info.netlify.app/logos/astro/light.svg",
+      },
+      "name": "Astro",
+      "package": {
+        "name": "astro",
+        "version": "1.5.1",
+      },
+      "plugins": [],
+      "staticAssetsDirectory": "public",
+    },
+  ],
   "jsWorkspaces": WorkspaceInfo {
     "isRoot": false,
     "packages": [
@@ -111,6 +160,12 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
@@ -133,9 +188,9 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm run build --filter @evilcorp/blog",
-      "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
+      "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",
@@ -144,7 +199,8 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins": [],
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -159,6 +215,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "buildSystems": [
     {
       "id": "pnpm",
+      "logo": undefined,
       "name": "PNPM",
       "version": undefined,
     },
@@ -178,6 +235,12 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
     ],
     "rootDir": "/cleaned-for-snapshot",
   },
+  "langRuntimes": [
+    {
+      "id": "node",
+      "name": "NodeJS",
+    },
+  ],
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
@@ -200,9 +263,9 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm run build --filter @evilcorp/blog",
-      "devCommand": "pnpm run dev --filter @evilcorp/blog",
-      "dist": "packages/blog/public",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
+      "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "dist": "packages/blog/dist",
       "env": {},
       "framework": {
         "id": "astro",
@@ -211,7 +274,8 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins": [],
+      "plugins_from_config_file": [],
+      "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -219,8 +283,8 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm run build --filter @evilcorp/website",
-      "devCommand": "pnpm run dev --filter @evilcorp/website",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
+      "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},
       "framework": {
@@ -230,7 +294,8 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "frameworkPort": 3000,
       "name": "PNPM + Next.js packages/website",
       "packagePath": "packages/website",
-      "plugins": [
+      "plugins_from_config_file": [],
+      "plugins_recommended": [
         "@netlify/plugin-nextjs",
       ],
       "pollingStrategies": [

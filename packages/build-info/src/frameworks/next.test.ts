@@ -132,9 +132,9 @@ describe('Nx monorepo', () => {
       packagePath: join('packages/website'),
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: join('dist/packages/website/.next'),
-      frameworkPort: 3000,
-      plugins: ['@netlify/plugin-nextjs'],
+      dist: join('dist/packages/website'),
+      frameworkPort: 4200,
+      plugins_recommended: ['@netlify/plugin-nextjs'],
     })
   })
 })
@@ -152,7 +152,7 @@ describe('Nx turborepo', () => {
       devCommand: 'turbo run dev --filter web',
       dist: join('apps/web/.next'),
       frameworkPort: 3000,
-      plugins: ['@netlify/plugin-nextjs'],
+      plugins_recommended: ['@netlify/plugin-nextjs'],
     })
   })
 })

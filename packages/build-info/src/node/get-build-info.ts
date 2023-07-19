@@ -1,9 +1,7 @@
 import { Client } from '@bugsnag/js'
-import { listFrameworks } from '@netlify/framework-info'
 
-import { Logger } from '../file-system.js'
 import { DetectedFramework } from '../frameworks/framework.js'
-import { report } from '../metrics.js'
+import { Logger } from '../logger.js'
 import { PkgManagerFields } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
 import { Settings } from '../settings/get-build-settings.js'
@@ -20,6 +18,7 @@ export type Info = {
     name: string
     version?: string | undefined
   }[]
+  langRuntimes: { name: string }[]
 }
 
 /** A noop logger that is used to not log anything (we use the stdout for parsing the json output) */
@@ -60,19 +59,10 @@ export async function getBuildInfo(
 
   const info = {} as Info
 
-  if (config.featureFlags?.build_info_new_framework_detection) {
-    info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
-  } else {
-    try {
-      // if the framework  detection is crashing we should not crash the build info and package-manager detection
-      info.frameworks = (await listFrameworks({ projectDir: project.baseDirectory })) as unknown as DetectedFramework[]
-    } catch (error) {
-      report(error, { client: config.bugsnagClient })
-      info.frameworks = []
-    }
-  }
-
+  // we are only interested in the frameworks of the base directory here (as they are for this site)
+  info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
   info.settings = await project.getBuildSettings()
+  info.langRuntimes = await project.detectRuntime()
 
   // some framework detection like NX can update the workspace in the project so assign it later on
   info.jsWorkspaces = project.workspace

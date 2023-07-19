@@ -1,14 +1,19 @@
-import { FrameworkName, frameworks, FrameworkInfo } from './frameworks/index.js'
+import { Accuracy, DetectedFramework } from './frameworks/framework.js'
+import { FrameworkName, frameworks } from './frameworks/index.js'
 import { Project } from './project.js'
 
 /** Return some information about a framework used by a project. */
-export async function getFramework(frameworkId: FrameworkName, project: Project): Promise<FrameworkInfo | undefined> {
+export async function getFramework(frameworkId: FrameworkName, project: Project): Promise<DetectedFramework> {
   const frameworkList = frameworks.map((Framework) => new Framework(project))
   const framework = frameworkList.find(({ id }) => id === frameworkId)
 
   if (framework) {
-    const result = await framework.detect()
-    return result?.toJSON()
+    framework.detected = { accuracy: Accuracy.Forced }
+    const detected = await framework.detect()
+
+    if (detected) {
+      return detected
+    }
   }
 
   const frameworkIds = frameworkList

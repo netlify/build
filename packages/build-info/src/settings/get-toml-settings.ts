@@ -2,24 +2,14 @@ import Bugsnag from '@bugsnag/js'
 import { parse } from 'toml'
 
 import { FileSystem } from '../file-system.js'
+import { Project } from '../project.js'
 
+import { Settings } from './get-build-settings.js'
 import { NetlifyTOML } from './netlify-toml.js'
 
 const {
   default: { notify },
 } = Bugsnag
-
-export type BuildSettings = {
-  cmd: string
-  dir: string
-  framework: string
-  frameworkName: string
-  functions_dir?: string
-  plugins: { package: string }[]
-  plugins_installed?: undefined
-  plugins_recommended: string[]
-  template?: string
-}
 
 /** Gracefully parses a toml file and reports errors to bugsnag */
 function gracefulParseToml<T>(content: string): T {
@@ -34,22 +24,44 @@ function gracefulParseToml<T>(content: string): T {
   }
 }
 
-export async function getNetlifyTomlSettings(fs: FileSystem, directory: string) {
+export async function getTomlSettingsFromPath(
+  fs: FileSystem,
+  directory: string,
+): Promise<Partial<Settings> | undefined> {
   const tomlFilePath = fs.join(directory, 'netlify.toml')
 
   try {
-    const settings: Partial<BuildSettings> = {}
-    const { build, functions, template } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
+    const settings: Partial<Settings> = {}
+    const { build, dev, functions, template, plugins } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
 
-    if (build) {
-      settings.cmd = build?.command
-      settings.dir = build.publish
-    }
+    settings.buildCommand = build?.command ?? settings.buildCommand
+    settings.dist = build?.publish ?? settings.dist
+    settings.devCommand = dev?.command ?? settings.devCommand
+    settings.frameworkPort = dev?.port ?? settings.frameworkPort
+    settings.plugins_from_config_file = plugins?.map((p) => p.package) ?? settings.plugins_from_config_file
+    settings.functionsDir = (build?.functions || functions?.directory) ?? settings.functionsDir
+    settings.template = template ?? settings.template
 
-    settings.functions_dir = build?.functions || functions?.directory
-    settings.template = template
+    return settings
   } catch {
-    // no toml found
-    return {}
+    // no toml found or issue while parsing it
   }
+}
+
+export async function getTomlSettings(project: Project, configFilePath?: string): Promise<Partial<Settings>> {
+  if (configFilePath?.length) {
+    return (await getTomlSettingsFromPath(project.fs, project.fs.dirname(configFilePath))) || {}
+  }
+
+  const baseDirSettings = await getTomlSettingsFromPath(project.fs, project.baseDirectory)
+  if (baseDirSettings) {
+    return baseDirSettings
+  }
+
+  if (project.root) {
+    const rootSettings = await getTomlSettingsFromPath(project.fs, project.root)
+    return rootSettings || {}
+  }
+
+  return {}
 }

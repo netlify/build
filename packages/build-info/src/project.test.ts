@@ -1,17 +1,19 @@
 import { join, resolve } from 'path'
 import { cwd } from 'process'
 
-import { parse } from 'semver'
+import { coerce, parse } from 'semver'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
 import { mockFileSystem } from '../tests/mock-file-system.js'
 
 import { NodeFS } from './node/file-system.js'
+import { NoopLogger } from './node/get-build-info.js'
 import { Project } from './project.js'
 
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
+  ctx.fs.logger = new NoopLogger()
 })
 
 afterEach(async ({ cleanup }) => await cleanup?.())
@@ -31,7 +33,7 @@ describe('Setting the node.js version', () => {
 
   test('process node version should override environment variable', async ({ fs }) => {
     const project = new Project(fs).setNodeVersion(process.version).setEnvironment({ NODE_VERSION: '1.2.3' })
-    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(process.version) || '')
+    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(coerce(process.version)) || '')
   })
 
   test('should set the node version correctly through an fuzzy environment variable', async ({ fs }) => {
@@ -228,8 +230,8 @@ describe('event based detection', () => {
       expect.objectContaining({
         isRoot: false,
         packages: [
-          { path: join('packages/astro'), name: 'astro' },
-          { path: join('packages/website'), name: 'website' },
+          { path: join('packages/astro'), name: 'astro', forcedFramework: 'astro' },
+          { path: join('packages/website'), name: 'website', forcedFramework: 'next' },
         ],
       }),
     )
@@ -243,5 +245,21 @@ describe('event based detection', () => {
       }),
     ])
     await finished
+  })
+})
+
+describe('reporting', () => {
+  test('should use a custom error reporting function', async ({ fs }) => {
+    const customReportFn = vi.fn()
+    const project = new Project(fs).setReportFn(customReportFn)
+
+    project.report('This is an error', { severity: 'warning', context: 'testy' })
+    expect(customReportFn).toHaveBeenCalledWith(
+      'This is an error',
+      expect.objectContaining({
+        context: 'testy',
+        severity: 'warning',
+      }),
+    )
   })
 })

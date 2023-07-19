@@ -17,6 +17,8 @@ export interface BuildSystem {
   getCommands?(path: string): Promise<Command[]>
   /** A function that can be implemented to override the dist location of a framework */
   getDist?(path: string): Promise<string>
+  /** A function that can be implemented to override the framework port */
+  getPort?(path: string): Promise<number | null>
   /** The detect function that is called to check if this build system is in use */
   detect(): Promise<BuildSystem | undefined>
 }
@@ -28,6 +30,12 @@ export abstract class BaseBuildTool {
   configFiles: string[] = []
   /** If the command should be executed from the repository root */
   runFromRoot?: boolean
+
+  logo?: {
+    default: string
+    light?: string
+    dark?: string
+  }
 
   constructor(public project: Project) {}
 
@@ -50,6 +58,12 @@ export abstract class BaseBuildTool {
       id: this.id,
       name: this.name,
       version: this.version,
+      logo: this.logo
+        ? Object.entries(this.logo).reduce(
+            (prev, [key, value]) => ({ ...prev, [key]: `https://framework-info.netlify.app${value}` }),
+            {},
+          )
+        : undefined,
     }
   }
 }

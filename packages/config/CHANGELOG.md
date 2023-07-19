@@ -76,6 +76,49 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.3](https://github.com/netlify/build/compare/config-v20.6.2...config-v20.6.3) (2023-07-18)
+
+
+### Bug Fixes
+
+* pull integrations in buildy botty mode ([#5168](https://github.com/netlify/build/issues/5168)) ([0650bda](https://github.com/netlify/build/commit/0650bda48b6749b14e6026e9d3c1d446b1d85675))
+
+## [20.6.2](https://github.com/netlify/build/compare/config-v20.6.1...config-v20.6.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* do not allow excluded path and pattern together ([#5142](https://github.com/netlify/build/issues/5142)) ([4c9aefe](https://github.com/netlify/build/commit/4c9aefe0e512abcd44ec963cd37cd8b4afb1aaf8))
+
+## [20.6.1](https://github.com/netlify/build/compare/config-v20.6.0...config-v20.6.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* references to token in fetch integrations and include some tests ([#5164](https://github.com/netlify/build/issues/5164)) ([9fe7880](https://github.com/netlify/build/commit/9fe78807ebd3e56c6e58e0dd2591a8a0598d6327))
+
+## [20.6.0](https://github.com/netlify/build/compare/config-v20.5.2...config-v20.6.0) (2023-07-12)
+
+
+### Features
+
+* install integrations alongside plugins ([#5116](https://github.com/netlify/build/issues/5116)) ([8982903](https://github.com/netlify/build/commit/8982903b7724d736c9f9514aed8f6c960c6378ba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.9 to ^13.1.10
+
+## [20.5.2](https://github.com/netlify/build/compare/config-v20.5.1...config-v20.5.2) (2023-07-06)
+
+
+### Bug Fixes
+
+* support edge_functions `excludedPath` ([#5135](https://github.com/netlify/build/issues/5135)) ([74edbee](https://github.com/netlify/build/commit/74edbee82cc811f54ec5b47e9db6b17f783dcd30))
+* support edge_functions.pattern ([#5136](https://github.com/netlify/build/issues/5136)) ([a04905b](https://github.com/netlify/build/commit/a04905b5fc325824a76b71e9b48e9dc1597548bf))
+
 ## [20.5.1](https://github.com/netlify/build/compare/config-v20.5.0...config-v20.5.1) (2023-06-14)
 
 

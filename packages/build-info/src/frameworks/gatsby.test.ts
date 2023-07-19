@@ -13,6 +13,7 @@ test('should not add the plugin if the node version is below 12.13.0', async ({ 
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
     'gatsby-config.js': '',
   })
+  fs.cwd = cwd
   const detected = await new Project(fs, cwd).setNodeVersion('12.12.9').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
   expect(detected?.[0].plugins).toMatchObject([])
@@ -23,6 +24,7 @@ test('should detect a simple Gatsby project and add the plugin if the node versi
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
     'gatsby-config.js': '',
   })
+  fs.cwd = cwd
   const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
   expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-gatsby'])
@@ -33,7 +35,9 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
     'gatsby-config.js': '',
   })
-  const detected = await new Project(fs, cwd).detectFrameworks()
+  fs.cwd = cwd
+  const project = new Project(fs, cwd)
+  const detected = await project.detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
   expect(detected?.[0].build.command).toBe('gatsby build')
   expect(detected?.[0].build.directory).toBe('public')
@@ -43,6 +47,31 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
       NODE_VERSION: '14',
     }),
   )
+
+  expect(await project.getBuildSettings()).toEqual([
+    {
+      baseDirectory: '',
+      buildCommand: 'gatsby build',
+      devCommand: 'gatsby develop',
+      dist: 'public',
+      env: {
+        AWS_LAMBDA_JS_RUNTIME: 'nodejs14.x',
+        GATSBY_LOGGER: 'yurnalist',
+        GATSBY_PRECOMPILE_DEVELOP_FUNCTIONS: 'true',
+        NODE_VERSION: '14',
+      },
+      framework: {
+        id: 'gatsby',
+        name: 'Gatsby',
+      },
+      frameworkPort: 8000,
+      name: 'Gatsby',
+      packagePath: '',
+      plugins_from_config_file: [],
+      plugins_recommended: [],
+      pollingStrategies: ['TCP', 'HTTP'],
+    },
+  ])
 })
 
 test('should detect a simple Gatsby 5 project', async ({ fs }) => {
@@ -50,6 +79,7 @@ test('should detect a simple Gatsby 5 project', async ({ fs }) => {
     'package.json': JSON.stringify({ dependencies: { gatsby: '^5.0.0' } }),
     'gatsby-config.js': '',
   })
+  fs.cwd = cwd
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
   expect(detected?.[0].env).toMatchObject(
