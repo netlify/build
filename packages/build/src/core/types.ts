@@ -80,6 +80,8 @@ export type TracingOptions = {
   port: number
   /** API Key used for a dedicated trace provider */
   apiKey: string
+  /** Sample rate being used for this trace, this allows for consistent probability sampling */
+  sampleRate: number
   /** Properties of the root span and trace id used to stitch context */
   traceId: string
   traceFlags: number

@@ -33,13 +33,13 @@ describe('PNPM workspaces', () => {
     expect(settings).toEqual([
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'pnpm --filter astro-app run build',
+        buildCommand: 'pnpm --filter astro-app... run build',
         devCommand: 'pnpm --filter astro-app run dev',
         dist: join('apps/astro/dist'),
       }),
       expect.objectContaining({
         baseDirectory: '', // executed from root
-        buildCommand: 'pnpm --filter next-app run build',
+        buildCommand: 'pnpm --filter next-app... run build',
         devCommand: 'pnpm --filter next-app run dev',
         dist: join('apps/next/.next'),
       }),

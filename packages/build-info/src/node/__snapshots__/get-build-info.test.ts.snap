@@ -53,7 +53,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -73,7 +73,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/website run build",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},
@@ -188,7 +188,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -263,7 +263,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -283,7 +283,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/website run build",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},

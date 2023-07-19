@@ -1,8 +1,8 @@
 {
-  "packages/build-info": "7.4.2",
-  "packages/build": "29.16.4",
+  "packages/build-info": "7.6.1",
+  "packages/build": "29.17.1",
   "packages/cache-utils": "5.1.5",
-  "packages/config": "20.6.3",
+  "packages/config": "20.6.4",
   "packages/framework-info": "9.8.10",
   "packages/functions-utils": "5.2.18",
   "packages/git-utils": "5.1.1",
