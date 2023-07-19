@@ -126,7 +126,7 @@ test('constants.NETLIFY_API_TOKEN', async (t) => {
   const output = await new Fixture('./fixtures/netlify_api_token')
     .withFlags({
       token: 'test',
-      testOpts: { env: false },
+      testOpts: { env: true },
     })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
