@@ -216,14 +216,14 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/blog'),
-          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          buildCommand: 'pnpm --filter @evilcorp/blog... run build',
           devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/website'),
-          buildCommand: 'pnpm --filter @evilcorp/website run build',
+          buildCommand: 'pnpm --filter @evilcorp/website... run build',
           devCommand: 'pnpm --filter @evilcorp/website run dev',
           dist: platformJoin('packages/website/.next'),
         }),
@@ -238,7 +238,7 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          buildCommand: 'pnpm --filter @evilcorp/blog... run build',
           devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
