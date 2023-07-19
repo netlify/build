@@ -27,7 +27,9 @@ export const getSiteInfo = async function ({
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
     let integrations = []
-    if (fetchIntegrations && api !== undefined && !testEnv) {
+    // testEnv is a weird misnomer here, but testing it to be _true_ ensures
+    // we're not running in test environments
+    if (fetchIntegrations && api !== undefined && testEnv) {
       // we still want to fetch integrations within buildbot
       integrations = await getIntegrations({ api, ownerType: 'site', ownerId: siteId, testOpts })
     }
