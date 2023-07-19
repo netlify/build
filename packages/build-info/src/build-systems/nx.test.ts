@@ -34,14 +34,14 @@ test('Get the commands for a package', async (ctx) => {
   const project = new Project(ctx.fs, fixture.cwd)
   const [nx] = await project.detectBuildSystem()
 
-  expect(await nx.getCommands?.('packages/astro')).toEqual([
+  expect(await nx.getCommands?.(join('packages/astro'))).toEqual([
     { command: 'nx run astro:build', type: 'build' },
     { command: 'nx run astro:dev', type: 'dev' },
     { command: 'nx run astro:preview', type: 'unknown' },
     { command: 'nx run astro:check', type: 'unknown' },
     { command: 'nx run astro:sync', type: 'unknown' },
   ])
-  expect(await nx.getCommands?.('packages/website')).toEqual([
+  expect(await nx.getCommands?.(join('packages/website'))).toEqual([
     { command: 'nx run website:build', type: 'build' },
     { command: 'nx run website:serve', type: 'dev' },
   ])
@@ -120,13 +120,13 @@ describe('getDist', () => {
   test('retrieve null for package based setups', async ({ fs, cwd }) => {
     const project = new Project(fs, cwd)
     const nx = new Nx(project)
-    expect(await nx.getDist('packages/vue-app')).toBe(null)
+    expect(await nx.getDist(join('packages/vue-app'))).toBe(null)
   })
   test('retrieve publish directory from nested options for integrated setup', async ({ fs, cwd }) => {
     const project = new Project(fs, cwd)
     project.jsWorkspaceRoot = cwd
     const nx = await new Nx(project).detect()
-    expect(await nx?.getDist('packages/vue-app')).toBe(join('dist/packages/vue-app-from-option'))
+    expect(await nx?.getDist(join('packages/vue-app'))).toBe(join('dist/packages/vue-app-from-option'))
   })
 
   test('retrieve the package path as fallback ', async ({ fs }) => {
@@ -143,7 +143,7 @@ describe('getDist', () => {
     const project = new Project(fs, cwd)
     project.jsWorkspaceRoot = cwd
     const nx = await new Nx(project).detect()
-    expect(await nx?.getDist('packages/vue-app')).toBe(join('dist/packages/vue-app'))
+    expect(await nx?.getDist(join('packages/vue-app'))).toBe(join('dist/packages/vue-app'))
   })
 })
 
@@ -234,6 +234,7 @@ describe('nx-integrated workspace.json based', () => {
       ]),
     )
   })
+
   test('detect build settings from a package sub path', async (ctx) => {
     const fixture = await createFixture('nx-integrated-old', ctx)
     const project = new Project(ctx.fs, join(fixture.cwd, 'apps/website'))
