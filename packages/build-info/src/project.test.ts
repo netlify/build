@@ -8,10 +8,12 @@ import { createFixture } from '../tests/helpers.js'
 import { mockFileSystem } from '../tests/mock-file-system.js'
 
 import { NodeFS } from './node/file-system.js'
+import { NoopLogger } from './node/get-build-info.js'
 import { Project } from './project.js'
 
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
+  ctx.fs.logger = new NoopLogger()
 })
 
 afterEach(async ({ cleanup }) => await cleanup?.())
@@ -243,5 +245,21 @@ describe('event based detection', () => {
       }),
     ])
     await finished
+  })
+})
+
+describe('reporting', () => {
+  test('should use a custom error reporting function', async ({ fs }) => {
+    const customReportFn = vi.fn()
+    const project = new Project(fs).setReportFn(customReportFn)
+
+    project.report('This is an error', { severity: 'warning', context: 'testy' })
+    expect(customReportFn).toHaveBeenCalledWith(
+      'This is an error',
+      expect.objectContaining({
+        context: 'testy',
+        severity: 'warning',
+      }),
+    )
   })
 })
