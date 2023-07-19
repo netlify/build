@@ -18,6 +18,10 @@ export const getZipError = async function (error, functionsSrc) {
     return getPackageJsonError(error)
   }
 
+  if (isGoVersionError(error)) {
+    return getGoVersionError(error)
+  }
+
   return error
 }
 
@@ -158,6 +162,15 @@ const isPackageJsonError = function (error) {
 const PACKAGE_JSON_ORIGINAL_MESSAGES = ['is invalid JSON', 'in JSON at position']
 
 const getPackageJsonError = function (error) {
+  addErrorInfo(error, { type: 'resolveConfig' })
+  return error
+}
+
+const isGoVersionError = function (error) {
+  return error.message.includes('module requires Go')
+}
+
+const getGoVersionError = function (error) {
   addErrorInfo(error, { type: 'resolveConfig' })
   return error
 }
