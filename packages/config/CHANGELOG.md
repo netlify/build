@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.6.4](https://github.com/netlify/build/compare/config-v20.6.3...config-v20.6.4) (2023-07-19)
+
+
+### Bug Fixes
+
+* correctly reference env from testOpts to install integrations ([#5193](https://github.com/netlify/build/issues/5193)) ([bda6ff5](https://github.com/netlify/build/commit/bda6ff583e963ebbbe87ec4c78e3608b9c2c2cd8))
+
 ## [20.6.3](https://github.com/netlify/build/compare/config-v20.6.2...config-v20.6.3) (2023-07-18)
 
 
