@@ -64,6 +64,25 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.6.1](https://github.com/netlify/build/compare/build-info-v7.6.0...build-info-v7.6.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* add correct 11ty logos for light and dark ([#5190](https://github.com/netlify/build/issues/5190)) ([c54f5c0](https://github.com/netlify/build/commit/c54f5c0556c317727f3529dd3effad2f0cc21329)), closes [#5187](https://github.com/netlify/build/issues/5187)
+
+## [7.6.0](https://github.com/netlify/build/compare/build-info-v7.5.0...build-info-v7.6.0) (2023-07-19)
+
+
+### Features
+
+* make error reporting configureable ([#5191](https://github.com/netlify/build/issues/5191)) ([5986af2](https://github.com/netlify/build/commit/5986af2f482e6d28ff342f56960f270d27af8c08))
+
+
+### Bug Fixes
+
+* fix nx-integrated detection via forced framework ([#5189](https://github.com/netlify/build/issues/5189)) ([ae6c09b](https://github.com/netlify/build/commit/ae6c09b1b889b48c71293d84d0e2422f003f5836))
+
 ## [7.5.0](https://github.com/netlify/build/compare/build-info-v7.4.3...build-info-v7.5.0) (2023-07-19)
 
 

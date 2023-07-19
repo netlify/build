@@ -93,6 +93,20 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+## [29.17.0](https://github.com/netlify/build/compare/build-v29.16.5...build-v29.17.0) (2023-07-19)
+
+
+### Features
+
+* **tracing:** add sample rate tracing parameter ([#5150](https://github.com/netlify/build/issues/5150)) ([97ee771](https://github.com/netlify/build/commit/97ee771c6695f71ac1f8d7c95fd1404fded17af1))
+
+## [29.16.5](https://github.com/netlify/build/compare/build-v29.16.4...build-v29.16.5) (2023-07-19)
+
+
+### Bug Fixes
+
+* mark go version errors as user errors ([#5188](https://github.com/netlify/build/issues/5188)) ([32cc97e](https://github.com/netlify/build/commit/32cc97e817d27a2da00e715024eb00d71ddebd07))
+
 ## [29.16.4](https://github.com/netlify/build/compare/build-v29.16.3...build-v29.16.4) (2023-07-18)
 
 

@@ -12,6 +12,7 @@ export enum Category {
 }
 
 export enum Accuracy {
+  Forced = 5, // Forced framework, this means that we don't detect the framework instead it get's set either through the user inside the toml or through the build system like nx-integrated
   NPM = 4, // Matched the npm dependency (highest accuracy on detecting it)
   ConfigOnly = 3, // Only a config file was specified and matched
   Config = 2, // Has npm dependencies specified as well but there it did not match (least resort)
@@ -278,12 +279,17 @@ export abstract class BaseFramework implements Framework {
    * - if `configFiles` is set, one of the files must exist
    */
   async detect(): Promise<DetectedFramework | undefined> {
+    // we can force frameworks as well
+    if (this.detected?.accuracy === Accuracy.Forced) {
+      return this as DetectedFramework
+    }
+
     const npm = await this.detectNpmDependency()
     const config = await this.detectConfigFile()
     this.detected = mergeDetections([npm, config])
 
     if (this.detected) {
-      return this as unknown as DetectedFramework
+      return this as DetectedFramework
     }
     // nothing detected
   }

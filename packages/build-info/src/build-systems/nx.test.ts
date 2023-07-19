@@ -212,10 +212,11 @@ describe('nx-integrated workspace.json based', () => {
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
           dist: join('dist/apps/website/output-folder'),
-          framework: { id: 'next', name: 'Next.js' },
-          name: `Nx + Next.js ${join('apps/website')}`,
+          framework: { id: 'react-static', name: 'React Static' },
+          frameworkPort: 4200,
+          name: `Nx + React Static ${join('apps/website')}`,
           packagePath: join('apps/website'),
-          plugins_recommended: ['@netlify/plugin-nextjs'],
+          plugins_recommended: [],
         }),
       ]),
     )
@@ -224,7 +225,7 @@ describe('nx-integrated workspace.json based', () => {
         expect.objectContaining({
           baseDirectory: '',
           buildCommand: 'nx run astro:build',
-          devCommand: 'nx run astro:serve',
+          devCommand: 'nx run astro:dev',
           dist: join('dist/apps/astro'),
           framework: { id: 'astro', name: 'Astro' },
           name: `Nx + Astro ${join('apps/astro')}`,
