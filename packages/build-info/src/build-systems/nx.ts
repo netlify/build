@@ -6,6 +6,38 @@ import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-pac
 
 import { BaseBuildTool, type Command } from './build-system.js'
 
+type WorkspaceJson = {
+  projects: Record<string, WorkspaceJsonProject>
+}
+
+type WorkspaceJsonProject = {
+  root: string
+  sourceRoot: string
+  projectType: 'application' | 'library'
+  schematics: Record<string, unknown>
+  architect: Record<string, Omit<WorkspaceJsonTarget, 'name'>>
+}
+
+type Target = WorkspaceJsonTarget | ProjectJsonTarget
+
+type WorkspaceJsonTarget = {
+  /** will be manually set */
+  name: string
+  builder: string
+  options?: Record<string, any>
+  configurations?: Record<string, any>
+}
+
+type ProjectJsonTarget = {
+  /** will be manually set */
+  name: string
+  executor: string
+  outputs?: string[]
+  options?: Record<string, any>
+  defaultConfiguration?: string
+  configurations?: Record<string, any>
+}
+
 export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
@@ -22,31 +54,27 @@ export class Nx extends BaseBuildTool {
    * @see https://nx.dev/concepts/integrated-vs-package-based
    */
   isIntegrated = false
+  /** List of target patterns */
+  targets = new Map<string, Target[]>()
 
   /** Retrieves a list of possible commands for a package */
   async getCommands(packagePath: string): Promise<Command[]> {
-    const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
-    const packageJSONPath = this.project.resolveFromPackage(packagePath, 'package.json')
-    let name = ''
-    const targets: string[] = []
+    let name = this.project.workspace?.getPackage(packagePath)?.name || ''
+    const targets = this.targets.get(packagePath) || []
+    const targetNames = targets.map((t) => t.name)
+
+    // it can be a mix of integrated and package based
     try {
-      const project = await this.project.fs.readJSON(projectPath, { fail: true })
-      this.isIntegrated = true
-      targets.push(...Object.keys(project?.targets || {}))
-      name = (project.name as string) || ''
+      const packageJSONPath = this.project.resolveFromPackage(packagePath, 'package.json')
+      const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath, { fail: true })
+      targetNames.push(...Object.keys(json?.scripts || {}))
+      name = json.name || ''
     } catch {
-      // if no project.json exists it's probably a package based nx workspace and not a integrated one
-      try {
-        const json = await this.project.fs.readJSON<PackageJson>(packageJSONPath, { fail: true })
-        targets.push(...Object.keys(json?.scripts || {}))
-        name = json.name || ''
-      } catch {
-        // noop
-      }
+      // noop
     }
 
-    if (name.length !== 0 && targets.length !== 0) {
-      return targets.map((target) => {
+    if (name.length !== 0 && targetNames.length !== 0) {
+      return targetNames.map((target) => {
         let type: Command['type'] = 'unknown'
 
         if (NPM_DEV_SCRIPTS.includes(target)) {
@@ -73,19 +101,43 @@ export class Nx extends BaseBuildTool {
       return null
     }
 
-    return this.getOutputDirFromProjectJSON(packagePath)
+    return this.getOutputFromTarget(packagePath)
   }
 
-  async getOutputDirFromProjectJSON(packagePath: string): Promise<string | null> {
+  /** Retrieve the overridden port of the nx executor for integrated setups */
+  async getPort(packagePath: string): Promise<number | null> {
+    // only nx integrated has the `project.json`
+    if (!this.isIntegrated) {
+      return null
+    }
+    const targets = this.targets.get(packagePath)?.filter((t) => NPM_DEV_SCRIPTS.includes(t.name)) || []
+    const executor = targets[0] && ('executor' in targets[0] ? targets[0].executor : targets[0].builder)
+
+    switch (executor) {
+      case '@nxtensions/astro:dev':
+        return 3000
+      case '@nrwl/next:server':
+      case '@nx/webpack:dev-server':
+      case '@angular-devkit/build-angular:dev-server':
+        return 4200
+      case '@nx-plus/vue:dev-server':
+        return 8000
+      default:
+        this.project.report({
+          name: 'UndetectedExecutor',
+          message: `Undetected executor for Nx integrated: ${executor}`,
+        })
+        return null
+    }
+  }
+
+  async getOutputFromTarget(packagePath: string): Promise<string | null> {
     // dynamic import out of performance reasons on the react UI
     const { getProperty } = await import('dot-prop')
     try {
-      const projectPath = this.project.resolveFromPackage(packagePath, 'project.json')
-      const project = await this.project.fs.readJSON<Record<string, any>>(projectPath, { fail: true })
-
-      const target = project?.targets?.build
+      const target = this.targets.get(packagePath)?.find((t) => t.name === 'build')
       if (target) {
-        const pattern = project?.targets?.build?.outputs?.[0]
+        const pattern = 'outputs' in target ? target.outputs?.[0] : target.options?.outputPath
         if (pattern) {
           return this.project.fs.join(
             pattern
@@ -102,47 +154,95 @@ export class Nx extends BaseBuildTool {
     return this.project.fs.join('dist', packagePath)
   }
 
+  /** detect workspace packages with the workspace.json file */
+  async detectWorkspaceFile(): Promise<WorkspacePackage[]> {
+    const fs = this.project.fs
+    try {
+      const { projects } = await fs.readJSON<WorkspaceJson>(fs.join(this.project.jsWorkspaceRoot, 'workspace.json'), {
+        fail: true,
+      })
+      return Object.entries(projects || {})
+        .map(([key, { root, projectType, architect }]) => {
+          if (!root || key.endsWith('-e2e') || projectType !== 'application') {
+            return
+          }
+          this.targets.set(
+            fs.join(root),
+            Object.entries(architect || {}).map(([name, target]) => ({ ...target, name })),
+          )
+          return { name: key, path: fs.join(root) } as WorkspacePackage
+        })
+        .filter(Boolean) as WorkspacePackage[]
+    } catch {
+      // noop
+    }
+    return []
+  }
+
+  /** detect workspace pacakges with the project.json files */
+  async detectProjectJson(): Promise<WorkspacePackage[]> {
+    const fs = this.project.fs
+    try {
+      const { workspaceLayout = { appsDir: 'apps' } } = await fs.readJSON<any>(
+        fs.join(this.project.jsWorkspaceRoot, 'nx.json'),
+        {
+          fail: true,
+        },
+      )
+      // if an apps dir is specified get it.
+      if (workspaceLayout?.appsDir?.length) {
+        const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
+          // ignore e2e test applications as there is no need to deploy them
+          if (entry === 'project.json' && !packagePath.endsWith('-e2e')) {
+            try {
+              // we need to check the project json for application types (we don't care about libraries)
+              const { projectType, name, targets } = await fs.readJSON(fs.join(directory, entry))
+              if (projectType === 'application') {
+                this.targets.set(
+                  fs.join(packagePath),
+                  Object.entries(targets || {}).map(([name, target]) => ({ ...target, name })),
+                )
+                return { name, path: fs.join(packagePath) } as WorkspacePackage
+              }
+            } catch {
+              // noop
+            }
+          }
+          return null
+        }
+
+        return findPackages(
+          this.project,
+          workspaceLayout.appsDir,
+          identifyPkg,
+          '*', // only check for one level
+        )
+      }
+    } catch {
+      // noop
+    }
+    return []
+  }
+
   async detect(): Promise<this | undefined> {
     const detected = await super.detect()
-    const fs = this.project.fs
     if (detected) {
-      try {
-        // in nx integrated setup the workspace is not managed through the package manager
-        // in this case we have to check the `nx.json` for the project references
-        if (this.project.workspace === null) {
-          const { workspaceLayout } = await fs.readJSON<any>(fs.join(this.project.jsWorkspaceRoot, 'nx.json'))
-          // if an apps dir is specified get it.
-          if (workspaceLayout?.appsDir?.length) {
-            const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
-              // ignore e2e test applications as there is no need to deploy them
-              if (entry === 'project.json' && !packagePath.endsWith('-e2e')) {
-                try {
-                  // we need to check the project json for application types (we don't care about libraries)
-                  const { projectType, name } = await fs.readJSON(fs.join(directory, entry))
-                  if (projectType === 'application') {
-                    return { name, path: packagePath } as WorkspacePackage
-                  }
-                } catch {
-                  // noop
-                }
-              }
-              return null
-            }
+      const pkgs = [...(await this.detectWorkspaceFile()), ...(await this.detectProjectJson())]
 
-            this.project.workspace = new WorkspaceInfo()
-            this.project.workspace.isRoot = this.project.jsWorkspaceRoot === this.project.baseDirectory
-            this.project.workspace.rootDir = this.project.jsWorkspaceRoot
-            this.project.workspace.packages = await findPackages(
-              this.project,
-              workspaceLayout.appsDir,
-              identifyPkg,
-              '*', // only check for one level
-            )
-            this.project.events.emit('detectWorkspaces', this.project.workspace)
-          }
+      if (pkgs.length) {
+        // in this case it's an integrated setup
+        this.isIntegrated = true
+
+        if (!this.project.workspace) {
+          this.project.workspace = new WorkspaceInfo()
+          this.project.workspace.isRoot = this.project.jsWorkspaceRoot === this.project.baseDirectory
+          this.project.workspace.rootDir = this.project.jsWorkspaceRoot
+          this.project.workspace.packages = pkgs
+        } else {
+          this.project.workspace.packages.push(...pkgs)
         }
-      } catch {
-        // noop
+
+        this.project.events.emit('detectWorkspaces', this.project.workspace)
       }
       return this
     }

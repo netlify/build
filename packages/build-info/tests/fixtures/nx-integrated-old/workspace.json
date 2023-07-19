@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "projects": {
+    "astro": {
+      "root": "apps/astro",
+      "sourceRoot": "apps/astro/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/apps/astro",
+            "siteId": "e6a73bc7-c0cd-4374-ae88-9b379bce541f"
+          }
+        },
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/apps/astro",
+            "index": "apps/astro/src/index.html",
+            "main": "apps/astro/src/main.tsx",
+            "polyfills": "apps/astro/src/polyfills.ts",
+            "tsConfig": "apps/astro/tsconfig.app.json",
+            "assets": [
+              "apps/astro/src/favicon.ico",
+              "apps/astro/src/assets"
+            ],
+            "styles": ["apps/astro/src/styles.css"],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/astro/src/environments/environment.ts",
+                  "with": "apps/astro/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "astro:build",
+            "proxyConfig": "apps/astro/proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "astro:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/astro/.eslintrc",
+            "tsConfig": [
+              "apps/astro/tsconfig.app.json",
+              "apps/astro/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/astro/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/astro/jest.config.js",
+            "tsConfig": "apps/astro/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "astro-e2e": {
+      "root": "apps/astro-e2e",
+      "sourceRoot": "apps/astro-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/astro-e2e/cypress.json",
+            "tsConfig": "apps/astro-e2e/tsconfig.e2e.json",
+            "devServerTarget": "astro:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "astro:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/astro-e2e/.eslintrc",
+            "tsConfig": ["apps/astro-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/astro-e2e/**"]
+          }
+        }
+      }
+    },
+    "website": {
+      "root": "apps/website",
+      "sourceRoot": "apps/website/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/apps/website",
+            "siteId": "9346dab9-5fd4-465d-9af3-a85c46f043fa"
+          }
+        },
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/apps/website/output-folder",
+            "index": "apps/website/src/index.html",
+            "main": "apps/website/src/main.tsx",
+            "polyfills": "apps/website/src/polyfills.ts",
+            "tsConfig": "apps/website/tsconfig.app.json",
+            "assets": [
+              "apps/website/src/favicon.ico",
+              "apps/website/src/assets"
+            ],
+            "styles": ["apps/website/src/styles.css"],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/website/src/environments/environment.ts",
+                  "with": "apps/website/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "website:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "website:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/website/.eslintrc",
+            "tsConfig": [
+              "apps/website/tsconfig.app.json",
+              "apps/website/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/website/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/website/jest.config.js",
+            "tsConfig": "apps/website/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "components": {
+      "root": "libs/components",
+      "sourceRoot": "libs/components/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "libs/components/.eslintrc",
+            "tsConfig": [
+              "libs/components/tsconfig.lib.json",
+              "libs/components/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/components/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/components/jest.config.js",
+            "tsConfig": "libs/components/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "defaultProject": "website"
+}
