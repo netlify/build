@@ -2,12 +2,14 @@ import bugsnag, { type Client, NotifiableError } from '@bugsnag/js'
 
 const { default: Bugsnag } = bugsnag
 
+export type Severity = 'info' | 'warning' | 'error'
+
 /** Report an error to bugsnag */
 export function report(
   error: NotifiableError,
   options: {
-    context?: 'string'
-    severity?: 'info' | 'warning' | 'error'
+    context?: string
+    severity?: Severity
     metadata?: Record<string, Record<string, any>>
     client?: Client
   } = {},
