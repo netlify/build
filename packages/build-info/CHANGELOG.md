@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.4.3](https://github.com/netlify/build/compare/build-info-v7.4.2...build-info-v7.4.3) (2023-07-19)
+
+
+### Bug Fixes
+
+* detection of workspace file and correct dev port ([#5181](https://github.com/netlify/build/issues/5181)) ([7331c27](https://github.com/netlify/build/commit/7331c278861c633b8b99e315134a4d4b4e5846ae))
+
 ## [7.4.2](https://github.com/netlify/build/compare/build-info-v7.4.1...build-info-v7.4.2) (2023-07-17)
 
 
