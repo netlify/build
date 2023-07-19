@@ -230,8 +230,8 @@ describe('event based detection', () => {
       expect.objectContaining({
         isRoot: false,
         packages: [
-          { path: join('packages/astro'), name: 'astro' },
-          { path: join('packages/website'), name: 'website' },
+          { path: join('packages/astro'), name: 'astro', forcedFramework: 'astro' },
+          { path: join('packages/website'), name: 'website', forcedFramework: 'next' },
         ],
       }),
     )

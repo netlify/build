@@ -7,85 +7,30 @@
       "projectType": "application",
       "schematics": {},
       "architect": {
-        "deploy": {
-          "builder": "@netlify-builder/deploy:deploy",
-          "options": {
-            "outputPath": "dist/apps/astro",
-            "siteId": "e6a73bc7-c0cd-4374-ae88-9b379bce541f"
-          }
-        },
         "build": {
-          "builder": "@nrwl/web:build",
-          "options": {
-            "outputPath": "dist/apps/astro",
-            "index": "apps/astro/src/index.html",
-            "main": "apps/astro/src/main.tsx",
-            "polyfills": "apps/astro/src/polyfills.ts",
-            "tsConfig": "apps/astro/tsconfig.app.json",
-            "assets": [
-              "apps/astro/src/favicon.ico",
-              "apps/astro/src/assets"
-            ],
-            "styles": ["apps/astro/src/styles.css"],
-            "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/astro/src/environments/environment.ts",
-                  "with": "apps/astro/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+          "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+          "executor": "@nxtensions/astro:build",
+          "options": {}
+        },
+        "dev": {
+          "executor": "@nxtensions/astro:dev",
+          "options": {}
+        },
+        "preview": {
+          "dependsOn": [
+            {
+              "target": "build",
+              "projects": "self"
             }
-          }
+          ],
+          "executor": "@nxtensions/astro:preview",
+          "options": {}
         },
-        "serve": {
-          "builder": "@nrwl/web:dev-server",
-          "options": {
-            "buildTarget": "astro:build",
-            "proxyConfig": "apps/astro/proxy.conf.json"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "astro:build:production"
-            }
-          }
+        "check": {
+          "executor": "@nxtensions/astro:check"
         },
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "config": "apps/astro/.eslintrc",
-            "tsConfig": [
-              "apps/astro/tsconfig.app.json",
-              "apps/astro/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/astro/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/astro/jest.config.js",
-            "tsConfig": "apps/astro/tsconfig.spec.json",
-            "passWithNoTests": true
-          }
+        "sync": {
+          "executor": "@nxtensions/astro:sync"
         }
       }
     },

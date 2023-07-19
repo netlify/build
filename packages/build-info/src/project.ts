@@ -8,6 +8,7 @@ import { EventEmitter } from './events.js'
 import { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
+import { getFramework } from './get-framework.js'
 import { Logger } from './logger.js'
 import { Severity, report } from './metrics.js'
 import {
@@ -293,8 +294,15 @@ export class Project {
       if (this.workspace) {
         // if we have a workspace parallelize in all workspaces
         await Promise.all(
-          this.workspace.packages.map(async ({ path: pkg }) => {
-            if (this.workspace) {
+          this.workspace.packages.map(async ({ path: pkg, forcedFramework }) => {
+            if (forcedFramework) {
+              try {
+                const framework = await getFramework(forcedFramework, this)
+                this.frameworks.set(pkg, [framework])
+              } catch {
+                // noop framework not found
+              }
+            } else if (this.workspace) {
               const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
               this.frameworks.set(pkg, result)
             }
