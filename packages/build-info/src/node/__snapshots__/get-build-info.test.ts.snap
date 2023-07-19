@@ -106,7 +106,46 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "version": undefined,
     },
   ],
-  "frameworks": [],
+  "frameworks": [
+    {
+      "build": {
+        "commands": [
+          "astro build",
+        ],
+        "directory": "dist",
+      },
+      "category": "static_site_generator",
+      "dev": {
+        "commands": [
+          "pnpm run dev",
+          "pnpm run start",
+        ],
+        "pollingStrategies": [
+          {
+            "name": "TCP",
+          },
+          {
+            "name": "HTTP",
+          },
+        ],
+        "port": 3000,
+      },
+      "env": {},
+      "id": "astro",
+      "logo": {
+        "dark": "https://framework-info.netlify.app/logos/astro/dark.svg",
+        "default": "https://framework-info.netlify.app/logos/astro/light.svg",
+        "light": "https://framework-info.netlify.app/logos/astro/light.svg",
+      },
+      "name": "Astro",
+      "package": {
+        "name": "astro",
+        "version": "1.5.1",
+      },
+      "plugins": [],
+      "staticAssetsDirectory": "public",
+    },
+  ],
   "jsWorkspaces": WorkspaceInfo {
     "isRoot": false,
     "packages": [

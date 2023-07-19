@@ -64,6 +64,28 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.4.2](https://github.com/netlify/build/compare/build-info-v7.4.1...build-info-v7.4.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* cleanup feature flag for new framework detection as already rolled out to 100% ([#5169](https://github.com/netlify/build/issues/5169)) ([2858d70](https://github.com/netlify/build/commit/2858d70341a2632e41bb683d0ca200008ee6d0ba))
+
+## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* downgrade dot-prop to support Node.js 14 ([#5147](https://github.com/netlify/build/issues/5147)) ([ff26375](https://github.com/netlify/build/commit/ff26375933e369c99add77c6f2f1a7e207a5c50a))
+* fix return type of get framework to return the class ([#5145](https://github.com/netlify/build/issues/5145)) ([8a1083e](https://github.com/netlify/build/commit/8a1083e08db98f345b1d7816c44458f9a702c3ce))
+
+## [7.4.0](https://github.com/netlify/build/compare/build-info-v7.3.5...build-info-v7.4.0) (2023-07-07)
+
+
+### Features
+
+* improve nx-integrated dist directory ([#5133](https://github.com/netlify/build/issues/5133)) ([3e99d21](https://github.com/netlify/build/commit/3e99d21e1369b7a2216746c241f6395ef226bdcc))
+
 ## [7.3.5](https://github.com/netlify/build/compare/build-info-v7.3.4...build-info-v7.3.5) (2023-07-06)
 
 

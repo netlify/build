@@ -87,7 +87,7 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
  * @returns string[] of relative paths from base of files that should be searched
  */
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
-  const omitPathsAlways = ['.git']
+  const omitPathsAlways = ['.git/']
 
   // node modules is dense and is only useful to scan if the repo itself commits these
   // files. As a simple check to understand if the repo would commit these files, we expect
@@ -121,10 +121,11 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   let omitPaths: string[] = []
   if (typeof env.SECRETS_SCAN_OMIT_PATHS === 'string') {
     omitPaths = env.SECRETS_SCAN_OMIT_PATHS.split(',')
-      .concat(omitPathsAlways)
       .map((s) => s.trim())
       .filter(Boolean)
   }
+
+  omitPaths = omitPaths.concat(omitPathsAlways)
 
   if (omitPaths.length > 0) {
     files = files.filter((relativePath) => !omitPathMatches(relativePath, omitPaths))

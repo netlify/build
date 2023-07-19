@@ -22,6 +22,12 @@ export const validations = [
   },
   {
     property: 'edge_functions.*',
+    check: (edgeFunction) => !(edgeFunction.excludedPath !== undefined && edgeFunction.excludedPattern !== undefined),
+    message: '"excludedPath" and "excludedPattern" are mutually exclusive.',
+    example: () => ({ edge_functions: [{ path: '/hello/*', function: 'hello', excludedPath: '/hello/no' }] }),
+  },
+  {
+    property: 'edge_functions.*',
     check: (edgeFunction) => edgeFunction.function !== undefined,
     message: '"function" property is required.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
@@ -41,14 +47,6 @@ export const validations = [
     }),
   },
   {
-    property: 'edge_functions.*',
-    check: (value) => value.excludedPath === undefined || value.path !== undefined,
-    message: '"excludedPath" can only be specified together with "path".',
-    example: () => ({
-      edge_functions: [{ path: '/products/*', excludedPath: ['/products/*.jpg'], function: 'customise' }],
-    }),
-  },
-  {
     property: 'edge_functions.*.pattern',
     check: isString,
     message: 'must be a string.',
@@ -59,15 +57,7 @@ export const validations = [
     check: (value) => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or array of strings.',
     example: () => ({
-      edge_functions: [{ path: '/products/(.*)', excludedPath: ['/products/(.*)\\.jpg'], function: 'customise' }],
-    }),
-  },
-  {
-    property: 'edge_functions.*.excludedPattern',
-    check: (value) => value.excludedPattern === undefined || value.pattern !== undefined,
-    message: '"excludedPattern" can only be specified together with "pattern".',
-    example: () => ({
-      edge_functions: [{ path: '/products/(.*)', excludedPath: ['/products/(.*)\\.jpg'], function: 'customise' }],
+      edge_functions: [{ path: '/products/(.*)', excludedPattern: ['^/products/(.*)\\.jpg$'], function: 'customise' }],
     }),
   },
   {

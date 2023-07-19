@@ -103,6 +103,7 @@ const tExecBuild = async function ({
     testOpts,
     featureFlags,
   })
+
   const {
     netlifyConfig,
     configPath,
@@ -119,6 +120,7 @@ const tExecBuild = async function ({
     api,
     siteInfo,
     timers: timersA,
+    integrations,
   } = await loadConfig({
     configOpts,
     cachedConfig,
@@ -129,6 +131,7 @@ const tExecBuild = async function ({
     nodePath,
     timers,
     quiet,
+    featureFlags,
   })
 
   if (featureFlags.build_automatic_runtime && framework) {
@@ -206,6 +209,7 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    integrations,
     explicitSecretKeys,
   })
   return {
@@ -260,6 +264,7 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
   explicitSecretKeys,
 }) {
   try {
@@ -309,6 +314,7 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      integrations,
       explicitSecretKeys,
     })
     await Promise.all([
@@ -408,6 +414,7 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
   explicitSecretKeys,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
@@ -426,6 +433,7 @@ const initAndRunBuild = async function ({
     timers,
     testOpts,
     featureFlags,
+    integrations,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA
