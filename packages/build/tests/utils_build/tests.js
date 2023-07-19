@@ -79,7 +79,7 @@ test('build.cancelBuild() API call no token', async (t) => {
 
 test('build.cancelBuild() API call failure', async (t) => {
   const output = await new Fixture('./fixtures/cancel')
-    .withFlags({ token: 'test', deployId: 'test', testOpts: { host: '...', env: false } })
+    .withFlags({ token: 'test', deployId: 'test', testOpts: { host: '...', env: true } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
