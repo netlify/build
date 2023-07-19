@@ -117,7 +117,7 @@ export class Project {
     return this
   }
 
-  /** Set's the function that is used to report errors. Overrides the default bugsnag reporting for the project */
+  /** Sets the function that is used to report errors. Overrides the default bugsnag reporting for the project */
   setReportFn(fn: typeof report): this {
     this.reportFn = fn
     return this
