@@ -103,6 +103,7 @@ const tExecBuild = async function ({
     testOpts,
     featureFlags,
   })
+
   const {
     netlifyConfig,
     configPath,
@@ -130,6 +131,7 @@ const tExecBuild = async function ({
     nodePath,
     timers,
     quiet,
+    featureFlags,
   })
 
   if (featureFlags.build_automatic_runtime && framework) {

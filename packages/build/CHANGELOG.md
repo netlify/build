@@ -93,6 +93,20 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+## [29.16.4](https://github.com/netlify/build/compare/build-v29.16.3...build-v29.16.4) (2023-07-18)
+
+
+### Bug Fixes
+
+* pull integrations in buildy botty mode ([#5168](https://github.com/netlify/build/issues/5168)) ([0650bda](https://github.com/netlify/build/commit/0650bda48b6749b14e6026e9d3c1d446b1d85675))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.2 to ^20.6.3
+
 ## [29.16.3](https://github.com/netlify/build/compare/build-v29.16.2...build-v29.16.3) (2023-07-17)
 
 
