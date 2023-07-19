@@ -1,5 +1,6 @@
 import type { PackageJson } from 'read-pkg'
 
+import { FrameworkName } from '../frameworks/index.js'
 import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
 import { WorkspaceInfo, WorkspacePackage } from '../workspaces/detect-workspace.js'
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
@@ -110,13 +111,14 @@ export class Nx extends BaseBuildTool {
     if (!this.isIntegrated) {
       return null
     }
-    const targets = this.targets.get(packagePath)?.filter((t) => NPM_DEV_SCRIPTS.includes(t.name)) || []
-    const executor = targets[0] && ('executor' in targets[0] ? targets[0].executor : targets[0].builder)
+    const target = this.targets.get(packagePath)?.find((t) => NPM_DEV_SCRIPTS.includes(t.name))
+    const executor = this.getExecutorFromTarget(target)
 
     switch (executor) {
       case '@nxtensions/astro:dev':
         return 3000
       case '@nrwl/next:server':
+      case '@nrwl/web:dev-server':
       case '@nx/webpack:dev-server':
       case '@angular-devkit/build-angular:dev-server':
         return 4200
@@ -131,7 +133,7 @@ export class Nx extends BaseBuildTool {
     }
   }
 
-  async getOutputFromTarget(packagePath: string): Promise<string | null> {
+  private async getOutputFromTarget(packagePath: string): Promise<string | null> {
     // dynamic import out of performance reasons on the react UI
     const { getProperty } = await import('dot-prop')
     try {
@@ -154,25 +156,71 @@ export class Nx extends BaseBuildTool {
     return this.project.fs.join('dist', packagePath)
   }
 
+  private getExecutorFromTarget(target?: Target): string | undefined {
+    return target && ('executor' in target ? target.executor : target.builder)
+  }
+
+  /** Detects a framework through the executor field in a target */
+  private async detectFramework(targets: Target[]): Promise<FrameworkName | undefined> {
+    const target = targets.find((t) => NPM_BUILD_SCRIPTS.includes(t.name))
+    const executor = this.getExecutorFromTarget(target)
+    if (!target || !executor) {
+      return
+    }
+
+    switch (executor) {
+      case '@nrwl/next:build':
+        return 'next'
+      case '@nxtensions/astro:build':
+        return 'astro'
+      case '@nx-plus/vue:browser':
+        return 'vue'
+      case '@angular-devkit/build-angular:browser':
+        return 'angular'
+      case '@nx/webpack:webpack':
+      case '@nrwl/web:build':
+        if (target.options?.webpackConfig?.includes?.('react')) {
+          return 'react-static'
+        }
+        this.project.report({
+          name: 'UndetectedNrwlWeb',
+          message: `Undetected @nrwl/web:build framework: ${JSON.stringify({ target }, null, 2)}`,
+        })
+        // TODO: once we add webpack return here 'webpack'
+        // https://github.com/netlify/build/issues/5185
+        return
+      // Non Supported builders that are not deployable
+      case '@nx/cypress:cypress':
+      case '@nrwl/cypress:cypress':
+      case '@nrwl/node:build':
+        return
+      default:
+        this.project.report({
+          name: 'UndetectedExecutor',
+          message: `Undetected executor for Nx integrated: ${executor}`,
+        })
+    }
+  }
+
   /** detect workspace packages with the workspace.json file */
-  async detectWorkspaceFile(): Promise<WorkspacePackage[]> {
+  private async detectWorkspaceFile(): Promise<WorkspacePackage[]> {
     const fs = this.project.fs
     try {
       const { projects } = await fs.readJSON<WorkspaceJson>(fs.join(this.project.jsWorkspaceRoot, 'workspace.json'), {
         fail: true,
       })
-      return Object.entries(projects || {})
-        .map(([key, { root, projectType, architect }]) => {
-          if (!root || key.endsWith('-e2e') || projectType !== 'application') {
-            return
-          }
-          this.targets.set(
-            fs.join(root),
-            Object.entries(architect || {}).map(([name, target]) => ({ ...target, name })),
-          )
-          return { name: key, path: fs.join(root) } as WorkspacePackage
-        })
-        .filter(Boolean) as WorkspacePackage[]
+      const pkgs: WorkspacePackage[] = []
+      for (const [key, { root, projectType, architect }] of Object.entries(projects || {})) {
+        if (!root || key.endsWith('-e2e') || projectType !== 'application') {
+          continue
+        }
+        const targets = Object.entries(architect || {}).map(([name, target]) => ({ ...target, name }))
+        const forcedFramework = await this.detectFramework(targets)
+        this.targets.set(fs.join(root), targets)
+
+        pkgs.push({ name: key, path: fs.join(root), forcedFramework })
+      }
+      return pkgs
     } catch {
       // noop
     }
@@ -180,7 +228,7 @@ export class Nx extends BaseBuildTool {
   }
 
   /** detect workspace pacakges with the project.json files */
-  async detectProjectJson(): Promise<WorkspacePackage[]> {
+  private async detectProjectJson(): Promise<WorkspacePackage[]> {
     const fs = this.project.fs
     try {
       const { workspaceLayout = { appsDir: 'apps' } } = await fs.readJSON<any>(
@@ -198,11 +246,10 @@ export class Nx extends BaseBuildTool {
               // we need to check the project json for application types (we don't care about libraries)
               const { projectType, name, targets } = await fs.readJSON(fs.join(directory, entry))
               if (projectType === 'application') {
-                this.targets.set(
-                  fs.join(packagePath),
-                  Object.entries(targets || {}).map(([name, target]) => ({ ...target, name })),
-                )
-                return { name, path: fs.join(packagePath) } as WorkspacePackage
+                const targetsWithName = Object.entries(targets || {}).map(([name, target]) => ({ ...target, name }))
+                const forcedFramework = await this.detectFramework(targetsWithName)
+                this.targets.set(fs.join(packagePath), targetsWithName)
+                return { name, path: fs.join(packagePath), forcedFramework } as WorkspacePackage
               }
             } catch {
               // noop
