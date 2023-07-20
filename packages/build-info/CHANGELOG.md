@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.7.1](https://github.com/netlify/build/compare/build-info-v7.7.0...build-info-v7.7.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* fixes an issue where an empty packagePath was ignored ([#5199](https://github.com/netlify/build/issues/5199)) ([0409189](https://github.com/netlify/build/commit/04091890f475a9da4d4a842223420ac5d836a3a1))
+
 ## [7.7.0](https://github.com/netlify/build/compare/build-info-v7.6.1...build-info-v7.7.0) (2023-07-20)
 
 
