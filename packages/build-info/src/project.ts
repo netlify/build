@@ -338,7 +338,7 @@ export class Project {
     }
   }
 
-  async getBuildSettings(): Promise<Settings[]> {
+  async getBuildSettings(packagePath?: string): Promise<Settings[]> {
     this.logger.debug('[project.ts]: getBuildSettings')
     // if the settings is undefined, the detection was not run.
     // if it is an array it has already run
@@ -351,7 +351,7 @@ export class Project {
       // This needs to be run first
       await this.detectFrameworks()
 
-      this.settings = await getBuildSettings(this)
+      this.settings = await getBuildSettings(this, packagePath)
       await this.events.emit('detectSettings', this.settings)
     } catch (error) {
       this.report(error)
