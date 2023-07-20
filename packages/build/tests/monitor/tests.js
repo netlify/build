@@ -78,7 +78,7 @@ test.serial('Report API error', async (t) => {
     .withFlags({
       token: 'test',
       deployId: 'test',
-      testOpts: { errorMonitor: true, env: false },
+      testOpts: { errorMonitor: true, env: true },
       bugsnagKey: BUGSNAG_TEST_KEY,
     })
     .runWithBuild()

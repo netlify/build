@@ -5,7 +5,7 @@ import { NodeSDK } from '@opentelemetry/sdk-node'
 import type { TracingOptions } from '../core/types.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
-let sdk: NodeSDK
+let sdk: NodeSDK | undefined
 
 /** Given a simple logging function return a `DiagLogger`. Used to setup our system logger as the diag logger.*/
 const getOtelLogger = function (logger: (...args: any[]) => void): DiagLogger {
@@ -33,6 +33,9 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
     protocol: 'grpc',
     apiKey: options.apiKey,
     endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
+    sampleRate: options.sampleRate,
+    // Turn off auto resource detection so that we fully control the attributes we export
+    autoDetectResources: false,
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
@@ -58,6 +61,7 @@ export const stopTracing = async function () {
     // The shutdown method might return an error if we fail to flush the traces
     // We handle it and use our diagnostics logger
     await sdk.shutdown()
+    sdk = undefined
   } catch (e) {
     diag.error(e)
   }

@@ -20,10 +20,10 @@ export const getSiteInfo = async function ({
   featureFlags = {},
   testOpts = {},
 }) {
-  const { env: testEnv = true } = testOpts
+  const { env: testEnv = false } = testOpts
   const fetchIntegrations = featureFlags.buildbot_fetch_integrations
 
-  if (api === undefined || mode === 'buildbot' || !testEnv) {
+  if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
     let integrations = []

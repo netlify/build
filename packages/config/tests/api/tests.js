@@ -60,21 +60,21 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
 
 test('--token', async (t) => {
   const output = await new Fixture('./fixtures/empty')
-    .withFlags({ token: 'test', testOpts: { env: false } })
+    .withFlags({ token: 'test', testOpts: { env: true } })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--token in CLI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
-    .withFlags({ token: 'test', testOpts: { env: false } })
+    .withFlags({ token: 'test', testOpts: { env: true } })
     .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('NETLIFY_AUTH_TOKEN environment variable', async (t) => {
   const output = await new Fixture('./fixtures/empty')
-    .withFlags({ testOpts: { env: false } })
+    .withFlags({ testOpts: { env: true } })
     .withEnv({ NETLIFY_AUTH_TOKEN: 'test' })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
