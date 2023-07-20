@@ -114,13 +114,14 @@ export async function getSettings(framework: Framework, project: Project, baseDi
   )
 }
 
-export async function getBuildSettings(project: Project): Promise<Settings[]> {
+/** Retrieves the build settings for a project */
+export async function getBuildSettings(project: Project, packagePath?: string): Promise<Settings[]> {
   project.logger.debug('[get-build-settings.ts] getBuildSettings')
   if (project.frameworks === undefined) {
     throw new Error('Please run the framework detection before calling the build settings!')
   }
 
-  const baseDirectory = project.relativeBaseDirectory || ''
+  const baseDirectory = packagePath || project.relativeBaseDirectory || ''
   const settingsPromises: Promise<Settings>[] = []
 
   // if we are in a workspace and trying to retrieve the settings from the root

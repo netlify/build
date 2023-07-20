@@ -77,6 +77,22 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
   ])
 })
 
+test('retrieve settings from the root for a base directory', async (ctx) => {
+  const fixture = await createFixture('nx-integrated', ctx)
+  const project = new Project(ctx.fs, fixture.cwd)
+  const settings = await project.getBuildSettings(join('packages/astro'))
+
+  expect(settings).toEqual([
+    expect.objectContaining({
+      baseDirectory: '', // nx needs to be run from the root
+      buildCommand: 'nx run astro:build',
+      devCommand: 'nx run astro:dev',
+      dist: join('dist/packages/astro'),
+      frameworkPort: 3000,
+    }),
+  ])
+})
+
 test('get dev command from npm scripts if defined', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({
