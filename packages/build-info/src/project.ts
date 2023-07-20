@@ -264,6 +264,7 @@ export class Project {
     }
   }
 
+  /** Detects all used runtimes */
   async detectRuntime() {
     this.logger.debug('[project.ts]: detectRuntime')
     try {
@@ -278,7 +279,7 @@ export class Project {
     }
   }
 
-  /** Detects all used build systems */
+  /** Detects all used frameworks */
   async detectFrameworks() {
     this.logger.debug('[project.ts]: detectFrameworks')
     // if the workspace is undefined, the detection was not run.
