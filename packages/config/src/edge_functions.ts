@@ -2,6 +2,8 @@ import { isString, validProperties } from './validate/helpers.js'
 
 const cacheValues = ['manual', 'off']
 
+const isStringOrArrayOfStrings = (value) => isString(value) || (Array.isArray(value) && value.every(isString))
+
 export const validations = [
   {
     property: 'edge_functions.*',
@@ -34,13 +36,13 @@ export const validations = [
   },
   {
     property: 'edge_functions.*.path',
-    check: isString,
-    message: 'must be a string.',
+    check: isStringOrArrayOfStrings,
+    message: 'must be a string or array of strings.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
     property: 'edge_functions.*.excludedPath',
-    check: (value) => isString(value) || (Array.isArray(value) && value.every(isString)),
+    check: isStringOrArrayOfStrings,
     message: 'must be a string or array of strings.',
     example: () => ({
       edge_functions: [{ path: '/products/*', excludedPath: ['/products/*.jpg'], function: 'customise' }],
@@ -48,13 +50,13 @@ export const validations = [
   },
   {
     property: 'edge_functions.*.pattern',
-    check: isString,
-    message: 'must be a string.',
+    check: isStringOrArrayOfStrings,
+    message: 'must be a string or array of strings.',
     example: () => ({ edge_functions: [{ pattern: '/hello/(.*)', function: 'hello' }] }),
   },
   {
     property: 'edge_functions.*.excludedPattern',
-    check: (value) => isString(value) || (Array.isArray(value) && value.every(isString)),
+    check: isStringOrArrayOfStrings,
     message: 'must be a string or array of strings.',
     example: () => ({
       edge_functions: [{ path: '/products/(.*)', excludedPattern: ['^/products/(.*)\\.jpg$'], function: 'customise' }],
