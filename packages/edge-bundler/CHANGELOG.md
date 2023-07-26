@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.17.0](https://github.com/netlify/edge-bundler/compare/v8.16.4...v8.17.0) (2023-07-26)
+
+
+### Features
+
+* replace `glob-to-regexp` with `URLPattern` ([#392](https://github.com/netlify/edge-bundler/issues/392)) ([ca6962d](https://github.com/netlify/edge-bundler/commit/ca6962daa37b2f2af44dd7d5f007efaec49dd8ba))
+
 ## [8.16.4](https://github.com/netlify/edge-bundler/compare/v8.16.3...v8.16.4) (2023-07-12)
 
 
