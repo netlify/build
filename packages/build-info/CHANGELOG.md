@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.7.2](https://github.com/netlify/build/compare/build-info-v7.7.1...build-info-v7.7.2) (2023-07-26)
+
+
+### Bug Fixes
+
+* change nuxt detection dist for v3 ([#4990](https://github.com/netlify/build/issues/4990)) ([e8b6be2](https://github.com/netlify/build/commit/e8b6be2f4fbf1595bdcbac3a5b42ecba7184d90f))
+
 ## [7.7.1](https://github.com/netlify/build/compare/build-info-v7.7.0...build-info-v7.7.1) (2023-07-20)
 
 
