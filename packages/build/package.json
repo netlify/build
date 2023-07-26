@@ -66,7 +66,7 @@
     "@honeycombio/opentelemetry-node": "^0.4.0",
     "@netlify/cache-utils": "^5.1.5",
     "@netlify/config": "^20.6.4",
-    "@netlify/edge-bundler": "8.16.4",
+    "@netlify/edge-bundler": "8.17.0",
     "@netlify/framework-info": "^9.8.10",
     "@netlify/functions-utils": "^5.2.18",
     "@netlify/git-utils": "^5.1.1",
