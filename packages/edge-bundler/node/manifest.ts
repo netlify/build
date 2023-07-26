@@ -11,6 +11,7 @@ import { FeatureFlags } from './feature_flags.js'
 import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { ExtendedURLPattern } from './utils/urlpattern.js'
 
 interface Route {
   function: string
@@ -77,10 +78,11 @@ const addExcludedPatterns = (
   name: string,
   manifestFunctionConfig: Record<string, EdgeFunctionConfig>,
   excludedPath?: Path | Path[],
+  featureFlags?: FeatureFlags,
 ) => {
   if (excludedPath) {
     const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
-    const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
+    const excludedPatterns = paths.map((path) => pathToRegularExpression(path, featureFlags)).map(serializePattern)
 
     manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
   }
@@ -107,7 +109,7 @@ const generateManifest = ({
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
-    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
+    addExcludedPatterns(name, manifestFunctionConfig, excludedPath, featureFlags)
 
     manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError }
   }
@@ -117,7 +119,7 @@ const generateManifest = ({
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
-    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
+    addExcludedPatterns(name, manifestFunctionConfig, excludedPath, featureFlags)
 
     manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError, ...rest }
   }
@@ -129,11 +131,8 @@ const generateManifest = ({
       return
     }
 
-    const pattern = getRegularExpression(declaration, featureFlags?.edge_functions_fail_unsupported_regex)
-    const excludedPattern = getExcludedRegularExpressions(
-      declaration,
-      featureFlags?.edge_functions_fail_unsupported_regex,
-    )
+    const pattern = getRegularExpression(declaration, featureFlags)
+    const excludedPattern = getExcludedRegularExpressions(declaration, featureFlags)
 
     const route: Route = {
       function: func.name,
@@ -164,7 +163,22 @@ const generateManifest = ({
   return manifest
 }
 
-const pathToRegularExpression = (path: string) => {
+const pathToRegularExpression = (path: string, featureFlags?: FeatureFlags) => {
+  if (featureFlags?.edge_functions_path_urlpattern) {
+    const pattern = new ExtendedURLPattern({ pathname: path })
+
+    // Removing the `^` and `$` delimiters because we'll need to modify what's
+    // between them.
+    const source = pattern.regexp.pathname.source.slice(1, -1)
+
+    // Wrapping the expression source with `^` and `$`. Also, adding an optional
+    // trailing slash, so that a declaration of `path: "/foo"` matches requests
+    // for both `/foo` and `/foo/`.
+    const normalizedSource = `^${source}\\/?$`
+
+    return normalizedSource
+  }
+
   // We use the global flag so that `globToRegExp` will not wrap the expression
   // with `^` and `$`. We'll do that ourselves.
   const regularExpression = globToRegExp(path, { flags: 'g' })
@@ -177,13 +191,13 @@ const pathToRegularExpression = (path: string) => {
   return normalizedSource
 }
 
-const getRegularExpression = (declaration: Declaration, failUnsupportedRegex = false): string => {
+const getRegularExpression = (declaration: Declaration, featureFlags?: FeatureFlags): string => {
   if ('pattern' in declaration) {
     try {
       return parsePattern(declaration.pattern)
     } catch (error: unknown) {
       // eslint-disable-next-line max-depth
-      if (failUnsupportedRegex) {
+      if (featureFlags?.edge_functions_fail_unsupported_regex) {
         throw new Error(
           `Could not parse path declaration of function '${declaration.function}': ${(error as Error).message}`,
         )
@@ -199,10 +213,10 @@ const getRegularExpression = (declaration: Declaration, failUnsupportedRegex = f
     }
   }
 
-  return pathToRegularExpression(declaration.path)
+  return pathToRegularExpression(declaration.path, featureFlags)
 }
 
-const getExcludedRegularExpressions = (declaration: Declaration, failUnsupportedRegex = false): string[] => {
+const getExcludedRegularExpressions = (declaration: Declaration, featureFlags?: FeatureFlags): string[] => {
   if ('excludedPattern' in declaration && declaration.excludedPattern) {
     const excludedPatterns: string[] = Array.isArray(declaration.excludedPattern)
       ? declaration.excludedPattern
@@ -211,7 +225,7 @@ const getExcludedRegularExpressions = (declaration: Declaration, failUnsupported
       try {
         return parsePattern(excludedPattern)
       } catch (error: unknown) {
-        if (failUnsupportedRegex) {
+        if (featureFlags?.edge_functions_fail_unsupported_regex) {
           throw new Error(
             `Could not parse path declaration of function '${declaration.function}': ${(error as Error).message}`,
           )
@@ -230,7 +244,7 @@ const getExcludedRegularExpressions = (declaration: Declaration, failUnsupported
 
   if ('path' in declaration && declaration.excludedPath) {
     const paths = Array.isArray(declaration.excludedPath) ? declaration.excludedPath : [declaration.excludedPath]
-    return paths.map(pathToRegularExpression)
+    return paths.map((path) => pathToRegularExpression(path, featureFlags))
   }
 
   return []

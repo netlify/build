@@ -44,9 +44,15 @@ test('Generates a manifest with display names', () => {
       name: 'Display Name',
     },
   }
-  const manifest = generateManifest({ bundles: [], declarations, functions, internalFunctionConfig })
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    internalFunctionConfig,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
 
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/.*/?$', excluded_patterns: [] }]
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [] }]
   expect(manifest.function_config).toEqual({
     'func-1': { name: 'Display Name' },
   })
@@ -63,9 +69,15 @@ test('Generates a manifest with a generator field', () => {
       generator: '@netlify/fake-plugin@1.0.0',
     },
   }
-  const manifest = generateManifest({ bundles: [], declarations, functions, internalFunctionConfig })
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    internalFunctionConfig,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
 
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/.*/?$', excluded_patterns: [] }]
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [] }]
   const expectedFunctionConfig = { 'func-1': { generator: '@netlify/fake-plugin@1.0.0' } }
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.function_config).toEqual(expectedFunctionConfig)
@@ -79,14 +91,23 @@ test('Generates a manifest with excluded paths and patterns', () => {
   ]
   const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1/*', excludedPath: '/f1/exclude' },
-    { function: 'func-2', pattern: '^/f2/.*/?$', excludedPattern: ['^/f2/exclude$', '^/f2/exclude-as-well$'] },
+    { function: 'func-2', pattern: '^/f2(?:/(.*))/?$', excludedPattern: ['^/f2/exclude$', '^/f2/exclude-as-well$'] },
     { function: 'func-3', path: '/*', excludedPath: '/**/*.html' },
   ]
-  const manifest = generateManifest({ bundles: [], declarations, functions })
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
   const expectedRoutes = [
-    { function: 'func-1', pattern: '^/f1/.*/?$', excluded_patterns: ['^/f1/exclude/?$'] },
-    { function: 'func-2', pattern: '^/f2/.*/?$', excluded_patterns: ['^/f2/exclude$', '^/f2/exclude-as-well$'] },
-    { function: 'func-3', pattern: '^/.*/?$', excluded_patterns: ['^/.*/.*\\.html/?$'] },
+    { function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: ['^/f1/exclude/?$'] },
+    { function: 'func-2', pattern: '^/f2(?:/(.*))/?$', excluded_patterns: ['^/f2/exclude$', '^/f2/exclude-as-well$'] },
+    {
+      function: 'func-3',
+      pattern: '^(?:/(.*))/?$',
+      excluded_patterns: ['^(?:/((?:.*)(?:/(?:.*))*))?(?:/(.*))\\.html/?$'],
+    },
   ]
 
   expect(manifest.routes).toEqual(expectedRoutes)
@@ -105,9 +126,14 @@ test('TOML-defined paths can be combined with ISC-defined excluded paths', () =>
   const userFunctionConfig: Record<string, FunctionConfig> = {
     'func-1': { excludedPath: '/f1/exclude' },
   }
-  const manifest = generateManifest({ bundles: [], declarations, functions, userFunctionConfig })
-
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/.*/?$', excluded_patterns: [] }]
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    userFunctionConfig,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [] }]
 
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.function_config).toEqual({
@@ -123,7 +149,7 @@ test('Filters out internal in-source configurations in user created functions', 
   ]
   const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1/*' },
-    { function: 'func-2', pattern: '^/f2/.*/?$' },
+    { function: 'func-2', pattern: '^/f2(?:/(.*))/?$' },
   ]
   const userFunctionConfig: Record<string, FunctionConfig> = {
     'func-1': {
@@ -185,22 +211,23 @@ test('excludedPath from ISC goes into function_config, TOML goes into routes', (
     functions,
     userFunctionConfig,
     internalFunctionConfig,
+    featureFlags: { edge_functions_path_urlpattern: true },
   })
   expect(manifest.routes).toEqual([
     {
       function: 'customisation',
-      pattern: '^/showcases/.*/?$',
+      pattern: '^/showcases(?:/(.*))/?$',
       excluded_patterns: [],
     },
     {
       function: 'customisation',
-      pattern: '^/checkout/.*/?$',
-      excluded_patterns: ['^/.*/terms-and-conditions/?$'],
+      pattern: '^/checkout(?:/(.*))/?$',
+      excluded_patterns: ['^(?:/(.*))/terms-and-conditions/?$'],
     },
   ])
   expect(manifest.function_config).toEqual({
     customisation: {
-      excluded_patterns: ['^/.*\\.css/?$', '^/.*\\.jpg/?$'],
+      excluded_patterns: ['^(?:/(.*))\\.css/?$', '^(?:/(.*))\\.jpg/?$'],
     },
   })
 
@@ -220,7 +247,7 @@ test('Includes failure modes in manifest', () => {
   ]
   const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1/*' },
-    { function: 'func-2', pattern: '^/f2/.*/?$' },
+    { function: 'func-2', pattern: '^/f2(?:/(.*))/?$' },
   ]
   const userFunctionConfig: Record<string, FunctionConfig> = {
     'func-1': {
@@ -330,8 +357,8 @@ test('Generates a manifest with layers', () => {
     { function: 'func-2', path: '/f2/*' },
   ]
   const expectedRoutes = [
-    { function: 'func-1', pattern: '^/f1/.*/?$', excluded_patterns: [] },
-    { function: 'func-2', pattern: '^/f2/.*/?$', excluded_patterns: [] },
+    { function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [] },
+    { function: 'func-2', pattern: '^/f2(?:/(.*))/?$', excluded_patterns: [] },
   ]
   const layers = [
     {
@@ -339,8 +366,19 @@ test('Generates a manifest with layers', () => {
       flag: 'edge_functions_onion_layer',
     },
   ]
-  const manifest1 = generateManifest({ bundles: [], declarations, functions })
-  const manifest2 = generateManifest({ bundles: [], declarations, functions, layers })
+  const manifest1 = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
+  const manifest2 = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    layers,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
 
   expect(manifest1.routes).toEqual(expectedRoutes)
   expect(manifest1.layers).toEqual([])
