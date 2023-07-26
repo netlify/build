@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.7.3](https://github.com/netlify/build/compare/build-info-v7.7.2...build-info-v7.7.3) (2023-07-26)
+
+
+### Bug Fixes
+
+* detect nx packages inside apps and packages folder by default ([#5207](https://github.com/netlify/build/issues/5207)) ([388c66a](https://github.com/netlify/build/commit/388c66acef3dd0ec156a9a4351904606d0093ee9))
+
 ## [7.7.2](https://github.com/netlify/build/compare/build-info-v7.7.1...build-info-v7.7.2) (2023-07-26)
 
 
