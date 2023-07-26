@@ -113,6 +113,9 @@ export class Nx extends BaseBuildTool {
     }
     const target = this.targets.get(packagePath)?.find((t) => NPM_DEV_SCRIPTS.includes(t.name))
     const executor = this.getExecutorFromTarget(target)
+    if (!executor) {
+      return null
+    }
 
     switch (executor) {
       case '@nxtensions/astro:dev':
@@ -227,44 +230,45 @@ export class Nx extends BaseBuildTool {
     return []
   }
 
-  /** detect workspace pacakges with the project.json files */
+  /** detect workspace packages with the project.json files */
   private async detectProjectJson(): Promise<WorkspacePackage[]> {
     const fs = this.project.fs
     try {
-      const { workspaceLayout = { appsDir: 'apps' } } = await fs.readJSON<any>(
-        fs.join(this.project.jsWorkspaceRoot, 'nx.json'),
-        {
-          fail: true,
-        },
-      )
-      // if an apps dir is specified get it.
-      if (workspaceLayout?.appsDir?.length) {
-        const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
-          // ignore e2e test applications as there is no need to deploy them
-          if (entry === 'project.json' && !packagePath.endsWith('-e2e')) {
-            try {
-              // we need to check the project json for application types (we don't care about libraries)
-              const { projectType, name, targets } = await fs.readJSON(fs.join(directory, entry))
-              if (projectType === 'application') {
-                const targetsWithName = Object.entries(targets || {}).map(([name, target]) => ({ ...target, name }))
-                const forcedFramework = await this.detectFramework(targetsWithName)
-                this.targets.set(fs.join(packagePath), targetsWithName)
-                return { name, path: fs.join(packagePath), forcedFramework } as WorkspacePackage
-              }
-            } catch {
-              // noop
+      const { workspaceLayout } = await fs.readJSON<any>(fs.join(this.project.jsWorkspaceRoot, 'nx.json'), {
+        fail: true,
+      })
+      const appDirs = workspaceLayout?.appsDir ? [workspaceLayout.appsDir] : ['apps', 'packages']
+      const identifyPkg: identifyPackageFn = async ({ entry, directory, packagePath }) => {
+        // ignore e2e test applications as there is no need to deploy them
+        if (entry === 'project.json' && !packagePath.endsWith('-e2e')) {
+          try {
+            // we need to check the project json for application types (we don't care about libraries)
+            const { projectType, name, targets } = await fs.readJSON(fs.join(directory, entry))
+            if (projectType === 'application') {
+              const targetsWithName = Object.entries(targets || {}).map(([name, target]) => ({ ...target, name }))
+              const forcedFramework = await this.detectFramework(targetsWithName)
+              this.targets.set(fs.join(packagePath), targetsWithName)
+              return { name, path: fs.join(packagePath), forcedFramework } as WorkspacePackage
             }
+          } catch {
+            // noop
           }
-          return null
         }
-
-        return findPackages(
-          this.project,
-          workspaceLayout.appsDir,
-          identifyPkg,
-          '*', // only check for one level
-        )
+        return null
       }
+
+      const pkgs = await Promise.all(
+        appDirs.map(async (appDir) =>
+          findPackages(
+            this.project,
+            appDir,
+            identifyPkg,
+            '*', // only check for one level
+          ).catch(() => []),
+        ),
+      )
+
+      return pkgs.flat()
     } catch {
       // noop
     }
