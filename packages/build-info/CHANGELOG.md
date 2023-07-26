@@ -64,6 +64,65 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.7.1](https://github.com/netlify/build/compare/build-info-v7.7.0...build-info-v7.7.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* fixes an issue where an empty packagePath was ignored ([#5199](https://github.com/netlify/build/issues/5199)) ([0409189](https://github.com/netlify/build/commit/04091890f475a9da4d4a842223420ac5d836a3a1))
+
+## [7.7.0](https://github.com/netlify/build/compare/build-info-v7.6.1...build-info-v7.7.0) (2023-07-20)
+
+
+### Features
+
+* make getBuildSettings accept an optional package parameter ([#5197](https://github.com/netlify/build/issues/5197)) ([1e5965c](https://github.com/netlify/build/commit/1e5965c615c2bb94d542e2337308e911412c5dbd))
+
+
+### Bug Fixes
+
+* update comment to mention framework ([#5089](https://github.com/netlify/build/issues/5089)) ([4992256](https://github.com/netlify/build/commit/4992256267abc0600319f16ee75805c6a7668072))
+
+## [7.6.1](https://github.com/netlify/build/compare/build-info-v7.6.0...build-info-v7.6.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* add correct 11ty logos for light and dark ([#5190](https://github.com/netlify/build/issues/5190)) ([c54f5c0](https://github.com/netlify/build/commit/c54f5c0556c317727f3529dd3effad2f0cc21329)), closes [#5187](https://github.com/netlify/build/issues/5187)
+
+## [7.6.0](https://github.com/netlify/build/compare/build-info-v7.5.0...build-info-v7.6.0) (2023-07-19)
+
+
+### Features
+
+* make error reporting configureable ([#5191](https://github.com/netlify/build/issues/5191)) ([5986af2](https://github.com/netlify/build/commit/5986af2f482e6d28ff342f56960f270d27af8c08))
+
+
+### Bug Fixes
+
+* fix nx-integrated detection via forced framework ([#5189](https://github.com/netlify/build/issues/5189)) ([ae6c09b](https://github.com/netlify/build/commit/ae6c09b1b889b48c71293d84d0e2422f003f5836))
+
+## [7.5.0](https://github.com/netlify/build/compare/build-info-v7.4.3...build-info-v7.5.0) (2023-07-19)
+
+
+### Features
+
+* update pnpm build command for workspaces to build dependents ([#5183](https://github.com/netlify/build/issues/5183)) ([aa9e363](https://github.com/netlify/build/commit/aa9e363e6a2d52c356e3f503cd2ee0a119aa03d8))
+
+## [7.4.3](https://github.com/netlify/build/compare/build-info-v7.4.2...build-info-v7.4.3) (2023-07-19)
+
+
+### Bug Fixes
+
+* detection of workspace file and correct dev port ([#5181](https://github.com/netlify/build/issues/5181)) ([7331c27](https://github.com/netlify/build/commit/7331c278861c633b8b99e315134a4d4b4e5846ae))
+
+## [7.4.2](https://github.com/netlify/build/compare/build-info-v7.4.1...build-info-v7.4.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* cleanup feature flag for new framework detection as already rolled out to 100% ([#5169](https://github.com/netlify/build/issues/5169)) ([2858d70](https://github.com/netlify/build/commit/2858d70341a2632e41bb683d0ca200008ee6d0ba))
+
 ## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
 
 

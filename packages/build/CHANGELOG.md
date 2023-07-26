@@ -93,6 +93,62 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+## [29.17.1](https://github.com/netlify/build/compare/build-v29.17.0...build-v29.17.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* correctly reference env from testOpts to install integrations ([#5193](https://github.com/netlify/build/issues/5193)) ([bda6ff5](https://github.com/netlify/build/commit/bda6ff583e963ebbbe87ec4c78e3608b9c2c2cd8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.3 to ^20.6.4
+
+## [29.17.0](https://github.com/netlify/build/compare/build-v29.16.5...build-v29.17.0) (2023-07-19)
+
+
+### Features
+
+* **tracing:** add sample rate tracing parameter ([#5150](https://github.com/netlify/build/issues/5150)) ([97ee771](https://github.com/netlify/build/commit/97ee771c6695f71ac1f8d7c95fd1404fded17af1))
+
+## [29.16.5](https://github.com/netlify/build/compare/build-v29.16.4...build-v29.16.5) (2023-07-19)
+
+
+### Bug Fixes
+
+* mark go version errors as user errors ([#5188](https://github.com/netlify/build/issues/5188)) ([32cc97e](https://github.com/netlify/build/commit/32cc97e817d27a2da00e715024eb00d71ddebd07))
+
+## [29.16.4](https://github.com/netlify/build/compare/build-v29.16.3...build-v29.16.4) (2023-07-18)
+
+
+### Bug Fixes
+
+* pull integrations in buildy botty mode ([#5168](https://github.com/netlify/build/issues/5168)) ([0650bda](https://github.com/netlify/build/commit/0650bda48b6749b14e6026e9d3c1d446b1d85675))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.2 to ^20.6.3
+
+## [29.16.3](https://github.com/netlify/build/compare/build-v29.16.2...build-v29.16.3) (2023-07-17)
+
+
+### Bug Fixes
+
+* omit the git path even if no other omit paths provided ([#5170](https://github.com/netlify/build/issues/5170)) ([29c76c5](https://github.com/netlify/build/commit/29c76c5857d92ce322c804f61c877888ad4cfb80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.1 to ^20.6.2
+
 ## [29.16.1](https://github.com/netlify/build/compare/build-v29.16.0...build-v29.16.1) (2023-07-12)
 
 

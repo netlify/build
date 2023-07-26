@@ -20,13 +20,20 @@ export const getSiteInfo = async function ({
   featureFlags = {},
   testOpts = {},
 }) {
-  const { env: testEnv = true } = testOpts
-
-  if (api === undefined || mode === 'buildbot' || !testEnv) {
-    const siteInfo = siteId === undefined ? {} : { id: siteId }
-    return { siteInfo, accounts: [], addons: [] }
-  }
+  const { env: testEnv = false } = testOpts
   const fetchIntegrations = featureFlags.buildbot_fetch_integrations
+
+  if (api === undefined || mode === 'buildbot' || testEnv) {
+    const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+    let integrations = []
+    if (fetchIntegrations && api !== undefined && !testEnv) {
+      // we still want to fetch integrations within buildbot
+      integrations = await getIntegrations({ api, ownerType: 'site', ownerId: siteId, testOpts })
+    }
+
+    return { siteInfo, accounts: [], addons: [], integrations }
+  }
 
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
@@ -42,7 +49,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations: integrations }
+  return { siteInfo, accounts, addons, integrations }
 }
 
 const getSite = async function (api, siteId, siteFeatureFlagPrefix = null) {

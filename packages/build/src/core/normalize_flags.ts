@@ -102,6 +102,8 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     tracing: {
       enabled: false,
       apiKey: '-',
+      // defaults to always sample
+      sampleRate: 1,
       httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
       port: DEFAULT_OTEL_TRACING_PORT,
     },

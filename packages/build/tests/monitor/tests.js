@@ -78,7 +78,7 @@ test.serial('Report API error', async (t) => {
     .withFlags({
       token: 'test',
       deployId: 'test',
-      testOpts: { errorMonitor: true, env: false },
+      testOpts: { errorMonitor: true, env: true },
       bugsnagKey: BUGSNAG_TEST_KEY,
     })
     .runWithBuild()
@@ -266,4 +266,20 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
   t.snapshot(normalizeOutput(output))
 
   stub.restore()
+})
+
+test.serial('Throws a user error when the wrong go version is used', async (t) => {
+  const logs = await new Fixture('./fixtures/go_version_error')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+
+  t.true(logs.includes('"errorClass": "resolveConfig"'))
+})
+
+test.serial('Throws a dependency error when go dependency is missing', async (t) => {
+  const logs = await new Fixture('./fixtures/go_missing_dependency')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+
+  t.true(logs.includes('"errorClass": "dependencies"'))
 })

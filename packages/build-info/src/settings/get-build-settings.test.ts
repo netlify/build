@@ -62,11 +62,27 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
   expect(settings).toEqual([
     expect.objectContaining({
       baseDirectory: '', // nx needs to be run from the root
+      buildCommand: 'nx run astro:build',
+      devCommand: 'nx run astro:dev',
+      dist: join('dist/packages/astro'),
+      frameworkPort: 3000,
+    }),
+    expect.objectContaining({
+      baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website'),
-      frameworkPort: 3000,
+      frameworkPort: 4200,
     }),
+  ])
+})
+
+test('retrieve settings from the root for a base directory', async (ctx) => {
+  const fixture = await createFixture('nx-integrated', ctx)
+  const project = new Project(ctx.fs, fixture.cwd)
+  const settings = await project.getBuildSettings(join('packages/astro'))
+
+  expect(settings).toEqual([
     expect.objectContaining({
       baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run astro:build',
@@ -216,14 +232,14 @@ describe.each([
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/blog'),
-          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          buildCommand: 'pnpm --filter @evilcorp/blog... run build',
           devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
           packagePath: platformJoin('packages/website'),
-          buildCommand: 'pnpm --filter @evilcorp/website run build',
+          buildCommand: 'pnpm --filter @evilcorp/website... run build',
           devCommand: 'pnpm --filter @evilcorp/website run dev',
           dist: platformJoin('packages/website/.next'),
         }),
@@ -238,7 +254,7 @@ describe.each([
       expect(settings).toEqual([
         expect.objectContaining({
           baseDirectory: '',
-          buildCommand: 'pnpm --filter @evilcorp/blog run build',
+          buildCommand: 'pnpm --filter @evilcorp/blog... run build',
           devCommand: 'pnpm --filter @evilcorp/blog run dev',
           dist: platformJoin('packages/blog/dist'),
           packagePath: platformJoin('packages/blog'),
@@ -402,7 +418,7 @@ describe.each([
           packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: platformJoin('apps/nuxt-app/dist'),
+          dist: platformJoin('apps/nuxt-app/.nuxt/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
@@ -432,7 +448,7 @@ describe.each([
           packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: platformJoin('apps/nuxt-app/dist'),
+          dist: platformJoin('apps/nuxt-app/.nuxt/dist'),
         }),
       ])
     })

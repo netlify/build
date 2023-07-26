@@ -30,13 +30,13 @@ export class Nuxt extends BaseFramework implements Framework {
       if (this.isV3(this.detected)) {
         this.name = 'Nuxt 3'
 
-        const cmd = this.project.packageManager?.runCommand || 'npm run'
-        this.build.command = `${cmd} build`
-        this.dev.command = `${cmd} dev`
+        this.build.command = `nuxt build`
+        this.build.directory = `.nuxt/dist`
+        this.dev.command = `nuxt dev`
 
         this.env = {
-          AWS_LAMBDA_JS_RUNTIME: 'nodejs14.x',
-          NODE_VERSION: '14',
+          AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
+          NODE_VERSION: '18',
         }
       }
       return this as DetectedFramework

@@ -8,8 +8,9 @@ import { EventEmitter } from './events.js'
 import { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
+import { getFramework } from './get-framework.js'
 import { Logger } from './logger.js'
-import { report } from './metrics.js'
+import { Severity, report } from './metrics.js'
 import {
   AVAILABLE_PACKAGE_MANAGERS,
   PkgManagerFields,
@@ -61,6 +62,9 @@ export class Project {
   bugsnag: Client
   /** A logging instance  */
   logger: Logger
+
+  /** A function that is used to report errors */
+  reportFn: typeof report = report
 
   events = new EventEmitter<Events>()
 
@@ -114,7 +118,13 @@ export class Project {
     return this
   }
 
-  /** Set's a bugsnag client for the current session */
+  /** Sets the function that is used to report errors. Overrides the default bugsnag reporting for the project */
+  setReportFn(fn: typeof report): this {
+    this.reportFn = fn
+    return this
+  }
+
+  /** Sets a bugsnag client for the current session */
   setBugsnag(client?: Client): this {
     if (client) {
       this.bugsnag = client
@@ -128,15 +138,21 @@ export class Project {
   }
 
   /** Reports an error with additional metadata */
-  report(error: NotifiableError) {
+  report(
+    error: NotifiableError,
+    config: { metadata?: Record<string, any>; severity?: Severity; context?: string } = {},
+  ) {
     this.fs.logger.error(error)
-    report(error, {
+    this.reportFn(error, {
       metadata: {
         build: {
           baseDirectory: this.baseDirectory,
           root: this.root,
         },
+        ...(config.metadata || {}),
       },
+      context: config.context,
+      severity: config.severity,
       client: this.bugsnag,
     })
   }
@@ -248,6 +264,7 @@ export class Project {
     }
   }
 
+  /** Detects all used runtimes */
   async detectRuntime() {
     this.logger.debug('[project.ts]: detectRuntime')
     try {
@@ -262,7 +279,7 @@ export class Project {
     }
   }
 
-  /** Detects all used build systems */
+  /** Detects all used frameworks */
   async detectFrameworks() {
     this.logger.debug('[project.ts]: detectFrameworks')
     // if the workspace is undefined, the detection was not run.
@@ -278,8 +295,15 @@ export class Project {
       if (this.workspace) {
         // if we have a workspace parallelize in all workspaces
         await Promise.all(
-          this.workspace.packages.map(async ({ path: pkg }) => {
-            if (this.workspace) {
+          this.workspace.packages.map(async ({ path: pkg, forcedFramework }) => {
+            if (forcedFramework) {
+              try {
+                const framework = await getFramework(forcedFramework, this)
+                this.frameworks.set(pkg, [framework])
+              } catch {
+                // noop framework not found
+              }
+            } else if (this.workspace) {
               const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
               this.frameworks.set(pkg, result)
             }
@@ -315,7 +339,7 @@ export class Project {
     }
   }
 
-  async getBuildSettings(): Promise<Settings[]> {
+  async getBuildSettings(packagePath?: string): Promise<Settings[]> {
     this.logger.debug('[project.ts]: getBuildSettings')
     // if the settings is undefined, the detection was not run.
     // if it is an array it has already run
@@ -328,7 +352,7 @@ export class Project {
       // This needs to be run first
       await this.detectFrameworks()
 
-      this.settings = await getBuildSettings(this)
+      this.settings = await getBuildSettings(this, packagePath)
       await this.events.emit('detectSettings', this.settings)
     } catch (error) {
       this.report(error)

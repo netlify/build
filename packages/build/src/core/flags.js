@@ -230,6 +230,11 @@ Default: false`,
     describe: 'Parent Span ID used to stitch the root parent span to',
     hidden: true,
   },
+  'tracing.sampleRate': {
+    number: true,
+    describe: 'Trace sample rate for the given trace ID',
+    hidden: true,
+  },
   'tracing.traceFlags': {
     number: true,
     describe: 'Trace flags containing the trace settings for the given trace ID',
