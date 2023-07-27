@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.17.1](https://github.com/netlify/edge-bundler/compare/v8.17.0...v8.17.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* ensure patterns match on whole path ([#442](https://github.com/netlify/edge-bundler/issues/442)) ([a9e1e11](https://github.com/netlify/edge-bundler/commit/a9e1e117f417894c9da21115674f6550872b3d10))
+* parseConfig stumbling over `globalThis.Netlify` usage in global scope ([#427](https://github.com/netlify/edge-bundler/issues/427)) ([d829e70](https://github.com/netlify/edge-bundler/commit/d829e70e9c8220ee4d3013f6ee631a204bccb341))
+
 ## [8.17.0](https://github.com/netlify/edge-bundler/compare/v8.16.4...v8.17.0) (2023-07-26)
 
 
