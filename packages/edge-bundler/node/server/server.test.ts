@@ -31,6 +31,10 @@ test('Starts a server and serves requests for edge functions', async () => {
       name: 'greet',
       path: join(paths.internal, 'greet.ts'),
     },
+    {
+      name: 'global_netlify',
+      path: join(paths.user, 'global_netlify.ts'),
+    },
   ]
   const options = {
     getFunctionsConfig: true,
@@ -44,7 +48,7 @@ test('Starts a server and serves requests for edge functions', async () => {
     options,
   )
   expect(success).toBe(true)
-  expect(functionsConfig).toEqual([{ path: '/my-function' }, {}])
+  expect(functionsConfig).toEqual([{ path: '/my-function' }, {}, { path: '/global-netlify' }])
 
   for (const key in functions) {
     const graphEntry = graph?.modules.some(
@@ -74,4 +78,16 @@ test('Starts a server and serves requests for edge functions', async () => {
   })
   expect(response2.status).toBe(200)
   expect(await response2.text()).toBe('HELLO!')
+
+  const response3 = await fetch(`http://0.0.0.0:${port}/global-netlify`, {
+    headers: {
+      'x-nf-edge-functions': 'global_netlify',
+      'x-ef-passthrough': 'passthrough',
+      'X-NF-Request-ID': uuidv4(),
+    },
+  })
+  expect(await response3.json()).toEqual({
+    global: 'i love netlify',
+    local: 'i love netlify',
+  })
 })

@@ -52,7 +52,19 @@ const getConfigExtractor = () => {
   return configExtractorPath
 }
 
-export const getFunctionConfig = async (func: EdgeFunction, importMap: ImportMap, deno: DenoBridge, log: Logger) => {
+export const getFunctionConfig = async ({
+  func,
+  importMap,
+  deno,
+  bootstrapURL,
+  log,
+}: {
+  func: EdgeFunction
+  importMap: ImportMap
+  deno: DenoBridge
+  bootstrapURL: string
+  log: Logger
+}) => {
   // The extractor is a Deno script that will import the function and run its
   // `config` export, if one exists.
   const extractorPath = getConfigExtractor()
@@ -79,6 +91,7 @@ export const getFunctionConfig = async (func: EdgeFunction, importMap: ImportMap
       extractorPath,
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,
+      bootstrapURL,
       JSON.stringify(ConfigExitCode),
     ],
     { rejectOnExitCode: false },

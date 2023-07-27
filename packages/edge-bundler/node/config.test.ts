@@ -14,6 +14,8 @@ import { FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
 
+const bootstrapURL = 'https://edge.netlify.com/bootstrap/index-combined.ts'
+
 const importMapFile = {
   baseURL: new URL('file:///some/path/import-map.json'),
   imports: {
@@ -136,15 +138,16 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
     await fs.writeFile(path, func.source)
 
     const funcCall = () =>
-      getFunctionConfig(
-        {
+      getFunctionConfig({
+        func: {
           name: func.name,
           path,
         },
-        new ImportMap([importMapFile]),
+        importMap: new ImportMap([importMapFile]),
         deno,
-        logger,
-      )
+        log: logger,
+        bootstrapURL,
+      })
 
     if (func.error) {
       await expect(funcCall()).rejects.toThrowError(func.error)
@@ -235,15 +238,16 @@ test('Passes validation if default export exists and is a function', async () =>
   await fs.writeFile(path, func.source)
 
   await expect(
-    getFunctionConfig(
-      {
+    getFunctionConfig({
+      func: {
         name: func.name,
         path,
       },
-      new ImportMap([importMapFile]),
+      importMap: new ImportMap([importMapFile]),
       deno,
-      logger,
-    ),
+      log: logger,
+      bootstrapURL,
+    }),
   ).resolves.not.toThrow()
 
   await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
@@ -271,15 +275,16 @@ test('Fails validation if default export is not function', async () => {
 
   await fs.writeFile(path, func.source)
 
-  const config = getFunctionConfig(
-    {
+  const config = getFunctionConfig({
+    func: {
       name: func.name,
       path,
     },
-    new ImportMap([importMapFile]),
+    importMap: new ImportMap([importMapFile]),
     deno,
-    logger,
-  )
+    log: logger,
+    bootstrapURL,
+  })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
 
@@ -307,15 +312,16 @@ test('Fails validation if default export is not present', async () => {
 
   await fs.writeFile(path, func.source)
 
-  const config = getFunctionConfig(
-    {
+  const config = getFunctionConfig({
+    func: {
       name: func.name,
       path,
     },
-    new ImportMap([importMapFile]),
+    importMap: new ImportMap([importMapFile]),
     deno,
-    logger,
-  )
+    log: logger,
+    bootstrapURL,
+  })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
 
