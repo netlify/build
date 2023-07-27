@@ -175,3 +175,11 @@ test('Escapes front slashes in a regex pattern', () => {
 
   expect(actual).toEqual(expected)
 })
+
+test('Ensures pattern match on the whole path', () => {
+  const regexPattern = '/foo/.*/bar'
+  const expected = '^\\/foo\\/.*\\/bar$'
+  const actual = parsePattern(regexPattern)
+
+  expect(actual).toEqual(expected)
+})
