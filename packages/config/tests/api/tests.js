@@ -174,6 +174,7 @@ test('Build settings are not used in CI', async (t) => {
 test('Integrations are returned if feature flag is true', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
+      token: 'test',
       siteId: 'test',
       featureFlags: { buildbot_fetch_integrations: true },
     })
