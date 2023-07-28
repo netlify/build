@@ -16,7 +16,7 @@ const SITE_INFO_ERROR = {
 }
 
 const SITE_INTEGRATIONS_RESPONSE = {
-  path: '/site/test/integrations',
+  path: '/site/test/integrations/safe',
   response: [
     {
       slug: 'test',
