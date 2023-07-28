@@ -174,7 +174,6 @@ test('Build settings are not used in CI', async (t) => {
 test('Integrations are returned if feature flag is true', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
-      token: 'test',
       siteId: 'test',
       featureFlags: { buildbot_fetch_integrations: true },
     })
@@ -183,10 +182,22 @@ test('Integrations are returned if feature flag is true', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Integrations are returned if feature flag is true, mode buildbot, and only integrationsToken supplied', async (t) => {
+test('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
-      integrationsToken: 'test',
+      siteId: 'test',
+      mode: 'buildbot',
+      featureFlags: { buildbot_fetch_integrations: true },
+    })
+    .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
+
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Integrations are not returned if offline', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      offline: true,
       siteId: 'test',
       mode: 'buildbot',
       featureFlags: { buildbot_fetch_integrations: true },
