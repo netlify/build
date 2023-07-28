@@ -40,7 +40,7 @@ export const getSiteInfo = async function ({
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
     let integrations: IntegrationResponse[] = []
-    if (fetchIntegrations && mode === 'buildbot' && !testEnv && !offline) {
+    if (fetchIntegrations && mode === 'buildbot' && !offline) {
       // we still want to fetch integrations within buildbot
       integrations = await getIntegrations({
         ownerType: 'site',
