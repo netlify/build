@@ -20,6 +20,7 @@ const SITE_INTEGRATIONS_RESPONSE = {
   response: [
     {
       slug: 'test',
+      version: 'so-cool',
       has_build: true,
     },
   ],
@@ -178,6 +179,19 @@ test('Integrations are returned if feature flag is true', async (t) => {
       featureFlags: { buildbot_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE])
+
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Integrations are returned if feature flag is true, mode buildbot, and only integrationsToken supplied', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      integrationsToken: 'test',
+      siteId: 'test',
+      mode: 'buildbot',
+      featureFlags: { buildbot_fetch_integrations: true },
+    })
+    .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
 
   t.snapshot(normalizeOutput(output))
 })
