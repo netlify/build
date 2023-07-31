@@ -16,14 +16,15 @@ type GetSiteInfoOpts = {
   featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
 }
-
-// Retrieve Netlify Site information, if available.
-// Used to retrieve local build environment variables and UI build settings.
-// This is not used in production builds since the buildbot passes this
-// information instead.
-// Requires knowing the `siteId` and having the access `token`.
-// Silently ignore API errors. For example the network connection might be down,
-// but local builds should still work regardless.
+/**
+ * Retrieve Netlify Site information, if available.
+ * Used to retrieve local build environment variables and UI build settings.
+ * This is not used in production builds since the buildbot passes this
+ * information instead.
+ * Requires knowing the `siteId` and having the access `token`.
+ * Silently ignore API errors. For example the network connection might be down,
+ * but local builds should still work regardless.
+ */
 export const getSiteInfo = async function ({
   api,
   siteId,
@@ -39,15 +40,8 @@ export const getSiteInfo = async function ({
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-    let integrations: IntegrationResponse[] = []
-    if (fetchIntegrations && mode === 'buildbot' && !offline) {
-      // we still want to fetch integrations within buildbot
-      integrations = await getIntegrations({
-        ownerType: 'site',
-        ownerId: siteId,
-        testOpts,
-      })
-    }
+    const integrations =
+      fetchIntegrations && mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -55,7 +49,7 @@ export const getSiteInfo = async function ({
   const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
 
   if (fetchIntegrations) {
-    promises.push(getIntegrations({ ownerType: 'site', ownerId: siteId, testOpts }))
+    promises.push(getIntegrations({ siteId, testOpts }))
   }
 
   const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
@@ -105,25 +99,21 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
 }
 
 type GetIntegrationsOpts = {
-  ownerType: 'site' | 'team'
-  ownerId: string | undefined
+  siteId?: string
   testOpts: TestOptions
 }
 
-const getIntegrations = async function ({
-  ownerType,
-  ownerId,
-  testOpts,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
-  if (ownerId === undefined) {
+const getIntegrations = async function ({ siteId, testOpts }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
+  if (!siteId) {
     return []
   }
 
   const { host } = testOpts
-  const baseUrl = host ? `http://${host}` : `https://api.netlifysdk.com`
+
+  const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
   try {
-    const response = await fetch(`${baseUrl}/${ownerType}/${ownerId}/integrations/safe`)
+    const response = await fetch(`${baseUrl}/site/${siteId}/integrations/safe`)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []

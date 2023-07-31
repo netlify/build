@@ -168,6 +168,7 @@ test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
     .runConfigServer(SITE_INFO_BUILD_SETTINGS)
+
   t.snapshot(normalizeOutput(output))
 })
 
@@ -180,7 +181,13 @@ test('Integrations are returned if feature flag is true', async (t) => {
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE])
 
-  t.snapshot(normalizeOutput(output))
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
 })
 
 test('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
@@ -192,7 +199,13 @@ test('Integrations are returned if feature flag is true, mode buildbot', async (
     })
     .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
 
-  t.snapshot(normalizeOutput(output))
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
 })
 
 test('Integrations are not returned if offline', async (t) => {
@@ -205,7 +218,10 @@ test('Integrations are not returned if offline', async (t) => {
     })
     .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
 
-  t.snapshot(normalizeOutput(output))
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 0)
 })
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
