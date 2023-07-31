@@ -96,6 +96,40 @@ test('detects nx workspace packages in a nested folder structure', async ({ fs }
   })
 })
 
+test('detects nx workspace packages in the default locations', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'nx.json': '{}', // no workspaceLayout specified
+    'package.json': JSON.stringify({ devDependencies: { nx: '^15.0.2' } }),
+    'packages/app-1/project.json': JSON.stringify({
+      name: 'app-1',
+      sourceRoot: 'packages/app-1',
+      projectType: 'application',
+      tags: [],
+      targets: { build: { executor: '@nrwl/next:build' } },
+    }),
+    'apps/app-2/project.json': JSON.stringify({
+      name: 'app-2',
+      sourceRoot: 'apps/app-2',
+      projectType: 'application',
+      tags: [],
+      targets: { build: { executor: '@nrwl/next:build' } },
+    }),
+  })
+  fs.cwd = cwd
+  const project = new Project(fs, cwd, cwd)
+  await project.getBuildSettings()
+  expect(project.buildSystems).toHaveLength(1)
+  expect(project.buildSystems[0]?.id).toBe('nx')
+  expect(project.workspace).toMatchObject({
+    isRoot: true,
+    packages: [
+      { path: join('apps/app-2'), name: 'app-2', forcedFramework: 'next' },
+      { path: join('packages/app-1'), name: 'app-1', forcedFramework: 'next' },
+    ],
+    rootDir: cwd,
+  })
+})
+
 describe('getDist', () => {
   beforeEach((ctx) => {
     ctx.cwd = mockFileSystem({
