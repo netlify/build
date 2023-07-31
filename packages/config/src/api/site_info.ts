@@ -113,7 +113,7 @@ const getIntegrations = async function ({ siteId, testOpts }: GetIntegrationsOpt
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
   try {
-    const response = await fetch(`${baseUrl}/site/${siteId}/integrations/safe`)
+    const response = await fetch(`${baseUrl}site/${siteId}/integrations/safe`)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
