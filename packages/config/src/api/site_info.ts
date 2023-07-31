@@ -1,5 +1,5 @@
+import { NetlifyAPI } from 'netlify'
 import fetch from 'node-fetch'
-import { NetlifyAPI } from 'packages/js-client/lib/index.js'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
