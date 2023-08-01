@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.7.0](https://github.com/netlify/build/compare/config-v20.6.4...config-v20.7.0) (2023-08-01)
+
+
+### Features
+
+* remove tokens related to integrations, improve typings ([#5211](https://github.com/netlify/build/issues/5211)) ([3b13192](https://github.com/netlify/build/commit/3b131924df7e2b898fc72de1de21bde7ae6709fb))
+
 ## [20.6.4](https://github.com/netlify/build/compare/config-v20.6.3...config-v20.6.4) (2023-07-19)
 
 

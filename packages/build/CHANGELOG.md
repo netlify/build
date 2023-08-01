@@ -93,6 +93,12 @@
   * dependencies
     * @netlify/config bumped from ^20.6.0 to ^20.6.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.6.4 to ^20.7.0
+
 ## [29.17.3](https://github.com/netlify/build/compare/build-v29.17.2...build-v29.17.3) (2023-07-27)
 
 
