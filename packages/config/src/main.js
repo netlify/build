@@ -66,9 +66,10 @@ export const resolveConfig = async function (opts) {
     api,
     siteId,
     mode,
-    testOpts,
+    offline,
     siteFeatureFlagPrefix,
     featureFlags,
+    testOpts,
   })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({

@@ -16,10 +16,11 @@ const SITE_INFO_ERROR = {
 }
 
 const SITE_INTEGRATIONS_RESPONSE = {
-  path: '/site/test/integrations',
+  path: '/site/test/integrations/safe',
   response: [
     {
       slug: 'test',
+      version: 'so-cool',
       has_build: true,
     },
   ],
@@ -167,6 +168,7 @@ test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
     .runConfigServer(SITE_INFO_BUILD_SETTINGS)
+
   t.snapshot(normalizeOutput(output))
 })
 
@@ -179,7 +181,47 @@ test('Integrations are returned if feature flag is true', async (t) => {
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE])
 
-  t.snapshot(normalizeOutput(output))
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
+})
+
+test('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'buildbot',
+      featureFlags: { buildbot_fetch_integrations: true },
+    })
+    .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
+})
+
+test('Integrations are not returned if offline', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      offline: true,
+      siteId: 'test',
+      mode: 'buildbot',
+      featureFlags: { buildbot_fetch_integrations: true },
+    })
+    .runConfigServer([SITE_INTEGRATIONS_RESPONSE])
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 0)
 })
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
