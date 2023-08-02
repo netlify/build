@@ -240,6 +240,32 @@ test('excludedPath from ISC goes into function_config, TOML goes into routes', (
   expect(matcher('/showcases/boho-style/expensive-chair.jpg')).toBeUndefined()
 })
 
+test('URLPattern named groups are supported', () => {
+  const functions = [{ name: 'customisation', path: '/path/to/customisation.ts' }]
+  const declarations: Declaration[] = [{ function: 'customisation', path: '/products/:productId' }]
+  const userFunctionConfig: Record<string, FunctionConfig> = {}
+  const internalFunctionConfig: Record<string, FunctionConfig> = {}
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    userFunctionConfig,
+    internalFunctionConfig,
+    featureFlags: { edge_functions_path_urlpattern: true },
+  })
+  expect(manifest.routes).toEqual([
+    {
+      function: 'customisation',
+      pattern: '^/products(?:/([^/]+?))/?$',
+      excluded_patterns: [],
+    },
+  ])
+
+  const matcher = getRouteMatcher(manifest)
+
+  expect(matcher('/products/jigsaw-doweling-jig')).toBeDefined()
+})
+
 test('Includes failure modes in manifest', () => {
   const functions = [
     { name: 'func-1', path: '/path/to/func-1.ts' },
