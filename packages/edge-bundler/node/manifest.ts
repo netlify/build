@@ -4,6 +4,7 @@ import { join } from 'path'
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
+import { wrapBundleError } from './bundle_error.js'
 import { Cache, FunctionConfig, Path } from './config.js'
 import { Declaration, parsePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
@@ -165,18 +166,22 @@ const generateManifest = ({
 
 const pathToRegularExpression = (path: string, featureFlags?: FeatureFlags) => {
   if (featureFlags?.edge_functions_path_urlpattern) {
-    const pattern = new ExtendedURLPattern({ pathname: path })
+    try {
+      const pattern = new ExtendedURLPattern({ pathname: path })
 
-    // Removing the `^` and `$` delimiters because we'll need to modify what's
-    // between them.
-    const source = pattern.regexp.pathname.source.slice(1, -1)
+      // Removing the `^` and `$` delimiters because we'll need to modify what's
+      // between them.
+      const source = pattern.regexp.pathname.source.slice(1, -1)
 
-    // Wrapping the expression source with `^` and `$`. Also, adding an optional
-    // trailing slash, so that a declaration of `path: "/foo"` matches requests
-    // for both `/foo` and `/foo/`.
-    const normalizedSource = `^${source}\\/?$`
+      // Wrapping the expression source with `^` and `$`. Also, adding an optional
+      // trailing slash, so that a declaration of `path: "/foo"` matches requests
+      // for both `/foo` and `/foo/`.
+      const normalizedSource = `^${source}\\/?$`
 
-    return normalizedSource
+      return normalizedSource
+    } catch (error) {
+      throw wrapBundleError(error)
+    }
   }
 
   // We use the global flag so that `globToRegExp` will not wrap the expression

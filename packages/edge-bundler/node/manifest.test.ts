@@ -5,6 +5,7 @@ import { test, expect, vi } from 'vitest'
 import { getRouteMatcher } from '../test/util.js'
 
 import { BundleFormat } from './bundle.js'
+import { BundleError } from './bundle_error.js'
 import { Cache, FunctionConfig } from './config.js'
 import { Declaration } from './declaration.js'
 import { generateManifest } from './manifest.js'
@@ -264,6 +265,24 @@ test('URLPattern named groups are supported', () => {
   const matcher = getRouteMatcher(manifest)
 
   expect(matcher('/products/jigsaw-doweling-jig')).toBeDefined()
+})
+
+test('Invalid Path patterns throw bundling errors', () => {
+  const functions = [{ name: 'customisation', path: '/path/to/customisation.ts' }]
+  const declarations: Declaration[] = [{ function: 'customisation', path: '/https://foo.netlify.app/' }]
+  const userFunctionConfig: Record<string, FunctionConfig> = {}
+  const internalFunctionConfig: Record<string, FunctionConfig> = {}
+
+  expect(() =>
+    generateManifest({
+      bundles: [],
+      declarations,
+      functions,
+      userFunctionConfig,
+      internalFunctionConfig,
+      featureFlags: { edge_functions_path_urlpattern: true },
+    }),
+  ).toThrowError(BundleError)
 })
 
 test('Includes failure modes in manifest', () => {
