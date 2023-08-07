@@ -55,7 +55,8 @@ const searchBaseConfigFile = function (repoRoot: string, base?: string, packageP
     return
   }
 
-  return searchConfigFile(join(base ? base : repoRoot, packagePath || ''))
+  const cwd = join(base ? base : repoRoot, packagePath || '')
+  return searchConfigFile(cwd)
 }
 /**
  * Look for several file extensions for `netlify.*`

@@ -5,7 +5,7 @@ import { resolvePath } from './files.js'
  */
 export const getInitialBase = function ({
   repositoryRoot,
-  // @ts-expect-error TODO: enhance later
+  // @ts-expect-error TODO: enhance the types later on, just moved the file to .ts
   defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
 }) {
