@@ -63,6 +63,7 @@ export const runStep = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -154,6 +155,7 @@ export const runStep = async function ({
       featureFlags,
       userNodeVersion,
       explicitSecretKeys,
+      bootstrapURL,
     })
 
     const newValues = await getStepReturn({
@@ -295,6 +297,7 @@ const tFireStep = function ({
   featureFlags,
   userNodeVersion,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -326,6 +329,7 @@ const tFireStep = function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      bootstrapURL,
     })
   }
 

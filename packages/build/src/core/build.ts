@@ -83,6 +83,7 @@ const tExecBuild = async function ({
   quiet,
   framework,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -211,6 +212,7 @@ const tExecBuild = async function ({
     quiet,
     integrations,
     explicitSecretKeys,
+    bootstrapURL,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -266,6 +268,7 @@ export const runAndReportBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   try {
     const {
@@ -316,6 +319,7 @@ export const runAndReportBuild = async function ({
       quiet,
       integrations,
       explicitSecretKeys,
+      bootstrapURL,
     })
     await Promise.all([
       reportStatuses({
@@ -416,6 +420,7 @@ const initAndRunBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -495,6 +500,7 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
+      bootstrapURL,
     })
 
     await Promise.all([
@@ -561,6 +567,7 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
+  bootstrapURL,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -620,6 +627,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
+    bootstrapURL,
   })
 
   return {

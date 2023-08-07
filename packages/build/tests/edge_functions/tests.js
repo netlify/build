@@ -211,3 +211,10 @@ test.serial('cleans up the edge functions dist directory before bundling', async
 
   t.false(await pathExists(oldBundlePath))
 })
+
+test.serial('injected bootstrapURL is passed down to edge-bundler', async (t) => {
+  const { output } = await new Fixture('./fixtures/functions_user')
+    .withFlags({ debug: false, bootstrapURL: 'https://invalid-domain' })
+    .runBuildBinary()
+  t.true(output.includes('error sending request for url (https://invalid-domain'))
+})
