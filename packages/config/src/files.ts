@@ -38,7 +38,6 @@ export const resolveConfigPaths = function (options: {
   const baseRel = options.baseRelDir ? options.buildDir : options.repositoryRoot
   const config = resolvePaths({
     config: options.config,
-    packagePath: options.packagePath,
     propNames: FILE_PATH_CONFIG_PROPS,
     baseRel,
     repositoryRoot: options.repositoryRoot,
@@ -55,28 +54,17 @@ const resolvePaths = function ({
   config,
   propNames,
   baseRel,
-  packagePath,
   repositoryRoot,
 }: {
   config: $TSFixMe
   propNames: string[]
   baseRel: string
   repositoryRoot: string
-  packagePath?: string
 }) {
-  return propNames.reduce(
-    (configA, propName) => resolvePathProp(configA, propName, baseRel, repositoryRoot, packagePath),
-    config,
-  )
+  return propNames.reduce((configA, propName) => resolvePathProp(configA, propName, baseRel, repositoryRoot), config)
 }
 
-const resolvePathProp = function (
-  config: $TSFixMe,
-  propName: string,
-  baseRel: string,
-  repositoryRoot: string,
-  packagePath?: string,
-) {
+const resolvePathProp = function (config: $TSFixMe, propName: string, baseRel: string, repositoryRoot: string) {
   const path = getProperty(config, propName) as string | undefined
 
   if (!isTruthy(path)) {
@@ -84,26 +72,15 @@ const resolvePathProp = function (
     return config
   }
 
-  return setProperty(config, propName, resolvePath(repositoryRoot, baseRel, path, propName, packagePath))
+  return setProperty(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
 }
 
-export const resolvePath = (
-  repositoryRoot: string,
-  baseRel: string,
-  originalPath: string,
-  propName: string,
-  // @ts-expect-error depends on the survey outcome see comment below
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  packagePath?: string,
-) => {
+export const resolvePath = (repositoryRoot: string, baseRel: string, originalPath: string, propName: string) => {
   if (!isTruthy(originalPath)) {
     return
   }
 
   const path = originalPath.replace(LEADING_SLASH_REGEXP, '')
-  // TODO: Based on survey outcome: https://netlify.slack.com/archives/C05556LEX28/p1691423437855069
-  // If we like option B then:
-  // const pathA = resolve(baseRel, packagePath || '', path)
   const pathA = resolve(baseRel, path)
   validateInsideRoot(originalPath, pathA, repositoryRoot, propName)
   return pathA

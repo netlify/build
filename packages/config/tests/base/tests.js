@@ -164,11 +164,45 @@ test('Monorepo with serverless functions', async (t) => {
         command: 'npm run build',
         commandOrigin: 'config',
       },
+      functions: { '*': {} },
+      functionsDirectory: join(repositoryRoot, 'apps/app-3/netlify/functions'),
+      functionsDirectoryOrigin: 'default',
     },
     configPath: join(repositoryRoot, 'apps/app-3/netlify.toml'),
     headersPath: join(repositoryRoot, 'apps/app-3/dist/_headers'),
     integrations: [],
     redirectsPath: join(repositoryRoot, 'apps/app-3/dist/_redirects'),
+    repositoryRoot,
+  })
+})
+
+test('Monorepo with custom serverless function directory', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-6',
+    })
+    .runWithConfig()
+  const config = JSON.parse(output)
+
+  t.like(config, {
+    buildDir: repositoryRoot,
+    config: {
+      build: {
+        environment: {},
+        publish: join(repositoryRoot, 'apps/app-6'),
+        functions: join(repositoryRoot, 'apps/app-6/custom-dir'),
+      },
+      functions: { '*': { node_bundler: 'esbuild' } },
+      functionsDirectory: join(repositoryRoot, 'apps/app-6/custom-dir'),
+      functionsDirectoryOrigin: 'config',
+    },
+    headersPath: join(repositoryRoot, 'apps/app-6/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'apps/app-6/_redirects'),
     repositoryRoot,
   })
 })
@@ -193,10 +227,50 @@ test('Monorepo with edge functions', async (t) => {
         publish: join(repositoryRoot, 'apps/app-4'),
         edge_functions: join(repositoryRoot, 'apps/app-4/netlify/edge-functions'),
       },
+      edge_functions: [
+        {
+          function: 'hello',
+          path: '/hello',
+        },
+      ],
     },
     headersPath: join(repositoryRoot, 'apps/app-4/_headers'),
     integrations: [],
     redirectsPath: join(repositoryRoot, 'apps/app-4/_redirects'),
+    repositoryRoot,
+  })
+})
+
+test('Monorepo with custom edge function directory', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-5',
+    })
+    .runWithConfig()
+  const config = JSON.parse(output)
+
+  t.like(config, {
+    buildDir: repositoryRoot,
+    config: {
+      build: {
+        environment: {},
+        publish: join(repositoryRoot, 'apps/app-5'),
+        edge_functions: join(repositoryRoot, 'apps/app-5/custom-dir'),
+      },
+      edge_functions: [
+        {
+          function: 'hello',
+          path: '/hello',
+        },
+      ],
+    },
+    headersPath: join(repositoryRoot, 'apps/app-5/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'apps/app-5/_redirects'),
     repositoryRoot,
   })
 })
