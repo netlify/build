@@ -77,6 +77,10 @@ Default: empty array.`,
     describe: `Current directory. Used to retrieve the configuration file.
 Default: current directory`,
   },
+  packagePath: {
+    string: true,
+    describe: `A relative path from the repository root to the package. Used inside monorepos to specify a package`,
+  },
   repositoryRoot: {
     string: true,
     describe: `Git repository root directory. Used to retrieve the configuration file.
