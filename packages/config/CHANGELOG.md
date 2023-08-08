@@ -76,6 +76,20 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.8.0](https://github.com/netlify/build/compare/config-v20.7.0...config-v20.8.0) (2023-08-08)
+
+
+### Features
+
+* add packagePath property for config ([#5223](https://github.com/netlify/build/issues/5223)) ([4a62bac](https://github.com/netlify/build/commit/4a62baca49747a1cb28eb31002765d8bcfe43ac5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-redirect-parser bumped from ^14.1.3 to ^14.2.0
+
 ## [20.7.0](https://github.com/netlify/build/compare/config-v20.6.4...config-v20.7.0) (2023-08-01)
 
 

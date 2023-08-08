@@ -99,6 +99,20 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.18.1](https://github.com/netlify/build/compare/build-v29.18.0...build-v29.18.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.71.0 ([#5215](https://github.com/netlify/build/issues/5215)) ([264177f](https://github.com/netlify/build/commit/264177fa7f86faca847df5f11d729ea6e3f169b1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.7.0 to ^20.8.0
+
 ## [29.18.0](https://github.com/netlify/build/compare/build-v29.17.4...build-v29.18.0) (2023-08-07)
 
 
