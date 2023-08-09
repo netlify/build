@@ -46,7 +46,7 @@ Default: automatically guessed`,
   },
   packagePath: {
     string: true,
-    describe: `A relative path from the repository root to the package. Used inside monorepos to specify a package`,
+    describe: `When using a monorepo, specifies the relative path from the repository root to the package being built`,
   },
   apiHost: {
     string: true,
