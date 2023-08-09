@@ -385,3 +385,38 @@ test('Monorepo with base field', async (t) => {
     repositoryRoot,
   })
 })
+
+test('Monorepo with base field and build plugin', async (t) => {
+  const fixture = await new Fixture('./fixtures').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      base: 'monorepo',
+      packagePath: 'apps/app-7',
+    })
+    .runWithConfig()
+
+  const config = JSON.parse(output)
+  t.like(config, {
+    buildDir: join(repositoryRoot, 'monorepo'),
+    configPath: join(repositoryRoot, 'monorepo/apps/app-7/netlify.toml'),
+    config: {
+      build: {
+        publish: join(repositoryRoot, 'monorepo/apps/app-7'),
+      },
+      plugins: [
+        {
+          inputs: {},
+          origin: 'config',
+          package: '/apps/app-7/build-plugin',
+        },
+      ],
+    },
+    headersPath: join(repositoryRoot, 'monorepo/apps/app-7/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'monorepo/apps/app-7/_redirects'),
+    repositoryRoot,
+  })
+})
