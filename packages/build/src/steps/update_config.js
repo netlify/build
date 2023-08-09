@@ -13,6 +13,7 @@ import { logConfigMutations } from '../log/messages/mutations.js'
 export const updateNetlifyConfig = async function ({
   configOpts,
   netlifyConfig,
+  packagePath,
   headersPath,
   redirectsPath,
   configMutations,

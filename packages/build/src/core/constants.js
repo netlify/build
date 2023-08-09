@@ -10,6 +10,7 @@ import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 export const getConstants = async function ({
   configPath,
   buildDir,
+  packagePath,
   functionsDistDir,
   edgeFunctionsDistDir,
   cacheDir,
@@ -24,6 +25,8 @@ export const getConstants = async function ({
   const constants = {
     // Path to the Netlify configuration file
     CONFIG_PATH: configPath,
+    // In monorepos this is the path that is used to point to a package that should be deployed
+    PACKAGE_PATH: packagePath,
     // The directory where built serverless functions are placed before deployment
     FUNCTIONS_DIST: functionsDistDir,
     // The directory where built Edge Functions are placed before deployment

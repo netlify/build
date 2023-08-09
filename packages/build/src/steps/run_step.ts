@@ -29,6 +29,7 @@ export const runStep = async function ({
   configPath,
   outputConfigPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   index,
@@ -68,6 +69,8 @@ export const runStep = async function ({
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,
     'build.execution.step.package_name': packageName,
+    'build.execution.step.package_path': packagePath,
+    'build.execution.step.build_dir': buildDir,
     'build.execution.step.id': coreStepId,
     'build.execution.step.loaded_from': loadedFrom,
     'build.execution.step.origin': origin,
@@ -87,6 +90,7 @@ export const runStep = async function ({
       failedPlugins,
       netlifyConfig,
       condition,
+      packagePath,
       constants: constantsA,
       buildbotServerSocket,
       buildDir,
@@ -125,6 +129,7 @@ export const runStep = async function ({
       coreStep,
       coreStepId,
       coreStepName,
+      packagePath,
       configPath,
       outputConfigPath,
       buildDir,
@@ -223,6 +228,7 @@ const shouldRunStep = async function ({
   event,
   packageName,
   error,
+  packagePath,
   failedPlugins,
   netlifyConfig,
   condition,
@@ -235,7 +241,15 @@ const shouldRunStep = async function ({
   if (
     failedPlugins.includes(packageName) ||
     (condition !== undefined &&
-      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig, explicitSecretKeys })))
+      !(await condition({
+        packagePath,
+        buildDir,
+        constants,
+        buildbotServerSocket,
+        netlifyConfig,
+        saveConfig,
+        explicitSecretKeys,
+      })))
   ) {
     return false
   }
@@ -271,6 +285,7 @@ const tFireStep = function ({
   outputConfigPath,
   buildDir,
   repositoryRoot,
+  packagePath,
   nodePath,
   childEnv,
   context,
@@ -305,6 +320,7 @@ const tFireStep = function ({
       outputConfigPath,
       buildDir,
       repositoryRoot,
+      packagePath,
       constants,
       buildbotServerSocket,
       events,
@@ -333,6 +349,7 @@ const tFireStep = function ({
     event,
     childProcess,
     packageName,
+    packagePath,
     pluginPackageJson,
     loadedFrom,
     origin,

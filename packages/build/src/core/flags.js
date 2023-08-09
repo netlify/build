@@ -44,6 +44,10 @@ Default: current directory`,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
   },
+  packagePath: {
+    string: true,
+    describe: `A relative path from the repository root to the package. Used inside monorepos to specify a package`,
+  },
   apiHost: {
     string: true,
     describe: `Netlify API endpoint.
