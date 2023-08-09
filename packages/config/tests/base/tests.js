@@ -109,6 +109,89 @@ test('Monorepo with package path retrieving _redirects', async (t) => {
   })
 })
 
+test('Monorepo with redirects from the publish directory', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo-with-root-files').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-1',
+    })
+    .runWithConfig()
+
+  const config = JSON.parse(output)
+  t.like(config, {
+    buildDir: repositoryRoot,
+    config: {
+      build: {
+        publish: join(repositoryRoot, 'apps/app-1/dist'),
+      },
+      redirects: [
+        {
+          conditions: {},
+          force: true,
+          from: '/from',
+          headers: {},
+          query: {},
+          status: 200,
+          to: '/to',
+        },
+      ],
+    },
+    headersPath: join(repositoryRoot, 'apps/app-1/dist/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'apps/app-1/dist/_redirects'),
+    repositoryRoot,
+  })
+})
+
+test('Monorepo with redirects from the top should be joined', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo-with-root-files').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-2',
+    })
+    .runWithConfig()
+
+  const config = JSON.parse(output)
+  t.like(config, {
+    buildDir: repositoryRoot,
+    config: {
+      build: {
+        publish: join(repositoryRoot, 'apps/app-2'),
+      },
+      redirects: [
+        {
+          conditions: {},
+          force: true,
+          from: '/from',
+          headers: {},
+          query: {},
+          status: 200,
+          to: '/to',
+        },
+        {
+          conditions: {},
+          force: false,
+          from: '/old-path',
+          headers: {},
+          query: {},
+          status: 301,
+          to: '/new-path',
+        },
+      ],
+    },
+    headersPath: join(repositoryRoot, 'apps/app-2/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'apps/app-2/_redirects'),
+    repositoryRoot,
+  })
+})
+
 test('Monorepo with package path retrieving _headers', async (t) => {
   const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
@@ -299,6 +382,41 @@ test('Monorepo with base field', async (t) => {
     headersPath: join(repositoryRoot, 'monorepo/apps/app-2/_headers'),
     integrations: [],
     redirectsPath: join(repositoryRoot, 'monorepo/apps/app-2/_redirects'),
+    repositoryRoot,
+  })
+})
+
+test('Monorepo with base field and build plugin', async (t) => {
+  const fixture = await new Fixture('./fixtures').withCopyRoot()
+  const { repositoryRoot } = fixture
+
+  const output = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      base: 'monorepo',
+      packagePath: 'apps/app-7',
+    })
+    .runWithConfig()
+
+  const config = JSON.parse(output)
+  t.like(config, {
+    buildDir: join(repositoryRoot, 'monorepo'),
+    configPath: join(repositoryRoot, 'monorepo/apps/app-7/netlify.toml'),
+    config: {
+      build: {
+        publish: join(repositoryRoot, 'monorepo/apps/app-7'),
+      },
+      plugins: [
+        {
+          inputs: {},
+          origin: 'config',
+          package: '/apps/app-7/build-plugin',
+        },
+      ],
+    },
+    headersPath: join(repositoryRoot, 'monorepo/apps/app-7/_headers'),
+    integrations: [],
+    redirectsPath: join(repositoryRoot, 'monorepo/apps/app-7/_redirects'),
     repositoryRoot,
   })
 })
