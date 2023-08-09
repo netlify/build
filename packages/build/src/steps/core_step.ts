@@ -79,7 +79,6 @@ export const fireCoreStep = async function ({
       headersPath,
       redirectsPath,
       configMutations,
-      packagePath,
       newConfigMutations,
       configSideFiles,
       errorParams,
