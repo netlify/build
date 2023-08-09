@@ -430,6 +430,7 @@ const initAndRunBuild = async function ({
     siteInfo,
     buildDir,
     nodePath,
+    packagePath,
     packageJson,
     userNodeVersion,
     mode,

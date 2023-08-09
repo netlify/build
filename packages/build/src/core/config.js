@@ -156,7 +156,6 @@ export const saveUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
-  packagePath,
   configPath = `${repositoryRoot}/netlify.toml`,
   outputConfigPath = configPath,
   headersPath,
