@@ -83,7 +83,7 @@ const tExecBuild = async function ({
   quiet,
   framework,
   explicitSecretKeys,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -212,7 +212,7 @@ const tExecBuild = async function ({
     quiet,
     integrations,
     explicitSecretKeys,
-    bootstrapURL,
+    edgeFunctionsBootstrapURL,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -268,7 +268,7 @@ export const runAndReportBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }) {
   try {
     const {
@@ -319,7 +319,7 @@ export const runAndReportBuild = async function ({
       quiet,
       integrations,
       explicitSecretKeys,
-      bootstrapURL,
+      edgeFunctionsBootstrapURL,
     })
     await Promise.all([
       reportStatuses({
@@ -420,7 +420,7 @@ const initAndRunBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -500,7 +500,7 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
-      bootstrapURL,
+      edgeFunctionsBootstrapURL,
     })
 
     await Promise.all([
@@ -567,7 +567,7 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -627,7 +627,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
-    bootstrapURL,
+    edgeFunctionsBootstrapURL,
   })
 
   return {

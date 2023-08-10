@@ -27,7 +27,7 @@ const coreStep = async function ({
   featureFlags,
   logs,
   netlifyConfig,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }: {
   buildDir: string
   constants: Record<string, string>
@@ -36,7 +36,7 @@ const coreStep = async function ({
   featureFlags: Record<string, any>
   logs: any
   netlifyConfig: any
-  bootstrapURL?: string
+  edgeFunctionsBootstrapURL?: string
 }) {
   const { edge_functions: declarations = [] } = netlifyConfig
   const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
@@ -75,7 +75,7 @@ const coreStep = async function ({
       importMapPaths: [userDefinedImportMap],
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
-      bootstrapURL: bootstrapURL,
+      bootstrapURL: edgeFunctionsBootstrapURL,
     })
     const metrics = getMetrics(manifest)
 

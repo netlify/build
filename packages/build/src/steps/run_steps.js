@@ -43,7 +43,7 @@ export const runSteps = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
-  bootstrapURL,
+  edgeFunctionsBootstrapURL,
 }) {
   const {
     index: stepsCount,
@@ -145,7 +145,7 @@ export const runSteps = async function ({
         quiet,
         userNodeVersion,
         explicitSecretKeys,
-        bootstrapURL,
+        edgeFunctionsBootstrapURL,
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
