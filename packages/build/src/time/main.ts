@@ -28,6 +28,12 @@ const kMeasureDuration = function (func, stageTag, { parentTag = undefined, cate
   }
 }
 
+// TODO: type properly like this and fix all the upstream type issues
+// export const measureDuration: <T extends (...args: any) => any>(
+//   fn: T,
+//   tag: string,
+//   options?: { parentTag?: any; category?: any },
+// ) => T = keepFuncProps(kMeasureDuration)
 // Ensure the wrapped function `name` is not `anonymous` in stack traces
 export const measureDuration = keepFuncProps(kMeasureDuration)
 

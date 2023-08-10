@@ -74,6 +74,7 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  packagePath,
   logs,
   netlifyConfig,
   featureFlags,
@@ -82,8 +83,8 @@ const coreStep = async function ({
   systemLog,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
-  const functionsDist = resolve(buildDir, relativeFunctionsDist)
-  const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
+  const functionsDist = resolve(buildDir, packagePath || '', relativeFunctionsDist)
+  const internalFunctionsSrc = resolve(buildDir, packagePath || '', relativeInternalFunctionsSrc)
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
@@ -144,14 +145,18 @@ const coreStep = async function ({
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command
 // or plugins.
-const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+const hasFunctionsDirectories = async function ({
+  buildDir,
+  packagePath,
+  constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
+}) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
     return true
   }
 
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
+  const internalFunctionsSrc = resolve(buildDir, packagePath || '', INTERNAL_FUNCTIONS_SRC)
 
   return await pathExists(internalFunctionsSrc)
 }
