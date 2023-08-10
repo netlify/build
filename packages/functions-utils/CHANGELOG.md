@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.21](https://github.com/netlify/build/compare/functions-utils-v5.2.20...functions-utils-v5.2.21) (2023-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.15.0 ([#5227](https://github.com/netlify/build/issues/5227)) ([b92dad2](https://github.com/netlify/build/commit/b92dad2b3faaf97980aa404eb5a004979dd20e60))
+
 ## [5.2.20](https://github.com/netlify/build/compare/functions-utils-v5.2.19...functions-utils-v5.2.20) (2023-08-07)
 
 
