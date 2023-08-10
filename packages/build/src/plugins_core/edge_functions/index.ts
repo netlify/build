@@ -31,6 +31,7 @@ const coreStep = async function ({
   edgeFunctionsBootstrapURL,
 }: {
   buildDir: string
+  packagePath: string
   constants: Record<string, string>
   debug: boolean
   systemLog(...args: any[]): void
