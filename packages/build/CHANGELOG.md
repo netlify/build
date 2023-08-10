@@ -99,6 +99,25 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.19.0](https://github.com/netlify/build/compare/build-v29.18.1...build-v29.19.0) (2023-08-10)
+
+
+### Features
+
+* add package path to build as well ([#5225](https://github.com/netlify/build/issues/5225)) ([f79aa0b](https://github.com/netlify/build/commit/f79aa0baa972aa53a680442d01b66496af5ff42e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.15.0 ([#5227](https://github.com/netlify/build/issues/5227)) ([b92dad2](https://github.com/netlify/build/commit/b92dad2b3faaf97980aa404eb5a004979dd20e60))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.20 to ^5.2.21
+
 ## [29.18.1](https://github.com/netlify/build/compare/build-v29.18.0...build-v29.18.1) (2023-08-08)
 
 
