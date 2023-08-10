@@ -64,6 +64,7 @@ const executeBuildStep = async function ({
   buildSteps,
   repositoryRoot,
   systemLog,
+  edgeFunctionsBootstrapURL,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -113,6 +114,7 @@ const executeBuildStep = async function ({
       buildSteps,
       repositoryRoot: repositoryRootA,
       systemLog,
+      edgeFunctionsBootstrapURL,
     })
 
     return {
@@ -149,6 +151,7 @@ const runBuildStep = async function ({
   buildSteps,
   repositoryRoot,
   systemLog,
+  edgeFunctionsBootstrapURL,
 }) {
   const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
     steps: getBuildSteps(buildSteps),
@@ -163,6 +166,7 @@ const runBuildStep = async function ({
     childEnv,
     repositoryRoot,
     systemLog,
+    edgeFunctionsBootstrapURL,
   } as any)
 
   return { netlifyConfig: netlifyConfigA, configMutations }
