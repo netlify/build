@@ -99,6 +99,58 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.19.0](https://github.com/netlify/build/compare/build-v29.18.1...build-v29.19.0) (2023-08-10)
+
+
+### Features
+
+* add package path to build as well ([#5225](https://github.com/netlify/build/issues/5225)) ([f79aa0b](https://github.com/netlify/build/commit/f79aa0baa972aa53a680442d01b66496af5ff42e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.15.0 ([#5227](https://github.com/netlify/build/issues/5227)) ([b92dad2](https://github.com/netlify/build/commit/b92dad2b3faaf97980aa404eb5a004979dd20e60))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.20 to ^5.2.21
+
+## [29.18.1](https://github.com/netlify/build/compare/build-v29.18.0...build-v29.18.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.71.0 ([#5215](https://github.com/netlify/build/issues/5215)) ([264177f](https://github.com/netlify/build/commit/264177fa7f86faca847df5f11d729ea6e3f169b1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.7.0 to ^20.8.0
+
+## [29.18.0](https://github.com/netlify/build/compare/build-v29.17.4...build-v29.18.0) (2023-08-07)
+
+
+### Features
+
+* add new command origin ([#5216](https://github.com/netlify/build/issues/5216)) ([0510734](https://github.com/netlify/build/commit/05107341d472b34e407b41619c92c7efedc81bb5))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.14.0 ([#5218](https://github.com/netlify/build/issues/5218)) ([f283c98](https://github.com/netlify/build/commit/f283c988ec43d93946f8b200834b0a363dd5e1b9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.19 to ^5.2.20
+
 ## [29.17.3](https://github.com/netlify/build/compare/build-v29.17.2...build-v29.17.3) (2023-07-27)
 
 

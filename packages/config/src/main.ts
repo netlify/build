@@ -18,22 +18,25 @@ import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
 
-// Load the configuration file.
-// Takes an optional configuration file path as input and return the resolved
-// `config` together with related properties such as the `configPath`.
+/**
+ * Load the configuration file.
+ * Takes an optional configuration file path as input and return the resolved
+ * `config` together with related properties such as the `configPath`.
+ */
 export const resolveConfig = async function (opts) {
   const {
     cachedConfig,
     cachedConfigPath,
     host,
     scheme,
+    packagePath,
     pathPrefix,
     testOpts,
     token,
     offline,
     siteFeatureFlagPrefix,
     ...optsA
-  } = addDefaultOpts(opts)
+  } = addDefaultOpts(opts) as $TSFixMe
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
@@ -87,6 +90,7 @@ export const resolveConfig = async function (opts) {
     cwd,
     context,
     repositoryRoot,
+    packagePath,
     branch,
     defaultConfig: defaultConfigA,
     inlineConfig: inlineConfigA,
@@ -134,8 +138,10 @@ export const resolveConfig = async function (opts) {
   return result
 }
 
-// Adds a `build.functions` property that mirrors `functionsDirectory`, for
-// backward compatibility.
+/**
+ * Adds a `build.functions` property that mirrors `functionsDirectory`, for
+ * backward compatibility.
+ */
 const addLegacyFunctionsDirectory = (config) => {
   if (!config.functionsDirectory) {
     return config
@@ -150,14 +156,17 @@ const addLegacyFunctionsDirectory = (config) => {
   }
 }
 
-// Try to load the configuration file in two passes.
-// The first pass uses the `defaultConfig`'s `build.base` (if defined).
-// The second pass uses the `build.base` from the first pass (if defined).
+/**
+ * Try to load the configuration file in two passes.
+ * The first pass uses the `defaultConfig`'s `build.base` (if defined).
+ * The second pass uses the `build.base` from the first pass (if defined).
+ */
 const loadConfig = async function ({
   configOpt,
   cwd,
   context,
   repositoryRoot,
+  packagePath,
   branch,
   defaultConfig,
   inlineConfig,
@@ -175,10 +184,11 @@ const loadConfig = async function ({
     defaultConfig,
     inlineConfig,
     baseRelDir,
+    packagePath,
     configBase: initialBase,
     logs,
     featureFlags,
-  })
+  } as $TSFixMe)
 
   // No second pass needed if:
   //  - there is no `build.base` (in which case both `base` and `initialBase`
@@ -209,7 +219,7 @@ const loadConfig = async function ({
     base,
     logs,
     featureFlags,
-  })
+  } as $TSFixMe)
   return {
     configPath: configPathA,
     config: configA,
@@ -219,12 +229,15 @@ const loadConfig = async function ({
   }
 }
 
-// Load configuration file and normalize it, merge contexts, etc.
+/**
+ * Load configuration file and normalize it, merge contexts, etc.
+ */
 const getFullConfig = async function ({
   configOpt,
   cwd,
   context,
   repositoryRoot,
+  packagePath,
   branch,
   defaultConfig,
   inlineConfig,
@@ -234,7 +247,13 @@ const getFullConfig = async function ({
   logs,
   featureFlags,
 }) {
-  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
+  const configPath = await getConfigPath({
+    configOpt,
+    cwd,
+    repositoryRoot,
+    packagePath,
+    configBase,
+  })
   try {
     const config = await parseConfig(configPath)
     const configA = mergeAndNormalizeConfig({
@@ -244,12 +263,13 @@ const getFullConfig = async function ({
       context,
       branch,
       logs,
+      packagePath,
     })
     const {
       config: configB,
       buildDir,
       base: baseA,
-    } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
+    } = await resolveFiles({ packagePath, config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
     const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
     const redirectsPath = getRedirectsPath(configC)
@@ -262,14 +282,16 @@ const getFullConfig = async function ({
   }
 }
 
-// Merge:
-//  - `--defaultConfig`: UI build settings and UI-installed plugins
-//  - `inlineConfig`: Netlify CLI flags
-// Then merge context-specific configuration.
-// Before and after those steps, also performs validation and normalization.
-// Those need to be done at different stages depending on whether they should
-// happen before/after the merges mentioned above.
-const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs }) {
+/**
+ * Merge:
+ *  - `--defaultConfig`: UI build settings and UI-installed plugins
+ *  - `inlineConfig`: Netlify CLI flags
+ * Then merge context-specific configuration.
+ * Before and after those steps, also performs validation and normalization.
+ * Those need to be done at different stages depending on whether they should
+ * happen before/after the merges mentioned above.
+ */
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs, packagePath }) {
   const configA = normalizeConfigAndContext(config, CONFIG_ORIGIN)
   const defaultConfigA = normalizeConfigAndContext(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeConfigAndContext(inlineConfig, INLINE_ORIGIN)
@@ -278,8 +300,7 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
   const configC = mergeContext({ config: configB, context, branch, logs })
   const configD = mergeConfigs([configC, inlineConfigA])
 
-  const configE = normalizeAfterConfigMerge(configD)
-  return configE
+  return normalizeAfterConfigMerge(configD, packagePath)
 }
 
 const normalizeConfigAndContext = function (config, origin) {
@@ -288,11 +309,25 @@ const normalizeConfigAndContext = function (config, origin) {
   return configB
 }
 
-// Find base directory, build directory and resolve all paths to absolute paths
-const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir }) {
+/**
+ * Find base directory, build directory and resolve all paths to absolute paths
+ */
+const resolveFiles = async function ({
+  config,
+  repositoryRoot,
+  base,
+  packagePath,
+  baseRelDir,
+}: {
+  config: $TSFixMe
+  repositoryRoot: string
+  packagePath?: string
+  base?: string
+  baseRelDir?: boolean
+}) {
   const baseA = getBase(base, repositoryRoot, config)
   const buildDir = await getBuildDir(repositoryRoot, baseA)
-  const configA = resolveConfigPaths({ config, repositoryRoot, buildDir, baseRelDir })
+  const configA = resolveConfigPaths({ config, packagePath, repositoryRoot, buildDir, baseRelDir })
   const configB = addBase(configA, baseA)
   return { config: configB, buildDir, base: baseA }
 }

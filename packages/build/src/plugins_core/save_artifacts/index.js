@@ -4,6 +4,7 @@ import { shouldDeploy } from '../deploy/index.js'
 const coreStep = async function ({
   buildDir,
   configPath,
+  packagePath,
   outputConfigPath,
   repositoryRoot,
   logs,
@@ -21,6 +22,7 @@ const coreStep = async function ({
     buildDir,
     repositoryRoot,
     configPath,
+    packagePath,
     outputConfigPath,
     headersPath,
     redirectsPath,

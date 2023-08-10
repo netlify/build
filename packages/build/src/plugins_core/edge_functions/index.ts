@@ -16,6 +16,7 @@ const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
 const coreStep = async function ({
   buildDir,
+  packagePath,
   constants: {
     EDGE_FUNCTIONS_DIST: distDirectory,
     EDGE_FUNCTIONS_SRC: srcDirectory,
@@ -40,8 +41,8 @@ const coreStep = async function ({
 }) {
   const { edge_functions: declarations = [] } = netlifyConfig
   const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
-  const distPath = resolve(buildDir, distDirectory)
-  const internalSrcPath = resolve(buildDir, internalSrcDirectory)
+  const distPath = resolve(buildDir, packagePath || '', distDirectory)
+  const internalSrcPath = resolve(buildDir, packagePath || '', internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
@@ -116,6 +117,7 @@ const getMetrics = (manifest): Metric[] => {
 // or plugins.
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
+  packagePath,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
 }): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
@@ -124,7 +126,7 @@ const hasEdgeFunctionsDirectories = async function ({
     return true
   }
 
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
+  const internalFunctionsSrc = resolve(buildDir, packagePath || '', INTERNAL_EDGE_FUNCTIONS_SRC)
 
   return await pathExists(internalFunctionsSrc)
 }

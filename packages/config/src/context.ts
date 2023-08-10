@@ -7,14 +7,14 @@ import { validateContextsPluginsConfig } from './validate/context.js'
 import { validatePreContextConfig } from './validate/main.js'
 
 // Validate and normalize `config.context.*`
-export const normalizeContextProps = function ({ config, config: { context: contextProps }, origin }) {
+export const normalizeContextProps = function ({ config, config: { context: contextProps }, origin }: $TSFixMe) {
   if (contextProps === undefined) {
     return config
   }
 
   validatePreContextConfig(config)
 
-  const allContextProps = mapObj(contextProps, (key, contextConfig) => [key, addNamespace(contextConfig)])
+  const allContextProps = mapObj(contextProps, (key: string, contextConfig) => [key, addNamespace(contextConfig)])
   const normalizedContextProps = mapObj(allContextProps, (key, contextConfig) => [
     key,
     normalizeBeforeConfigMerge(contextConfig, origin),
@@ -31,7 +31,7 @@ export const mergeContext = function ({
   context,
   branch,
   logs,
-}) {
+}: $TSFixMe) {
   if (contextProps === undefined) {
     return config
   }
