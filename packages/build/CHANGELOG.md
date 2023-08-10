@@ -99,6 +99,13 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.0](https://github.com/netlify/build/compare/build-v29.19.0...build-v29.20.0) (2023-08-10)
+
+
+### Features
+
+* allow injecting bootstrapURL from CLI ([#5221](https://github.com/netlify/build/issues/5221)) ([b982ce6](https://github.com/netlify/build/commit/b982ce6aeafb9879cf4db4f061453ac024f09637))
+
 ## [29.19.0](https://github.com/netlify/build/compare/build-v29.18.1...build-v29.19.0) (2023-08-10)
 
 
