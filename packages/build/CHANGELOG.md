@@ -99,6 +99,13 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.2](https://github.com/netlify/build/compare/build-v29.20.1...build-v29.20.2) (2023-08-11)
+
+
+### Bug Fixes
+
+* forward edgeFunctionsBootstrapURL via run_core_steps ([#5231](https://github.com/netlify/build/issues/5231)) ([ab82c80](https://github.com/netlify/build/commit/ab82c809895f2b60f3fcf6097042ca08182f76f5))
+
 ## [29.20.1](https://github.com/netlify/build/compare/build-v29.20.0...build-v29.20.1) (2023-08-10)
 
 
