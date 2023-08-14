@@ -28,9 +28,11 @@ export const getConstants = async function ({
     // In monorepos this is the path that is used to point to a package that should be deployed
     PACKAGE_PATH: packagePath,
     // The directory where built serverless functions are placed before deployment
-    FUNCTIONS_DIST: join(packagePath || '', functionsDistDir),
+    // only on local development join with the packagePath as this directory
+    // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
+    FUNCTIONS_DIST: !isLocal ? functionsDistDir : join(packagePath || '', functionsDistDir),
     // The directory where built Edge Functions are placed before deployment
-    EDGE_FUNCTIONS_DIST: join(packagePath || '', edgeFunctionsDistDir),
+    EDGE_FUNCTIONS_DIST: !isLocal ? edgeFunctionsDistDir : join(packagePath || '', edgeFunctionsDistDir),
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
