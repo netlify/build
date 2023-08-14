@@ -99,6 +99,13 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.3](https://github.com/netlify/build/compare/build-v29.20.2...build-v29.20.3) (2023-08-14)
+
+
+### Bug Fixes
+
+* update the constants with the correct internal functions path ([#5237](https://github.com/netlify/build/issues/5237)) ([9037454](https://github.com/netlify/build/commit/9037454097c56d8c085e073710e55c6a2981379a))
+
 ## [29.20.2](https://github.com/netlify/build/compare/build-v29.20.1...build-v29.20.2) (2023-08-11)
 
 
