@@ -99,6 +99,13 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.5](https://github.com/netlify/build/compare/build-v29.20.4...build-v29.20.5) (2023-08-14)
+
+
+### Bug Fixes
+
+* fixes an issue where the functions directory did not match buildbot ([#5242](https://github.com/netlify/build/issues/5242)) ([f844e42](https://github.com/netlify/build/commit/f844e42b0e075c395307bf69d00ec4196aea1bb6))
+
 ## [29.20.4](https://github.com/netlify/build/compare/build-v29.20.3...build-v29.20.4) (2023-08-14)
 
 
