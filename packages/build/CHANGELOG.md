@@ -99,6 +99,13 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.4](https://github.com/netlify/build/compare/build-v29.20.3...build-v29.20.4) (2023-08-14)
+
+
+### Bug Fixes
+
+* fixes an issue where the internal functions paths where off due to a constant issue ([#5239](https://github.com/netlify/build/issues/5239)) ([ae47530](https://github.com/netlify/build/commit/ae4753091d698a7f3da2227ae9a3bb98f48a5c08))
+
 ## [29.20.3](https://github.com/netlify/build/compare/build-v29.20.2...build-v29.20.3) (2023-08-14)
 
 
