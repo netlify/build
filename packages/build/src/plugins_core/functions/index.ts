@@ -84,6 +84,21 @@ const coreStep = async function ({
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
+
+  console.log(
+    `
+
+>>  [functions.coreStep]`,
+    {
+      relativeInternalFunctionsSrc,
+      relativeFunctionsSrc,
+      relativeFunctionsDist,
+      functionsDist,
+      functionsSrc,
+      buildDir,
+    },
+  )
+
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
@@ -145,6 +160,13 @@ const coreStep = async function ({
 // `condition` because the directories might be created by the build command
 // or plugins.
 const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+  console.log(
+    `
+
+ >> [functions.hasFunctionsDirectories]
+  `,
+    { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC },
+  )
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {

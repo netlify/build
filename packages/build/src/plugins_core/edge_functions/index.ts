@@ -43,6 +43,14 @@ const coreStep = async function ({
   const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
+
+  console.log(
+    `
+
+>>  [edge_functions.coreStep]`,
+    { distPath, internalSrcPath, internalSrcDirectory, buildDir, srcDirectory, distDirectory },
+  )
+
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
@@ -119,6 +127,13 @@ const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
 }): Promise<boolean> {
+  console.log(
+    `
+
+ >> [edge_functions.hasEdgeFunctionsDirectories]
+  `,
+    { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
+  )
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
