@@ -1,4 +1,4 @@
-import { relative, normalize } from 'path'
+import { relative, normalize, join } from 'path'
 
 import { getCacheDir } from '@netlify/cache-utils'
 import mapObj from 'map-obj'
@@ -28,9 +28,9 @@ export const getConstants = async function ({
     // In monorepos this is the path that is used to point to a package that should be deployed
     PACKAGE_PATH: packagePath,
     // The directory where built serverless functions are placed before deployment
-    FUNCTIONS_DIST: functionsDistDir,
+    FUNCTIONS_DIST: join(packagePath || '', functionsDistDir),
     // The directory where built Edge Functions are placed before deployment
-    EDGE_FUNCTIONS_DIST: edgeFunctionsDistDir,
+    EDGE_FUNCTIONS_DIST: join(packagePath || '', edgeFunctionsDistDir),
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
@@ -45,10 +45,10 @@ export const getConstants = async function ({
     NETLIFY_API_HOST: apiHost,
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live
-    INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
+    INTERNAL_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_FUNCTIONS_SRC),
     // The directory where internal Edge Functions (i.e. generated programmatically
     // via plugins or others) live
-    INTERNAL_EDGE_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_EDGE_FUNCTIONS_SRC}`,
+    INTERNAL_EDGE_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_EDGE_FUNCTIONS_SRC),
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA
