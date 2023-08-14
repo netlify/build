@@ -13,6 +13,13 @@ export interface NetlifyPluginConstants {
    * `undefined` if no `netlify/functions` directory exists in the base directory and if not specified by the user.
    */
   FUNCTIONS_SRC?: string
+
+  /**
+   * the directory inside a mono repository where it collects the settings from.
+   * This is the value of the package directory field of the build settings
+   * `undefined` if none is set.
+   */
+  PACKAGE_PTH?: string
   /**
    * the directory where internal Edge Functions source code lives. This is where build plugins should place auto-generated functions.
    * `undefined` if the version of @netlify/build does not support internal Edge Functions
