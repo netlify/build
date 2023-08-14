@@ -32,6 +32,8 @@ export const getConstants = async function ({
     // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
     FUNCTIONS_DIST: !isLocal ? functionsDistDir : join(packagePath || '', functionsDistDir),
     // The directory where built Edge Functions are placed before deployment
+    // only on local development join with the packagePath as this directory
+    // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
     EDGE_FUNCTIONS_DIST: !isLocal ? edgeFunctionsDistDir : join(packagePath || '', edgeFunctionsDistDir),
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,

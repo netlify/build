@@ -57,7 +57,6 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
 export const deploySiteWithBuildbotClient = async function ({ client, events, buildDir, repositoryRoot, constants }) {
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
   const deployDir = getDeployDir({ buildDir, repositoryRoot, constants })
-  console.log('inside deploysite', { deployDir })
   const payload = { action, deployDir }
 
   const [{ succeeded, values: { error, error_type: errorType } = {} }] = await Promise.all([
@@ -78,7 +77,6 @@ export const deploySiteWithBuildbotClient = async function ({ client, events, bu
 // repository root, so `deployDir` is "." not ""
 const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_DIR } }) {
   const absolutePublishDir = resolve(buildDir, PUBLISH_DIR)
-  console.log({ absolutePublishDir })
   const relativePublishDir = relative(repositoryRoot, absolutePublishDir)
   const deployDir = normalize(relativePublishDir)
   return deployDir
