@@ -19,7 +19,7 @@ export interface NetlifyPluginConstants {
    * This is the value of the package directory field of the build settings
    * `undefined` if none is set.
    */
-  PACKAGE_PTH?: string
+  PACKAGE_PATH?: string
   /**
    * the directory where internal Edge Functions source code lives. This is where build plugins should place auto-generated functions.
    * `undefined` if the version of @netlify/build does not support internal Edge Functions
