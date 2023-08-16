@@ -167,9 +167,17 @@ export const saveUpdatedConfig = async function ({
   debug,
   saveConfig,
 }) {
+  console.log('@@@ GOT HERE')
   if (!saveConfig) {
     return
   }
+
+  console.log(`saveUpdatedConfig => `, {
+    configPath,
+    repositoryRoot,
+    buildDir,
+    outputConfigPath,
+  })
 
   await updateConfig(configMutations, {
     buildDir,

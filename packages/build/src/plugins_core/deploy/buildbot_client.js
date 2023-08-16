@@ -58,6 +58,7 @@ export const deploySiteWithBuildbotClient = async function ({ client, events, bu
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
   const deployDir = getDeployDir({ buildDir, repositoryRoot, constants })
   const payload = { action, deployDir }
+  console.log(`>> deploy.deploySiteWithBuildbotClient`, { payload, buildDir })
 
   const [{ succeeded, values: { error, error_type: errorType } = {} }] = await Promise.all([
     getNextParsedResponsePromise(client),
