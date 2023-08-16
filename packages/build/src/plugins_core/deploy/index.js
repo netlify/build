@@ -38,6 +38,7 @@ const coreStep = async function ({
       headersPath,
       redirectsPath,
       constants,
+      configMutations,
     },
   )
 
