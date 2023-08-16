@@ -74,6 +74,7 @@ const deleteSideFile = async function (filePath) {
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
+  console.log(`@netlify/config.mutations.update`, { tempDir, configPath, headersPath, redirectsPath })
   await fs.mkdir(tempDir, { recursive: true })
   await Promise.all([
     backupFile(configPath, `${tempDir}/netlify.toml`),

@@ -1,3 +1,5 @@
+import { readFile } from 'fs/promises'
+
 import { saveUpdatedConfig, restoreUpdatedConfig } from '../../core/config.js'
 import { logDeploySuccess } from '../../log/messages/plugins.js'
 
@@ -26,6 +28,25 @@ const coreStep = async function ({
   debug,
   saveConfig,
 }) {
+  console.log(
+    `>>> [deploy.corestep]
+  `,
+    {
+      buildDir,
+      configPath,
+      packagePath,
+      headersPath,
+      redirectsPath,
+      constants,
+    },
+  )
+
+  try {
+    const c = await readFile(configPath, 'utf-8')
+    console.log('>> the toml to deploy', c)
+  } catch {
+    // noop
+  }
   const client = createBuildbotClient(buildbotServerSocket)
   try {
     await connectBuildbotClient(client)
