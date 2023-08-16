@@ -1,4 +1,5 @@
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 
 import { virtualRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
@@ -37,13 +38,19 @@ const bundleESZIP = async ({
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
   const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
-  const importMapData = JSON.stringify(importMap.getContents(basePath, virtualRoot))
+
+  // Transforming all paths under `basePath` to use the virtual root prefix.
+  const importMapPrefixes: Record<string, string> = {
+    [`${pathToFileURL(basePath)}/`]: virtualRoot,
+  }
+  const importMapData = importMap.getContents(importMapPrefixes)
+
   const payload: WriteStage2Options = {
     basePath,
     destPath,
     externals,
     functions,
-    importMapData,
+    importMapData: JSON.stringify(importMapData),
   }
   const flags = ['--allow-all', '--no-config', `--import-map=${bundlerImportMap}`]
 

@@ -4,7 +4,7 @@ import { cwd } from 'process'
 import { pathToFileURL } from 'url'
 
 import tmp from 'tmp-promise'
-import { test, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 
 import { ImportMap } from './import_map.js'
 
@@ -48,43 +48,87 @@ test('Resolves relative paths to absolute paths if a base path is not provided',
   expect(imports['alias:pets']).toBe(`${pathToFileURL(expectedPath).toString()}/`)
 })
 
-test('Transforms relative paths so that they become relative to the base path', () => {
-  const basePath = join(cwd(), 'my-cool-site', 'import-map.json')
+describe('Returns the fully resolved import map', () => {
   const inputFile1 = {
-    baseURL: pathToFileURL(basePath),
+    baseURL: new URL('file:///some/full/path/import-map.json'),
     imports: {
-      'alias:pets': './heart/pets/',
+      specifier1: 'file:///some/full/path/file.js',
+      specifier2: './file2.js',
+      specifier3: 'file:///different/full/path/file3.js',
+    },
+  }
+  const inputFile2 = {
+    baseURL: new URL('file:///some/cool/path/import-map.json'),
+    imports: {
+      'lib/*': './library/',
+    },
+    scopes: {
+      'with/scopes/': {
+        'lib/*': 'https://external.netlify/lib/',
+        foo: './foo-alias',
+        bar: 'file:///different/full/path/bar.js',
+      },
     },
   }
 
-  // Without a prefix.
-  const map1 = new ImportMap([inputFile1])
-  const { imports: imports1 } = map1.getContents(cwd())
+  test('Without prefixes', () => {
+    const map = new ImportMap([inputFile1, inputFile2])
+    const { imports, scopes } = map.getContents()
 
-  expect(imports1['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
-  expect(imports1['alias:pets']).toBe('file:///my-cool-site/heart/pets/')
+    expect(imports).toStrictEqual({
+      'lib/*': 'file:///some/cool/path/library/',
+      specifier3: 'file:///different/full/path/file3.js',
+      specifier2: 'file:///some/full/path/file2.js',
+      specifier1: 'file:///some/full/path/file.js',
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
+    })
 
-  // With a prefix.
-  const map2 = new ImportMap([inputFile1])
-  const { imports: imports2 } = map2.getContents(cwd(), 'file:///root/')
+    expect(scopes).toStrictEqual({
+      'file:///some/cool/path/with/scopes/': {
+        'lib/*': 'https://external.netlify/lib/',
+        foo: 'file:///some/cool/path/foo-alias',
+        bar: 'file:///different/full/path/bar.js',
+      },
+    })
+  })
 
-  expect(imports2['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
-  expect(imports2['alias:pets']).toBe('file:///root/my-cool-site/heart/pets/')
+  test('With prefixes', () => {
+    const map = new ImportMap([inputFile1, inputFile2])
+    const { imports, scopes } = map.getContents({
+      'file:///some/': 'file:///root/',
+      'file:///different/': 'file:///vendor/',
+    })
+
+    expect(imports).toStrictEqual({
+      'lib/*': 'file:///root/cool/path/library/',
+      specifier3: 'file:///vendor/full/path/file3.js',
+      specifier2: 'file:///root/full/path/file2.js',
+      specifier1: 'file:///root/full/path/file.js',
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
+    })
+
+    expect(scopes).toStrictEqual({
+      'file:///root/cool/path/with/scopes/': {
+        'lib/*': 'https://external.netlify/lib/',
+        foo: 'file:///root/cool/path/foo-alias',
+        bar: 'file:///vendor/full/path/bar.js',
+      },
+    })
+  })
 })
 
 test('Throws when an import map uses a relative path to reference a file outside of the base path', () => {
-  const basePath = join(cwd(), 'my-cool-site')
   const inputFile1 = {
-    baseURL: pathToFileURL(join(basePath, 'import_map.json')),
+    baseURL: pathToFileURL(join(cwd(), 'import-map.json')),
     imports: {
       'alias:file': '../file.js',
     },
   }
 
-  const map = new ImportMap([inputFile1])
+  const map = new ImportMap([inputFile1], pathToFileURL(cwd()).toString())
 
-  expect(() => map.getContents(basePath)).toThrowError(
-    `Import map cannot reference '${join(cwd(), 'file.js')}' as it's outside of the base directory '${basePath}'`,
+  expect(() => map.getContents()).toThrowError(
+    `Import map cannot reference '${join(cwd(), '..', 'file.js')}' as it's outside of the base directory '${cwd()}'`,
   )
 })
 
