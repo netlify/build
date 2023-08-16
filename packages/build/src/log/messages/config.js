@@ -56,6 +56,7 @@ const INTERNAL_FLAGS = [
   'systemLogFile',
   'timeline',
   'explicitSecretKeys',
+  'edgeFunctionsBootstrapURL',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
