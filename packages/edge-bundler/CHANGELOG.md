@@ -1,5 +1,19 @@
 # Changelog
 
+## [8.18.0](https://github.com/netlify/edge-bundler/compare/v8.17.1...v8.18.0) (2023-08-17)
+
+
+### Features
+
+* add `path` to manifest ([#455](https://github.com/netlify/edge-bundler/issues/455)) ([fdbc09d](https://github.com/netlify/edge-bundler/commit/fdbc09de991638e5b452331416390cf219402ae2))
+* simplify `ImportMap` ([#453](https://github.com/netlify/edge-bundler/issues/453)) ([12a1d45](https://github.com/netlify/edge-bundler/commit/12a1d45f9fa7d59b2259161aee23ef564b036fad))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semver to v7.5.4 ([#445](https://github.com/netlify/edge-bundler/issues/445)) ([f1011af](https://github.com/netlify/edge-bundler/commit/f1011af32dd0ad9a394bddc4a6499c49a373bd7f))
+* mark invalid url patterns as user error ([#450](https://github.com/netlify/edge-bundler/issues/450)) ([4363322](https://github.com/netlify/edge-bundler/commit/436332297ca31e8ab4ccb23b229729a67f21006a))
+
 ## [8.17.1](https://github.com/netlify/edge-bundler/compare/v8.17.0...v8.17.1) (2023-07-27)
 
 
