@@ -18,6 +18,7 @@ interface Route {
   function: string
   pattern: string
   excluded_patterns: string[]
+  path?: string
 }
 
 interface EdgeFunctionConfig {
@@ -139,6 +140,10 @@ const generateManifest = ({
       function: func.name,
       pattern: serializePattern(pattern),
       excluded_patterns: excludedPattern.map(serializePattern),
+    }
+
+    if ('path' in declaration) {
+      route.path = declaration.path
     }
 
     if (declaration.cache === Cache.Manual) {
