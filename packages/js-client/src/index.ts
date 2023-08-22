@@ -28,7 +28,7 @@ type APIOptions = {
   globalParams?: Record<string, unknown>
 }
 
-export abstract class NetlifyAPI {
+export class NetlifyAPI {
   #accessToken: string | null = null
 
   defaultHeaders: Record<string, string> = {
@@ -72,6 +72,7 @@ export abstract class NetlifyAPI {
   set accessToken(token: string | null) {
     if (!token) {
       delete this.defaultHeaders.Authorization
+      this.#accessToken = null
       return
     }
     this.#accessToken = token
