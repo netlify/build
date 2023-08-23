@@ -108,9 +108,17 @@ export class NetlifyAPI {
     return accessTokenResponse.access_token
   }
 
-  // Those functions get implemented through the Open API implementations
-  abstract showTicket(config: { ticketId: string }): Promise<{ authorized: boolean }>
-  abstract exchangeTicket(config: { ticketId: string }): Promise<{ access_token: string }>
+  // Those methods are getting implemented by the Object.assign(this, { ...methods }) in the constructor
+  // This is a way where we can still maintain proper types while not implementing them.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  showTicket(_config: { ticketId: string }): Promise<{ authorized: boolean }> {
+    throw new Error('Will be overridden in constructor!')
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  exchangeTicket(_config: { ticketId: string }): Promise<{ access_token: string }> {
+    throw new Error('Will be overridden in constructor!')
+  }
 }
 
 export const methods = getOperations()
