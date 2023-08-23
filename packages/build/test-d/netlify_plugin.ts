@@ -1,7 +1,7 @@
-import { NetlifyPlugin, OnPreBuild, OnBuild, OnPostBuild, OnError, OnSuccess, OnEnd } from '@netlify/build'
+import type { NetlifyPlugin, OnPreBuild, OnBuild, OnPostBuild, OnError, OnSuccess, OnEnd } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
 
-const testEventNames = function () {
+export const testEventNames = function () {
   expectAssignable<NetlifyPlugin['onPreBuild']>(noop)
   expectAssignable<OnPreBuild>(noop)
   expectAssignable<OnBuild>(noop)
@@ -14,10 +14,10 @@ const testEventNames = function () {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = function () {}
 
-const testOnError: OnError = function ({ error }) {
+export const testOnError: OnError = function ({ error }) {
   expectType<Error>(error)
 }
 
-const testOnEnd: OnEnd = function ({ error }) {
+export const testOnEnd: OnEnd = function ({ error }) {
   expectType<Error | undefined>(error)
 }

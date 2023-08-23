@@ -1,6 +1,6 @@
-import { OnPreBuild, NetlifyPluginUtils } from '@netlify/build'
+import type { OnPreBuild, NetlifyPluginUtils } from '@netlify/build'
 
-const testUtilsBuildFailBuild: OnPreBuild = function ({
+export const testUtilsBuildFailBuild: OnPreBuild = function ({
   utils: {
     build: { failBuild },
   },
@@ -12,7 +12,7 @@ const testUtilsBuildFailBuild: OnPreBuild = function ({
   failBuild('message', { error: new Error('message') })
 }
 
-const testUtilsBuildFailPlugin: OnPreBuild = function ({
+export const testUtilsBuildFailPlugin: OnPreBuild = function ({
   utils: {
     build: { failPlugin },
   },
@@ -24,7 +24,7 @@ const testUtilsBuildFailPlugin: OnPreBuild = function ({
   failPlugin('message', { error: new Error('message') })
 }
 
-const testUtilsBuildCancelBuild: OnPreBuild = function ({
+export const testUtilsBuildCancelBuild: OnPreBuild = function ({
   utils: {
     build: { cancelBuild },
   },
