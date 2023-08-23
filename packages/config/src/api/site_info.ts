@@ -35,7 +35,7 @@ export const getSiteInfo = async function ({
   testOpts = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-  const fetchIntegrations = featureFlags.buildbot_fetch_integrations
+  const fetchIntegrations = featureFlags.buildbot_fetch_integrations || featureFlags.cli_fetch_integrations
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }

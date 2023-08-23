@@ -447,6 +447,7 @@ const initAndRunBuild = async function ({
     testOpts,
     featureFlags,
     integrations,
+    context,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA

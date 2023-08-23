@@ -9,6 +9,7 @@ import { getEnv } from './env/main.js'
 import { resolveConfigPaths } from './files.js'
 import { getHeadersPath, addHeaders } from './headers.js'
 import { getInlineConfig } from './inline_config.js'
+import { mergeIntegrations } from './integrations.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } from './merge_normalize.js'
@@ -116,9 +117,15 @@ export const resolveConfig = async function (opts) {
   // @todo Remove in the next major version.
   const configA = addLegacyFunctionsDirectory(config)
 
+  const mergedIntegrations = await mergeIntegrations({
+    apiIntegrations: integrations,
+    configIntegrations: configA.integrations,
+    context: context,
+  })
+
   const result = {
     siteInfo,
-    integrations,
+    integrations: mergedIntegrations,
     accounts,
     addons,
     env,

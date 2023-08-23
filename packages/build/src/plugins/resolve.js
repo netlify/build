@@ -31,6 +31,7 @@ export const resolvePluginsPath = async function ({
   testOpts,
   featureFlags,
   integrations,
+  context,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
@@ -62,8 +63,8 @@ export const resolvePluginsPath = async function ({
 
   let integrationPluginOptions = []
 
-  if (featureFlags.buildbot_fetch_integrations) {
-    integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs })
+  if (featureFlags.buildbot_fetch_integrations || featureFlags.cli_fetch_integrations) {
+    integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs, buildDir, context })
   }
 
   return [...pluginsOptionsE, ...integrationPluginOptions]
@@ -151,21 +152,30 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   return Promise.all(pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })))
 }
 
-const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs }) {
+const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context }) {
   const toInstall = integrations.filter((integration) => integration.has_build)
-  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs })
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context })
 
   return Promise.all(
     toInstall.map((integration) =>
       resolveIntegration({
         integration,
         autoPluginsDir,
+        buildDir,
+        context,
       }),
     ),
   )
 }
 
-const resolveIntegration = async function ({ integration, autoPluginsDir }) {
+const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context }) {
+  if (typeof integration.dev !== 'undefined' && context === 'dev') {
+    const { path } = integration.dev
+    const pluginPath = await resolvePath(`${path}/.ntli/build`, buildDir)
+
+    return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
+  }
+
   const pluginPath = await resolvePath(`${integration.slug}-buildhooks`, autoPluginsDir)
 
   return { pluginPath, packageName: `${integration.slug}-buildhooks`, isIntegration: true, integration }
