@@ -1,4 +1,4 @@
-import { Many } from '../utils/many'
+import type { Many } from '../utils/many.d.ts'
 
 /**
  * Cache files between builds

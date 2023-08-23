@@ -1,9 +1,9 @@
-import { OnPreBuild, NetlifyPluginUtils } from '@netlify/build'
+import type { OnPreBuild, NetlifyPluginUtils } from '@netlify/build'
 import { expectType } from 'tsd'
 
-const testUtilsCacheSave: OnPreBuild = function ({
+export const testUtilsCacheSave: OnPreBuild = function ({
   utils: {
-    cache: { save, list, restore, remove, has },
+    cache: { save },
   },
 }: {
   utils: NetlifyPluginUtils
@@ -14,7 +14,7 @@ const testUtilsCacheSave: OnPreBuild = function ({
   save('file', { ttl: 1, digests: ['digest'], cwd: '.' })
 }
 
-const testUtilsCacheList: OnPreBuild = function ({
+export const testUtilsCacheList: OnPreBuild = function ({
   utils: {
     cache: { list },
   },
@@ -27,7 +27,7 @@ const testUtilsCacheList: OnPreBuild = function ({
   list({ depth: 1, cwd: '.' })
 }
 
-const testUtilsRestore: OnPreBuild = function ({
+export const testUtilsRestore: OnPreBuild = function ({
   utils: {
     cache: { restore },
   },
@@ -40,7 +40,7 @@ const testUtilsRestore: OnPreBuild = function ({
   restore('file', { cwd: '.' })
 }
 
-const testUtilsCacheRemove: OnPreBuild = function ({
+export const testUtilsCacheRemove: OnPreBuild = function ({
   utils: {
     cache: { remove },
   },
@@ -53,7 +53,7 @@ const testUtilsCacheRemove: OnPreBuild = function ({
   remove('file', { cwd: '.' })
 }
 
-const testUtilsCacheHas: OnPreBuild = function ({
+export const testUtilsCacheHas: OnPreBuild = function ({
   utils: {
     cache: { has },
   },

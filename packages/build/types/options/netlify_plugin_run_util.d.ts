@@ -1,4 +1,4 @@
-import { Options as ExecaOptions, ExecaChildProcess } from 'execa'
+import type { Options as ExecaOptions, ExecaChildProcess } from 'execa'
 
 type NetlifyPluginRunUtilOptions = Omit<ExecaOptions, 'preferLocal'> & {
   /**

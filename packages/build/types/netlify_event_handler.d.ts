@@ -1,5 +1,5 @@
-import { PluginInputs, StringKeys } from './config/inputs'
-import { NetlifyPluginOptions } from './netlify_plugin_options'
+import type { PluginInputs, StringKeys } from './config/inputs.d.ts'
+import type { NetlifyPluginOptions } from './netlify_plugin_options.d.ts'
 
 interface NetlifyEventHandler<PluginOptions extends NetlifyPluginOptions = NetlifyPluginOptions> {
   (options: PluginOptions): void | Promise<void>
