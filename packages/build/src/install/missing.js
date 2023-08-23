@@ -24,12 +24,14 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
 }
 
 export const installIntegrationPlugins = async function ({ integrations, autoPluginsDir, mode, logs, context }) {
-  const someToBuild = integrations.filter((integration) => typeof integration.dev !== 'undefined' && context === 'dev')
-  if (someToBuild.length) {
+  const integrationsToBuild = integrations.filter(
+    (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
+  )
+  if (integrationsToBuild.length) {
     logSubHeader(logs, 'Building integrations')
     logArray(
       logs,
-      someToBuild.map(({ slug, dev: { path } }) => `${slug} from ${path}`),
+      integrationsToBuild.map(({ slug, dev: { path } }) => `${slug} from ${path}`),
     )
   }
   const packages = (
@@ -38,7 +40,7 @@ export const installIntegrationPlugins = async function ({ integrations, autoPlu
   logInstallIntegrations(
     logs,
     integrations.filter((integration) =>
-      someToBuild.every((compiledIntegration) => integration.slug !== compiledIntegration.slug),
+      integrationsToBuild.every((compiledIntegration) => integration.slug !== compiledIntegration.slug),
     ),
   )
 
