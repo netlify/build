@@ -8,7 +8,7 @@ import { hideBin } from 'yargs/helpers'
 
 import { normalizeCliFeatureFlags } from './feature_flags.js'
 import { FLAGS } from './flags.js'
-import build from './main.js'
+import { buildSite } from './main.js'
 import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 
 // CLI entry point.
@@ -23,7 +23,7 @@ const runCli = async function () {
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
 
-  const { severityCode, logs } = await build(flagsA)
+  const { severityCode, logs } = await buildSite(flagsA)
   printLogs(logs)
   process.exitCode = severityCode
 

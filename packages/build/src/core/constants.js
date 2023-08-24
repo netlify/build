@@ -1,4 +1,4 @@
-import { relative, normalize } from 'path'
+import { relative, normalize, join } from 'path'
 
 import { getCacheDir } from '@netlify/cache-utils'
 import mapObj from 'map-obj'
@@ -10,6 +10,7 @@ import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 export const getConstants = async function ({
   configPath,
   buildDir,
+  packagePath,
   functionsDistDir,
   edgeFunctionsDistDir,
   cacheDir,
@@ -24,10 +25,16 @@ export const getConstants = async function ({
   const constants = {
     // Path to the Netlify configuration file
     CONFIG_PATH: configPath,
+    // In monorepos this is the path that is used to point to a package that should be deployed
+    PACKAGE_PATH: packagePath,
     // The directory where built serverless functions are placed before deployment
-    FUNCTIONS_DIST: functionsDistDir,
+    // only on local development join with the packagePath as this directory
+    // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
+    FUNCTIONS_DIST: !isLocal ? functionsDistDir : join(packagePath || '', functionsDistDir),
     // The directory where built Edge Functions are placed before deployment
-    EDGE_FUNCTIONS_DIST: edgeFunctionsDistDir,
+    // only on local development join with the packagePath as this directory
+    // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
+    EDGE_FUNCTIONS_DIST: !isLocal ? edgeFunctionsDistDir : join(packagePath || '', edgeFunctionsDistDir),
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
@@ -42,10 +49,10 @@ export const getConstants = async function ({
     NETLIFY_API_HOST: apiHost,
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live
-    INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
+    INTERNAL_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_FUNCTIONS_SRC),
     // The directory where internal Edge Functions (i.e. generated programmatically
     // via plugins or others) live
-    INTERNAL_EDGE_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_EDGE_FUNCTIONS_SRC}`,
+    INTERNAL_EDGE_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_EDGE_FUNCTIONS_SRC),
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA

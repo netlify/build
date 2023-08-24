@@ -1,0 +1,6 @@
+[build]
+edge_functions = "apps/app-5/custom-dir"
+
+[[edge_functions]]
+function = "hello"
+path = "/hello"

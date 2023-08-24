@@ -101,6 +101,8 @@ export type RootExecutionAttributes = {
 export type StepExecutionAttributes = {
   'build.execution.step.name': string
   'build.execution.step.package_name': string
+  'build.execution.step.package_path': string
+  'build.execution.step.build_dir': string
   'build.execution.step.id': string
   'build.execution.step.loaded_from': string
   'build.execution.step.origin': string

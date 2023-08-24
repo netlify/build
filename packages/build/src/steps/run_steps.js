@@ -19,6 +19,7 @@ export const runSteps = async function ({
   headersPath,
   redirectsPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   childEnv,
@@ -43,6 +44,7 @@ export const runSteps = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const {
     index: stepsCount,
@@ -110,6 +112,7 @@ export const runSteps = async function ({
         configPath,
         outputConfigPath,
         buildDir,
+        packagePath,
         repositoryRoot,
         nodePath,
         index,
@@ -144,6 +147,7 @@ export const runSteps = async function ({
         quiet,
         userNodeVersion,
         explicitSecretKeys,
+        edgeFunctionsBootstrapURL,
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })

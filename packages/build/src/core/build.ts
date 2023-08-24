@@ -49,6 +49,7 @@ const tExecBuild = async function ({
   cachedConfigPath,
   outputConfigPath,
   cwd,
+  packagePath,
   repositoryRoot,
   apiHost,
   token,
@@ -83,12 +84,14 @@ const tExecBuild = async function ({
   quiet,
   framework,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const configOpts = getConfigOpts({
     config,
     defaultConfig,
     cwd,
     repositoryRoot,
+    packagePath,
     apiHost,
     token,
     siteId,
@@ -153,6 +156,7 @@ const tExecBuild = async function ({
     functionsDistDir,
     edgeFunctionsDistDir,
     cacheDir,
+    packagePath,
     netlifyConfig,
     siteInfo,
     apiHost,
@@ -183,6 +187,7 @@ const tExecBuild = async function ({
     redirectsPath,
     buildDir,
     repositoryRoot: repositoryRootA,
+    packagePath,
     nodePath,
     packageJson,
     userNodeVersion,
@@ -211,6 +216,7 @@ const tExecBuild = async function ({
     quiet,
     integrations,
     explicitSecretKeys,
+    edgeFunctionsBootstrapURL,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -236,6 +242,7 @@ export const runAndReportBuild = async function ({
   outputConfigPath,
   headersPath,
   redirectsPath,
+  packagePath,
   buildDir,
   repositoryRoot,
   nodePath,
@@ -266,6 +273,7 @@ export const runAndReportBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   try {
     const {
@@ -287,6 +295,7 @@ export const runAndReportBuild = async function ({
       headersPath,
       redirectsPath,
       buildDir,
+      packagePath,
       repositoryRoot,
       nodePath,
       packageJson,
@@ -316,6 +325,7 @@ export const runAndReportBuild = async function ({
       quiet,
       integrations,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
     })
     await Promise.all([
       reportStatuses({
@@ -387,6 +397,7 @@ const initAndRunBuild = async function ({
   headersPath,
   redirectsPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   packageJson,
@@ -416,6 +427,7 @@ const initAndRunBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -423,6 +435,7 @@ const initAndRunBuild = async function ({
     siteInfo,
     buildDir,
     nodePath,
+    packagePath,
     packageJson,
     userNodeVersion,
     mode,
@@ -470,6 +483,7 @@ const initAndRunBuild = async function ({
       headersPath,
       redirectsPath,
       buildDir,
+      packagePath,
       repositoryRoot,
       nodePath,
       childEnv,
@@ -495,6 +509,7 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
     })
 
     await Promise.all([
@@ -537,6 +552,7 @@ const runBuild = async function ({
   redirectsPath,
   buildDir,
   repositoryRoot,
+  packagePath,
   nodePath,
   childEnv,
   context,
@@ -561,6 +577,7 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -597,6 +614,7 @@ const runBuild = async function ({
     redirectsPath,
     buildDir,
     repositoryRoot,
+    packagePath,
     nodePath,
     childEnv,
     context,
@@ -620,6 +638,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
+    edgeFunctionsBootstrapURL,
   })
 
   return {

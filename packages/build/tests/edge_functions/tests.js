@@ -98,7 +98,7 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
 
   const { routes, function_config } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', excluded_patterns: [] }])
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', excluded_patterns: [], path: '/*' }])
   t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
@@ -187,7 +187,9 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
 
   const { routes } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [] }])
+  t.deepEqual(routes, [
+    { function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [], path: '/test-test' },
+  ])
 })
 
 test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
@@ -210,4 +212,11 @@ test.serial('cleans up the edge functions dist directory before bundling', async
   t.not(manifest.bundles[0].asset, 'old.eszip')
 
   t.false(await pathExists(oldBundlePath))
+})
+
+test.serial('injected edgeFunctionsBootstrapURL is passed down to edge-bundler', async (t) => {
+  const { output } = await new Fixture('./fixtures/functions_user')
+    .withFlags({ debug: false, edgeFunctionsBootstrapURL: 'https://invalid-domain' })
+    .runBuildBinary()
+  t.true(output.includes('error sending request for url (https://invalid-domain'))
 })
