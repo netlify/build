@@ -17,6 +17,7 @@ interface Route {
   pattern: string
   excluded_patterns: string[]
   path?: string
+  methods?: string[]
 }
 
 interface EdgeFunctionConfig {
@@ -87,6 +88,23 @@ const addExcludedPatterns = (
   }
 }
 
+/**
+ * Normalizes method names into arrays of uppercase strings.
+ * (e.g. "get" becomes ["GET"])
+ */
+const normalizeMethods = (method: unknown, name: string): string[] | undefined => {
+  const methods = Array.isArray(method) ? method : [method]
+  return methods.map((method) => {
+    if (typeof method !== 'string') {
+      throw new TypeError(
+        `Could not parse method declaration of function '${name}'. Expecting HTTP Method, got ${method}`,
+      )
+    }
+
+    return method.toUpperCase()
+  })
+}
+
 const generateManifest = ({
   bundles = [],
   declarations = [],
@@ -137,6 +155,10 @@ const generateManifest = ({
       function: func.name,
       pattern: serializePattern(pattern),
       excluded_patterns: excludedPattern.map(serializePattern),
+    }
+
+    if ('method' in declaration) {
+      route.methods = normalizeMethods(declaration.method, func.name)
     }
 
     if ('path' in declaration) {

@@ -1,11 +1,12 @@
 import regexpAST from 'regexp-tree'
 
-import { FunctionConfig, Path } from './config.js'
+import { FunctionConfig, HTTPMethod, Path } from './config.js'
 import { FeatureFlags } from './feature_flags.js'
 
 interface BaseDeclaration {
   cache?: string
   function: string
+  method?: HTTPMethod | HTTPMethod[]
   // todo: remove these two after a while and only support in-source config for non-route related configs
   name?: string
   generator?: string
@@ -93,7 +94,7 @@ const createDeclarationsFromFunctionConfigs = (
   const declarations: Declaration[] = []
 
   for (const name in functionConfigs) {
-    const { cache, path } = functionConfigs[name]
+    const { cache, path, method } = functionConfigs[name]
 
     // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name) && path) {
@@ -103,6 +104,9 @@ const createDeclarationsFromFunctionConfigs = (
         const declaration: Declaration = { function: name, path: singlePath }
         if (cache) {
           declaration.cache = cache
+        }
+        if (method) {
+          declaration.method = method
         }
         declarations.push(declaration)
       })

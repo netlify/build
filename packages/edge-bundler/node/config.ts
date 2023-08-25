@@ -26,6 +26,8 @@ export const enum Cache {
   Manual = 'manual',
 }
 
+export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS'
+
 export type Path = `/${string}`
 
 export type OnError = 'fail' | 'bypass' | Path
@@ -43,6 +45,7 @@ export interface FunctionConfig {
   onError?: OnError
   name?: string
   generator?: string
+  method?: HTTPMethod | HTTPMethod[]
 }
 
 const getConfigExtractor = () => {

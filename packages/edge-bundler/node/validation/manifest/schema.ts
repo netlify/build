@@ -32,6 +32,10 @@ const routesSchema = {
     excluded_patterns: excludedPatternsSchema,
     generator: { type: 'string' },
     path: { type: 'string' },
+    methods: {
+      type: 'array',
+      items: { type: 'string', enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] },
+    },
   },
   additionalProperties: false,
 }

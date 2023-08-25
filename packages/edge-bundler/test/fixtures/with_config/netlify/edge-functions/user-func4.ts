@@ -8,4 +8,5 @@ export default async () =>
 export const config = {
   cache: 'manual',
   path: '/user-func4',
+  method: ['POST', 'PUT'],
 }
