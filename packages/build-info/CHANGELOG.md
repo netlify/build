@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.7.4](https://github.com/netlify/build/compare/build-info-v7.7.3...build-info-v7.7.4) (2023-08-25)
+
+
+### Bug Fixes
+
+* handle nx-run targets that don't have an executor ([#5201](https://github.com/netlify/build/issues/5201)) ([5a1acfa](https://github.com/netlify/build/commit/5a1acfa101eec583a03d2d6e020a782db8c4f2c2))
+
 ## [7.7.3](https://github.com/netlify/build/compare/build-info-v7.7.2...build-info-v7.7.3) (2023-07-26)
 
 
