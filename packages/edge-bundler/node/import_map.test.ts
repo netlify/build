@@ -80,6 +80,7 @@ describe('Returns the fully resolved import map', () => {
       specifier3: 'file:///different/full/path/file3.js',
       specifier2: 'file:///some/full/path/file2.js',
       specifier1: 'file:///some/full/path/file.js',
+      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
       'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
     })
 
@@ -104,6 +105,7 @@ describe('Returns the fully resolved import map', () => {
       specifier3: 'file:///vendor/full/path/file3.js',
       specifier2: 'file:///root/full/path/file2.js',
       specifier1: 'file:///root/full/path/file.js',
+      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
       'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
     })
 

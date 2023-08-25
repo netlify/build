@@ -1,3 +1,4 @@
+import { Config } from '@netlify/edge-functions'
 import { greet } from 'alias:helper'
 
 // Accessing `Deno.env` in the global scope
@@ -11,6 +12,6 @@ export default async () => {
   return new Response(greeting)
 }
 
-export const config = {
+export const config: Config = {
   path: '/user-func1',
 }

@@ -4,7 +4,7 @@ import * as path from 'https://deno.land/std@0.177.0/path/mod.ts'
 
 import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
 import { importMapSpecifier, virtualRoot } from '../../shared/consts.ts'
-import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER } from './consts.ts'
+import { LEGACY_PUBLIC_SPECIFIER, PUBLIC_SPECIFIER, STAGE2_SPECIFIER } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 
 interface FunctionReference {
@@ -75,7 +75,12 @@ const stage2Loader = (basePath: string, functions: InputFunction[], externals: S
       return inlineModule(specifier, importMapData)
     }
 
-    if (specifier === PUBLIC_SPECIFIER || externals.has(specifier) || specifier.startsWith('node:')) {
+    if (
+      specifier === LEGACY_PUBLIC_SPECIFIER ||
+      specifier === PUBLIC_SPECIFIER ||
+      externals.has(specifier) ||
+      specifier.startsWith('node:')
+    ) {
       return {
         kind: 'external',
         specifier,
