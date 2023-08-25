@@ -127,6 +127,9 @@ export class Nx extends BaseBuildTool {
         return 4200
       case '@nx-plus/vue:dev-server':
         return 8000
+      // some targets like run command don't have an executor
+      case undefined:
+        return null
       default:
         this.project.report({
           name: 'UndetectedExecutor',
@@ -196,6 +199,10 @@ export class Nx extends BaseBuildTool {
       case '@nx/cypress:cypress':
       case '@nrwl/cypress:cypress':
       case '@nrwl/node:build':
+        return
+      case 'nx:run-commands':
+      case undefined:
+        // some targets like run command don't have an executor
         return
       default:
         this.project.report({
