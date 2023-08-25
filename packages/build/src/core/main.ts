@@ -13,9 +13,6 @@ import { reportMetrics } from './report_metrics.js'
 import { getSeverity } from './severity.js'
 import { BuildFlags } from './types.js'
 
-export { startDev } from './dev.js'
-export { runCoreSteps } from '../steps/run_core_steps.js'
-
 const tracer = trace.getTracer('core')
 
 /**
@@ -24,7 +21,7 @@ const tracer = trace.getTracer('core')
  *
  * @param flags - build configuration CLI flags
  */
-export default async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
+export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   success: boolean
   severityCode: number
   logs: any

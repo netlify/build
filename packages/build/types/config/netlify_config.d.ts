@@ -1,8 +1,8 @@
-import { Many } from '../utils/many'
+import type { Many } from '../utils/many.d.ts'
 
-import { Build } from './build'
-import { Functions } from './functions'
-import { PluginInputs } from './inputs'
+import type { Build } from './build.d.ts'
+import type { Functions } from './functions.d.ts'
+import type { PluginInputs } from './inputs.d.ts'
 
 type HttpStatusCode = number
 

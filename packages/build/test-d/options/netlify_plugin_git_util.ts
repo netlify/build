@@ -1,7 +1,7 @@
-import { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
+import type { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
 
-const testUtilsGit: OnPreBuild = function ({ utils: { git } }: { utils: NetlifyPluginUtils }) {
+export const testUtilsGit: OnPreBuild = function ({ utils: { git } }: { utils: NetlifyPluginUtils }) {
   expectType<readonly string[]>(git.fileMatch('*'))
   expectType<readonly string[]>(git.modifiedFiles)
   expectType<readonly string[]>(git.createdFiles)
@@ -9,7 +9,7 @@ const testUtilsGit: OnPreBuild = function ({ utils: { git } }: { utils: NetlifyP
   expectType<Promise<number>>(git.linesOfCode())
 }
 
-const testUtilsGitCommits: OnPreBuild = function ({
+export const testUtilsGitCommits: OnPreBuild = function ({
   utils: {
     git: {
       commits: [commit],

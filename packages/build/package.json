@@ -1,11 +1,11 @@
 {
   "name": "@netlify/build",
-  "version": "29.20.6",
+  "version": "29.20.7",
   "description": "Netlify build module",
   "type": "module",
-  "exports": "./lib/core/main.js",
-  "main": "./lib/core/main.js",
-  "types": "./types/index.d.ts",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
     "netlify-build": "./bin.js"
   },
@@ -13,6 +13,7 @@
     "bin.js",
     "lib/**/*.js",
     "lib/**/*.yml",
+    "lib/**/*.d.ts",
     "types/**/*.d.ts"
   ],
   "author": "Netlify Inc.",
@@ -24,9 +25,10 @@
     "prebuild": "rm -rf lib",
     "postbuild": "npx copyfiles \"src/**/*.yml\" lib/ -u 1",
     "build": "tsc",
-    "test": "ava",
+    "test:types": "tsd",
+    "test": "ava && tsd",
     "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava && tsd",
     "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
@@ -142,10 +144,5 @@
   },
   "engines": {
     "node": "^14.16.0 || >=16.0.0"
-  },
-  "tsd": {
-    "compilerOptions": {
-      "module": "commonjs"
-    }
   }
 }
