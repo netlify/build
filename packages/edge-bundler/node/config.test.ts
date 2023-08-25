@@ -181,7 +181,6 @@ test('Loads function paths from the in-source `config` function', async () => {
   const result = await bundle([internalDirectory, userDirectory], distPath, declarations, {
     basePath,
     configPath: join(internalDirectory, 'config.json'),
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   const generatedFiles = await fs.readdir(distPath)
 

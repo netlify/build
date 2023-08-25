@@ -50,7 +50,6 @@ test('Generates a manifest with display names', () => {
     declarations,
     functions,
     internalFunctionConfig,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [], path: '/f1/*' }]
@@ -75,7 +74,6 @@ test('Generates a manifest with a generator field', () => {
     declarations,
     functions,
     internalFunctionConfig,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [], path: '/f1/*' }]
@@ -99,7 +97,6 @@ test('Generates a manifest with excluded paths and patterns', () => {
     bundles: [],
     declarations,
     functions,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   const expectedRoutes = [
     { function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: ['^/f1/exclude/?$'], path: '/f1/*' },
@@ -137,7 +134,6 @@ test('TOML-defined paths can be combined with ISC-defined excluded paths', () =>
     declarations,
     functions,
     userFunctionConfig,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [], path: '/f1/*' }]
 
@@ -217,7 +213,6 @@ test('excludedPath from ISC goes into function_config, TOML goes into routes', (
     functions,
     userFunctionConfig,
     internalFunctionConfig,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   expect(manifest.routes).toEqual([
     {
@@ -259,7 +254,6 @@ test('URLPattern named groups are supported', () => {
     functions,
     userFunctionConfig,
     internalFunctionConfig,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   expect(manifest.routes).toEqual([
     {
@@ -288,7 +282,6 @@ test('Invalid Path patterns throw bundling errors', () => {
       functions,
       userFunctionConfig,
       internalFunctionConfig,
-      featureFlags: { edge_functions_path_urlpattern: true },
     }),
   ).toThrowError(BundleError)
 })
@@ -425,14 +418,12 @@ test('Generates a manifest with layers', () => {
     bundles: [],
     declarations,
     functions,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
   const manifest2 = generateManifest({
     bundles: [],
     declarations,
     functions,
     layers,
-    featureFlags: { edge_functions_path_urlpattern: true },
   })
 
   expect(manifest1.routes).toEqual(expectedRoutes)
