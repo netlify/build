@@ -52,7 +52,8 @@ export class NetlifyAPI {
     this.scheme = options.scheme || openApiSpec.schemes[0]
     this.host = options.host || openApiSpec.host
     this.pathPrefix = options.pathPrefix || openApiSpec.basePath
-    this.#accessToken = options.accessToken || accessTokenInput || null
+    // use the setter to set the header as well
+    this.accessToken = options.accessToken || accessTokenInput || null
     this.defaultHeaders['User-agent'] = options.userAgent || 'netlify/js-client'
 
     const methods = getMethods({
