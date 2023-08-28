@@ -1,5 +1,14 @@
 # Changelog
 
+## [8.19.0](https://github.com/netlify/edge-bundler/compare/v8.18.0...v8.19.0) (2023-08-28)
+
+
+### Features
+
+* match on http methods ([#458](https://github.com/netlify/edge-bundler/issues/458)) ([72e8453](https://github.com/netlify/edge-bundler/commit/72e8453fe70f1b0d2e566b0faf58ccdecbe65518))
+* remove `URLPattern` feature flag ([#460](https://github.com/netlify/edge-bundler/issues/460)) ([aa4d4ab](https://github.com/netlify/edge-bundler/commit/aa4d4abdd2458cfd7bd6d31d5ccb604815d642e6))
+* support `@netlify/edge-functions` specifier ([#459](https://github.com/netlify/edge-bundler/issues/459)) ([3340ac6](https://github.com/netlify/edge-bundler/commit/3340ac64d9ced1a1bba638f40b053e290e580a8a))
+
 ## [8.18.0](https://github.com/netlify/edge-bundler/compare/v8.17.1...v8.18.0) (2023-08-17)
 
 
