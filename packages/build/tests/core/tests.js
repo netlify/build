@@ -450,7 +450,7 @@ test('Shows notice about bundling errors and warnings coming from esbuild', asyn
   t.snapshot(normalizeOutput(output))
 })
 
-test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
+test('Shows notice about bundling errors and falls back to ZISI', async (t) => {
   const output = await new Fixture('./fixtures/esbuild_errors_2').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
