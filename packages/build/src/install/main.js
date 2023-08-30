@@ -12,6 +12,9 @@ export const installDependencies = function ({ packageRoot, isLocal }) {
 
 // Add new Node.js dependencies, with exact semver ranges
 export const addExactDependencies = function ({ packageRoot, isLocal, packages }) {
+  if (!packages || packages.length === 0) {
+    return
+  }
   return runCommand({ packageRoot, packages, isLocal, type: 'addExact' })
 }
 
