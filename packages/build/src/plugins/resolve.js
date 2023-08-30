@@ -156,6 +156,10 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
   const toInstall = integrations.filter((integration) => integration.has_build)
   await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context })
 
+  if (toInstall.length === 0) {
+    return []
+  }
+
   return Promise.all(
     toInstall.map((integration) =>
       resolveIntegration({

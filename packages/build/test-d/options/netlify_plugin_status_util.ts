@@ -1,6 +1,6 @@
-import { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
+import type { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
 
-const testUtilsStatus: OnPreBuild = function ({
+export const testUtilsStatus: OnPreBuild = function ({
   utils: {
     status: { show },
   },

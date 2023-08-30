@@ -99,6 +99,63 @@
   * dependencies
     * @netlify/config bumped from ^20.6.4 to ^20.7.0
 
+## [29.20.11](https://github.com/netlify/build/compare/build-v29.20.10...build-v29.20.11) (2023-08-30)
+
+
+### Bug Fixes
+
+* prevent addExact running when no integrations supplied ([#5264](https://github.com/netlify/build/issues/5264)) ([7ad4354](https://github.com/netlify/build/commit/7ad43548b47cd1eaeddba61f05d2ab9a38345c00))
+
+## [29.20.10](https://github.com/netlify/build/compare/build-v29.20.9...build-v29.20.10) (2023-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.17.2 ([#5262](https://github.com/netlify/build/issues/5262)) ([79a3680](https://github.com/netlify/build/commit/79a368056f12e0db8a5ad1d94cb259d47f86abf7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.25 to ^5.2.26
+
+## [29.20.9](https://github.com/netlify/build/compare/build-v29.20.8...build-v29.20.9) (2023-08-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.17.1 ([#5260](https://github.com/netlify/build/issues/5260)) ([133f577](https://github.com/netlify/build/commit/133f57702f96d757b64a8ef58689a0620575e534))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.24 to ^5.2.25
+
+## [29.20.8](https://github.com/netlify/build/compare/build-v29.20.7...build-v29.20.8) (2023-08-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.19.0 ([#5258](https://github.com/netlify/build/issues/5258)) ([a965b2d](https://github.com/netlify/build/commit/a965b2d8f447113de989d795691f43f9d98fdfc4))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.17.0 ([#5257](https://github.com/netlify/build/issues/5257)) ([311cd37](https://github.com/netlify/build/commit/311cd37276cddda465c6a6530ce55f56abb84f9d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.23 to ^5.2.24
+
+## [29.20.7](https://github.com/netlify/build/compare/build-v29.20.6...build-v29.20.7) (2023-08-23)
+
+
+### Bug Fixes
+
+* fixes the types of netlify/build and re adds the type tests ([#5252](https://github.com/netlify/build/issues/5252)) ([753d204](https://github.com/netlify/build/commit/753d204f0f13350d8402b1ed66377380c7b0eda4))
+
 ## [29.20.6](https://github.com/netlify/build/compare/build-v29.20.5...build-v29.20.6) (2023-08-17)
 
 

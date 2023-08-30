@@ -1,9 +1,9 @@
-import { OnPreBuild, NetlifyConfig } from '@netlify/build'
+import type { OnPreBuild, NetlifyConfig } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
 
-import type { JSONValue } from '../../types/utils/json_value'
+import type { JSONValue } from '../../types/utils/json_value.d.ts'
 
-const testNetlifyConfigPlugins: OnPreBuild = function ({
+export const testNetlifyConfigPlugins: OnPreBuild = function ({
   netlifyConfig: {
     plugins: [plugin],
   },
@@ -14,7 +14,7 @@ const testNetlifyConfigPlugins: OnPreBuild = function ({
   expectType<JSONValue | undefined>(plugin.inputs.testVar)
 }
 
-const testNetlifyConfigEdgeHandlers: OnPreBuild = function ({
+export const testNetlifyConfigEdgeHandlers: OnPreBuild = function ({
   netlifyConfig: {
     edge_functions: [edgeFunction],
   },
@@ -25,7 +25,7 @@ const testNetlifyConfigEdgeHandlers: OnPreBuild = function ({
   expectType<string>(edgeFunction.function)
 }
 
-const testNetlifyConfigHeaders: OnPreBuild = function ({
+export const testNetlifyConfigHeaders: OnPreBuild = function ({
   netlifyConfig: {
     headers: [header],
   },
@@ -36,7 +36,7 @@ const testNetlifyConfigHeaders: OnPreBuild = function ({
   expectType<string | string[] | undefined>(header.values.testVar)
 }
 
-const testNetlifyConfigRedirects: OnPreBuild = function ({
+export const testNetlifyConfigRedirects: OnPreBuild = function ({
   netlifyConfig: {
     redirects: [redirect],
   },
