@@ -21,7 +21,7 @@ test.each([
   expect(detected?.[0].build.command).toBe('astro build')
   expect(detected?.[0].build.directory).toBe('dist')
   expect(detected?.[0].dev?.command).toBe('astro dev')
-  expect(detected?.[0].dev?.port).toBe(3000)
+  expect(detected?.[0].dev?.port).toBe(4321)
 })
 
 test('should return 3000 for less than 3.0.0', async () => {
