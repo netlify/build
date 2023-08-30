@@ -36,6 +36,7 @@ test('should return 3000 for less than 3.0.0', async () => {
   expect(detected?.[0].build.directory).toBe('dist')
   expect(detected?.[0].dev?.command).toBe('astro dev')
   expect(detected?.[0].dev?.port).toBe(3000)
+  expect(detected?.[0].env?.NODE_VERSION).toBe('16')
 })
 
 test('should detect Astro 3.0.0+ via the dependency', async () => {
@@ -49,4 +50,5 @@ test('should detect Astro 3.0.0+ via the dependency', async () => {
   expect(detected?.[0].build.directory).toBe('dist')
   expect(detected?.[0].dev?.command).toBe('astro dev')
   expect(detected?.[0].dev?.port).toBe(4321)
+  expect(detected?.[0].env?.NODE_VERSION).toBe('18')
 })
