@@ -1,4 +1,4 @@
-import { gte } from 'semver'
+import { lt } from 'semver'
 
 import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
@@ -11,7 +11,7 @@ export class Astro extends BaseFramework implements Framework {
   staticAssetsDirectory = 'public'
 
   dev = {
-    port: 3000,
+    port: 4321,
     command: 'astro dev',
     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
   }
@@ -31,8 +31,9 @@ export class Astro extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      if (this.version && gte(this.version, '3.0.0')) {
-        this.dev.port = 4321
+      // Less than 3.x.x. uses port 3000
+      if (this.version && lt(this.version, '3.0.0')) {
+        this.dev.port = 3000
       }
 
       return this as DetectedFramework
