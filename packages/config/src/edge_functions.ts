@@ -1,11 +1,14 @@
 import { isString, validProperties } from './validate/helpers.js'
 
 const cacheValues = ['manual', 'off']
+const methodValues = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+
+const isMethod = (value: unknown) => typeof value === 'string' && methodValues.includes(value.toUpperCase())
 
 export const validations = [
   {
     property: 'edge_functions.*',
-    ...validProperties(['path', 'excludedPath', 'pattern', 'excludedPattern', 'function', 'cache'], []),
+    ...validProperties(['path', 'excludedPath', 'pattern', 'excludedPattern', 'function', 'cache', 'method'], []),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
@@ -77,5 +80,11 @@ export const validations = [
     check: (value) => cacheValues.includes(value),
     message: `must be one of: ${cacheValues.join(', ')}`,
     example: () => ({ edge_functions: [{ cache: cacheValues[0], path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.method',
+    check: (value) => isMethod(value) || (Array.isArray(value) && value.length !== 0 && value.every(isMethod)),
+    message: `must be one of or array of: ${methodValues.join(', ')}`,
+    example: () => ({ edge_functions: [{ method: ['PUT', 'DELETE'], path: '/hello', function: 'hello' }] }),
   },
 ]
