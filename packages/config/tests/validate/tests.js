@@ -315,3 +315,8 @@ test('edge_functions.any.mode: disallowed values', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_mode_disallowed').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
+
+test('edge_functions.any.method: disallowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_method_disallowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
