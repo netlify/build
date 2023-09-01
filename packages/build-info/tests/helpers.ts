@@ -68,16 +68,11 @@ export const createWebFixture = async (fixture: string) => {
       const info = await stat(src)
       if (info.isDirectory()) {
         const entries = await readdir(src, { withFileTypes: true })
-        return new Response(
-          JSON.stringify(
-            entries.map((entry) => ({
-              path: entry.name,
-              type: entry.isDirectory() ? 'dir' : 'file',
-            })),
-          ),
-          {
-            headers: { 'Content-Type': 'application/json' },
-          },
+        return Response.json(
+          entries.map((entry) => ({
+            path: entry.name,
+            type: entry.isDirectory() ? 'dir' : 'file',
+          })),
         )
       } else {
         const file = await readFile(src, 'utf-8')
@@ -87,7 +82,7 @@ export const createWebFixture = async (fixture: string) => {
       // noop
     }
 
-    throw new Error(`404 ${url} not found!`)
+    return Response.json({ error: 'not found' }, { status: 404 })
   })
 
   return { cwd: '/' }

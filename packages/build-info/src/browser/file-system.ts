@@ -26,7 +26,7 @@ export class GithubProvider {
     if (response.headers?.get('Content-Type')?.match(/json/)) {
       const json = await response.json()
       if (!response.ok) {
-        Promise.reject(json)
+        throw new Error(JSON.stringify(json))
       }
       return json
     }
@@ -55,7 +55,7 @@ export class WebFS extends FileSystem {
 
   async fileExists(path: string): Promise<boolean> {
     try {
-      this.readFile(path)
+      await this.readFile(path)
       return true
     } catch {
       return false
