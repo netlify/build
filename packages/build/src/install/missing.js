@@ -17,6 +17,10 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
   const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(logs, packages)
 
+  if (packages.length === 0) {
+    return
+  }
+
   await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
@@ -24,6 +28,10 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
 export const installIntegrationPlugins = async function ({ integrations, autoPluginsDir, mode, logs }) {
   const packages = integrations.map(getIntegrationPackage)
   logInstallIntegrations(logs, integrations)
+
+  if (packages.length === 0) {
+    return
+  }
 
   await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
