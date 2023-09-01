@@ -33,7 +33,6 @@ const redwoodToml = `
 `
 
 test('should detect redwood', async ({ fs }) => {
-  /*
   const cwd = mockFileSystem({
     'redwood.toml': redwoodToml,
     'package.json': JSON.stringify({
@@ -88,9 +87,8 @@ test('should detect redwood', async ({ fs }) => {
       },
     }),
   })
-  */
 
-  const project = new Project(fs, '/Users/skn0tt/dev/tmp/rw-netlify-test', '/Users/skn0tt/dev/tmp/rw-netlify-test')
+  const project = new Project(fs, cwd, cwd)
 
   expect(await project.detectWorkspaces()).toBeNull()
   const detected = await project.detectFrameworks()
