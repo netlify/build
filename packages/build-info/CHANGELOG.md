@@ -64,6 +64,18 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.8.0](https://github.com/netlify/build/compare/build-info-v7.7.4...build-info-v7.8.0) (2023-09-01)
+
+
+### Features
+
+* udpate astro ports for 3.x.x ([#5267](https://github.com/netlify/build/issues/5267)) ([6ca9952](https://github.com/netlify/build/commit/6ca995257a05ef0021ddf8e2881c5cee54d99d19))
+
+
+### Bug Fixes
+
+* Don't detect Redwood App as multiple workspaces ([#5271](https://github.com/netlify/build/issues/5271)) ([9eaa059](https://github.com/netlify/build/commit/9eaa059f8bcc8f30151cf2ca29f2400c935ce073))
+
 ## [7.7.4](https://github.com/netlify/build/compare/build-info-v7.7.3...build-info-v7.7.4) (2023-08-25)
 
 
