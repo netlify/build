@@ -8,7 +8,7 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
-test('should detect quick with npm', async ({ fs }) => {
+test('should detect qwik with npm', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { '@builder.io/qwik': '*' } }),
   })
@@ -19,7 +19,7 @@ test('should detect quick with npm', async ({ fs }) => {
   expect(detected?.[0].dev?.command).toBe('vite')
 })
 
-test('should detect quick with yarn', async ({ fs }) => {
+test('should detect qwik with yarn', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ packageManager: 'yarn@3.2.1', dependencies: { '@builder.io/qwik': '*' } }),
   })
@@ -29,7 +29,7 @@ test('should detect quick with yarn', async ({ fs }) => {
   expect(detected?.[0].build.directory).toBe('dist')
 })
 
-test('should detect quick', async ({ fs }) => {
+test('should detect qwik', async ({ fs }) => {
   const cwd = mockFileSystem({
     'pnpm-lock.yaml': '',
     'package.json': JSON.stringify({ dependencies: { '@builder.io/qwik': '*' } }),

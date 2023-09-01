@@ -78,6 +78,10 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
     return null
   }
 
+  if (await project.isRedwoodProject()) {
+    return null
+  }
+
   const pkgJSON = await project.getRootPackageJSON()
   const workspaceGlobs =
     project.packageManager.name === PkgManager.PNPM
