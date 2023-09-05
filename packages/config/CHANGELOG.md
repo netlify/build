@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.8.1](https://github.com/netlify/build/compare/config-v20.8.0...config-v20.8.1) (2023-09-01)
+
+
+### Bug Fixes
+
+* add ef-method field ([#5270](https://github.com/netlify/build/issues/5270)) ([eb83967](https://github.com/netlify/build/commit/eb839670c9e8410fe8bd58ef93c531f77733c8fd))
+
 ## [20.8.0](https://github.com/netlify/build/compare/config-v20.7.0...config-v20.8.0) (2023-08-08)
 
 
