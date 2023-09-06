@@ -87,7 +87,8 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
 })
 
 test('Adds a custom error property to user errors during bundling', async () => {
-  expect.assertions(2)
+  process.env.NO_COLOR = 'true'
+  expect.assertions(3)
 
   const { basePath, cleanup, distPath } = await useFixture('invalid_functions')
   const sourceDirectory = join(basePath, 'functions')
@@ -102,6 +103,16 @@ test('Adds a custom error property to user errors during bundling', async () => 
     await bundle([sourceDirectory], distPath, declarations, { basePath })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
+    const [messageBeforeStack] = (error as BundleError).message.split('at <anonymous> (file://')
+    expect(messageBeforeStack).toMatchInlineSnapshot(`
+      "error: Uncaught (in promise) Error: The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27
+
+        export default async () => 
+                                  ~
+            const ret = new Error(getStringFromWasm0(arg0, arg1));
+                        ^
+          "
+    `)
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'eszip',

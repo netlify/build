@@ -1,3 +1,5 @@
+import type { ExecaError } from 'execa'
+
 interface BundleErrorOptions {
   format: string
 }
@@ -30,6 +32,11 @@ class BundleError extends Error {
  */
 const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
   if (input instanceof Error) {
+    if (input.message.includes("The module's source code could not be parsed")) {
+      // eslint-disable-next-line no-param-reassign
+      input.message = (input as ExecaError).stderr
+    }
+
     return new BundleError(input, options)
   }
 
