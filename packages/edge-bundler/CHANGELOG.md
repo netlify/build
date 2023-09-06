@@ -1,5 +1,14 @@
 # Changelog
 
+## [8.19.1](https://github.com/netlify/edge-bundler/compare/v8.19.0...v8.19.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* hide stack trace on syntax errors ([#464](https://github.com/netlify/edge-bundler/issues/464)) ([9261b8c](https://github.com/netlify/edge-bundler/commit/9261b8c13a07970be0e177aa6f1c4358ac862110))
+* pin bootstrap version used in config extraction ([#469](https://github.com/netlify/edge-bundler/issues/469)) ([19d142d](https://github.com/netlify/edge-bundler/commit/19d142dcb17953e4c598626709662a2ddb6cf506))
+* remap `netlify:edge` specifier ([#467](https://github.com/netlify/edge-bundler/issues/467)) ([9728d1a](https://github.com/netlify/edge-bundler/commit/9728d1a067cd791226eae2110e03897d2e0ac97b))
+
 ## [8.19.0](https://github.com/netlify/edge-bundler/compare/v8.18.0...v8.19.0) (2023-08-28)
 
 
