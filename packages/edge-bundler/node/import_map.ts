@@ -10,7 +10,7 @@ import { isFileNotFoundError } from './utils/error.js'
 
 const INTERNAL_IMPORTS = {
   '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
-  'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
+  'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
 }
 
 type Imports = Record<string, string>

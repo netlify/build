@@ -26,7 +26,8 @@ test('Handles import maps with full URLs without specifying a base URL', () => {
   const map = new ImportMap([inputFile1, inputFile2])
   const { imports } = map.getContents()
 
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
   expect(imports['alias:jamstack']).toBe('https://jamstack.org/')
   expect(imports['alias:pets']).toBe('https://petsofnetlify.com/')
 })
@@ -44,7 +45,8 @@ test('Resolves relative paths to absolute paths if a base path is not provided',
   const { imports } = map.getContents()
   const expectedPath = join(cwd(), 'my-cool-site', 'heart', 'pets')
 
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
   expect(imports['alias:pets']).toBe(`${pathToFileURL(expectedPath).toString()}/`)
 })
 
@@ -81,7 +83,7 @@ describe('Returns the fully resolved import map', () => {
       specifier2: 'file:///some/full/path/file2.js',
       specifier1: 'file:///some/full/path/file.js',
       '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
-      'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
     })
 
     expect(scopes).toStrictEqual({
@@ -106,7 +108,7 @@ describe('Returns the fully resolved import map', () => {
       specifier2: 'file:///root/full/path/file2.js',
       specifier1: 'file:///root/full/path/file.js',
       '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
-      'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
     })
 
     expect(scopes).toStrictEqual({
@@ -154,6 +156,7 @@ test('Writes import map file to disk', async () => {
 
   await file.cleanup()
 
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
   expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
 })
