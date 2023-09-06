@@ -50,7 +50,6 @@ const bundle = async (
     onBeforeDownload,
     systemLogger,
     internalSrcFolder,
-    bootstrapURL = 'https://edge.netlify.com/bootstrap/index-combined.ts',
   }: BundleOptions = {},
 ) => {
   const logger = getLogger(systemLogger, debug)
@@ -115,11 +114,11 @@ const bundle = async (
   // Retrieving a configuration object for each function.
   // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
   const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger, bootstrapURL })] as const,
+    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
   )
 
   const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger, bootstrapURL })] as const,
+    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
   )
 
   // Creating a hash of function names to configuration objects.

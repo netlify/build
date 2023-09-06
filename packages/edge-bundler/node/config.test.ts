@@ -14,8 +14,6 @@ import { FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
 
-const bootstrapURL = 'https://edge.netlify.com/bootstrap/index-combined.ts'
-
 const importMapFile = {
   baseURL: new URL('file:///some/path/import-map.json'),
   imports: {
@@ -146,7 +144,6 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
         importMap: new ImportMap([importMapFile]),
         deno,
         log: logger,
-        bootstrapURL,
       })
 
     if (func.error) {
@@ -284,7 +281,6 @@ test('Passes validation if default export exists and is a function', async () =>
       importMap: new ImportMap([importMapFile]),
       deno,
       log: logger,
-      bootstrapURL,
     }),
   ).resolves.not.toThrow()
 
@@ -321,7 +317,6 @@ test('Fails validation if default export is not function', async () => {
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,
-    bootstrapURL,
   })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
@@ -358,7 +353,6 @@ test('Fails validation if default export is not present', async () => {
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,
-    bootstrapURL,
   })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))

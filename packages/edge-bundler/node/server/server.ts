@@ -88,7 +88,7 @@ const prepareServer = ({
 
     if (options.getFunctionsConfig) {
       functionsConfig = await Promise.all(
-        functions.map((func) => getFunctionConfig({ func, importMap, deno, bootstrapURL, log: logger })),
+        functions.map((func) => getFunctionConfig({ func, importMap, deno, log: logger })),
       )
     }
 
