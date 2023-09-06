@@ -62,7 +62,7 @@ const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
     return !isExcluded
   })
 
-const runESZIP = async (eszipPath: string) => {
+const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
   // Extract ESZIP into temporary directory.
@@ -86,7 +86,12 @@ const runESZIP = async (eszipPath: string) => {
 
   for (const path of [importMapPath, stage2Path]) {
     const file = await fs.readFile(path, 'utf8')
-    const normalizedFile = file.replace(/file:\/\/\/root/g, pathToFileURL(virtualRootPath).toString())
+
+    let normalizedFile = file.replace(/file:\/{3}root/g, pathToFileURL(virtualRootPath).toString())
+
+    if (vendorDirectory !== undefined) {
+      normalizedFile = normalizedFile.replace(/file:\/{3}vendor/g, pathToFileURL(vendorDirectory).toString())
+    }
 
     await fs.writeFile(path, normalizedFile)
   }

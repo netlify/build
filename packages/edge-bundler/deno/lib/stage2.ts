@@ -3,7 +3,7 @@ import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.40.0/mod.ts'
 import * as path from 'https://deno.land/std@0.177.0/path/mod.ts'
 
 import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
-import { importMapSpecifier, virtualRoot } from '../../shared/consts.ts'
+import { importMapSpecifier, virtualRoot, virtualVendorRoot } from '../../shared/consts.ts'
 import { LEGACY_PUBLIC_SPECIFIER, PUBLIC_SPECIFIER, STAGE2_SPECIFIER } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 
@@ -63,7 +63,13 @@ const getVirtualPath = (basePath: string, filePath: string) => {
   return url
 }
 
-const stage2Loader = (basePath: string, functions: InputFunction[], externals: Set<string>, importMapData?: string) => {
+const stage2Loader = (
+  basePath: string,
+  functions: InputFunction[],
+  externals: Set<string>,
+  importMapData: string | undefined,
+  vendorDirectory?: string,
+) => {
   return async (specifier: string): Promise<LoadResponse | undefined> => {
     if (specifier === STAGE2_SPECIFIER) {
       const stage2Entry = getStage2Entry(basePath, functions)
@@ -91,13 +97,24 @@ const stage2Loader = (basePath: string, functions: InputFunction[], externals: S
       return loadFromVirtualRoot(specifier, virtualRoot, basePath)
     }
 
+    if (vendorDirectory !== undefined && specifier.startsWith(virtualVendorRoot)) {
+      return loadFromVirtualRoot(specifier, virtualVendorRoot, vendorDirectory)
+    }
+
     return await loadWithRetry(specifier)
   }
 }
 
-const writeStage2 = async ({ basePath, destPath, externals, functions, importMapData }: WriteStage2Options) => {
+const writeStage2 = async ({
+  basePath,
+  destPath,
+  externals,
+  functions,
+  importMapData,
+  vendorDirectory,
+}: WriteStage2Options) => {
   const importMapURL = importMapData ? importMapSpecifier : undefined
-  const loader = stage2Loader(basePath, functions, new Set(externals), importMapData)
+  const loader = stage2Loader(basePath, functions, new Set(externals), importMapData, vendorDirectory)
   const bytes = await build([STAGE2_SPECIFIER], loader, importMapURL)
   const directory = path.dirname(destPath)
 

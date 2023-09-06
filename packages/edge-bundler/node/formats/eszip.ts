@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
-import { virtualRoot } from '../../shared/consts.js'
+import { virtualRoot, virtualVendorRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
 import { DenoBridge } from '../bridge.js'
 import { Bundle, BundleFormat } from '../bundle.js'
@@ -23,6 +23,7 @@ interface BundleESZIPOptions {
   featureFlags: FeatureFlags
   functions: EdgeFunction[]
   importMap: ImportMap
+  vendorDirectory?: string
 }
 
 const bundleESZIP = async ({
@@ -34,23 +35,27 @@ const bundleESZIP = async ({
   externals,
   functions,
   importMap,
+  vendorDirectory,
 }: BundleESZIPOptions): Promise<Bundle> => {
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
-  const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
-
-  // Transforming all paths under `basePath` to use the virtual root prefix.
   const importMapPrefixes: Record<string, string> = {
     [`${pathToFileURL(basePath)}/`]: virtualRoot,
   }
-  const importMapData = importMap.getContents(importMapPrefixes)
 
+  if (vendorDirectory !== undefined) {
+    importMapPrefixes[`${pathToFileURL(vendorDirectory)}/`] = virtualVendorRoot
+  }
+
+  const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
+  const importMapData = JSON.stringify(importMap.getContents(importMapPrefixes))
   const payload: WriteStage2Options = {
     basePath,
     destPath,
     externals,
     functions,
-    importMapData: JSON.stringify(importMapData),
+    importMapData,
+    vendorDirectory,
   }
   const flags = ['--allow-all', '--no-config', `--import-map=${bundlerImportMap}`]
 

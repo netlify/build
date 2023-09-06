@@ -2,6 +2,7 @@
 *.swp
 npm-debug.log
 node_modules
+!test/fixtures/**/node_modules
 /core
 .eslintcache
 .npmrc

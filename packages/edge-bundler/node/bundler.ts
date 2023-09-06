@@ -11,30 +11,33 @@ import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations } from './declaration.js'
 import { load as loadDeployConfig } from './deploy_config.js'
+import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
 import { ImportMap } from './import_map.js'
-import { getLogger, LogFunction } from './logger.js'
+import { getLogger, LogFunction, Logger } from './logger.js'
 import { writeManifest } from './manifest.js'
+import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 
-interface BundleOptions {
+export interface BundleOptions {
   basePath?: string
+  bootstrapURL?: string
   cacheDirectory?: string
   configPath?: string
   debug?: boolean
   distImportMapPath?: string
   featureFlags?: FeatureFlags
   importMapPaths?: (string | undefined)[]
+  internalSrcFolder?: string
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
-  internalSrcFolder?: string
-  bootstrapURL?: string
+  vendorDirectory?: string
 }
 
-const bundle = async (
+export const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   tomlDeclarations: Declaration[] = [],
@@ -46,10 +49,11 @@ const bundle = async (
     distImportMapPath,
     featureFlags: inputFeatureFlags,
     importMapPaths = [],
+    internalSrcFolder,
     onAfterDownload,
     onBeforeDownload,
     systemLogger,
-    internalSrcFolder,
+    vendorDirectory,
   }: BundleOptions = {},
 ) => {
   const logger = getLogger(systemLogger, debug)
@@ -93,6 +97,11 @@ const bundle = async (
   const userFunctions = userSourceDirectories.length === 0 ? [] : await findFunctions(userSourceDirectories)
   const internalFunctions = internalSrcFolder ? await findFunctions([internalSrcFolder]) : []
   const functions = [...internalFunctions, ...userFunctions]
+  const vendor = await safelyVendorNPMSpecifiers({ basePath, featureFlags, functions, logger, vendorDirectory })
+
+  if (vendor) {
+    importMap.add(vendor.importMap)
+  }
 
   const functionBundle = await bundleESZIP({
     basePath,
@@ -104,6 +113,7 @@ const bundle = async (
     functions,
     featureFlags,
     importMap,
+    vendorDirectory: vendor?.directory,
   })
 
   // The final file name of the bundles contains a SHA256 hash of the contents,
@@ -116,7 +126,6 @@ const bundle = async (
   const internalConfigPromises = internalFunctions.map(
     async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
   )
-
   const userConfigPromises = userFunctions.map(
     async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
   )
@@ -151,6 +160,8 @@ const bundle = async (
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
   })
+
+  await vendor?.cleanup()
 
   if (distImportMapPath) {
     await importMap.writeToFile(distImportMapPath)
@@ -224,5 +235,32 @@ const createFunctionConfig = ({ internalFunctionsWithConfig, declarations }: Cre
     }
   }, {} as Record<string, FunctionConfig>)
 
-export { bundle }
-export type { BundleOptions }
+interface VendorNPMOptions {
+  basePath: string
+  featureFlags: FeatureFlags
+  functions: EdgeFunction[]
+  logger: Logger
+  vendorDirectory: string | undefined
+}
+
+const safelyVendorNPMSpecifiers = async ({
+  basePath,
+  featureFlags,
+  functions,
+  logger,
+  vendorDirectory,
+}: VendorNPMOptions) => {
+  if (!featureFlags.edge_functions_npm_modules) {
+    return
+  }
+
+  try {
+    return await vendorNPMSpecifiers(
+      basePath,
+      functions.map(({ path }) => path),
+      vendorDirectory,
+    )
+  } catch (error) {
+    logger.system(error)
+  }
+}

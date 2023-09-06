@@ -12,6 +12,7 @@ module.exports = {
     complexity: 'off',
     'import/extensions': 'off',
     'max-lines': 'off',
+    'max-lines-per-function': 'off',
     'max-statements': 'off',
     'node/no-missing-import': 'off',
     'no-magic-numbers': 'off',

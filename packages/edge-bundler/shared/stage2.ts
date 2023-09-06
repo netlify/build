@@ -9,4 +9,5 @@ export interface WriteStage2Options {
   externals: string[]
   functions: InputFunction[]
   importMapData?: string
+  vendorDirectory?: string
 }
