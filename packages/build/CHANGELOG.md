@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.20.14](https://github.com/netlify/build/compare/build-v29.20.13...build-v29.20.14) (2023-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @honeycombio/opentelemetry-node to ^0.5.0 ([#5279](https://github.com/netlify/build/issues/5279)) ([4777772](https://github.com/netlify/build/commit/477777206ecd7770818b3236e7840562ed8f80b9))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.18.0 ([#5280](https://github.com/netlify/build/issues/5280)) ([b077da3](https://github.com/netlify/build/commit/b077da356dc7ff5dfd8def850f764ee1f9103bbb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.27 to ^5.2.28
+
 ## [29.20.13](https://github.com/netlify/build/compare/build-v29.20.12...build-v29.20.13) (2023-09-05)
 
 
