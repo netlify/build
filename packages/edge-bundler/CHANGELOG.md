@@ -1,5 +1,17 @@
 # Changelog
 
+## [8.20.0](https://github.com/netlify/edge-bundler/compare/v8.19.1...v8.20.0) (2023-09-07)
+
+
+### Features
+
+* add support for npm modules ([#454](https://github.com/netlify/edge-bundler/issues/454)) ([3d8b3f3](https://github.com/netlify/edge-bundler/commit/3d8b3f342e9f075bbb17fe7fb80602ed377d1a46))
+
+
+### Bug Fixes
+
+* support import maps in npm module resolution ([#471](https://github.com/netlify/edge-bundler/issues/471)) ([3f4975e](https://github.com/netlify/edge-bundler/commit/3f4975e465a098e1699ab5e35f13524f9bbbd1c2))
+
 ## [8.19.1](https://github.com/netlify/edge-bundler/compare/v8.19.0...v8.19.1) (2023-09-06)
 
 
