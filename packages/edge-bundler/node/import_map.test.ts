@@ -24,12 +24,20 @@ test('Handles import maps with full URLs without specifying a base URL', () => {
   }
 
   const map = new ImportMap([inputFile1, inputFile2])
-  const { imports } = map.getContents()
 
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
-  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
-  expect(imports['alias:jamstack']).toBe('https://jamstack.org/')
-  expect(imports['alias:pets']).toBe('https://petsofnetlify.com/')
+  const m1 = map.getContents()
+
+  expect(m1.imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+  expect(m1.imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(m1.imports['alias:jamstack']).toBe('https://jamstack.org/')
+  expect(m1.imports['alias:pets']).toBe('https://petsofnetlify.com/')
+
+  const m2 = map.getContentsWithURLObjects()
+
+  expect(m2.imports['netlify:edge']).toStrictEqual(new URL('https://edge.netlify.com/v1/index.ts?v=legacy'))
+  expect(m2.imports['@netlify/edge-functions']).toStrictEqual(new URL('https://edge.netlify.com/v1/index.ts'))
+  expect(m2.imports['alias:jamstack']).toStrictEqual(new URL('https://jamstack.org/'))
+  expect(m2.imports['alias:pets']).toStrictEqual(new URL('https://petsofnetlify.com/'))
 })
 
 test('Resolves relative paths to absolute paths if a base path is not provided', () => {
@@ -42,12 +50,19 @@ test('Resolves relative paths to absolute paths if a base path is not provided',
   }
 
   const map = new ImportMap([inputFile1])
-  const { imports } = map.getContents()
   const expectedPath = join(cwd(), 'my-cool-site', 'heart', 'pets')
 
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
-  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
-  expect(imports['alias:pets']).toBe(`${pathToFileURL(expectedPath).toString()}/`)
+  const m1 = map.getContents()
+
+  expect(m1.imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+  expect(m1.imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(m1.imports['alias:pets']).toBe(`${pathToFileURL(expectedPath).toString()}/`)
+
+  const m2 = map.getContentsWithURLObjects()
+
+  expect(m2.imports['netlify:edge']).toStrictEqual(new URL('https://edge.netlify.com/v1/index.ts?v=legacy'))
+  expect(m2.imports['@netlify/edge-functions']).toStrictEqual(new URL('https://edge.netlify.com/v1/index.ts'))
+  expect(m2.imports['alias:pets']).toStrictEqual(new URL(`${pathToFileURL(expectedPath).toString()}/`))
 })
 
 describe('Returns the fully resolved import map', () => {

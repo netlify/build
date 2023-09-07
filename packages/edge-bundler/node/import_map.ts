@@ -76,6 +76,26 @@ export class ImportMap {
     )
   }
 
+  static convertImportsToURLObjects(imports: Imports) {
+    return Object.entries(imports).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: new URL(value),
+      }),
+      {} as Record<string, URL>,
+    )
+  }
+
+  static convertScopesToURLObjects(scopes: Record<string, Imports>) {
+    return Object.entries(scopes).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: ImportMap.convertImportsToURLObjects(value),
+      }),
+      {} as Record<string, Record<string, URL>>,
+    )
+  }
+
   // Applies a list of prefixes to a given path, returning the replaced path.
   // For example, given a `path` of `file:///foo/bar/baz.js` and a `prefixes`
   // object with `{"file:///foo/": "file:///hello/"}`, this method will return
@@ -177,6 +197,18 @@ export class ImportMap {
     return {
       imports: transformedImports,
       scopes: transformedScopes,
+    }
+  }
+
+  // The same as `getContents`, but the URLs are represented as URL objects
+  // instead of strings. This is compatible with the `ParsedImportMap` type
+  // from the `@import-maps/resolve` library.
+  getContentsWithURLObjects(prefixes: Record<string, string> = {}) {
+    const { imports, scopes } = this.getContents(prefixes)
+
+    return {
+      imports: ImportMap.convertImportsToURLObjects(imports),
+      scopes: ImportMap.convertScopesToURLObjects(scopes),
     }
   }
 
