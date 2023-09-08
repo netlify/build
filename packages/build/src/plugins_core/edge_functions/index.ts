@@ -53,12 +53,26 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  // Cleaning up the dist directory, in case it has any artifacts from previous
-  // builds.
-  try {
-    await fs.rm(distPath, { recursive: true })
-  } catch {
-    // no-op
+  // Cleaning up directories with leftover artifacts from previous builds.
+  const directoriesToCleanUp = [distPath, internalSrcPath].map(async (directory) => {
+    try {
+      await fs.rm(directory, { recursive: true })
+    } catch {
+      // no-op
+    }
+  })
+
+  await Promise.all(directoriesToCleanUp)
+
+  let vendorDirectory
+
+  // If we're building locally, set a vendor directory in `internalSrcPath`.
+  // This makes Edge Bundler keep the vendor files around after the build,
+  // which lets the IDE have a valid reference to them.
+  if (isRunningLocally && featureFlags.edge_functions_npm_modules) {
+    vendorDirectory = join(internalSrcPath, '.vendor')
+
+    await fs.mkdir(vendorDirectory, { recursive: true })
   }
 
   // Ensuring the dist directory actually exists before letting Edge Bundler
@@ -77,6 +91,7 @@ const coreStep = async function ({
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
       bootstrapURL: edgeFunctionsBootstrapURL,
+      vendorDirectory,
     })
     const metrics = getMetrics(manifest)
 
