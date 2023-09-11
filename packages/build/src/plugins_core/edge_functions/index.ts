@@ -53,16 +53,13 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  // Cleaning up directories with leftover artifacts from previous builds.
-  const directoriesToCleanUp = [distPath, internalSrcPath].map(async (directory) => {
-    try {
-      await fs.rm(directory, { recursive: true })
-    } catch {
-      // no-op
-    }
-  })
-
-  await Promise.all(directoriesToCleanUp)
+  // Cleaning up the dist directory, in case it has any artifacts from previous
+  // builds.
+  try {
+    await fs.rm(distPath, { recursive: true })
+  } catch {
+    // no-op
+  }
 
   let vendorDirectory
 
