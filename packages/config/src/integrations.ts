@@ -1,19 +1,22 @@
 import { getAvailableIntegrations } from './api/integrations.js'
 import { IntegrationResponse } from './types/api.js'
 import { Integration } from './types/integrations.js'
+import { TestOptions } from './types/options.js'
 
 type MergeIntegrationsOpts = {
   configIntegrations?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
   apiIntegrations: IntegrationResponse[]
   context: string
+  testOpts?: TestOptions
 }
 
 export const mergeIntegrations = async function ({
   configIntegrations = [],
   apiIntegrations,
   context,
+  testOpts = {},
 }: MergeIntegrationsOpts): Promise<Integration[]> {
-  const availableIntegrations = await getAvailableIntegrations()
+  const availableIntegrations = await getAvailableIntegrations({ testOpts })
 
   // Include all API integrations, unless they have a `dev` property and we are in the `dev` context
   const resolvedApiIntegrations = apiIntegrations.filter(
@@ -56,7 +59,7 @@ export const mergeIntegrations = async function ({
       return {
         slug: integration.slug,
         version: integration.hostSiteUrl,
-        has_build: true,
+        has_build: !!integration.hasBuild,
       }
     })
     .filter((i): i is IntegrationResponse => typeof i !== 'undefined')

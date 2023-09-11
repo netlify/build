@@ -121,6 +121,7 @@ export const resolveConfig = async function (opts) {
     apiIntegrations: integrations,
     configIntegrations: configA.integrations,
     context: context,
+    testOpts,
   })
 
   const result = {
