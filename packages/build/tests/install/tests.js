@@ -146,7 +146,7 @@ test('In integration dev mode, install local plugins and install the integration
       context: 'dev',
       featureFlags: { cli_fetch_integrations: true },
       testOpts: {
-        cwd: './packages/build/tests/install/fixtures/local_missing_integration/',
+        cwd: './tests/install/fixtures/local_missing_integration/',
       },
     })
     .runWithBuild()

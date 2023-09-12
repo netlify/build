@@ -1,6 +1,6 @@
 [[integrations]]
-	name = "abc-integration"
+name = "abc-integration"
 
-  [integrations.dev]
-    path = "./integration"
-    force_run_in_build = true
+[integrations.dev]
+path = "./integration"
+force_run_in_build = true
