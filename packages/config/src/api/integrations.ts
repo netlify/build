@@ -16,14 +16,18 @@ export const getAvailableIntegrations = async function ({
   testOpts,
 }: GetAvailableIntegrationsOpts): Promise<AvailableIntegration[]> {
   const { host } = testOpts
-  const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com/`)
+  const baseUrl = new URL(host ? `http://${host}/` : `https://api.netlifysdk.com/`)
 
-  const response = await fetch(`${baseUrl}integrations`)
+  try {
+    const response = await fetch(`${baseUrl}integrations`)
 
-  if (response.ok) {
-    const integrations = (await response.json()) as AvailableIntegration[]
-    return Array.isArray(integrations) ? integrations : []
-  } else {
-    throw new Error(`Failed retrieving integrations: ${response.statusText}`)
+    if (response.ok) {
+      const integrations = (await response.json()) as AvailableIntegration[]
+      return Array.isArray(integrations) ? integrations : []
+    } else {
+      return []
+    }
+  } catch {
+    return []
   }
 }
