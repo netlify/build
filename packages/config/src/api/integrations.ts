@@ -24,9 +24,9 @@ export const getAvailableIntegrations = async function ({
     if (response.ok) {
       const integrations = (await response.json()) as AvailableIntegration[]
       return Array.isArray(integrations) ? integrations : []
-    } else {
-      return []
     }
+
+    return []
   } catch {
     return []
   }
