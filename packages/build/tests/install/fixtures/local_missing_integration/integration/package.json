@@ -1,0 +1,15 @@
+{
+  "name": "plugin_deps_plugin",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Build complete!'"
+  },
+  "main": "main.js",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {
+    "math-avg": "^1.0.0"
+  }
+}

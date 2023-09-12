@@ -27,7 +27,14 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-export const installIntegrationPlugins = async function ({ integrations, autoPluginsDir, mode, logs, context }) {
+export const installIntegrationPlugins = async function ({
+  integrations,
+  autoPluginsDir,
+  mode,
+  logs,
+  context,
+  testOpts,
+}) {
   const integrationsToBuild = integrations.filter(
     (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
   )
@@ -39,7 +46,7 @@ export const installIntegrationPlugins = async function ({ integrations, autoPlu
     )
   }
   const packages = (
-    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context })))
+    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts })))
   ).filter(Boolean)
   logInstallIntegrations(
     logs,
@@ -53,10 +60,11 @@ export const installIntegrationPlugins = async function ({ integrations, autoPlu
   }
 
   await createAutoPluginsDir(logs, autoPluginsDir)
+
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const getIntegrationPackage = async function ({ integration: { version, dev }, context }) {
+const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts }) {
   if (typeof version !== 'undefined') {
     return `${version}/packages/buildhooks.tgz`
   }
@@ -64,7 +72,7 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
   if (typeof dev !== 'undefined' && context === 'dev') {
     const { path } = dev
 
-    const integrationDir = resolve(process.cwd(), path)
+    const integrationDir = testOpts ? resolve(testOpts.cwd, path) : resolve(path)
     try {
       const res = await execa('npm', ['run', 'build'], { cwd: integrationDir })
 

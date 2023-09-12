@@ -64,7 +64,15 @@ export const resolvePluginsPath = async function ({
   let integrationPluginOptions = []
 
   if (featureFlags.buildbot_fetch_integrations || featureFlags.cli_fetch_integrations) {
-    integrationPluginOptions = await handleIntegrations({ integrations, autoPluginsDir, mode, logs, buildDir, context })
+    integrationPluginOptions = await handleIntegrations({
+      integrations,
+      autoPluginsDir,
+      mode,
+      logs,
+      buildDir,
+      context,
+      testOpts,
+    })
   }
 
   return [...pluginsOptionsE, ...integrationPluginOptions]
@@ -152,9 +160,9 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   return Promise.all(pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })))
 }
 
-const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context }) {
+const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context, testOpts }) {
   const toInstall = integrations.filter((integration) => integration.has_build)
-  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context })
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts })
 
   if (toInstall.length === 0) {
     return []

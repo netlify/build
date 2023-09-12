@@ -255,7 +255,7 @@ test('Integration specified in config is not returned if integration is not avai
   t.assert(config.integrations[0].slug === 'test')
 })
 
-test('In dev mode, integration specified in config is returned even if integration is not available in API', async (t) => {
+test('In integration dev mode, integration specified in config is returned even if integration is not available in API', async (t) => {
   const { output } = await new Fixture('./fixtures/dev_integration')
     .withFlags({
       token: 'test',
@@ -275,7 +275,7 @@ test('In dev mode, integration specified in config is returned even if integrati
   t.assert(config.integrations[1].version === undefined)
 })
 
-test('In dev mode, integration specified in config is returned even if integration is not enabled on site', async (t) => {
+test('In integration dev mode, integration specified in config is returned even if integration is not enabled on site', async (t) => {
   const { output } = await new Fixture('./fixtures/dev_integration')
     .withFlags({
       token: 'test',
@@ -294,7 +294,7 @@ test('In dev mode, integration specified in config is returned even if integrati
   t.assert(config.integrations[0].version === undefined)
 })
 
-test('In dev mode, integration specified in config is returned and build is forced by config', async (t) => {
+test('In integration dev mode, integration specified in config is returned and build is forced by config', async (t) => {
   const { output } = await new Fixture('./fixtures/dev_integration_with_force_build')
     .withFlags({
       token: 'test',
