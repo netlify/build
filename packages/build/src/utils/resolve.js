@@ -24,7 +24,6 @@ export const resolvePath = async function (path, basedir) {
     // `resolve` sometimes gives unhelpful error messages.
     // https://github.com/browserify/resolve/issues/223
   } catch (e) {
-    console.log('resolvePath error', e)
     return require.resolve(path, { paths: [basedir] })
   }
 }
