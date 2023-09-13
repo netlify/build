@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.9.0](https://github.com/netlify/build/compare/config-v20.8.1...config-v20.9.0) (2023-09-13)
+
+
+### Features
+
+* parse integrations from the config, including local dev support ([#5251](https://github.com/netlify/build/issues/5251)) ([08dbe97](https://github.com/netlify/build/commit/08dbe97b2da5fd5772dff851be59bd56b3f61561))
+
 ## [20.8.1](https://github.com/netlify/build/compare/config-v20.8.0...config-v20.8.1) (2023-09-01)
 
 
