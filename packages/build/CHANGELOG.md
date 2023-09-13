@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.21.0](https://github.com/netlify/build/compare/build-v29.20.15...build-v29.21.0) (2023-09-13)
+
+
+### Features
+
+* parse integrations from the config, including local dev support ([#5251](https://github.com/netlify/build/issues/5251)) ([08dbe97](https://github.com/netlify/build/commit/08dbe97b2da5fd5772dff851be59bd56b3f61561))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.18.1 ([#5288](https://github.com/netlify/build/issues/5288)) ([b1f9fb0](https://github.com/netlify/build/commit/b1f9fb0f793c55fa2c1104e177bf4b8fd74e8953))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.8.1 to ^20.9.0
+    * @netlify/functions-utils bumped from ^5.2.28 to ^5.2.29
+
 ## [29.20.15](https://github.com/netlify/build/compare/build-v29.20.14...build-v29.20.15) (2023-09-07)
 
 
