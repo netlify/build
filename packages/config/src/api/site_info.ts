@@ -31,28 +31,26 @@ export const getSiteInfo = async function ({
   mode,
   siteFeatureFlagPrefix,
   offline = false,
-  featureFlags = {},
   testOpts = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-  const fetchIntegrations = featureFlags.buildbot_fetch_integrations
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-    const integrations =
-      fetchIntegrations && mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts }) : []
+    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
 
-  const promises = [getSite(api, siteId, siteFeatureFlagPrefix), getAccounts(api), getAddons(api, siteId)]
+  const promises = [
+    getSite(api, siteId, siteFeatureFlagPrefix),
+    getAccounts(api),
+    getAddons(api, siteId),
+    getIntegrations({ siteId, testOpts }),
+  ]
 
-  if (fetchIntegrations) {
-    promises.push(getIntegrations({ siteId, testOpts }))
-  }
-
-  const [siteInfo, accounts, addons, integrations = []] = await Promise.all(promises)
+  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
