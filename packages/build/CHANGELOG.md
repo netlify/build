@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.21.1](https://github.com/netlify/build/compare/build-v29.21.0...build-v29.21.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* check testOpts properly in rationalising integrations ([#5292](https://github.com/netlify/build/issues/5292)) ([eb8d4b0](https://github.com/netlify/build/commit/eb8d4b0fdcb7e0b1335730055c57bcf012763bac))
+
 ## [29.21.0](https://github.com/netlify/build/compare/build-v29.20.15...build-v29.21.0) (2023-09-13)
 
 
