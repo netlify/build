@@ -64,7 +64,7 @@ export const installIntegrationPlugins = async function ({
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts }) {
+const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {} }) {
   if (typeof version !== 'undefined') {
     return `${version}/packages/buildhooks.tgz`
   }
@@ -72,7 +72,7 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
   if (typeof dev !== 'undefined' && context === 'dev') {
     const { path } = dev
 
-    const integrationDir = testOpts ? resolve(testOpts.cwd, path) : resolve(path)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
     try {
       const res = await execa('npm', ['run', 'build'], { cwd: integrationDir })
 
