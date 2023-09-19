@@ -1,5 +1,5 @@
-import type { PluginInputs } from './config/inputs.d.ts'
-import type { OnBuild, OnEnd, OnError, OnPostBuild, OnPreBuild, OnSuccess } from './netlify_event_handler.d.ts'
+import type { PluginInputs } from './config/inputs.js'
+import type { OnBuild, OnEnd, OnError, OnPostBuild, OnPreBuild, OnSuccess } from './netlify_event_handler.js'
 
 export interface NetlifyPlugin<TInputs extends PluginInputs = PluginInputs> {
   /**

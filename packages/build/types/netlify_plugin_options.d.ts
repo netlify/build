@@ -1,8 +1,8 @@
-import type { PluginInputs, StringKeys } from './config/inputs.d.ts'
-import type { NetlifyConfig } from './config/netlify_config.d.ts'
-import type { NetlifyPluginConstants } from './netlify_plugin_constants.d.ts'
-import type { NetlifyPluginUtils } from './options/netlify_plugin_utils.d.ts'
-import type { JSONValue } from './utils/json_value.d.ts'
+import type { PluginInputs, StringKeys } from './config/inputs.js'
+import type { NetlifyConfig } from './config/netlify_config.js'
+import type { NetlifyPluginConstants } from './netlify_plugin_constants.js'
+import type { NetlifyPluginUtils } from './options/netlify_plugin_utils.js'
+import type { JSONValue } from './utils/json_value.js'
 
 export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TInputs>> = PluginInputs> {
   /**

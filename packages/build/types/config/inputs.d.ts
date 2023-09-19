@@ -1,4 +1,4 @@
-import type { JSONValue } from '../utils/json_value.d.ts'
+import type { JSONValue } from '../utils/json_value.js'
 
 // Helper type to be used as a workaround for the fact that `interface`s don't have implicit
 // index signatures: https://github.com/microsoft/TypeScript/issues/15300
