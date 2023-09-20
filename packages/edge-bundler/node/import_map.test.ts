@@ -144,7 +144,7 @@ test('Throws when an import map uses a relative path to reference a file outside
     },
   }
 
-  const map = new ImportMap([inputFile1], pathToFileURL(cwd()).toString())
+  const map = new ImportMap([inputFile1], cwd())
 
   expect(() => map.getContents()).toThrowError(
     `Import map cannot reference '${join(cwd(), '..', 'file.js')}' as it's outside of the base directory '${cwd()}'`,
@@ -174,4 +174,51 @@ test('Writes import map file to disk', async () => {
   expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
   expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
   expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
+})
+
+test('Clones an import map', () => {
+  const basePath = join(cwd(), 'my-cool-site', 'import-map.json')
+  const inputFile1 = {
+    baseURL: pathToFileURL(basePath),
+    imports: {
+      'alias:jamstack': 'https://jamstack.org',
+    },
+  }
+  const inputFile2 = {
+    baseURL: pathToFileURL(basePath),
+    imports: {
+      'alias:pets': 'https://petsofnetlify.com/',
+    },
+  }
+
+  const map1 = new ImportMap([inputFile1, inputFile2])
+  const map2 = map1.clone()
+
+  map2.add({
+    baseURL: pathToFileURL(basePath),
+    imports: {
+      netlify: 'https://netlify.com',
+    },
+  })
+
+  expect(map1.getContents()).toStrictEqual({
+    imports: {
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
+      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
+      'alias:jamstack': 'https://jamstack.org/',
+      'alias:pets': 'https://petsofnetlify.com/',
+    },
+    scopes: {},
+  })
+
+  expect(map2.getContents()).toStrictEqual({
+    imports: {
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
+      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
+      'alias:jamstack': 'https://jamstack.org/',
+      'alias:pets': 'https://petsofnetlify.com/',
+      netlify: 'https://netlify.com/',
+    },
+    scopes: {},
+  })
 })

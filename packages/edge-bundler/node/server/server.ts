@@ -1,21 +1,22 @@
-import { tmpName } from 'tmp-promise'
-
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
 import type { EdgeFunction } from '../edge_function.js'
 import { generateStage2 } from '../formats/javascript.js'
 import { ImportMap } from '../import_map.js'
 import { getLogger, LogFunction, Logger } from '../logger.js'
+import { vendorNPMSpecifiers } from '../npm_dependencies.js'
 import { ensureLatestTypes } from '../types.js'
 
 import { killProcess, waitForServer } from './util.js'
 
-type FormatFunction = (name: string) => string
+export type FormatFunction = (name: string) => string
 
 interface PrepareServerOptions {
+  basePath: string
   bootstrapURL: string
   deno: DenoBridge
   distDirectory: string
+  distImportMapPath?: string
   entryPoint?: string
   flags: string[]
   formatExportTypeError?: FormatFunction
@@ -30,13 +31,15 @@ interface StartServerOptions {
 }
 
 const prepareServer = ({
+  basePath,
   bootstrapURL,
   deno,
   distDirectory,
+  distImportMapPath,
   flags: denoFlags,
   formatExportTypeError,
   formatImportError,
-  importMap,
+  importMap: baseImportMap,
   logger,
   port,
 }: PrepareServerOptions) => {
@@ -61,6 +64,19 @@ const prepareServer = ({
       formatImportError,
     })
 
+    const importMap = baseImportMap.clone()
+    const vendor = await vendorNPMSpecifiers({
+      basePath,
+      directory: distDirectory,
+      functions: functions.map(({ path }) => path),
+      importMap,
+      logger,
+    })
+
+    if (vendor) {
+      importMap.add(vendor.importMap)
+    }
+
     try {
       // This command will print a JSON object with all the modules found in
       // the `stage2Path` file as well as all of their dependencies.
@@ -73,12 +89,13 @@ const prepareServer = ({
       // no-op
     }
 
-    const bootstrapFlags = ['--port', port.toString()]
+    const extraDenoFlags = [`--import-map=${importMap.toDataURL()}`]
+    const applicationFlags = ['--port', port.toString()]
 
     // We set `extendEnv: false` to avoid polluting the edge function context
     // with variables from the user's system, since those will not be available
     // in the production environment.
-    await deno.runInBackground(['run', ...denoFlags, stage2Path, ...bootstrapFlags], processRef, {
+    await deno.runInBackground(['run', ...denoFlags, ...extraDenoFlags, stage2Path, ...applicationFlags], processRef, {
       pipeOutput: true,
       env,
       extendEnv: false,
@@ -90,6 +107,10 @@ const prepareServer = ({
       functionsConfig = await Promise.all(
         functions.map((func) => getFunctionConfig({ func, importMap, deno, log: logger })),
       )
+    }
+
+    if (distImportMapPath) {
+      await importMap.writeToFile(distImportMapPath)
     }
 
     const success = await waitForServer(port, processRef.ps)
@@ -115,6 +136,7 @@ interface InspectSettings {
   address?: string
 }
 interface ServeOptions {
+  basePath: string
   bootstrapURL: string
   certificatePath?: string
   debug?: boolean
@@ -126,10 +148,12 @@ interface ServeOptions {
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
   port: number
+  servePath: string
   systemLogger?: LogFunction
 }
 
-const serve = async ({
+export const serve = async ({
+  basePath,
   bootstrapURL,
   certificatePath,
   debug,
@@ -141,6 +165,7 @@ const serve = async ({
   onAfterDownload,
   onBeforeDownload,
   port,
+  servePath,
   systemLogger,
 }: ServeOptions) => {
   const logger = getLogger(systemLogger, debug)
@@ -151,21 +176,13 @@ const serve = async ({
     onBeforeDownload,
   })
 
-  // We need to generate a stage 2 file and write it somewhere. We use a
-  // temporary directory for that.
-  const distDirectory = await tmpName()
-
   // Wait for the binary to be downloaded if needed.
   await deno.getBinaryPath()
 
   // Downloading latest types if needed.
   await ensureLatestTypes(deno, logger)
 
-  const importMap = new ImportMap()
-
-  await importMap.addFiles(importMapPaths, logger)
-
-  const flags = ['--allow-all', `--import-map=${importMap.toDataURL()}`, '--no-config']
+  const flags = ['--allow-all', '--no-config']
 
   if (certificatePath) {
     flags.push(`--cert=${certificatePath}`)
@@ -185,10 +202,16 @@ const serve = async ({
     }
   }
 
+  const importMap = new ImportMap()
+
+  await importMap.addFiles(importMapPaths, logger)
+
   const server = prepareServer({
+    basePath,
     bootstrapURL,
     deno,
-    distDirectory,
+    distDirectory: servePath,
+    distImportMapPath,
     flags,
     formatExportTypeError,
     formatImportError,
@@ -197,12 +220,5 @@ const serve = async ({
     port,
   })
 
-  if (distImportMapPath) {
-    await importMap.writeToFile(distImportMapPath)
-  }
-
   return server
 }
-
-export { serve }
-export type { FormatFunction }

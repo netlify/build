@@ -31,8 +31,8 @@ export class ImportMap {
   // The different import map files that make up the wider import map.
   sources: ImportMapFile[]
 
-  constructor(sources: ImportMapFile[] = [], rootURL: string | null = null) {
-    this.rootPath = rootURL ? fileURLToPath(rootURL) : null
+  constructor(sources: ImportMapFile[] = [], rootPath: string | null = null) {
+    this.rootPath = rootPath
     this.sources = []
 
     sources.forEach((file) => {
@@ -74,6 +74,10 @@ export class ImportMap {
       }),
       {},
     )
+  }
+
+  clone() {
+    return new ImportMap(this.sources, this.rootPath)
   }
 
   static convertImportsToURLObjects(imports: Imports) {

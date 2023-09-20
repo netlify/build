@@ -2,6 +2,7 @@ import { join } from 'path'
 
 import getPort from 'get-port'
 import fetch from 'node-fetch'
+import { tmpName } from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'
 
@@ -16,10 +17,13 @@ test('Starts a server and serves requests for edge functions', async () => {
   }
   const port = await getPort()
   const importMapPaths = [join(paths.internal, 'import_map.json'), join(paths.user, 'import-map.json')]
+  const servePath = await tmpName()
   const server = await serve({
+    basePath,
     bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
     importMapPaths,
     port,
+    servePath,
   })
 
   const functions = [
