@@ -8,7 +8,7 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
-test('detects node when .node-version is present', async ({ fs }) => {
+test('detects node when bunfig.toml is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     'bunfig.toml': '',
   })
@@ -17,7 +17,7 @@ test('detects node when .node-version is present', async ({ fs }) => {
   expect(detected[0].name).toBe('Bun')
 })
 
-test('detects node when .nvmrc is present', async ({ fs }) => {
+test('detects node when bun.lockb is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     'bun.lockb': '',
   })
