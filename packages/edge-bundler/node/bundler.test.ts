@@ -125,7 +125,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing NPM module', async () => {
+test('Prints a nice error message when user tries importing an npm module and npm support is disabled', async () => {
   expect.assertions(2)
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module')
@@ -142,7 +142,34 @@ test('Prints a nice error message when user tries importing NPM module', async (
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).message).toEqual(
-      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/parent-1"'?`,
+      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/parent-2"'?`,
+    )
+  } finally {
+    await cleanup()
+  }
+})
+
+test('Prints a nice error message when user tries importing an npm module and npm support is enabled', async () => {
+  expect.assertions(2)
+
+  const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+
+  try {
+    await bundle([sourceDirectory], distPath, declarations, {
+      basePath,
+      featureFlags: { edge_functions_npm_modules: true },
+    })
+  } catch (error) {
+    expect(error).toBeInstanceOf(BundleError)
+    expect((error as BundleError).message).toEqual(
+      `There was an error when loading the 'p-retry' npm module. Support for npm modules in edge functions is an experimental feature. Refer to https://ntl.fyi/edge-functions-npm for more information.`,
     )
   } finally {
     await cleanup()
@@ -458,7 +485,7 @@ test('Handles imports with the `node:` prefix', async () => {
   await cleanup()
 })
 
-test('Loads npm modules from bare specifiers with and without the `npm:` prefix', async () => {
+test('Loads npm modules from bare specifiers', async () => {
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [

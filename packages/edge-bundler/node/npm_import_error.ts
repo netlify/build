@@ -1,8 +1,12 @@
 class NPMImportError extends Error {
-  constructor(originalError: Error, moduleName: string) {
-    super(
-      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/${moduleName}"'?`,
-    )
+  constructor(originalError: Error, moduleName: string, supportsNPM: boolean) {
+    let message = `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/${moduleName}"'?`
+
+    if (supportsNPM) {
+      message = `There was an error when loading the '${moduleName}' npm module. Support for npm modules in edge functions is an experimental feature. Refer to https://ntl.fyi/edge-functions-npm for more information.`
+    }
+
+    super(message)
 
     this.name = 'NPMImportError'
     this.stack = originalError.stack
@@ -12,18 +16,18 @@ class NPMImportError extends Error {
   }
 }
 
-const wrapNpmImportError = (input: unknown) => {
+const wrapNpmImportError = (input: unknown, supportsNPM: boolean) => {
   if (input instanceof Error) {
     const match = input.message.match(/Relative import path "(.*)" not prefixed with/)
     if (match !== null) {
       const [, moduleName] = match
-      return new NPMImportError(input, moduleName)
+      return new NPMImportError(input, moduleName, supportsNPM)
     }
 
     const schemeMatch = input.message.match(/Error: Module not found "npm:(.*)"/)
     if (schemeMatch !== null) {
       const [, moduleName] = schemeMatch
-      return new NPMImportError(input, moduleName)
+      return new NPMImportError(input, moduleName, supportsNPM)
     }
   }
 

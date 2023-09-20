@@ -1,5 +1,5 @@
 import parent1 from 'parent-1'
-import parent2 from 'npm:parent-2'
+import parent2 from 'parent-2'
 import parent3 from './lib/util.ts'
 import { echo } from 'alias:helper'
 
