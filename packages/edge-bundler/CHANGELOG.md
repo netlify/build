@@ -1,5 +1,17 @@
 # Changelog
 
+## [9.0.0](https://github.com/netlify/edge-bundler/compare/v8.20.0...v9.0.0) (2023-09-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* support npm modules when serving ([#475](https://github.com/netlify/edge-bundler/issues/475))
+
+### Features
+
+* remove support for `npm:` prefix ([#472](https://github.com/netlify/edge-bundler/issues/472)) ([87478f0](https://github.com/netlify/edge-bundler/commit/87478f0300577b97da14c05a09e6b02d64c350a3))
+* support npm modules when serving ([#475](https://github.com/netlify/edge-bundler/issues/475)) ([ec33cd7](https://github.com/netlify/edge-bundler/commit/ec33cd70b1c2b1fa29dcf183e6fa7ebf1825f685))
+
 ## [8.20.0](https://github.com/netlify/edge-bundler/compare/v8.19.1...v8.20.0) (2023-09-07)
 
 
