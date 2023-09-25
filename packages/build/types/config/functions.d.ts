@@ -31,6 +31,6 @@ type FunctionsObject = {
 /* eslint-enable camelcase */
 
 export type Functions = {
-  '*': FunctionsObject
+  '*': FunctionsObject & { deno_import_map?: string }
   [pattern: GlobPattern]: FunctionsObject
 }
