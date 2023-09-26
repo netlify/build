@@ -1,6 +1,7 @@
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
 import type { EdgeFunction } from '../edge_function.js'
+import type { FeatureFlags } from '../feature_flags.js'
 import { generateStage2 } from '../formats/javascript.js'
 import { ImportMap } from '../import_map.js'
 import { getLogger, LogFunction, Logger } from '../logger.js'
@@ -18,6 +19,7 @@ interface PrepareServerOptions {
   distDirectory: string
   distImportMapPath?: string
   entryPoint?: string
+  featureFlags?: FeatureFlags
   flags: string[]
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
@@ -36,6 +38,7 @@ const prepareServer = ({
   deno,
   distDirectory,
   distImportMapPath,
+  featureFlags,
   flags: denoFlags,
   formatExportTypeError,
   formatImportError,
@@ -64,17 +67,22 @@ const prepareServer = ({
       formatImportError,
     })
 
+    const features: Record<string, boolean> = {}
     const importMap = baseImportMap.clone()
-    const vendor = await vendorNPMSpecifiers({
-      basePath,
-      directory: distDirectory,
-      functions: functions.map(({ path }) => path),
-      importMap,
-      logger,
-    })
 
-    if (vendor) {
-      importMap.add(vendor.importMap)
+    if (featureFlags?.edge_functions_npm_modules) {
+      const vendor = await vendorNPMSpecifiers({
+        basePath,
+        directory: distDirectory,
+        functions: functions.map(({ path }) => path),
+        importMap,
+        logger,
+      })
+
+      if (vendor) {
+        features.npmModules = true
+        importMap.add(vendor.importMap)
+      }
     }
 
     try {
@@ -116,6 +124,7 @@ const prepareServer = ({
     const success = await waitForServer(port, processRef.ps)
 
     return {
+      features,
       functionsConfig,
       graph,
       success,
@@ -141,6 +150,7 @@ interface ServeOptions {
   certificatePath?: string
   debug?: boolean
   distImportMapPath?: string
+  featureFlags?: FeatureFlags
   inspectSettings?: InspectSettings
   importMapPaths?: string[]
   onAfterDownload?: OnAfterDownloadHook
@@ -159,6 +169,7 @@ export const serve = async ({
   debug,
   distImportMapPath,
   inspectSettings,
+  featureFlags,
   formatExportTypeError,
   formatImportError,
   importMapPaths = [],
@@ -212,6 +223,7 @@ export const serve = async ({
     deno,
     distDirectory: servePath,
     distImportMapPath,
+    featureFlags,
     flags,
     formatExportTypeError,
     formatImportError,

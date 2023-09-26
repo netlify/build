@@ -69,7 +69,7 @@ export const getDependencyTrackerPlugin = (
         return { external: true }
       }
 
-      const isLocalImport = specifier.startsWith(path.sep) || specifier.startsWith('.')
+      const isLocalImport = specifier.startsWith(path.sep) || specifier.startsWith('.') || path.isAbsolute(specifier)
 
       // If this is a local import, return so that esbuild visits that path.
       if (isLocalImport) {
@@ -160,10 +160,6 @@ export const vendorNPMSpecifiers = async ({
   if (specifiers.size === 0) {
     return
   }
-
-  logger.user(
-    'You are using npm modules in Edge Functions, which is an experimental feature. Learn more at https://ntl.fyi/edge-functions-npm.',
-  )
 
   // To bundle an entire module and all its dependencies, create a barrel file
   // where we re-export everything from that specifier. We do this for every

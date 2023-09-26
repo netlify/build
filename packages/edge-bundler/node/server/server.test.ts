@@ -44,13 +44,14 @@ test('Starts a server and serves requests for edge functions', async () => {
     getFunctionsConfig: true,
   }
 
-  const { functionsConfig, graph, success } = await server(
+  const { features, functionsConfig, graph, success } = await server(
     functions,
     {
       very_secret_secret: 'i love netlify',
     },
     options,
   )
+  expect(features).toEqual({})
   expect(success).toBe(true)
   expect(functionsConfig).toEqual([{ path: '/my-function' }, {}, { path: '/global-netlify' }])
 
