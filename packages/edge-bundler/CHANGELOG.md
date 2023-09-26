@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.1.0](https://github.com/netlify/edge-bundler/compare/v9.0.0...v9.1.0) (2023-09-26)
+
+
+### Features
+
+* return `features` from server ([#481](https://github.com/netlify/edge-bundler/issues/481)) ([e135bb9](https://github.com/netlify/edge-bundler/commit/e135bb925d5af142dea3465813d1b8c6ccf5d4f8))
+
 ## [9.0.0](https://github.com/netlify/edge-bundler/compare/v8.20.0...v9.0.0) (2023-09-20)
 
 
