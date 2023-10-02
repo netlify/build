@@ -79,7 +79,7 @@
     "better-ajv-errors": "^1.2.0",
     "common-path-prefix": "^3.0.0",
     "env-paths": "^3.0.0",
-    "esbuild": "0.19.2",
+    "esbuild": "0.19.4",
     "execa": "^6.0.0",
     "find-up": "^6.3.0",
     "get-port": "^6.1.2",
