@@ -33,7 +33,7 @@ const getClient = function (opts: any = {}) {
 }
 
 test('Default options', (t) => {
-  const client: any = new NetlifyAPI({})
+  const client = new NetlifyAPI({})
   t.is(client.scheme, 'https')
   t.is(client.host, 'api.netlify.com')
   t.is(client.pathPrefix, '/api/v1')
@@ -47,17 +47,17 @@ test('Default options', (t) => {
 })
 
 test('Can set|get scheme', (t) => {
-  const client: any = new NetlifyAPI({ scheme })
+  const client = new NetlifyAPI({ scheme })
   t.is(client.scheme, scheme)
 })
 
 test('Can set|get host', (t) => {
-  const client: any = new NetlifyAPI({ host })
+  const client = new NetlifyAPI({ host })
   t.is(client.host, host)
 })
 
 test('Can set|get pathPrefix', (t) => {
-  const client: any = new NetlifyAPI({ pathPrefix })
+  const client = new NetlifyAPI({ pathPrefix })
   t.is(client.pathPrefix, pathPrefix)
 })
 
@@ -67,7 +67,7 @@ test('Can set|get basePath', (t) => {
 })
 
 test('Can update basePath', (t) => {
-  const client: any = new NetlifyAPI({ scheme, host, pathPrefix })
+  const client = new NetlifyAPI({ scheme, host, pathPrefix })
 
   const newScheme = 'https'
   const newHost = `${domain}:1224`
@@ -81,18 +81,18 @@ test('Can update basePath', (t) => {
 
 test('Can set user agent', (t) => {
   const userAgent = 'test'
-  const client: any = new NetlifyAPI({ userAgent })
+  const client = new NetlifyAPI({ userAgent })
   t.is(client.defaultHeaders['User-agent'], userAgent)
 })
 
 test('Can set|get globalParams', (t) => {
   const testGlobalParams = { test: 'test' }
-  const client: any = new NetlifyAPI({ globalParams: testGlobalParams })
+  const client = new NetlifyAPI({ globalParams: testGlobalParams })
   t.deepEqual(client.globalParams, testGlobalParams)
 })
 
 test('Can set|get access token', (t) => {
-  const client: any = getClient()
+  const client = getClient()
   client.accessToken = testAccessToken
   t.is(client.accessToken, testAccessToken)
   t.is(client.defaultHeaders.Authorization, `Bearer ${testAccessToken}`)
@@ -120,7 +120,7 @@ test('Can use underscored parameters in path variables', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
   t.true(scope.isDone())
@@ -130,7 +130,7 @@ test('Can use camelcase parameters in path variables', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ accountId })
 
   t.true(scope.isDone())
@@ -140,7 +140,7 @@ test('Can use global parameters in path variables', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient({ globalParams: { account_id: accountId } })
+  const client = getClient({ globalParams: { account_id: accountId } })
   await client.getAccount()
 
   t.true(scope.isDone())
@@ -150,7 +150,7 @@ test('Can use underscored parameters in query variables', async (t) => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createTicket({ client_id: clientId })
 
   t.true(scope.isDone())
@@ -160,7 +160,7 @@ test('Can use camelcase parameters in query variables', async (t) => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createTicket({ clientId })
 
   t.true(scope.isDone())
@@ -170,7 +170,7 @@ test('Can use global parameters in query variables', async (t) => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
-  const client: any = getClient({ globalParams: { client_id: clientId } })
+  const client = getClient({ globalParams: { client_id: clientId } })
   await client.createTicket()
 
   t.true(scope.isDone())
@@ -184,7 +184,7 @@ test('Allow array query parameters', async (t) => {
     )
     .reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getLatestPluginRuns({ site_id: siteId, packages: ['@scope/package', '@scope/package-two'] })
 
   t.true(scope.isDone())
@@ -196,7 +196,7 @@ test('Can specify JSON request body as an object', async (t) => {
     .post(`${pathPrefix}/accounts`, body, { 'Content-Type': 'application/json' } as any)
     .reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createAccount({ body })
 
   t.true(scope.isDone())
@@ -208,7 +208,7 @@ test('Can specify JSON request body as a function', async (t) => {
     .post(`${pathPrefix}/accounts`, body, { 'Content-Type': 'application/json' } as any)
     .reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createAccount({ body: () => body })
 
   t.true(scope.isDone())
@@ -223,7 +223,7 @@ test('Can specify binary request body as a stream', async (t) => {
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: fromString(body) })
 
   t.deepEqual(response, expectedResponse)
@@ -239,7 +239,7 @@ test('Can specify binary request body as a function', async (t) => {
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
 
   t.deepEqual(response, expectedResponse)
@@ -250,7 +250,7 @@ test('Can use global parameters in request body', async (t) => {
   const body = { test: 'test' }
   const scope = nock(origin).post(`${pathPrefix}/accounts`, body).reply(200)
 
-  const client: any = getClient({ globalParams: { body } })
+  const client = getClient({ globalParams: { body } })
   await client.createAccount()
 
   t.true(scope.isDone())
@@ -269,7 +269,7 @@ test('Can set header parameters', async (t) => {
     .matchHeader('X-Nf-Retry-Count', retryCount.toString())
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFunction({
     deploy_id: deployId,
     name: functionName,
@@ -285,7 +285,7 @@ test('Validates required path parameters', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).put(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await t.throwsAsync(client.updateAccount(), { message: "Missing required path variable 'account_id'" })
 
   t.false(scope.isDone())
@@ -295,7 +295,7 @@ test('Validates required query parameters', async (t) => {
   const zone_id = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/dns_zones/${zone_id}/transfer`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await t.throwsAsync(client.transferDnsZone({ zone_id }), {
     message: "Missing required query variable 'account_id'",
   })
@@ -309,7 +309,7 @@ test('Can set request headers', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).matchHeader(headerName, headerValue).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId }, { headers: { [headerName]: headerValue } })
 
   t.true(scope.isDone())
@@ -320,7 +320,7 @@ test('Can parse JSON responses', async (t) => {
   const expectedResponse = { test: 'test' }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
   t.deepEqual(response, expectedResponse)
@@ -332,7 +332,7 @@ test('Can parse text responses', async (t) => {
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
   t.deepEqual(response, expectedResponse)
@@ -345,7 +345,7 @@ test('Handle error empty responses', async (t) => {
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
@@ -362,7 +362,7 @@ test('Handle error text responses', async (t) => {
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
@@ -381,7 +381,7 @@ test('Handle error text responses on JSON endpoints', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(status, expectedResponse, { 'Content-Type': 'application/json' })
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
@@ -398,7 +398,7 @@ test('Handle error JSON responses', async (t) => {
   const errorJson = { error: true }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, errorJson)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
@@ -415,7 +415,7 @@ test('Handle network errors', async (t) => {
   const url = `${pathPrefix}/accounts/${accountId}`
   const scope = nock(origin).get(url).replyWithError(expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.true(error instanceof Error)
@@ -507,7 +507,7 @@ test('Does not retry on server errors', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, 500)
@@ -527,7 +527,7 @@ test('Retries on server errors for the `getLatestPluginRuns` endpoint', async (t
     .query({ packages })
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getLatestPluginRuns({ site_id: siteId, packages })
 
   t.deepEqual(response, expectedResponse)
@@ -545,7 +545,7 @@ test('Handles API rate limiting', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
   t.true(Date.now() >= retryAtMs)
@@ -562,7 +562,7 @@ test('Handles API rate limiting when date is in the past', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
   t.true(scope.isDone())
@@ -578,7 +578,7 @@ test('Handles API rate limiting when X-RateLimit-Reset is missing', async (t) =>
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
   t.true(scope.isDone())
@@ -596,7 +596,7 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, 429)
@@ -618,7 +618,7 @@ errorCodes.forEach((code) => {
       .get(`${pathPrefix}/accounts/${accountId}`)
       .reply(200, expectedResponse)
 
-    const client: any = getClient()
+    const client = getClient()
     const response: any = await client.getAccount({ account_id: accountId })
 
     t.true(Date.now() >= retryAtMs)
@@ -639,7 +639,7 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
     .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
 
   t.true(Date.now() >= retryAtMs)
@@ -647,8 +647,23 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
   t.true(scope.isDone())
 })
 
+test('Updates environment variables on a site', async (t) => {
+  const siteId = uuidv4()
+  const body = { build_settings: { env: { HELLO: 'WORLD' } } }
+  const expectedResponse = { test: 'test' }
+  const scope = nock(origin).patch(`${pathPrefix}/sites/${siteId}`, JSON.stringify(body)).reply(200, expectedResponse)
+
+  const client = getClient()
+  const response = await client.updateSite({
+    siteId,
+    body,
+  })
+  t.deepEqual(response, expectedResponse)
+  t.true(scope.isDone())
+})
+
 test('Can set (proxy) agent', (t) => {
-  const client: any = getClient({ accessToken: testAccessToken, agent })
+  const client = getClient({ accessToken: testAccessToken, agent })
   t.is(client.agent, agent)
 })
 
@@ -656,7 +671,7 @@ test('(Proxy) agent is passed as request option', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient({ accessToken: testAccessToken, agent })
+  const client = getClient({ accessToken: testAccessToken, agent })
   await client.getAccount({ account_id: accountId })
   t.is((scope as any).interceptors[0].req.options.agent, agent)
 })
@@ -665,7 +680,7 @@ test('(Proxy) agent is not passed as request option if not set', async (t) => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient({ accessToken: testAccessToken })
+  const client = getClient({ accessToken: testAccessToken })
   await client.getAccount({ account_id: accountId })
   t.falsy((scope as any).interceptors[0].req.options.agent)
 })
