@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.9.0](https://github.com/netlify/build/compare/build-info-v7.8.0...build-info-v7.9.0) (2023-10-02)
+
+
+### Features
+
+* detect bun as runtime ([#5300](https://github.com/netlify/build/issues/5300)) ([6f87850](https://github.com/netlify/build/commit/6f8785097de00e763fd81f17689c088ed39cdf8b))
+
 ## [7.8.0](https://github.com/netlify/build/compare/build-info-v7.7.4...build-info-v7.8.0) (2023-09-01)
 
 

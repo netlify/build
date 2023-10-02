@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.21.2](https://github.com/netlify/build/compare/build-v29.21.1...build-v29.21.2) (2023-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.19.0 ([#5309](https://github.com/netlify/build/issues/5309)) ([77de265](https://github.com/netlify/build/commit/77de2651e8d659bdd57fe55242d40b4716e008cd))
+* document deno_import_map in function types ([#5305](https://github.com/netlify/build/issues/5305)) ([21cafcf](https://github.com/netlify/build/commit/21cafcfd25ed4a05e82af39925098b26623ae745))
+* fixes an issue where the type imports could not be resolved ([#5297](https://github.com/netlify/build/issues/5297)) ([0a72c89](https://github.com/netlify/build/commit/0a72c891b3d9e3676e33173900bb94d6e587c1dc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.29 to ^5.2.30
+
 ## [29.21.1](https://github.com/netlify/build/compare/build-v29.21.0...build-v29.21.1) (2023-09-15)
 
 
