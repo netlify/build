@@ -1,4 +1,5 @@
 import { Brew } from './brew.js'
+import { Bun } from './bun.js'
 import { Emacs } from './cask.js'
 import { Go } from './go.js'
 import { Java } from './java.js'
@@ -9,4 +10,4 @@ import { Ruby } from './ruby.js'
 import { Rust } from './rust.js'
 import { Swift } from './swift.js'
 
-export const runtimes = [Node, Ruby, Brew, Emacs, Go, Java, Php, Rust, Swift, Python]
+export const runtimes = [Node, Ruby, Brew, Bun, Emacs, Go, Java, Php, Rust, Swift, Python]
