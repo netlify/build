@@ -55,48 +55,48 @@
     "order": 13,
     "machine": 2
   },
-  "tests/mutate_save/tests.js": {
+  "tests/utils_build/tests.js": {
     "order": 14,
     "machine": 2
   },
-  "tests/mutate/tests.js": {
-    "order": 15,
-    "machine": 2
-  },
-  "tests/utils_build/tests.js": {
-    "order": 16,
-    "machine": 2
-  },
   "tests/core/tests.js": {
-    "order": 17,
+    "order": 15,
     "machine": 3
   },
   "tests/edge_functions/tests.js": {
-    "order": 18,
+    "order": 16,
     "machine": 3
   },
   "tests/install/tests.js": {
-    "order": 19,
+    "order": 17,
     "machine": 3
   },
   "tests/log/tests.js": {
-    "order": 20,
+    "order": 18,
     "machine": 3
   },
   "tests/manifest/tests.js": {
-    "order": 21,
+    "order": 19,
     "machine": 3
   },
   "tests/plugins/tests.js": {
-    "order": 22,
+    "order": 20,
     "machine": 3
   },
   "tests/steps/tests.js": {
-    "order": 23,
+    "order": 21,
     "machine": 3
   },
   "tests/secrets_scanning/tests.js": {
-    "order": 24,
+    "order": 22,
     "machine": 3
+  },
+  "tests/mutate_save/tests.js": {
+    "order": 23,
+    "machine": 4
+  },
+  "tests/mutate/tests.js": {
+    "order": 24,
+    "machine": 4
   }
 }
