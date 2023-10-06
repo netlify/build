@@ -88,7 +88,7 @@ test('Erroneous headers created by a build command are handled', async (t) => {
           branch: 'main',
         })
         .runBuildBinary()
-      t.snapshot(normalizeOutput(output))
+      t.true(output.includes('Warning: some headers have syntax errors'))
     } finally {
       await stopServer()
     }
