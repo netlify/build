@@ -588,6 +588,7 @@ const runBuild = async function ({
     logs,
     debug,
     verbose,
+    netlifyConfig,
   })
 
   const { steps, events } = timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps) : getSteps(pluginsSteps)
