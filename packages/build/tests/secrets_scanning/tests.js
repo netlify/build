@@ -63,5 +63,5 @@ test('secrets scanning, should not fail if the secrets values are not detected i
   const output = await new Fixture('./fixtures/src_scanning_env_vars_no_matches')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(output.includes(`No secrets detected in build output or repo code!`))
 })

@@ -89,7 +89,7 @@
   },
   "tests/secrets_scanning/tests.js": {
     "order": 22,
-    "machine": 3
+    "machine": 4
   },
   "tests/mutate_save/tests.js": {
     "order": 23,

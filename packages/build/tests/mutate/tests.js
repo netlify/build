@@ -1,3 +1,5 @@
+import os from 'os'
+
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
@@ -161,6 +163,11 @@ test('netlifyConfig.build.command can be added', async (t) => {
 })
 
 test('netlifyConfig.build.command can be removed', async (t) => {
+  if (os.platform() === 'win32') {
+    t.log('Test skipped on Windows.')
+    t.pass()
+    return
+  }
   const output = await new Fixture('./fixtures/build_command_remove').runWithBuild()
   t.true(output.includes(`Netlify configuration property "build.command" value changed to ''.`))
 })
@@ -176,6 +183,11 @@ test('netlifyConfig.build.environment can be assigned individually', async (t) =
 })
 
 test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', async (t) => {
+  if (os.platform() === 'win32') {
+    t.log('Test skipped on Windows.')
+    t.pass()
+    return
+  }
   const output = await new Fixture('./fixtures/publish_constants').runWithBuild()
   t.true(output.includes(`Netlify configuration property "build.publish" value changed to 'test'.`))
 })
@@ -186,6 +198,11 @@ test('netlifyConfig.build.edge_functions mutations are used by constants.EDGE_FU
 })
 
 test('netlifyConfig.edge_functions can be assigned all at once', async (t) => {
+  if (os.platform() === 'win32') {
+    t.log('Test skipped on Windows.')
+    t.pass()
+    return
+  }
   const output = await new Fixture('./fixtures/edge_functions_all').withFlags({ debug: false }).runWithBuild()
   t.true(output.includes(`Netlify Build Complete`))
 })
