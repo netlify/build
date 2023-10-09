@@ -5,6 +5,7 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { Metric } from '../../core/report_metrics.js'
+import { log, reduceLogLines } from '../../log/logger.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
@@ -74,6 +75,7 @@ const coreStep = async function ({
       distImportMapPath,
       featureFlags,
       importMapPaths: [userDefinedImportMap],
+      userLogger: (...args) => log(logs, reduceLogLines(args)),
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
       bootstrapURL: edgeFunctionsBootstrapURL,
