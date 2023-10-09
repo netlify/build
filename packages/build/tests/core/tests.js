@@ -46,6 +46,7 @@ test('--help', async (t) => {
 
 test('--version', async (t) => {
   const { output } = await new Fixture().withFlags({ version: true }).runBuildBinary(FIXTURES_DIR)
+  t.not(output, '0.0.0')
   t.regex(output, /^\d+\.\d+\.\d+/)
 })
 
