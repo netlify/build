@@ -34,6 +34,7 @@ export interface BundleOptions {
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
+  userLogger?: LogFunction
   vendorDirectory?: string
 }
 
@@ -52,11 +53,12 @@ export const bundle = async (
     internalSrcFolder,
     onAfterDownload,
     onBeforeDownload,
+    userLogger,
     systemLogger,
     vendorDirectory,
   }: BundleOptions = {},
 ) => {
-  const logger = getLogger(systemLogger, debug)
+  const logger = getLogger(systemLogger, userLogger, debug)
   const featureFlags = getFlags(inputFeatureFlags)
   const options: DenoOptions = {
     debug,

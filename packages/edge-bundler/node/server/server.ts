@@ -159,6 +159,7 @@ interface ServeOptions {
   formatImportError?: FormatFunction
   port: number
   servePath: string
+  userLogger?: LogFunction
   systemLogger?: LogFunction
 }
 
@@ -177,9 +178,10 @@ export const serve = async ({
   onBeforeDownload,
   port,
   servePath,
+  userLogger,
   systemLogger,
 }: ServeOptions) => {
-  const logger = getLogger(systemLogger, debug)
+  const logger = getLogger(systemLogger, userLogger, debug)
   const deno = new DenoBridge({
     debug,
     logger,

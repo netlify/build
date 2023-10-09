@@ -13,12 +13,12 @@ afterEach(() => {
   console.log = consoleLog
 })
 
-test('Prints user logs to stdout', () => {
+test('Prints user logs to stdout if no user logger is provided', () => {
   const mockConsoleLog = vi.fn()
   console.log = mockConsoleLog
 
-  const logger1 = getLogger(noopLogger, true)
-  const logger2 = getLogger(noopLogger, false)
+  const logger1 = getLogger(noopLogger, undefined, true)
+  const logger2 = getLogger(noopLogger, undefined, false)
 
   logger1.user('Hello with `debug: true`')
   logger2.user('Hello with `debug: false`')
@@ -28,13 +28,23 @@ test('Prints user logs to stdout', () => {
   expect(mockConsoleLog).toHaveBeenNthCalledWith(2, 'Hello with `debug: false`')
 })
 
+test('Prints user logs to user logger provided', () => {
+  const userLogger = vi.fn()
+  const logger = getLogger(noopLogger, userLogger, true)
+
+  logger.user('Hello!')
+
+  expect(userLogger).toHaveBeenCalledTimes(1)
+  expect(userLogger).toHaveBeenNthCalledWith(1, 'Hello!')
+})
+
 test('Prints system logs to the system logger provided', () => {
   const mockSystemLog = vi.fn()
   const mockConsoleLog = vi.fn()
   console.log = mockSystemLog
 
-  const logger1 = getLogger(mockSystemLog, true)
-  const logger2 = getLogger(mockSystemLog, false)
+  const logger1 = getLogger(mockSystemLog, undefined, true)
+  const logger2 = getLogger(mockSystemLog, undefined, false)
 
   logger1.system('Hello with `debug: true`')
   logger2.system('Hello with `debug: false`')
@@ -49,8 +59,8 @@ test('Prints system logs to stdout if there is no system logger provided and `de
   const mockConsoleLog = vi.fn()
   console.log = mockConsoleLog
 
-  const logger1 = getLogger(undefined, true)
-  const logger2 = getLogger(undefined, false)
+  const logger1 = getLogger(undefined, undefined, true)
+  const logger2 = getLogger(undefined, undefined, false)
 
   logger1.system('Hello with `debug: true`')
   logger2.system('Hello with `debug: false`')

@@ -56,7 +56,7 @@ class DenoBridge {
     this.cacheDirectory = options.cacheDirectory ?? getPathInHome('deno-cli')
     this.debug = options.debug ?? false
     this.denoDir = options.denoDir
-    this.logger = options.logger ?? getLogger(undefined, options.debug)
+    this.logger = options.logger ?? getLogger(undefined, undefined, options.debug)
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
