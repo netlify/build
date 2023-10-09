@@ -122,7 +122,7 @@ export const logWarningSubHeader = function (logs: BufferedLogs | undefined, str
 
 // Combines an array of elements into a single string, separated by a space,
 // and with basic serialization of non-string types
-const reduceLogLines = function (lines) {
+export const reduceLogLines = function (lines) {
   return lines
     .map((input) => {
       if (input instanceof Error) {
