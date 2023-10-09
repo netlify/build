@@ -1,5 +1,20 @@
 # Changelog
 
+## [9.2.0](https://github.com/netlify/edge-bundler/compare/v9.1.0...v9.2.0) (2023-10-09)
+
+
+### Features
+
+* allow injecting user-facing logger ([#493](https://github.com/netlify/edge-bundler/issues/493)) ([95b4131](https://github.com/netlify/edge-bundler/commit/95b4131cccc42f9af6e1d904720cf9c3c926af8c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.19.4 ([#487](https://github.com/netlify/edge-bundler/issues/487)) ([b54d948](https://github.com/netlify/edge-bundler/commit/b54d948df15be90abfe2425e4320e4aaaf9eef75))
+* **deps:** update dependency uuid to v9.0.1 ([#489](https://github.com/netlify/edge-bundler/issues/489)) ([58e2ce9](https://github.com/netlify/edge-bundler/commit/58e2ce92f0f513ab8ab7aca3b3fc06bf73846fd3))
+* detect .mjs files ([#483](https://github.com/netlify/edge-bundler/issues/483)) ([2a9024c](https://github.com/netlify/edge-bundler/commit/2a9024cb8a108b6f50f17db874b3ac82c1325111))
+* NPM bundling should use ESM format ([#494](https://github.com/netlify/edge-bundler/issues/494)) ([6bb800f](https://github.com/netlify/edge-bundler/commit/6bb800f0b66f3d78a06ea9314b525da509c45385))
+
 ## [9.1.0](https://github.com/netlify/edge-bundler/compare/v9.0.0...v9.1.0) (2023-09-26)
 
 
