@@ -6,7 +6,7 @@ import { nonNullable } from './utils/non_nullable.js'
 
 // the order of the allowed extensions is also the order we remove duplicates
 // with a lower index meaning a higher precedence over the others
-const ALLOWED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
+const ALLOWED_EXTENSIONS = ['.js', '.jsx', '.mjs', '.mts', '.ts', '.tsx']
 
 export const removeDuplicatesByExtension = (functions: string[]) => {
   const seen = new Map()
