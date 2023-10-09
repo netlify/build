@@ -45,7 +45,8 @@ test('Functions: invalid package.json', async (t) => {
   await writeFile(packageJsonPath, '{{}')
   try {
     const output = await new Fixture('./fixtures/functions_package_json_invalid').runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    // This shape of this error can change with different Node.js versions.
+    t.true(output.includes('in JSON at position 1'))
   } finally {
     await rm(packageJsonPath, { force: true, recursive: true, maxRetries: 10 })
   }
