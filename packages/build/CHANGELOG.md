@@ -105,6 +105,18 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.22.0](https://github.com/netlify/build/compare/build-v29.21.2...build-v29.22.0) (2023-10-09)
+
+
+### Features
+
+* add netlifyConfig to dynamic plugin metadata ([#5312](https://github.com/netlify/build/issues/5312)) ([a9bffe2](https://github.com/netlify/build/commit/a9bffe24d5a0a8db01938b2a4c397afd35beaa24))
+
+
+### Bug Fixes
+
+* stop using snapshot for checking invalid package json ([#5313](https://github.com/netlify/build/issues/5313)) ([0d7eaf0](https://github.com/netlify/build/commit/0d7eaf02a628a41ece9b87ded2f597f15704542f))
+
 ## [29.21.2](https://github.com/netlify/build/compare/build-v29.21.1...build-v29.21.2) (2023-10-02)
 
 
