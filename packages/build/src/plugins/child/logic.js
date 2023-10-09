@@ -10,9 +10,9 @@ const require = createRequire(import.meta.url)
 
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-export const getLogic = async function ({ pluginPath, inputs, tsNodeService }) {
+export const getLogic = async function ({ pluginPath, inputs, tsNodeService, netlifyConfig }) {
   const logic = await importLogic(pluginPath, tsNodeService)
-  const logicA = loadLogic({ logic, inputs })
+  const logicA = loadLogic({ logic, inputs, netlifyConfig })
   return logicA
 }
 
@@ -45,7 +45,7 @@ const importLogic = async function (pluginPath, tsNodeService) {
   }
 }
 
-const loadLogic = function ({ logic, inputs }) {
+const loadLogic = function ({ logic, inputs, netlifyConfig }) {
   if (typeof logic !== 'function') {
     return logic
   }
@@ -53,6 +53,7 @@ const loadLogic = function ({ logic, inputs }) {
   const metadata = {
     events: new Set([...DEV_EVENTS, ...EVENTS]),
     version: ROOT_PACKAGE_JSON.version,
+    netlifyConfig,
   }
 
   try {
