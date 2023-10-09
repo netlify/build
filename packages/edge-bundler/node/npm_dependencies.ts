@@ -148,6 +148,7 @@ export const vendorNPMSpecifiers = async ({
       platform: 'node',
       plugins: [getDependencyTrackerPlugin(specifiers, importMap.getContentsWithURLObjects(), pathToFileURL(basePath))],
       write: false,
+      format: 'esm',
     })
   } catch (error) {
     logger.system('Could not track dependencies in edge function:', error)

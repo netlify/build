@@ -486,6 +486,7 @@ test('Handles imports with the `node:` prefix', async () => {
 })
 
 test('Loads npm modules from bare specifiers', async () => {
+  const systemLogger = vi.fn()
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
@@ -501,7 +502,13 @@ test('Loads npm modules from bare specifiers', async () => {
     featureFlags: { edge_functions_npm_modules: true },
     importMapPaths: [join(basePath, 'import_map.json')],
     vendorDirectory: vendorDirectory.path,
+    systemLogger,
   })
+
+  expect(
+    systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+  ).toBeUndefined()
+
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
