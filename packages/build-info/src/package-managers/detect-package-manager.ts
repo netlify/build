@@ -6,6 +6,7 @@ import type { Project } from '../project.js'
 export const enum PkgManager {
   YARN = 'yarn',
   PNPM = 'pnpm',
+  BUN = 'bun',
   NPM = 'npm',
 }
 
@@ -42,6 +43,12 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     runCommand: 'pnpm run',
     lockFile: 'pnpm-lock.yaml',
     forceEnvironment: 'NETLIFY_USE_PNPM',
+  },
+  [PkgManager.BUN]: {
+    name: PkgManager.BUN,
+    installCommand: 'bun install',
+    runCommand: 'bun run',
+    lockFile: 'bun.lockb',
   },
   [PkgManager.NPM]: {
     name: PkgManager.NPM,
