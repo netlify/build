@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.22.1](https://github.com/netlify/build/compare/build-v29.22.0...build-v29.22.1) (2023-10-09)
+
+
+### Bug Fixes
+
+* provide userlogger to edge-bundler ([#5317](https://github.com/netlify/build/issues/5317)) ([e1f2a36](https://github.com/netlify/build/commit/e1f2a369fe9d6b80943c03895b400625a6d51433))
+
 ## [29.22.0](https://github.com/netlify/build/compare/build-v29.21.2...build-v29.22.0) (2023-10-09)
 
 
