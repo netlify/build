@@ -1,3 +1,3 @@
 import mathAvg from 'math-avg-mispelled'
 
-export default () => mathAvg([])
+export const handler = () => mathAvg([])
