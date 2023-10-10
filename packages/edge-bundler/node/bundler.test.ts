@@ -138,7 +138,10 @@ test('Prints a nice error message when user tries importing an npm module and np
   ]
 
   try {
-    await bundle([sourceDirectory], distPath, declarations, { basePath })
+    await bundle([sourceDirectory], distPath, declarations, {
+      basePath,
+      importMapPaths: [join(basePath, 'import_map.json')],
+    })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).message).toEqual(
