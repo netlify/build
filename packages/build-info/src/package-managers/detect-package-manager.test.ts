@@ -131,7 +131,7 @@ test('should prefer the `packageManager` property over a lockfile', async ({ fs 
 
 test('should prefer yarn over bun when both lockfiles exist', async ({ fs }) => {
   const cwd = mockFileSystem({
-    'package.json': '',
+    'package.json': '{}',
     'yarn.lock': '',
     'bun.lockb': '',
   })
@@ -142,13 +142,24 @@ test('should prefer yarn over bun when both lockfiles exist', async ({ fs }) => 
 
 test('should prefer pnpm over bun when both lockfiles exist', async ({ fs }) => {
   const cwd = mockFileSystem({
-    'package.json': '',
+    'package.json': '{}',
     'pnpm-lock.yaml': '',
     'bun.lockb': '',
   })
   const project = new Project(fs, cwd)
   const pkgManager = await detectPackageManager(project)
   expect(pkgManager?.name).toBe('pnpm')
+})
+
+test('should prefer npm over bun when both lockfiles exist', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'package-lock.json': '',
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('npm')
 })
 
 describe('workspaces package manager detection', () => {
