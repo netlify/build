@@ -44,17 +44,17 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     lockFile: 'pnpm-lock.yaml',
     forceEnvironment: 'NETLIFY_USE_PNPM',
   },
-  [PkgManager.BUN]: {
-    name: PkgManager.BUN,
-    installCommand: 'bun install',
-    runCommand: 'bun run',
-    lockFile: 'bun.lockb',
-  },
   [PkgManager.NPM]: {
     name: PkgManager.NPM,
     installCommand: 'npm install',
     runCommand: 'npm run',
     lockFile: 'package-lock.json',
+  },
+  [PkgManager.BUN]: {
+    name: PkgManager.BUN,
+    installCommand: 'bun install',
+    runCommand: 'bun run',
+    lockFile: 'bun.lockb',
   },
 }
 
