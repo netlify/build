@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.2.1](https://github.com/netlify/edge-bundler/compare/v9.2.0...v9.2.1) (2023-10-11)
+
+
+### Bug Fixes
+
+* mute esbuild while parsing for NPM modules ([#497](https://github.com/netlify/edge-bundler/issues/497)) ([6a3685e](https://github.com/netlify/edge-bundler/commit/6a3685e6d5d32690af0c4e0a0733c19287dbeaa6))
+* NPM parsing shouldn't try loading Deno URL imports ([#496](https://github.com/netlify/edge-bundler/issues/496)) ([8278713](https://github.com/netlify/edge-bundler/commit/8278713bf6913650586a5dece0746be83315523e))
+
 ## [9.2.0](https://github.com/netlify/edge-bundler/compare/v9.1.0...v9.2.0) (2023-10-09)
 
 
