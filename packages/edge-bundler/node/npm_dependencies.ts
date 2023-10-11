@@ -142,11 +142,11 @@ export const vendorNPMSpecifiers = async ({
   // loaded as npm dependencies, because they either use the `npm:` prefix or
   // they are bare specifiers. We'll collect them in `specifiers`.
   try {
-    await build({
+    const { errors, warnings } = await build({
       banner,
       bundle: true,
       entryPoints: functions,
-      logLevel: 'error',
+      logLevel: 'silent',
       nodePaths,
       outdir: temporaryDirectory.path,
       platform: 'node',
@@ -154,10 +154,16 @@ export const vendorNPMSpecifiers = async ({
       write: false,
       format: 'esm',
     })
+    if (errors.length !== 0) {
+      logger.system('ESBuild errored while tracking dependencies in edge function:', errors)
+    }
+    if (warnings.length !== 0) {
+      logger.system('ESBuild warned while tracking dependencies in edge function:', warnings)
+    }
   } catch (error) {
     logger.system('Could not track dependencies in edge function:', error)
     logger.user(
-      'An error occurred when trying to scan your edge functions for npm modules, which is an experimental feature. If you are loading npm modules, please share the errors above in https://ntl.fyi/edge-functions-npm. If you are not loading npm modules, you can ignore this message.',
+      'An error occurred when trying to scan your edge functions for npm modules, which is an experimental feature. If you are loading npm modules, please share the link to this deploy in https://ntl.fyi/edge-functions-npm. If you are not loading npm modules, you can ignore this message.',
     )
   }
 
