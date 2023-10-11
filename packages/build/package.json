@@ -74,7 +74,7 @@
     "@netlify/git-utils": "^5.1.1",
     "@netlify/plugins-list": "^6.71.0",
     "@netlify/run-utils": "^5.1.1",
-    "@netlify/zip-it-and-ship-it": "9.23.1",
+    "@netlify/zip-it-and-ship-it": "9.24.1",
     "@opentelemetry/api": "^1.4.1",
     "@sindresorhus/slugify": "^2.0.0",
     "ansi-escapes": "^6.0.0",
