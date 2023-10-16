@@ -6,6 +6,7 @@ import type { Project } from '../project.js'
 export const enum PkgManager {
   YARN = 'yarn',
   PNPM = 'pnpm',
+  BUN = 'bun',
   NPM = 'npm',
 }
 
@@ -48,6 +49,12 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     installCommand: 'npm install',
     runCommand: 'npm run',
     lockFile: 'package-lock.json',
+  },
+  [PkgManager.BUN]: {
+    name: PkgManager.BUN,
+    installCommand: 'bun install',
+    runCommand: 'bun run',
+    lockFile: 'bun.lockb',
   },
 }
 

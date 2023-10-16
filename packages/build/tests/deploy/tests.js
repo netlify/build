@@ -43,14 +43,15 @@ test('Deploy plugin connection error', async (t) => {
   const { address, stopServer } = await startDeployServer()
   await stopServer()
   const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
-  t.true(output.includes('Could not connect to buildbot: Error: connect'))
+  t.true(output.includes('Internal error during "Deploy site"'))
 })
 
 test('Deploy plugin response syntax error', async (t) => {
   const { address, stopServer } = await startDeployServer({ response: 'test' })
   try {
     const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    // This shape of this error can change with different Node.js versions.
+    t.true(output.includes('Internal error during "Deploy site"'))
   } finally {
     await stopServer()
   }

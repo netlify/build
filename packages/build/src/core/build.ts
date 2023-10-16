@@ -447,6 +447,7 @@ const initAndRunBuild = async function ({
     testOpts,
     featureFlags,
     integrations,
+    context,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA
@@ -587,6 +588,7 @@ const runBuild = async function ({
     logs,
     debug,
     verbose,
+    netlifyConfig,
   })
 
   const { steps, events } = timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps) : getSteps(pluginsSteps)

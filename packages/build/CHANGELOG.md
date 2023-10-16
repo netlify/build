@@ -105,6 +105,127 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.22.5](https://github.com/netlify/build/compare/build-v29.22.4...build-v29.22.5) (2023-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.24.3 ([#5328](https://github.com/netlify/build/issues/5328)) ([4bcc623](https://github.com/netlify/build/commit/4bcc623b1d3868ced7b0b7de9d41387a5abeabf3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.33 to ^5.2.34
+
+## [29.22.4](https://github.com/netlify/build/compare/build-v29.22.3...build-v29.22.4) (2023-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.24.2 ([#5326](https://github.com/netlify/build/issues/5326)) ([5f69f3b](https://github.com/netlify/build/commit/5f69f3b2500ab5e51726794e9b684eadb5480afc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.32 to ^5.2.33
+
+## [29.22.3](https://github.com/netlify/build/compare/build-v29.22.2...build-v29.22.3) (2023-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v9.2.1 ([#5322](https://github.com/netlify/build/issues/5322)) ([dafc6b0](https://github.com/netlify/build/commit/dafc6b07a68bccb4bbe952f606740ffa5076b430))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.23.1 ([#5323](https://github.com/netlify/build/issues/5323)) ([96e3571](https://github.com/netlify/build/commit/96e3571a73dfb586b77b21b629e59c18195f25cb))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.24.1 ([#5325](https://github.com/netlify/build/issues/5325)) ([46e8fb9](https://github.com/netlify/build/commit/46e8fb91a1fdc2dbc333e86a66c43ea5c21a1351))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.31 to ^5.2.32
+
+## [29.22.2](https://github.com/netlify/build/compare/build-v29.22.1...build-v29.22.2) (2023-10-10)
+
+
+### Bug Fixes
+
+* --version should print version ([#5318](https://github.com/netlify/build/issues/5318)) ([aab3a02](https://github.com/netlify/build/commit/aab3a02cc5ba29475ce6885f6d6a352d34f1b35a))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.23.0 ([#5310](https://github.com/netlify/build/issues/5310)) ([ee5c5c6](https://github.com/netlify/build/commit/ee5c5c64c77f4ef7a19884af94e198aff4d62dbf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.30 to ^5.2.31
+
+## [29.22.1](https://github.com/netlify/build/compare/build-v29.22.0...build-v29.22.1) (2023-10-09)
+
+
+### Bug Fixes
+
+* provide userlogger to edge-bundler ([#5317](https://github.com/netlify/build/issues/5317)) ([e1f2a36](https://github.com/netlify/build/commit/e1f2a369fe9d6b80943c03895b400625a6d51433))
+
+## [29.22.0](https://github.com/netlify/build/compare/build-v29.21.2...build-v29.22.0) (2023-10-09)
+
+
+### Features
+
+* add netlifyConfig to dynamic plugin metadata ([#5312](https://github.com/netlify/build/issues/5312)) ([a9bffe2](https://github.com/netlify/build/commit/a9bffe24d5a0a8db01938b2a4c397afd35beaa24))
+
+
+### Bug Fixes
+
+* stop using snapshot for checking invalid package json ([#5313](https://github.com/netlify/build/issues/5313)) ([0d7eaf0](https://github.com/netlify/build/commit/0d7eaf02a628a41ece9b87ded2f597f15704542f))
+
+## [29.21.2](https://github.com/netlify/build/compare/build-v29.21.1...build-v29.21.2) (2023-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.19.0 ([#5309](https://github.com/netlify/build/issues/5309)) ([77de265](https://github.com/netlify/build/commit/77de2651e8d659bdd57fe55242d40b4716e008cd))
+* document deno_import_map in function types ([#5305](https://github.com/netlify/build/issues/5305)) ([21cafcf](https://github.com/netlify/build/commit/21cafcfd25ed4a05e82af39925098b26623ae745))
+* fixes an issue where the type imports could not be resolved ([#5297](https://github.com/netlify/build/issues/5297)) ([0a72c89](https://github.com/netlify/build/commit/0a72c891b3d9e3676e33173900bb94d6e587c1dc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.29 to ^5.2.30
+
+## [29.21.1](https://github.com/netlify/build/compare/build-v29.21.0...build-v29.21.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* check testOpts properly in rationalising integrations ([#5292](https://github.com/netlify/build/issues/5292)) ([eb8d4b0](https://github.com/netlify/build/commit/eb8d4b0fdcb7e0b1335730055c57bcf012763bac))
+
+## [29.21.0](https://github.com/netlify/build/compare/build-v29.20.15...build-v29.21.0) (2023-09-13)
+
+
+### Features
+
+* parse integrations from the config, including local dev support ([#5251](https://github.com/netlify/build/issues/5251)) ([08dbe97](https://github.com/netlify/build/commit/08dbe97b2da5fd5772dff851be59bd56b3f61561))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.18.1 ([#5288](https://github.com/netlify/build/issues/5288)) ([b1f9fb0](https://github.com/netlify/build/commit/b1f9fb0f793c55fa2c1104e177bf4b8fd74e8953))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.8.1 to ^20.9.0
+    * @netlify/functions-utils bumped from ^5.2.28 to ^5.2.29
+
 ## [29.20.15](https://github.com/netlify/build/compare/build-v29.20.14...build-v29.20.15) (2023-09-07)
 
 

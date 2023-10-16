@@ -64,6 +64,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.10.1](https://github.com/netlify/build/compare/build-info-v7.10.0...build-info-v7.10.1) (2023-10-10)
+
+
+### Bug Fixes
+
+* **build-info:** prefer `npm` over `bun` when both lockfiles are present ([#5320](https://github.com/netlify/build/issues/5320)) ([67d11d0](https://github.com/netlify/build/commit/67d11d00320c51e552b9cd8fc31071a55d9c3918))
+
+## [7.10.0](https://github.com/netlify/build/compare/build-info-v7.9.0...build-info-v7.10.0) (2023-10-09)
+
+
+### Features
+
+* detect bun as package manager ([#5306](https://github.com/netlify/build/issues/5306)) ([5d91c31](https://github.com/netlify/build/commit/5d91c319ea6813f4606e6b156ce29d3d90495f50))
+
+## [7.9.0](https://github.com/netlify/build/compare/build-info-v7.8.0...build-info-v7.9.0) (2023-10-02)
+
+
+### Features
+
+* detect bun as runtime ([#5300](https://github.com/netlify/build/issues/5300)) ([6f87850](https://github.com/netlify/build/commit/6f8785097de00e763fd81f17689c088ed39cdf8b))
+
 ## [7.8.0](https://github.com/netlify/build/compare/build-info-v7.7.4...build-info-v7.8.0) (2023-09-01)
 
 

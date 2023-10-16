@@ -1,3 +1,3 @@
 const isNetlifyMagic = true
 
-export default () => isNetlifyMagic
+export const handler = () => isNetlifyMagic
