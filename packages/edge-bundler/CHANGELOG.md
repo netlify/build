@@ -1,5 +1,17 @@
 # Changelog
 
+## [9.3.0](https://github.com/netlify/edge-bundler/compare/v9.2.1...v9.3.0) (2023-10-16)
+
+
+### Features
+
+* trace npm modules with NFT ([#499](https://github.com/netlify/edge-bundler/issues/499)) ([d3d09ca](https://github.com/netlify/edge-bundler/commit/d3d09ca675230d279ad5f37fca5aba46896acc59))
+
+
+### Bug Fixes
+
+* respect import map files containing only scopes ([#495](https://github.com/netlify/edge-bundler/issues/495)) ([6812209](https://github.com/netlify/edge-bundler/commit/681220982a6cc5e2fb0ed5ccd9a189f5f96d2f22))
+
 ## [9.2.1](https://github.com/netlify/edge-bundler/compare/v9.2.0...v9.2.1) (2023-10-11)
 
 
