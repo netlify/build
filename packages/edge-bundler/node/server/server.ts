@@ -69,6 +69,7 @@ const prepareServer = ({
 
     const features: Record<string, boolean> = {}
     const importMap = baseImportMap.clone()
+    const npmSpecifiersWithExtraneousFiles: string[] = []
 
     if (featureFlags?.edge_functions_npm_modules) {
       const vendor = await vendorNPMSpecifiers({
@@ -82,6 +83,7 @@ const prepareServer = ({
       if (vendor) {
         features.npmModules = true
         importMap.add(vendor.importMap)
+        npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
       }
     }
 
@@ -127,6 +129,7 @@ const prepareServer = ({
       features,
       functionsConfig,
       graph,
+      npmSpecifiersWithExtraneousFiles,
       success,
     }
   }

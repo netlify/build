@@ -145,7 +145,7 @@ test('Prints a nice error message when user tries importing an npm module and np
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).message).toEqual(
-      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/parent-2"'?`,
+      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/parent-1"'?`,
     )
   } finally {
     await cleanup()

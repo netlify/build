@@ -1,19 +1,18 @@
 import { promises as fs } from 'fs'
-import { builtinModules, createRequire } from 'module'
+import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import { resolve, ParsedImportMap } from '@import-maps/resolve'
-import { build, OnResolveResult, Plugin } from 'esbuild'
+import { nodeFileTrace, resolve as nftResolve } from '@vercel/nft'
+import { build } from 'esbuild'
+import getPackageName from 'get-package-name'
 import tmp from 'tmp-promise'
-
-import { nodePrefix, npmPrefix } from '../shared/consts.js'
 
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 
-const builtinModulesSet = new Set(builtinModules)
-const require = createRequire(import.meta.url)
+const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.cts', '.mts'])
 
 // Workaround for https://github.com/evanw/esbuild/issues/1921.
 const banner = {
@@ -27,88 +26,96 @@ const banner = {
   `,
 }
 
-// esbuild plugin that will traverse the code and look for imports of external
-// dependencies (i.e. Node modules). It stores the specifiers found in the Set
-// provided.
-export const getDependencyTrackerPlugin = (
-  specifiers: Set<string>,
-  importMap: ParsedImportMap,
-  baseURL: URL,
-): Plugin => ({
-  name: 'dependency-tracker',
-  setup(build) {
-    build.onResolve({ filter: /^(.*)$/ }, (args) => {
-      if (args.kind !== 'import-statement') {
-        return
+/**
+ * Parses a set of functions and returns a list of specifiers that correspond
+ * to npm modules.
+ *
+ * @param basePath Root of the project
+ * @param functions Functions to parse
+ * @param importMap Import map to apply when resolving imports
+ */
+const getNPMSpecifiers = async (basePath: string, functions: string[], importMap: ParsedImportMap) => {
+  const baseURL = pathToFileURL(basePath)
+  const { reasons } = await nodeFileTrace(functions, {
+    base: basePath,
+    readFile: async (filePath: string) => {
+      // If this is a TypeScript file, we need to compile in before we can
+      // parse it.
+      if (TYPESCRIPT_EXTENSIONS.has(path.extname(filePath))) {
+        const compiled = await build({
+          bundle: false,
+          entryPoints: [filePath],
+          logLevel: 'silent',
+          platform: 'node',
+          write: false,
+        })
+
+        return compiled.outputFiles[0].text
       }
 
-      const result: Partial<OnResolveResult> = {}
-
-      let specifier = args.path
-
+      return fs.readFile(filePath, 'utf8')
+    },
+    // eslint-disable-next-line require-await
+    resolve: async (specifier, ...args) => {
       // Start by checking whether the specifier matches any import map defined
       // by the user.
       const { matched, resolvedImport } = resolve(specifier, importMap, baseURL)
 
       // If it does, the resolved import is the specifier we'll evaluate going
       // forward.
-      if (matched) {
-        if (resolvedImport.protocol !== 'file:') {
-          return { external: true }
+      if (matched && resolvedImport.protocol === 'file:') {
+        const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
+
+        return nftResolve(newSpecifier, ...args)
+      }
+
+      return nftResolve(specifier, ...args)
+    },
+  })
+  const npmSpecifiers = new Set<string>()
+  const npmSpecifiersWithExtraneousFiles = new Set<string>()
+
+  reasons.forEach((reason, filePath) => {
+    const packageName = getPackageName(filePath)
+
+    if (packageName === undefined) {
+      return
+    }
+
+    const parents = [...reason.parents]
+    const isDirectDependency = parents.some((parentPath) => !parentPath.startsWith(`node_modules${path.sep}`))
+
+    // We're only interested in capturing the specifiers that are first-level
+    // dependencies. Because we'll bundle all modules in a subsequent step,
+    // any transitive dependencies will be handled then.
+    if (isDirectDependency) {
+      const specifier = getPackageName(filePath)
+
+      npmSpecifiers.add(specifier)
+    }
+
+    const isExtraneousFile = reason.type.every((type) => type === 'asset')
+
+    // An extraneous file is a dependency that was traced by NFT and marked
+    // as not being statically imported. We can't process dynamic importing
+    // at runtime, so we gather the list of modules that may use these files
+    // so that we can warn users about this caveat.
+    if (isExtraneousFile) {
+      parents.forEach((path) => {
+        const specifier = getPackageName(path)
+
+        if (specifier) {
+          npmSpecifiersWithExtraneousFiles.add(specifier)
         }
+      })
+    }
+  })
 
-        specifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
-
-        result.path = specifier
-      }
-
-      // If the specifier is a Node.js built-in, we don't want to bundle it.
-      if (specifier.startsWith(nodePrefix) || builtinModulesSet.has(specifier)) {
-        return { external: true }
-      }
-
-      // We don't support the `npm:` prefix yet. Mark the specifier as external
-      // and the ESZIP bundler will handle the failure.
-      if (specifier.startsWith(npmPrefix)) {
-        return { external: true }
-      }
-
-      const isLocalImport = specifier.startsWith(path.sep) || specifier.startsWith('.') || path.isAbsolute(specifier)
-
-      // If this is a local import, return so that esbuild visits that path.
-      if (isLocalImport) {
-        return result
-      }
-
-      const isRemoteURLImport = specifier.startsWith('https://') || specifier.startsWith('http://')
-
-      if (isRemoteURLImport) {
-        return { external: true }
-      }
-
-      // At this point we know we're dealing with a bare specifier that should
-      // be treated as an external module. We first try to resolve it, because
-      // in the event that it doesn't exist (e.g. user is referencing a module
-      // that they haven't installed) we won't even attempt to bundle it. This
-      // lets the ESZIP bundler handle and report the missing import instead of
-      // esbuild, which is a better experience for the user.
-      try {
-        require.resolve(specifier, { paths: [args.resolveDir] })
-
-        specifiers.add(specifier)
-      } catch {
-        // no-op
-      }
-
-      // Mark the specifier as external, because we don't want to traverse the
-      // entire module tree — i.e. if user code imports module `foo` and that
-      // imports `bar`, we only want to add `foo` to the list of specifiers,
-      // since the whole module — including its dependencies like `bar` —
-      // will be bundled.
-      return { external: true }
-    })
-  },
-})
+  return {
+    npmSpecifiers: [...npmSpecifiers],
+    npmSpecifiersWithExtraneousFiles: [...npmSpecifiersWithExtraneousFiles],
+  }
+}
 
 interface VendorNPMSpecifiersOptions {
   basePath: string
@@ -123,10 +130,7 @@ export const vendorNPMSpecifiers = async ({
   directory,
   functions,
   importMap,
-  logger,
 }: VendorNPMSpecifiersOptions) => {
-  const specifiers = new Set<string>()
-
   // The directories that esbuild will use when resolving Node modules. We must
   // set these manually because esbuild will be operating from a temporary
   // directory that will not live inside the project root, so the normal
@@ -138,37 +142,14 @@ export const vendorNPMSpecifiers = async ({
   // Otherwise, create a random temporary directory.
   const temporaryDirectory = directory ? { path: directory } : await tmp.dir()
 
-  // Do a first pass at bundling to gather a list of specifiers that should be
-  // loaded as npm dependencies, because they either use the `npm:` prefix or
-  // they are bare specifiers. We'll collect them in `specifiers`.
-  try {
-    const { errors, warnings } = await build({
-      banner,
-      bundle: true,
-      entryPoints: functions,
-      logLevel: 'silent',
-      nodePaths,
-      outdir: temporaryDirectory.path,
-      platform: 'node',
-      plugins: [getDependencyTrackerPlugin(specifiers, importMap.getContentsWithURLObjects(), pathToFileURL(basePath))],
-      write: false,
-      format: 'esm',
-    })
-    if (errors.length !== 0) {
-      logger.system('ESBuild errored while tracking dependencies in edge function:', errors)
-    }
-    if (warnings.length !== 0) {
-      logger.system('ESBuild warned while tracking dependencies in edge function:', warnings)
-    }
-  } catch (error) {
-    logger.system('Could not track dependencies in edge function:', error)
-    logger.user(
-      'An error occurred when trying to scan your edge functions for npm modules, which is an experimental feature. If you are loading npm modules, please share the link to this deploy in https://ntl.fyi/edge-functions-npm. If you are not loading npm modules, you can ignore this message.',
-    )
-  }
+  const { npmSpecifiers, npmSpecifiersWithExtraneousFiles } = await getNPMSpecifiers(
+    basePath,
+    functions,
+    importMap.getContentsWithURLObjects(),
+  )
 
   // If we found no specifiers, there's nothing left to do here.
-  if (specifiers.size === 0) {
+  if (npmSpecifiers.length === 0) {
     return
   }
 
@@ -176,7 +157,7 @@ export const vendorNPMSpecifiers = async ({
   // where we re-export everything from that specifier. We do this for every
   // specifier, and each of these files will become entry points to esbuild.
   const ops = await Promise.all(
-    [...specifiers].map(async (specifier, index) => {
+    npmSpecifiers.map(async (specifier, index) => {
       const code = `import * as mod from "${specifier}"; export default mod.default; export * from "${specifier}";`
       const filePath = path.join(temporaryDirectory.path, `barrel-${index}.js`)
 
@@ -249,5 +230,6 @@ export const vendorNPMSpecifiers = async ({
     cleanup,
     directory: temporaryDirectory.path,
     importMap: newImportMap,
+    npmSpecifiersWithExtraneousFiles,
   }
 }

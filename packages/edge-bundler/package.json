@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@import-maps/resolve": "^1.0.1",
+    "@vercel/nft": "^0.24.3",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
     "better-ajv-errors": "^1.2.0",
@@ -82,6 +83,7 @@
     "esbuild": "0.19.4",
     "execa": "^6.0.0",
     "find-up": "^6.3.0",
+    "get-package-name": "^2.2.0",
     "get-port": "^6.1.2",
     "is-path-inside": "^4.0.0",
     "jsonc-parser": "^3.2.0",
