@@ -62,6 +62,17 @@ const coreStep = async function ({
     // no-op
   }
 
+  let vendorDirectory
+
+  // If we're building locally, set a vendor directory in `internalSrcPath`.
+  // This makes Edge Bundler keep the vendor files around after the build,
+  // which lets the IDE have a valid reference to them.
+  if (isRunningLocally && featureFlags.edge_functions_npm_modules) {
+    vendorDirectory = join(internalSrcPath, '.vendor')
+
+    await fs.mkdir(vendorDirectory, { recursive: true })
+  }
+
   // Ensuring the dist directory actually exists before letting Edge Bundler
   // write to it.
   await fs.mkdir(distPath, { recursive: true })
@@ -79,6 +90,7 @@ const coreStep = async function ({
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
       bootstrapURL: edgeFunctionsBootstrapURL,
+      vendorDirectory,
     })
     const metrics = getMetrics(manifest)
 
