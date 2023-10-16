@@ -17,7 +17,7 @@ type Imports = Record<string, string>
 
 export interface ImportMapFile {
   baseURL: URL
-  imports: Imports
+  imports?: Imports
   scopes?: Record<string, Imports>
 }
 
@@ -46,10 +46,6 @@ export class ImportMap {
 
   async addFile(path: string, logger: Logger) {
     const source = await ImportMap.readFile(path, logger)
-
-    if (Object.keys(source.imports).length === 0) {
-      return
-    }
 
     return this.add(source)
   }

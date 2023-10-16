@@ -7,6 +7,7 @@ import tmp from 'tmp-promise'
 import { describe, test, expect } from 'vitest'
 
 import { ImportMap } from './import_map.js'
+import { getLogger } from './logger.js'
 
 test('Handles import maps with full URLs without specifying a base URL', () => {
   const basePath = join(cwd(), 'my-cool-site', 'import-map.json')
@@ -174,6 +175,32 @@ test('Writes import map file to disk', async () => {
   expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
   expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
   expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
+})
+
+test('Respects import map when it has only scoped key', async () => {
+  const file = await tmp.file()
+  const importMap = {
+    scopes: {
+      './foo': {
+        'alias:pets': './heart/pets/file.ts',
+      },
+    },
+  }
+  await fs.writeFile(file.path, JSON.stringify(importMap))
+  const map = new ImportMap()
+  await map.addFile(file.path, getLogger())
+
+  expect(map.getContents()).toEqual({
+    imports: {
+      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
+      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
+    },
+    scopes: {
+      [pathToFileURL(join(file.path, '../foo')).href]: {
+        'alias:pets': pathToFileURL(join(file.path, '../heart/pets/file.ts')).href,
+      },
+    },
+  })
 })
 
 test('Clones an import map', () => {
