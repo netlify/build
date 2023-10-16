@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.23.0](https://github.com/netlify/build/compare/build-v29.22.5...build-v29.23.0) (2023-10-16)
+
+
+### Features
+
+* use custom edge functions vendor directory ([#5283](https://github.com/netlify/build/issues/5283)) ([715d7f5](https://github.com/netlify/build/commit/715d7f5284097b7b7f6f64ee3b2802d8f3a9e31b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.25.0 ([#5331](https://github.com/netlify/build/issues/5331)) ([1358fc7](https://github.com/netlify/build/commit/1358fc772d4817fe2775939d58e2c39dee2c9547))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.25.1 ([#5334](https://github.com/netlify/build/issues/5334)) ([d21a073](https://github.com/netlify/build/commit/d21a073d4de7504d29ab715186acc5ab9b237d8c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.34 to ^5.2.35
+
 ## [29.22.5](https://github.com/netlify/build/compare/build-v29.22.4...build-v29.22.5) (2023-10-12)
 
 
