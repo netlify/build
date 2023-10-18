@@ -95,6 +95,8 @@ export type RootExecutionAttributes = {
   'site.id': string
   'deploy.id': string
   'deploy.context': string
+  // We need to respect the current format used by Buildbot
+  'build.info.primary_framework': string
 }
 
 /** Attributes used for the execution of each build step  */

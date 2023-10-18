@@ -52,6 +52,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
     'build.id': buildId,
     'deploy.context': flagsA.context,
     'site.id': flagsA.siteId,
+    'build.info.primary_framework': framework,
   }
   const rootCtx = context.with(rootTracingContext, () => setMultiSpanAttributes(attributes))
 
