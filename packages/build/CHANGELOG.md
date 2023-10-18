@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.23.3](https://github.com/netlify/build/compare/build-v29.23.2...build-v29.23.3) (2023-10-18)
+
+
+### Bug Fixes
+
+* **tracing:** add `framework` data ([#5340](https://github.com/netlify/build/issues/5340)) ([3d532c3](https://github.com/netlify/build/commit/3d532c3e6d5d346a7ecdaf78e231fe9744ecd3cc))
+
 ## [29.23.2](https://github.com/netlify/build/compare/build-v29.23.1...build-v29.23.2) (2023-10-18)
 
 
