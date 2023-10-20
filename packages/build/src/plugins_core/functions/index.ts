@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
+import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
@@ -18,6 +19,45 @@ const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
       .map((bundle) => (bundle.runtime === RUNTIME.JAVASCRIPT ? bundle.bundler : null))
       .filter(Boolean) as NodeBundlerName[],
   )
+
+// see https://docs.netlify.com/functions/trigger-on-events/#available-triggers
+const eventTriggeredFunctions = new Set([
+  'deploy-building',
+  'deploy-succeeded',
+  'deploy-failed',
+  'deploy-deleted',
+  'deploy-locked',
+  'deploy-unlocked',
+  'submission-created',
+  'split-test-activated',
+  'split-test-deactivated',
+  'split-test-modified',
+  'identity-validate',
+  'identity-signup',
+  'identity-login',
+])
+
+const validateCustomRoutes = async function (zisiResults: Awaited<ReturnType<typeof zipFunctions>>) {
+  for (const { routes, name, schedule } of zisiResults) {
+    if (!routes || routes.length === 0) continue
+
+    if (schedule) {
+      const error = new Error(
+        `Scheduled functions must not specify a custom route. Please remove the "routes" configuration or pick a different name for the function. Learn more about scheduled functions at https://docs.netlify.com/functions/scheduled-functions.`,
+      )
+      addErrorInfo(error, { type: 'resolveConfig' })
+      throw error
+    }
+
+    if (eventTriggeredFunctions.has(name.toLowerCase().replace('-background', ''))) {
+      const error = new Error(
+        `Event-triggered functions must not specify a custom route. Please remove the "routes" configuration or pick a different name for the function. Learn more about event-triggered functions at https://docs.netlify.com/functions/trigger-on-events.`,
+      )
+      addErrorInfo(error, { type: 'resolveConfig' })
+      throw error
+    }
+  }
+}
 
 const zipFunctionsAndLogResults = async ({
   buildDir,
@@ -52,6 +92,8 @@ const zipFunctionsAndLogResults = async ({
 
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
+
+    validateCustomRoutes(results)
 
     const bundlers = Array.from(getBundlers(results))
 
