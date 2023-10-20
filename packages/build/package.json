@@ -76,6 +76,7 @@
     "@netlify/run-utils": "^5.1.1",
     "@netlify/zip-it-and-ship-it": "9.25.3",
     "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/core": "^1.17.1",
     "@sindresorhus/slugify": "^2.0.0",
     "ansi-escapes": "^6.0.0",
     "chalk": "^5.0.0",

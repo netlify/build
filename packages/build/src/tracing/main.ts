@@ -1,5 +1,8 @@
+import { readFile } from 'node:fs/promises'
+
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
+import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 import type { TracingOptions } from '../core/types.js'
@@ -74,6 +77,7 @@ export const setMultiSpanAttributes = function (attributes: { [key: string]: str
   Object.entries(attributes).forEach((entry) => {
     baggage = baggage.setEntry(entry[0], { value: entry[1] })
   })
+
   return propagation.setBaggage(context.active(), baggage)
 }
 
@@ -87,6 +91,20 @@ export const addErrorToActiveSpan = function (error: Error) {
     code: SpanStatusCode.ERROR,
     message: error.message,
   })
+}
+
+//** Loads the baggage attributes from a baggabe file which follows W3C Baggage specification */
+export const loadBaggageFromFile = async function (baggageFilePath: string) {
+  if (baggageFilePath === undefined || baggageFilePath.length == 0) return setMultiSpanAttributes({})
+  let baggageString: string
+  try {
+    baggageString = await readFile(baggageFilePath, 'utf-8')
+  } catch (error) {
+    diag.error(error)
+    return
+  }
+  const parsedBaggage = parseKeyPairsIntoRecord(baggageString)
+  return setMultiSpanAttributes(parsedBaggage)
 }
 
 /** Attributes used for the root span of our execution */

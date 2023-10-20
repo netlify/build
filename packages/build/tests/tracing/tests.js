@@ -1,14 +1,80 @@
-import { trace, TraceFlags } from '@opentelemetry/api'
+import { writeFile, mkdir, rm } from 'fs/promises'
+import { fileURLToPath } from 'url'
+
+import { trace, TraceFlags, propagation } from '@opentelemetry/api'
 import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
 import test from 'ava'
 
-import { setMultiSpanAttributes, startTracing, stopTracing } from '../../lib/tracing/main.js'
+import { setMultiSpanAttributes, startTracing, stopTracing, loadBaggageFromFile } from '../../lib/tracing/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+const BAGGAGE_PATH = `${FIXTURES_DIR}/baggage.dump`
 
 test('Tracing set multi span attributes', async (t) => {
   const ctx = setMultiSpanAttributes({ some: 'test', foo: 'bar' })
   const baggage = getBaggage(ctx)
   t.is(baggage.getEntry('some').value, 'test')
   t.is(baggage.getEntry('foo').value, 'bar')
+})
+
+const testMatrixBaggageFile = [
+  {
+    description: 'when baggageFilePath is blank',
+    input: {
+      baggageFilePath: '',
+      baggageFileContent: null,
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is set but file is empty',
+    input: {
+      baggageFilePath: BAGGAGE_PATH,
+      baggageFileContent: '',
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is set and has content',
+    input: {
+      baggageFilePath: BAGGAGE_PATH,
+      baggageFileContent: 'somefield=value,foo=bar',
+    },
+    expects: {
+      somefield: { value: 'value' },
+      foo: { value: 'bar' },
+    },
+  },
+]
+
+testMatrixBaggageFile.forEach((testCase) => {
+  test.serial(`Tracing baggage loading - ${testCase.description}`, async (t) => {
+    const { input, expects } = testCase
+    if (input.baggageFilePath.length > 0) {
+      await mkdir(FIXTURES_DIR, { recursive: true })
+      await writeFile(input.baggageFilePath, input.baggageFileContent)
+    }
+
+    const ctx = await loadBaggageFromFile(input.baggageFilePath)
+    const baggage = propagation.getBaggage(ctx)
+
+    Object.entries(expects).forEach(([property, expected]) => {
+      if (expected === undefined) {
+        t.is(baggage.getEntry(property), expected)
+      } else {
+        t.is(baggage.getEntry(property).value, expected.value)
+      }
+    })
+    if (input.baggageFilePath.length > 0) {
+      rm(input.baggageFilePath, { force: true })
+    }
+  })
 })
 
 const spanId = '6e0c63257de34c92'
