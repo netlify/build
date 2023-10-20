@@ -49,12 +49,17 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from Buildbot
-  return trace.setSpanContext(context.active(), {
+  const ctx = trace.setSpanContext(context.active(), {
     traceId: options.traceId,
     spanId: options.parentSpanId,
     traceFlags: options.traceFlags,
     isRemote: true,
   })
+
+  // Loads the contents of the passed baggageFilePath into the baggage
+  loadBaggageFromFile(options.baggageFilePath)
+
+  return ctx
 }
 
 /** Stops the tracing service if there's one running. This will flush any ongoing events */
