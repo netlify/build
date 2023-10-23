@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { resolve, ParsedImportMap } from '@import-maps/resolve'
 import { nodeFileTrace, resolve as nftResolve } from '@vercel/nft'
 import { build } from 'esbuild'
+import { findUp } from 'find-up'
 import getPackageName from 'get-package-name'
 import tmp from 'tmp-promise'
 
@@ -13,6 +14,66 @@ import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 
 const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.cts', '.mts'])
+
+/**
+ * Returns the name of the `@types/` package used by a given specifier. Most of
+ * the times this is just the specifier itself, but scoped packages suffer a
+ * transformation (e.g. `@netlify/functions` -> `@types/netlify__functions`).
+ * https://github.com/DefinitelyTyped/DefinitelyTyped#what-about-scoped-packages
+ */
+const getTypesPackageName = (specifier: string) => {
+  if (!specifier.startsWith('@')) return path.join('@types', specifier)
+  const [scope, pkg] = specifier.split('/')
+  return path.join('@types', `${scope.replace('@', '')}__${pkg}`)
+}
+
+/**
+ * Finds corresponding DefinitelyTyped packages (`@types/...`) and returns path to declaration file.
+ */
+const getTypePathFromTypesPackage = async (
+  packageName: string,
+  packageJsonPath: string,
+): Promise<string | undefined> => {
+  const typesPackagePath = await findUp(`node_modules/${getTypesPackageName(packageName)}/package.json`, {
+    cwd: packageJsonPath,
+  })
+  if (!typesPackagePath) {
+    return undefined
+  }
+
+  const { types, typings } = JSON.parse(await fs.readFile(typesPackagePath, 'utf8'))
+  const declarationPath = types ?? typings
+  if (typeof declarationPath === 'string') {
+    return path.join(typesPackagePath, '..', declarationPath)
+  }
+
+  return undefined
+}
+
+/**
+ * Starting from a `package.json` file, this tries detecting a TypeScript declaration file.
+ * It first looks at the `types` and `typings` fields in `package.json`.
+ * If it doesn't find them, it falls back to DefinitelyTyped packages (`@types/...`).
+ */
+const getTypesPath = async (packageJsonPath: string): Promise<string | undefined> => {
+  const { name, types, typings } = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'))
+  // this only looks at `.types` and `.typings` fields. there might also be data in `exports -> . -> types -> import/default`.
+  // we're ignoring that for now.
+  const declarationPath = types ?? typings
+  if (typeof declarationPath === 'string') {
+    return path.join(packageJsonPath, '..', declarationPath)
+  }
+
+  return await getTypePathFromTypesPackage(name, packageJsonPath)
+}
+
+const safelyDetectTypes = async (packageJsonPath: string): Promise<string | undefined> => {
+  try {
+    return await getTypesPath(packageJsonPath)
+  } catch {
+    return undefined
+  }
+}
 
 // Workaround for https://github.com/evanw/esbuild/issues/1921.
 const banner = {
@@ -33,8 +94,14 @@ const banner = {
  * @param basePath Root of the project
  * @param functions Functions to parse
  * @param importMap Import map to apply when resolving imports
+ * @param referenceTypes Whether to detect typescript declarations and reference them in the output
  */
-const getNPMSpecifiers = async (basePath: string, functions: string[], importMap: ParsedImportMap) => {
+const getNPMSpecifiers = async (
+  basePath: string,
+  functions: string[],
+  importMap: ParsedImportMap,
+  referenceTypes: boolean,
+) => {
   const baseURL = pathToFileURL(basePath)
   const { reasons } = await nodeFileTrace(functions, {
     base: basePath,
@@ -72,28 +139,11 @@ const getNPMSpecifiers = async (basePath: string, functions: string[], importMap
       return nftResolve(specifier, ...args)
     },
   })
-  const npmSpecifiers = new Set<string>()
+  const npmSpecifiers: { specifier: string; types?: string }[] = []
   const npmSpecifiersWithExtraneousFiles = new Set<string>()
 
-  reasons.forEach((reason, filePath) => {
-    const packageName = getPackageName(filePath)
-
-    if (packageName === undefined) {
-      return
-    }
-
+  for (const [filePath, reason] of reasons.entries()) {
     const parents = [...reason.parents]
-    const isDirectDependency = parents.some((parentPath) => !parentPath.startsWith(`node_modules${path.sep}`))
-
-    // We're only interested in capturing the specifiers that are first-level
-    // dependencies. Because we'll bundle all modules in a subsequent step,
-    // any transitive dependencies will be handled then.
-    if (isDirectDependency) {
-      const specifier = getPackageName(filePath)
-
-      npmSpecifiers.add(specifier)
-    }
-
     const isExtraneousFile = reason.type.every((type) => type === 'asset')
 
     // An extraneous file is a dependency that was traced by NFT and marked
@@ -109,10 +159,37 @@ const getNPMSpecifiers = async (basePath: string, functions: string[], importMap
         }
       })
     }
-  })
+
+    // every dependency will have its `package.json` in `reasons` exactly once.
+    // by only looking at this file, we save us from doing duplicate work.
+    const isPackageJson = filePath.endsWith('package.json')
+    if (!isPackageJson) continue
+
+    const packageName = getPackageName(filePath)
+    if (packageName === undefined) continue
+
+    const isDirectDependency = parents.some((parentPath) => {
+      if (!parentPath.startsWith(`node_modules${path.sep}`)) return true
+      // typically, edge functions have no direct dependency on the `package.json` of a module.
+      // it's the impl files that depend on `package.json`, so we need to check the parents of
+      // the `package.json` file as well to see if the module is a direct dependency.
+      const parents = [...(reasons.get(parentPath)?.parents ?? [])]
+      return parents.some((parentPath) => !parentPath.startsWith(`node_modules${path.sep}`))
+    })
+
+    // We're only interested in capturing the specifiers that are first-level
+    // dependencies. Because we'll bundle all modules in a subsequent step,
+    // any transitive dependencies will be handled then.
+    if (isDirectDependency) {
+      npmSpecifiers.push({
+        specifier: packageName,
+        types: referenceTypes ? await safelyDetectTypes(path.join(basePath, filePath)) : undefined,
+      })
+    }
+  }
 
   return {
-    npmSpecifiers: [...npmSpecifiers],
+    npmSpecifiers,
     npmSpecifiersWithExtraneousFiles: [...npmSpecifiersWithExtraneousFiles],
   }
 }
@@ -123,6 +200,7 @@ interface VendorNPMSpecifiersOptions {
   functions: string[]
   importMap: ImportMap
   logger: Logger
+  referenceTypes: boolean
 }
 
 export const vendorNPMSpecifiers = async ({
@@ -130,6 +208,7 @@ export const vendorNPMSpecifiers = async ({
   directory,
   functions,
   importMap,
+  referenceTypes,
 }: VendorNPMSpecifiersOptions) => {
   // The directories that esbuild will use when resolving Node modules. We must
   // set these manually because esbuild will be operating from a temporary
@@ -146,10 +225,11 @@ export const vendorNPMSpecifiers = async ({
     basePath,
     functions,
     importMap.getContentsWithURLObjects(),
+    referenceTypes,
   )
 
   // If we found no specifiers, there's nothing left to do here.
-  if (npmSpecifiers.length === 0) {
+  if (Object.keys(npmSpecifiers).length === 0) {
     return
   }
 
@@ -157,13 +237,14 @@ export const vendorNPMSpecifiers = async ({
   // where we re-export everything from that specifier. We do this for every
   // specifier, and each of these files will become entry points to esbuild.
   const ops = await Promise.all(
-    npmSpecifiers.map(async (specifier, index) => {
+    npmSpecifiers.map(async ({ specifier, types }, index) => {
       const code = `import * as mod from "${specifier}"; export default mod.default; export * from "${specifier}";`
-      const filePath = path.join(temporaryDirectory.path, `barrel-${index}.js`)
+      const barrelName = `barrel-${index}.js`
+      const filePath = path.join(temporaryDirectory.path, barrelName)
 
       await fs.writeFile(filePath, code)
 
-      return { filePath, specifier }
+      return { filePath, specifier, barrelName, types }
     }),
   )
   const entryPoints = ops.map(({ filePath }) => filePath)
@@ -171,7 +252,7 @@ export const vendorNPMSpecifiers = async ({
   // Bundle each of the barrel files we created. We'll end up with a compiled
   // version of each of the barrel files, plus any chunks of shared code
   // between them (such that a common module isn't bundled twice).
-  await build({
+  const { outputFiles } = await build({
     allowOverwrite: true,
     banner,
     bundle: true,
@@ -183,7 +264,19 @@ export const vendorNPMSpecifiers = async ({
     platform: 'node',
     splitting: true,
     target: 'es2020',
+    write: false,
   })
+
+  await Promise.all(
+    outputFiles.map(async (file) => {
+      const types = ops.find((op) => file.path.endsWith(op.barrelName))?.types
+      let content = file.text
+      if (types) {
+        content = `/// <reference types="${path.relative(file.path, types)}" />\n${content}`
+      }
+      await fs.writeFile(file.path, content)
+    }),
+  )
 
   // Add all Node.js built-ins to the import map, so any unprefixed specifiers
   // (e.g. `process`) resolve to the prefixed versions (e.g. `node:prefix`),

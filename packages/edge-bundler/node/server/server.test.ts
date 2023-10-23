@@ -1,8 +1,8 @@
+import { readFile } from 'fs/promises'
 import { join } from 'path'
 
 import getPort from 'get-port'
 import fetch from 'node-fetch'
-import { tmpName } from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'
 
@@ -17,13 +17,16 @@ test('Starts a server and serves requests for edge functions', async () => {
   }
   const port = await getPort()
   const importMapPaths = [join(paths.internal, 'import_map.json'), join(paths.user, 'import-map.json')]
-  const servePath = await tmpName()
+  const servePath = join(basePath, '.netlify', 'edge-functions-serve')
   const server = await serve({
     basePath,
     bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
     importMapPaths,
     port,
     servePath,
+    featureFlags: {
+      edge_functions_npm_modules: true,
+    },
   })
 
   const functions = [
@@ -44,16 +47,17 @@ test('Starts a server and serves requests for edge functions', async () => {
     getFunctionsConfig: true,
   }
 
-  const { features, functionsConfig, graph, success } = await server(
+  const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
     functions,
     {
       very_secret_secret: 'i love netlify',
     },
     options,
   )
-  expect(features).toEqual({})
+  expect(features).toEqual({ npmModules: true })
   expect(success).toBe(true)
   expect(functionsConfig).toEqual([{ path: '/my-function' }, {}, { path: '/global-netlify' }])
+  expect(npmSpecifiersWithExtraneousFiles).toEqual(['dictionary'])
 
   for (const key in functions) {
     const graphEntry = graph?.modules.some(
@@ -95,4 +99,22 @@ test('Starts a server and serves requests for edge functions', async () => {
     global: 'i love netlify',
     local: 'i love netlify',
   })
+
+  const idBarrelFile = await readFile(join(servePath, 'barrel-0.js'), 'utf-8')
+  expect(idBarrelFile).toContain(
+    `/// <reference types="${join('..', '..', '..', 'node_modules', 'id', 'types.d.ts')}" />`,
+  )
+
+  const identidadeBarrelFile = await readFile(join(servePath, 'barrel-2.js'), 'utf-8')
+  expect(identidadeBarrelFile).toContain(
+    `/// <reference types="${join(
+      '..',
+      '..',
+      '..',
+      'node_modules',
+      '@types',
+      'pt-committee__identidade',
+      'index.d.ts',
+    )}" />`,
+  )
 })
