@@ -15,17 +15,19 @@ import { Logger } from './logger.js'
 
 const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.cts', '.mts'])
 
+const slugifyPackageName = (specifier: string) => {
+  if (!specifier.startsWith('@')) return specifier
+  const [scope, pkg] = specifier.split('/')
+  return `${scope.replace('@', '')}__${pkg}`
+}
+
 /**
  * Returns the name of the `@types/` package used by a given specifier. Most of
  * the times this is just the specifier itself, but scoped packages suffer a
  * transformation (e.g. `@netlify/functions` -> `@types/netlify__functions`).
  * https://github.com/DefinitelyTyped/DefinitelyTyped#what-about-scoped-packages
  */
-const getTypesPackageName = (specifier: string) => {
-  if (!specifier.startsWith('@')) return path.join('@types', specifier)
-  const [scope, pkg] = specifier.split('/')
-  return path.join('@types', `${scope.replace('@', '')}__${pkg}`)
-}
+const getTypesPackageName = (specifier: string) => path.join('@types', slugifyPackageName(specifier))
 
 /**
  * Finds corresponding DefinitelyTyped packages (`@types/...`) and returns path to declaration file.
@@ -233,24 +235,23 @@ export const vendorNPMSpecifiers = async ({
     return
   }
 
-  // To bundle an entire module and all its dependencies, create a barrel file
+  // To bundle an entire module and all its dependencies, create a entrypoint file
   // where we re-export everything from that specifier. We do this for every
   // specifier, and each of these files will become entry points to esbuild.
   const ops = await Promise.all(
-    npmSpecifiers.map(async ({ specifier, types }, index) => {
+    npmSpecifiers.map(async ({ specifier, types }) => {
       const code = `import * as mod from "${specifier}"; export default mod.default; export * from "${specifier}";`
-      const barrelName = `barrel-${index}.js`
-      const filePath = path.join(temporaryDirectory.path, barrelName)
+      const filePath = path.join(temporaryDirectory.path, `bundled-${slugifyPackageName(specifier)}.js`)
 
       await fs.writeFile(filePath, code)
 
-      return { filePath, specifier, barrelName, types }
+      return { filePath, specifier, types }
     }),
   )
   const entryPoints = ops.map(({ filePath }) => filePath)
 
-  // Bundle each of the barrel files we created. We'll end up with a compiled
-  // version of each of the barrel files, plus any chunks of shared code
+  // Bundle each of the entrypoints we created. We'll end up with a compiled
+  // version of each, plus any chunks of shared code
   // between them (such that a common module isn't bundled twice).
   const { outputFiles } = await build({
     allowOverwrite: true,
@@ -269,7 +270,7 @@ export const vendorNPMSpecifiers = async ({
 
   await Promise.all(
     outputFiles.map(async (file) => {
-      const types = ops.find((op) => file.path.endsWith(op.barrelName))?.types
+      const types = ops.find((op) => path.basename(file.path) === path.basename(op.filePath))?.types
       let content = file.text
       if (types) {
         content = `/// <reference types="${path.relative(file.path, types)}" />\n${content}`
