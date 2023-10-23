@@ -38,7 +38,7 @@ const eventTriggeredFunctions = new Set([
 ])
 
 const validateCustomRoutes = function (functions: Awaited<ReturnType<typeof zipFunctions>>) {
-  for (const { routes, name, schedule } of zisiResults) {
+  for (const { routes, name, schedule } of functions) {
     if (!routes || routes.length === 0) continue
 
     if (schedule) {
