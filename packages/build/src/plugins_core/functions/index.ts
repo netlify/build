@@ -43,7 +43,7 @@ const validateCustomRoutes = function (zisiResults: Awaited<ReturnType<typeof zi
 
     if (schedule) {
       const error = new Error(
-        `Scheduled functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about scheduled functions at https://docs.netlify.com/functions/scheduled-functions.`,
+        `Scheduled functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about scheduled functions at https://ntl.fyi/custom-path-scheduled-functions.`,
       )
       addErrorInfo(error, { type: 'resolveConfig' })
       throw error
@@ -51,7 +51,7 @@ const validateCustomRoutes = function (zisiResults: Awaited<ReturnType<typeof zi
 
     if (eventTriggeredFunctions.has(name.toLowerCase().replace('-background', ''))) {
       const error = new Error(
-        `Event-triggered functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about event-triggered functions at https://docs.netlify.com/functions/trigger-on-events.`,
+        `Event-triggered functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about event-triggered functions at https://ntl.fyi/custom-path-event-triggered-functions.`,
       )
       addErrorInfo(error, { type: 'resolveConfig' })
       throw error
