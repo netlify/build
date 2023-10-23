@@ -37,7 +37,7 @@ const eventTriggeredFunctions = new Set([
   'identity-login',
 ])
 
-const validateCustomRoutes = function (zisiResults: Awaited<ReturnType<typeof zipFunctions>>) {
+const validateCustomRoutes = function (functions: Awaited<ReturnType<typeof zipFunctions>>) {
   for (const { routes, name, schedule } of zisiResults) {
     if (!routes || routes.length === 0) continue
 
