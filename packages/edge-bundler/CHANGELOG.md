@@ -1,5 +1,17 @@
 # Changelog
 
+## [9.4.0](https://github.com/netlify/edge-bundler/compare/v9.3.0...v9.4.0) (2023-10-23)
+
+
+### Features
+
+* detect Typescript typings for NPM modules and reference them from barrel files ([#505](https://github.com/netlify/edge-bundler/issues/505)) ([32f9e9e](https://github.com/netlify/edge-bundler/commit/32f9e9ee83e517ff534e4010156d852193fd3fd1))
+
+
+### Bug Fixes
+
+* give stable barrel file names ([#509](https://github.com/netlify/edge-bundler/issues/509)) ([a4edd93](https://github.com/netlify/edge-bundler/commit/a4edd93e3e71553f128fd867cca652e3395b3184))
+
 ## [9.3.0](https://github.com/netlify/edge-bundler/compare/v9.2.1...v9.3.0) (2023-10-16)
 
 
