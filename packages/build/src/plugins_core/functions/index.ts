@@ -37,13 +37,13 @@ const eventTriggeredFunctions = new Set([
   'identity-login',
 ])
 
-const validateCustomRoutes = async function (zisiResults: Awaited<ReturnType<typeof zipFunctions>>) {
+const validateCustomRoutes = function (zisiResults: Awaited<ReturnType<typeof zipFunctions>>) {
   for (const { routes, name, schedule } of zisiResults) {
     if (!routes || routes.length === 0) continue
 
     if (schedule) {
       const error = new Error(
-        `Scheduled functions must not specify a custom route. Please remove the "routes" configuration or pick a different name for the function. Learn more about scheduled functions at https://docs.netlify.com/functions/scheduled-functions.`,
+        `Scheduled functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about scheduled functions at https://docs.netlify.com/functions/scheduled-functions.`,
       )
       addErrorInfo(error, { type: 'resolveConfig' })
       throw error
@@ -51,7 +51,7 @@ const validateCustomRoutes = async function (zisiResults: Awaited<ReturnType<typ
 
     if (eventTriggeredFunctions.has(name.toLowerCase().replace('-background', ''))) {
       const error = new Error(
-        `Event-triggered functions must not specify a custom route. Please remove the "routes" configuration or pick a different name for the function. Learn more about event-triggered functions at https://docs.netlify.com/functions/trigger-on-events.`,
+        `Event-triggered functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about event-triggered functions at https://docs.netlify.com/functions/trigger-on-events.`,
       )
       addErrorInfo(error, { type: 'resolveConfig' })
       throw error

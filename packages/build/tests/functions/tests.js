@@ -67,3 +67,13 @@ test('Functions: --functionsDistDir', async (t) => {
     await removeDir(functionsDistDir)
   }
 })
+
+test('Functions: custom path on scheduled function', async (t) => {
+  const output = await new Fixture('./fixtures/custom_path_scheduled').runWithBuild()
+  t.true(output.includes('Scheduled functions must not specify a custom path.'))
+})
+
+test('Functions: custom path on event-triggered function', async (t) => {
+  const output = await new Fixture('./fixtures/custom_path_event_triggered').runWithBuild()
+  t.true(output.includes('Event-triggered functions must not specify a custom path.'))
+})
