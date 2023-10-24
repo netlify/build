@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.10.2](https://github.com/netlify/build/compare/build-info-v7.10.1...build-info-v7.10.2) (2023-10-24)
+
+
+### Bug Fixes
+
+* typo in PHP detection ([#5348](https://github.com/netlify/build/issues/5348)) ([784c1ff](https://github.com/netlify/build/commit/784c1ff6841b3d6fb401add931de9de9fb7da013))
+
 ## [7.10.1](https://github.com/netlify/build/compare/build-info-v7.10.0...build-info-v7.10.1) (2023-10-10)
 
 
