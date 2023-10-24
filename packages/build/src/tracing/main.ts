@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
@@ -47,19 +47,16 @@ export const startTracing = function (options: TracingOptions, logger: (...args:
 
   sdk.start()
 
+  // Loads the contents of the passed baggageFilePath into the baggage
+  const baggageCtx = loadBaggageFromFile(options.baggageFilePath)
+
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from Buildbot
-  let ctx = trace.setSpanContext(context.active(), {
+  const ctx = trace.setSpanContext(baggageCtx, {
     traceId: options.traceId,
     spanId: options.parentSpanId,
     traceFlags: options.traceFlags,
     isRemote: true,
-  })
-
-  // Loads the contents of the passed baggageFilePath into the baggage
-  loadBaggageFromFile(options.baggageFilePath).then((res) => {
-    if (res === undefined) return
-    ctx = res
   })
 
   return ctx
@@ -78,12 +75,13 @@ export const stopTracing = async function () {
   }
 }
 
-/** Sets attributes to be propagated across child spans under the current context */
+/** Sets attributes to be propagated across child spans under the current active context */
 export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
   const currentBaggage = propagation.getBaggage(context.active())
+  // Create a baggage if there's none
   let baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
-  Object.entries(attributes).forEach((entry) => {
-    baggage = baggage.setEntry(entry[0], { value: entry[1] })
+  Object.entries(attributes).forEach(([key, value]) => {
+    baggage = baggage.setEntry(key, { value })
   })
 
   return propagation.setBaggage(context.active(), baggage)
@@ -102,14 +100,17 @@ export const addErrorToActiveSpan = function (error: Error) {
 }
 
 //** Loads the baggage attributes from a baggabe file which follows W3C Baggage specification */
-export const loadBaggageFromFile = async function (baggageFilePath: string) {
-  if (baggageFilePath === undefined || baggageFilePath.length == 0) return setMultiSpanAttributes({})
+export const loadBaggageFromFile = function (baggageFilePath: string) {
+  if (baggageFilePath.length === 0) {
+    diag.warn('Empty baggage file path provided, no context loaded')
+    return context.active()
+  }
   let baggageString: string
   try {
-    baggageString = await readFile(baggageFilePath, 'utf-8')
+    baggageString = readFileSync(baggageFilePath, 'utf-8')
   } catch (error) {
     diag.error(error)
-    return
+    return context.active()
   }
   const parsedBaggage = parseKeyPairsIntoRecord(baggageString)
   return setMultiSpanAttributes(parsedBaggage)
