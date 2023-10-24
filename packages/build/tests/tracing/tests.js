@@ -61,14 +61,18 @@ testMatrixBaggageFile.forEach((testCase) => {
       await writeFile(input.baggageFilePath, input.baggageFileContent)
     }
 
-    const ctx = await loadBaggageFromFile(input.baggageFilePath)
+    const ctx = loadBaggageFromFile(input.baggageFilePath)
     const baggage = propagation.getBaggage(ctx)
 
     Object.entries(expects).forEach(([property, expected]) => {
-      if (expected === undefined) {
-        t.is(baggage.getEntry(property), expected)
+      if (input.baggageFilePath === '') {
+        t.is(baggage, undefined)
       } else {
-        t.is(baggage.getEntry(property).value, expected.value)
+        if (expected === undefined) {
+          t.is(baggage.getEntry(property), expected)
+        } else {
+          t.is(baggage.getEntry(property).value, expected.value)
+        }
       }
     })
     if (input.baggageFilePath.length > 0) {
@@ -144,6 +148,7 @@ testMatrix.forEach((testCase) => {
         traceId: input.traceId,
         traceFlags: input.traceFlags,
         parentSpanId: spanId,
+        baggageFilePath: '',
       },
       noopLogger,
     )
