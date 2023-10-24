@@ -273,7 +273,7 @@ export const vendorNPMSpecifiers = async ({
       const types = ops.find((op) => path.basename(file.path) === path.basename(op.filePath))?.types
       let content = file.text
       if (types) {
-        content = `/// <reference types="${path.relative(file.path, types)}" />\n${content}`
+        content = `/// <reference types="${path.relative(path.dirname(file.path), types)}" />\n${content}`
       }
       await fs.writeFile(file.path, content)
     }),
