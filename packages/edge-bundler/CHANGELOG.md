@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.4.1](https://github.com/netlify/edge-bundler/compare/v9.4.0...v9.4.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* relative path needs to be from directory, not from file ([#510](https://github.com/netlify/edge-bundler/issues/510)) ([e8304db](https://github.com/netlify/edge-bundler/commit/e8304dba06d6b65e93484df4f3b22196f18cfa1c))
+
 ## [9.4.0](https://github.com/netlify/edge-bundler/compare/v9.3.0...v9.4.0) (2023-10-23)
 
 
