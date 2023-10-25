@@ -59,6 +59,18 @@ test('secrets scanning, should fail build when it finds secrets in the src and b
   t.snapshot(normalizeOutput(output))
 })
 
+test('secrets scanning failure should produce an user error', async (t) => {
+  const { severityCode } = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
+    .withFlags({
+      debug: false,
+      explicitSecretKeys:
+        'ENV_VAR_MULTILINE_A,ENV_VAR_1,ENV_VAR_2,ENV_VAR_3,ENV_VAR_4,ENV_VAR_5,ENV_VAR_6,ENV_VAR_MULTILINE_B',
+    })
+    .runBuildProgrammatic()
+  // Severity code of 2 is user error
+  t.is(severityCode, 2)
+})
+
 test('secrets scanning, should not fail if the secrets values are not detected in the build output', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_no_matches')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
