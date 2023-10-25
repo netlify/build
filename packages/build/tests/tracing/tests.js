@@ -1,14 +1,12 @@
-import { writeFile, mkdir, rm } from 'fs/promises'
-import { fileURLToPath } from 'url'
+import { writeFile, rm, mkdtemp } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
 
 import { trace, TraceFlags, propagation } from '@opentelemetry/api'
 import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
 import test from 'ava'
 
 import { setMultiSpanAttributes, startTracing, stopTracing, loadBaggageFromFile } from '../../lib/tracing/main.js'
-
-const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
-const BAGGAGE_PATH = `${FIXTURES_DIR}/baggage.dump`
 
 test('Tracing set multi span attributes', async (t) => {
   const ctx = setMultiSpanAttributes({ some: 'test', foo: 'bar' })
@@ -32,7 +30,7 @@ const testMatrixBaggageFile = [
   {
     description: 'when baggageFilePath is set but file is empty',
     input: {
-      baggageFilePath: BAGGAGE_PATH,
+      baggageFilePath: 'baggage.dump',
       baggageFileContent: '',
     },
     expects: {
@@ -43,7 +41,7 @@ const testMatrixBaggageFile = [
   {
     description: 'when baggageFilePath is set and has content',
     input: {
-      baggageFilePath: BAGGAGE_PATH,
+      baggageFilePath: 'baggage.dump',
       baggageFileContent: 'somefield=value,foo=bar',
     },
     expects: {
@@ -53,31 +51,42 @@ const testMatrixBaggageFile = [
   },
 ]
 
+let baggagePath
+test.before(async () => {
+  baggagePath = await mkdtemp(join(tmpdir(), 'baggage-path-'))
+})
+
+test.after(async () => {
+  await rm(baggagePath, { recursive: true })
+})
+
 testMatrixBaggageFile.forEach((testCase) => {
   test.serial(`Tracing baggage loading - ${testCase.description}`, async (t) => {
     const { input, expects } = testCase
+
+    // We only want to write the file if it's a non-empty string '', while we still want to test scenario
+    let filePath = input.baggageFilePath
     if (input.baggageFilePath.length > 0) {
-      await mkdir(FIXTURES_DIR, { recursive: true })
-      await writeFile(input.baggageFilePath, input.baggageFileContent)
+      const filePath = `${baggagePath}/${input.baggageFilePath}`
+      await writeFile(filePath, input.baggageFileContent)
     }
 
-    const ctx = loadBaggageFromFile(input.baggageFilePath)
+    const ctx = loadBaggageFromFile(filePath)
     const baggage = propagation.getBaggage(ctx)
 
+    // When there's no file we test that baggage is not set
+    if (input.baggageFilePath === '') {
+      t.is(baggage, undefined)
+      return
+    }
+
     Object.entries(expects).forEach(([property, expected]) => {
-      if (input.baggageFilePath === '') {
-        t.is(baggage, undefined)
+      if (expected === undefined) {
+        t.is(baggage.getEntry(property), expected)
       } else {
-        if (expected === undefined) {
-          t.is(baggage.getEntry(property), expected)
-        } else {
-          t.is(baggage.getEntry(property).value, expected.value)
-        }
+        t.is(baggage.getEntry(property).value, expected.value)
       }
     })
-    if (input.baggageFilePath.length > 0) {
-      rm(input.baggageFilePath, { force: true })
-    }
   })
 })
 
