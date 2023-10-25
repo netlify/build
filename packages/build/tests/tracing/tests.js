@@ -67,7 +67,7 @@ testMatrixBaggageFile.forEach((testCase) => {
     // We only want to write the file if it's a non-empty string '', while we still want to test scenario
     let filePath = input.baggageFilePath
     if (input.baggageFilePath.length > 0) {
-      const filePath = `${baggagePath}/${input.baggageFilePath}`
+      filePath = `${baggagePath}/${input.baggageFilePath}`
       await writeFile(filePath, input.baggageFileContent)
     }
 
