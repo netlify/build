@@ -20,4 +20,5 @@ export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TI
   packageJson: Partial<Record<string, JSONValue>>
   constants: NetlifyPluginConstants
   utils: NetlifyPluginUtils
+  featureFlags?: Record<string, unknown>
 }
