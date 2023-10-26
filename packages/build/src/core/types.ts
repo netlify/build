@@ -86,4 +86,5 @@ export type TracingOptions = {
   traceId: string
   traceFlags: number
   parentSpanId: string
+  baggageFilePath: string
 }
