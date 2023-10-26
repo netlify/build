@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.24.1](https://github.com/netlify/build/compare/build-v29.24.0...build-v29.24.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* **secret-scanning:** secret detection should produce an user error not a system one ([#5354](https://github.com/netlify/build/issues/5354)) ([0458ea7](https://github.com/netlify/build/commit/0458ea703c9f899ff44f4766890f42104b2dbf8d))
+
 ## [29.24.0](https://github.com/netlify/build/compare/build-v29.23.5...build-v29.24.0) (2023-10-26)
 
 
