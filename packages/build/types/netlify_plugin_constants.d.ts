@@ -58,9 +58,9 @@ export interface NetlifyPluginConstants {
   /**
    * the Netlify API access token
    */
-  NETLIFY_API_TOKEN?: string,
+  NETLIFY_API_TOKEN?: string
   /**
    * the Netlify API host
    */
-  NETLIFY_API_HOST?: string,
+  NETLIFY_API_HOST?: string
 }
