@@ -1,14 +1,93 @@
-import { trace, TraceFlags } from '@opentelemetry/api'
+import { writeFile, rm, mkdtemp } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
+
+import { trace, TraceFlags, propagation } from '@opentelemetry/api'
 import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
 import test from 'ava'
 
-import { setMultiSpanAttributes, startTracing, stopTracing } from '../../lib/tracing/main.js'
+import { setMultiSpanAttributes, startTracing, stopTracing, loadBaggageFromFile } from '../../lib/tracing/main.js'
 
 test('Tracing set multi span attributes', async (t) => {
   const ctx = setMultiSpanAttributes({ some: 'test', foo: 'bar' })
   const baggage = getBaggage(ctx)
   t.is(baggage.getEntry('some').value, 'test')
   t.is(baggage.getEntry('foo').value, 'bar')
+})
+
+const testMatrixBaggageFile = [
+  {
+    description: 'when baggageFilePath is blank',
+    input: {
+      baggageFilePath: '',
+      baggageFileContent: null,
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is set but file is empty',
+    input: {
+      baggageFilePath: 'baggage.dump',
+      baggageFileContent: '',
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is set and has content',
+    input: {
+      baggageFilePath: 'baggage.dump',
+      baggageFileContent: 'somefield=value,foo=bar',
+    },
+    expects: {
+      somefield: { value: 'value' },
+      foo: { value: 'bar' },
+    },
+  },
+]
+
+let baggagePath
+test.before(async () => {
+  baggagePath = await mkdtemp(join(tmpdir(), 'baggage-path-'))
+})
+
+test.after(async () => {
+  await rm(baggagePath, { recursive: true })
+})
+
+testMatrixBaggageFile.forEach((testCase) => {
+  test.serial(`Tracing baggage loading - ${testCase.description}`, async (t) => {
+    const { input, expects } = testCase
+
+    // We only want to write the file if it's a non-empty string '', while we still want to test scenario
+    let filePath = input.baggageFilePath
+    if (input.baggageFilePath.length > 0) {
+      filePath = `${baggagePath}/${input.baggageFilePath}`
+      await writeFile(filePath, input.baggageFileContent)
+    }
+
+    const ctx = loadBaggageFromFile(filePath)
+    const baggage = propagation.getBaggage(ctx)
+
+    // When there's no file we test that baggage is not set
+    if (input.baggageFilePath === '') {
+      t.is(baggage, undefined)
+      return
+    }
+
+    Object.entries(expects).forEach(([property, expected]) => {
+      if (expected === undefined) {
+        t.is(baggage.getEntry(property), expected)
+      } else {
+        t.is(baggage.getEntry(property).value, expected.value)
+      }
+    })
+  })
 })
 
 const spanId = '6e0c63257de34c92'
@@ -78,6 +157,7 @@ testMatrix.forEach((testCase) => {
         traceId: input.traceId,
         traceFlags: input.traceFlags,
         parentSpanId: spanId,
+        baggageFilePath: '',
       },
       noopLogger,
     )

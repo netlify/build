@@ -244,6 +244,11 @@ Default: false`,
     describe: 'Trace flags containing the trace settings for the given trace ID',
     hidden: true,
   },
+  'tracing.baggageFilePath': {
+    string: true,
+    describe: '',
+    hidden: true,
+  },
   offline: {
     boolean: true,
     describe: `Do not send requests to the Netlify API to retrieve site settings.

@@ -106,6 +106,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
       sampleRate: 1,
       httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
       port: DEFAULT_OTEL_TRACING_PORT,
+      baggageFilePath: '',
     },
     timeline: 'build',
     quiet: false,
