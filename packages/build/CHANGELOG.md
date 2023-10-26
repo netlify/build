@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.24.1](https://github.com/netlify/build/compare/build-v29.24.0...build-v29.24.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* **secret-scanning:** secret detection should produce an user error not a system one ([#5354](https://github.com/netlify/build/issues/5354)) ([0458ea7](https://github.com/netlify/build/commit/0458ea703c9f899ff44f4766890f42104b2dbf8d))
+
+## [29.24.0](https://github.com/netlify/build/compare/build-v29.23.5...build-v29.24.0) (2023-10-26)
+
+
+### Features
+
+* Add support for loading a tracing baggage dump in WC3 Baggage format ([#5343](https://github.com/netlify/build/issues/5343)) ([3d64536](https://github.com/netlify/build/commit/3d6453670570a63c6a4d1d51f2ce41b11c8250d4))
+
+
+### Bug Fixes
+
+* error on scheduled/event-triggered functions with custom route ([#5344](https://github.com/netlify/build/issues/5344)) ([9ef1a15](https://github.com/netlify/build/commit/9ef1a1519561ff61d7e483a99eb2f5b6a09bc3fe))
+
 ## [29.23.5](https://github.com/netlify/build/compare/build-v29.23.4...build-v29.23.5) (2023-10-23)
 
 

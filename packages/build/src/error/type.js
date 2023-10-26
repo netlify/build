@@ -104,7 +104,7 @@ const TYPES = {
   secretScanningFoundSecrets: {
     title: 'Secrets scanning detected secrets in files during build.',
     stackType: 'none',
-    severity: 'error',
+    severity: 'info',
   },
 
   // Plugin called `utils.build.failBuild()`
