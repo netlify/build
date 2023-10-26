@@ -55,4 +55,12 @@ export interface NetlifyPluginConstants {
    * the Netlify site ID
    */
   SITE_ID: string
+  /**
+   * the Netlify API access token
+   */
+  NETLIFY_API_TOKEN?: string
+  /**
+   * the Netlify API host
+   */
+  NETLIFY_API_HOST?: string
 }
