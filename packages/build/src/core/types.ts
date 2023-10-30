@@ -1,4 +1,5 @@
 import { NetlifyConfig } from '../../types/index.js'
+import { BufferedLogs } from '../log/logger.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
@@ -48,7 +49,7 @@ export type BuildResult = {
   severityCode: SeverityCode
   netlifyConfig?: NetlifyConfig
   configMutations?: any
-  logs?: string[]
+  logs?: BufferedLogs
 }
 
 export enum SeverityCode {
