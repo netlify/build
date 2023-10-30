@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from 'fs/promises'
+import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
@@ -27,7 +27,6 @@ const generateStage2 = async ({
   formatImportError,
   functions,
 }: GenerateStage2Options) => {
-  await rm(distDirectory, { force: true, recursive: true, maxRetries: 3 })
   await mkdir(distDirectory, { recursive: true })
 
   const entryPoint = getLocalEntryPoint(functions, { bootstrapURL, formatExportTypeError, formatImportError })

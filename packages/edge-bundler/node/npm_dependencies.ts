@@ -326,5 +326,6 @@ export const vendorNPMSpecifiers = async ({
     directory: temporaryDirectory.path,
     importMap: newImportMap,
     npmSpecifiersWithExtraneousFiles,
+    outputFiles: outputFiles.map((file) => file.path),
   }
 }

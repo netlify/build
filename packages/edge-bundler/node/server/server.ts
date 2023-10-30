@@ -1,3 +1,6 @@
+import { readdir, unlink } from 'fs/promises'
+import { join } from 'path'
+
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
 import type { EdgeFunction } from '../edge_function.js'
@@ -30,6 +33,17 @@ interface PrepareServerOptions {
 
 interface StartServerOptions {
   getFunctionsConfig?: boolean
+}
+
+/**
+ * Cleans up a directory, except for the files specified in the `except` array.
+ * Both should be given as absolute paths.
+ * Assumes the directory doesn't contain any nested directories.
+ */
+const cleanDirectory = async (directory: string, except: string[]) => {
+  const files = await readdir(directory)
+  const toBeDeleted = files.filter((file) => !except.includes(join(directory, file)))
+  await Promise.all(toBeDeleted.map((file) => unlink(join(directory, file))))
 }
 
 const prepareServer = ({
@@ -70,6 +84,9 @@ const prepareServer = ({
     const importMap = baseImportMap.clone()
     const npmSpecifiersWithExtraneousFiles: string[] = []
 
+    // we keep track of the files that are relevant to the user's code, so we can clean up leftovers from past executions later
+    const relevantFiles = [stage2Path]
+
     const vendor = await vendorNPMSpecifiers({
       basePath,
       directory: distDirectory,
@@ -83,7 +100,10 @@ const prepareServer = ({
       features.npmModules = true
       importMap.add(vendor.importMap)
       npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
+      relevantFiles.push(...vendor.outputFiles)
     }
+
+    await cleanDirectory(distDirectory, relevantFiles)
 
     try {
       // This command will print a JSON object with all the modules found in
