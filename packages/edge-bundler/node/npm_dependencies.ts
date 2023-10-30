@@ -259,6 +259,7 @@ export const vendorNPMSpecifiers = async ({
     bundle: true,
     entryPoints,
     format: 'esm',
+    mainFields: ['module', 'browser', 'main'],
     logLevel: 'error',
     nodePaths,
     outdir: temporaryDirectory.path,
