@@ -1,7 +1,4 @@
-const defaultFlags = {
-  edge_functions_fail_unsupported_regex: false,
-  edge_functions_npm_modules: false,
-}
+const defaultFlags = {}
 
 type FeatureFlag = keyof typeof defaultFlags
 type FeatureFlags = Partial<Record<FeatureFlag, boolean>>

@@ -38,7 +38,6 @@ const prepareServer = ({
   deno,
   distDirectory,
   distImportMapPath,
-  featureFlags,
   flags: denoFlags,
   formatExportTypeError,
   formatImportError,
@@ -71,21 +70,19 @@ const prepareServer = ({
     const importMap = baseImportMap.clone()
     const npmSpecifiersWithExtraneousFiles: string[] = []
 
-    if (featureFlags?.edge_functions_npm_modules) {
-      const vendor = await vendorNPMSpecifiers({
-        basePath,
-        directory: distDirectory,
-        functions: functions.map(({ path }) => path),
-        importMap,
-        logger,
-        referenceTypes: true,
-      })
+    const vendor = await vendorNPMSpecifiers({
+      basePath,
+      directory: distDirectory,
+      functions: functions.map(({ path }) => path),
+      importMap,
+      logger,
+      referenceTypes: true,
+    })
 
-      if (vendor) {
-        features.npmModules = true
-        importMap.add(vendor.importMap)
-        npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
-      }
+    if (vendor) {
+      features.npmModules = true
+      importMap.add(vendor.importMap)
+      npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
     }
 
     try {

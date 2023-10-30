@@ -24,9 +24,6 @@ test('Starts a server and serves requests for edge functions', async () => {
     importMapPaths,
     port,
     servePath,
-    featureFlags: {
-      edge_functions_npm_modules: true,
-    },
   })
 
   const functions = [

@@ -255,16 +255,11 @@ interface VendorNPMOptions {
 
 const safelyVendorNPMSpecifiers = async ({
   basePath,
-  featureFlags,
   functions,
   importMap,
   logger,
   vendorDirectory,
 }: VendorNPMOptions) => {
-  if (!featureFlags.edge_functions_npm_modules) {
-    return
-  }
-
   try {
     return await vendorNPMSpecifiers({
       basePath,

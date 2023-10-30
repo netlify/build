@@ -108,7 +108,6 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
 const generateManifest = ({
   bundles = [],
   declarations = [],
-  featureFlags,
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
@@ -148,8 +147,8 @@ const generateManifest = ({
       return
     }
 
-    const pattern = getRegularExpression(declaration, featureFlags)
-    const excludedPattern = getExcludedRegularExpressions(declaration, featureFlags)
+    const pattern = getRegularExpression(declaration)
+    const excludedPattern = getExcludedRegularExpressions(declaration)
 
     const route: Route = {
       function: func.name,
@@ -207,32 +206,23 @@ const pathToRegularExpression = (path: string) => {
   }
 }
 
-const getRegularExpression = (declaration: Declaration, featureFlags?: FeatureFlags): string => {
+const getRegularExpression = (declaration: Declaration): string => {
   if ('pattern' in declaration) {
     try {
       return parsePattern(declaration.pattern)
     } catch (error: unknown) {
-      // eslint-disable-next-line max-depth
-      if (featureFlags?.edge_functions_fail_unsupported_regex) {
-        throw new Error(
+      throw wrapBundleError(
+        new Error(
           `Could not parse path declaration of function '${declaration.function}': ${(error as Error).message}`,
-        )
-      }
-
-      console.warn(
-        `Function '${declaration.function}' uses an unsupported regular expression and will not be invoked: ${
-          (error as Error).message
-        }`,
+        ),
       )
-
-      return declaration.pattern
     }
   }
 
   return pathToRegularExpression(declaration.path)
 }
 
-const getExcludedRegularExpressions = (declaration: Declaration, featureFlags?: FeatureFlags): string[] => {
+const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
   if ('excludedPattern' in declaration && declaration.excludedPattern) {
     const excludedPatterns: string[] = Array.isArray(declaration.excludedPattern)
       ? declaration.excludedPattern
@@ -241,19 +231,11 @@ const getExcludedRegularExpressions = (declaration: Declaration, featureFlags?: 
       try {
         return parsePattern(excludedPattern)
       } catch (error: unknown) {
-        if (featureFlags?.edge_functions_fail_unsupported_regex) {
-          throw new Error(
+        throw wrapBundleError(
+          new Error(
             `Could not parse path declaration of function '${declaration.function}': ${(error as Error).message}`,
-          )
-        }
-
-        console.warn(
-          `Function '${
-            declaration.function
-          }' uses an unsupported regular expression and will therefore not be invoked: ${(error as Error).message}`,
+          ),
         )
-
-        return excludedPattern
       }
     })
   }

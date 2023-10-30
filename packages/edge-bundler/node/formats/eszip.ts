@@ -33,7 +33,6 @@ const bundleESZIP = async ({
   deno,
   distDirectory,
   externals,
-  featureFlags,
   functions,
   importMap,
   vendorDirectory,
@@ -67,7 +66,7 @@ const bundleESZIP = async ({
   try {
     await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })
   } catch (error: unknown) {
-    throw wrapBundleError(wrapNpmImportError(error, Boolean(featureFlags.edge_functions_npm_modules)), {
+    throw wrapBundleError(wrapNpmImportError(error), {
       format: 'eszip',
     })
   }

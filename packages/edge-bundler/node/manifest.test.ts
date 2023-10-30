@@ -1,6 +1,6 @@
 import { env } from 'process'
 
-import { test, expect, vi } from 'vitest'
+import { test, expect } from 'vitest'
 
 import { getRouteMatcher } from '../test/util.js'
 
@@ -433,30 +433,7 @@ test('Generates a manifest with layers', () => {
   expect(manifest2.layers).toEqual(layers)
 })
 
-test('Shows a warning if the regular expression contains a negative lookahead', () => {
-  const mockConsoleWarn = vi.fn()
-  const consoleWarn = console.warn
-
-  console.warn = mockConsoleWarn
-
-  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
-  const declarations = [{ function: 'func-1', pattern: '^/\\w+(?=\\d)$' }]
-  const manifest = generateManifest({
-    bundles: [],
-    declarations,
-    functions,
-  })
-
-  console.warn = consoleWarn
-
-  expect(manifest.routes).toEqual([{ function: 'func-1', pattern: '^/\\w+(?=\\d)$', excluded_patterns: [] }])
-  expect(mockConsoleWarn).toHaveBeenCalledOnce()
-  expect(mockConsoleWarn).toHaveBeenCalledWith(
-    "Function 'func-1' uses an unsupported regular expression and will not be invoked: Regular expressions with lookaheads are not supported",
-  )
-})
-
-test('Throws an error if the regular expression contains a negative lookahead and the `edge_functions_fail_unsupported_regex` flag is set', () => {
+test('Throws an error if the regular expression contains a negative lookahead', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
   const declarations = [{ function: 'func-1', pattern: '^/\\w+(?=\\d)$' }]
 
@@ -464,7 +441,6 @@ test('Throws an error if the regular expression contains a negative lookahead an
     generateManifest({
       bundles: [],
       declarations,
-      featureFlags: { edge_functions_fail_unsupported_regex: true },
       functions,
     }),
   ).toThrowError(
