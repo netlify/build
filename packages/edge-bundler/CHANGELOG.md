@@ -1,5 +1,19 @@
 # Changelog
 
+## [9.5.0](https://github.com/netlify/edge-bundler/compare/v9.4.1...v9.5.0) (2023-10-30)
+
+
+### Features
+
+* add support for JSON imports ([#513](https://github.com/netlify/edge-bundler/issues/513)) ([d391d20](https://github.com/netlify/edge-bundler/commit/d391d20405373c0917f3bf839f8bbea386f8271b))
+
+
+### Bug Fixes
+
+* don't delete dist directory in between builds on local dev ([#512](https://github.com/netlify/edge-bundler/issues/512)) ([aa416ae](https://github.com/netlify/edge-bundler/commit/aa416aebec77086ba4d5bb530954ea24d930c29c))
+* prefer ESM if available ([#517](https://github.com/netlify/edge-bundler/issues/517)) ([906ff87](https://github.com/netlify/edge-bundler/commit/906ff87559f90fee9f7290f47e3b4d3f2e424dd7))
+* remove npm_modules and fail_unsupported_regex flags ([#514](https://github.com/netlify/edge-bundler/issues/514)) ([be1d7cc](https://github.com/netlify/edge-bundler/commit/be1d7cc74b5e76b282acccbffd4b8d74e830224d))
+
 ## [9.4.1](https://github.com/netlify/edge-bundler/compare/v9.4.0...v9.4.1) (2023-10-24)
 
 
