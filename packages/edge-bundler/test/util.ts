@@ -69,7 +69,7 @@ const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   const extractCommand = execa('deno', [
     'run',
     '--allow-all',
-    'https://deno.land/x/eszip@v0.40.0/eszip.ts',
+    'https://deno.land/x/eszip@v0.55.2/eszip.ts',
     'x',
     eszipPath,
     tmpDir.path,

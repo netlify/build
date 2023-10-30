@@ -471,3 +471,30 @@ test('Loads npm modules from bare specifiers', async () => {
   await cleanup()
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
+
+test('Loads JSON modules', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('imports_json')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const vendorDirectory = await tmp.dir()
+
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+    vendorDirectory: vendorDirectory.path,
+  })
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+  expect(func1).toBe(`{"foo":"bar"}`)
+
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+})

@@ -29,7 +29,7 @@ jobs:
         os: [ubuntu-latest]
         node-version: ['14.18.0', '*']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        deno-version: ['v1.32.5', 'v1.x']
+        deno-version: ['v1.37.0', 'v1.x']
         include:
           - os: macOS-latest
             node-version: '*'
@@ -46,7 +46,7 @@ jobs:
         with:
           deno-version: ${{ matrix.deno-version }}
       - name: Setup Deno dependencies
-        run: deno cache https://deno.land/x/eszip@v0.40.0/eszip.ts
+        run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

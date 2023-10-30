@@ -1,4 +1,4 @@
-import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.40.0/mod.ts'
+import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.55.2/mod.ts'
 
 import * as path from 'https://deno.land/std@0.177.0/path/mod.ts'
 
