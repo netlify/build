@@ -1,10 +1,10 @@
 {
   "packages/build-info": "7.10.2",
-  "packages/build": "29.24.2",
+  "packages/build": "29.24.3",
   "packages/cache-utils": "5.1.5",
   "packages/config": "20.9.0",
   "packages/framework-info": "9.8.10",
-  "packages/functions-utils": "5.2.37",
+  "packages/functions-utils": "5.2.38",
   "packages/git-utils": "5.1.1",
   "packages/headers-parser": "7.1.2",
   "packages/js-client": "13.1.10",
