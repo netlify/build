@@ -70,6 +70,24 @@ test('Event handlers are called', async (t) => {
   t.true(flag)
 })
 
+test('Event handlers with description are called', async (t) => {
+  let flag = false
+  await new Fixture('./fixtures/empty')
+    .withFlags({
+      eventHandlers: {
+        onPostBuild: {
+          handler: () => {
+            flag = true
+          },
+          description: 'Test onPostBuild',
+        },
+      },
+    })
+    .runWithBuild()
+
+  t.true(flag)
+})
+
 test('Exit code is 1 on build cancellation', async (t) => {
   const { exitCode } = await new Fixture('./fixtures/cancel').runBuildBinary()
   t.is(exitCode, 1)
