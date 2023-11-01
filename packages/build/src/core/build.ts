@@ -85,6 +85,7 @@ const tExecBuild = async function ({
   framework,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -217,6 +218,7 @@ const tExecBuild = async function ({
     integrations,
     explicitSecretKeys,
     edgeFunctionsBootstrapURL,
+    eventHandlers,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -274,6 +276,7 @@ export const runAndReportBuild = async function ({
   integrations,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   try {
     const {
@@ -326,6 +329,7 @@ export const runAndReportBuild = async function ({
       integrations,
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
+      eventHandlers,
     })
     await Promise.all([
       reportStatuses({
@@ -428,6 +432,7 @@ const initAndRunBuild = async function ({
   integrations,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -511,6 +516,7 @@ const initAndRunBuild = async function ({
       quiet,
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
+      eventHandlers,
     })
 
     await Promise.all([
@@ -579,6 +585,7 @@ const runBuild = async function ({
   quiet,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -591,7 +598,10 @@ const runBuild = async function ({
     netlifyConfig,
   })
 
-  const { steps, events } = timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps) : getSteps(pluginsSteps)
+  const { steps, events } =
+    timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps, eventHandlers) : getSteps(pluginsSteps, eventHandlers)
+
+  console.log({ steps })
 
   if (dry) {
     await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })

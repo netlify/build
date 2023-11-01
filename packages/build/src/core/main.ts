@@ -42,6 +42,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
     buildId,
     deployId,
     rootTracingContext,
+    eventHandlers,
     ...flagsA
   }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
@@ -81,6 +82,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         testOpts,
         errorParams,
         framework,
+        eventHandlers,
       })
       await handleBuildSuccess({
         framework,

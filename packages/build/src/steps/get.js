@@ -7,15 +7,18 @@ import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
 
 // Get all build steps
-export const getSteps = function (steps) {
+export const getSteps = function (steps, eventHandlers) {
   const stepsA = addCoreSteps(steps)
-  const stepsB = sortSteps(stepsA, EVENTS)
+  const eventSteps = getEventSteps(eventHandlers)
+  const stepsB = [...stepsA, ...eventSteps]
+
+  const stepsC = sortSteps(stepsB, EVENTS)
   const events = getEvents(stepsB)
-  return { steps: stepsB, events }
+  return { steps: stepsC, events }
 }
 
 // Get all dev steps
-export const getDevSteps = function (command, steps) {
+export const getDevSteps = function (command, steps, eventHandlers) {
   const devCommandStep = {
     event: 'onDev',
     coreStep: async () => {
@@ -27,10 +30,37 @@ export const getDevSteps = function (command, steps) {
     coreStepName: 'dev.command',
     coreStepDescription: () => 'Run command for local development',
   }
-  const sortedSteps = sortSteps([...steps, devCommandStep], DEV_EVENTS)
+
+  const eventSteps = getEventSteps(eventHandlers)
+
+  const sortedSteps = sortSteps([...steps, eventSteps, devCommandStep], DEV_EVENTS)
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
+}
+
+const getEventSteps = function (eventHandlers) {
+  return Object.entries(eventHandlers ?? {}).map(([event, eventHandler]) => {
+    if (typeof eventHandler !== 'function') {
+      const { handler, description } = eventHandler
+
+      return {
+        event,
+        coreStep: handler,
+        coreStepId: `options_${event}`,
+        coreStepName: `options.${event}`,
+        coreStepDescription: () => description,
+      }
+    } else {
+      return {
+        event,
+        coreStep: eventHandler,
+        coreStepId: `options_${event}`,
+        coreStepName: `options.${event}`,
+        coreStepDescription: () => `Custom event handler for ${event}`,
+      }
+    }
+  })
 }
 
 const addCoreSteps = function (steps) {
