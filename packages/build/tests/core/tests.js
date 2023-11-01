@@ -55,6 +55,21 @@ test('Exit code is 0 on success', async (t) => {
   t.is(exitCode, 0)
 })
 
+test('Event handlers are called', async (t) => {
+  let flag = false
+  await new Fixture('./fixtures/empty')
+    .withFlags({
+      eventHandlers: {
+        onPostBuild: () => {
+          flag = true
+        },
+      },
+    })
+    .runWithBuild()
+
+  t.true(flag)
+})
+
 test('Exit code is 1 on build cancellation', async (t) => {
   const { exitCode } = await new Fixture('./fixtures/cancel').runBuildBinary()
   t.is(exitCode, 1)
