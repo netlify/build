@@ -601,8 +601,6 @@ const runBuild = async function ({
   const { steps, events } =
     timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps, eventHandlers) : getSteps(pluginsSteps, eventHandlers)
 
-  console.log({ steps })
-
   if (dry) {
     await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })
     return { netlifyConfig }
