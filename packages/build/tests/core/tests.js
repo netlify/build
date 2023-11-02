@@ -113,7 +113,7 @@ test('Event handlers do not displace plugin methods', async (t) => {
 
             return {}
           },
-          description: 'Test onPostBuild',
+          description: 'Test onPreBuild',
         },
       },
     })
