@@ -1,3 +1,4 @@
+import { getUtils } from '../plugins/child/utils.js'
 import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
@@ -41,24 +42,25 @@ export const getDevSteps = function (command, steps, eventHandlers) {
 
 const getEventSteps = function (eventHandlers) {
   return Object.entries(eventHandlers ?? {}).map(([event, eventHandler]) => {
-    if (typeof eventHandler !== 'function') {
-      const { handler, description } = eventHandler
+    let description = `Event handler for ${event}`
+    let handler = eventHandler
 
-      return {
-        event,
-        coreStep: handler,
-        coreStepId: `options_${event}`,
-        coreStepName: `options.${event}`,
-        coreStepDescription: () => description,
-      }
-    } else {
-      return {
-        event,
-        coreStep: eventHandler,
-        coreStepId: `options_${event}`,
-        coreStepName: `options.${event}`,
-        coreStepDescription: () => `Custom event handler for ${event}`,
-      }
+    if (typeof eventHandler !== 'function') {
+      description = eventHandler.description
+      handler = eventHandler.handler
+    }
+
+    return {
+      event,
+      coreStep: (args) => {
+        const { constants, event } = args
+        const utils = getUtils({ event, constants, runState: {} })
+
+        return handler({ utils, ...args })
+      },
+      coreStepId: `options_${event}`,
+      coreStepName: `options.${event}`,
+      coreStepDescription: () => description,
     }
   })
 }

@@ -57,35 +57,78 @@ test('Exit code is 0 on success', async (t) => {
 
 test('Event handlers are called', async (t) => {
   let flag = false
-  await new Fixture('./fixtures/empty')
+  let handlerArgs = undefined
+  const { success } = await new Fixture('./fixtures/empty')
     .withFlags({
       eventHandlers: {
-        onPostBuild: () => {
+        onPostBuild: (args) => {
           flag = true
+          handlerArgs = args
+
+          return {}
         },
       },
     })
-    .runWithBuild()
+    .runBuildProgrammatic()
 
+  t.true(success)
   t.true(flag)
+  t.true(handlerArgs?.constants !== undefined)
+  t.true(handlerArgs?.utils !== undefined)
 })
 
 test('Event handlers with description are called', async (t) => {
   let flag = false
-  await new Fixture('./fixtures/empty')
+  const {
+    success,
+    logs: { stdout },
+  } = await new Fixture('./fixtures/empty')
     .withFlags({
       eventHandlers: {
         onPostBuild: {
           handler: () => {
             flag = true
+
+            return {}
           },
           description: 'Test onPostBuild',
         },
       },
     })
-    .runWithBuild()
+    .runBuildProgrammatic()
 
+  t.true(success)
   t.true(flag)
+  t.true(stdout.join('\n').includes('Test onPostBuild'))
+})
+
+test('Event handlers do not displace plugin methods', async (t) => {
+  let flag = false
+  const { success, configMutations } = await new Fixture('./fixtures/plugin_mutations')
+    .withFlags({
+      eventHandlers: {
+        onPreBuild: {
+          handler: () => {
+            flag = true
+
+            return {}
+          },
+          description: 'Test onPostBuild',
+        },
+      },
+    })
+    .runBuildProgrammatic()
+
+  t.deepEqual(configMutations, [
+    {
+      keys: ['redirects'],
+      keysString: 'redirects',
+      value: [{ from: 'api/*', to: '.netlify/functions/:splat', status: 200 }],
+      event: 'onPreBuild',
+    },
+  ])
+  t.true(flag)
+  t.true(success)
 })
 
 test('Exit code is 1 on build cancellation', async (t) => {
