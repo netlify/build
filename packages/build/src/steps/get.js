@@ -1,3 +1,4 @@
+import { getUtils } from '../plugins/child/utils.js'
 import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
@@ -7,15 +8,18 @@ import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
 
 // Get all build steps
-export const getSteps = function (steps) {
+export const getSteps = function (steps, eventHandlers) {
   const stepsA = addCoreSteps(steps)
-  const stepsB = sortSteps(stepsA, EVENTS)
+  const eventSteps = getEventSteps(eventHandlers)
+  const stepsB = [...stepsA, ...eventSteps]
+
+  const stepsC = sortSteps(stepsB, EVENTS)
   const events = getEvents(stepsB)
-  return { steps: stepsB, events }
+  return { steps: stepsC, events }
 }
 
 // Get all dev steps
-export const getDevSteps = function (command, steps) {
+export const getDevSteps = function (command, steps, eventHandlers) {
   const devCommandStep = {
     event: 'onDev',
     coreStep: async () => {
@@ -27,10 +31,38 @@ export const getDevSteps = function (command, steps) {
     coreStepName: 'dev.command',
     coreStepDescription: () => 'Run command for local development',
   }
-  const sortedSteps = sortSteps([...steps, devCommandStep], DEV_EVENTS)
+
+  const eventSteps = getEventSteps(eventHandlers)
+
+  const sortedSteps = sortSteps([...steps, eventSteps, devCommandStep], DEV_EVENTS)
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
+}
+
+const getEventSteps = function (eventHandlers) {
+  return Object.entries(eventHandlers ?? {}).map(([event, eventHandler]) => {
+    let description = `Event handler for ${event}`
+    let handler = eventHandler
+
+    if (typeof eventHandler !== 'function') {
+      description = eventHandler.description
+      handler = eventHandler.handler
+    }
+
+    return {
+      event,
+      coreStep: (args) => {
+        const { constants, event } = args
+        const utils = getUtils({ event, constants, runState: {} })
+
+        return handler({ utils, ...args })
+      },
+      coreStepId: `options_${event}`,
+      coreStepName: `options.${event}`,
+      coreStepDescription: () => description,
+    }
+  })
 }
 
 const addCoreSteps = function (steps) {

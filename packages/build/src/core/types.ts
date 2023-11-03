@@ -1,4 +1,4 @@
-import { NetlifyConfig } from '../../types/index.js'
+import { NetlifyConfig, NetlifyPlugin } from '../../types/index.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
@@ -41,6 +41,16 @@ export type BuildCLIFlags = {
 
 export type BuildFlags = BuildCLIFlags & {
   env?: Record<string, unknown>
+  eventHandlers?: EventHandlers
+}
+
+type EventHandlers = {
+  [K in keyof NetlifyPlugin]:
+    | NetlifyPlugin[K]
+    | {
+        handler: NetlifyPlugin[K]
+        description: string
+      }
 }
 
 export type BuildResult = {
