@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.25.0](https://github.com/netlify/build/compare/build-v29.24.3...build-v29.25.0) (2023-11-03)
+
+
+### Features
+
+* allow build event handlers to be passed programatically to the build execution ([#5362](https://github.com/netlify/build/issues/5362)) ([70c3d57](https://github.com/netlify/build/commit/70c3d570e404aa711bf0544f611405deff6a9472))
+
 ## [29.24.3](https://github.com/netlify/build/compare/build-v29.24.2...build-v29.24.3) (2023-10-30)
 
 
