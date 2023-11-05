@@ -1,5 +1,6 @@
 import { readFile } from 'fs/promises'
 import { join } from 'path'
+import process from 'process'
 
 import getPort from 'get-port'
 import fetch from 'node-fetch'
@@ -103,5 +104,67 @@ test('Starts a server and serves requests for edge functions', async () => {
   const identidadeBarrelFile = await readFile(join(servePath, 'bundled-pt-committee__identidade.js'), 'utf-8')
   expect(identidadeBarrelFile).toContain(
     `/// <reference types="${join('..', '..', 'node_modules', '@types', 'pt-committee__identidade', 'index.d.ts')}" />`,
+  )
+})
+
+test('Serves edge functions in a monorepo setup', async () => {
+  const rootPath = join(fixturesDir, 'monorepo_npm_module')
+  const basePath = join(rootPath, 'packages', 'frontend')
+  const paths = {
+    user: join(basePath, 'functions'),
+  }
+  const port = await getPort()
+  const importMapPaths = [join(basePath, 'import_map.json')]
+  const servePath = join(basePath, '.netlify', 'edge-functions-serve')
+  const server = await serve({
+    basePath,
+    bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
+    importMapPaths,
+    port,
+    rootPath,
+    servePath,
+  })
+
+  const functions = [
+    {
+      name: 'func1',
+      path: join(paths.user, 'func1.ts'),
+    },
+  ]
+  const options = {
+    getFunctionsConfig: true,
+  }
+
+  const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
+    functions,
+    {
+      very_secret_secret: 'i love netlify',
+    },
+    options,
+  )
+  expect(features).toEqual({ npmModules: true })
+  expect(success).toBe(true)
+  expect(functionsConfig).toEqual([{ path: '/func1' }])
+  expect(npmSpecifiersWithExtraneousFiles).toEqual(['child-1'])
+
+  for (const key in functions) {
+    const graphEntry = graph?.modules.some(
+      // @ts-expect-error TODO: Module graph is currently not typed
+      ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functions[key].path,
+    )
+
+    expect(graphEntry).toBe(true)
+  }
+
+  const response1 = await fetch(`http://0.0.0.0:${port}/func1`, {
+    headers: {
+      'x-nf-edge-functions': 'func1',
+      'x-ef-passthrough': 'passthrough',
+      'X-NF-Request-ID': uuidv4(),
+    },
+  })
+  expect(response1.status).toBe(200)
+  expect(await response1.text()).toBe(
+    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
   )
 })

@@ -33,6 +33,7 @@ export interface BundleOptions {
   internalSrcFolder?: string
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
+  rootPath?: string
   systemLogger?: LogFunction
   userLogger?: LogFunction
   vendorDirectory?: string
@@ -53,6 +54,7 @@ export const bundle = async (
     internalSrcFolder,
     onAfterDownload,
     onBeforeDownload,
+    rootPath,
     userLogger,
     systemLogger,
     vendorDirectory,
@@ -105,6 +107,7 @@ export const bundle = async (
     functions,
     importMap,
     logger,
+    rootPath: rootPath ?? basePath,
     vendorDirectory,
   })
 
@@ -250,6 +253,7 @@ interface VendorNPMOptions {
   functions: EdgeFunction[]
   importMap: ImportMap
   logger: Logger
+  rootPath: string
   vendorDirectory: string | undefined
 }
 
@@ -258,6 +262,7 @@ const safelyVendorNPMSpecifiers = async ({
   functions,
   importMap,
   logger,
+  rootPath,
   vendorDirectory,
 }: VendorNPMOptions) => {
   try {
@@ -268,6 +273,7 @@ const safelyVendorNPMSpecifiers = async ({
       importMap,
       logger,
       referenceTypes: false,
+      rootPath,
     })
   } catch (error) {
     logger.system(error)

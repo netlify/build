@@ -29,6 +29,7 @@ interface PrepareServerOptions {
   importMap: ImportMap
   logger: Logger
   port: number
+  rootPath?: string
 }
 
 interface StartServerOptions {
@@ -58,6 +59,7 @@ const prepareServer = ({
   importMap: baseImportMap,
   logger,
   port,
+  rootPath,
 }: PrepareServerOptions) => {
   const processRef: ProcessRef = {}
   const startServer = async (
@@ -94,6 +96,7 @@ const prepareServer = ({
       importMap,
       logger,
       referenceTypes: true,
+      rootPath,
     })
 
     if (vendor) {
@@ -179,27 +182,106 @@ interface ServeOptions {
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
   port: number
+  rootPath?: string
   servePath: string
   userLogger?: LogFunction
   systemLogger?: LogFunction
 }
 
 export const serve = async ({
+  /**
+   * Path that is common to all functions. Works as the root directory in the
+   * generated bundle.
+   */
   basePath,
+
+  /**
+   * URL of the bootstrap layer to use.
+   */
   bootstrapURL,
+
+  /**
+   * Path to an SSL certificate to run the Deno server with.
+   */
   certificatePath,
+
+  /**
+   * Whether to print verbose information about the server process.
+   */
   debug,
+
+  /**
+   * Path of an import map file to be generated using the built-in specifiers
+   * and any npm modules found during the bundling process.
+   */
   distImportMapPath,
+
+  /**
+   * Debug settings to use with Deno's `--inspect` and `--inspect-brk` flags.
+   */
   inspectSettings,
+
+  /**
+   * Map of feature flags.
+   */
   featureFlags,
+
+  /**
+   * Callback function to be triggered whenever a function has a default export
+   * with the wrong type.
+   */
   formatExportTypeError,
+
+  /**
+   * Callback function to be triggered whenever an error occurs while importing
+   * a function.
+   */
   formatImportError,
+
+  /**
+   * Paths to any additional import map files.
+   */
   importMapPaths = [],
+
+  /**
+   * Callback function to be triggered after the Deno CLI has been downloaded.
+   */
   onAfterDownload,
+
+  /**
+   * Callback function to be triggered before we attempt to download the Deno
+   * CLI.
+   */
   onBeforeDownload,
+
+  /**
+   * Port where the server should listen on.
+   */
   port,
+
+  /**
+   * Root path of the project. Defines a boundary outside of which files or npm
+   * modules cannot be included from. This is usually the same as `basePath`,
+   * with monorepos being the main exception, where `basePath` maps to the
+   * package path and `rootPath` is the repository root.
+   */
+  rootPath,
+
+  /**
+   * Path to write ephemeral files that need to be generated for the server to
+   * operate.
+   */
   servePath,
+
+  /**
+   * Custom logging function to be used for user-facing messages. Defaults to
+   * `console.log`.
+   */
   userLogger,
+
+  /**
+   * Custom logging function to be used for system-level messages.
+   */
   systemLogger,
 }: ServeOptions) => {
   const logger = getLogger(systemLogger, userLogger, debug)
@@ -253,6 +335,7 @@ export const serve = async ({
     importMap,
     logger,
     port,
+    rootPath,
   })
 
   return server

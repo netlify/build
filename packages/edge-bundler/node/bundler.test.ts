@@ -472,6 +472,44 @@ test('Loads npm modules from bare specifiers', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
+test('Loads npm modules in a monorepo setup', async () => {
+  const systemLogger = vi.fn()
+  const { basePath: rootPath, cleanup, distPath } = await useFixture('monorepo_npm_module')
+  const basePath = join(rootPath, 'packages', 'frontend')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const vendorDirectory = await tmp.dir()
+
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+    importMapPaths: [join(basePath, 'import_map.json')],
+    rootPath,
+    vendorDirectory: vendorDirectory.path,
+    systemLogger,
+  })
+
+  expect(
+    systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+  ).toBeUndefined()
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+  expect(func1).toBe(
+    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
+  )
+
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+})
+
 test('Loads JSON modules', async () => {
   const { basePath, cleanup, distPath } = await useFixture('imports_json')
   const sourceDirectory = join(basePath, 'functions')

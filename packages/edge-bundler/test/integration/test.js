@@ -97,6 +97,10 @@ const runAssertions = ({ basePath, bundleOutput }) => {
 }
 
 const cleanup = async () => {
+  if (process.env.CI) {
+    return
+  }
+
   console.log(`Cleaning up temporary files...`)
 
   for (const folder of pathsToCleanup) {
