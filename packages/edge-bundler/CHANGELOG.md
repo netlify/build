@@ -1,5 +1,22 @@
 # Changelog
 
+## [10.0.0](https://github.com/netlify/edge-bundler/compare/v9.5.0...v10.0.0) (2023-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* `generateManifest` exported method now returns an object with a `manifest` property
+
+### Features
+
+* add `rootPath` for monorepo setups ([#521](https://github.com/netlify/edge-bundler/issues/521)) ([aeb76d3](https://github.com/netlify/edge-bundler/commit/aeb76d3bc4e5b07f495d90a134f30583d43c87d2))
+* return declarations without function and unrouted functions ([#523](https://github.com/netlify/edge-bundler/issues/523)) ([45f04a7](https://github.com/netlify/edge-bundler/commit/45f04a772276ceb2294cf655ce8903ef0256dbb4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.19.5 ([#525](https://github.com/netlify/edge-bundler/issues/525)) ([5c777cf](https://github.com/netlify/edge-bundler/commit/5c777cfc5099eb4bc4d1bb032cbddd9a15796f30))
+
 ## [9.5.0](https://github.com/netlify/edge-bundler/compare/v9.4.1...v9.5.0) (2023-10-30)
 
 
