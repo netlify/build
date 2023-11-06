@@ -20,7 +20,7 @@ interface Route {
   methods?: string[]
 }
 
-interface EdgeFunctionConfig {
+export interface EdgeFunctionConfig {
   excluded_patterns: string[]
   on_error?: string
   generator?: string
@@ -82,7 +82,7 @@ const addExcludedPatterns = (
 ) => {
   if (excludedPath) {
     const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
-    const excludedPatterns = paths.map((path) => pathToRegularExpression(path)).map(serializePattern)
+    const excludedPatterns = paths.map(pathToRegularExpression).filter(nonNullable).map(serializePattern)
 
     manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
   }
@@ -119,12 +119,15 @@ const generateManifest = ({
   const manifestFunctionConfig: Manifest['function_config'] = Object.fromEntries(
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
+  const routedFunctions = new Set<string>()
+  const declarationsWithoutFunction = new Set<string>()
 
   for (const [name, { excludedPath, onError }] of Object.entries(userFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
+
     addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
 
     manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError }
@@ -135,6 +138,7 @@ const generateManifest = ({
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
+
     addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
 
     manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError, ...rest }
@@ -144,12 +148,22 @@ const generateManifest = ({
     const func = functions.find(({ name }) => declaration.function === name)
 
     if (func === undefined) {
+      declarationsWithoutFunction.add(declaration.function)
+
       return
     }
 
     const pattern = getRegularExpression(declaration)
-    const excludedPattern = getExcludedRegularExpressions(declaration)
 
+    // If there is no `pattern`, the declaration will never be triggered, so we
+    // can discard it.
+    if (!pattern) {
+      return
+    }
+
+    routedFunctions.add(declaration.function)
+
+    const excludedPattern = getExcludedRegularExpressions(declaration)
     const route: Route = {
       function: func.name,
       pattern: serializePattern(pattern),
@@ -183,11 +197,16 @@ const generateManifest = ({
     import_map: importMap,
     function_config: sanitizeEdgeFunctionConfig(manifestFunctionConfig),
   }
+  const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
 
-  return manifest
+  return { declarationsWithoutFunction: [...declarationsWithoutFunction], manifest, unroutedFunctions }
 }
 
 const pathToRegularExpression = (path: string) => {
+  if (!path) {
+    return null
+  }
+
   try {
     const pattern = new ExtendedURLPattern({ pathname: path })
 
@@ -206,7 +225,7 @@ const pathToRegularExpression = (path: string) => {
   }
 }
 
-const getRegularExpression = (declaration: Declaration): string => {
+const getRegularExpression = (declaration: Declaration) => {
   if ('pattern' in declaration) {
     try {
       return parsePattern(declaration.pattern)
@@ -242,7 +261,8 @@ const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
 
   if ('path' in declaration && declaration.excludedPath) {
     const paths = Array.isArray(declaration.excludedPath) ? declaration.excludedPath : [declaration.excludedPath]
-    return paths.map((path) => pathToRegularExpression(path))
+
+    return paths.map(pathToRegularExpression).filter(nonNullable)
   }
 
   return []
@@ -253,7 +273,7 @@ interface WriteManifestOptions extends GenerateManifestOptions {
 }
 
 const writeManifest = async ({ distDirectory, ...rest }: WriteManifestOptions) => {
-  const manifest = generateManifest(rest)
+  const { manifest } = generateManifest(rest)
   const manifestPath = join(distDirectory, 'manifest.json')
 
   await fs.writeFile(manifestPath, JSON.stringify(manifest))

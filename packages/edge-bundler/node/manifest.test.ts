@@ -23,7 +23,7 @@ test('Generates a manifest with different bundles', () => {
   }
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
   const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
-  const manifest = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
 
   const expectedBundles = [
     { asset: bundle1.hash + bundle1.extension, format: bundle1.format },
@@ -45,7 +45,7 @@ test('Generates a manifest with display names', () => {
       name: 'Display Name',
     },
   }
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -69,7 +69,7 @@ test('Generates a manifest with a generator field', () => {
       generator: '@netlify/fake-plugin@1.0.0',
     },
   }
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -93,7 +93,7 @@ test('Generates a manifest with excluded paths and patterns', () => {
     { function: 'func-2', pattern: '^/f2(?:/(.*))/?$', excludedPattern: ['^/f2/exclude$', '^/f2/exclude-as-well$'] },
     { function: 'func-3', path: '/*', excludedPath: '/**/*.html' },
   ]
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -129,7 +129,7 @@ test('TOML-defined paths can be combined with ISC-defined excluded paths', () =>
   const userFunctionConfig: Record<string, FunctionConfig> = {
     'func-1': { excludedPath: '/f1/exclude' },
   }
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -173,7 +173,7 @@ test('Filters out internal in-source configurations in user created functions', 
       generator: 'internal-generator',
     },
   }
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -207,7 +207,7 @@ test('excludedPath from ISC goes into function_config, TOML goes into routes', (
     },
   }
   const internalFunctionConfig: Record<string, FunctionConfig> = {}
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -248,7 +248,7 @@ test('URLPattern named groups are supported', () => {
   const declarations: Declaration[] = [{ function: 'customisation', path: '/products/:productId' }]
   const userFunctionConfig: Record<string, FunctionConfig> = {}
   const internalFunctionConfig: Record<string, FunctionConfig> = {}
-  const manifest = generateManifest({
+  const { manifest } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -300,7 +300,7 @@ test('Includes failure modes in manifest', () => {
       onError: '/custom-error',
     },
   }
-  const manifest = generateManifest({ bundles: [], declarations, functions, userFunctionConfig })
+  const { manifest } = generateManifest({ bundles: [], declarations, functions, userFunctionConfig })
   expect(manifest.function_config).toEqual({
     'func-1': { on_error: '/custom-error' },
   })
@@ -317,7 +317,7 @@ test('Excludes functions for which there are function files but no matching conf
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
   const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
-  const manifest = generateManifest({ bundles: [bundle1], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [bundle1], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$', excluded_patterns: [], path: '/f1' }]
 
@@ -335,7 +335,7 @@ test('Excludes functions for which there are config declarations but no matching
     { function: 'func-1', path: '/f1' },
     { function: 'func-2', path: '/f2' },
   ]
-  const manifest = generateManifest({ bundles: [bundle1], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [bundle1], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-2', pattern: '^/f2/?$', excluded_patterns: [], path: '/f2' }]
 
@@ -345,7 +345,7 @@ test('Excludes functions for which there are config declarations but no matching
 test('Generates a manifest without bundles', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
   const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
-  const manifest = generateManifest({ bundles: [], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$', excluded_patterns: [], path: '/f1' }]
 
@@ -375,7 +375,7 @@ test('Generates a manifest with pre and post-cache routes', () => {
     { function: 'func-2', cache: 'not_a_supported_value', path: '/f2' },
     { function: 'func-3', cache: 'manual', path: '/f3' },
   ]
-  const manifest = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
 
   const expectedBundles = [
     { asset: bundle1.hash + bundle1.extension, format: bundle1.format },
@@ -414,12 +414,12 @@ test('Generates a manifest with layers', () => {
       flag: 'edge_functions_onion_layer',
     },
   ]
-  const manifest1 = generateManifest({
+  const { manifest: manifest1 } = generateManifest({
     bundles: [],
     declarations,
     functions,
   })
-  const manifest2 = generateManifest({
+  const { manifest: manifest2 } = generateManifest({
     bundles: [],
     declarations,
     functions,
@@ -451,7 +451,38 @@ test('Throws an error if the regular expression contains a negative lookahead', 
 test('Converts named capture groups to unnamed capture groups in regular expressions', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
   const declarations = [{ function: 'func-1', pattern: '^/(?<name>\\w+)$' }]
-  const manifest = generateManifest({ bundles: [], declarations, functions })
+  const { manifest } = generateManifest({ bundles: [], declarations, functions })
 
   expect(manifest.routes).toEqual([{ function: 'func-1', pattern: '^/(\\w+)$', excluded_patterns: [] }])
+})
+
+test('Returns functions without a declaration and unrouted functions', () => {
+  const bundle = {
+    extension: '.ext1',
+    format: BundleFormat.ESZIP2,
+    hash: '123456',
+  }
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+    { name: 'func-4', path: '/path/to/func-4.ts' },
+  ]
+  const declarations: Declaration[] = [
+    { function: 'func-1', path: '/f1' },
+    { function: 'func-3', path: '/f3' },
+
+    // @ts-expect-error Error is expected due to neither `path` or `pattern`
+    // being present.
+    { function: 'func-4', name: 'Some name' },
+  ]
+  const { declarationsWithoutFunction, manifest, unroutedFunctions } = generateManifest({
+    bundles: [bundle],
+    declarations,
+    functions,
+  })
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$', excluded_patterns: [], path: '/f1' }]
+
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(declarationsWithoutFunction).toEqual(['func-3'])
+  expect(unroutedFunctions).toEqual(['func-2', 'func-4'])
 })
