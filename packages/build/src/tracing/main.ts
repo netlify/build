@@ -6,6 +6,8 @@ import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/u
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 import type { TracingOptions } from '../core/types.js'
+import { isBuildError } from '../error/info.js'
+import { parseErrorInfo } from '../error/parse/parse.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 let sdk: NodeSDK | undefined
@@ -91,12 +93,23 @@ export const setMultiSpanAttributes = function (attributes: { [key: string]: str
 export const addErrorToActiveSpan = function (error: Error) {
   const span = trace.getActiveSpan()
   if (!span) return
+  if (isBuildError(error)) {
+    const { severity, type } = parseErrorInfo(error)
+    if (severity == 'none') return
+    span.setAttributes({ severity, type })
+  }
 
   span.recordException(error)
   span.setStatus({
     code: SpanStatusCode.ERROR,
     message: error.message,
   })
+}
+
+export const addEventToActiveSpan = function (eventName: string, attributes?: { [key: string]: string }) {
+  const span = trace.getActiveSpan()
+  if (!span) return
+  span.addEvent(eventName, attributes)
 }
 
 //** Loads the baggage attributes from a baggabe file which follows W3C Baggage specification */

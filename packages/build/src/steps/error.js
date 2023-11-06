@@ -3,7 +3,7 @@ import { handleBuildError } from '../error/handle.js'
 import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
 import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { isSoftFailEvent } from '../plugins/events.js'
-import { addErrorToActiveSpan } from '../tracing/main.js'
+import { addErrorToActiveSpan, addEventToActiveSpan } from '../tracing/main.js'
 
 // Handle build command errors and plugin errors:
 //  - usually, propagate the error to make the build stop.
@@ -33,7 +33,12 @@ export const handleStepError = function ({
   }
 
   const fullErrorInfo = getFullErrorInfo({ error: newError, colors: false, debug })
-  const { type } = fullErrorInfo
+  const {
+    errorInfo: { location: { packageName } = {} },
+    message,
+    title,
+    type,
+  } = fullErrorInfo
 
   if (type === 'failPlugin' || isSoftFailEvent(event)) {
     return handleFailPlugin({
@@ -50,6 +55,12 @@ export const handleStepError = function ({
   }
 
   if (type === 'cancelBuild') {
+    const cancellationAttributes = {
+      'build.cancellation.title': title,
+      'build.cancellation.message': message,
+      'build.cancellation.packageName': packageName,
+    }
+    addEventToActiveSpan('build.cancelled', cancellationAttributes)
     return handleCancelBuild({ fullErrorInfo, newError, api, deployId })
   }
 

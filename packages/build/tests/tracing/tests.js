@@ -2,11 +2,20 @@ import { writeFile, rm, mkdtemp } from 'fs/promises'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
-import { trace, TraceFlags, propagation } from '@opentelemetry/api'
+import { ROOT_CONTEXT, context, trace, TraceFlags, propagation, SpanKind, SpanStatusCode } from '@opentelemetry/api'
 import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
+import { BasicTracerProvider, Span } from '@opentelemetry/sdk-trace-base'
 import test from 'ava'
 
-import { setMultiSpanAttributes, startTracing, stopTracing, loadBaggageFromFile } from '../../lib/tracing/main.js'
+import { addErrorInfo } from '../../lib/error/info.js'
+import {
+  addEventToActiveSpan,
+  setMultiSpanAttributes,
+  startTracing,
+  stopTracing,
+  loadBaggageFromFile,
+  addErrorToActiveSpan,
+} from '../../lib/tracing/main.js'
 
 test('Tracing set multi span attributes', async (t) => {
   const ctx = setMultiSpanAttributes({ some: 'test', foo: 'bar' })
@@ -168,5 +177,78 @@ testMatrix.forEach((testCase) => {
     t.is(span.spanContext().traceId, expects.traceId)
     t.is(span.spanContext().traceFlags, expects.traceFlags)
     t.deepEqual(span.attributes, expects.attributes)
+  })
+})
+
+test('addEventToActiveSpan - adds an event to the current span', async (t) => {
+  const tracer = new BasicTracerProvider().getTracer('default')
+  const span = new Span(tracer, ROOT_CONTEXT, 'my-span', {}, SpanKind.SERVER)
+  const ctx = trace.setSpan(context.active(), span)
+
+  context.with(ctx, async () => {
+    addEventToActiveSpan('someEvent', { foo: 'bar' })
+
+    const firstEvent = span.events[0]
+    t.deepEqual(firstEvent.name, 'someEvent')
+    t.deepEqual(firstEvent.attributes, { foo: 'bar' })
+  })
+})
+
+test('addErrorToActiveSpan - when error severity info', async (t) => {
+  const tracer = new BasicTracerProvider().getTracer('default')
+  const span = new Span(tracer, ROOT_CONTEXT, 'my-span', {}, SpanKind.SERVER)
+  const ctx = trace.setSpan(context.active(), span)
+
+  const myError = new Error()
+  addErrorInfo(myError, { type: 'failPlugin' })
+
+  context.with(ctx, async () => {
+    addErrorToActiveSpan(myError)
+
+    t.is(span.status.code, SpanStatusCode.ERROR)
+    // Severities are infered from the Error Type
+    t.deepEqual(span.attributes, { severity: 'info', type: 'failPlugin' })
+
+    const firstEvent = span.events[0]
+    t.deepEqual(firstEvent.name, 'exception')
+    t.truthy(firstEvent.attributes['exception.stacktrace'])
+    t.is(firstEvent.attributes['exception.type'], 'Error')
+  })
+})
+
+test('addErrorToActiveSpan - when error has no info', async (t) => {
+  const tracer = new BasicTracerProvider().getTracer('default')
+  const span = new Span(tracer, ROOT_CONTEXT, 'my-span', {}, SpanKind.SERVER)
+  const ctx = trace.setSpan(context.active(), span)
+
+  const myError = new Error()
+  context.with(ctx, async () => {
+    addErrorToActiveSpan(myError)
+
+    t.is(span.status.code, SpanStatusCode.ERROR)
+    // If we have no custom build error Info nothing is added to the span attributes
+    t.deepEqual(span.attributes, {})
+
+    const firstEvent = span.events[0]
+    t.deepEqual(firstEvent.name, 'exception')
+    t.truthy(firstEvent.attributes['exception.stacktrace'])
+    t.is(firstEvent.attributes['exception.type'], 'Error')
+  })
+})
+
+test('addErrorToActiveSpan - noop when error severity none', async (t) => {
+  const tracer = new BasicTracerProvider().getTracer('default')
+  const span = new Span(tracer, ROOT_CONTEXT, 'my-span', {}, SpanKind.SERVER)
+  const ctx = trace.setSpan(context.active(), span)
+
+  const myError = new Error()
+  addErrorInfo(myError, { type: 'cancelBuild' })
+
+  context.with(ctx, async () => {
+    addErrorToActiveSpan(myError)
+
+    t.deepEqual(span.attributes, {})
+    t.is(span.status.code, SpanStatusCode.UNSET)
+    t.is(span.events.length, 0)
   })
 })
