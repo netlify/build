@@ -10,6 +10,26 @@ import { serializeToml } from '../utils/toml.js'
 
 import { applyMutations } from './apply.js'
 
+// Performs a merge of the configuration changes with the existing `netlify.toml`,
+// and returns the updated configuration
+export const mergeConfig = async function (
+  configMutations,
+  { configPath, headersPath, redirectsPath, context, branch, logs, featureFlags },
+) {
+  if (configMutations.length === 0) {
+    return
+  }
+
+  const inlineConfig = applyMutations({}, configMutations)
+  const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
+  const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
+  const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
+  const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
+  const simplifiedConfig = simplifyConfig(finalConfig)
+
+  return simplifiedConfig
+}
+
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
 export const updateConfig = async function (
@@ -26,16 +46,16 @@ export const updateConfig = async function (
     featureFlags,
   },
 ) {
-  if (configMutations.length === 0) {
-    return
-  }
-
-  const inlineConfig = applyMutations({}, configMutations)
-  const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
-  const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
-  const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
-  const simplifiedConfig = simplifyConfig(finalConfig)
+  const simplifiedConfig = await mergeConfig(configMutations, {
+    buildDir,
+    configPath,
+    headersPath,
+    redirectsPath,
+    context,
+    branch,
+    logs,
+    featureFlags,
+  })
 
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
