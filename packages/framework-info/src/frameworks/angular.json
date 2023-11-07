@@ -25,7 +25,7 @@
   "plugins": [
     {
       "packageName": "@netlify/angular-runtime",
-      "condition": { "minNodeVersion": "17.0.0" }
+      "condition": { "minNodeVersion": "16.0.0", "minFrameworkVersion": "17.0.0-rc" }
     }
   ]
 }

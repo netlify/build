@@ -72,3 +72,8 @@ describe('hasFramework', () => {
     }
   })
 })
+
+test('minFrameworkVersion', async () => {
+  expect((await getFramework('min_framework_version', 'angular')).plugins).toEqual(['@netlify/angular-runtime'])
+  expect((await getFramework('min_framework_version_2', 'angular')).plugins).toEqual([])
+})

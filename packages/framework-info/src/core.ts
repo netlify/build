@@ -28,9 +28,10 @@ export const listFrameworks = async function (context: Context): Promise<Framewo
     packageJsonPath,
   })
   const frameworks = await pFilter(FRAMEWORKS, (framework) => usesFramework(framework, { pathExists, npmDependencies }))
-  const frameworkInfos = frameworks.map((framework) =>
-    getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion }),
-  )
+  const frameworkInfos = frameworks.map((framework) => {
+    const frameworkVersion = npmDependencies[framework.detect.npmDependencies[0]]
+    return getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion, frameworkVersion })
+  })
   return frameworkInfos
 }
 
@@ -51,12 +52,13 @@ export const hasFramework = async function (frameworkId: FrameworkName, context:
 export const getFramework = async function (frameworkId: FrameworkName, context: Context): Promise<Framework> {
   const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
-  const { scripts, runScriptCommand } = await getProjectInfo({
+  const { scripts, runScriptCommand, npmDependencies } = await getProjectInfo({
     pathExists,
     packageJson,
     packageJsonPath,
   })
-  const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion })
+  const frameworkVersion = npmDependencies[framework.detect.npmDependencies[0]]
+  const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion, frameworkVersion })
   return frameworkInfo
 }
 /**
@@ -112,14 +114,16 @@ const getFrameworkInfo = function (
     scripts,
     runScriptCommand,
     nodeVersion,
+    frameworkVersion,
   }: {
     scripts: Record<string, string>
     runScriptCommand: string
     nodeVersion: string
+    frameworkVersion?: string
   },
 ): Framework {
   const devCommands = getDevCommands({ frameworkDevCommand, scripts, runScriptCommand })
-  const recommendedPlugins = getPlugins(plugins, { nodeVersion })
+  const recommendedPlugins = getPlugins(plugins, { nodeVersion, frameworkVersion })
 
   return {
     id,
