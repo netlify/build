@@ -47,7 +47,6 @@ export const updateConfig = async function (
   },
 ) {
   const simplifiedConfig = await mergeConfig(configMutations, {
-    buildDir,
     configPath,
     headersPath,
     redirectsPath,
