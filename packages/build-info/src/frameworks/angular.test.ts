@@ -29,7 +29,7 @@ test('should detect Angular', async ({ fs }) => {
   expect(detected?.[0].id).toBe('angular')
   expect(detected?.[0].name).toBe('Angular')
   expect(detected?.[0].build.command).toBe('ng build --prod')
-  expect(detected?.[0].build.directory).toBe('dist/demo/browser')
+  expect(detected?.[0].build.directory).toBe(fs.join('dist', 'demo', 'browser'))
   expect(detected?.[0].dev?.command).toBe('ng serve')
   expect(detected?.[0].plugins).toEqual(['@netlify/angular-runtime'])
 })
