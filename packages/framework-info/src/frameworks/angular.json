@@ -22,10 +22,5 @@
     "dark": "/logos/angular/default.svg"
   },
   "env": {},
-  "plugins": [
-    {
-      "packageName": "@netlify/angular-runtime",
-      "condition": { "minNodeVersion": "16.0.0", "minFrameworkVersion": "17.0.0-rc" }
-    }
-  ]
+  "plugins": []
 }

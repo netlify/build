@@ -17,7 +17,7 @@ export const usesFramework = async function (
       configFiles,
     },
   }: FrameworkDefinition,
-  { pathExists, npmDependencies }: { pathExists: PathExists; npmDependencies: Record<string, string | undefined> },
+  { pathExists, npmDependencies }: { pathExists: PathExists; npmDependencies: string[] },
 ): Promise<boolean> {
   return (
     usesNpmDependencies(frameworkNpmDependencies, npmDependencies) &&
@@ -26,22 +26,19 @@ export const usesFramework = async function (
   )
 }
 
-const usesNpmDependencies = function (
-  frameworkNpmDependencies: string[],
-  npmDependencies: Record<string, string | undefined>,
-): boolean {
+const usesNpmDependencies = function (frameworkNpmDependencies: string[], npmDependencies: string[]): boolean {
   return (
     frameworkNpmDependencies.length === 0 ||
-    frameworkNpmDependencies.some((frameworkNpmDependency) => npmDependencies[frameworkNpmDependency] !== undefined)
+    frameworkNpmDependencies.some((frameworkNpmDependency) => npmDependencies.includes(frameworkNpmDependency))
   )
 }
 
 const lacksExcludedNpmDependencies = function (
   frameworkExcludedNpmDependencies: string[],
-  npmDependencies: Record<string, string | undefined>,
+  npmDependencies: string[],
 ): boolean {
   return frameworkExcludedNpmDependencies.every(
-    (frameworkNpmDependency) => npmDependencies[frameworkNpmDependency] === undefined,
+    (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency),
   )
 }
 

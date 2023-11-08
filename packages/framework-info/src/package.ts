@@ -4,7 +4,7 @@ import type { PackageJson } from 'read-pkg-up'
 
 export const getPackageJsonContent = function (packageJson: PackageJson | undefined) {
   if (packageJson === undefined) {
-    return { npmDependencies: {}, scripts: {} }
+    return { npmDependencies: [], scripts: {} }
   }
 
   const npmDependencies = getNpmDependencies(packageJson)
@@ -14,14 +14,16 @@ export const getPackageJsonContent = function (packageJson: PackageJson | undefi
 }
 
 // Retrieve `package.json` `dependencies` and `devDependencies` names
-const getNpmDependencies = function ({
-  dependencies,
-  devDependencies,
-}: PackageJson): Record<string, string | undefined> {
-  return {
-    ...(dependencies ?? {}),
-    ...(devDependencies ?? {}),
+const getNpmDependencies = function ({ dependencies, devDependencies }: PackageJson) {
+  return [...getObjectKeys(dependencies), ...getObjectKeys(devDependencies)]
+}
+
+const getObjectKeys = function (value: any): string[] {
+  if (!isPlainObj(value)) {
+    return []
   }
+
+  return Object.keys(value)
 }
 
 // Retrieve `package.json` `scripts`

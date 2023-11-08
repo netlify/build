@@ -8,7 +8,6 @@ interface Plugin {
   packageName: string
   condition: {
     minNodeVersion: string
-    minFrameworkVersion?: string
   }
 }
 
