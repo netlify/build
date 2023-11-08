@@ -32,6 +32,7 @@ export class Angular extends BaseFramework implements Framework {
     if (this.detected) {
       if (this.version && gte(this.version, '17.0.0-rc')) {
         this.plugins.push('@netlify/angular-runtime')
+        this.build.directory = '' // will be overwritten by the plugin
       }
       return this as DetectedFramework
     }
