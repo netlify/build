@@ -1,3 +1,4 @@
+import type { BuildError, BasicErrorInfo, ErrorInfo } from '../types.js'
 import { serializeObject } from '../../log/serialize.js'
 import { getErrorInfo } from '../info.js'
 import { getTypeInfo } from '../type.js'
@@ -9,14 +10,13 @@ import { getErrorProps } from './properties.js'
 import { getStackInfo } from './stack.js'
 
 // Add additional type-specific error information
-export const getFullErrorInfo = function ({ error, colors, debug }) {
+export const getFullErrorInfo = function ({ error, colors, debug }): BuildError {
   const basicErrorInfo = parseErrorInfo(error)
   const {
     message,
     stack,
     errorProps,
     errorInfo,
-    errorInfo: { location = {}, plugin = {}, tsConfig },
     severity,
     title,
     stackType,
@@ -26,11 +26,15 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
     errorMetadata,
   } = basicErrorInfo
 
+  const { location = {}, plugin = {}, tsConfig } = errorInfo
+
   const titleA = getTitle(title, errorInfo)
 
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, severity, debug })
 
-  const pluginInfo = getPluginInfo(plugin, location)
+  // FIXME here location should be PluginLocation type, but I'm affraid to mess up the current
+  // getPluginInfo behaviour by running a type check
+  const pluginInfo = getPluginInfo(plugin, location as any)
   const tsConfigInfo = getTsConfigInfo(tsConfig)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps({ errorProps, showErrorProps, colors })
@@ -48,7 +52,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
 }
 
 // Serialize the `tsConfig` error information
-const getTsConfigInfo = function (tsConfig) {
+const getTsConfigInfo = function (tsConfig: any) {
   if (tsConfig === undefined) {
     return
   }
@@ -57,7 +61,7 @@ const getTsConfigInfo = function (tsConfig) {
 }
 
 // Parse error instance into all the basic properties containing information
-export const parseErrorInfo = function (error) {
+export const parseErrorInfo = function (error: Error): BasicErrorInfo {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
   const { errorMetadata } = errorInfo
@@ -92,7 +96,7 @@ export const parseErrorInfo = function (error) {
 }
 
 // Retrieve title to print in logs
-const getTitle = function (title, errorInfo) {
+const getTitle = function (title: Function | string, errorInfo: ErrorInfo) {
   if (typeof title !== 'function') {
     return title
   }

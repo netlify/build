@@ -24,7 +24,7 @@ const serializeField = function ({ name, getField, pluginPackageJson, packageNam
 
 const NAME_PADDING = 16
 
-const getPackage = function (pluginPackageJson, { packageName }) {
+const getPackage = function (_, { packageName }) {
   return packageName
 }
 
@@ -36,7 +36,12 @@ const getVersion = function ({ version }) {
   return version
 }
 
-export const getHomepage = function (pluginPackageJson = {}, { loadedFrom } = {}) {
+type pkgJSONData = { name?: string; bugs?: { url?: string }; repository?: { url?: string } }
+
+export const getHomepage = function (
+  pluginPackageJson: pkgJSONData = {},
+  { loadedFrom }: { loadedFrom?: string } = {},
+) {
   return (
     getRepository(pluginPackageJson) ||
     getNpmLink(pluginPackageJson, { loadedFrom }) ||
@@ -44,11 +49,11 @@ export const getHomepage = function (pluginPackageJson = {}, { loadedFrom } = {}
   )
 }
 
-const getRepository = function ({ repository: { url } = {} }) {
+const getRepository = function ({ repository: { url } = {} }: { repository?: { url?: string } }) {
   return url
 }
 
-const getNpmLink = function ({ name }, { loadedFrom }) {
+const getNpmLink = function ({ name }: { name?: string }, { loadedFrom }) {
   if (!name || loadedFrom === 'local') {
     return
   }
@@ -56,7 +61,7 @@ const getNpmLink = function ({ name }, { loadedFrom }) {
   return `https://www.npmjs.com/package/${name}`
 }
 
-const getIssuesLink = function ({ bugs: { url } = {} }) {
+const getIssuesLink = function ({ bugs: { url } = {} }: { bugs?: { url?: string } }) {
   return url
 }
 
