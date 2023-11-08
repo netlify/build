@@ -38,7 +38,7 @@ export class Angular extends BaseFramework implements Framework {
           const project = projects[defaultProject ?? Object.keys(projects)[0]]
           const outputPath = project?.architect?.build?.options?.outputPath
           if (outputPath) {
-            this.build.directory = `${outputPath}/browser`
+            this.build.directory = this.project.fs.join(outputPath, 'browser')
           }
         }
       }
