@@ -11,13 +11,25 @@ beforeEach((ctx) => {
 test('should detect Angular', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { '@angular/cli': '17.0.0' } }),
-    'angular.json': '',
+    'angular.json': JSON.stringify({
+      projects: {
+        demo: {
+          architect: {
+            build: {
+              options: {
+                outputPath: 'dist/demo',
+              },
+            },
+          },
+        },
+      },
+    }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('angular')
   expect(detected?.[0].name).toBe('Angular')
   expect(detected?.[0].build.command).toBe('ng build --prod')
-  expect(detected?.[0].build.directory).toBe('')
+  expect(detected?.[0].build.directory).toBe('dist/demo/browser')
   expect(detected?.[0].dev?.command).toBe('ng serve')
   expect(detected?.[0].plugins).toEqual(['@netlify/angular-runtime'])
 })
