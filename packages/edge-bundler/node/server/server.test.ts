@@ -59,7 +59,6 @@ test('Starts a server and serves requests for edge functions', async () => {
 
   for (const key in functions) {
     const graphEntry = graph?.modules.some(
-      // @ts-expect-error TODO: Module graph is currently not typed
       ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functions[key].path,
     )
 
@@ -149,7 +148,6 @@ test('Serves edge functions in a monorepo setup', async () => {
 
   for (const key in functions) {
     const graphEntry = graph?.modules.some(
-      // @ts-expect-error TODO: Module graph is currently not typed
       ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functions[key].path,
     )
 
