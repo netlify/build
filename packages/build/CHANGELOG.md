@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.26.1](https://github.com/netlify/build/compare/build-v29.26.0...build-v29.26.1) (2023-11-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.26.0 ([#5363](https://github.com/netlify/build/issues/5363)) ([bc12e41](https://github.com/netlify/build/commit/bc12e41e98e26b6a820be28e882451f9bde3e017))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.38 to ^5.2.39
+
+## [29.26.0](https://github.com/netlify/build/compare/build-v29.25.0...build-v29.26.0) (2023-11-06)
+
+
+### Features
+
+* leverage errors types for tracing ([#5365](https://github.com/netlify/build/issues/5365)) ([f6bb421](https://github.com/netlify/build/commit/f6bb421cbc67254512bcdf23edab77cac7bac3bd))
+
 ## [29.25.0](https://github.com/netlify/build/compare/build-v29.24.3...build-v29.25.0) (2023-11-03)
 
 
