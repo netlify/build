@@ -1,7 +1,7 @@
 import type { BuildError, BasicErrorInfo, ErrorInfo } from '../types.js'
 import { serializeObject } from '../../log/serialize.js'
 import { getErrorInfo } from '../info.js'
-import { getTypeInfo } from '../type.js'
+import { getTypeInfo } from '../types.js'
 
 import { getLocationInfo } from './location.js'
 import { normalizeError } from './normalize.js'
