@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.0](https://github.com/netlify/edge-bundler/compare/v10.0.0...v10.1.0) (2023-11-08)
+
+
+### Features
+
+* add `ModuleGraph` type ([#528](https://github.com/netlify/edge-bundler/issues/528)) ([11ff685](https://github.com/netlify/edge-bundler/commit/11ff68588bf84c1a32ec9d8460a3f030c82c23c8))
+
 ## [10.0.0](https://github.com/netlify/edge-bundler/compare/v9.5.0...v10.0.0) (2023-11-06)
 
 
