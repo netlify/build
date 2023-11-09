@@ -32,17 +32,6 @@ enum StackType {
 type GroupFunction = ({ location }: { location: ErrorLocation }) => string
 export type TitleFunction = ({ location }: { location: ErrorLocation }) => string
 
-export interface ErrorType {
-  title: TitleFunction | string
-  locationType?: string
-  showErrorProps?: boolean
-  rawStack?: boolean
-  showInBuildLog?: boolean
-  group?: GroupFunction
-  severity: keyof typeof ErrorSeverity
-  stackType: keyof typeof StackType
-}
-
 export type ErrorInfo = {
   plugin?: any
   tsConfig?: any
@@ -124,6 +113,16 @@ export const getTypeInfo = function ({ type }) {
 //    "All errors" bookmark depending on whether we should get notified on Slack
 //    for new errors of that type. You must use the bookmark menu action "Update
 //    with current filters"
+export interface ErrorType {
+  title: TitleFunction | string
+  locationType?: string
+  showErrorProps?: boolean
+  rawStack?: boolean
+  showInBuildLog?: boolean
+  group?: GroupFunction
+  severity: keyof typeof ErrorSeverity
+  stackType: keyof typeof StackType
+}
 
 const ErrorTypeMap = {
   cancelBuild: 'cancelBuild',
