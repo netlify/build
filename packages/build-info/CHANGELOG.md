@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.11.1](https://github.com/netlify/build/compare/build-info-v7.11.0...build-info-v7.11.1) (2023-11-09)
+
+
+### Bug Fixes
+
+* for angular v17, detect publish directory from `angular.json` ([#5373](https://github.com/netlify/build/issues/5373)) ([5cf6370](https://github.com/netlify/build/commit/5cf63704122a5aff52b20c4e54e4a8a507f62799))
+
 ## [7.11.0](https://github.com/netlify/build/compare/build-info-v7.10.2...build-info-v7.11.0) (2023-11-08)
 
 
