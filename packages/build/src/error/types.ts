@@ -10,7 +10,7 @@ export type BasicErrorInfo = {
   severity: string
   type: ErrorTypes
   errorInfo: ErrorInfo
-  errorProps: any
+  errorProps: Record<string, unknown>
   errorMetadata: any
   tsConfigInfo?: any
 } & ErrorType
