@@ -1,3 +1,4 @@
+import { getBuildCommandDescription, getPluginOrigin } from '../../log/description.js'
 import type {
   BuildCommandLocation,
   FunctionsBundlingLocation,
@@ -5,7 +6,6 @@ import type {
   PluginLocation,
   APILocation,
 } from '../types.js'
-import { getBuildCommandDescription, getPluginOrigin } from '../../log/description.js'
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).

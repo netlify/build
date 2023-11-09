@@ -1,6 +1,5 @@
-import type { BuildError } from '../types.js'
-
 import { THEME } from '../../log/theme.js'
+import type { BuildError } from '../types.js'
 
 // Serialize an error object into a title|body string to print in logs
 export const serializeLogError = function ({

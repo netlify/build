@@ -1,6 +1,6 @@
-import type { BuildError, BasicErrorInfo, ErrorInfo } from '../types.js'
 import { serializeObject } from '../../log/serialize.js'
 import { getErrorInfo } from '../info.js'
+import type { BuildError, BasicErrorInfo, ErrorInfo, TitleFunction } from '../types.js'
 import { getTypeInfo } from '../types.js'
 
 import { getLocationInfo } from './location.js'
@@ -96,7 +96,7 @@ export const parseErrorInfo = function (error: Error): BasicErrorInfo {
 }
 
 // Retrieve title to print in logs
-const getTitle = function (title: Function | string, errorInfo: ErrorInfo) {
+const getTitle = function (title: TitleFunction | string, errorInfo: ErrorInfo) {
   if (typeof title !== 'function') {
     return title
   }

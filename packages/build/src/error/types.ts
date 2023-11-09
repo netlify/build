@@ -8,7 +8,7 @@ export type BasicErrorInfo = {
   message: string
   stack: string
   severity: string
-  type: keyof typeof ErrorTypes
+  type: ErrorTypes
   errorInfo: ErrorInfo
   errorProps: any
   errorMetadata: any
@@ -29,36 +29,16 @@ enum StackType {
   message = 'message',
 }
 
-type ErrorTypes = keyof typeof TYPES
+type GroupFunction = ({ location }: { location: ErrorLocation }) => string
+export type TitleFunction = ({ location }: { location: ErrorLocation }) => string
 
-const ErrorTypes: { [T in ErrorTypes]: T } = {
-  cancelBuild: 'cancelBuild',
-  resolveConfig: 'resolveConfig',
-  dependencies: 'dependencies',
-  pluginInput: 'pluginInput',
-  pluginUnsupportedVersion: 'pluginUnsupportedVersion',
-  buildCommand: 'buildCommand',
-  functionsBundling: 'functionsBundling',
-  secretScanningFoundSecrets: 'secretScanningFoundSecrets',
-  failPlugin: 'failPlugin',
-  failBuild: 'failBuild',
-  pluginValidation: 'pluginValidation',
-  pluginInternal: 'pluginInternal',
-  ipc: 'ipc',
-  corePlugin: 'corePlugin',
-  coreStep: 'coreStep',
-  api: 'api',
-  exception: 'exception',
-  telemetry: 'telemetry',
-}
-
-export type ErrorType = {
-  title: Function | string
+export interface ErrorType {
+  title: TitleFunction | string
   locationType?: string
   showErrorProps?: boolean
   rawStack?: boolean
   showInBuildLog?: boolean
-  group?: Function
+  group?: GroupFunction
   severity: keyof typeof ErrorSeverity
   stackType: keyof typeof StackType
 }
@@ -66,7 +46,7 @@ export type ErrorType = {
 export type ErrorInfo = {
   plugin?: any
   tsConfig?: any
-  location?: ErrorLocation
+  location: ErrorLocation
 }
 
 export type BuildCommandLocation = {
@@ -88,11 +68,12 @@ export type PluginLocation = {
   packageName: string
   loadedFrom: string
   origin: string
+  input?: string
 }
 
 export type APILocation = {
   endpoint: string
-  parameters: any
+  parameters?: any
 }
 
 export type ErrorLocation =
@@ -143,10 +124,34 @@ export const getTypeInfo = function ({ type }) {
 //    "All errors" bookmark depending on whether we should get notified on Slack
 //    for new errors of that type. You must use the bookmark menu action "Update
 //    with current filters"
-const TYPES: { [T: string]: ErrorType } = {
+
+const ErrorTypeMap = {
+  cancelBuild: 'cancelBuild',
+  resolveConfig: 'resolveConfig',
+  dependencies: 'dependencies',
+  pluginInput: 'pluginInput',
+  pluginUnsupportedVersion: 'pluginUnsupportedVersion',
+  buildCommand: 'buildCommand',
+  functionsBundling: 'functionsBundling',
+  secretScanningFoundSecrets: 'secretScanningFoundSecrets',
+  failPlugin: 'failPlugin',
+  failBuild: 'failBuild',
+  pluginValidation: 'pluginValidation',
+  pluginInternal: 'pluginInternal',
+  ipc: 'ipc',
+  corePlugin: 'corePlugin',
+  coreStep: 'coreStep',
+  api: 'api',
+  exception: 'exception',
+  telemetry: 'telemetry',
+} as const
+
+type ErrorTypes = keyof typeof ErrorTypeMap
+
+const TYPES: { [T in ErrorTypes]: ErrorType } = {
   // Plugin called `utils.build.cancelBuild()`
   cancelBuild: {
-    title: ({ location: { packageName } }) => `Build canceled by ${packageName}`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Build canceled by ${packageName}`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'none',
@@ -168,7 +173,8 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // User misconfigured a plugin
   pluginInput: {
-    title: ({ location: { packageName, input } }) => `Plugin "${packageName}" invalid input "${input}"`,
+    title: ({ location: { packageName, input } }: { location: PluginLocation }) =>
+      `Plugin "${packageName}" invalid input "${input}"`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'info',
@@ -184,7 +190,7 @@ const TYPES: { [T: string]: ErrorType } = {
   // `build.command` non-0 exit code
   buildCommand: {
     title: '"build.command" failed',
-    group: ({ location: { buildCommand } }) => buildCommand,
+    group: ({ location: { buildCommand } }: { location: BuildCommandLocation }) => buildCommand,
     stackType: 'message',
     locationType: 'buildCommand',
     severity: 'info',
@@ -192,14 +198,15 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // User error during Functions bundling
   functionsBundling: {
-    title: ({ location: { functionName, functionType } }) => {
+    title: ({ location: { functionName, functionType } }: { location: FunctionsBundlingLocation }) => {
       if (functionType === 'edge') {
         return 'Bundling of edge function failed'
       }
 
       return `Bundling of function "${functionName}" failed`
     },
-    group: ({ location: { functionType = 'serverless' } }) => `Bundling of ${functionType} function failed`,
+    group: ({ location: { functionType = 'serverless' } }: { location: FunctionsBundlingLocation }) =>
+      `Bundling of ${functionType} function failed`,
     stackType: 'none',
     locationType: 'functionsBundling',
     severity: 'info',
@@ -213,7 +220,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Plugin called `utils.build.failBuild()`
   failBuild: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -221,7 +228,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Plugin called `utils.build.failPlugin()`
   failPlugin: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -229,7 +236,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Plugin has an invalid shape
   pluginValidation: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'warning',
@@ -237,7 +244,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Plugin threw an uncaught exception
   pluginInternal: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -247,7 +254,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Bug while orchestrating child processes
   ipc: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'warning',
@@ -255,7 +262,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Core plugin internal error
   corePlugin: {
-    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -265,7 +272,8 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Core step internal error
   coreStep: {
-    title: ({ location: { coreStepName } }) => `Internal error during "${coreStepName}"`,
+    title: ({ location: { coreStepName } }: { location: CoreStepLocation }) =>
+      `Internal error during "${coreStepName}"`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -275,7 +283,7 @@ const TYPES: { [T: string]: ErrorType } = {
 
   // Request error when `@netlify/build` was calling Netlify API
   api: {
-    title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
+    title: ({ location: { endpoint } }: { location: APILocation }) => `API error on "${endpoint}"`,
     stackType: 'message',
     showErrorProps: true,
     locationType: 'api',
@@ -300,7 +308,7 @@ const TYPES: { [T: string]: ErrorType } = {
     rawStack: true,
     severity: 'error',
   },
-}
+} as const
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
