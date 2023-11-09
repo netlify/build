@@ -1,4 +1,6 @@
-import { BaseFramework, Category, Framework } from './framework.js'
+import { gte } from 'semver'
+
+import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Angular extends BaseFramework implements Framework {
   readonly id = 'angular'
@@ -22,5 +24,25 @@ export class Angular extends BaseFramework implements Framework {
     default: '/logos/angular/default.svg',
     light: '/logos/angular/default.svg',
     dark: '/logos/angular/default.svg',
+  }
+
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
+
+    if (this.detected) {
+      if (this.version && gte(this.version, '17.0.0-rc')) {
+        this.plugins.push('@netlify/angular-runtime')
+        const angularJson = await this.project.fs.gracefullyReadFile('angular.json')
+        if (angularJson) {
+          const { projects, defaultProject } = JSON.parse(angularJson)
+          const project = projects[defaultProject ?? Object.keys(projects)[0]]
+          const outputPath = project?.architect?.build?.options?.outputPath
+          if (outputPath) {
+            this.build.directory = this.project.fs.join(outputPath, 'browser')
+          }
+        }
+      }
+      return this as DetectedFramework
+    }
   }
 }
