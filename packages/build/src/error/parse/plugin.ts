@@ -49,11 +49,11 @@ export const getHomepage = function (
   )
 }
 
-const getRepository = function ({ repository: { url } = {} }: { repository?: { url?: string } }) {
+const getRepository = function ({ repository: { url } = {} }: pkgJSONData) {
   return url
 }
 
-const getNpmLink = function ({ name }: { name?: string }, { loadedFrom }) {
+const getNpmLink = function ({ name }: pkgJSONData, { loadedFrom }: { loadedFrom?: string }) {
   if (!name || loadedFrom === 'local') {
     return
   }
@@ -61,7 +61,7 @@ const getNpmLink = function ({ name }: { name?: string }, { loadedFrom }) {
   return `https://www.npmjs.com/package/${name}`
 }
 
-const getIssuesLink = function ({ bugs: { url } = {} }: { bugs?: { url?: string } }) {
+const getIssuesLink = function ({ bugs: { url } = {} }: pkgJSONData) {
   return url
 }
 
