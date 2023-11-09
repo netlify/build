@@ -1,4 +1,11 @@
 import { getBuildCommandDescription, getPluginOrigin } from '../../log/description.js'
+import type {
+  BuildCommandLocation,
+  FunctionsBundlingLocation,
+  CoreStepLocation,
+  PluginLocation,
+  APILocation,
+} from '../types.js'
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
@@ -17,13 +24,13 @@ export const getLocationInfo = function ({ stack, location, locationType }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }) {
+const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }: BuildCommandLocation) {
   const description = getBuildCommandDescription(buildCommandOrigin)
   return `In ${description}:
 ${buildCommand}`
 }
 
-const getFunctionsBundlingLocation = function ({ functionName, functionType }) {
+const getFunctionsBundlingLocation = function ({ functionName, functionType }: FunctionsBundlingLocation) {
   if (functionType === 'edge') {
     return 'While bundling edge function'
   }
@@ -31,17 +38,17 @@ const getFunctionsBundlingLocation = function ({ functionName, functionType }) {
   return `While bundling function "${functionName}"`
 }
 
-const getCoreStepLocation = function ({ coreStepName }) {
+const getCoreStepLocation = function ({ coreStepName }: CoreStepLocation) {
   return `During ${coreStepName}`
 }
 
-const getBuildFailLocation = function ({ event, packageName, loadedFrom, origin }) {
+const getBuildFailLocation = function ({ event, packageName, loadedFrom, origin }: PluginLocation) {
   const eventMessage = getEventMessage(event)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
   return `${eventMessage} "${packageName}" ${pluginOrigin}`
 }
 
-const getEventMessage = function (event) {
+const getEventMessage = function (event: string) {
   if (event === 'load') {
     return `While loading`
   }
@@ -49,7 +56,7 @@ const getEventMessage = function (event) {
   return `In "${event}" event in`
 }
 
-const getApiLocation = function ({ endpoint, parameters }) {
+const getApiLocation = function ({ endpoint, parameters }: APILocation) {
   return `While calling the Netlify API endpoint '${endpoint}' with:\n${JSON.stringify(parameters, null, 2)}`
 }
 

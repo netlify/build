@@ -1,8 +1,11 @@
 import { THEME } from '../../log/theme.js'
+import type { BuildError } from '../types.js'
 
 // Serialize an error object into a title|body string to print in logs
 export const serializeLogError = function ({
   fullErrorInfo: { title, severity, message, pluginInfo, locationInfo, tsConfigInfo, errorProps },
+}: {
+  fullErrorInfo: BuildError
 }) {
   const body = getBody({ message, pluginInfo, locationInfo, tsConfigInfo, errorProps, severity })
   return { title, body }
