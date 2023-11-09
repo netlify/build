@@ -1,7 +1,9 @@
-export type BuildError = BasicErrorInfo & {
+// We override errorProps and title through getTitle and getErrorProps
+export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {
   title: string
   pluginInfo?: string
   locationInfo?: string
+  errorProps?: string
 }
 
 export type BasicErrorInfo = {
