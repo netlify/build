@@ -15,17 +15,47 @@ export type BasicErrorInfo = {
   tsConfigInfo?: any
 } & ErrorType
 
+/**
+ * Error severity groups the errors emitted by build and used to translate to exit code via SEVERITY_MAP
+ */
 enum ErrorSeverity {
+  /**
+   * build success
+   */
   success = 'success',
+  /**
+   * not an error, e.g. build cancellation
+   */
   none = 'none',
+  /**
+   * user error
+   */
   info = 'info',
+  /**
+   * community plugin error
+   */
   warning = 'warning',
+  /**
+   * system error, including core plugin error
+   */
   error = 'Error',
 }
 
+/**
+ * How the stack trace should appear in the build error logs
+ */
 enum StackType {
+  /**
+   * not printed
+   */
   none = 'none',
+  /**
+   * printed as is
+   */
   stack = 'stack',
+  /**
+   * printed as is, but taken from `error.message`. Used when `error.stack` is not being correct due to the error being passed between different processes.
+   */
   message = 'message',
 }
 
@@ -72,59 +102,56 @@ export type ErrorLocation =
   | PluginLocation
   | APILocation
 
-// Retrieve error-type specific information
+/**
+ * Retrieve error-type specific information
+ */
 export const getTypeInfo = function ({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
   return { type: typeA, ...TYPES[typeA] }
 }
 
-// List of error types, and their related properties
-// Related to build error logs:
-//  - `showInBuildLog`: `true` when we want this error to show in build logs (defaults to true)
-//  - `title`: main title shown in build error logs and in the UI (statuses)
-//  - `locationType`: retrieve a human-friendly location of the error, printed
-//    in build error logs
-//  - `showErrorProps`: `true` when the `Error` instance static properties
-//    should be printed in build error logs. Only useful when the `Error`
-//    instance was not created by us.
-//  - `rawStack`: `true` when the stack trace should be cleaned up
-//  - `stackType`: how the stack trace should appear in build error logs:
-//      - `none`: not printed
-//      - `stack`: printed as is
-//      - `message`: printed as is, but taken from `error.message`.
-//        Used when `error.stack` is not being correct due to the error being
-//        passed between different processes.
-//  - `severity`: error severity (also used by Bugsnag):
-//      - `success`: build success
-//      - `none`: not an error, e.g. build cancellation
-//      - `info`: user error
-//      - `warning`: community plugin error
-//      - `error`: system error, including core plugin error
-// Related to Bugsnag:
-//  - `group`: main title shown in Bugsnag. Also used to group errors together
-//    in Bugsnag, combined with `error.message`.
-//    Defaults to `title`.
-// New error types should be added to Bugsnag since we use it for automated
-// monitoring (through its Slack integration). The steps in Bugsnag are:
-//  - Create a new bookmark. Try to re-use the search filter of an existing
-//    bookmark with a similar error type, but only changing the `errorClass`.
-//    Make sure to check the box "Share with my team".
-//  - Add the `errorClass` to the search filter of either the "All warnings" or
-//    "All errors" bookmark depending on whether we should get notified on Slack
-//    for new errors of that type. You must use the bookmark menu action "Update
-//    with current filters"
+/**
+ * Interface for build error types
+ */
 export interface ErrorType {
+  /**
+   *  main title shown in build error logs and in the UI (statuses)
+   */
   title: TitleFunction | string
+  /**
+   *  retrieve a human-friendly location of the error, printed
+   */
   locationType?: string
+  /**
+   *  `true` when the `Error` instance static properties
+   */
   showErrorProps?: boolean
+  /**
+   *  `true` when the stack trace should be cleaned up
+   */
   rawStack?: boolean
+  /**
+   *  `true` when we want this error to show in build logs (defaults to true)
+   */
   showInBuildLog?: boolean
+  /**
+   *  main title shown in Bugsnag. Also used to group errors together in Bugsnag, combined with `error.message`. Defaults to `title`.
+   */
   group?: GroupFunction
+  /**
+   *  error severity (also used by Bugsnag)
+   */
   severity: keyof typeof ErrorSeverity
+  /**
+   *  how the stack trace should appear in build error logs
+   */
   stackType: keyof typeof StackType
 }
 
 const ErrorTypeMap = {
+  /**
+   * Plugin called `utils.build.cancelBuild()`
+   */
   cancelBuild: 'cancelBuild',
   resolveConfig: 'resolveConfig',
   dependencies: 'dependencies',
@@ -147,30 +174,48 @@ const ErrorTypeMap = {
 
 type ErrorTypes = keyof typeof ErrorTypeMap
 
+/**
+ * List of error types, and their related properties
+ * New error types should be added to Bugsnag since we use it for automated
+ * monitoring (through its Slack integration). The steps in Bugsnag are:
+ *  - Create a new bookmark. Try to re-use the search filter of an existing
+ *    bookmark with a similar error type, but only changing the `errorClass`.
+ *    Make sure to check the box "Share with my team".
+ *  - Add the `errorClass` to the search filter of either the "All warnings" or
+ *    "All errors" bookmark depending on whether we should get notified on Slack
+ *    for new errors of that type. You must use the bookmark menu action "Update
+ *    with current filters"
+ *
+ */
 const TYPES: { [T in ErrorTypes]: ErrorType } = {
-  // Plugin called `utils.build.cancelBuild()`
+  /**
+   * Plugin called `utils.build.cancelBuild()`
+   */
   cancelBuild: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Build canceled by ${packageName}`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'none',
   },
-
-  // User configuration error (`@netlify/config`, wrong Node.js version)
+  /**
+   * User configuration error (`@netlify/config`, wrong Node.js version)
+   */
   resolveConfig: {
     title: 'Configuration error',
     stackType: 'none',
     severity: 'info',
   },
-
-  // Error while installing user packages (missing plugins, local plugins or functions dependencies)
+  /**
+   * Error while installing user packages (missing plugins, local plugins or functions dependencies)
+   */
   dependencies: {
     title: 'Dependencies installation error',
     stackType: 'none',
     severity: 'info',
   },
-
-  // User misconfigured a plugin
+  /**
+   * User misconfigured a plugin
+   */
   pluginInput: {
     title: ({ location: { packageName, input } }: { location: PluginLocation }) =>
       `Plugin "${packageName}" invalid input "${input}"`,
@@ -178,15 +223,17 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'buildFail',
     severity: 'info',
   },
-
-  // User package.json sets an unsupported plugin version
+  /**
+   * User package.json sets an unsupported plugin version
+   */
   pluginUnsupportedVersion: {
     title: 'Unsupported plugin version detected',
     stackType: 'none',
     severity: 'info',
   },
-
-  // `build.command` non-0 exit code
+  /**
+   * `build.command` non-0 exit code
+   */
   buildCommand: {
     title: '"build.command" failed',
     group: ({ location: { buildCommand } }: { location: BuildCommandLocation }) => buildCommand,
@@ -194,8 +241,9 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'buildCommand',
     severity: 'info',
   },
-
-  // User error during Functions bundling
+  /**
+   * User error during Functions bundling
+   */
   functionsBundling: {
     title: ({ location: { functionName, functionType } }: { location: FunctionsBundlingLocation }) => {
       if (functionType === 'edge') {
@@ -210,38 +258,44 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'functionsBundling',
     severity: 'info',
   },
-
+  /**
+   * Error from the secret scanning core step
+   */
   secretScanningFoundSecrets: {
     title: 'Secrets scanning detected secrets in files during build.',
     stackType: 'none',
     severity: 'info',
   },
-
-  // Plugin called `utils.build.failBuild()`
+  /**
+   * Plugin called `utils.build.failBuild()`
+   */
   failBuild: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
   },
-
-  // Plugin called `utils.build.failPlugin()`
+  /**
+   * Plugin called `utils.build.failPlugin()`
+   */
   failPlugin: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
   },
-
-  // Plugin has an invalid shape
+  /**
+   * Plugin has an invalid shape
+   */
   pluginValidation: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'warning',
   },
-
-  // Plugin threw an uncaught exception
+  /**
+   * Plugin threw an uncaught exception
+   */
   pluginInternal: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
@@ -250,16 +304,18 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'buildFail',
     severity: 'warning',
   },
-
-  // Bug while orchestrating child processes
+  /**
+   * Bug while orchestrating child processes
+   */
   ipc: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'warning',
   },
-
-  // Core plugin internal error
+  /**
+   * Core plugin internal error
+   */
   corePlugin: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
@@ -268,8 +324,9 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'buildFail',
     severity: 'error',
   },
-
-  // Core step internal error
+  /**
+   * Core step internal error
+   */
   coreStep: {
     title: ({ location: { coreStepName } }: { location: CoreStepLocation }) =>
       `Internal error during "${coreStepName}"`,
@@ -279,8 +336,9 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'coreStep',
     severity: 'error',
   },
-
-  // Request error when `@netlify/build` was calling Netlify API
+  /**
+   * Request error when `@netlify/build` was calling Netlify API
+   */
   api: {
     title: ({ location: { endpoint } }: { location: APILocation }) => `API error on "${endpoint}"`,
     stackType: 'message',
@@ -288,8 +346,9 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     locationType: 'api',
     severity: 'error',
   },
-
-  // `@netlify/build` threw an uncaught exception
+  /**
+   * `@netlify/build` threw an uncaught exception
+   */
   exception: {
     title: 'Core internal error',
     stackType: 'stack',
@@ -297,8 +356,9 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     rawStack: true,
     severity: 'error',
   },
-
-  // Errors related with the telemetry output
+  /**
+   * Errors related with the telemetry output
+   */
   telemetry: {
     showInBuildLog: false,
     title: 'Telemetry error',
