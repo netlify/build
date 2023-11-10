@@ -1,3 +1,5 @@
+import { Attributes } from '@opentelemetry/api'
+
 // We override errorProps and title through getTitle and getErrorProps
 export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {
   title: string
@@ -75,13 +77,27 @@ export type BuildCommandLocation = {
   buildCommandOrigin: string
 }
 
+export const isBuildCommandLocation = function (location?: ErrorLocation): location is BuildCommandLocation {
+  const buildLocation = location as BuildCommandLocation
+  return typeof buildLocation?.buildCommand === 'string' && typeof buildLocation?.buildCommandOrigin === 'string'
+}
+
 export type FunctionsBundlingLocation = {
   functionName: string
   functionType: string
 }
 
+export const isFunctionsBundlingLocation = function (location?: ErrorLocation): location is FunctionsBundlingLocation {
+  const bundlingLocation = location as FunctionsBundlingLocation
+  return typeof bundlingLocation?.functionName === 'string' && typeof bundlingLocation?.functionType === 'string'
+}
+
 export type CoreStepLocation = {
   coreStepName: string
+}
+
+export const isCoreStepLocation = function (location?: ErrorLocation): location is CoreStepLocation {
+  return typeof (location as CoreStepLocation)?.coreStepName === 'string'
 }
 
 export type PluginLocation = {
@@ -92,9 +108,22 @@ export type PluginLocation = {
   input?: string
 }
 
+export const isPluginLocation = function (location?: ErrorLocation): location is PluginLocation {
+  const pluginLocation = location as PluginLocation
+  return (
+    typeof pluginLocation?.event === 'string' &&
+    typeof pluginLocation?.packageName === 'string' &&
+    typeof pluginLocation?.loadedFrom === 'string'
+  )
+}
+
 export type APILocation = {
   endpoint: string
   parameters?: any
+}
+
+export const isAPILocation = function (location?: ErrorLocation): location is APILocation {
+  return typeof (location as APILocation)?.endpoint === 'string'
 }
 
 export type ErrorLocation =
@@ -103,6 +132,60 @@ export type ErrorLocation =
   | CoreStepLocation
   | PluginLocation
   | APILocation
+
+const buildErrorAttributePrefix = 'build.error'
+
+const errorLocationToTracingAttributes = function (location: ErrorLocation): Attributes {
+  const locationAttributePrefix = `${buildErrorAttributePrefix}.location`
+  if (isBuildCommandLocation(location)) {
+    return {
+      [`${locationAttributePrefix}.command`]: location.buildCommand,
+      [`${locationAttributePrefix}.command_origin`]: location.buildCommandOrigin,
+    }
+  }
+  if (isPluginLocation(location)) {
+    return {
+      [`${locationAttributePrefix}.plugin.event`]: location.event,
+      [`${locationAttributePrefix}.plugin.package_name`]: location.packageName,
+      [`${locationAttributePrefix}.plugin.loaded_from`]: location.loadedFrom,
+      [`${locationAttributePrefix}.plugin.origin`]: location.origin,
+    }
+  }
+  if (isFunctionsBundlingLocation(location)) {
+    return {
+      [`${locationAttributePrefix}.function.type`]: location.functionType,
+      [`${locationAttributePrefix}.function.name`]: location.functionName,
+    }
+  }
+
+  if (isCoreStepLocation(location)) {
+    return {
+      [`${locationAttributePrefix}.core_step.name`]: location.coreStepName,
+    }
+  }
+
+  if (isAPILocation(location)) {
+    return {
+      [`${locationAttributePrefix}.api.endpoint`]: location.endpoint,
+    }
+  }
+  return {}
+}
+
+/**
+ * Given a BuildError, extract the relevant trace attributes to add to the on-going Span
+ */
+export const buildErrorToTracingAttributes = function (error: BuildError | BasicErrorInfo): Attributes {
+  const attributes = {}
+  // Check we're not adding undefined values
+  if (error?.severity) attributes[`${buildErrorAttributePrefix}.severity`] = error.severity
+  if (error?.type) attributes[`${buildErrorAttributePrefix}.type`] = error.type
+  if (error?.locationType) attributes[`${buildErrorAttributePrefix}.location.type`] = error.locationType
+  return {
+    ...attributes,
+    ...errorLocationToTracingAttributes(error.errorInfo?.location),
+  }
+}
 
 /**
  * Retrieve error-type specific information

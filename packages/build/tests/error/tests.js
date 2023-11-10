@@ -1,6 +1,8 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
+import { buildErrorToTracingAttributes } from '../../lib/error/types.js'
+
 test('exception', async (t) => {
   const output = await new Fixture('./fixtures/exception').runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -109,4 +111,106 @@ test('Redact API token on errors', async (t) => {
     .withFlags({ token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+const testMatrixAttributeTracing = [
+  {
+    description: 'build command error',
+    input: {
+      errorInfo: { location: { buildCommand: 'test-build', buildCommandOrigin: 'test-origin' } },
+      severity: 'error',
+      type: 'build-cmd',
+      locationType: 'build-cmd-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'build-cmd',
+      'build.error.location.type': 'build-cmd-location-type',
+      'build.error.location.command': 'test-build',
+      'build.error.location.command_origin': 'test-origin',
+    },
+  },
+  {
+    description: 'plugin error',
+    input: {
+      errorInfo: {
+        location: {
+          event: 'test-event',
+          packageName: 'test-package',
+          loadedFrom: 'test-loaded-from',
+          origin: 'test-origin',
+        },
+      },
+      severity: 'error',
+      type: 'plugin-error',
+      locationType: 'plugin-error-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'plugin-error',
+      'build.error.location.type': 'plugin-error-location-type',
+      'build.error.location.plugin.event': 'test-event',
+      'build.error.location.plugin.package_name': 'test-package',
+      'build.error.location.plugin.loaded_from': 'test-loaded-from',
+      'build.error.location.plugin.origin': 'test-origin',
+    },
+  },
+  {
+    description: 'functions bundling error',
+    input: {
+      errorInfo: { location: { functionType: 'function-type', functionName: 'function-name' } },
+      severity: 'error',
+      type: 'func-bundle',
+      locationType: 'func-bundle-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'func-bundle',
+      'build.error.location.type': 'func-bundle-location-type',
+      'build.error.location.function.type': 'function-type',
+      'build.error.location.function.name': 'function-name',
+    },
+  },
+  {
+    description: 'core step error',
+    input: {
+      errorInfo: { location: { coreStepName: 'some-name' } },
+      severity: 'error',
+      type: 'core-step',
+      locationType: 'core-step-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'core-step',
+      'build.error.location.type': 'core-step-location-type',
+      'build.error.location.core_step.name': 'some-name',
+    },
+  },
+  {
+    description: 'api error',
+    input: {
+      errorInfo: { location: { endpoint: 'some-endpoint' } },
+      severity: 'error',
+      type: 'api',
+      locationType: 'api-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'api',
+      'build.error.location.type': 'api-location-type',
+      'build.error.location.api.endpoint': 'some-endpoint',
+    },
+  },
+  {
+    description: 'nothing is added',
+    input: {},
+    expects: {},
+  },
+]
+
+testMatrixAttributeTracing.forEach(({ description, input, expects }) => {
+  test(`Tracing attributes - ${description}`, async (t) => {
+    const attributes = buildErrorToTracingAttributes(input)
+    t.deepEqual(attributes, expects)
+  })
 })
