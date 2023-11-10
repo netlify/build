@@ -137,5 +137,5 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
     logs,
     `If these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
   )
-  logError(logs, `See the Netlify Docs for more information on secrets scanning.`)
+  logError(logs, `For more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`)
 }
