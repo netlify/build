@@ -8,6 +8,7 @@ type MergeIntegrationsOpts = {
   apiIntegrations: IntegrationResponse[]
   context: string
   testOpts?: TestOptions
+  offline: boolean
 }
 
 export const mergeIntegrations = async function ({
@@ -15,8 +16,9 @@ export const mergeIntegrations = async function ({
   apiIntegrations,
   context,
   testOpts = {},
+  offline,
 }: MergeIntegrationsOpts): Promise<Integration[]> {
-  const availableIntegrations = await getAvailableIntegrations({ testOpts })
+  const availableIntegrations = await getAvailableIntegrations({ testOpts, offline })
 
   // Include all API integrations, unless they have a `dev` property and we are in the `dev` context
   const resolvedApiIntegrations = apiIntegrations.filter(
