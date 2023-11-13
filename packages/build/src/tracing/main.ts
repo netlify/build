@@ -8,6 +8,7 @@ import { NodeSDK } from '@opentelemetry/sdk-node'
 import type { TracingOptions } from '../core/types.js'
 import { isBuildError } from '../error/info.js'
 import { parseErrorInfo } from '../error/parse/parse.js'
+import { buildErrorToTracingAttributes } from '../error/types.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 let sdk: NodeSDK | undefined
@@ -94,9 +95,9 @@ export const addErrorToActiveSpan = function (error: Error) {
   const span = trace.getActiveSpan()
   if (!span) return
   if (isBuildError(error)) {
-    const { severity, type } = parseErrorInfo(error)
-    if (severity == 'none') return
-    span.setAttributes({ severity, type })
+    const buildError = parseErrorInfo(error)
+    if (buildError.severity == 'none') return
+    span.setAttributes(buildErrorToTracingAttributes(buildError))
   }
 
   span.recordException(error)
