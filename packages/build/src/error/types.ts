@@ -16,6 +16,10 @@ export type BasicErrorInfo = {
   errorInfo: ErrorInfo
   errorProps: Record<string, unknown>
   errorMetadata: any
+  /**
+   * The core step id where the error took place
+   */
+  stage?: string
   tsConfigInfo?: any
 } & ErrorType
 
@@ -181,6 +185,7 @@ export const buildErrorToTracingAttributes = function (error: BuildError | Basic
   if (error?.severity) attributes[`${buildErrorAttributePrefix}.severity`] = error.severity
   if (error?.type) attributes[`${buildErrorAttributePrefix}.type`] = error.type
   if (error?.locationType) attributes[`${buildErrorAttributePrefix}.location.type`] = error.locationType
+  if (error?.stage) attributes[`${buildErrorAttributePrefix}.step.id`] = error.stage
   return {
     ...attributes,
     ...errorLocationToTracingAttributes(error.errorInfo?.location),
