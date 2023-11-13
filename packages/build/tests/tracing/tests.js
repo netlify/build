@@ -207,7 +207,11 @@ test('addErrorToActiveSpan - when error severity info', async (t) => {
 
     t.is(span.status.code, SpanStatusCode.ERROR)
     // Severities are infered from the Error Type
-    t.deepEqual(span.attributes, { severity: 'info', type: 'failPlugin' })
+    t.deepEqual(span.attributes, {
+      'build.error.location.type': 'buildFail',
+      'build.error.severity': 'info',
+      'build.error.type': 'failPlugin',
+    })
 
     const firstEvent = span.events[0]
     t.deepEqual(firstEvent.name, 'exception')
