@@ -10,11 +10,16 @@ type AvailableIntegration = {
 
 type GetAvailableIntegrationsOpts = {
   testOpts: TestOptions
+  offline: boolean
 }
 
 export const getAvailableIntegrations = async function ({
   testOpts,
+  offline,
 }: GetAvailableIntegrationsOpts): Promise<AvailableIntegration[]> {
+  if (offline) {
+    return []
+  }
   const { host } = testOpts
   const baseUrl = new URL(host ? `http://${host}/` : `https://api.netlifysdk.com/`)
 

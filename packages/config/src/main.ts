@@ -122,6 +122,7 @@ export const resolveConfig = async function (opts) {
     configIntegrations: configA.integrations,
     context: context,
     testOpts,
+    offline,
   })
 
   const result = {

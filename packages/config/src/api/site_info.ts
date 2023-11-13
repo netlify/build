@@ -38,7 +38,7 @@ export const getSiteInfo = async function ({
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts }) : []
+    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -47,7 +47,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts }),
+    getIntegrations({ siteId, testOpts, offline }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -99,10 +99,15 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
 type GetIntegrationsOpts = {
   siteId?: string
   testOpts: TestOptions
+  offline: boolean
 }
 
-const getIntegrations = async function ({ siteId, testOpts }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
-  if (!siteId) {
+const getIntegrations = async function ({
+  siteId,
+  testOpts,
+  offline,
+}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
+  if (!siteId || offline) {
     return []
   }
 
