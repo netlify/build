@@ -105,6 +105,14 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.26.4](https://github.com/netlify/build/compare/build-v29.26.3...build-v29.26.4) (2023-11-13)
+
+
+### Bug Fixes
+
+* link to secrets scanning docs ([#5378](https://github.com/netlify/build/issues/5378)) ([05ddd28](https://github.com/netlify/build/commit/05ddd288361c875e5b2b42d75c1b3f53a55c3423))
+* **tracing:** namespace attributes in build error events and add further data ([#5381](https://github.com/netlify/build/issues/5381)) ([795d935](https://github.com/netlify/build/commit/795d9358322729509b2978e00c2773b0dc725513))
+
 ## [29.26.3](https://github.com/netlify/build/compare/build-v29.26.2...build-v29.26.3) (2023-11-09)
 
 
