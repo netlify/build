@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 import process from 'process'
@@ -535,4 +536,35 @@ test('Loads JSON modules', async () => {
 
   await cleanup()
   await rm(vendorDirectory.path, { force: true, recursive: true })
+})
+
+test('Supports TSX and process.env', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('tsx')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const vendorDirectory = await tmp.dir()
+
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+    vendorDirectory: vendorDirectory.path,
+  })
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  process.env.FOO = 'bar'
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+  expect(Buffer.from(func1, 'base64').toString()).toBe(
+    `hippedy hoppedy, createElement is now a production property. Here, take this env var: FOO=bar`,
+  )
+
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+  delete process.env.FOO
 })

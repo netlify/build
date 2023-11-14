@@ -272,7 +272,7 @@ const safelyVendorNPMSpecifiers = async ({
       functions: functions.map(({ path }) => path),
       importMap,
       logger,
-      referenceTypes: false,
+      environment: 'production',
       rootPath,
     })
   } catch (error) {

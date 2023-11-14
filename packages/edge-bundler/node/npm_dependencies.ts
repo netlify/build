@@ -14,7 +14,7 @@ import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { pathsBetween } from './utils/fs.js'
 
-const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.cts', '.mts'])
+const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'])
 
 const slugifyPackageName = (specifier: string) => {
   if (!specifier.startsWith('@')) return specifier
@@ -81,6 +81,10 @@ const safelyDetectTypes = async (packageJsonPath: string): Promise<string | unde
 // Workaround for https://github.com/evanw/esbuild/issues/1921.
 const banner = {
   js: `
+  import process from "node:process";
+  import {setImmediate, clearImmediate} from "node:timers";
+  import {Buffer} from "node:buffer";
+
   import {createRequire as ___nfyCreateRequire} from "node:module";
   import {fileURLToPath as ___nfyFileURLToPath} from "node:url";
   import {dirname as ___nfyPathDirname} from "node:path";
@@ -94,7 +98,7 @@ interface GetNPMSpecifiersOptions {
   basePath: string
   functions: string[]
   importMap: ParsedImportMap
-  referenceTypes: boolean
+  environment: 'production' | 'development'
   rootPath: string
 }
 
@@ -102,13 +106,7 @@ interface GetNPMSpecifiersOptions {
  * Parses a set of functions and returns a list of specifiers that correspond
  * to npm modules.
  */
-const getNPMSpecifiers = async ({
-  basePath,
-  functions,
-  importMap,
-  referenceTypes,
-  rootPath,
-}: GetNPMSpecifiersOptions) => {
+const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, rootPath }: GetNPMSpecifiersOptions) => {
   const baseURL = pathToFileURL(basePath)
   const { reasons } = await nodeFileTrace(functions, {
     base: rootPath,
@@ -191,7 +189,7 @@ const getNPMSpecifiers = async ({
     if (isDirectDependency) {
       npmSpecifiers.push({
         specifier: packageName,
-        types: referenceTypes ? await safelyDetectTypes(path.join(basePath, filePath)) : undefined,
+        types: environment === 'development' ? await safelyDetectTypes(path.join(basePath, filePath)) : undefined,
       })
     }
   }
@@ -208,7 +206,7 @@ interface VendorNPMSpecifiersOptions {
   functions: string[]
   importMap: ImportMap
   logger: Logger
-  referenceTypes: boolean
+  environment: 'production' | 'development'
   rootPath?: string
 }
 
@@ -217,7 +215,7 @@ export const vendorNPMSpecifiers = async ({
   directory,
   functions,
   importMap,
-  referenceTypes,
+  environment,
   rootPath = basePath,
 }: VendorNPMSpecifiersOptions) => {
   // The directories that esbuild will use when resolving Node modules. We must
@@ -235,7 +233,7 @@ export const vendorNPMSpecifiers = async ({
     basePath,
     functions,
     importMap: importMap.getContentsWithURLObjects(),
-    referenceTypes,
+    environment,
     rootPath,
   })
 
@@ -258,7 +256,6 @@ export const vendorNPMSpecifiers = async ({
     }),
   )
   const entryPoints = ops.map(({ filePath }) => filePath)
-
   // Bundle each of the entrypoints we created. We'll end up with a compiled
   // version of each, plus any chunks of shared code
   // between them (such that a common module isn't bundled twice).
@@ -276,6 +273,12 @@ export const vendorNPMSpecifiers = async ({
     splitting: true,
     target: 'es2020',
     write: false,
+    define:
+      environment === 'production'
+        ? {
+            'process.env.NODE_ENV': '"production"',
+          }
+        : undefined,
   })
 
   await Promise.all(
