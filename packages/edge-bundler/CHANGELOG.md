@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.1](https://github.com/netlify/edge-bundler/compare/v10.1.0...v10.1.1) (2023-11-14)
+
+
+### Bug Fixes
+
+* parse TSX files for module detection, define NODE_ENV, polyfill missing Node.js globals ([#519](https://github.com/netlify/edge-bundler/issues/519)) ([6f69f35](https://github.com/netlify/edge-bundler/commit/6f69f35d7cc0472502d355dd6227281d08aaa5ae))
+
 ## [10.1.0](https://github.com/netlify/edge-bundler/compare/v10.0.0...v10.1.0) (2023-11-08)
 
 
