@@ -76,6 +76,20 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.10.0](https://github.com/netlify/build/compare/config-v20.9.0...config-v20.10.0) (2023-11-14)
+
+
+### Features
+
+* fetch integrations only when online ([#5380](https://github.com/netlify/build/issues/5380)) ([916a54c](https://github.com/netlify/build/commit/916a54c8b2389ea856b974b92443cbd0e77613f2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.10 to ^13.1.11
+
 ## [20.9.0](https://github.com/netlify/build/compare/config-v20.8.1...config-v20.9.0) (2023-09-13)
 
 
