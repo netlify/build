@@ -1,5 +1,5 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { diag, DiagLogLevel } from '@opentelemetry/api'
+import { trace, diag, context, DiagLogLevel } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
@@ -17,12 +17,12 @@ export type TracingOptions = {
   /** Sample rate being used for this trace, this allows for consistent probability sampling */
   sampleRate: number
   /** Properties of the root span and trace id used to stitch context */
-  traceId: string
-  traceFlags: number
-  parentSpanId: string
-  baggageFilePath: string
+  traceId?: string
+  traceFlags?: number
+  parentSpanId?: string
+  baggageFilePath?: string
   /** Debug mode enabled - logs to stdout */
-  debug: boolean
+  debug?: boolean
   /** System log file descriptor */
   systemLogFile?: number
 }
@@ -61,15 +61,14 @@ export const startTracing = async function (options: TracingOptions, packageJson
 
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from Buildbot
-  // const ctx = trace.setSpanContext(baggageCtx, {
-  //   traceId: options.traceId,
-  //   spanId: options.parentSpanId,
-  //   traceFlags: options.traceFlags,
-  //   isRemote: true,
-  // })
+  const ctx = trace.setSpanContext(context.active(), {
+    traceId: options.traceId,
+    spanId: options.parentSpanId,
+    traceFlags: options.traceFlags,
+    isRemote: true,
+  })
 
-  // global['NETLIFY_ROOT_CONTEXT'] = ctx
-  // return ctx
+  return ctx
 }
 
 /** Stops the tracing service if there's one running. This will flush any ongoing events */
