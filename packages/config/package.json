@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "20.9.0",
+  "version": "20.10.0",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -70,7 +70,7 @@
     "is-plain-obj": "^4.0.0",
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
-    "netlify": "^13.1.10",
+    "netlify": "^13.1.11",
     "netlify-headers-parser": "^7.1.2",
     "node-fetch": "^3.3.1",
     "netlify-redirect-parser": "^14.2.0",
