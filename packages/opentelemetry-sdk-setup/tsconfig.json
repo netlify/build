@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2022",
+    "outDir": "lib" /* Specify an output folder for all emitted files. */
+  },
+  "include": ["src/**/*.ts"]
+}
