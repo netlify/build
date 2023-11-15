@@ -23,9 +23,11 @@ const testMatrix = [
       sampleRate: 4,
     },
     expects: {
+      parentSpanId: spanId,
       traceId: sampledTraceId,
       traceFlags: TraceFlags.SAMPLED,
       attributes: { SampleRate: 4 },
+      checkResource: true,
     },
   },
   {
@@ -35,9 +37,13 @@ const testMatrix = [
       sampleRate: 4,
     },
     expects: {
+      // When trace isn't sampled, parent span id is undefined
+      parentSpanId: undefined,
       traceId: notSampledTraceId,
       traceFlags: TraceFlags.NONE,
       attributes: undefined,
+      // When trace isn't sampled, resource is undefined
+      checkResource: false,
     },
   },
   {
@@ -48,9 +54,11 @@ const testMatrix = [
       sampleRate: 4,
     },
     expects: {
+      parentSpanId: spanId,
       traceId: sampledTraceId,
       traceFlags: TraceFlags.SAMPLED,
       attributes: { SampleRate: 4 },
+      checkResource: true,
     },
   },
 ]
@@ -70,6 +78,7 @@ testMatrix.forEach((testCase) => {
         parentSpanId: spanId,
         baggageFilePath: '',
         apiKey: '-',
+        debug: false,
       },
       {
         name: 'mock-package',
@@ -82,6 +91,38 @@ testMatrix.forEach((testCase) => {
 
     expect(span.spanContext().traceId).toEqual(expects.traceId)
     expect(span.spanContext().traceFlags).toEqual(expects.traceFlags)
+    expect(span.parentSpanId).toEqual(expects.parentSpanId)
     expect(span.attributes).toStrictEqual(expects.attributes)
+    if (expects.checkResource) {
+      expect(span.resource.attributes).toContain({
+        'service.name': 'mock-package',
+        'service.version': '1.0.0',
+      })
+    }
   })
+})
+
+test('Tracing - trace id and resource definition', async (_) => {
+  const ctx = await startTracing(
+    {
+      preloadingEnabled: true,
+      httpProtocol: 'http',
+      host: 'localhost',
+      port: 4127,
+      sampleRate: 1,
+      baggageFilePath: '',
+      apiKey: '-',
+      debug: false,
+    },
+    {
+      name: 'mock-package',
+      version: '1.0.0',
+    },
+  )
+
+  const tracer = trace.getTracer('test')
+  const span = tracer.startSpan('test', {}, ctx) as Span
+
+  expect(span.spanContext().traceId).not.empty
+  expect(span.parentSpanId).toBeUndefined()
 })

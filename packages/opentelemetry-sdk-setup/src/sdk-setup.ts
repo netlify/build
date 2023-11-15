@@ -1,5 +1,5 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { trace, diag, context, DiagLogLevel } from '@opentelemetry/api'
+import { trace, diag, context, DiagLogLevel, TraceFlags } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
@@ -22,7 +22,7 @@ export type TracingOptions = {
   parentSpanId?: string
   baggageFilePath?: string
   /** Debug mode enabled - logs to stdout */
-  debug?: boolean
+  debug: boolean
   /** System log file descriptor */
   systemLogFile?: number
 }
@@ -59,16 +59,19 @@ export const startTracing = async function (options: TracingOptions, packageJson
   // Loads the contents of the passed baggageFilePath into the baggage
   // const baggageCtx = await loadBaggageFromFile(options.baggageFilePath)
 
+  const traceFlags = options.traceFlags !== undefined ? options.traceFlags : TraceFlags.NONE
   // Sets the current trace ID and span ID based on the options received
-  // this is used as a way to propagate trace context from Buildbot
-  const ctx = trace.setSpanContext(context.active(), {
-    traceId: options.traceId,
-    spanId: options.parentSpanId,
-    traceFlags: options.traceFlags,
-    isRemote: true,
-  })
+  // this is used as a way to propagate trace context from other processes such as Buildbot
+  if (options.traceId !== undefined && options.parentSpanId !== undefined) {
+    return trace.setSpanContext(context.active(), {
+      traceId: options.traceId,
+      spanId: options.parentSpanId,
+      traceFlags: traceFlags,
+      isRemote: true,
+    })
+  }
 
-  return ctx
+  return context.active()
 }
 
 /** Stops the tracing service if there's one running. This will flush any ongoing events */
