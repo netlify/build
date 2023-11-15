@@ -1,7 +1,9 @@
+import * as fs from 'fs/promises'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
+import { tmpName } from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -143,11 +145,20 @@ test('Plugins can have inputs', async (t) => {
 })
 
 test('Plugins are passed featureflags', async (t) => {
+  const systemLogFile = await tmpName()
   const output = await new Fixture('./fixtures/feature_flags')
     .withFlags({
       featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
     })
     .runWithBuild()
+
+  const systemLog = await fs.readFile(systemLogFile, { encoding: 'utf8' })
+
+  const expectedSystemLogs = 'some system-facing logs'
+  t.false(output.includes(expectedSystemLogs))
+  t.is(systemLog, expectedSystemLogs)
 
   t.true(
     output.includes(
@@ -165,6 +176,8 @@ test('Plugins are passed featureflags', async (t) => {
   const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
     .withFlags({
       featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
     })
     .runWithBuild()
 

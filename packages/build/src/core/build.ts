@@ -204,6 +204,7 @@ const tExecBuild = async function ({
     logs,
     debug,
     systemLog,
+    systemLogFile,
     verbose,
     timers: timersA,
     sendStatus,
@@ -264,6 +265,7 @@ export const runAndReportBuild = async function ({
   logs,
   debug,
   systemLog,
+  systemLogFile,
   verbose,
   timers,
   sendStatus,
@@ -315,6 +317,7 @@ export const runAndReportBuild = async function ({
       logs,
       debug,
       systemLog,
+      systemLogFile,
       verbose,
       timers,
       sendStatus,
@@ -418,6 +421,7 @@ const initAndRunBuild = async function ({
   logs,
   debug,
   systemLog,
+  systemLogFile,
   verbose,
   sendStatus,
   saveConfig,
@@ -466,6 +470,7 @@ const initAndRunBuild = async function ({
     timers: timersA,
     featureFlags,
     quiet,
+    systemLogFile,
   })
 
   try {
