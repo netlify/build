@@ -144,7 +144,7 @@ test('Plugins can have inputs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Plugins are passed featureflags', async (t) => {
+test.only('Trusted plugins are passed featureflags and system log', async (t) => {
   const systemLogFile = await tmpName()
   const output = await new Fixture('./fixtures/feature_flags')
     .withFlags({
