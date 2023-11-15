@@ -3,6 +3,7 @@ import { Span } from '@opentelemetry/sdk-trace-base'
 import { expect, test, beforeEach } from 'vitest'
 
 import { startTracing, stopTracing } from '../src/sdk-setup.js'
+import { findExecutablePackageJSON } from '../src/util.js'
 
 beforeEach(async () => {
   await stopTracing()
@@ -125,4 +126,22 @@ test('Tracing - trace id and resource definition', async (_) => {
 
   expect(span.spanContext().traceId).not.empty
   expect(span.parentSpanId).toBeUndefined()
+})
+
+test('Tracing - package.json extraction for executable', async (_) => {
+  const pkgJson = await findExecutablePackageJSON(
+    new URL('./fixtures/monorepo/packages/some-package/js-exec.js', import.meta.url).pathname,
+  )
+
+  expect(pkgJson.name).toEqual('some-package')
+  expect(pkgJson.version).toEqual('2.0.0')
+})
+
+test('Tracing - package.json extraction for symlinked executable', async (_) => {
+  const pkgJson = await findExecutablePackageJSON(
+    new URL('./fixtures/package-with-symlink/package/js-exec.js', import.meta.url).pathname,
+  )
+
+  expect(pkgJson.name).toEqual('package-with-symlink')
+  expect(pkgJson.version).toEqual('1.0.0')
 })
