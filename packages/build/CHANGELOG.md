@@ -105,6 +105,28 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.26.6](https://github.com/netlify/build/compare/build-v29.26.5...build-v29.26.6) (2023-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v10.1.2 ([#5389](https://github.com/netlify/build/issues/5389)) ([01252f5](https://github.com/netlify/build/commit/01252f5f360a02b85a7d33086bbfc48c4c99fffd))
+
+## [29.26.5](https://github.com/netlify/build/compare/build-v29.26.4...build-v29.26.5) (2023-11-14)
+
+
+### Bug Fixes
+
+* **build-error:** add core step id to the build error type and traces ([#5385](https://github.com/netlify/build/issues/5385)) ([db86268](https://github.com/netlify/build/commit/db86268b95c4fe98e1fc353a4457712eb7326d52))
+* **deps:** update dependency @netlify/edge-bundler to v10.1.1 ([#5387](https://github.com/netlify/build/issues/5387)) ([b365eed](https://github.com/netlify/build/commit/b365eed796136c5343a89ee3895e4e9cd282af86))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.9.0 to ^20.10.0
+
 ## [29.26.4](https://github.com/netlify/build/compare/build-v29.26.3...build-v29.26.4) (2023-11-13)
 
 

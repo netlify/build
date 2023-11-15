@@ -1,13 +1,13 @@
 {
   "packages/build-info": "7.11.1",
-  "packages/build": "29.26.4",
+  "packages/build": "29.26.6",
   "packages/cache-utils": "5.1.5",
-  "packages/config": "20.9.0",
+  "packages/config": "20.10.0",
   "packages/framework-info": "9.8.10",
   "packages/functions-utils": "5.2.40",
   "packages/git-utils": "5.1.1",
   "packages/headers-parser": "7.1.2",
-  "packages/js-client": "13.1.10",
+  "packages/js-client": "13.1.11",
   "packages/nock-udp": "3.1.2",
   "packages/redirect-parser": "14.2.0",
   "packages/run-utils": "5.1.1"
