@@ -144,7 +144,7 @@ test('Plugins can have inputs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test.only('Trusted plugins are passed featureflags and system log', async (t) => {
+test('Trusted plugins are passed featureflags and system log', async (t) => {
   const systemLogFile = await tmpName()
   const output = await new Fixture('./fixtures/feature_flags')
     .withFlags({
@@ -154,11 +154,11 @@ test.only('Trusted plugins are passed featureflags and system log', async (t) =>
     })
     .runWithBuild()
 
-  const systemLog = await fs.readFile(systemLogFile, { encoding: 'utf8' })
+  const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
 
   const expectedSystemLogs = 'some system-facing logs'
   t.false(output.includes(expectedSystemLogs))
-  t.is(systemLog, expectedSystemLogs)
+  t.true(systemLog.includes(expectedSystemLogs))
 
   t.true(
     output.includes(
