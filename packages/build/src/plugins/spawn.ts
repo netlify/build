@@ -10,6 +10,7 @@ import {
   logIncompatiblePlugins,
   logLoadingIntegration,
 } from '../log/messages/compatibility.js'
+import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
 import { getEventFromChild } from './ipc.js'
@@ -44,9 +45,6 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
 const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }) {
-  // todo: extract this into a function that's shared with the feature flag impl
-  const isTrustedPlugin = pluginPackageJson?.name?.startsWith('@netlify/')
-
   const childProcess = execaNode(CHILD_MAIN_FILE, [], {
     cwd: buildDir,
     preferLocal: true,
@@ -55,7 +53,8 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,
-    stdio: isTrustedPlugin && systemLogFile ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile] : undefined,
+    stdio:
+      isTrustedPlugin(pluginPackageJson) && systemLogFile ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile] : undefined,
   })
 
   try {
