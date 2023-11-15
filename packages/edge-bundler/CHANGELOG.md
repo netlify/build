@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.2](https://github.com/netlify/edge-bundler/compare/v10.1.1...v10.1.2) (2023-11-15)
+
+
+### Bug Fixes
+
+* prevent global namespace clash for `Buffer` ([#535](https://github.com/netlify/edge-bundler/issues/535)) ([e2a787f](https://github.com/netlify/edge-bundler/commit/e2a787ff3ffee6312eb5c7b0ddf755bb965cb5ab))
+
 ## [10.1.1](https://github.com/netlify/edge-bundler/compare/v10.1.0...v10.1.1) (2023-11-14)
 
 
