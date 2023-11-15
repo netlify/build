@@ -81,16 +81,19 @@ const safelyDetectTypes = async (packageJsonPath: string): Promise<string | unde
 // Workaround for https://github.com/evanw/esbuild/issues/1921.
 const banner = {
   js: `
-  import process from "node:process";
-  import {setImmediate, clearImmediate} from "node:timers";
-  import {Buffer} from "node:buffer";
-
+  import __nfyProcess from "node:process";
+  import {setImmediate as __nfySetImmediate, clearImmediate as __nfyClearImmediate} from "node:timers";
+  import {Buffer as __nfyBuffer} from "node:buffer";
   import {createRequire as ___nfyCreateRequire} from "node:module";
   import {fileURLToPath as ___nfyFileURLToPath} from "node:url";
   import {dirname as ___nfyPathDirname} from "node:path";
   let __filename=___nfyFileURLToPath(import.meta.url);
   let __dirname=___nfyPathDirname(___nfyFileURLToPath(import.meta.url));
   let require=___nfyCreateRequire(import.meta.url);
+  globalThis.process = __nfyProcess;
+  globalThis.setImmediate = __nfySetImmediate;
+  globalThis.clearImmediate = __nfyClearImmediate;
+  globalThis.Buffer = __nfyBuffer;
   `,
 }
 
