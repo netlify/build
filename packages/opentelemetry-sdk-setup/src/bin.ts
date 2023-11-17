@@ -2,7 +2,7 @@ import process from 'node:process'
 
 import argsParser from 'yargs-parser'
 
-import { startTracing, TracingOptions } from './sdk-setup.js'
+import { startTracing, stopTracing, TracingOptions } from './sdk-setup.js'
 import { findExecutablePackageJSON } from './util.js'
 
 const DEFAULT_OTEL_TRACING_PORT = 4317
@@ -29,9 +29,11 @@ const args = argsParser(process.argv) as unknown as {
 
 // Apply the defaults making sure we're not tripped by falsy values
 const options = Object.entries(defaultOptions)
-  .map(([key, value]) => {
-    if (args.tracing[key] !== undefined) return { [key]: args.tracing[key] }
-    return { [key]: value }
+  .map(([key, defaultValue]) => {
+    if (args.tracing !== undefined && args.tracing[key] !== undefined) {
+      return { [key]: args.tracing[key] }
+    }
+    return { [key]: defaultValue }
   })
   .reduce((acc, prop) => ({ ...acc, ...prop }), {}) as TracingOptions
 
@@ -46,5 +48,6 @@ const executablePath = args._[1]
 
 findExecutablePackageJSON(executablePath).then((pkg) => startTracing(options, pkg))
 
-//TODO handle `stopTracing` via `process` event emitter
-process.on('beforeExit', () => console.log('on before exit'))
+//TODO handle `stopTracing` via `process` event emitter for all the other cases such as
+//SIGINT and SIGTERM signals and potential uncaught exceptions
+process.on('beforeExit', async () => await stopTracing())
