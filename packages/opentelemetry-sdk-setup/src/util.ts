@@ -1,13 +1,14 @@
 import { createWriteStream } from 'node:fs'
 import { realpath, readFile } from 'node:fs/promises'
 
-import { diag, DiagLogger } from '@opentelemetry/api'
+import { diag, context, DiagLogger, Context } from '@opentelemetry/api'
 import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
 import { readPackageUp, PackageJson } from 'read-pkg-up'
 
 /**
  * Builds a function for logging data to a provided fileDescriptor (i.e. hidden from
  * the user-facing build logs)
+ * This has been pulled from @netlify/build as a quick way to hook into the system logger
  */
 const getSystemLogger = function (
   debug: boolean,
@@ -99,4 +100,23 @@ export const findExecutablePackageJSON = async function (path: string): Promise<
     // packageJson read failed, we ignore the error and return an empty obj
     return {}
   }
+}
+
+/**
+ * Sets global context to be used when initialising our root span
+ * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
+ */
+export const setGlobalContext = function (ctx: Context) {
+  global['NETLIFY_GLOBAL_CONTEXT'] = ctx
+}
+
+/**
+ * Gets the global context to be used when initialising our root span
+ * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
+ */
+export const getGlobalContext = function (): Context {
+  if (global['NETLIFY_GLOBAL_CONTEXT'] === undefined) {
+    return context.active()
+  }
+  return global['NETLIFY_GLOBAL_CONTEXT']
 }

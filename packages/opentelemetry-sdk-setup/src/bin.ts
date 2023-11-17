@@ -1,9 +1,10 @@
 import process from 'node:process'
 
+import { diag } from '@opentelemetry/api'
 import argsParser from 'yargs-parser'
 
 import { startTracing, stopTracing, TracingOptions } from './sdk-setup.js'
-import { findExecutablePackageJSON } from './util.js'
+import { findExecutablePackageJSON, setGlobalContext } from './util.js'
 
 const DEFAULT_OTEL_TRACING_PORT = 4317
 const DEFAULT_OTEL_ENDPOINT_PROTOCOL = 'http'
@@ -39,7 +40,18 @@ const options = Object.entries(defaultOptions)
 
 const executablePath = args._[1]
 
-findExecutablePackageJSON(executablePath).then((pkg) => startTracing(options, pkg))
+try {
+  const pkg = await findExecutablePackageJSON(executablePath)
+  const rootCtx = await startTracing(options, pkg)
+  if (rootCtx !== undefined) {
+    diag.debug('Setting global root context imported from bagage file')
+    setGlobalContext(rootCtx)
+  } else {
+    diag.debug('Root context undefined, skip setting global root context')
+  }
+} catch {
+  // don't blow up the execution in case something fails
+}
 
 //TODO handle `stopTracing` via `process` event emitter for all the other cases such as
 //SIGINT and SIGTERM signals and potential uncaught exceptions
