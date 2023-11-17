@@ -22,7 +22,7 @@ On the script we're instrumenting we can just rely on `@opentelemetry/api` to cr
   const myInstrumentedFunction = async function() {
     await tracer.startActiveSpan(
       'scanning-files',
-      { attributes: { keysToSearchFor, totalFiles: filePaths.length } },
+      { attributes: { myAttribute: 'foobar' } },
       async (span) => {
         doSomeWork()
         span.end()
@@ -59,7 +59,7 @@ And on the instrumented script:
   const myInstrumentedFunction = async function() {
     await tracer.startActiveSpan(
       'scanning-files',
-      { attributes: { keysToSearchFor, totalFiles: filePaths.length } },
+      { attributes: { myAttribute: 'foobar' } },
       getGlobalContext(),
       async (span) => {
         doSomeWork()
