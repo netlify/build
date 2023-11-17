@@ -104,7 +104,7 @@ test.each(testSpanMatrix)('Tracing spans - $testCase.description', async ({ inpu
   }
 })
 
-test('Tracing - trace id and resource definition', async (_) => {
+test('Tracing - trace id and resource definition', async () => {
   const ctx = await startTracing(
     {
       preloadingEnabled: true,
@@ -129,7 +129,7 @@ test('Tracing - trace id and resource definition', async (_) => {
   expect(span.parentSpanId).toBeUndefined()
 })
 
-test('Tracing - package.json extraction for executable', async (_) => {
+test('Tracing - package.json extraction for executable', async () => {
   const pkgJson = await findExecutablePackageJSON(
     new URL('./fixtures/monorepo/packages/some-package/js-exec.js', import.meta.url).pathname,
   )
@@ -138,7 +138,7 @@ test('Tracing - package.json extraction for executable', async (_) => {
   expect(pkgJson.version).toEqual('2.0.0')
 })
 
-test('Tracing - package.json extraction for symlinked executable', async (_) => {
+test('Tracing - package.json extraction for symlinked executable', async () => {
   const pkgJson = await findExecutablePackageJSON(
     new URL('./fixtures/package-with-symlink/package/js-exec.js', import.meta.url).pathname,
   )
