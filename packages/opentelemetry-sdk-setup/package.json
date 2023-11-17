@@ -4,7 +4,7 @@
   "description": "Opentelemetry SDK setup script",
   "type": "module",
   "bin": {
-    "otel-sdk-setup": "./lib/bin.js"
+    "otel-sdk-setup": "./bin.js"
   },
   "files": [
     "bin.js",
