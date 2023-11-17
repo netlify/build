@@ -37,13 +37,6 @@ const options = Object.entries(defaultOptions)
   })
   .reduce((acc, prop) => ({ ...acc, ...prop }), {}) as TracingOptions
 
-// const options = {
-//   ...args.tracing,
-//   ...defaultOptions,
-//   debug: args.tracing.debug === undefined ? defaultOptions.debug : args.tracing.debug,
-//   preloadingEnabled:
-//     args.tracing.preloadingEnabled === undefined ? defaultOptions.preloadingEnabled : args.tracing.preloadingEnabled,
-// }
 const executablePath = args._[1]
 
 findExecutablePackageJSON(executablePath).then((pkg) => startTracing(options, pkg))

@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs'
 import { realpath, readFile } from 'node:fs/promises'
 
-import { context, diag, DiagLogger } from '@opentelemetry/api'
+import { diag, DiagLogger } from '@opentelemetry/api'
 import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
 import { readPackageUp, PackageJson } from 'read-pkg-up'
 
@@ -62,17 +62,17 @@ export const getOtelLogger = function (
 }
 
 //** Loads the baggage attributes from a baggabe file which follows W3C Baggage specification */
-export const loadBaggageFromFile = async function (baggageFilePath: string) {
-  if (baggageFilePath.length === 0) {
-    diag.warn('Empty baggage file path provided, no context loaded')
-    return context.active()
+export const loadBaggageFromFile = async function (baggageFilePath?: string) {
+  if (baggageFilePath === undefined || baggageFilePath.length === 0) {
+    diag.warn('No baggage file path provided, no context loaded')
+    return {}
   }
   let baggageString: string
   try {
     baggageString = await readFile(baggageFilePath, 'utf-8')
   } catch (error) {
     diag.error(error)
-    return context.active()
+    return {}
   }
   return parseKeyPairsIntoRecord(baggageString)
 }

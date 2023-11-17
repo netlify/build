@@ -1,9 +1,13 @@
+import { writeFile, rm, mkdtemp } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
+
 import { trace, TraceFlags } from '@opentelemetry/api'
 import { Span } from '@opentelemetry/sdk-trace-base'
-import { expect, test, beforeEach } from 'vitest'
+import { expect, test, beforeEach, beforeAll, afterAll } from 'vitest'
 
 import { startTracing, stopTracing } from '../src/sdk-setup.js'
-import { findExecutablePackageJSON } from '../src/util.js'
+import { findExecutablePackageJSON, loadBaggageFromFile } from '../src/util.js'
 
 beforeEach(async () => {
   await stopTracing()
@@ -16,7 +20,7 @@ const spanId = '6e0c63257de34c92'
 const notSampledTraceId = 'd4cda95b652f4a1592b449d5929fda1b'
 const sampledTraceId = 'e1819d7355971fd50456e41dbed71e58'
 
-const testMatrix = [
+const testSpanMatrix = [
   {
     description: 'when sampled, only include the SampleRate attribute by default',
     input: {
@@ -64,43 +68,40 @@ const testMatrix = [
   },
 ]
 
-testMatrix.forEach((testCase) => {
-  test(`Tracing spans - ${testCase.description}`, async (_) => {
-    const { input, expects } = testCase
-    const ctx = await startTracing(
-      {
-        preloadingEnabled: true,
-        httpProtocol: 'http',
-        host: 'localhost',
-        port: 4127,
-        sampleRate: input.sampleRate,
-        traceId: input.traceId,
-        traceFlags: input.traceFlags,
-        parentSpanId: spanId,
-        baggageFilePath: '',
-        apiKey: '-',
-        debug: false,
-      },
-      {
-        name: 'mock-package',
-        version: '1.0.0',
-      },
-    )
+test.each(testSpanMatrix)('Tracing spans - $testCase.description', async ({ input, expects }) => {
+  const ctx = await startTracing(
+    {
+      preloadingEnabled: true,
+      httpProtocol: 'http',
+      host: 'localhost',
+      port: 4127,
+      sampleRate: input.sampleRate,
+      traceId: input.traceId,
+      traceFlags: input.traceFlags,
+      parentSpanId: spanId,
+      baggageFilePath: '',
+      apiKey: '-',
+      debug: false,
+    },
+    {
+      name: 'mock-package',
+      version: '1.0.0',
+    },
+  )
 
-    const tracer = trace.getTracer('test')
-    const span = tracer.startSpan('test', {}, ctx) as Span
+  const tracer = trace.getTracer('test')
+  const span = tracer.startSpan('test', {}, ctx) as Span
 
-    expect(span.spanContext().traceId).toEqual(expects.traceId)
-    expect(span.spanContext().traceFlags).toEqual(expects.traceFlags)
-    expect(span.parentSpanId).toEqual(expects.parentSpanId)
-    expect(span.attributes).toStrictEqual(expects.attributes)
-    if (expects.checkResource) {
-      expect(span.resource.attributes).toContain({
-        'service.name': 'mock-package',
-        'service.version': '1.0.0',
-      })
-    }
-  })
+  expect(span.spanContext().traceId).toEqual(expects.traceId)
+  expect(span.spanContext().traceFlags).toEqual(expects.traceFlags)
+  expect(span.parentSpanId).toEqual(expects.parentSpanId)
+  expect(span.attributes).toStrictEqual(expects.attributes)
+  if (expects.checkResource) {
+    expect(span.resource.attributes).toContain({
+      'service.name': 'mock-package',
+      'service.version': '1.0.0',
+    })
+  }
 })
 
 test('Tracing - trace id and resource definition', async (_) => {
@@ -144,4 +145,76 @@ test('Tracing - package.json extraction for symlinked executable', async (_) => 
 
   expect(pkgJson.name).toEqual('package-with-symlink')
   expect(pkgJson.version).toEqual('1.0.0')
+})
+
+const testMatrixBaggageFile = [
+  {
+    description: 'when baggageFilePath is undefined',
+    input: {
+      baggageFilePath: undefined,
+      baggageFileContent: null,
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is blank',
+    input: {
+      baggageFilePath: '',
+      baggageFileContent: null,
+    },
+    expects: {
+      somefield: undefined,
+      foo: undefined,
+    },
+  },
+  {
+    description: 'when baggageFilePath is set but file is empty',
+    input: {
+      baggageFilePath: 'baggage.dump',
+      baggageFileContent: '',
+    },
+    expects: {},
+  },
+  {
+    description: 'when baggageFilePath is set and has content',
+    input: {
+      baggageFilePath: 'baggage.dump',
+      baggageFileContent: 'somefield=value,foo=bar',
+    },
+    expects: {
+      somefield: 'value',
+      foo: 'bar',
+    },
+  },
+]
+
+let baggagePath: string
+beforeAll(async () => {
+  baggagePath = await mkdtemp(join(tmpdir(), 'baggage-path-'))
+})
+
+afterAll(async () => {
+  await rm(baggagePath, { recursive: true })
+})
+
+test.each(testMatrixBaggageFile)('Tracing baggage loading - $description', async ({ input, expects }) => {
+  // We only want to write the file if it's a non-empty string '', while we still want to test scenario
+  let filePath = input.baggageFilePath
+  if (typeof input.baggageFilePath === 'string' && input.baggageFilePath.length > 0) {
+    filePath = `${baggagePath}/${input.baggageFilePath}`
+    await writeFile(filePath, input.baggageFileContent)
+  }
+
+  const attributes = await loadBaggageFromFile(filePath)
+
+  // When there's no file we test that baggage is not set
+  if (input.baggageFilePath === '' || input.baggageFilePath === undefined) {
+    expect(attributes).toStrictEqual({})
+    return
+  }
+
+  expect(attributes).toStrictEqual(expects)
 })

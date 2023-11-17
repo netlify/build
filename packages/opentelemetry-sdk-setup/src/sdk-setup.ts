@@ -1,10 +1,10 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { trace, diag, context, DiagLogLevel, TraceFlags } from '@opentelemetry/api'
+import { trace, diag, context, propagation, DiagLogLevel, TraceFlags } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
 
-import { getOtelLogger } from './util.js'
+import { getOtelLogger, loadBaggageFromFile } from './util.js'
 
 export type TracingOptions = {
   /** This is a temporary property to signal preloading is enabled, can be replaced with `enabled` once we retire build's internal sdk setup */
@@ -57,13 +57,14 @@ export const startTracing = async function (options: TracingOptions, packageJson
   sdk.start()
 
   // Loads the contents of the passed baggageFilePath into the baggage
-  // const baggageCtx = await loadBaggageFromFile(options.baggageFilePath)
+  const baggageAttributes = await loadBaggageFromFile(options.baggageFilePath)
+  const baggageCtx = setMultiSpanAttributes(baggageAttributes)
 
   const traceFlags = options.traceFlags !== undefined ? options.traceFlags : TraceFlags.NONE
   // Sets the current trace ID and span ID based on the options received
   // this is used as a way to propagate trace context from other processes such as Buildbot
   if (options.traceId !== undefined && options.parentSpanId !== undefined) {
-    return trace.setSpanContext(context.active(), {
+    return trace.setSpanContext(baggageCtx, {
       traceId: options.traceId,
       spanId: options.parentSpanId,
       traceFlags: traceFlags,
@@ -85,4 +86,19 @@ export const stopTracing = async function () {
   } catch (e) {
     diag.error(e)
   }
+}
+
+/** Sets attributes to be propagated across child spans under the current active context
+ * TODO this method will be removed from this package once we move it to a dedicated one to be shared between build,
+ * this setup and any other node module which might use our open telemetry setup
+ * */
+export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
+  const currentBaggage = propagation.getBaggage(context.active())
+  // Create a baggage if there's none
+  let baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
+  Object.entries(attributes).forEach(([key, value]) => {
+    baggage = baggage.setEntry(key, { value })
+  })
+
+  return propagation.setBaggage(context.active(), baggage)
 }
