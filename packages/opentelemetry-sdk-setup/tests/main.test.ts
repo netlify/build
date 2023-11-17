@@ -1,4 +1,5 @@
-import { writeFile, rm, mkdtemp } from 'fs/promises'
+import { writeFile, rm, mkdtemp } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
@@ -131,7 +132,7 @@ test('Tracing - trace id and resource definition', async () => {
 
 test('Tracing - package.json extraction for executable', async () => {
   const pkgJson = await findExecutablePackageJSON(
-    new URL('./fixtures/monorepo/packages/some-package/js-exec.js', import.meta.url).pathname,
+    resolve('tests', 'fixtures', 'monorepo', 'packages', 'some-package', 'js-exec.js'),
   )
 
   expect(pkgJson.name).toEqual('some-package')
@@ -140,7 +141,7 @@ test('Tracing - package.json extraction for executable', async () => {
 
 test('Tracing - package.json extraction for symlinked executable', async () => {
   const pkgJson = await findExecutablePackageJSON(
-    new URL('./fixtures/package-with-symlink/package/js-exec.js', import.meta.url).pathname,
+    resolve('tests', 'fixtures', 'package-with-symlink', 'package', 'js-exec.js'),
   )
 
   expect(pkgJson.name).toEqual('package-with-symlink')
