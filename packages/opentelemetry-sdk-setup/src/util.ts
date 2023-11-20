@@ -42,7 +42,7 @@ const getSystemLogger = function (
 }
 
 /** Given a simple logging function return a `DiagLogger`. Used to setup our system logger as the diag logger.*/
-export const getOtelLogger = function (
+export const getDiagLogger = function (
   debug: boolean,
   /** A system log file descriptor, if non is provided it will be a noop logger */
   systemLogFile?: number,

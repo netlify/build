@@ -4,7 +4,7 @@ import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
 
-import { getOtelLogger, loadBaggageFromFile } from './util.js'
+import { getDiagLogger, loadBaggageFromFile } from './util.js'
 
 export type TracingOptions = {
   /** This is a temporary property to signal preloading is enabled, can be replaced with `enabled` once we retire build's internal sdk setup */
@@ -49,7 +49,7 @@ export const startTracing = async function (options: TracingOptions, packageJson
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
   // in case there's a default console logger already registered (it would log a msg to it)
-  diag.setLogger(getOtelLogger(options.debug, options.systemLogFile), {
+  diag.setLogger(getDiagLogger(options.debug, options.systemLogFile), {
     logLevel: options.debug ? DiagLogLevel.DEBUG : DiagLogLevel.INFO,
     suppressOverrideMessage: true,
   })
