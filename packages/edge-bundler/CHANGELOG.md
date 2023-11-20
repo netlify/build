@@ -1,5 +1,13 @@
 # Changelog
 
+## [10.1.3](https://github.com/netlify/edge-bundler/compare/v10.1.2...v10.1.3) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.19.6 ([#538](https://github.com/netlify/edge-bundler/issues/538)) ([0c0fad6](https://github.com/netlify/edge-bundler/commit/0c0fad6cb397d3edf4da2a48a3623415cf22f400))
+* fix `ModuleGraph` type export ([#537](https://github.com/netlify/edge-bundler/issues/537)) ([0138d13](https://github.com/netlify/edge-bundler/commit/0138d138049e813074442fe3ede86f1faf12342c))
+
 ## [10.1.2](https://github.com/netlify/edge-bundler/compare/v10.1.1...v10.1.2) (2023-11-15)
 
 
