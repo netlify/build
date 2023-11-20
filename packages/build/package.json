@@ -101,6 +101,7 @@
     "p-every": "^2.0.0",
     "p-filter": "^3.0.0",
     "p-locate": "^6.0.0",
+    "p-map": "^6.0.0",
     "p-reduce": "^3.0.0",
     "path-exists": "^5.0.0",
     "path-type": "^5.0.0",
