@@ -1,7 +1,6 @@
 import { readdir, unlink } from 'fs/promises'
 import { join } from 'path'
 
-import type { ModuleGraphJson } from '../../deno/vendor/deno.land/x/deno_graph@0.59.2/types.d.js'
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
 import type { EdgeFunction } from '../edge_function.js'
@@ -11,11 +10,11 @@ import { ImportMap } from '../import_map.js'
 import { getLogger, LogFunction, Logger } from '../logger.js'
 import { vendorNPMSpecifiers } from '../npm_dependencies.js'
 import { ensureLatestTypes } from '../types.js'
+import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 
 import { killProcess, waitForServer } from './util.js'
 
 export type FormatFunction = (name: string) => string
-export type ModuleGraph = ModuleGraphJson
 
 interface PrepareServerOptions {
   basePath: string
@@ -73,7 +72,7 @@ const prepareServer = ({
       await killProcess(processRef.ps)
     }
 
-    let graph: ModuleGraph = {
+    let graph: ModuleGraphJson = {
       roots: [],
       modules: [],
       redirects: {},

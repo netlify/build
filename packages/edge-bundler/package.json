@@ -35,11 +35,11 @@
     "test:ci:vitest": "vitest run --coverage",
     "test:ci:deno": "deno test --allow-all deno",
     "test:integration": "node --experimental-modules test/integration/test.js",
-    "vendor": "deno vendor --force --output deno/vendor https://deno.land/x/deno_graph@0.59.2/types.d.ts https://deno.land/x/eszip@v0.55.2/mod.ts https://deno.land/x/retry@v2.0.0/mod.ts https://deno.land/x/std@0.177.0/path/mod.ts"
+    "vendor": "deno vendor --force --output deno/vendor https://deno.land/x/eszip@v0.55.2/mod.ts https://deno.land/x/retry@v2.0.0/mod.ts https://deno.land/x/std@0.177.0/path/mod.ts"
   },
   "config": {
     "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{node,scripts,.github}/**/*.{js,ts,md,html}\" \"*.{js,ts,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{node,scripts,.github}/**/*.{js,ts,md,yml,json,html}\" \"*.{js,ts,yml,json,html}\" \".*.{js,ts,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{node,scripts,.github}/**/*.{js,ts,md,yml,json,html}\" \"*.{js,ts,yml,json,html}\" \".*.{js,ts,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\" \"!node/vendor/**\""
   },
   "keywords": [],
   "license": "MIT",
