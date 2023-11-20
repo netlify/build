@@ -155,6 +155,7 @@ test('Trusted plugins are passed featureflags and system log', async (t) => {
     })
     .runWithBuild()
 
+  // windows doesn't support the `/dev/fd/` API we're relying on for system logging.
   if (platform !== 'win32') {
     const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
 
