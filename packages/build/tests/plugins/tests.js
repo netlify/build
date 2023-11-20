@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises'
+import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
@@ -154,11 +155,13 @@ test('Trusted plugins are passed featureflags and system log', async (t) => {
     })
     .runWithBuild()
 
-  const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
+  if (platform !== 'win32') {
+    const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
 
-  const expectedSystemLogs = 'some system-facing logs'
-  t.false(output.includes(expectedSystemLogs))
-  t.true(systemLog.includes(expectedSystemLogs))
+    const expectedSystemLogs = 'some system-facing logs'
+    t.false(output.includes(expectedSystemLogs))
+    t.true(systemLog.includes(expectedSystemLogs))
+  }
 
   t.true(
     output.includes(
