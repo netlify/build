@@ -21,4 +21,5 @@ export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TI
   constants: NetlifyPluginConstants
   utils: NetlifyPluginUtils
   featureFlags?: Record<string, unknown>
+  systemLog?(message: string): void
 }

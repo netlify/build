@@ -7,6 +7,8 @@ import { getSuccessStatus } from '../status/success.js'
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
+export const isTrustedPlugin = (pluginPackageJson) => pluginPackageJson?.name?.startsWith('@netlify/')
+
 // Fire a plugin step
 export const firePluginStep = async function ({
   event,
@@ -33,8 +35,6 @@ export const firePluginStep = async function ({
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
 
-  const isTrustedPlugin = pluginPackageJson?.name?.startsWith('@netlify/')
-
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
@@ -48,7 +48,7 @@ export const firePluginStep = async function ({
         event,
         error,
         envChanges,
-        featureFlags: isTrustedPlugin ? featureFlags : undefined,
+        featureFlags: isTrustedPlugin(pluginPackageJson) ? featureFlags : undefined,
         netlifyConfig,
         constants,
       },
