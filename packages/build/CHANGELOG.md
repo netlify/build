@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.27.0](https://github.com/netlify/build/compare/build-v29.26.6...build-v29.27.0) (2023-11-20)
+
+
+### Features
+
+* supply system log to trusted plugins via FD ([#5391](https://github.com/netlify/build/issues/5391)) ([8fee92b](https://github.com/netlify/build/commit/8fee92b2597ab3841d1b6a41d29c96a7961fe48a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v10.1.3 ([#5397](https://github.com/netlify/build/issues/5397)) ([1da1bbe](https://github.com/netlify/build/commit/1da1bbe7aadef0b2c3f2ca25b75ee073a6790f8a))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.26.2 ([#5399](https://github.com/netlify/build/issues/5399)) ([e5e567e](https://github.com/netlify/build/commit/e5e567ec4c6c8ebcd17dd371bb6b112f4cc65e50))
+* skip scanning .cache for secrets ([#5386](https://github.com/netlify/build/issues/5386)) ([97fd98c](https://github.com/netlify/build/commit/97fd98c98c1a6d0ecbca8a5e5ca14867d3e6053e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.40 to ^5.2.41
+
 ## [29.26.6](https://github.com/netlify/build/compare/build-v29.26.5...build-v29.26.6) (2023-11-15)
 
 
