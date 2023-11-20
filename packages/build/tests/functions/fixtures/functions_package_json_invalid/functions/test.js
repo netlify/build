@@ -1,1 +1,1 @@
-export { default } from 'does-not-exist'
+export { foo } from 'does-not-exist'
