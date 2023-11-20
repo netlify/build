@@ -32,6 +32,10 @@ interface NetlifyPlugin {
   inputs: PluginInputs
 }
 
+interface ImagesConfig {
+  remote_images: string[]
+}
+
 /* eslint-disable camelcase -- some properties are named in snake case in this API */
 
 interface NetlifyConfig {
@@ -53,6 +57,10 @@ interface NetlifyConfig {
   functions: Functions
   build: Build
   plugins: readonly NetlifyPlugin[]
+  /**
+   * object with options for image transforms
+   */
+  images: ImagesConfig
 }
 
 /* eslint-enable camelcase */
