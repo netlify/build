@@ -87,7 +87,7 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
  * @returns string[] of relative paths from base of files that should be searched
  */
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
-  const omitPathsAlways = ['.git/']
+  const omitPathsAlways = ['.git/', '.cache/']
 
   // node modules is dense and is only useful to scan if the repo itself commits these
   // files. As a simple check to understand if the repo would commit these files, we expect
