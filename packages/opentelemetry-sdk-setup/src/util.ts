@@ -62,7 +62,7 @@ export const getOtelLogger = function (
   }
 }
 
-//** Loads the baggage attributes from a baggabe file which follows W3C Baggage specification */
+//** Loads the baggage attributes from a baggage file which follows W3C Baggage specification */
 export const loadBaggageFromFile = async function (baggageFilePath?: string) {
   if (baggageFilePath === undefined || baggageFilePath.length === 0) {
     diag.warn('No baggage file path provided, no context loaded')
