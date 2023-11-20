@@ -10,6 +10,7 @@ import {
   logIncompatiblePlugins,
   logLoadingIntegration,
 } from '../log/messages/compatibility.js'
+import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
 import { getEventFromChild } from './ipc.js'
@@ -23,7 +24,7 @@ const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug, quiet }) {
+const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug, quiet, systemLogFile }) {
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
     logLoadingPlugins(logs, pluginsOptions, debug)
@@ -34,14 +35,16 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
-    pluginsOptions.map(({ pluginDir, nodePath }) => startPlugin({ pluginDir, nodePath, buildDir, childEnv })),
+    pluginsOptions.map(({ pluginDir, nodePath, pluginPackageJson }) =>
+      startPlugin({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }),
+    ),
   )
   return { childProcesses }
 }
 
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
-const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
+const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }) {
   const childProcess = execaNode(CHILD_MAIN_FILE, [], {
     cwd: buildDir,
     preferLocal: true,
@@ -50,6 +53,8 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,
+    stdio:
+      isTrustedPlugin(pluginPackageJson) && systemLogFile ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile] : undefined,
   })
 
   try {
