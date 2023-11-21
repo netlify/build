@@ -143,6 +143,14 @@
     "tsd": "^0.28.0",
     "yarn": "^1.22.4"
   },
+  "peerDependencies": {
+    "@netlify/opentelemetry-sdk-setup": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@netlify/opentelemetry-sdk-setup": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": "^14.16.0 || >=16.0.0"
   }
