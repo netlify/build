@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.28.0](https://github.com/netlify/build/compare/build-v29.27.0...build-v29.28.0) (2023-11-21)
+
+
+### Features
+
+* images on netlify config type ([#5393](https://github.com/netlify/build/issues/5393)) ([e49cd58](https://github.com/netlify/build/commit/e49cd584ad7d92cd485d88cb5b330b050bcc13f3))
+
 ## [29.27.0](https://github.com/netlify/build/compare/build-v29.26.6...build-v29.27.0) (2023-11-20)
 
 
