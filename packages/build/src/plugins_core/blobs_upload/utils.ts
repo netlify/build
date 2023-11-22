@@ -60,6 +60,10 @@ async function readMetadata(metadataPath: string): Promise<Record<string, string
     throw err
   }
 
-  const metadata = JSON.parse(metadataFile)
-  return metadata
+  try {
+    return JSON.parse(metadataFile)
+  } catch (err) {
+    // Normalize the error message
+    throw new Error(`Error parsing metadata file '${metadataPath}'`)
+  }
 }

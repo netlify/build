@@ -38,7 +38,7 @@ const coreStep = async function ({
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
 
-    const error = new Error(`Failed while uploading blobs to deploy store.`)
+    const error = new Error(`Failed while uploading blobs to deploy store`)
     addErrorInfo(error, { type: 'blobsUploadError' })
     throw error
   }
