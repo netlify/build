@@ -101,6 +101,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
     tracing: {
       enabled: false,
+      preloadingEnabled: false,
       apiKey: '-',
       // defaults to always sample
       sampleRate: 1,
