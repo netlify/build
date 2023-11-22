@@ -14,8 +14,11 @@ const defaultOptions: TracingOptions = {
   httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
   host: 'locahost',
   port: DEFAULT_OTEL_TRACING_PORT,
+  // defaults to always sample
   sampleRate: 1,
   baggageFilePath: '',
+  // tracing.apiKey defaults to '-' else we'll get warning logs if not using
+  // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
   apiKey: '-',
   parentSpanId: '',
   traceId: '',
@@ -40,19 +43,25 @@ const options = Object.entries(defaultOptions)
 
 const executablePath = args._[1]
 
-try {
-  const pkg = await findExecutablePackageJSON(executablePath)
-  const rootCtx = await startTracing(options, pkg)
-  if (rootCtx !== undefined) {
-    diag.debug('Setting global root context imported from bagage file')
-    setGlobalContext(rootCtx)
-  } else {
-    diag.debug('Root context undefined, skip setting global root context')
+const run = async function () {
+  try {
+    // If tracing is disabled just skip the initialisation altogether
+    if (!options.preloadingEnabled) return
+    const pkg = await findExecutablePackageJSON(executablePath)
+    const rootCtx = await startTracing(options, pkg)
+    if (rootCtx !== undefined) {
+      diag.debug('Setting global root context imported from bagage file')
+      setGlobalContext(rootCtx)
+    } else {
+      diag.debug('Root context undefined, skip setting global root context')
+    }
+  } catch {
+    // don't blow up the execution in case something fails
   }
-} catch {
-  // don't blow up the execution in case something fails
 }
 
 //TODO handle `stopTracing` via `process` event emitter for all the other cases such as
 //SIGINT and SIGTERM signals and potential uncaught exceptions
 process.on('beforeExit', async () => await stopTracing())
+
+await run()
