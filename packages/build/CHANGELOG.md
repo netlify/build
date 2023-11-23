@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.28.1](https://github.com/netlify/build/compare/build-v29.28.0...build-v29.28.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **build:** add otel sdk setup as an optional peer dependency ([#5402](https://github.com/netlify/build/issues/5402)) ([5db644b](https://github.com/netlify/build/commit/5db644b60ed204bf9274e0c561479750378d71f0))
+* **build:** add support for ntl otel sdk setup on preloading ([#5407](https://github.com/netlify/build/issues/5407)) ([4beb4df](https://github.com/netlify/build/commit/4beb4dfad22d91814c318b89abdcccc98e3292d0))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.26.3 ([#5405](https://github.com/netlify/build/issues/5405)) ([21239dc](https://github.com/netlify/build/commit/21239dca368001072a3cead8805a3c641f744fd5))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.26.4 ([#5409](https://github.com/netlify/build/issues/5409)) ([5a41df0](https://github.com/netlify/build/commit/5a41df0762a25e24239cdfc1c85e1ecfd9ce7edb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.41 to ^5.2.42
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.0 to ^1.0.1
+
 ## [29.28.0](https://github.com/netlify/build/compare/build-v29.27.0...build-v29.28.0) (2023-11-21)
 
 
