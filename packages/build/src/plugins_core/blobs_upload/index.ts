@@ -1,5 +1,8 @@
+import { version as nodeVersion } from 'node:process'
+
 import { getDeployStore } from '@netlify/blobs'
 import pMap from 'p-map'
+import semver from 'semver'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log, logError } from '../../log/logger.js'
@@ -13,7 +16,18 @@ const coreStep = async function ({
   buildDir,
   constants: { PUBLISH_DIR, SITE_ID, NETLIFY_API_TOKEN, API_URL },
 }) {
-  const blobStore = getDeployStore({ siteID: SITE_ID, deployID: deployId, token: NETLIFY_API_TOKEN, apiURL: API_URL })
+  const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
+    siteID: SITE_ID,
+    deployID: deployId,
+    token: NETLIFY_API_TOKEN,
+    apiURL: API_URL,
+  }
+  if (semver.lt(nodeVersion, '18.0.0')) {
+    const nodeFetch = await import('node-fetch')
+    storeOpts.fetch = nodeFetch.default
+  }
+
+  const blobStore = getDeployStore(storeOpts)
   const blobsDir = getBlobsDir({ buildDir, publishDir: PUBLISH_DIR })
   const keys = await getKeysToUpload(blobsDir)
 

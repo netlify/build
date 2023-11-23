@@ -1,7 +1,10 @@
+import { version as nodeVersion } from 'node:process'
+
 import { BlobsServer, getDeployStore } from '@netlify/blobs'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
+import semver from 'semver'
 import tmp from 'tmp-promise'
 
 const TOKEN = 'test'
@@ -62,7 +65,13 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
 
   t.is(t.context.blobRequestCount.set, 3)
 
-  const store = getDeployStore({ deployID: 'abc123', siteID: 'test', token: TOKEN })
+  const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
+  if (semver.lt(nodeVersion, '18.0.0')) {
+    const nodeFetch = await import('node-fetch')
+    storeOpts.fetch = nodeFetch.default
+  }
+
+  const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
   t.is(blob1.data, 'some value')
