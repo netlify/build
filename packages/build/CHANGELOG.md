@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.28.2](https://github.com/netlify/build/compare/build-v29.28.1...build-v29.28.2) (2023-11-23)
+
+
+### Bug Fixes
+
+* **build:** add trusted plugin error type ([#5408](https://github.com/netlify/build/issues/5408)) ([2ea3ea0](https://github.com/netlify/build/commit/2ea3ea01bd00ae01b46395fba76fe0817639e545))
+
 ## [29.28.1](https://github.com/netlify/build/compare/build-v29.28.0...build-v29.28.1) (2023-11-23)
 
 
