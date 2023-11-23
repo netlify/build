@@ -7,7 +7,7 @@ import { getSuccessStatus } from '../status/success.js'
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
-export const isTrustedPlugin = (pluginPackageJson) => pluginPackageJson?.name?.startsWith('@netlify/')
+export const isTrustedPlugin = (packageName) => packageName?.startsWith('@netlify/')
 
 // Fire a plugin step
 export const firePluginStep = async function ({
@@ -48,7 +48,7 @@ export const firePluginStep = async function ({
         event,
         error,
         envChanges,
-        featureFlags: isTrustedPlugin(pluginPackageJson) ? featureFlags : undefined,
+        featureFlags: isTrustedPlugin(pluginPackageJson?.name) ? featureFlags : undefined,
         netlifyConfig,
         constants,
       },
@@ -83,7 +83,7 @@ export const firePluginStep = async function ({
       newStatus,
     }
   } catch (newError) {
-    const errorType = getPluginErrorType(newError, loadedFrom)
+    const errorType = getPluginErrorType(newError, loadedFrom, packageName)
     addErrorInfo(newError, {
       ...errorType,
       plugin: { pluginPackageJson, packageName },

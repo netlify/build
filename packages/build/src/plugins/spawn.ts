@@ -56,7 +56,9 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     env: childEnv,
     extendEnv: false,
     stdio:
-      isTrustedPlugin(pluginPackageJson) && systemLogFile ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile] : undefined,
+      isTrustedPlugin(pluginPackageJson?.name) && systemLogFile
+        ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile]
+        : undefined,
   })
 
   try {

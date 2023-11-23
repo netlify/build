@@ -1,7 +1,14 @@
-// Serialize an error object to `statuses` properties
+import type { BuildError } from '../types.js'
+
+type ErrorState = 'failed_build' | 'failed_plugin' | 'canceled_build'
+
+/* Serialize an error object to `statuses` properties */
 export const serializeErrorStatus = function ({
   fullErrorInfo: { title, message, locationInfo, errorProps, errorMetadata },
   state,
+}: {
+  fullErrorInfo: BuildError
+  state: ErrorState
 }) {
   const text = getText({ locationInfo, errorProps })
   return { state, title, summary: message, text, extraData: errorMetadata }
@@ -17,7 +24,7 @@ const getText = function ({ locationInfo, errorProps }) {
   return parts.join('\n\n')
 }
 
-const getErrorProps = function (errorProps) {
+const getErrorProps = function (errorProps: string | undefined) {
   if (errorProps === undefined) {
     return
   }

@@ -256,13 +256,15 @@ const ErrorTypeMap = {
   pluginInternal: 'pluginInternal',
   ipc: 'ipc',
   corePlugin: 'corePlugin',
+  trustedPlugin: 'trustedPlugin',
   coreStep: 'coreStep',
   api: 'api',
   exception: 'exception',
   telemetry: 'telemetry',
 } as const
 
-type ErrorTypes = keyof typeof ErrorTypeMap
+/* Error classes for build executions */
+export type ErrorTypes = keyof typeof ErrorTypeMap
 
 /**
  * List of error types, and their related properties
@@ -407,6 +409,17 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Core plugin internal error
    */
   corePlugin: {
+    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    stackType: 'stack',
+    showErrorProps: true,
+    rawStack: true,
+    locationType: 'buildFail',
+    severity: 'error',
+  },
+  /**
+   * Trusted plugin internal error (all of our `@netlify/*` plugins).
+   */
+  trustedPlugin: {
     title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,

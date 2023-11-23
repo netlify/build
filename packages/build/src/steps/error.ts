@@ -1,17 +1,24 @@
+import type { ErrorParam } from '../core/types.js'
 import { cancelBuild } from '../error/cancel.js'
 import { handleBuildError } from '../error/handle.js'
 import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
 import { serializeErrorStatus } from '../error/parse/serialize_status.js'
+import { BuildError, isPluginLocation, PluginLocation, ErrorTypes } from '../error/types.js'
 import { isSoftFailEvent } from '../plugins/events.js'
 import { addErrorToActiveSpan, addEventToActiveSpan } from '../tracing/main.js'
 
-// Handle build command errors and plugin errors:
-//  - usually, propagate the error to make the build stop.
-//  - `utils.build.cancelBuild()` also cancels the build by calling the API
-//  - `utils.build.failPlugin()` or post-deploy errors do not make the build
-//    stop, but are still reported, and prevent future events from the same
-//    plugin.
-// This also computes error statuses that are sent to the API.
+import { isTrustedPlugin } from "./plugin.js"
+
+
+/**
+ * Handle build command errors and plugin errors:
+ *  - usually, propagate the error to make the build stop.
+ *  - `utils.build.cancelBuild()` also cancels the build by calling the API
+ *  - `utils.build.failPlugin()` or post-deploy errors do not make the build
+ *    stop, but are still reported, and prevent future events from the same
+ *    plugin.
+ * This also computes error statuses that are sent to the API.
+ */
 export const handleStepError = function ({
   event,
   newError,
@@ -33,12 +40,7 @@ export const handleStepError = function ({
   }
 
   const fullErrorInfo = getFullErrorInfo({ error: newError, colors: false, debug })
-  const {
-    errorInfo: { location: { packageName } = {} },
-    message,
-    title,
-    type,
-  } = fullErrorInfo
+  const { errorInfo, message, title, type } = fullErrorInfo
 
   if (type === 'failPlugin' || isSoftFailEvent(event)) {
     return handleFailPlugin({
@@ -58,7 +60,9 @@ export const handleStepError = function ({
     const cancellationAttributes = {
       'build.cancellation.title': title,
       'build.cancellation.message': message,
-      'build.cancellation.packageName': packageName,
+    }
+    if (isPluginLocation(errorInfo.location)) {
+      cancellationAttributes['build.cancellation.packageName'] = errorInfo.location.packageName
     }
     addEventToActiveSpan('build.cancelled', cancellationAttributes)
     return handleCancelBuild({ fullErrorInfo, newError, api, deployId })
@@ -67,12 +71,14 @@ export const handleStepError = function ({
   return handleFailBuild({ fullErrorInfo, newError })
 }
 
-// On `utils.build.failPlugin()` or during `onSuccess` or `onEnd`
+type failPluginArgs = {
+  newError: Error
+  fullErrorInfo: BuildError
+} & ErrorParam
+
+/* On `utils.build.failPlugin()` or during `onSuccess` or `onEnd` */
 const handleFailPlugin = async function ({
   fullErrorInfo,
-  fullErrorInfo: {
-    errorInfo: { location: { packageName } = {} },
-  },
   newError,
   childEnv,
   mode,
@@ -81,27 +87,38 @@ const handleFailPlugin = async function ({
   logs,
   debug,
   testOpts,
-}) {
+}: failPluginArgs) {
   const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_plugin' })
   await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
-  return { failedPlugin: [packageName], newStatus }
+  // TODO we should probably use type guard here, but due to the way we build these errorInfo objects I'm not 100%
+  // confident we have all the properties currently required by the type
+  const location = fullErrorInfo.errorInfo.location as PluginLocation
+  return { failedPlugin: [location.packageName], newStatus }
 }
 
-// On `utils.build.cancelBuild()`
+/* On `utils.build.cancelBuild()` */
 const handleCancelBuild = async function ({ fullErrorInfo, newError, api, deployId }) {
   const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'canceled_build' })
   await cancelBuild({ api, deployId })
   return { newError, newStatus }
 }
 
-// On `utils.build.failBuild()` or uncaught exception
+/* On `utils.build.failBuild()` or uncaught exception */
 const handleFailBuild = function ({ fullErrorInfo, newError }) {
   const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_build' })
   return { newError, newStatus }
 }
 
-// Unlike community plugins, core plugin bugs should be handled as system errors
-export const getPluginErrorType = function (error, loadedFrom) {
+/* Unlike community plugins, core plugin and trusted plugin bugs should be handled as system errors */
+export const getPluginErrorType = function (
+  error: Error,
+  loadedFrom: string,
+  packageName?: string,
+): { type?: ErrorTypes } {
+  console.error(error)
+  if (isTrustedPluginBug(error, packageName)) {
+    return { type: 'trustedPlugin' }
+  }
   if (!isCorePluginBug(error, loadedFrom)) {
     return {}
   }
@@ -109,7 +126,12 @@ export const getPluginErrorType = function (error, loadedFrom) {
   return { type: 'corePlugin' }
 }
 
-const isCorePluginBug = function (error, loadedFrom) {
+const isCorePluginBug = function (error: Error, loadedFrom: string) {
   const { severity } = parseErrorInfo(error)
   return severity === 'warning' && loadedFrom === 'core'
+}
+
+const isTrustedPluginBug = function (error: Error, packageName?: string) {
+  const { severity } = parseErrorInfo(error)
+  return severity === 'warning' && isTrustedPlugin(packageName)
 }
