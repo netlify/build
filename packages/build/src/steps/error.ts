@@ -114,7 +114,6 @@ export const getPluginErrorType = function (
   loadedFrom: string,
   packageName?: string,
 ): { type?: ErrorTypes } {
-  console.error(error)
   if (isTrustedPluginBug(error, packageName)) {
     return { type: 'trustedPlugin' }
   }
