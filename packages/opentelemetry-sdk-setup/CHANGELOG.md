@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.0...opentelemetry-sdk-setup-v1.0.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **otel-sdk-setup:** skip sdk setup entirely if disabled ([#5406](https://github.com/netlify/build/issues/5406)) ([50e4c37](https://github.com/netlify/build/commit/50e4c37b1c1720829d3fe87278d06534e08d6269))
+
 ## 1.0.0 (2023-11-21)
 
 
