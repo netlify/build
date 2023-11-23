@@ -6,8 +6,9 @@ import semver from 'semver'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log, logError } from '../../log/logger.js'
+import { getBlobsDir } from '../../utils/blobs.js'
 
-import { getKeysToUpload, getBlobsDir, getFileWithMetadata, anyBlobsToUpload } from './utils.js'
+import { getKeysToUpload, getFileWithMetadata, anyBlobsToUpload } from './utils.js'
 
 const coreStep = async function ({
   debug,

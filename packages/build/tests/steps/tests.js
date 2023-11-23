@@ -1,3 +1,5 @@
+import fsPromises from 'node:fs/promises'
+import path from 'path'
 import { platform } from 'process'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
@@ -40,4 +42,20 @@ test('build.command from UI settings', async (t) => {
 test('Invalid package.json does not make build fail', async (t) => {
   const output = await new Fixture('./fixtures/invalid_package_json').runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('Build removes blobs directory before starting if there is a build command', async (t) => {
+  const fixture = await new Fixture('./fixtures/with_preexisting_blobs').withCopyRoot({ git: false })
+
+  const { success } = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+    })
+    .runBuildProgrammatic()
+
+  t.true(success)
+
+  const blobsDir = path.join(fixture.repositoryRoot, 'out', '.netlify', 'blobs', 'deploy')
+
+  await t.throwsAsync(fsPromises.access(blobsDir))
 })

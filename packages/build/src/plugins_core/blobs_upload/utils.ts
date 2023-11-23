@@ -3,13 +3,10 @@ import path from 'node:path'
 
 import { fdir } from 'fdir'
 
-const BLOBS_PATH = '.netlify/blobs/deploy'
+import { getBlobsDir } from '../../utils/blobs.js'
+
 const METADATA_PREFIX = '$'
 const METADATA_SUFFIX = '.json'
-
-export const getBlobsDir = function ({ buildDir, publishDir }) {
-  return path.resolve(buildDir, publishDir, BLOBS_PATH)
-}
 
 export const anyBlobsToUpload = async function ({ buildDir, publishDir }) {
   const blobsDir = getBlobsDir({ buildDir, publishDir })
