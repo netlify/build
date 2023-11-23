@@ -25,7 +25,6 @@ test.beforeEach(async (t) => {
   process.env.NETLIFY_BLOBS_CONTEXT = Buffer.from(
     JSON.stringify({
       edgeURL: `http://localhost:${port}`,
-      token: TOKEN, // This is for tests, during build this is passed as argument
     }),
   ).toString('base64')
 })
@@ -36,7 +35,10 @@ test.afterEach.always(async (t) => {
 })
 
 test("blobs upload, don't run when deploy id is provided and no files in directory", async (t) => {
-  const output = await new Fixture('./fixtures/src_empty').withFlags({ deployId: 'abc123' }).runWithBuild()
+  const output = await new Fixture('./fixtures/src_empty')
+    // Passing `offline: true` to avoid fetching the configuration from the API
+    .withFlags({ deployId: 'abc123', token: TOKEN, offline: true })
+    .runWithBuild()
 
   t.is(t.context.blobRequestCount.set, 0)
 
@@ -44,7 +46,9 @@ test("blobs upload, don't run when deploy id is provided and no files in directo
 })
 
 test("blobs upload, don't run when there are files but deploy id is not provided", async (t) => {
-  const output = await new Fixture('./fixtures/src_with_blobs').withFlags({}).runWithBuild()
+  const output = await new Fixture('./fixtures/src_with_blobs')
+    .withFlags({ token: TOKEN, offline: true })
+    .runWithBuild()
 
   t.is(t.context.blobRequestCount.set, 0)
 
@@ -53,12 +57,12 @@ test("blobs upload, don't run when there are files but deploy id is not provided
 
 test.serial('blobs upload, uploads files to deploy store', async (t) => {
   const output = await new Fixture('./fixtures/src_with_blobs')
-    .withFlags({ deployId: 'abc123', siteId: 'test' })
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true })
     .runWithBuild()
 
   t.is(t.context.blobRequestCount.set, 3)
 
-  const store = getDeployStore({ deployID: 'abc123', siteID: 'test' })
+  const store = getDeployStore({ deployID: 'abc123', siteID: 'test', token: TOKEN })
 
   const blob1 = await store.getWithMetadata('something.txt')
   t.is(blob1.data, 'some value')
@@ -77,7 +81,7 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
 
 test.serial('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
   const output = await new Fixture('./fixtures/src_with_malformed_blobs_metadata')
-    .withFlags({ deployId: 'abc123', siteId: 'test' })
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true })
     .runWithBuild()
 
   t.is(t.context.blobRequestCount.set, 0)
