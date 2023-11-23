@@ -50,6 +50,8 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     preferLocal: true,
     localDir: pluginDir,
     nodePath,
+    // make sure we don't pass build's node cli properties for now (e.g. --import)
+    nodeOptions: [],
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,

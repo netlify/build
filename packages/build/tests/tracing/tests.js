@@ -15,6 +15,7 @@ import {
   stopTracing,
   loadBaggageFromFile,
   addErrorToActiveSpan,
+  setGlobalContext,
 } from '../../lib/tracing/main.js'
 
 test('Tracing set multi span attributes', async (t) => {
@@ -146,13 +147,13 @@ const testMatrix = [
   },
 ]
 
+const noopLogger = () => {}
+
 test.beforeEach('cleanup tracing', async () => {
   await stopTracing()
 })
 
 testMatrix.forEach((testCase) => {
-  const noopLogger = () => {}
-
   // Tests need to run serially since the tracing context is global state
   test.serial(`Tracing spans - ${testCase.description}`, async (t) => {
     const { input, expects } = testCase
@@ -255,4 +256,13 @@ test('addErrorToActiveSpan - noop when error severity none', async (t) => {
     t.is(span.status.code, SpanStatusCode.UNSET)
     t.is(span.events.length, 0)
   })
+})
+
+test('startTracing - uses global context if preloading is enabled', async (t) => {
+  const rootCtx = context.active()
+  const key = Symbol('some-key')
+  const newCtx = rootCtx.setValue(key, 'my-custom-value')
+  setGlobalContext(newCtx)
+  const tracingInitCtx = startTracing({ preloadingEnabled: true }, noopLogger)
+  t.is(tracingInitCtx.getValue(key), 'my-custom-value')
 })

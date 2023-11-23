@@ -204,6 +204,11 @@ Default: false`,
     describe: 'Enable distributed tracing for build',
     hidden: true,
   },
+  'tracing.preloadingEnabled': {
+    boolean: true,
+    describe: 'Enable distributed tracing for build via module preloading, to be removed once fully rolled out',
+    hidden: true,
+  },
   'tracing.apiKey': {
     string: true,
     describe: 'API Key for the tracing backend provider',

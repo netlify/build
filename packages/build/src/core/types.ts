@@ -85,6 +85,8 @@ export type ErrorParam = {
 
 export type TracingOptions = {
   enabled: boolean
+  /* Tracing is enabled via module preloading, to be removed once we fully rolled it out  */
+  preloadingEnabled: boolean
   httpProtocol: string
   host: string
   port: number

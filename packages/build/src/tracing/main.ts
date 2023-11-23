@@ -1,7 +1,16 @@
 import { readFileSync } from 'node:fs'
 
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { context, trace, propagation, SpanStatusCode, diag, DiagLogLevel, DiagLogger } from '@opentelemetry/api'
+import {
+  context,
+  trace,
+  propagation,
+  SpanStatusCode,
+  diag,
+  DiagLogLevel,
+  DiagLogger,
+  Context,
+} from '@opentelemetry/api'
 import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
@@ -29,8 +38,32 @@ const getOtelLogger = function (logger: (...args: any[]) => void): DiagLogger {
   }
 }
 
+/**
+ * Gets the global context to be used when initialising our root span
+ * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
+ */
+export const getGlobalContext = function (): Context {
+  if (global['NETLIFY_GLOBAL_CONTEXT'] === undefined) {
+    return context.active()
+  }
+  return global['NETLIFY_GLOBAL_CONTEXT']
+}
+
+/**
+ * Sets global context to be used when initialising our root span
+ * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
+ */
+export const setGlobalContext = function (ctx: Context) {
+  global['NETLIFY_GLOBAL_CONTEXT'] = ctx
+}
+
 /** Starts the tracing SDK, if there's already a tracing service this will be a no-op */
 export const startTracing = function (options: TracingOptions, logger: (...args: any[]) => void) {
+  // As we roll out the new way to initialise the SDK, if we detect preloading is enabled,
+  // it means we're using `@netlify/opentelemetry-sdk-setup` so we must get the initial context from the global store
+  if (options.preloadingEnabled) {
+    return getGlobalContext()
+  }
   if (!options.enabled) return
   if (sdk) return
 
