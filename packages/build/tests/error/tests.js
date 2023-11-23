@@ -214,3 +214,15 @@ testMatrixAttributeTracing.forEach(({ description, input, expects }) => {
     t.deepEqual(attributes, expects)
   })
 })
+
+test('Trusted plugins - internal errors are system errors', async (t) => {
+  const fixture = new Fixture('./fixtures/trusted_plugin_uncaught')
+  const { severityCode } = await fixture.runBuildProgrammatic()
+  t.deepEqual(severityCode, 4)
+})
+
+test('Trusted plugins - controlled failures are user errors', async (t) => {
+  const fixture = new Fixture('./fixtures/trusted_plugin')
+  const { severityCode } = await fixture.runBuildProgrammatic()
+  t.deepEqual(severityCode, 2)
+})
