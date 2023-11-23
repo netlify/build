@@ -1,14 +1,13 @@
-import type { ErrorParam } from '../core/types.js'
 import { cancelBuild } from '../error/cancel.js'
 import { handleBuildError } from '../error/handle.js'
 import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
-import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { BuildError, isPluginLocation, PluginLocation, ErrorTypes } from '../error/types.js'
+import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { isSoftFailEvent } from '../plugins/events.js'
 import { addErrorToActiveSpan, addEventToActiveSpan } from '../tracing/main.js'
+import { isTrustedPlugin } from '../steps/plugin.js'
 
-import { isTrustedPlugin } from "./plugin.js"
-
+import type { ErrorParam } from '../core/types.js'
 
 /**
  * Handle build command errors and plugin errors:
