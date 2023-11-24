@@ -14,6 +14,7 @@ const coreStep = async function ({
   logs,
   deployId,
   buildDir,
+  quiet,
   constants: { PUBLISH_DIR, SITE_ID, NETLIFY_API_TOKEN, API_URL },
 }) {
   const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
@@ -33,14 +34,18 @@ const coreStep = async function ({
 
   // We checked earlier, but let's be extra safe
   if (keys.length === 0) {
-    log(logs, 'No blobs to upload to deploy store.')
+    if (!quiet) {
+      log(logs, 'No blobs to upload to deploy store.')
+    }
     return {}
   }
 
-  log(logs, `Uploading ${keys.length} blobs to deploy store...`)
+  if (!quiet) {
+    log(logs, `Uploading ${keys.length} blobs to deploy store...`)
+  }
 
   const uploadBlob = async (key) => {
-    if (debug) {
+    if (debug && !quiet) {
       log(logs, `- Uploading blob ${key}`, { indent: true })
     }
     const { data, metadata } = await getFileWithMetadata(blobsDir, key)
@@ -57,7 +62,9 @@ const coreStep = async function ({
     throw error
   }
 
-  log(logs, `Done uploading blobs to deploy store.`)
+  if (!quiet) {
+    log(logs, `Done uploading blobs to deploy store.`)
+  }
 
   return {}
 }
