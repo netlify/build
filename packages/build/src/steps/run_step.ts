@@ -97,6 +97,7 @@ export const runStep = async function ({
       buildDir,
       saveConfig,
       explicitSecretKeys,
+      deployId,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
     if (!shouldRun) {
@@ -161,6 +162,7 @@ export const runStep = async function ({
       userNodeVersion,
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
+      deployId,
     })
 
     const newValues = await getStepReturn({
@@ -239,6 +241,7 @@ const shouldRunStep = async function ({
   buildDir,
   saveConfig,
   explicitSecretKeys,
+  deployId,
 }) {
   if (
     failedPlugins.includes(packageName) ||
@@ -251,6 +254,7 @@ const shouldRunStep = async function ({
         netlifyConfig,
         saveConfig,
         explicitSecretKeys,
+        deployId,
       })))
   ) {
     return false
@@ -313,6 +317,7 @@ const tFireStep = function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  deployId,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -346,6 +351,7 @@ const tFireStep = function ({
       userNodeVersion,
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
+      deployId,
     })
   }
 
