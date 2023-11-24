@@ -65,6 +65,9 @@ const executeBuildStep = async function ({
   repositoryRoot,
   systemLog,
   edgeFunctionsBootstrapURL,
+  deployId,
+  token,
+  quiet,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -86,6 +89,7 @@ const executeBuildStep = async function ({
     cachedConfig,
     debug,
     logs,
+    quiet,
     nodePath,
     timers: [],
   })
@@ -97,6 +101,7 @@ const executeBuildStep = async function ({
     netlifyConfig,
     siteInfo,
     mode,
+    token,
   } as any)
 
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
@@ -115,6 +120,8 @@ const executeBuildStep = async function ({
       repositoryRoot: repositoryRootA,
       systemLog,
       edgeFunctionsBootstrapURL,
+      deployId,
+      quiet,
     })
 
     return {
@@ -152,6 +159,8 @@ const runBuildStep = async function ({
   repositoryRoot,
   systemLog,
   edgeFunctionsBootstrapURL,
+  deployId,
+  quiet,
 }) {
   const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
     steps: getBuildSteps(buildSteps),
@@ -167,6 +176,8 @@ const runBuildStep = async function ({
     repositoryRoot,
     systemLog,
     edgeFunctionsBootstrapURL,
+    deployId,
+    quiet,
   } as any)
 
   return { netlifyConfig: netlifyConfigA, configMutations }
