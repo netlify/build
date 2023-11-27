@@ -47,6 +47,10 @@ test('Invalid package.json does not make build fail', async (t) => {
 test('Build removes blobs directory before starting if there is a build command', async (t) => {
   const fixture = await new Fixture('./fixtures/with_preexisting_blobs').withCopyRoot({ git: false })
 
+  const blobsDir = path.join(fixture.repositoryRoot, 'out', '.netlify', 'blobs', 'deploy')
+
+  await t.notThrowsAsync(fsPromises.access(blobsDir))
+
   const { success } = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
@@ -54,8 +58,6 @@ test('Build removes blobs directory before starting if there is a build command'
     .runBuildProgrammatic()
 
   t.true(success)
-
-  const blobsDir = path.join(fixture.repositoryRoot, 'out', '.netlify', 'blobs', 'deploy')
 
   await t.throwsAsync(fsPromises.access(blobsDir))
 })
