@@ -14,7 +14,7 @@ export const anyBlobsToUpload = async function ({ buildDir, publishDir }) {
   return files > 0
 }
 
-/* Given output directory, find all file paths to upload excluding metadata files */
+/** Given output directory, find all file paths to upload excluding metadata files */
 export async function getKeysToUpload(blobsDir: string): Promise<string[]> {
   const files = await new fdir()
     .withRelativePaths() // we want the relative path from the blobsDir
@@ -26,7 +26,7 @@ export async function getKeysToUpload(blobsDir: string): Promise<string[]> {
   return files.map((f) => f.split(path.sep).join('/'))
 }
 
-/* Read a file and its metadata file from the blobs directory */
+/** Read a file and its metadata file from the blobs directory */
 export async function getFileWithMetadata(
   blobsDir: string,
   key: string,
@@ -59,7 +59,7 @@ async function readMetadata(metadataPath: string): Promise<Record<string, string
 
   try {
     return JSON.parse(metadataFile)
-  } catch (err) {
+  } catch  {
     // Normalize the error message
     throw new Error(`Error parsing metadata file '${metadataPath}'`)
   }

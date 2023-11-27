@@ -1,4 +1,4 @@
-import fsPromises from 'node:fs/promises'
+import { rm } from 'node:fs/promises'
 import { platform } from 'process'
 
 import { execa } from 'execa'
@@ -12,8 +12,8 @@ import { getBlobsDir } from '../utils/blobs.js'
 async function cleanupBlobsDir(buildDir, publishDir) {
   const blobsDir = getBlobsDir({ buildDir, publishDir })
   try {
-    await fsPromises.rm(blobsDir, { recursive: true, force: true })
-  } catch (err) {
+    await rm(blobsDir, { recursive: true, force: true })
+  } catch {
     // Ignore errors if it fails, we can continue anyway.
   }
 }
