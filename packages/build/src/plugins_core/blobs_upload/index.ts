@@ -4,7 +4,6 @@ import { getDeployStore } from '@netlify/blobs'
 import pMap from 'p-map'
 import semver from 'semver'
 
-import { addErrorInfo } from '../../error/info.js'
 import { log, logError } from '../../log/logger.js'
 import { getBlobsDir } from '../../utils/blobs.js'
 
@@ -58,9 +57,7 @@ const coreStep = async function ({
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
 
-    const error = new Error(`Failed while uploading blobs to deploy store`)
-    addErrorInfo(error, { type: 'blobsUploadError' })
-    throw error
+    throw new Error(`Failed while uploading blobs to deploy store`)
   }
 
   if (!quiet) {
