@@ -5,9 +5,9 @@ import pMap from 'p-map'
 import semver from 'semver'
 
 import { log, logError } from '../../log/logger.js'
-import { getBlobsDir } from '../../utils/blobs.js'
+import { anyBlobsToUpload, getBlobsDir } from '../../utils/blobs.js'
 
-import { getKeysToUpload, getFileWithMetadata, anyBlobsToUpload } from './utils.js'
+import { getKeysToUpload, getFileWithMetadata } from './utils.js'
 
 const coreStep = async function ({
   debug,

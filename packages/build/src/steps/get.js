@@ -5,6 +5,7 @@ import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
+import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
 
@@ -68,6 +69,7 @@ const getEventSteps = function (eventHandlers) {
 
 const addCoreSteps = function (steps) {
   return [
+    preCleanup,
     buildCommandCore,
     ...steps,
     bundleFunctions,

@@ -1,4 +1,3 @@
-import { rm } from 'node:fs/promises'
 import { platform } from 'process'
 
 import { execa } from 'execa'
@@ -7,16 +6,6 @@ import { addErrorInfo } from '../error/info.js'
 import { getBuildCommandDescription } from '../log/description.js'
 import { logBuildCommandStart } from '../log/messages/steps.js'
 import { getBuildCommandStdio, handleBuildCommandOutput } from '../log/stream.js'
-import { getBlobsDir } from '../utils/blobs.js'
-
-async function cleanupBlobsDir(buildDir, publishDir) {
-  const blobsDir = getBlobsDir({ buildDir, publishDir })
-  try {
-    await rm(blobsDir, { recursive: true, force: true })
-  } catch {
-    // Ignore errors if it fails, we can continue anyway.
-  }
-}
 
 // Fire `build.command`
 const coreStep = async function ({
@@ -25,12 +14,10 @@ const coreStep = async function ({
   nodePath,
   childEnv,
   logs,
-  constants: { PUBLISH_DIR },
   netlifyConfig: {
     build: { command: buildCommand, commandOrigin: buildCommandOrigin },
   },
 }) {
-  await cleanupBlobsDir(buildDir, PUBLISH_DIR)
   logBuildCommandStart(logs, buildCommand)
 
   const stdio = getBuildCommandStdio(logs)

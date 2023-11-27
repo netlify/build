@@ -1,0 +1,11 @@
+import { mkdir, writeFile } from 'node:fs/promises'
+
+await mkdir('dist/.netlify/blobs/deploy/nested', { recursive: true })
+
+await Promise.all([
+  writeFile('dist/.netlify/blobs/deploy/something.txt', 'some value'),
+  writeFile('dist/.netlify/blobs/deploy/with-metadata.txt', 'another value'),
+  writeFile('dist/.netlify/blobs/deploy/$with-metadata.txt.json', JSON.stringify({ "meta": "data", "number": 1234 })),
+  writeFile('dist/.netlify/blobs/deploy/nested/file.txt', 'file value'),
+  writeFile('dist/.netlify/blobs/deploy/nested/$file.txt.json', JSON.stringify({ "some": "metadata" })),
+])
