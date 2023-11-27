@@ -1,4 +1,4 @@
-import fsPromises from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { fdir } from 'fdir'
@@ -36,11 +36,9 @@ export async function getFileWithMetadata(
   const basename = path.basename(key)
   const metadataPath = path.join(blobsDir, dirname, `${METADATA_PREFIX}${basename}${METADATA_SUFFIX}`)
 
-  const [data, metadata] = await Promise.all([fsPromises.readFile(contentPath), readMetadata(metadataPath)]).catch(
-    (err) => {
-      throw new Error(`Failed while reading '${key}' and its metadata: ${err.message}`)
-    },
-  )
+  const [data, metadata] = await Promise.all([readFile(contentPath), readMetadata(metadataPath)]).catch((err) => {
+    throw new Error(`Failed while reading '${key}' and its metadata: ${err.message}`)
+  })
 
   return { data, metadata }
 }
@@ -48,7 +46,7 @@ export async function getFileWithMetadata(
 async function readMetadata(metadataPath: string): Promise<Record<string, string>> {
   let metadataFile
   try {
-    metadataFile = await fsPromises.readFile(metadataPath, { encoding: 'utf8' })
+    metadataFile = await readFile(metadataPath, { encoding: 'utf8' })
   } catch (err) {
     if (err.code === 'ENOENT') {
       // no metadata file found, that's ok
@@ -59,7 +57,7 @@ async function readMetadata(metadataPath: string): Promise<Record<string, string
 
   try {
     return JSON.parse(metadataFile)
-  } catch  {
+  } catch {
     // Normalize the error message
     throw new Error(`Error parsing metadata file '${metadataPath}'`)
   }
