@@ -38,31 +38,41 @@ test.afterEach.always(async (t) => {
 })
 
 test("blobs upload, don't run when deploy id is provided and no files in directory", async (t) => {
-  const output = await new Fixture('./fixtures/src_empty')
+  const {
+    success,
+    logs: { stdout },
+  } = await new Fixture('./fixtures/src_empty')
     // Passing `offline: true` to avoid fetching the configuration from the API
     .withFlags({ deployId: 'abc123', token: TOKEN, offline: true })
-    .runWithBuild()
+    .runBuildProgrammatic()
 
+  t.true(success)
   t.is(t.context.blobRequestCount.set, 0)
 
-  t.snapshot(normalizeOutput(output))
+  t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
 test("blobs upload, don't run when there are files but deploy id is not provided", async (t) => {
-  const output = await new Fixture('./fixtures/src_with_blobs')
-    .withFlags({ token: TOKEN, offline: true })
-    .runWithBuild()
+  const {
+    success,
+    logs: { stdout },
+  } = await new Fixture('./fixtures/src_with_blobs').withFlags({ token: TOKEN, offline: true }).runBuildProgrammatic()
 
+  t.true(success)
   t.is(t.context.blobRequestCount.set, 0)
 
-  t.snapshot(normalizeOutput(output))
+  t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
 test.serial('blobs upload, uploads files to deploy store', async (t) => {
-  const output = await new Fixture('./fixtures/src_with_blobs')
+  const {
+    success,
+    logs: { stdout },
+  } = await new Fixture('./fixtures/src_with_blobs')
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true })
-    .runWithBuild()
+    .runBuildProgrammatic()
 
+  t.true(success)
   t.is(t.context.blobRequestCount.set, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
@@ -85,7 +95,7 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
   t.is(blob3.data, 'file value')
   t.deepEqual(blob3.metadata, { some: 'metadata' })
 
-  t.snapshot(normalizeOutput(output))
+  t.true(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
 test('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
