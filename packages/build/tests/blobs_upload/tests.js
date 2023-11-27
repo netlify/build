@@ -88,7 +88,7 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test.serial('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
+test('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
   const { success, severityCode } = await new Fixture('./fixtures/src_with_malformed_blobs_metadata')
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, debug: false })
     .runBuildProgrammatic()
