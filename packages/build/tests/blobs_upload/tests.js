@@ -1,7 +1,7 @@
 import { version as nodeVersion } from 'node:process'
 
 import { BlobsServer, getDeployStore } from '@netlify/blobs'
-import { Fixture, normalizeOutput } from '@netlify/testing'
+import { Fixture } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
 import semver from 'semver'
