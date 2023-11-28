@@ -17,6 +17,7 @@ export const fireCoreStep = async function ({
   buildbotServerSocket,
   events,
   logs,
+  quiet,
   nodePath,
   childEnv,
   context,
@@ -35,6 +36,7 @@ export const fireCoreStep = async function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  deployId,
 }) {
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -54,6 +56,7 @@ export const fireCoreStep = async function ({
       buildbotServerSocket,
       events,
       logs,
+      quiet,
       context,
       branch,
       childEnv: childEnvA,
@@ -69,6 +72,7 @@ export const fireCoreStep = async function ({
       userNodeVersion,
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
+      deployId,
     })
     const {
       netlifyConfig: netlifyConfigA,

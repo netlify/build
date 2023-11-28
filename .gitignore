@@ -22,9 +22,11 @@ packages/*/lib/
 **/fixtures/**/edge-functions-dist
 **/fixtures/**/edge-functions-import-map.json
 **/**/secrets_scanning/fixtures/**/dist
+!**/blobs_upload/fixtures/**/dist/.netlify
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
+!**/fixtures/with_preexisting_blobs/**/.netlify
 !**/fixtures/**/functions_*/.netlify
 !**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
 lib

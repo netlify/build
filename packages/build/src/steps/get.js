@@ -1,5 +1,6 @@
 import { getUtils } from '../plugins/child/utils.js'
 import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
+import { uploadBlobs } from '../plugins_core/blobs_upload/index.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
@@ -66,7 +67,16 @@ const getEventSteps = function (eventHandlers) {
 }
 
 const addCoreSteps = function (steps) {
-  return [buildCommandCore, ...steps, bundleFunctions, bundleEdgeFunctions, scanForSecrets, deploySite, saveArtifacts]
+  return [
+    buildCommandCore,
+    ...steps,
+    bundleFunctions,
+    bundleEdgeFunctions,
+    scanForSecrets,
+    uploadBlobs,
+    deploySite,
+    saveArtifacts,
+  ]
 }
 
 // Sort plugin steps by event order.

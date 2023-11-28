@@ -8,6 +8,8 @@ export type BuildCLIFlags = {
   siteId: string
   /** Netlify API token for authentication */
   token: string
+  /** Netlify Deploy ID */
+  deployId: string
   /**
    * Run in dry mode, i.e. printing steps without executing them
    * @default false
