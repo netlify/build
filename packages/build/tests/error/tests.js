@@ -140,6 +140,39 @@ const testMatrixAttributeTracing = [
           loadedFrom: 'test-loaded-from',
           origin: 'test-origin',
         },
+        plugin: {
+          packageName: 'test-package',
+          pluginPackageJson: {
+            version: '1.2.1',
+          },
+        },
+      },
+      severity: 'error',
+      type: 'plugin-error',
+      locationType: 'plugin-error-location-type',
+    },
+    expects: {
+      'build.error.severity': 'error',
+      'build.error.type': 'plugin-error',
+      'build.error.location.type': 'plugin-error-location-type',
+      'build.error.location.plugin.event': 'test-event',
+      'build.error.location.plugin.package_name': 'test-package',
+      'build.error.location.plugin.loaded_from': 'test-loaded-from',
+      'build.error.location.plugin.origin': 'test-origin',
+      'build.error.plugin.name': 'test-package',
+      'build.error.plugin.version': '1.2.1',
+    },
+  },
+  {
+    description: 'plugin error without plugin info',
+    input: {
+      errorInfo: {
+        location: {
+          event: 'test-event',
+          packageName: 'test-package',
+          loadedFrom: 'test-loaded-from',
+          origin: 'test-origin',
+        },
       },
       severity: 'error',
       type: 'plugin-error',
