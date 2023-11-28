@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.29.0](https://github.com/netlify/build/compare/build-v29.28.2...build-v29.29.0) (2023-11-28)
+
+
+### Features
+
+* **build:** Add step to upload blobs from file based output ([#5404](https://github.com/netlify/build/issues/5404)) ([4a7c7c3](https://github.com/netlify/build/commit/4a7c7c30dc42b46f677c76bd941d51d2eff93417))
+
+
+### Bug Fixes
+
+* **build:** cleanup buildbot client and add further error segmentation ([#5414](https://github.com/netlify/build/issues/5414)) ([ca3d3a6](https://github.com/netlify/build/commit/ca3d3a6ec9e4cc212951329070d821a981bb26a4))
+* cleanup blobs before build ([#5413](https://github.com/netlify/build/issues/5413)) ([54e62eb](https://github.com/netlify/build/commit/54e62eb24e4dacf7d80e99b91fb784eccf322c35))
+* **deps:** update dependency @netlify/blobs to ^6.3.1 ([#5415](https://github.com/netlify/build/issues/5415)) ([095d608](https://github.com/netlify/build/commit/095d608b3266a537e4b2c9522a1958fcf3223309))
+
 ## [29.28.2](https://github.com/netlify/build/compare/build-v29.28.1...build-v29.28.2) (2023-11-23)
 
 
