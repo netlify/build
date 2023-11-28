@@ -1,6 +1,6 @@
 export { DEV_EVENTS, EVENTS } from '@netlify/config'
 
-const isAmongEvents = function (events, event) {
+const isAmongEvents = function (events: string[], event: string) {
   return events.includes(event)
 }
 

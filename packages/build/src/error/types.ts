@@ -57,7 +57,7 @@ enum StackType {
    * not printed
    */
   none = 'none',
-  /**
+  /*
    * printed as is
    */
   stack = 'stack',
@@ -130,12 +130,21 @@ export const isAPILocation = function (location?: ErrorLocation): location is AP
   return typeof (location as APILocation)?.endpoint === 'string'
 }
 
+export type DeployLocation = {
+  statusCode: string
+}
+
+export const isDeployLocation = function (location?: ErrorLocation): location is DeployLocation {
+  return typeof (location as DeployLocation)?.statusCode === 'string'
+}
+
 export type ErrorLocation =
   | BuildCommandLocation
   | FunctionsBundlingLocation
   | CoreStepLocation
   | PluginLocation
   | APILocation
+  | DeployLocation
 
 const buildErrorAttributePrefix = 'build.error'
 
@@ -171,6 +180,12 @@ const errorLocationToTracingAttributes = function (location: ErrorLocation): Att
   if (isAPILocation(location)) {
     return {
       [`${locationAttributePrefix}.api.endpoint`]: location.endpoint,
+    }
+  }
+
+  if (isDeployLocation(location)) {
+    return {
+      [`${locationAttributePrefix}.deploy.status_code`]: location.statusCode,
     }
   }
   return {}
@@ -259,6 +274,8 @@ const ErrorTypeMap = {
   trustedPlugin: 'trustedPlugin',
   coreStep: 'coreStep',
   api: 'api',
+  deploy: 'deploy',
+  deployInternal: 'deployInternal',
   exception: 'exception',
   telemetry: 'telemetry',
 } as const
@@ -447,6 +464,24 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     stackType: 'message',
     showErrorProps: true,
     locationType: 'api',
+    severity: 'error',
+  },
+  /**
+   * Non-internal errors deploying files or functions
+   */
+  deploy: {
+    title: 'Error deploying',
+    stackType: 'none',
+    locationType: 'deploy',
+    severity: 'info',
+  },
+  /**
+   * Internal errors deploying files or functions
+   */
+  deployInternal: {
+    title: 'Internal error deploying',
+    stackType: 'none',
+    locationType: 'deploy',
     severity: 'error',
   },
   /**

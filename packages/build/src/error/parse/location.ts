@@ -5,6 +5,7 @@ import type {
   CoreStepLocation,
   PluginLocation,
   APILocation,
+  DeployLocation,
 } from '../types.js'
 
 // Retrieve an error's location to print in logs.
@@ -60,10 +61,15 @@ const getApiLocation = function ({ endpoint, parameters }: APILocation) {
   return `While calling the Netlify API endpoint '${endpoint}' with:\n${JSON.stringify(parameters, null, 2)}`
 }
 
+const getDeployLocation = function ({ statusCode }: DeployLocation) {
+  return `At deploy the stage with HTTP status code '${statusCode}'`
+}
+
 const LOCATIONS = {
   buildCommand: getBuildCommandLocation,
   functionsBundling: getFunctionsBundlingLocation,
   coreStep: getCoreStepLocation,
   buildFail: getBuildFailLocation,
   api: getApiLocation,
+  deploy: getDeployLocation,
 }
