@@ -3,16 +3,8 @@ import path from 'node:path'
 
 import { fdir } from 'fdir'
 
-import { getBlobsDir } from '../../utils/blobs.js'
-
 const METADATA_PREFIX = '$'
 const METADATA_SUFFIX = '.json'
-
-export const anyBlobsToUpload = async function ({ buildDir, publishDir }) {
-  const blobsDir = getBlobsDir({ buildDir, publishDir })
-  const { files } = await new fdir().onlyCounts().crawl(blobsDir).withPromise()
-  return files > 0
-}
 
 /** Given output directory, find all file paths to upload excluding metadata files */
 export async function getKeysToUpload(blobsDir: string): Promise<string[]> {

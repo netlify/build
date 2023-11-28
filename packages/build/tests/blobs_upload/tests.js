@@ -1,4 +1,6 @@
+import { access } from 'node:fs/promises'
 import { version as nodeVersion } from 'node:process'
+import { join } from 'path'
 
 import { BlobsServer, getDeployStore } from '@netlify/blobs'
 import { Fixture } from '@netlify/testing'
@@ -53,23 +55,31 @@ test("blobs upload, don't run when deploy id is provided and no files in directo
 })
 
 test("blobs upload, don't run when there are files but deploy id is not provided", async (t) => {
+  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+
   const {
     success,
     logs: { stdout },
-  } = await new Fixture('./fixtures/src_with_blobs').withFlags({ token: TOKEN, offline: true }).runBuildProgrammatic()
+  } = await fixture.withFlags({ token: TOKEN, offline: true, cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   t.true(success)
+
+  const blobsDir = join(fixture.repositoryRoot, 'dist', '.netlify', 'blobs', 'deploy')
+  await t.notThrowsAsync(access(blobsDir))
+
   t.is(t.context.blobRequestCount.set, 0)
 
   t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
 test.serial('blobs upload, uploads files to deploy store', async (t) => {
+  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+
   const {
     success,
     logs: { stdout },
-  } = await new Fixture('./fixtures/src_with_blobs')
-    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true })
+  } = await fixture
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runBuildProgrammatic()
 
   t.true(success)
@@ -99,9 +109,13 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
 })
 
 test('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
-  const { success, severityCode } = await new Fixture('./fixtures/src_with_malformed_blobs_metadata')
+  const fixture = await new Fixture('./fixtures/src_with_malformed_blobs_metadata').withCopyRoot({ git: false })
+  const { success, severityCode } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, debug: false })
     .runBuildProgrammatic()
+
+  const blobsDir = join(fixture.repositoryRoot, 'dist', '.netlify', 'blobs', 'deploy')
+  await t.notThrowsAsync(access(blobsDir))
 
   t.is(t.context.blobRequestCount.set, 0)
 
