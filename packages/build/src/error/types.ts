@@ -71,9 +71,16 @@ type GroupFunction = ({ location }: { location: ErrorLocation }) => string
 export type TitleFunction = ({ location }: { location: ErrorLocation }) => string
 
 export type ErrorInfo = {
-  plugin?: any
+  plugin?: PluginInfo
   tsConfig?: any
   location: ErrorLocation
+}
+
+type PluginInfo = {
+  packageName: string
+  pluginPackageJson: {
+    version?: string
+  }
 }
 
 export type BuildCommandLocation = {
@@ -191,6 +198,15 @@ const errorLocationToTracingAttributes = function (location: ErrorLocation): Att
   return {}
 }
 
+const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attributes {
+  const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
+  if (typeof pluginInfo === 'undefined') return {}
+  return {
+    [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
+    [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
+  }
+}
+
 /**
  * Given a BuildError, extract the relevant trace attributes to add to the on-going Span
  */
@@ -204,6 +220,7 @@ export const buildErrorToTracingAttributes = function (error: BuildError | Basic
   return {
     ...attributes,
     ...errorLocationToTracingAttributes(error.errorInfo?.location),
+    ...pluginDataToTracingAttributes(error.errorInfo?.plugin),
   }
 }
 
