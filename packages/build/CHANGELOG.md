@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.29.1](https://github.com/netlify/build/compare/build-v29.29.0...build-v29.29.1) (2023-11-29)
+
+
+### Bug Fixes
+
+* **build:** add plugin version to tracing errors ([#5417](https://github.com/netlify/build/issues/5417)) ([591f3e7](https://github.com/netlify/build/commit/591f3e713e381d9316fe44d6d7a5c04a7ceb017e))
+
 ## [29.29.0](https://github.com/netlify/build/compare/build-v29.28.2...build-v29.29.0) (2023-11-28)
 
 
