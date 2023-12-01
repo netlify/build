@@ -1,4 +1,5 @@
 import { readdir, rm, stat, writeFile } from 'fs/promises'
+import { sep } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
@@ -88,7 +89,7 @@ test('Functions: internal functions are cleared on the dev timeline', async (t) 
   await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/`), { code: 'ENOENT' })
 
   t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes('Cleaned up .netlify/functions-internal, .netlify/edge-functions'))
+  t.true(output.includes(`Cleaned up .netlify${sep}functions-internal, .netlify${sep}edge-functions`))
 })
 
 test('Functions: cleanup is only triggered when there are internal functions', async (t) => {

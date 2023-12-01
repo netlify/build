@@ -32,21 +32,25 @@ const getDirtyDirs = async function ({
   return dirs
 }
 
+const condition = async (input: Input) => {
+  const dirs = await getDirtyDirs(input)
+  return dirs.length > 0
+}
+
+const coreStep = async (input: Input) => {
+  const dirs = await getDirtyDirs(input)
+  for (const dir of dirs) {
+    await rm(resolve(input.buildDir, dir), { recursive: true, force: true })
+  }
+  log(input.logs, `Cleaned up ${dirs.join(', ')}.`)
+  return {}
+}
+
 export const preDevCleanup = {
   event: 'onPreDev',
+  coreStep,
   coreStepId: 'pre_dev_cleanup',
   coreStepName: 'Pre Dev cleanup',
   coreStepDescription: () => 'Cleaning up leftover files from previous builds',
-  condition: async (input: Input) => {
-    const dirs = await getDirtyDirs(input)
-    return dirs.length > 0
-  },
-  coreStep: async (input: Input) => {
-    const dirs = await getDirtyDirs(input)
-    for (const dir of dirs) {
-      await rm(resolve(input.buildDir, dir), { recursive: true, force: true })
-    }
-    log(input.logs, `Cleaned up ${dirs.join(', ')}.`)
-    return {}
-  },
+  condition,
 }
