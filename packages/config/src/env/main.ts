@@ -1,3 +1,4 @@
+import type { NetlifyAPI } from 'netlify'
 import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
@@ -29,7 +30,14 @@ export const getEnv = async function ({
   }
 
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
-  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({ api, config, siteInfo, accounts, addons })
+  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({
+    api,
+    config,
+    siteInfo,
+    accounts,
+    addons,
+    context,
+  })
 
   // Sources of environment variables, in descending order of precedence.
   const sources = [
@@ -129,8 +137,8 @@ const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
 const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
-const getUserEnv = async function ({ api, config, siteInfo, accounts, addons }) {
-  const accountEnv = await getAccountEnv({ api, siteInfo, accounts })
+const getUserEnv = async function ({ api, config, siteInfo, accounts, addons, context }) {
+  const accountEnv = await getAccountEnv({ api, siteInfo, accounts, context })
   const addonsEnv = getAddonsEnv(addons)
   const uiEnv = getUiEnv({ siteInfo })
   const configFileEnv = getConfigFileEnv({ config })
@@ -138,9 +146,19 @@ const getUserEnv = async function ({ api, config, siteInfo, accounts, addons }) 
 }
 
 // Account-wide environment variables
-const getAccountEnv = async function ({ api, siteInfo, accounts }) {
+const getAccountEnv = async function ({
+  api,
+  siteInfo,
+  accounts,
+  context,
+}: {
+  api: NetlifyAPI
+  siteInfo: any
+  accounts: any
+  context?: string
+}) {
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug })
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, context })
     return envelope
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
