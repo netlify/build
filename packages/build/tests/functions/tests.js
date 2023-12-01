@@ -1,4 +1,4 @@
-import { readdir, rm, writeFile } from 'fs/promises'
+import { readdir, rm, stat, writeFile } from 'fs/promises'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
@@ -76,4 +76,29 @@ test('Functions: custom path on scheduled function', async (t) => {
 test('Functions: custom path on event-triggered function', async (t) => {
   const output = await new Fixture('./fixtures/custom_path_event_triggered').runWithBuild()
   t.true(output.includes('Event-triggered functions must not specify a custom path.'))
+})
+
+test('Functions: internal functions are cleared on the dev timeline', async (t) => {
+  const fixture = await new Fixture('./fixtures/internal_functions')
+    .withFlags({ debug: false, timeline: 'dev' })
+    .withCopyRoot()
+  const output = await fixture.runDev(() => {})
+
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/`), { code: 'ENOENT' })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/`), { code: 'ENOENT' })
+
+  t.true(output.includes('Cleaning up leftover files from previous builds'))
+  t.true(output.includes('Cleaned up .netlify/functions-internal, .netlify/edge-functions'))
+})
+
+test('Functions: cleanup is only triggered when there are internal functions', async (t) => {
+  const fixture = await new Fixture('./fixtures/internal_functions')
+    .withFlags({ debug: false, timeline: 'dev' })
+    .withCopyRoot()
+
+  await rm(`${fixture.repositoryRoot}/.netlify/functions-internal/`, { force: true, recursive: true })
+  await rm(`${fixture.repositoryRoot}/.netlify/edge-functions/`, { force: true, recursive: true })
+
+  const output = await fixture.runDev(() => {})
+  t.false(output.includes('Cleaning up leftover files from previous builds'))
 })
