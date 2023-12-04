@@ -1,3 +1,5 @@
+import { platform } from 'node:process'
+
 import { beforeEach, expect, describe, test } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
@@ -47,5 +49,11 @@ describe('Nuxt V3', () => {
       AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
       NODE_VERSION: '18',
     })
+
+    if (platform === 'win32') {
+      expect(detected?.[0].getDevCommands()).toEqual(['del dist\\_redirects dist\\_headers & nuxt dev'])
+    } else {
+      expect(detected?.[0].getDevCommands()).toEqual(['rm dist/_redirects dist/_headers; nuxt dev'])
+    }
   })
 })

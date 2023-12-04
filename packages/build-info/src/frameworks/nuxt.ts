@@ -1,3 +1,5 @@
+import { platform } from 'node:process'
+
 import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Nuxt extends BaseFramework implements Framework {
@@ -45,5 +47,16 @@ export class Nuxt extends BaseFramework implements Framework {
 
   isV3(detected: Detection) {
     return detected.package?.name === 'nuxt3' || detected.package?.version?.major === 3
+  }
+
+  // Workaround for https://github.com/unjs/nitro/issues/1970
+  getDevCommands(): string[] {
+    return super.getDevCommands().map((command) => {
+      if (platform === 'win32') {
+        return `del dist\\_redirects dist\\_headers & ${command}`
+      } else {
+        return `rm dist/_redirects dist/_headers; ${command}`
+      }
+    })
   }
 }
