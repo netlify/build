@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.30.0](https://github.com/netlify/build/compare/build-v29.29.4...build-v29.30.0) (2023-12-05)
+
+
+### Features
+
+* cleanup internal functions onPreDev ([#5421](https://github.com/netlify/build/issues/5421)) ([b165fb0](https://github.com/netlify/build/commit/b165fb0566e46c9fb12dd1715b9d67eb6251acc8))
+
 ## [29.29.4](https://github.com/netlify/build/compare/build-v29.29.3...build-v29.29.4) (2023-12-01)
 
 
