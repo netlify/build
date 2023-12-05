@@ -16,7 +16,7 @@ type NetlifyPluginRunUtilResult = ExecaChildProcess
 export interface NetlifyPluginRunUtil {
   (
     file: string,
-    // eslint-disable-next-line fp/no-arguments -- params are named `arguments` in the docs. Unrelated to JS's `arguments`
+    // @ts-expect-error this is ok
     arguments?: readonly string[],
     options?: NetlifyPluginRunUtilOptions,
   ): Promise<NetlifyPluginRunUtilResult>

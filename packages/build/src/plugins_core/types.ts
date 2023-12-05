@@ -1,7 +1,6 @@
-import { NetlifyConfig } from 'packages/build/types/index.js'
-
 import { NetlifyPluginConstants } from '../core/constants.js'
 import { BufferedLogs } from '../log/logger.js'
+import { NetlifyConfig } from '../types/config/netlify_config.js'
 
 type $TSFixme = any
 

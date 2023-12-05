@@ -28,7 +28,7 @@ const coreStep: CoreStepFunction = async function ({
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
-    apiURL: NETLIFY_API_HOST,
+    apiURL: NETLIFY_API_HOST.startsWith('http') ? NETLIFY_API_HOST : `https://${NETLIFY_API_HOST}`,
   }
   if (semver.lt(nodeVersion, '18.0.0')) {
     const nodeFetch = await import('node-fetch')

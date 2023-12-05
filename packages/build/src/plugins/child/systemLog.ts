@@ -12,8 +12,6 @@ export const getSystemLog = () => {
       appendFileSync(fd, `${stringifiedMessage}\n`)
     }
   } catch {
-    return () => {
-      /** noop */
-    }
+    // not accessible
   }
 }

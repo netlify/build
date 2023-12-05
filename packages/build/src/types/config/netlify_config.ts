@@ -38,7 +38,7 @@ interface ImagesConfig {
 
 /* eslint-disable camelcase -- some properties are named in snake case in this API */
 
-interface NetlifyConfig {
+export interface NetlifyConfig {
   /**
    * array of redirects with their modifiable options
    */

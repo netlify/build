@@ -1,4 +1,4 @@
-import { NetlifyConfig, NetlifyPlugin } from '../../types/index.js'
+import { NetlifyConfig, NetlifyPlugin } from '../index.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
