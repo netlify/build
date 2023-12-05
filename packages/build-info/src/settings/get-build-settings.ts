@@ -88,7 +88,6 @@ export async function getSettings(framework: Framework, project: Project, baseDi
     name: framework.name,
     buildCommand: buildCommands[0],
     devCommand: devCommands[0],
-    clearPublishDirectory: framework.dev?.clearPublishDirectory,
     frameworkPort: framework.dev?.port,
     dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
@@ -101,6 +100,10 @@ export async function getSettings(framework: Framework, project: Project, baseDi
     baseDirectory,
     packagePath: baseDirectory,
     pollingStrategies: framework.dev?.pollingStrategies?.map(({ name }) => name) || [],
+  }
+
+  if (typeof framework.dev?.clearPublishDirectory !== 'undefined') {
+    settings.clearPublishDirectory = framework.dev.clearPublishDirectory
   }
 
   if (baseDirectory?.length && project.workspace?.isRoot) {
