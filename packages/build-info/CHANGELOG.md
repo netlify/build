@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.11.2](https://github.com/netlify/build/compare/build-info-v7.11.1...build-info-v7.11.2) (2023-12-05)
+
+
+### Bug Fixes
+
+* **nuxt:** clear dist directory before local dev ([#5430](https://github.com/netlify/build/issues/5430)) ([c59b9a1](https://github.com/netlify/build/commit/c59b9a147dc254474022df13b790d0f2171ad060))
+
 ## [7.11.1](https://github.com/netlify/build/compare/build-info-v7.11.0...build-info-v7.11.1) (2023-11-09)
 
 
