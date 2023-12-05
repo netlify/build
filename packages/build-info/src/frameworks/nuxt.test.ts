@@ -1,6 +1,7 @@
 import { beforeEach, expect, describe, test } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
+import { getSettings } from '../index.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
 
@@ -36,7 +37,8 @@ describe('Nuxt V3', () => {
     ['major version', { 'package.json': JSON.stringify({ dependencies: { nuxt: '^3.0.0' } }) }],
   ])('should detect Nuxt via the %s', async (_, files) => {
     const cwd = mockFileSystem(files)
-    const detected = await new Project(fs, cwd).detectFrameworks()
+    const project = new Project(fs, cwd)
+    const detected = await project.detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
     expect(detected?.[0].name).toBe('Nuxt 3')
     expect(detected?.[0].build.command).toBe('nuxt build')
@@ -48,5 +50,8 @@ describe('Nuxt V3', () => {
       AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
       NODE_VERSION: '18',
     })
+
+    const settings = await getSettings(detected![0], project, cwd)
+    expect(settings.clearPublishDirectory).toBeTruthy()
   })
 })

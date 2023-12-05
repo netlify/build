@@ -19,6 +19,8 @@ export type Settings = {
     id: string
     name: string
   }
+  /** Wether to clear the publish directory before local dev */
+  clearPublishDirectory?: boolean
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
@@ -86,6 +88,7 @@ export async function getSettings(framework: Framework, project: Project, baseDi
     name: framework.name,
     buildCommand: buildCommands[0],
     devCommand: devCommands[0],
+    clearPublishDirectory: framework.dev?.clearPublishDirectory,
     frameworkPort: framework.dev?.port,
     dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
