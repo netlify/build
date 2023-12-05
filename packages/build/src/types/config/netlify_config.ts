@@ -36,8 +36,6 @@ interface ImagesConfig {
   remote_images: string[]
 }
 
-/* eslint-disable camelcase -- some properties are named in snake case in this API */
-
 export interface NetlifyConfig {
   /**
    * array of redirects with their modifiable options
@@ -62,5 +60,3 @@ export interface NetlifyConfig {
    */
   images: ImagesConfig
 }
-
-/* eslint-enable camelcase */

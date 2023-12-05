@@ -1,5 +1,3 @@
-/* eslint-disable camelcase -- some properties are named in snake case in this API */
-
 export interface Build {
   /**
    * Includes a site's [build command](https://docs.netlify.com/configure-builds/get-started/#definitions)
@@ -48,5 +46,3 @@ export interface Build {
     }
   }
 }
-
-/* eslint-enable camelcase */
