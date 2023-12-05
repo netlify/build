@@ -10,6 +10,7 @@ export class Nuxt extends BaseFramework implements Framework {
     command: 'nuxt',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    clearPublishDirectory: true,
   }
 
   build = {
