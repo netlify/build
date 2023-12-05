@@ -42,7 +42,7 @@ describe('Nuxt V3', () => {
     expect(detected?.[0].build.command).toBe('nuxt build')
     expect(detected?.[0].build?.directory).toBe('.nuxt/dist')
     expect(detected?.[0].dev?.command).toBe('nuxt dev')
-    expect(detected?.[0].dev?.clearDist).toBe(true)
+    expect(detected?.[0].dev?.clearPublishDirectory).toBe(true)
     expect(detected?.[0].dev?.port).toBe(3000)
     expect(detected?.[0].env).toMatchObject({
       AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
