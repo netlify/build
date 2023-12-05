@@ -36,7 +36,7 @@ export type CoreStepFunctionArgs = {
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
 export type CoreStepCondition = (args: CoreStepFunctionArgs) => Promise<boolean> | boolean
 
-type Event = `on${'Pre' | '' | 'Post'}${'Build' | 'Dev'}`
+type Event = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onPreDev' | 'onDev' | 'onPostDev'
 
 export type CoreStep = {
   event: Event
