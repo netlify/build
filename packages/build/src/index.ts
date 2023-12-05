@@ -1,4 +1,5 @@
 import { buildSite } from './core/main.js'
+export { NetlifyPluginConstants } from './core/constants.js'
 
 // export the legacy types
 export type * from '../types/index.js'

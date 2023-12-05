@@ -6,22 +6,29 @@ import semver from 'semver'
 
 import { log, logError } from '../../log/logger.js'
 import { anyBlobsToUpload, getBlobsDir } from '../../utils/blobs.js'
+import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
 import { getKeysToUpload, getFileWithMetadata } from './utils.js'
 
-const coreStep = async function ({
+const coreStep: CoreStepFunction = async function ({
   debug,
   logs,
   deployId,
   buildDir,
   quiet,
-  constants: { PUBLISH_DIR, SITE_ID, NETLIFY_API_TOKEN, API_URL },
+  packagePath,
+  constants: { SITE_ID, NETLIFY_API_TOKEN, NETLIFY_API_HOST },
 }) {
+  // This should never happen due to the condition check
+  if (!deployId || !NETLIFY_API_TOKEN || !NETLIFY_API_HOST) {
+    return {}
+  }
+
   const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
-    apiURL: API_URL,
+    apiURL: NETLIFY_API_HOST,
   }
   if (semver.lt(nodeVersion, '18.0.0')) {
     const nodeFetch = await import('node-fetch')
@@ -29,7 +36,7 @@ const coreStep = async function ({
   }
 
   const blobStore = getDeployStore(storeOpts)
-  const blobsDir = getBlobsDir({ buildDir, publishDir: PUBLISH_DIR })
+  const blobsDir = getBlobsDir(buildDir, packagePath)
   const keys = await getKeysToUpload(blobsDir)
 
   // We checked earlier, but let's be extra safe
@@ -67,11 +74,10 @@ const coreStep = async function ({
   return {}
 }
 
-const deployAndBlobsPresent = async function ({ deployId, buildDir, constants: { PUBLISH_DIR } }): Promise<boolean> {
-  return deployId && (await anyBlobsToUpload({ buildDir, publishDir: PUBLISH_DIR }))
-}
+const deployAndBlobsPresent: CoreStepCondition = async ({ deployId, buildDir, packagePath }) =>
+  Boolean(deployId && (await anyBlobsToUpload(buildDir, packagePath)))
 
-export const uploadBlobs = {
+export const uploadBlobs: CoreStep = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'blobs_upload',

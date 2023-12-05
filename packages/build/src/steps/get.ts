@@ -9,9 +9,10 @@ import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
+import { CoreStep } from '../plugins_core/types.js'
 
 // Get all build steps
-export const getSteps = function (steps, eventHandlers) {
+export const getSteps = function (steps, eventHandlers?: any[]) {
   const stepsA = addCoreSteps(steps)
   const eventSteps = getEventSteps(eventHandlers)
   const stepsB = [...stepsA, ...eventSteps]
@@ -22,7 +23,7 @@ export const getSteps = function (steps, eventHandlers) {
 }
 
 // Get all dev steps
-export const getDevSteps = function (command, steps, eventHandlers) {
+export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
   const devCommandStep = {
     event: 'onDev',
     coreStep: async () => {
@@ -43,7 +44,7 @@ export const getDevSteps = function (command, steps, eventHandlers) {
   return { steps: sortedSteps, events }
 }
 
-const getEventSteps = function (eventHandlers) {
+const getEventSteps = function (eventHandlers?: any[]) {
   return Object.entries(eventHandlers ?? {}).map(([event, eventHandler]) => {
     let description = `Event handler for ${event}`
     let handler = eventHandler
@@ -68,7 +69,7 @@ const getEventSteps = function (eventHandlers) {
   })
 }
 
-const addCoreSteps = function (steps) {
+const addCoreSteps = function (steps): CoreStep[] {
   return [
     preCleanup,
     buildCommandCore,

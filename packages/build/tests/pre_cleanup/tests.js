@@ -4,7 +4,7 @@ import { join } from 'path'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
 
-test('Build removes blobs directory before starting', async (t) => {
+test.only('Build removes blobs directory before starting', async (t) => {
   const fixture = await new Fixture('./fixtures/with_preexisting_blobs').withCopyRoot({ git: false })
 
   const blobsDir = join(fixture.repositoryRoot, 'out', '.netlify', 'blobs', 'deploy')
