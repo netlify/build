@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "lib" /* Specify an output folder for all emitted files. */
+  },
+  "include": ["src/**/*.ts"]
+}

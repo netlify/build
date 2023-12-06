@@ -12,6 +12,7 @@
     "packages/js-client": {},
     "packages/nock-udp": {},
     "packages/opentelemetry-sdk-setup": {},
+    "packages/opentelemetry-utils": {},
     "packages/redirect-parser": {},
     "packages/run-utils": {}
   },
