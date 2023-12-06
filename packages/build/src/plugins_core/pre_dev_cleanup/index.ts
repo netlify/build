@@ -1,10 +1,10 @@
 import { rm, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import type { NetlifyPluginOptions } from '../../index.js'
 import { log } from '../../log/logger.js'
+import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
 
-const dirExists = async function (path: string): Promise<boolean> {
+const dirExists = async (path: string): Promise<boolean> => {
   try {
     await stat(path)
     return true
@@ -13,12 +13,10 @@ const dirExists = async function (path: string): Promise<boolean> {
   }
 }
 
-type Input = NetlifyPluginOptions & { buildDir: string; logs: any }
-
 const getDirtyDirs = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC },
-}: Input): Promise<string[]> {
+}: CoreStepFunctionArgs): Promise<string[]> {
   const dirs: string[] = []
 
   if (INTERNAL_FUNCTIONS_SRC && (await dirExists(resolve(buildDir, INTERNAL_FUNCTIONS_SRC)))) {
@@ -32,12 +30,7 @@ const getDirtyDirs = async function ({
   return dirs
 }
 
-const condition = async (input: Input) => {
-  const dirs = await getDirtyDirs(input)
-  return dirs.length > 0
-}
-
-const coreStep = async (input: Input) => {
+const coreStep: CoreStepFunction = async (input) => {
   const dirs = await getDirtyDirs(input)
   for (const dir of dirs) {
     await rm(resolve(input.buildDir, dir), { recursive: true, force: true })
@@ -46,7 +39,12 @@ const coreStep = async (input: Input) => {
   return {}
 }
 
-export const preDevCleanup = {
+const condition: CoreStepCondition = async (input) => {
+  const dirs = await getDirtyDirs(input)
+  return dirs.length > 0
+}
+
+export const preDevCleanup: CoreStep = {
   event: 'onPreDev',
   coreStep,
   coreStepId: 'pre_dev_cleanup',

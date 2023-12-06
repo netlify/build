@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.31.0](https://github.com/netlify/build/compare/build-v29.30.0...build-v29.31.0) (2023-12-06)
+
+
+### Features
+
+* change blob store location from publish directory to .netlify folder ([#5432](https://github.com/netlify/build/issues/5432)) ([b83d83a](https://github.com/netlify/build/commit/b83d83ab984aa4c1d1cc336bdf67d895ea844d5f))
+
 ## [29.30.0](https://github.com/netlify/build/compare/build-v29.29.4...build-v29.30.0) (2023-12-05)
 
 
