@@ -20,15 +20,17 @@ const coreStep: CoreStepFunction = async function ({
   constants: { SITE_ID, NETLIFY_API_TOKEN, NETLIFY_API_HOST },
 }) {
   // This should never happen due to the condition check
-  if (!deployId || !NETLIFY_API_TOKEN || !NETLIFY_API_HOST) {
+  if (!deployId || !NETLIFY_API_TOKEN) {
     return {}
   }
+  // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
+  const apiHost = NETLIFY_API_HOST || 'api.netlify.com'
 
   const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
-    apiURL: NETLIFY_API_HOST.startsWith('http') ? NETLIFY_API_HOST : `https://${NETLIFY_API_HOST}`,
+    apiURL: `https://${apiHost}`,
   }
   if (semver.lt(nodeVersion, '18.0.0')) {
     const nodeFetch = await import('node-fetch')
@@ -74,8 +76,12 @@ const coreStep: CoreStepFunction = async function ({
   return {}
 }
 
-const deployAndBlobsPresent: CoreStepCondition = async ({ deployId, buildDir, packagePath }) =>
-  Boolean(deployId && (await anyBlobsToUpload(buildDir, packagePath)))
+const deployAndBlobsPresent: CoreStepCondition = async ({
+  deployId,
+  buildDir,
+  packagePath,
+  constants: { NETLIFY_API_TOKEN },
+}) => Boolean(NETLIFY_API_TOKEN && deployId && (await anyBlobsToUpload(buildDir, packagePath)))
 
 export const uploadBlobs: CoreStep = {
   event: 'onPostBuild',

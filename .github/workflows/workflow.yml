@@ -169,6 +169,9 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: setup pnpm/yarn
+        run: corepack enable
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
