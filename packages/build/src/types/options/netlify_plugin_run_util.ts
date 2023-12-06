@@ -14,11 +14,6 @@ type NetlifyPluginRunUtilResult = ExecaChildProcess
  * @see https://github.com/netlify/build/blob/master/packages/run-utils/README.md
  */
 export interface NetlifyPluginRunUtil {
-  (
-    file: string,
-    // @ts-expect-error this is ok
-    arguments?: readonly string[],
-    options?: NetlifyPluginRunUtilOptions,
-  ): Promise<NetlifyPluginRunUtilResult>
+  (file: string, args?: readonly string[], options?: NetlifyPluginRunUtilOptions): Promise<NetlifyPluginRunUtilResult>
   command(command: string, options?: NetlifyPluginRunUtilOptions): Promise<NetlifyPluginRunUtilResult>
 }
