@@ -132,6 +132,7 @@ test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) 
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
     .runBuildProgrammatic()
 
+  console.log(stdout.join('\n'))
   t.true(success)
   t.is(t.context.blobRequestCount.set, 3)
 
