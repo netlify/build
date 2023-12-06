@@ -56,6 +56,7 @@ export interface Framework {
     command: string
     port?: number
     pollingStrategies?: PollingStrategy[]
+    clearPublishDirectory?: boolean
   }
   build: {
     command: string

@@ -6,6 +6,7 @@ import { deploySite } from '../plugins_core/deploy/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
+import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
 
@@ -36,7 +37,7 @@ export const getDevSteps = function (command, steps, eventHandlers) {
 
   const eventSteps = getEventSteps(eventHandlers)
 
-  const sortedSteps = sortSteps([...steps, eventSteps, devCommandStep], DEV_EVENTS)
+  const sortedSteps = sortSteps([...steps, eventSteps, preDevCleanup, devCommandStep], DEV_EVENTS)
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
