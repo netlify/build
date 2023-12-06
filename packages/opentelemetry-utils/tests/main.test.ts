@@ -1,4 +1,3 @@
-
 import { context, trace, SpanStatusCode, ROOT_CONTEXT } from '@opentelemetry/api'
 import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
 import type { Span } from '@opentelemetry/sdk-trace-base'
