@@ -99,7 +99,7 @@ const getGeneralEnv = async function ({
   context,
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
-  const deployUrls = getDeployUrls({ siteInfo, branch, deployId })
+  const deployUrls = getDeployUrls({ siteInfo: siteInfo as any, branch, deployId })
   return removeFalsy({
     SITE_ID: id,
     SITE_NAME: name,
@@ -120,7 +120,11 @@ const getGeneralEnv = async function ({
 }
 
 const getDeployUrls = function ({
-  siteInfo: { name = DEFAULT_SITE_NAME, ssl_url: sslUrl, build_settings: { repo_url: REPOSITORY_URL } = {} },
+  siteInfo: {
+    name = DEFAULT_SITE_NAME,
+    ssl_url: sslUrl,
+    build_settings: { repo_url: REPOSITORY_URL = undefined } = {},
+  },
   branch,
   deployId,
 }) {
