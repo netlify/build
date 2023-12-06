@@ -1,7 +1,6 @@
 import type { OnPreBuild, NetlifyConfig } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
-
-import type { JSONValue } from '../../types/utils/json_value.d.ts'
+import type { JSONValue } from '../../lib/types/utils/json_value.js'
 
 export const testNetlifyConfigPlugins: OnPreBuild = function ({
   netlifyConfig: {

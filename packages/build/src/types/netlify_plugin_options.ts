@@ -1,6 +1,7 @@
+import type { NetlifyPluginConstants } from '../core/constants.js'
+
 import type { PluginInputs, StringKeys } from './config/inputs.js'
 import type { NetlifyConfig } from './config/netlify_config.js'
-import type { NetlifyPluginConstants } from './netlify_plugin_constants.js'
 import type { NetlifyPluginUtils } from './options/netlify_plugin_utils.js'
 import type { JSONValue } from './utils/json_value.js'
 

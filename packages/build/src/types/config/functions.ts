@@ -1,6 +1,5 @@
 type GlobPattern = string
 
-/* eslint-disable camelcase -- some properties are named in snake case in this API */
 type FunctionsObject = {
   /**
    * a list of additional paths to include in the function bundle. Although our build system includes statically referenced files (like `import * from "./some-file.js"`) by default, `included_files` lets you specify additional files or directories and reference them dynamically in function code. You can use `*` to match any character or prefix an entry with `!` to exclude files. Paths are relative to the [base directory](https://docs.netlify.com/configure-builds/get-started/#definitions-1).
@@ -28,7 +27,6 @@ type FunctionsObject = {
       ignored_node_modules?: string[]
     }
 )
-/* eslint-enable camelcase */
 
 export type Functions = {
   '*': FunctionsObject & { deno_import_map?: string }
