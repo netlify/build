@@ -25,6 +25,9 @@ const runCli = async function () {
 
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
+  process.on('SIGTERM', async () => {
+    process.exit(FALLBACK_SEVERITY_ENTRY.severityCode)
+  })
 
   const { severityCode, logs } = await buildSite(flagsA)
   printLogs(logs)
