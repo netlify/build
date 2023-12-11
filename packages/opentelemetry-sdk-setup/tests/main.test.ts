@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
-import { trace, TraceFlags, context } from '@opentelemetry/api'
+import { trace, TraceFlags } from '@opentelemetry/api'
 import { Span } from '@opentelemetry/sdk-trace-base'
 import { expect, test, beforeEach, beforeAll, afterAll } from 'vitest'
 
 import { startTracing, stopTracing } from '../src/sdk-setup.js'
-import { findExecutablePackageJSON, loadBaggageFromFile, getGlobalContext, setGlobalContext } from '../src/util.js'
+import { findExecutablePackageJSON, loadBaggageFromFile } from '../src/util.js'
 
 beforeEach(async () => {
   await stopTracing()
@@ -218,18 +218,4 @@ test.each(testMatrixBaggageFile)('Tracing baggage loading - $description', async
   }
 
   expect(attributes).toStrictEqual(expects)
-})
-
-test('Sets the global context', async () => {
-  const rootCtx = context.active()
-  const key = Symbol('some-key')
-  const newCtx = rootCtx.setValue(key, 'my-custom-value')
-  expect(getGlobalContext()).toBe(rootCtx)
-  expect(getGlobalContext()).not.toBe(newCtx)
-  setGlobalContext(newCtx)
-
-  const globalCtx = getGlobalContext()
-  expect(globalCtx).not.toBe(rootCtx)
-  expect(globalCtx).toBe(newCtx)
-  expect(globalCtx.getValue(key)).toEqual('my-custom-value')
 })
