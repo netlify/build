@@ -1,5 +1,23 @@
 # Changelog
 
+## [11.0.0](https://github.com/netlify/edge-bundler/compare/v10.1.3...v11.0.0) (2023-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* provide import maps when starting the isolate, not server ([#548](https://github.com/netlify/edge-bundler/issues/548))
+
+### Features
+
+* provide import maps when starting the isolate, not server ([#548](https://github.com/netlify/edge-bundler/issues/548)) ([7d500b9](https://github.com/netlify/edge-bundler/commit/7d500b9433ad205929c9b21253c8f6dcfa35c67c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to v0.24.4 ([#545](https://github.com/netlify/edge-bundler/issues/545)) ([c06e234](https://github.com/netlify/edge-bundler/commit/c06e23470d8e3292c0fc0983f9e5ba2c7eb65e3a))
+* **deps:** update dependency esbuild to v0.19.8 ([#542](https://github.com/netlify/edge-bundler/issues/542)) ([b596235](https://github.com/netlify/edge-bundler/commit/b596235d259c8ad317343c5a472bff783fb95ae1))
+* **deps:** update dependency esbuild to v0.19.9 ([#550](https://github.com/netlify/edge-bundler/issues/550)) ([e41a990](https://github.com/netlify/edge-bundler/commit/e41a990bdf659fcb16e3c3f95b8e502eb86ba6a9))
+
 ## [10.1.3](https://github.com/netlify/edge-bundler/compare/v10.1.2...v10.1.3) (2023-11-20)
 
 
