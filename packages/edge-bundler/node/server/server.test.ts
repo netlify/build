@@ -22,7 +22,6 @@ test('Starts a server and serves requests for edge functions', async () => {
   const server = await serve({
     basePath,
     bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
-    importMapPaths,
     port,
     servePath,
   })
@@ -43,6 +42,7 @@ test('Starts a server and serves requests for edge functions', async () => {
   ]
   const options = {
     getFunctionsConfig: true,
+    importMapPaths,
   }
 
   const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
@@ -118,7 +118,6 @@ test('Serves edge functions in a monorepo setup', async () => {
   const server = await serve({
     basePath,
     bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
-    importMapPaths,
     port,
     rootPath,
     servePath,
@@ -132,6 +131,7 @@ test('Serves edge functions in a monorepo setup', async () => {
   ]
   const options = {
     getFunctionsConfig: true,
+    importMapPaths,
   }
 
   const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
