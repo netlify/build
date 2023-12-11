@@ -21,8 +21,6 @@ export type BuildCLIFlags = {
   /** The invoking service of netlify build */
   mode: Mode
   telemetry: boolean
-  /** Distributed tracing properties for this build*/
-  tracing: TracingOptions
   /**
    * Buffer output instead of printing it
    * @default false
@@ -83,22 +81,4 @@ export type ErrorParam = {
   testOpts?: TestOptions
   childEnv?: any
   netlifyConfig?: NetlifyConfig
-}
-
-export type TracingOptions = {
-  enabled: boolean
-  /* Tracing is enabled via module preloading, to be removed once we fully rolled it out  */
-  preloadingEnabled: boolean
-  httpProtocol: string
-  host: string
-  port: number
-  /** API Key used for a dedicated trace provider */
-  apiKey: string
-  /** Sample rate being used for this trace, this allows for consistent probability sampling */
-  sampleRate: number
-  /** Properties of the root span and trace id used to stitch context */
-  traceId: string
-  traceFlags: number
-  parentSpanId: string
-  baggageFilePath: string
 }
