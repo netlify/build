@@ -54,7 +54,7 @@ test('should set publish directory based on builder', async ({ fs }) => {
     }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected?.[0].build.directory).toBe(fs.join('dist', 'demo'))
+  expect(detected?.[0].build.directory).toBe('dist/demo')
 })
 
 test('should only install plugin on v17+', async ({ fs }) => {
