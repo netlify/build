@@ -20,7 +20,7 @@ export type PluginsOptions = {
  * This node version is minimum required to run the plugins code.
  * If the users preferred Node.js version is below that we have to fall back to the system node version
  */
-const MINIMUM_REQUIRED_NODE_VERSION = '^14.14.0 || >=16.0.0'
+const MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
 
 /**
  * Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
@@ -60,7 +60,7 @@ const addPluginNodeVersion = function ({
 
   Read more about our minimum required version in our ${link(
     'forums announcement',
-    'https://answers.netlify.com/t/build-plugins-dropping-support-for-node-js-12/79421',
+    'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20',
   )}`,
     )
   }

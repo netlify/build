@@ -9,7 +9,7 @@
     "lib/**"
   ],
   "engines": {
-    "node": "^14.16.0 || >=16.0.0"
+    "node": ">=18.14.0"
   },
   "scripts": {
     "prebuild": "rm -rf lib",
