@@ -48,7 +48,7 @@ export type BuildPlugin = {
    * automatically install the latest version without the need of the user
    * managing the version plugin.
    */
-  alwaysInstall?: boolean
+  autoInstall?: boolean
   source?: 'toml'
 }
 

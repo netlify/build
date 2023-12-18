@@ -40,9 +40,9 @@ export class Next extends BaseFramework implements Framework {
         gte(this.detected.package.version, '13.5.0') &&
         typeof runtimeFromRollout === 'string'
       ) {
-        this.plugins.push({ name: runtimeFromRollout ?? '@netlify/plugin-nextjs', alwaysInstall: true })
+        this.plugins.push({ name: runtimeFromRollout ?? '@netlify/plugin-nextjs', autoInstall: true })
       } else if (nodeVersion && gte(nodeVersion, '10.13.0')) {
-        this.plugins.push({ name: '@netlify/plugin-nextjs', alwaysInstall: true })
+        this.plugins.push({ name: '@netlify/plugin-nextjs', autoInstall: true })
       }
       return this as DetectedFramework
     }

@@ -85,7 +85,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "packagePath": "packages/website",
       "plugins": [
         {
-          "alwaysInstall": true,
+          "autoInstall": true,
           "name": "@netlify/plugin-nextjs",
         },
       ],
@@ -295,7 +295,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "packagePath": "packages/website",
       "plugins": [
         {
-          "alwaysInstall": true,
+          "autoInstall": true,
           "name": "@netlify/plugin-nextjs",
         },
       ],

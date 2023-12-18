@@ -27,7 +27,7 @@ test('get the settings for a next project', async (ctx) => {
       dist: '.next',
       env: {},
       frameworkPort: 3000,
-      plugins: [{ alwaysInstall: true, name: '@netlify/plugin-nextjs' }],
+      plugins: [{ autoInstall: true, name: '@netlify/plugin-nextjs' }],
       pollingStrategies: ['TCP'],
     }),
   ])
@@ -46,7 +46,7 @@ test('get the settings for a next project if a build system has no commands and 
       dist: '.next',
       env: {},
       frameworkPort: 3000,
-      plugins: [{ alwaysInstall: true, name: '@netlify/plugin-nextjs' }],
+      plugins: [{ autoInstall: true, name: '@netlify/plugin-nextjs' }],
       pollingStrategies: ['TCP'],
     }),
   ])

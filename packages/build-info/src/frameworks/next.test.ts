@@ -38,7 +38,7 @@ describe('Next.js Plugin', () => {
     const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', alwaysInstall: true }])
+    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 
   test('Should use the old runtime if the next.js version is not >= 13.5.0', async ({ fs, cwd }) => {
@@ -46,7 +46,7 @@ describe('Next.js Plugin', () => {
     project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime' }
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', alwaysInstall: true }])
+    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
@@ -83,7 +83,7 @@ describe('New Next.js Runtime', () => {
     project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime@latest' }
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', alwaysInstall: true }])
+    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 
   test('Should use the old runtime if the next.js version is not >= 13.5.0', async ({ fs, cwd }) => {
@@ -91,7 +91,7 @@ describe('New Next.js Runtime', () => {
     project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime@latest' }
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/next-runtime@latest', alwaysInstall: true }])
+    expect(frameworks?.[0].plugins).toEqual([{ name: '@netlify/next-runtime@latest', autoInstall: true }])
   })
 })
 
@@ -136,7 +136,7 @@ describe('simple Next.js project', async () => {
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).setEnvironment({ NODE_VERSION: '18.x' }).detectFrameworks()
     expect(detected?.[0].id).toBe('next')
-    expect(detected?.[0].plugins).toMatchObject([{ name: '@netlify/plugin-nextjs', alwaysInstall: true }])
+    expect(detected?.[0].plugins).toMatchObject([{ name: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 })
 
@@ -180,7 +180,7 @@ describe('Nx monorepo', () => {
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website'),
       frameworkPort: 4200,
-      plugins: [{ name: '@netlify/plugin-nextjs', alwaysInstall: true }],
+      plugins: [{ name: '@netlify/plugin-nextjs', autoInstall: true }],
     })
   })
 })
@@ -198,7 +198,7 @@ describe('Nx turborepo', () => {
       devCommand: 'turbo run dev --filter web',
       dist: join('apps/web/.next'),
       frameworkPort: 3000,
-      plugins: [{ name: '@netlify/plugin-nextjs', alwaysInstall: true }],
+      plugins: [{ name: '@netlify/plugin-nextjs', autoInstall: true }],
     })
   })
 })
