@@ -39,6 +39,13 @@ export type Detection = {
 
 export type FrameworkInfo = ReturnType<Framework['toJSON']>
 
+export type BuildPlugin = {
+  name: string
+  /** Plugins that should be always installed */
+  alwaysInstall?: boolean
+  source?: 'toml'
+}
+
 export interface Framework {
   project: Project
 
@@ -67,7 +74,7 @@ export interface Framework {
     light?: string
     dark?: string
   }
-  plugins: string[]
+  plugins: BuildPlugin[]
   env: Record<string, string>
 
   detect(): Promise<DetectedFramework | undefined>
@@ -147,7 +154,7 @@ export abstract class BaseFramework implements Framework {
   configFiles: string[] = []
   npmDependencies: string[] = []
   excludedNpmDependencies: string[] = []
-  plugins: string[] = []
+  plugins: BuildPlugin[] = []
   staticAssetsDirectory?: string
   env = {}
   dev?: {
@@ -355,7 +362,7 @@ export abstract class BaseFramework implements Framework {
             {},
           )
         : undefined,
-      plugins: this.plugins,
+      plugins: this.plugins.map(({ name }) => name),
     }
   }
 }

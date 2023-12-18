@@ -64,8 +64,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins_from_config_file": [],
-      "plugins_recommended": [],
+      "plugins": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -84,9 +83,11 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "frameworkPort": 3000,
       "name": "PNPM + Next.js packages/website",
       "packagePath": "packages/website",
-      "plugins_from_config_file": [],
-      "plugins_recommended": [
-        "@netlify/plugin-nextjs",
+      "plugins": [
+        {
+          "alwaysInstall": true,
+          "name": "@netlify/plugin-nextjs",
+        },
       ],
       "pollingStrategies": [
         "TCP",
@@ -199,8 +200,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins_from_config_file": [],
-      "plugins_recommended": [],
+      "plugins": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -274,8 +274,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "frameworkPort": 3000,
       "name": "PNPM + Astro packages/blog",
       "packagePath": "packages/blog",
-      "plugins_from_config_file": [],
-      "plugins_recommended": [],
+      "plugins": [],
       "pollingStrategies": [
         "TCP",
         "HTTP",
@@ -294,9 +293,11 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "frameworkPort": 3000,
       "name": "PNPM + Next.js packages/website",
       "packagePath": "packages/website",
-      "plugins_from_config_file": [],
-      "plugins_recommended": [
-        "@netlify/plugin-nextjs",
+      "plugins": [
+        {
+          "alwaysInstall": true,
+          "name": "@netlify/plugin-nextjs",
+        },
       ],
       "pollingStrategies": [
         "TCP",

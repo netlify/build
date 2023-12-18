@@ -197,7 +197,7 @@ describe('nx-integrated project.json based', () => {
           frameworkPort: 4200,
           name: `Nx + Next.js ${join('packages/website')}`,
           packagePath: join('packages/website'),
-          plugins_recommended: ['@netlify/plugin-nextjs'],
+          plugins: [{ name: '@netlify/plugin-nextjs', alwaysInstall: true }],
         }),
       ]),
     )
@@ -212,7 +212,7 @@ describe('nx-integrated project.json based', () => {
           frameworkPort: 3000,
           name: `Nx + Astro ${join('packages/astro')}`,
           packagePath: join('packages/astro'),
-          plugins_recommended: [],
+          plugins: [],
         }),
       ]),
     )
@@ -250,7 +250,7 @@ describe('nx-integrated workspace.json based', () => {
           frameworkPort: 4200,
           name: `Nx + React Static ${join('apps/website')}`,
           packagePath: join('apps/website'),
-          plugins_recommended: [],
+          plugins: [],
         }),
       ]),
     )
@@ -264,7 +264,7 @@ describe('nx-integrated workspace.json based', () => {
           framework: { id: 'astro', name: 'Astro' },
           name: `Nx + Astro ${join('apps/astro')}`,
           packagePath: join('apps/astro'),
-          plugins_recommended: [],
+          plugins: [],
         }),
       ]),
     )

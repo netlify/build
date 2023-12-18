@@ -8,7 +8,11 @@ import { report } from '../metrics.js'
 import { getBuildInfo } from './get-build-info.js'
 import { initializeMetrics } from './metrics.js'
 
-type Args = Arguments<{ projectDir?: string; rootDir?: string; featureFlags: Record<string, boolean> }>
+type Args = Arguments<{
+  projectDir?: string
+  rootDir?: string
+  featureFlags: Record<string, number | boolean | string>
+}>
 
 yargs(hideBin(argv))
   .command(
@@ -22,13 +26,9 @@ yargs(hideBin(argv))
         },
         featureFlags: {
           string: true,
-          describe: 'comma separated list of feature flags',
-          coerce: (value = '') =>
-            value
-              .split(',')
-              .map((flag) => flag.trim())
-              .filter((flag) => flag.length)
-              .reduce((prev, cur) => ({ ...prev, [cur]: true }), {}),
+          describe: 'JSON stringified list of feature flags with values',
+          alias: 'ff',
+          coerce: (value: '{}') => JSON.parse(value),
         },
       }),
     async ({ projectDir, rootDir, featureFlags }: Args) => {
@@ -37,7 +37,12 @@ yargs(hideBin(argv))
       try {
         console.log(
           JSON.stringify(
-            await getBuildInfo({ projectDir, rootDir, featureFlags, bugsnagClient }),
+            await getBuildInfo({
+              projectDir,
+              rootDir,
+              featureFlags,
+              bugsnagClient,
+            }),
             // hide null values from the string output as we use null to identify it has already run but did not detect anything
             // undefined marks that it was never run
             (_, value) => (value !== null ? value : undefined),

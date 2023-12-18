@@ -62,6 +62,8 @@ export class Project {
   bugsnag: Client
   /** A logging instance  */
   logger: Logger
+  /** A list of enabled feature flags */
+  featureFlags: Record<string, boolean | number | string> = {}
 
   /** A function that is used to report errors */
   reportFn: typeof report = report
@@ -73,6 +75,11 @@ export class Project {
 
   setNodeVersion(version: string): this {
     this._nodeVersion = parse(coerce(version), { loose: true })
+    return this
+  }
+
+  setFeatureFlags(flags: Record<string, boolean | number | string> = {}): this {
+    this.featureFlags = { ...this.featureFlags, ...flags }
     return this
   }
 

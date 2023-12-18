@@ -31,7 +31,7 @@ test('should detect Angular', async ({ fs }) => {
   expect(detected?.[0].build.command).toBe('ng build --prod')
   expect(detected?.[0].build.directory).toBe(fs.join('dist', 'demo', 'browser'))
   expect(detected?.[0].dev?.command).toBe('ng serve')
-  expect(detected?.[0].plugins).toEqual(['@netlify/angular-runtime'])
+  expect(detected?.[0].plugins).toEqual([{ name: '@netlify/angular-runtime' }])
 })
 
 test('should only install plugin on v17+', async ({ fs }) => {

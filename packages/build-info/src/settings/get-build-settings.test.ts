@@ -17,7 +17,7 @@ beforeEach((ctx) => {
 
 test('get the settings for a next project', async (ctx) => {
   const fixture = await createFixture('next-project', ctx)
-  const project = new Project(ctx.fs, fixture.cwd)
+  const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('18.0.0')
   const settings = await project.getBuildSettings()
 
   expect(settings).toEqual([
@@ -27,8 +27,7 @@ test('get the settings for a next project', async (ctx) => {
       dist: '.next',
       env: {},
       frameworkPort: 3000,
-      plugins_recommended: [],
-      plugins_from_config_file: [],
+      plugins: [{ alwaysInstall: true, name: '@netlify/plugin-nextjs' }],
       pollingStrategies: ['TCP'],
     }),
   ])
@@ -36,7 +35,7 @@ test('get the settings for a next project', async (ctx) => {
 
 test('get the settings for a next project if a build system has no commands and overrides', async (ctx) => {
   const fixture = await createFixture('next-project', ctx)
-  const project = new Project(ctx.fs, fixture.cwd)
+  const project = new Project(ctx.fs, fixture.cwd).setNodeVersion('18.0.0')
   project.buildSystems = [new Bazel(project)]
   const settings = await project.getBuildSettings()
 
@@ -47,8 +46,7 @@ test('get the settings for a next project if a build system has no commands and 
       dist: '.next',
       env: {},
       frameworkPort: 3000,
-      plugins_recommended: [],
-      plugins_from_config_file: [],
+      plugins: [{ alwaysInstall: true, name: '@netlify/plugin-nextjs' }],
       pollingStrategies: ['TCP'],
     }),
   ])

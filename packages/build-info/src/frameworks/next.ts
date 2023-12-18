@@ -32,8 +32,17 @@ export class Next extends BaseFramework implements Framework {
 
     if (this.detected) {
       const nodeVersion = await this.project.getCurrentNodeVersion()
-      if (nodeVersion && gte(nodeVersion, '10.13.0')) {
-        this.plugins.push('@netlify/plugin-nextjs')
+      const runtimeFromRollout = this.project.featureFlags['project_ceruledge_ui']
+      if (
+        nodeVersion &&
+        gte(nodeVersion, '18.0.0') &&
+        this.detected.package?.version &&
+        gte(this.detected.package.version, '13.5.0') &&
+        typeof runtimeFromRollout === 'string'
+      ) {
+        this.plugins.push({ name: runtimeFromRollout ?? '@netlify/plugin-nextjs', alwaysInstall: true })
+      } else if (nodeVersion && gte(nodeVersion, '10.13.0')) {
+        this.plugins.push({ name: '@netlify/plugin-nextjs', alwaysInstall: true })
       }
       return this as DetectedFramework
     }
