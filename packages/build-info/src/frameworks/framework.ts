@@ -41,7 +41,13 @@ export type FrameworkInfo = ReturnType<Framework['toJSON']>
 
 export type BuildPlugin = {
   name: string
-  /** Plugins that should be always installed */
+  /**
+   * This setting is for runtimes that are expected to be "automatically"
+   * installed. Even though they can be installed on package/toml, we always
+   * want them installed in the site settings. When installed our build will
+   * automatically install the latest version without the need of the user
+   * managing the version plugin.
+   */
   alwaysInstall?: boolean
   source?: 'toml'
 }
