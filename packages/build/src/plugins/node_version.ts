@@ -63,10 +63,9 @@ const addPluginNodeVersion = function ({
     'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20',
   )}`,
     )
+
+    return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
   }
 
-  return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
-    semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)
-    ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
-    : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
+  return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
 }
