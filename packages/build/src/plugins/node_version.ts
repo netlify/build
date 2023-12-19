@@ -69,11 +69,13 @@ const addPluginNodeVersion = function ({
     if (!semver.satisfies(userNodeVersion, UPCOMING_MINIMUM_REQUIRED_NODE_VERSION)) {
       logWarningSubHeader(
         logs,
-        `Warning: Starting January 16, 2024 ${packageName} will be executed with Node.js version 20.`,
+        `Warning: Starting January 16, 2024 plugin "${packageName}" will be executed with Node.js version 20.`,
       )
       logWarning(
         logs,
         `  We're upgrading our system node version on that day, which means the plugin cannot be executed with your defined Node.js version ${userNodeVersion}.
+        
+  Please make sure your plugin supports being run on Node.js 20.
   
   Read more about our minimum required version in our ${link(
     'forums announcement',
