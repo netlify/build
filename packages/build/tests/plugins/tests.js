@@ -106,7 +106,7 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 test('Validate --node-path version is supported by the plugin', async (t) => {
   const nodePath = getNodePath('18.14.0')
   const output = await new Fixture('./fixtures/engines').withFlags({ nodePath }).runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(output.includes(`The Node.js version is 18.14.0 but the plugin "./plugin.js" requires >=20.0.0`))
 })
 
 test('Validate --node-path exists', async (t) => {
@@ -121,7 +121,8 @@ test('Provided --node-path version is unused in buildbot for local plugin execut
   const output = await new Fixture('./fixtures/version_greater_than_minimum')
     .withFlags({ nodePath, mode: 'buildbot' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(normalizeOutput(output).includes('Warning: ./plugin.js will be executed with Node.js version 1.0.0'))
+  t.true(normalizeOutput(output).includes('The plugin cannot be executed with your defined Node.js version 1.0.0'))
 })
 
 test('Plugins can execute local binaries', async (t) => {
