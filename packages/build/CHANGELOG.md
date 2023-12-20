@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.31.2](https://github.com/netlify/build/compare/build-v29.31.1...build-v29.31.2) (2023-12-20)
+
+
+### Bug Fixes
+
+* warn about upcoming system version update ([#5451](https://github.com/netlify/build/issues/5451)) ([ba50681](https://github.com/netlify/build/commit/ba506810e216331696926f51a98ed48ef6e8e1f6))
+
 ## [29.31.1](https://github.com/netlify/build/compare/build-v29.31.0...build-v29.31.1) (2023-12-13)
 
 

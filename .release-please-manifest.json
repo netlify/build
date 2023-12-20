@@ -1,6 +1,6 @@
 {
-  "packages/build-info": "7.11.3",
-  "packages/build": "29.31.1",
+  "packages/build-info": "7.11.4",
+  "packages/build": "29.31.2",
   "packages/cache-utils": "5.1.5",
   "packages/config": "20.10.0",
   "packages/framework-info": "9.8.10",
