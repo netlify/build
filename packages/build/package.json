@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "29.31.1",
+  "version": "29.31.2",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/index.js",

@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.11.4](https://github.com/netlify/build/compare/build-info-v7.11.3...build-info-v7.11.4) (2023-12-20)
+
+
+### Bug Fixes
+
+* recommend ng17 dist dir based on builder ([#5445](https://github.com/netlify/build/issues/5445)) ([494ffcc](https://github.com/netlify/build/commit/494ffcc04b8038a437c1c5dd4c54ec56d4af79c7))
+
 ## [7.11.3](https://github.com/netlify/build/compare/build-info-v7.11.2...build-info-v7.11.3) (2023-12-06)
 
 
