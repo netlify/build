@@ -73,7 +73,7 @@ const addPluginNodeVersion = function ({
     ) {
       logWarningSubHeader(
         logs,
-        `Warning: Starting January 16, 2024 plugin "${packageName}" will be executed with Node.js version 20.`,
+        `Warning: Starting January 30, 2024 plugin "${packageName}" will be executed with Node.js version 20.`,
       )
       logWarning(
         logs,
