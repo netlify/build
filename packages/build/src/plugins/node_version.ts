@@ -30,14 +30,15 @@ const UPCOMING_MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
  * usually the system's Node.js version.
  * If the user Node version does not satisfy our supported engine range use our own system Node version
  */
-export const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion, logs }) {
+export const addPluginsNodeVersion = function ({ featureFlags, pluginsOptions, nodePath, userNodeVersion, logs }) {
   const currentNodeVersion = semver.clean(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
+    addPluginNodeVersion({ featureFlags, pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
   )
 }
 
 const addPluginNodeVersion = function ({
+  featureFlags,
   pluginOptions,
   pluginOptions: { loadedFrom, packageName },
   currentNodeVersion,
@@ -66,7 +67,10 @@ const addPluginNodeVersion = function ({
       return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
     }
 
-    if (!semver.satisfies(userNodeVersion, UPCOMING_MINIMUM_REQUIRED_NODE_VERSION)) {
+    if (
+      featureFlags.build_warn_upcoming_system_version_change &&
+      !semver.satisfies(userNodeVersion, UPCOMING_MINIMUM_REQUIRED_NODE_VERSION)
+    ) {
       logWarningSubHeader(
         logs,
         `Warning: Starting January 16, 2024 plugin "${packageName}" will be executed with Node.js version 20.`,
