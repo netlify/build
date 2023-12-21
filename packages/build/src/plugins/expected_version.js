@@ -27,7 +27,7 @@ export const addExpectedVersions = async function ({
   const pluginsList = await getPluginsList({ debug, logs, testOpts })
   return await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir, featureFlags }),
+      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir, featureFlags, testOpts }),
     ),
   )
 }
@@ -41,13 +41,14 @@ const addExpectedVersion = async function ({
   pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion, pinnedVersion },
   buildDir,
   featureFlags,
+  testOpts,
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
   }
 
   if (pluginsList[packageName] === undefined) {
-    validateUnlistedPlugin(packageName, loadedFrom)
+    validateUnlistedPlugin(packageName, loadedFrom, testOpts)
     return pluginOptions
   }
 
@@ -105,7 +106,11 @@ const needsExpectedVersion = function ({ loadedFrom }) {
 // Plugins that are not in our official list can only be specified in
 // `netlify.toml` providing they are also installed in the site's package.json.
 // Otherwise, the build should fail.
-const validateUnlistedPlugin = function (packageName, loadedFrom) {
+const validateUnlistedPlugin = function (packageName, loadedFrom, testOpts) {
+  if (testOpts.skipPluginList) {
+    return
+  }
+
   if (loadedFrom === 'package.json') {
     return
   }

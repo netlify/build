@@ -124,6 +124,20 @@ test('Provided --node-path version is unused in buildbot for local plugin execut
   t.snapshot(normalizeOutput(output))
 })
 
+test('UI plugins dont use provided --node-path', async (t) => {
+  const nodePath = getNodePath('12.19.0')
+  const output = await new Fixture('./fixtures/ui_auto_install')
+    .withFlags({
+      nodePath,
+      mode: 'buildbot',
+      defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] },
+      testOpts: { skipPluginList: true },
+    })
+    .runWithBuild()
+  const systemNodeVersion = process.version
+  t.true(output.includes(`node.js version used to execute this plugin: ${systemNodeVersion}`))
+})
+
 test('Plugins can execute local binaries', async (t) => {
   const output = await new Fixture('./fixtures/local_bin').runWithBuild()
   t.snapshot(normalizeOutput(output))
