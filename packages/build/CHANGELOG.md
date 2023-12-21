@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.31.3](https://github.com/netlify/build/compare/build-v29.31.2...build-v29.31.3) (2023-12-21)
+
+
+### Bug Fixes
+
+* test version selection for ui plugin ([#5453](https://github.com/netlify/build/issues/5453)) ([b5ae02e](https://github.com/netlify/build/commit/b5ae02e47068f4ef21c68460c3fd19ae47df1db8))
+
 ## [29.31.2](https://github.com/netlify/build/compare/build-v29.31.1...build-v29.31.2) (2023-12-20)
 
 
