@@ -38,7 +38,6 @@ export const resolvePluginsPath = async function ({
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
   const pluginsOptionsB = addPluginsNodeVersion({
-    featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
