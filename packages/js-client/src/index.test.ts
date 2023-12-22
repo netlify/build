@@ -672,4 +672,3 @@ test('(Proxy) agent is not passed as request option if not set', async (t) => {
 
 const TEST_RATE_LIMIT_DELAY = 5e3
 const SECS_TO_MSECS = 1e3
-/* eslint-enable max-lines */
