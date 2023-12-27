@@ -6,7 +6,7 @@ import { parseHeaders } from './helpers/main.js'
 // https://github.com/tinylibs/tinybench/pull/40 and
 // https://github.com/tinylibs/tinybench/pull/43
 // This is just a quick workaround to not run the bench tests in node 14 while we still support it
-if (!process.version.startsWith('14')) {
+if (!process.version.startsWith('v14')) {
   bench('Merges large _headers file with config headers', async () => {
     const input = {
       headersFiles: ['large_headers_file'],
