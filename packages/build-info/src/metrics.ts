@@ -29,7 +29,7 @@ const normalizeError = (error: any): NotifiableError => {
 
 /** Report an error to bugsnag */
 export function report(
-  error: NotifiableError | Record<string, Record<string, any>>,
+  error: NotifiableError | Record<string, any>,
   options: {
     context?: string
     severity?: Severity
