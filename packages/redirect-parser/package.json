@@ -1,6 +1,6 @@
 {
   "name": "netlify-redirect-parser",
-  "version": "14.2.0",
+  "version": "14.2.1",
   "description": "Parses netlify redirects into a js object representation",
   "type": "module",
   "exports": "./lib/index.js",

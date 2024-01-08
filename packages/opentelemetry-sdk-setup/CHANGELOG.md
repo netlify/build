@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.1...opentelemetry-sdk-setup-v1.0.2) (2024-01-08)
+
+
+### Bug Fixes
+
+* **tracing:** cleanup otel setup ([#5446](https://github.com/netlify/build/issues/5446)) ([2d10996](https://github.com/netlify/build/commit/2d10996ee91e7640be0e4b53105ae30cb42752fe))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ^1.0.0 to ^1.0.1
+
 ## [1.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.0...opentelemetry-sdk-setup-v1.0.1) (2023-11-23)
 
 
