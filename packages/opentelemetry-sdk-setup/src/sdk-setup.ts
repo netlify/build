@@ -1,5 +1,6 @@
 import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
-import { trace, diag, context, propagation, DiagLogLevel, TraceFlags } from '@opentelemetry/api'
+import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
+import { trace, diag, context, DiagLogLevel, TraceFlags } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
@@ -86,19 +87,4 @@ export const stopTracing = async function () {
   } catch (e) {
     diag.error(e)
   }
-}
-
-/** Sets attributes to be propagated across child spans under the current active context
- * TODO this method will be removed from this package once we move it to a dedicated one to be shared between build,
- * this setup and any other node module which might use our open telemetry setup
- * */
-export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
-  const currentBaggage = propagation.getBaggage(context.active())
-  // Create a baggage if there's none
-  let baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
-  Object.entries(attributes).forEach(([key, value]) => {
-    baggage = baggage.setEntry(key, { value })
-  })
-
-  return propagation.setBaggage(context.active(), baggage)
 }

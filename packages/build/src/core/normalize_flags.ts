@@ -4,7 +4,7 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import type { BuildFlags, Mode, TestOptions, TracingOptions } from './types.js'
+import type { BuildFlags, Mode, TestOptions } from './types.js'
 
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
@@ -43,7 +43,6 @@ export type ResolvedFlags = {
   statsdOpts: { host?: number; port: number }
   bugsnagKey?: string
   systemLogFile?: number
-  tracingOpts: TracingOptions
 }
 
 /** Normalize CLI flags  */
@@ -62,7 +61,6 @@ export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): Resol
     ...rawFlags,
     ...telemetryFlag,
     statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
-    tracingOpts: { ...defaultFlags.tracing, ...rawFlags.tracing },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags) as any

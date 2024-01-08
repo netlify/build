@@ -13,7 +13,6 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
-import { startTracing } from '../tracing/main.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -35,11 +34,10 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, tracingOpts, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: { tracingOpts, debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
-  const rootTracingContext = startTracing(tracingOpts, getSystemLogger(logs, debug, systemLogFile))
+  const { bugsnagKey, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
 
-  return { ...flagsA, rootTracingContext, debug, systemLogFile, errorMonitor, logs, timers }
+  return { ...flagsA, debug, systemLogFile, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({

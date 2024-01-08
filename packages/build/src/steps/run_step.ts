@@ -1,3 +1,4 @@
+import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
@@ -5,7 +6,7 @@ import { logStepStart } from '../log/messages/steps.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
-import { setMultiSpanAttributes, StepExecutionAttributes } from '../tracing/main.js'
+import { StepExecutionAttributes } from '../tracing/main.js'
 
 import { fireCoreStep } from './core_step.js'
 import { firePluginStep } from './plugin.js'
