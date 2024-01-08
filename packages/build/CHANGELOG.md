@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.31.4](https://github.com/netlify/build/compare/build-v29.31.3...build-v29.31.4) (2024-01-08)
+
+
+### Bug Fixes
+
+* **tracing:** cleanup otel setup ([#5446](https://github.com/netlify/build/issues/5446)) ([2d10996](https://github.com/netlify/build/commit/2d10996ee91e7640be0e4b53105ae30cb42752fe))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.10.0 to ^20.10.1
+    * @netlify/opentelemetry-utils bumped from ^1.0.0 to ^1.0.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.1 to ^1.0.2
+
 ## [29.31.3](https://github.com/netlify/build/compare/build-v29.31.2...build-v29.31.3) (2023-12-21)
 
 
