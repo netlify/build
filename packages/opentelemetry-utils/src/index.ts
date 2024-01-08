@@ -1,4 +1,4 @@
-import { context, Context, propagation, trace, SpanStatusCode } from '@opentelemetry/api'
+import { context, Context, propagation, trace, SpanStatusCode, Attributes } from '@opentelemetry/api'
 
 /**
  * Sets attributes to be propagated across child spans under the current active context
@@ -17,7 +17,7 @@ export const setMultiSpanAttributes = function (attributes: { [key: string]: str
 /**
  * Add error information to the current active span (if any). Optionally sets the provided attributes on the span too.
  */
-export const addErrorToActiveSpan = function (error: Error, attributes?: { [key: string]: string }) {
+export const addErrorToActiveSpan = function (error: Error, attributes?: Attributes) {
   const span = trace.getActiveSpan()
   if (!span) return
 
@@ -35,7 +35,7 @@ export const addErrorToActiveSpan = function (error: Error, attributes?: { [key:
 /**
  * Creates a specific event to the current active span (if any)
  */
-export const addEventToActiveSpan = function (eventName: string, attributes?: { [key: string]: string }) {
+export const addEventToActiveSpan = function (eventName: string, attributes?: Attributes) {
   const span = trace.getActiveSpan()
   if (!span) return
   span.addEvent(eventName, attributes)
