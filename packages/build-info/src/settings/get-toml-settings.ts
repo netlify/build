@@ -44,7 +44,7 @@ export async function getTomlSettingsFromPath(
     settings.template = template ?? settings.template
 
     for (const plugin of plugins || []) {
-      settings.plugins.push({ name: plugin.package, source: 'toml' })
+      settings.plugins.push({ package: plugin.package, source: 'toml' })
     }
 
     return settings

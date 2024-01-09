@@ -86,7 +86,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "plugins": [
         {
           "autoInstall": true,
-          "name": "@netlify/plugin-nextjs",
+          "package": "@netlify/plugin-nextjs",
         },
       ],
       "pollingStrategies": [
@@ -296,7 +296,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "plugins": [
         {
           "autoInstall": true,
-          "name": "@netlify/plugin-nextjs",
+          "package": "@netlify/plugin-nextjs",
         },
       ],
       "pollingStrategies": [

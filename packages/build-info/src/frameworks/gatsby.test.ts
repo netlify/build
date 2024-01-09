@@ -27,7 +27,7 @@ test('should detect a simple Gatsby project and add the plugin if the node versi
   fs.cwd = cwd
   const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
-  expect(detected?.[0].plugins).toMatchObject([{ name: '@netlify/plugin-gatsby' }])
+  expect(detected?.[0].plugins).toMatchObject([{ package: '@netlify/plugin-gatsby' }])
 })
 
 test('should detect a simple Gatsby 4 project', async ({ fs }) => {

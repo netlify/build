@@ -40,7 +40,7 @@ export type Detection = {
 export type FrameworkInfo = ReturnType<Framework['toJSON']>
 
 export type BuildPlugin = {
-  name: string
+  package: string
   /**
    * This setting is for runtimes that are expected to be "automatically"
    * installed. Even though they can be installed on package/toml, we always
@@ -106,7 +106,7 @@ export interface Framework {
     staticAssetsDirectory?: string
     env: Record<string, string>
     logo?: Record<string, string>
-    plugins: string[]
+    plugins: BuildPlugin[]
   }
 }
 
@@ -368,7 +368,7 @@ export abstract class BaseFramework implements Framework {
             {},
           )
         : undefined,
-      plugins: this.plugins.map(({ name }) => name),
+      plugins: this.plugins,
     }
   }
 }

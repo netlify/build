@@ -107,7 +107,7 @@ package = "@netlify/plugin-nextjs"
       dist: '.next',
       frameworkPort: 3000,
       functionsDir: 'api',
-      plugins: [{ name: '@netlify/plugin-nextjs', source: 'toml' }],
+      plugins: [{ package: '@netlify/plugin-nextjs', source: 'toml' }],
     }),
   )
 })

@@ -31,7 +31,7 @@ export class Angular extends BaseFramework implements Framework {
 
     if (this.detected) {
       if (this.version && gte(this.version, '17.0.0-rc')) {
-        this.plugins.push({ name: '@netlify/angular-runtime' })
+        this.plugins.push({ package: '@netlify/angular-runtime' })
         const angularJson = await this.project.fs.gracefullyReadFile('angular.json')
         if (angularJson) {
           const { projects, defaultProject } = JSON.parse(angularJson)
