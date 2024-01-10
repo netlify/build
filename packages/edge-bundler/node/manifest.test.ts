@@ -486,22 +486,3 @@ test('Returns functions without a declaration and unrouted functions', () => {
   expect(declarationsWithoutFunction).toEqual(['func-3'])
   expect(unroutedFunctions).toEqual(['func-2', 'func-4'])
 })
-
-test('Generates exclusion patterns from negative lookaheads', () => {
-  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
-  const declarations = [{ function: 'func-1', pattern: "'/((?!api|_next/static|_next/image|favicon.ico).*)'" }]
-  const { manifest } = generateManifest({
-    bundles: [],
-    declarations,
-    featureFlags: { edge_bundler_transform_lookaheads: true },
-    functions,
-  })
-
-  expect(manifest.routes).toEqual([
-    {
-      function: 'func-1',
-      pattern: "^'/(.*)'$",
-      excluded_patterns: ["/^'/(api|_next/static|_next/image|favicon.ico.*)'$/"],
-    },
-  ])
-})

@@ -108,7 +108,6 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
 const generateManifest = ({
   bundles = [],
   declarations = [],
-  featureFlags,
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
@@ -154,8 +153,7 @@ const generateManifest = ({
       return
     }
 
-    const extractedExclusionPatterns = featureFlags?.edge_bundler_transform_lookaheads ? [] : undefined
-    const pattern = getRegularExpression(declaration, extractedExclusionPatterns)
+    const pattern = getRegularExpression(declaration)
 
     // If there is no `pattern`, the declaration will never be triggered, so we
     // can discard it.
@@ -165,7 +163,7 @@ const generateManifest = ({
 
     routedFunctions.add(declaration.function)
 
-    const excludedPattern = [...getExcludedRegularExpressions(declaration), ...(extractedExclusionPatterns ?? [])]
+    const excludedPattern = getExcludedRegularExpressions(declaration)
     const route: Route = {
       function: func.name,
       pattern: serializePattern(pattern),
@@ -227,10 +225,10 @@ const pathToRegularExpression = (path: string) => {
   }
 }
 
-const getRegularExpression = (declaration: Declaration, extractedExclusionPatterns?: string[]) => {
+const getRegularExpression = (declaration: Declaration) => {
   if ('pattern' in declaration) {
     try {
-      return parsePattern(declaration.pattern, extractedExclusionPatterns)
+      return parsePattern(declaration.pattern)
     } catch (error: unknown) {
       throw wrapBundleError(
         new Error(
