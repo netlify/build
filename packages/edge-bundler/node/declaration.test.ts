@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 
 import { FunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations, parsePattern } from './declaration.js'
@@ -182,4 +182,50 @@ test('Ensures pattern match on the whole path', () => {
   const actual = parsePattern(regexPattern)
 
   expect(actual).toEqual(expected)
+})
+
+describe('Transforms negative lookaheads', () => {
+  test('Throws if a `extractedExclusionPatterns` property is not supplied', () => {
+    const input = "'/((?!api|_next/static|_next/image|favicon.ico).*)'"
+
+    expect(() => parsePattern(input)).toThrowError('Regular expressions with lookaheads are not supported')
+  })
+
+  test('With a disjunction inside the lookahead', () => {
+    const input = "'/((?!api|_next/static|_next/image|favicon.ico).*)'"
+    const exclusions: string[] = []
+    const actual = parsePattern(input, exclusions)
+
+    expect(actual).toEqual("^'\\/(.*)'$")
+    expect(exclusions).toStrictEqual(["/^'\\/(api|_next\\/static|_next\\/image|favicon.ico.*)'$/"])
+  })
+
+  test('With multiple lookaheads inside a disjunction', () => {
+    const input = 'one(two(?!three)|four|five(?!six)|seven)'
+    const exclusions: string[] = []
+    const expected = '^one(two|four|five|seven)$'
+    const actual = parsePattern(input, exclusions)
+
+    expect(actual).toEqual(expected)
+    expect(exclusions).toStrictEqual(['/^one(twothree)$/', '/^one(fivesix)$/'])
+  })
+
+  test('With a lookahead outside of a disjunction', () => {
+    const input = 'a(b|c)(?!d)'
+    const exclusions: string[] = []
+    const expected = '^a(b|c)$'
+    const actual = parsePattern(input, exclusions)
+
+    expect(actual).toEqual(expected)
+    expect(exclusions).toStrictEqual(['/^a(b|c)d$/'])
+  })
+
+  test('Throws on nested lookaheads', () => {
+    const exclusions: string[] = []
+
+    expect(() => parsePattern('one(?!two(?!three))', exclusions)).toThrowError(
+      'Regular expressions with nested lookaheads are not supported',
+    )
+    expect(exclusions).toStrictEqual([])
+  })
 })

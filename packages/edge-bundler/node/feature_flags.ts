@@ -1,4 +1,6 @@
-const defaultFlags = {}
+const defaultFlags = {
+  edge_bundler_transform_lookaheads: false,
+}
 
 type FeatureFlag = keyof typeof defaultFlags
 type FeatureFlags = Partial<Record<FeatureFlag, boolean>>
