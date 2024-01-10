@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.3](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.2...netlify-headers-parser-v7.1.3) (2024-01-08)
+
+
+### Bug Fixes
+
+* **tracing:** cleanup otel setup ([#5446](https://github.com/netlify/build/issues/5446)) ([2d10996](https://github.com/netlify/build/commit/2d10996ee91e7640be0e4b53105ae30cb42752fe))
+
 ## [7.1.2](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.1...netlify-headers-parser-v7.1.2) (2023-03-13)
 
 
