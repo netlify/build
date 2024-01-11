@@ -1,6 +1,7 @@
-import { log, logArray, logWarning, logSubHeader } from '../logger.js'
+import type { PluginList } from '../../plugins/list.js'
+import { BufferedLogs, log, logArray, logSubHeader, logWarning } from '../logger.js'
 
-export const logPluginsFetchError = function (logs, message) {
+export const logPluginsFetchError = function (logs: BufferedLogs | undefined, message: string): void {
   logWarning(
     logs,
     `
@@ -9,19 +10,25 @@ ${message}`,
   )
 }
 
-export const logPluginsList = function ({ pluginsList, debug, logs }) {
+export const logPluginsList = function ({
+  pluginsList,
+  debug,
+  logs,
+}: {
+  pluginsList: PluginList
+  logs: BufferedLogs | undefined
+  debug?: boolean
+}): void {
   if (!debug) {
     return
   }
 
-  const pluginsListArray = Object.entries(pluginsList).map(getPluginsListItem).sort()
+  const pluginsListArray = Object.entries(pluginsList)
+    .map(([packageName, versions]) => `${packageName}@${versions[0].version}`)
+    .sort()
 
   logSubHeader(logs, 'Available plugins')
   logArray(logs, pluginsListArray)
-}
-
-const getPluginsListItem = function ([packageName, versions]) {
-  return `${packageName}@${versions[0].version}`
 }
 
 export const logFailPluginWarning = function (methodName, event) {
@@ -33,6 +40,6 @@ export const logFailPluginWarning = function (methodName, event) {
   )
 }
 
-export const logDeploySuccess = function (logs) {
+export const logDeploySuccess = function (logs?: BufferedLogs) {
   log(logs, 'Site deploy was successfully initiated')
 }
