@@ -105,7 +105,9 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
   const nodePath = getNodePath('16.14.0')
-  const output = await new Fixture('./fixtures/engines').withFlags({ nodePath }).runWithBuild()
+  const output = await new Fixture('./fixtures/engines')
+    .withFlags({ nodePath, featureFlags: { build_warn_upcoming_system_version_change: true } })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
