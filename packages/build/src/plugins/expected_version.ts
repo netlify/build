@@ -10,11 +10,9 @@ import { getExpectedVersion } from './compatibility.js'
 import { PluginList, PluginVersion, getPluginsList } from './list.js'
 import { PluginsOptions } from './node_version.js'
 
-/**
- * When using plugins in our official list, those are installed in .netlify/plugins/
- * We ensure that the last version that's been approved is always the one being used.
- * We also ensure that the plugin is our official list.
- */
+// When using plugins in our official list, those are installed in .netlify/plugins/
+// We ensure that the last version that's been approved is always the one being used.
+// We also ensure that the plugin is our official list.
 export const addExpectedVersions = async function ({
   pluginsOptions,
   autoPluginsDir,
@@ -97,11 +95,9 @@ const addExpectedVersion = async function ({
   }
 }
 
-/**
- * Feature flagged versions are removed unless the feature flag is present.
- *  - This is done before conditions are applied since, unlike conditions,
- *    users cannot always choose to enable a feature flag.
- */
+// Feature flagged versions are removed unless the feature flag is present.
+//  - This is done before conditions are applied since, unlike conditions,
+//    users cannot always choose to enable a feature flag.
 const filterVersions = function (unfilteredVersions: PluginVersion[], featureFlags: FeatureFlags) {
   return unfilteredVersions.filter(({ featureFlag }) => featureFlag === undefined || featureFlags[featureFlag])
 }
@@ -136,11 +132,9 @@ const needsExpectedVersion = function ({ loadedFrom }: PluginsOptions) {
   return loadedFrom === 'auto_install' || loadedFrom === 'package.json'
 }
 
-/**
- * Plugins that are not in our official list can only be specified in
- * `netlify.toml` providing they are also installed in the site's package.json.
- * Otherwise, the build should fail.
- */
+// Plugins that are not in our official list can only be specified in
+// `netlify.toml` providing they are also installed in the site's package.json.
+// Otherwise, the build should fail.
 const validateUnlistedPlugin = function (packageName, loadedFrom, testOpts) {
   if (testOpts.skipPluginList) {
     return

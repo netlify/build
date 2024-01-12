@@ -52,7 +52,7 @@ export const getExpectedVersion = async function ({
 
 /**
  *  This function finds the right `compatibility` entry to use with the plugin.
- *   - `compatibitlity` entries are meant for backward compatibility
+ *   - `compatibility` entries are meant for backward compatibility
  *     Plugins should define each major version in `compatibility`.
  *   - The entries are sorted from most to least recent version.
  *   - After their first successful run, plugins are pinned by their major
