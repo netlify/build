@@ -7,7 +7,7 @@ import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'
 
 import { getExpectedVersion } from './compatibility.js'
-import { PluginList, getPluginsList } from './list.js'
+import { PluginList, PluginVersion, getPluginsList } from './list.js'
 import { PluginsOptions } from './node_version.js'
 
 /**
@@ -102,7 +102,7 @@ const addExpectedVersion = async function ({
  *  - This is done before conditions are applied since, unlike conditions,
  *    users cannot always choose to enable a feature flag.
  */
-const filterVersions = function (unfilteredVersions, featureFlags) {
+const filterVersions = function (unfilteredVersions: PluginVersion[], featureFlags: FeatureFlags) {
   return unfilteredVersions.filter(({ featureFlag }) => featureFlag === undefined || featureFlags[featureFlag])
 }
 

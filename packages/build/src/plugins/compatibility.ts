@@ -93,8 +93,8 @@ const getCompatibleEntry = async function ({
     }
 
     // no conditions means nothing to filter
-    if (conditions.length === 0) {
-      return true
+    if (conditions.length === 0 && pinnedVersion === undefined) {
+      return false
     }
 
     return await pEvery(conditions, async ({ type, condition }) =>
@@ -102,5 +102,8 @@ const getCompatibleEntry = async function ({
     )
   })
 
-  return compatibleEntry || { version: versions[0].version, conditions: [] }
+  return (
+    compatibleEntry ||
+    (pinnedVersion ? { version: pinnedVersion, conditions: [] } : { version: versions[0].version, conditions: [] })
+  )
 }
