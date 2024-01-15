@@ -418,7 +418,7 @@ describe.each([
           packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: platformJoin('apps/nuxt-app/.nuxt/dist'),
+          dist: platformJoin('apps/nuxt-app/dist'),
         }),
         expect.objectContaining({
           baseDirectory: '',
@@ -448,7 +448,7 @@ describe.each([
           packagePath: platformJoin('apps/nuxt-app'),
           buildCommand: 'nx run nuxt-app:build',
           devCommand: 'nx run nuxt-app:dev',
-          dist: platformJoin('apps/nuxt-app/.nuxt/dist'),
+          dist: platformJoin('apps/nuxt-app/dist'),
         }),
       ])
     })

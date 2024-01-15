@@ -32,7 +32,7 @@ export class Nuxt extends BaseFramework implements Framework {
         this.name = 'Nuxt 3'
 
         this.build.command = `nuxt build`
-        this.build.directory = `.nuxt/dist`
+        this.build.directory = `dist`
         this.dev.command = `nuxt dev`
 
         this.env = {
