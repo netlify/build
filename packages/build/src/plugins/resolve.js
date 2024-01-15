@@ -38,16 +38,19 @@ export const resolvePluginsPath = async function ({
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
   const pluginsOptionsB = addPluginsNodeVersion({
+    featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
     logs,
   })
+
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({
     pluginsOptions: pluginsOptionsC,
     autoPluginsDir,
     packageJson,
+    packagePath,
     debug,
     logs,
     buildDir,

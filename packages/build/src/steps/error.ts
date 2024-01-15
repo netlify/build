@@ -1,3 +1,5 @@
+import { addEventToActiveSpan } from '@netlify/opentelemetry-utils'
+
 import type { ErrorParam } from '../core/types.js'
 import { cancelBuild } from '../error/cancel.js'
 import { handleBuildError } from '../error/handle.js'
@@ -5,7 +7,7 @@ import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
 import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { BuildError, isPluginLocation, PluginLocation, ErrorTypes } from '../error/types.js'
 import { isSoftFailEvent } from '../plugins/events.js'
-import { addErrorToActiveSpan, addEventToActiveSpan } from '../tracing/main.js'
+import { addBuildErrorToActiveSpan } from '../tracing/main.js'
 
 import { isTrustedPlugin } from './plugin.js'
 
@@ -32,7 +34,7 @@ export const handleStepError = function ({
   debug,
   testOpts,
 }) {
-  addErrorToActiveSpan(newError)
+  addBuildErrorToActiveSpan(newError)
   // Core steps do not report error statuses
   if (coreStep !== undefined) {
     return { newError }

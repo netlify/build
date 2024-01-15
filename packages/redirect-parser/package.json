@@ -1,6 +1,6 @@
 {
   "name": "netlify-redirect-parser",
-  "version": "14.2.0",
+  "version": "14.2.1",
   "description": "Parses netlify redirects into a js object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:bench": "vitest bench",
     "test:dev": "vitest",
-    "test:ci": "vitest run --reporter=default && vitest bench --run"
+    "test:ci": "vitest run --reporter=default && vitest bench --run --passWithNoTests"
   },
   "keywords": [
     "netlify"
