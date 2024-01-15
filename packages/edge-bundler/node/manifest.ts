@@ -108,6 +108,7 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
 const generateManifest = ({
   bundles = [],
   declarations = [],
+  featureFlags,
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
@@ -153,7 +154,7 @@ const generateManifest = ({
       return
     }
 
-    const pattern = getRegularExpression(declaration)
+    const pattern = getRegularExpression(declaration, Boolean(featureFlags?.edge_bundler_pcre_regexp))
 
     // If there is no `pattern`, the declaration will never be triggered, so we
     // can discard it.
@@ -163,7 +164,7 @@ const generateManifest = ({
 
     routedFunctions.add(declaration.function)
 
-    const excludedPattern = getExcludedRegularExpressions(declaration)
+    const excludedPattern = getExcludedRegularExpressions(declaration, Boolean(featureFlags?.edge_bundler_pcre_regexp))
     const route: Route = {
       function: func.name,
       pattern: serializePattern(pattern),
@@ -225,8 +226,12 @@ const pathToRegularExpression = (path: string) => {
   }
 }
 
-const getRegularExpression = (declaration: Declaration) => {
+const getRegularExpression = (declaration: Declaration, pcreRegexpEngine: boolean) => {
   if ('pattern' in declaration) {
+    if (pcreRegexpEngine) {
+      return declaration.pattern
+    }
+
     try {
       return parsePattern(declaration.pattern)
     } catch (error: unknown) {
@@ -241,11 +246,16 @@ const getRegularExpression = (declaration: Declaration) => {
   return pathToRegularExpression(declaration.path)
 }
 
-const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
+const getExcludedRegularExpressions = (declaration: Declaration, pcreRegexpEngine: boolean): string[] => {
   if ('excludedPattern' in declaration && declaration.excludedPattern) {
     const excludedPatterns: string[] = Array.isArray(declaration.excludedPattern)
       ? declaration.excludedPattern
       : [declaration.excludedPattern]
+
+    if (pcreRegexpEngine) {
+      return excludedPatterns
+    }
+
     return excludedPatterns.map((excludedPattern) => {
       try {
         return parsePattern(excludedPattern)

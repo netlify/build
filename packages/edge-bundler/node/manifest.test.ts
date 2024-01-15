@@ -433,9 +433,9 @@ test('Generates a manifest with layers', () => {
   expect(manifest2.layers).toEqual(layers)
 })
 
-test('Throws an error if the regular expression contains a negative lookahead', () => {
+test('Throws an error if the regular expression contains a negative lookahead and support for the PCRE engine is disabled', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
-  const declarations = [{ function: 'func-1', pattern: '^/\\w+(?=\\d)$' }]
+  const declarations = [{ function: 'func-1', pattern: '^\\/((?!api|_next\\/static|_next\\/image|favicon.ico).*)$' }]
 
   expect(() =>
     generateManifest({
@@ -446,6 +446,22 @@ test('Throws an error if the regular expression contains a negative lookahead', 
   ).toThrowError(
     /^Could not parse path declaration of function 'func-1': Regular expressions with lookaheads are not supported$/,
   )
+})
+
+test('Accepts regular expressions with lookaheads if support for the PCRE engine is enabled', () => {
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations = [{ function: 'func-1', pattern: '^\\/((?!api|_next\\/static|_next\\/image|favicon.ico).*)$' }]
+  const { manifest } = generateManifest({
+    bundles: [],
+    declarations,
+    featureFlags: { edge_bundler_pcre_regexp: true },
+    functions,
+  })
+  const [route] = manifest.routes
+  const regexp = new RegExp(route.pattern)
+
+  expect(regexp.test('/foo')).toBeTruthy()
+  expect(regexp.test('/_next/static/foo')).toBeFalsy()
 })
 
 test('Converts named capture groups to unnamed capture groups in regular expressions', () => {
