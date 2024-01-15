@@ -1,5 +1,22 @@
 # Changelog
 
+## [11.1.0](https://github.com/netlify/edge-bundler/compare/v11.0.0...v11.1.0) (2024-01-15)
+
+
+### Features
+
+* support PCRE regexp engine ([#563](https://github.com/netlify/edge-bundler/issues/563)) ([14ecd17](https://github.com/netlify/edge-bundler/commit/14ecd178f9c035e38be02038b0186c45a8ae325f))
+* transform negative lookaheads ([#560](https://github.com/netlify/edge-bundler/issues/560)) ([4cf6a5e](https://github.com/netlify/edge-bundler/commit/4cf6a5ef1e8627ffa317d6d2cf67229a070ff691))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to ^0.26.0 ([#551](https://github.com/netlify/edge-bundler/issues/551)) ([b733ed3](https://github.com/netlify/edge-bundler/commit/b733ed3c8c9d9efbd8b1cfb9e54271e4f02be52f))
+* **deps:** update dependency @vercel/nft to v0.26.2 ([#559](https://github.com/netlify/edge-bundler/issues/559)) ([4433b46](https://github.com/netlify/edge-bundler/commit/4433b46bb5cb7d8d567632cdee3eea59e3ca5c3a))
+* **deps:** update dependency esbuild to v0.19.10 ([#554](https://github.com/netlify/edge-bundler/issues/554)) ([bdf2291](https://github.com/netlify/edge-bundler/commit/bdf2291e85eb08565da7f904574986bac5b2ddcb))
+* **deps:** update dependency esbuild to v0.19.11 ([#556](https://github.com/netlify/edge-bundler/issues/556)) ([f031c99](https://github.com/netlify/edge-bundler/commit/f031c99897312011053341027d2fa9450c88d6a5))
+* revert "feat: transform negative lookaheads" ([#561](https://github.com/netlify/edge-bundler/issues/561)) ([99784f2](https://github.com/netlify/edge-bundler/commit/99784f2f3b669619de5c46702d827b89bd31890e))
+
 ## [11.0.0](https://github.com/netlify/edge-bundler/compare/v10.1.3...v11.0.0) (2023-12-11)
 
 
