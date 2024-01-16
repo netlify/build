@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.2.0](https://github.com/netlify/edge-bundler/compare/v11.1.0...v11.2.0) (2024-01-16)
+
+
+### Features
+
+* allow custom `stderr` and `stdout` in server ([#564](https://github.com/netlify/edge-bundler/issues/564)) ([837027e](https://github.com/netlify/edge-bundler/commit/837027e1e98dad96047d0ba88e8b9d5d94e9f1d1))
+
 ## [11.1.0](https://github.com/netlify/edge-bundler/compare/v11.0.0...v11.1.0) (2024-01-15)
 
 
