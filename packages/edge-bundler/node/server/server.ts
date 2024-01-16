@@ -1,3 +1,4 @@
+import type { WriteStream } from 'fs'
 import { readdir, unlink } from 'fs/promises'
 import { join } from 'path'
 
@@ -28,6 +29,8 @@ interface PrepareServerOptions {
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
   logger: Logger
+  stderr?: WriteStream
+  stdout?: WriteStream
   port: number
   rootPath?: string
 }
@@ -60,6 +63,8 @@ const prepareServer = ({
   logger,
   port,
   rootPath,
+  stderr,
+  stdout,
 }: PrepareServerOptions) => {
   const processRef: ProcessRef = {}
   const startServer = async (
@@ -134,9 +139,11 @@ const prepareServer = ({
     // with variables from the user's system, since those will not be available
     // in the production environment.
     await deno.runInBackground(['run', ...denoFlags, ...extraDenoFlags, stage2Path, ...applicationFlags], processRef, {
-      pipeOutput: true,
       env,
       extendEnv: false,
+      pipeOutput: true,
+      stderr,
+      stdout,
     })
 
     let functionsConfig: FunctionConfig[] = []
@@ -190,6 +197,8 @@ interface ServeOptions {
   port: number
   rootPath?: string
   servePath: string
+  stderr?: WriteStream
+  stdout?: WriteStream
   userLogger?: LogFunction
   systemLogger?: LogFunction
 }
@@ -275,6 +284,18 @@ export const serve = async ({
   servePath,
 
   /**
+   * Writable stream to receive the stderr of the server process. If not set,
+   * the stderr of the parent process will be used.
+   */
+  stderr,
+
+  /**
+   * Writable stream to receive the stdout of the server process. If not set,
+   * the stdout of the parent process will be used.
+   */
+  stdout,
+
+  /**
    * Custom logging function to be used for user-facing messages. Defaults to
    * `console.log`.
    */
@@ -330,6 +351,8 @@ export const serve = async ({
     formatExportTypeError,
     formatImportError,
     logger,
+    stderr,
+    stdout,
     port,
     rootPath,
   })

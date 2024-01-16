@@ -8,6 +8,8 @@ await Promise.resolve()
 new HTMLRewriter()
 
 export default async () => {
+  console.error('Something is on fire')
+
   const text = [parent1('JavaScript'), parent2('APIs'), parent3('Markup')].join(', ')
 
   return new Response(echo(text))

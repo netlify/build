@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, type WriteStream } from 'fs'
 import path from 'path'
 import process from 'process'
 
@@ -35,9 +35,11 @@ interface ProcessRef {
 }
 
 interface RunOptions {
-  pipeOutput?: boolean
   env?: NodeJS.ProcessEnv
   extendEnv?: boolean
+  pipeOutput?: boolean
+  stderr?: WriteStream
+  stdout?: WriteStream
   rejectOnExitCode?: boolean
 }
 
@@ -159,12 +161,28 @@ class DenoBridge {
     return this.currentDownload
   }
 
-  private static runWithBinary(binaryPath: string, args: string[], options?: Options, pipeOutput?: boolean) {
+  private static runWithBinary(
+    binaryPath: string,
+    args: string[],
+    {
+      options,
+      pipeOutput,
+      stderr,
+      stdout,
+    }: { options?: Options; pipeOutput?: boolean; stderr?: WriteStream; stdout?: WriteStream },
+  ) {
     const runDeno = execa(binaryPath, args, options)
 
-    if (pipeOutput) {
-      runDeno.stdout?.pipe(process.stdout)
+    if (stderr) {
+      runDeno.stderr?.pipe(stderr)
+    } else if (pipeOutput) {
       runDeno.stderr?.pipe(process.stderr)
+    }
+
+    if (stdout) {
+      runDeno.stdout?.pipe(stdout)
+    } else if (pipeOutput) {
+      runDeno.stdout?.pipe(process.stdout)
     }
 
     return runDeno
@@ -219,12 +237,15 @@ class DenoBridge {
 
   // Runs the Deno CLI in the background and returns a reference to the child
   // process, awaiting its execution.
-  async run(args: string[], { pipeOutput, env: inputEnv, extendEnv = true, rejectOnExitCode = true }: RunOptions = {}) {
+  async run(
+    args: string[],
+    { env: inputEnv, extendEnv = true, rejectOnExitCode = true, stderr, stdout }: RunOptions = {},
+  ) {
     const { path: binaryPath } = await this.getBinaryPath()
     const env = this.getEnvironmentVariables(inputEnv)
     const options: Options = { env, extendEnv, reject: rejectOnExitCode }
 
-    return DenoBridge.runWithBinary(binaryPath, args, options, pipeOutput)
+    return DenoBridge.runWithBinary(binaryPath, args, { options, stderr, stdout })
   }
 
   // Runs the Deno CLI in the background, assigning a reference of the child
@@ -232,12 +253,12 @@ class DenoBridge {
   async runInBackground(
     args: string[],
     ref?: ProcessRef,
-    { pipeOutput, env: inputEnv, extendEnv = true }: RunOptions = {},
+    { env: inputEnv, extendEnv = true, stderr, stdout }: RunOptions = {},
   ) {
     const { path: binaryPath } = await this.getBinaryPath()
     const env = this.getEnvironmentVariables(inputEnv)
     const options: Options = { env, extendEnv }
-    const ps = DenoBridge.runWithBinary(binaryPath, args, options, pipeOutput)
+    const ps = DenoBridge.runWithBinary(binaryPath, args, { options, stderr, stdout })
 
     if (ref !== undefined) {
       // eslint-disable-next-line no-param-reassign
