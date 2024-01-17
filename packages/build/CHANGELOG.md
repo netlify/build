@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.32.0](https://github.com/netlify/build/compare/build-v29.31.5...build-v29.32.0) (2024-01-12)
+
+
+### Features
+
+* use the `overridePinnedVersion` from the plugins.json ([#5463](https://github.com/netlify/build/issues/5463)) ([42ffa9b](https://github.com/netlify/build/commit/42ffa9b2cf4bf902d3c6da2c5cd02003994e16bb))
+
+## [29.31.5](https://github.com/netlify/build/compare/build-v29.31.4...build-v29.31.5) (2024-01-10)
+
+
+### Bug Fixes
+
+* warn about system version upgrade ([#5461](https://github.com/netlify/build/issues/5461)) ([64a9bd5](https://github.com/netlify/build/commit/64a9bd5b9bb78e03a52cc9fcb0b376f8c1001b1a))
+
 ## [29.31.4](https://github.com/netlify/build/compare/build-v29.31.3...build-v29.31.4) (2024-01-08)
 
 
