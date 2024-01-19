@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.2.1](https://github.com/netlify/edge-bundler/compare/v11.2.0...v11.2.1) (2024-01-19)
+
+
+### Bug Fixes
+
+* enclose regexp when using PCRE ([#566](https://github.com/netlify/edge-bundler/issues/566)) ([1057a31](https://github.com/netlify/edge-bundler/commit/1057a318ab8616c5968d1696502b7be5bf4dfdde))
+
 ## [11.2.0](https://github.com/netlify/edge-bundler/compare/v11.1.0...v11.2.0) (2024-01-16)
 
 
