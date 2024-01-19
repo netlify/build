@@ -163,23 +163,23 @@ test('netlify.toml-defined excludedPath are respected', () => {
 test('Does not escape front slashes in a regex pattern if they are already escaped', () => {
   const regexPattern = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
   const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
-  const actual = parsePattern(regexPattern)
 
-  expect(actual).toEqual(expected)
+  expect(parsePattern(regexPattern, false)).toEqual(expected)
+  expect(parsePattern(regexPattern, true)).toEqual(expected)
 })
 
 test('Escapes front slashes in a regex pattern', () => {
   const regexPattern = '^(?:/(_next/data/[^/]{1,}))?(?:/([^/.]{1,}))/shows(?:/(.*))(.json)?[/#\\?]?$'
   const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[/#\\?]?$'
-  const actual = parsePattern(regexPattern)
 
-  expect(actual).toEqual(expected)
+  expect(parsePattern(regexPattern, false)).toEqual(expected)
+  expect(parsePattern(regexPattern, true)).toEqual(expected)
 })
 
 test('Ensures pattern match on the whole path', () => {
   const regexPattern = '/foo/.*/bar'
   const expected = '^\\/foo\\/.*\\/bar$'
-  const actual = parsePattern(regexPattern)
 
-  expect(actual).toEqual(expected)
+  expect(parsePattern(regexPattern, false)).toEqual(expected)
+  expect(parsePattern(regexPattern, true)).toEqual(expected)
 })

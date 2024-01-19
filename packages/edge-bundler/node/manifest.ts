@@ -228,12 +228,8 @@ const pathToRegularExpression = (path: string) => {
 
 const getRegularExpression = (declaration: Declaration, pcreRegexpEngine: boolean) => {
   if ('pattern' in declaration) {
-    if (pcreRegexpEngine) {
-      return declaration.pattern
-    }
-
     try {
-      return parsePattern(declaration.pattern)
+      return parsePattern(declaration.pattern, pcreRegexpEngine)
     } catch (error: unknown) {
       throw wrapBundleError(
         new Error(
@@ -252,13 +248,9 @@ const getExcludedRegularExpressions = (declaration: Declaration, pcreRegexpEngin
       ? declaration.excludedPattern
       : [declaration.excludedPattern]
 
-    if (pcreRegexpEngine) {
-      return excludedPatterns
-    }
-
     return excludedPatterns.map((excludedPattern) => {
       try {
-        return parsePattern(excludedPattern)
+        return parsePattern(excludedPattern, pcreRegexpEngine)
       } catch (error: unknown) {
         throw wrapBundleError(
           new Error(
