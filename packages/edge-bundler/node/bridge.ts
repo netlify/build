@@ -253,12 +253,12 @@ class DenoBridge {
   async runInBackground(
     args: string[],
     ref?: ProcessRef,
-    { env: inputEnv, extendEnv = true, stderr, stdout }: RunOptions = {},
+    { env: inputEnv, extendEnv = true, pipeOutput, stderr, stdout }: RunOptions = {},
   ) {
     const { path: binaryPath } = await this.getBinaryPath()
     const env = this.getEnvironmentVariables(inputEnv)
     const options: Options = { env, extendEnv }
-    const ps = DenoBridge.runWithBinary(binaryPath, args, { options, stderr, stdout })
+    const ps = DenoBridge.runWithBinary(binaryPath, args, { options, pipeOutput, stderr, stdout })
 
     if (ref !== undefined) {
       // eslint-disable-next-line no-param-reassign
