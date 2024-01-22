@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.2.2](https://github.com/netlify/edge-bundler/compare/v11.2.1...v11.2.2) (2024-01-22)
+
+
+### Bug Fixes
+
+* pipe log output in server ([#568](https://github.com/netlify/edge-bundler/issues/568)) ([de9bff0](https://github.com/netlify/edge-bundler/commit/de9bff0ebc653eb1f936e95660dde5091b8da7d2))
+
 ## [11.2.1](https://github.com/netlify/edge-bundler/compare/v11.2.0...v11.2.1) (2024-01-19)
 
 
