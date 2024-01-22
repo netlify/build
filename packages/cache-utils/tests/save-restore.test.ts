@@ -139,3 +139,21 @@ test('Should skip deep empty directories on restore', async () => {
     await removeFiles([cacheDir])
   }
 })
+
+test('Should persist mtime', async () => {
+  const accessTime = new Date('2024-01-22T15:37:20.990Z')
+  const modifiedTime = new Date('2023-01-22T15:37:20.990Z')
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
+  await fs.utimes(srcFile, accessTime, modifiedTime)
+  try {
+    await save(srcFile, { cacheDir })
+    await removeFiles(srcFile)
+    await restore(srcFile, { cacheDir })
+
+    const stat = await fs.stat(srcFile)
+    expect(stat.mtime).toEqual(modifiedTime)
+    expect(stat.atime).toEqual(accessTime)
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
