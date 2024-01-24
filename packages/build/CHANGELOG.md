@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.33.1](https://github.com/netlify/build/compare/build-v29.33.0...build-v29.33.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* fix passing down missing packagePath in runCoreSteps ([#5487](https://github.com/netlify/build/issues/5487)) ([07f08fb](https://github.com/netlify/build/commit/07f08fb5c78e5faae33f5b459b53ef409aad618d))
+
 ## [29.33.0](https://github.com/netlify/build/compare/build-v29.32.4...build-v29.33.0) (2024-01-24)
 
 
