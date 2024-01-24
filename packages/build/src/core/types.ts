@@ -36,6 +36,8 @@ export type BuildCLIFlags = {
    */
   quiet?: boolean
 
+  packagePath?: string
+
   statsd?: { host?: string; port?: number }
 }
 
