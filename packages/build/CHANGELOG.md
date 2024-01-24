@@ -105,6 +105,18 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.33.0](https://github.com/netlify/build/compare/build-v29.32.4...build-v29.33.0) (2024-01-24)
+
+
+### Features
+
+* make cache-utils monorepo aware ([#5482](https://github.com/netlify/build/issues/5482)) ([c9ce65a](https://github.com/netlify/build/commit/c9ce65ace43f114b0f4b3b1e3ce75ede8e6bc505))
+
+
+### Bug Fixes
+
+* update types to include the packagePath on the build flags ([#5486](https://github.com/netlify/build/issues/5486)) ([dee9a79](https://github.com/netlify/build/commit/dee9a79f2e72e91a46ef41e33b2cdfd68cae0f3c))
+
 ## [29.32.4](https://github.com/netlify/build/compare/build-v29.32.3...build-v29.32.4) (2024-01-22)
 
 
