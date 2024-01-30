@@ -132,10 +132,15 @@ export class Nx extends BaseBuildTool {
       case undefined:
         return null
       default:
-        this.project.report({
-          name: 'UndetectedExecutor',
-          message: `Undetected executor for Nx integrated: ${executor}`,
-        })
+        this.project.report(
+          {
+            name: 'UndetectedExecutor',
+            message: `Undetected executor for Nx integrated: ${executor}`,
+          },
+          {
+            metadata: { executor },
+          },
+        )
         return null
     }
   }
@@ -207,10 +212,15 @@ export class Nx extends BaseBuildTool {
         // some targets like run command don't have an executor
         return
       default:
-        this.project.report({
-          name: 'UndetectedExecutor',
-          message: `Undetected executor for Nx integrated: ${executor}`,
-        })
+        this.project.report(
+          {
+            name: 'UndetectedExecutor',
+            message: `Undetected executor for Nx integrated: ${executor}`,
+          },
+          {
+            metadata: { executor },
+          },
+        )
     }
   }
 
