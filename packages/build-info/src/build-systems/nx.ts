@@ -120,6 +120,7 @@ export class Nx extends BaseBuildTool {
     switch (executor) {
       case '@nxtensions/astro:dev':
         return 3000
+      case '@nx/next:server':
       case '@nrwl/next:server':
       case '@nrwl/web:dev-server':
       case '@nx/webpack:dev-server':
@@ -176,6 +177,7 @@ export class Nx extends BaseBuildTool {
 
     switch (executor) {
       case '@nrwl/next:build':
+      case '@nx/next:build':
         return 'next'
       case '@nxtensions/astro:build':
         return 'astro'
