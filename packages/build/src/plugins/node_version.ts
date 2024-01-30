@@ -20,8 +20,7 @@ export type PluginsOptions = {
  * This node version is minimum required to run the plugins code.
  * If the users preferred Node.js version is below that we have to fall back to the system node version
  */
-const MINIMUM_REQUIRED_NODE_VERSION = '^14.14.0 || >=16.0.0'
-const UPCOMING_MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
+const MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
 
 /**
  * Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
@@ -57,27 +56,6 @@ const addPluginNodeVersion = function ({
   const isUIOrAutoInstalledPlugin = !isLocalPlugin
   if (isUIOrAutoInstalledPlugin) {
     return systemNode
-  }
-
-  if (
-    featureFlags.build_warn_upcoming_system_version_change &&
-    !semver.satisfies(userNodeVersion, UPCOMING_MINIMUM_REQUIRED_NODE_VERSION)
-  ) {
-    logWarningSubHeader(
-      logs,
-      `Warning: Starting January 30, 2024 plugin "${packageName}" will be executed with Node.js version 20.`,
-    )
-    logWarning(
-      logs,
-      `  We're upgrading our system node version on that day, which means the plugin cannot be executed with your defined Node.js version ${userNodeVersion}.
-        
-  Please make sure your plugin supports being run on Node.js 20.
-  
-  Read more about our minimum required version in our ${link(
-    'forums announcement',
-    'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20/108633',
-  )}`,
-    )
   }
 
   if (semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)) {
