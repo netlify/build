@@ -29,15 +29,14 @@ const MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
  * usually the system's Node.js version.
  * If the user Node version does not satisfy our supported engine range use our own system Node version
  */
-export const addPluginsNodeVersion = function ({ featureFlags, pluginsOptions, nodePath, userNodeVersion, logs }) {
+export const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion, logs }) {
   const currentNodeVersion = semver.clean(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ featureFlags, pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
+    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
   )
 }
 
 const addPluginNodeVersion = function ({
-  featureFlags,
   pluginOptions,
   pluginOptions: { loadedFrom, packageName },
   currentNodeVersion,
