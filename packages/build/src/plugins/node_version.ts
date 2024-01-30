@@ -68,7 +68,7 @@ const addPluginNodeVersion = function ({
   
   Read more about our minimum required version in our ${link(
     'forums announcement',
-    'https://answers.netlify.com/t/build-plugins-dropping-support-for-node-js-12/79421',
+    'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20',
   )}`,
   )
 
