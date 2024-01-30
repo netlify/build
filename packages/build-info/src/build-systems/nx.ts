@@ -129,6 +129,7 @@ export class Nx extends BaseBuildTool {
       case '@nx-plus/vue:dev-server':
         return 8000
       // some targets like run command don't have an executor
+      case 'nx:run-commands':
       case undefined:
         return null
       default:
