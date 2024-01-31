@@ -32,11 +32,26 @@ const UPCOMING_MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
  * usually the system's Node.js version.
  * If the user Node version does not satisfy our supported engine range use our own system Node version
  */
-export const addPluginsNodeVersion = function ({ featureFlags, pluginsOptions, nodePath, userNodeVersion, logs }) {
+export const addPluginsNodeVersion = function ({
+  featureFlags,
+  pluginsOptions,
+  nodePath,
+  userNodeVersion,
+  logs,
+  systemLog,
+}) {
   const currentNodeVersion = semver.clean(currentVersion)
   return Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      addPluginNodeVersion({ featureFlags, pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
+      addPluginNodeVersion({
+        featureFlags,
+        pluginOptions,
+        currentNodeVersion,
+        userNodeVersion,
+        nodePath,
+        logs,
+        systemLog,
+      }),
     ),
   )
 }
@@ -49,6 +64,7 @@ const addPluginNodeVersion = async function ({
   userNodeVersion,
   nodePath,
   logs,
+  systemLog,
 }: {
   pluginOptions: PluginsOptions
   [key: string]: any
@@ -94,17 +110,24 @@ const addPluginNodeVersion = async function ({
           logs,
           "This plugin doesn't have a `package.json` file with an `engines.node` field, so it might not work well with Node.js 20.",
         )
+        systemLog(`plugin "${packageName}" might be affected by node.js 20 change`)
       } else if (semver.satisfies('20.0.0', pluginNodeVersionRange)) {
         logWarning(
           logs,
           'In its package.json, the plugin claims to be compatible with Node.js 20, so this upgrade should go alright.',
         )
+        systemLog(`plugin "${packageName}" probably not affected by node.js 20 change`)
       } else {
         logWarning(
           logs,
           `In its package.json, the plugin says it's incompatible with Node.js 20 (version range: "${pluginNodeVersionRange}"). Please upgrade the plugin, so it can be used with Node.js 20.`,
         )
+        systemLog(`plugin "${packageName}" will be affected by node.js 20 change`)
       }
+    } else {
+      systemLog(
+        `plugin "${packageName}" might be affected by node.js 20 change, pluginPath not available to determine its compatibility`,
+      )
     }
   }
 

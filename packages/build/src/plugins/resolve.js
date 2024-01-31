@@ -32,6 +32,7 @@ export const resolvePluginsPath = async function ({
   featureFlags,
   integrations,
   context,
+  systemLog,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
