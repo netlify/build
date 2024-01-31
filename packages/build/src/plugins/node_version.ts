@@ -1,9 +1,11 @@
+import { dirname } from 'path'
 import { execPath, version as currentVersion } from 'process'
 
 import semver from 'semver'
 import link from 'terminal-link'
 
 import { logWarning, logWarningSubHeader } from '../log/logger.js'
+import { getPackageJson } from '../utils/package.js'
 
 export type PluginsLoadedFrom = 'auto_install' | 'local' | 'package.json'
 
@@ -32,15 +34,17 @@ const UPCOMING_MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
  */
 export const addPluginsNodeVersion = function ({ featureFlags, pluginsOptions, nodePath, userNodeVersion, logs }) {
   const currentNodeVersion = semver.clean(currentVersion)
-  return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ featureFlags, pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
+  return Promise.all(
+    pluginsOptions.map((pluginOptions) =>
+      addPluginNodeVersion({ featureFlags, pluginOptions, currentNodeVersion, userNodeVersion, nodePath, logs }),
+    ),
   )
 }
 
-const addPluginNodeVersion = function ({
+const addPluginNodeVersion = async function ({
   featureFlags,
   pluginOptions,
-  pluginOptions: { loadedFrom, packageName },
+  pluginOptions: { loadedFrom, packageName, pluginPath },
   currentNodeVersion,
   userNodeVersion,
   nodePath,
@@ -78,6 +82,30 @@ const addPluginNodeVersion = function ({
     'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20/108633',
   )}`,
     )
+
+    if (pluginPath) {
+      const pluginDir = dirname(pluginPath)
+      const { packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
+
+      // Ensure Node.js version is compatible with plugin's `engines.node`
+      const pluginNodeVersionRange = pluginPackageJson?.engines?.node
+      if (!pluginNodeVersionRange) {
+        logWarning(
+          logs,
+          "This plugin doesn't have a `package.json` file with an `engines.node` field, so it might not work well with Node.js 20.",
+        )
+      } else if (semver.satisfies('20.0.0', pluginNodeVersionRange)) {
+        logWarning(
+          logs,
+          'In its package.json, the plugin claims to be compatible with Node.js 20, so this upgrade should go alright.',
+        )
+      } else {
+        logWarning(
+          logs,
+          `In its package.json, the plugin says it's incompatible with Node.js 20 (version range: "${pluginNodeVersionRange}"). Please upgrade the plugin, so it can be used with Node.js 20.`,
+        )
+      }
+    }
   }
 
   if (semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)) {
