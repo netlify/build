@@ -44,6 +44,7 @@ export const resolvePluginsPath = async function ({
     nodePath,
     userNodeVersion,
     logs,
+    systemLog,
   })
 
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
