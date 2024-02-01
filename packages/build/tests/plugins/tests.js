@@ -108,7 +108,7 @@ test('Validate --node-path version is supported by the plugin', async (t) => {
   const output = await new Fixture('./fixtures/engines')
     .withFlags({ nodePath, featureFlags: { build_warn_upcoming_system_version_change: true } })
     .runWithBuild()
-  t.true(output.includes('The Node.js version is 16.14.0 but the plugin "./plugin.js" requires >=18.0.0'))
+  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
   t.true(
     output.includes(
       'Warning: Starting January 30, 2024 plugin "./plugin.js" will be executed with Node.js version 20.',
