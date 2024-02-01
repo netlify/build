@@ -64,6 +64,20 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.12.0](https://github.com/netlify/build/compare/build-info-v7.11.5...build-info-v7.12.0) (2024-01-30)
+
+
+### Features
+
+* add latest nx executors to detection ([#5494](https://github.com/netlify/build/issues/5494)) ([ab39be0](https://github.com/netlify/build/commit/ab39be0c5f3788ddd5c981a502d8783cf5ad9263))
+
+## [7.11.5](https://github.com/netlify/build/compare/build-info-v7.11.4...build-info-v7.11.5) (2024-01-15)
+
+
+### Bug Fixes
+
+* update autodetect Nuxt default dir to `dist` ([#5457](https://github.com/netlify/build/issues/5457)) ([43f910d](https://github.com/netlify/build/commit/43f910dad53767d1068d8b9c92753c4342683dfb))
+
 ## [7.11.4](https://github.com/netlify/build/compare/build-info-v7.11.3...build-info-v7.11.4) (2023-12-20)
 
 

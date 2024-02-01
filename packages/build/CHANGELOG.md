@@ -105,6 +105,111 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.33.4](https://github.com/netlify/build/compare/build-v29.33.3...build-v29.33.4) (2024-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.29.0 ([#5498](https://github.com/netlify/build/issues/5498)) ([0406306](https://github.com/netlify/build/commit/04063062c12f130786e8f57babded6e2de4d298b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.10.2 to ^20.10.3
+    * @netlify/functions-utils bumped from ^5.2.48 to ^5.2.49
+
+## [29.33.3](https://github.com/netlify/build/compare/build-v29.33.2...build-v29.33.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* skip pre-dev cleanup for Remix ([#5491](https://github.com/netlify/build/issues/5491)) ([ed86bf9](https://github.com/netlify/build/commit/ed86bf99493ce3a6931d7284000f46ddcbc3ab6c))
+
+## [29.33.2](https://github.com/netlify/build/compare/build-v29.33.1...build-v29.33.2) (2024-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.28.4 ([#5489](https://github.com/netlify/build/issues/5489)) ([cc329b0](https://github.com/netlify/build/commit/cc329b075d5f8e20bff1e9f9e166071fdaaaa9cb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.47 to ^5.2.48
+
+## [29.33.1](https://github.com/netlify/build/compare/build-v29.33.0...build-v29.33.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* fix passing down missing packagePath in runCoreSteps ([#5487](https://github.com/netlify/build/issues/5487)) ([07f08fb](https://github.com/netlify/build/commit/07f08fb5c78e5faae33f5b459b53ef409aad618d))
+
+## [29.33.0](https://github.com/netlify/build/compare/build-v29.32.4...build-v29.33.0) (2024-01-24)
+
+
+### Features
+
+* make cache-utils monorepo aware ([#5482](https://github.com/netlify/build/issues/5482)) ([c9ce65a](https://github.com/netlify/build/commit/c9ce65ace43f114b0f4b3b1e3ce75ede8e6bc505))
+
+
+### Bug Fixes
+
+* update types to include the packagePath on the build flags ([#5486](https://github.com/netlify/build/issues/5486)) ([dee9a79](https://github.com/netlify/build/commit/dee9a79f2e72e91a46ef41e33b2cdfd68cae0f3c))
+
+## [29.32.4](https://github.com/netlify/build/compare/build-v29.32.3...build-v29.32.4) (2024-01-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v11.2.2 ([#5480](https://github.com/netlify/build/issues/5480)) ([52294fb](https://github.com/netlify/build/commit/52294fb47aa8d99b167123da7e87905b2e8e8cc4))
+
+## [29.32.3](https://github.com/netlify/build/compare/build-v29.32.2...build-v29.32.3) (2024-01-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v11.2.1 ([#5473](https://github.com/netlify/build/issues/5473)) ([0bd3896](https://github.com/netlify/build/commit/0bd38960d06000914cb5ea37fba69fb39c3b04a4))
+
+## [29.32.2](https://github.com/netlify/build/compare/build-v29.32.1...build-v29.32.2) (2024-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.28.3 ([#5471](https://github.com/netlify/build/issues/5471)) ([38db9e1](https://github.com/netlify/build/commit/38db9e15ffb5f2779964b082208b41ee98700988))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.46 to ^5.2.47
+
+## [29.32.1](https://github.com/netlify/build/compare/build-v29.32.0...build-v29.32.1) (2024-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^6.4.2 ([#5460](https://github.com/netlify/build/issues/5460)) ([5c97b0a](https://github.com/netlify/build/commit/5c97b0ae1b7729b1ee528528745c76990bc07251))
+* **deps:** update dependency @netlify/edge-bundler to v11 ([#5444](https://github.com/netlify/build/issues/5444)) ([d39723e](https://github.com/netlify/build/commit/d39723e1c48d557b82cc49c1f2f978050be9c8f5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.10.1 to ^20.10.2
+
+## [29.32.0](https://github.com/netlify/build/compare/build-v29.31.5...build-v29.32.0) (2024-01-12)
+
+
+### Features
+
+* use the `overridePinnedVersion` from the plugins.json ([#5463](https://github.com/netlify/build/issues/5463)) ([42ffa9b](https://github.com/netlify/build/commit/42ffa9b2cf4bf902d3c6da2c5cd02003994e16bb))
+
 ## [29.31.5](https://github.com/netlify/build/compare/build-v29.31.4...build-v29.31.5) (2024-01-10)
 
 
