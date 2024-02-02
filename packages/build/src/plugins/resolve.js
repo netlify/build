@@ -32,17 +32,19 @@ export const resolvePluginsPath = async function ({
   featureFlags,
   integrations,
   context,
+  systemLog,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = addPluginsNodeVersion({
+  const pluginsOptionsB = await addPluginsNodeVersion({
     featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
     logs,
+    systemLog,
   })
 
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })

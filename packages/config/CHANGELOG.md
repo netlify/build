@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.11.0](https://github.com/netlify/build/compare/config-v20.10.3...config-v20.11.0) (2024-02-02)
+
+
+### Features
+
+* allow mutating images field in NetlifyConfig ([#5464](https://github.com/netlify/build/issues/5464)) ([8d33d21](https://github.com/netlify/build/commit/8d33d217c2ee13643d3c8d6818bde01da7217093))
+
 ## [20.10.3](https://github.com/netlify/build/compare/config-v20.10.2...config-v20.10.3) (2024-01-31)
 
 
