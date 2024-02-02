@@ -106,16 +106,8 @@ const addPluginNodeVersion = async function ({
       // Ensure Node.js version is compatible with plugin's `engines.node`
       const pluginNodeVersionRange = pluginPackageJson?.engines?.node
       if (!pluginNodeVersionRange) {
-        logWarning(
-          logs,
-          "This plugin doesn't have a `package.json` file with an `engines.node` field, so it might not work well with Node.js 20.",
-        )
         systemLog(`plugin "${packageName}" might be affected by node.js 20 change`)
       } else if (semver.satisfies('20.0.0', pluginNodeVersionRange)) {
-        logWarning(
-          logs,
-          'In its package.json, the plugin claims to be compatible with Node.js 20, so this upgrade should go alright.',
-        )
         systemLog(`plugin "${packageName}" probably not affected by node.js 20 change`)
       } else {
         logWarning(
