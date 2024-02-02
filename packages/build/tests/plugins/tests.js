@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
-import { tmpName } from 'tmp-promise'
+import tmp, { tmpName } from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -104,11 +104,27 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
+  const systemLog = await tmp.file()
+
   const nodePath = getNodePath('16.14.0')
   const output = await new Fixture('./fixtures/engines')
-    .withFlags({ nodePath, featureFlags: { build_warn_upcoming_system_version_change: true } })
+    .withFlags({
+      nodePath,
+      featureFlags: { build_warn_upcoming_system_version_change: true },
+      systemLogFile: systemLog.fd,
+      debug: false,
+    })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
+  t.true(
+    output.includes(
+      'Warning: Starting January 30, 2024 plugin "./plugin.js" will be executed with Node.js version 20.',
+    ),
+  )
+  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+  await systemLog.cleanup()
+
+  t.true(systemLogContents.includes('plugin "./plugin.js" probably not affected by node.js 20 change'))
 })
 
 test('Validate --node-path exists', async (t) => {
