@@ -455,6 +455,7 @@ const initAndRunBuild = async function ({
     featureFlags,
     integrations,
     context,
+    systemLog,
   })
 
   errorParams.pluginsOptions = pluginsOptionsA
