@@ -21,6 +21,11 @@ export interface Build {
    * Includes the path to a site's [Edge Handlers directory](https://docs.netlify.com/edge-handlers/configure-and-build/#choose-an-edge-handlers-directory)
    */
   edge_handlers?: string
+
+  /**
+   * Includes the path to a site's [Edge Functions directory](https://docs.netlify.com/edge-functions/optional-configuration/#edge-functions-directory)
+   */
+  edge_functions?: string
   /**
    * Contains a site's [environment variables](https://docs.netlify.com/configure-builds/environment-variables/#netlify-configuration-variables)
    */
