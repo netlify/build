@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.33.5](https://github.com/netlify/build/compare/build-v29.33.4...build-v29.33.5) (2024-02-02)
+
+
+### Bug Fixes
+
+* check version range of node 20 upgrade ([#5497](https://github.com/netlify/build/issues/5497)) ([b0aa3bf](https://github.com/netlify/build/commit/b0aa3bf7e5babd7b3945000b4a10ec2ffb28531e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.10.3 to ^20.11.0
+
 ## [29.33.4](https://github.com/netlify/build/compare/build-v29.33.3...build-v29.33.4) (2024-01-31)
 
 
