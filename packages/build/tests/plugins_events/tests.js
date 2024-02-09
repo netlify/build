@@ -134,3 +134,8 @@ test('Shows error information in the `startDev` entrypoint even when `quiet: tru
 
   t.is(devCommand.callCount, 0)
 })
+
+test('Merges configuration from the Deploy Configuration API', async (t) => {
+  const output = await new Fixture('./fixtures/deploy_config').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})

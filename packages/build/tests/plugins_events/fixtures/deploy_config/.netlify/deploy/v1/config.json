@@ -1,0 +1,17 @@
+{
+  "build": {
+    "processing": {
+      "html": {
+        "baz": 123
+      }
+    }
+  },
+  "redirects": [
+    {
+      "from": "/from-config",
+      "to": "/to-config",
+      "status": 418,
+      "force": true
+    }
+  ]
+}

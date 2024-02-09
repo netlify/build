@@ -3,6 +3,7 @@ import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
 import { uploadBlobs } from '../plugins_core/blobs_upload/index.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
+import { applyDeployConfig } from '../plugins_core/deploy_config/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
@@ -74,6 +75,7 @@ const addCoreSteps = function (steps): CoreStep[] {
     preCleanup,
     buildCommandCore,
     ...steps,
+    applyDeployConfig,
     bundleFunctions,
     bundleEdgeFunctions,
     scanForSecrets,
@@ -85,7 +87,12 @@ const addCoreSteps = function (steps): CoreStep[] {
 
 // Sort plugin steps by event order.
 const sortSteps = function (steps, events) {
-  return events.flatMap((event) => steps.filter((step) => step.event === event))
+  return events.flatMap((event) => {
+    const groupedSteps = steps.filter((step) => step.event === event)
+    const sortedSteps = groupedSteps.sort((stepA, stepB) => (stepB.priority || 0) - (stepA.priority || 0))
+
+    return sortedSteps
+  })
 }
 
 // Retrieve list of unique events

@@ -23,6 +23,7 @@ export const runStep = async function ({
   coreStepId,
   coreStepName,
   coreStepDescription,
+  coreStepQuiet,
   pluginPackageJson,
   loadedFrom,
   origin,
