@@ -191,7 +191,7 @@ export const runStep = async function ({
       durationNs,
       testOpts,
       systemLog,
-      quiet,
+      quiet: quiet || coreStepQuiet,
       metrics,
     })
 
