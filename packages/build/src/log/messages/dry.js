@@ -23,7 +23,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 export const logDryRunStep = function ({
   logs,
-  step: { event, packageName, coreStepDescription, quiet },
+  step: { event, packageName, coreStepDescription },
   index,
   netlifyConfig,
   eventWidth,

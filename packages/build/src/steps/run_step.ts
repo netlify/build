@@ -100,6 +100,7 @@ export const runStep = async function ({
       saveConfig,
       explicitSecretKeys,
       deployId,
+      featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
     if (!shouldRun) {
@@ -245,6 +246,7 @@ const shouldRunStep = async function ({
   saveConfig,
   explicitSecretKeys,
   deployId,
+  featureFlags = {},
 }) {
   if (
     failedPlugins.includes(packageName) ||
@@ -258,6 +260,7 @@ const shouldRunStep = async function ({
         saveConfig,
         explicitSecretKeys,
         deployId,
+        featureFlags,
       })))
   ) {
     return false

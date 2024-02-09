@@ -34,7 +34,7 @@ export const applyDeployConfig: CoreStep = {
   coreStepId: 'deploy_config',
   coreStepName: 'Applying Deploy Configuration',
   coreStepDescription: () => '',
-  condition: () => true,
+  condition: ({ featureFlags }) => featureFlags?.netlify_build_deploy_configuration_api,
   priority: 1,
   quiet: true,
 }
