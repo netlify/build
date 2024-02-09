@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/js'
-import { parse } from 'toml'
+import { parse } from '@iarna/toml'
 
 import { FileSystem } from '../file-system.js'
 import { Project } from '../project.js'
@@ -14,7 +14,7 @@ const {
 /** Gracefully parses a toml file and reports errors to bugsnag */
 function gracefulParseToml<T>(content: string): T {
   try {
-    return parse(content)
+    return parse(content) as T
   } catch (error) {
     notify(error, (event) => {
       event.context = '@netlify/build-info => gracefullyParseToml => toml.parse'
