@@ -1,9 +1,7 @@
 {
-  "build": {
-    "processing": {
-      "html": {
-        "baz": 123
-      }
+  "functions": {
+    "my_framework*": {
+      "included_files": ["files/**"]
     }
   },
   "redirects": [
