@@ -29,10 +29,6 @@ export const logDryRunStep = function ({
   eventWidth,
   stepsCount,
 }) {
-  if (quiet) {
-    return
-  }
-
   const columnWidth = getDryColumnWidth(eventWidth, stepsCount)
   const fullName = getFullName(coreStepDescription, netlifyConfig, packageName)
   const line = '─'.repeat(columnWidth)
