@@ -23,12 +23,16 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 export const logDryRunStep = function ({
   logs,
-  step: { event, packageName, coreStepDescription },
+  step: { event, packageName, coreStepDescription, quiet },
   index,
   netlifyConfig,
   eventWidth,
   stepsCount,
 }) {
+  if (quiet) {
+    return
+  }
+
   const columnWidth = getDryColumnWidth(eventWidth, stepsCount)
   const fullName = getFullName(coreStepDescription, netlifyConfig, packageName)
   const line = '─'.repeat(columnWidth)
