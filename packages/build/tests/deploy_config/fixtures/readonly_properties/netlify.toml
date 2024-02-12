@@ -1,5 +1,6 @@
 [build]
 command = "echo Hello"
+publish = "publish/user"
 
 [[plugins]]
 package = "./plugin.js"

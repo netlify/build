@@ -47,3 +47,5 @@ export type CoreStep = {
   priority?: number
   quiet?: boolean
 }
+
+export type SystemLogger = (...args: any[]) => void

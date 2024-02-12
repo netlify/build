@@ -11,13 +11,4 @@
       "status": 418,
       "force": true
     }
-  ],
-  "redirects!": [
-    {
-      "from": "/$netlify-snapshot-preserve/from-config-override",
-      "to": "/$netlify-snapshot-preserve/to-config-override",
-      "status": 418,
-      "force": true
-    }
   ]
-}

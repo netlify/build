@@ -1,9 +1,16 @@
 {
-  "functions": {
-    "my_framework*": {
-      "included_files": ["files/**"]
+  "build": {
+    "command": "echo Goodbye",
+    "publish": "publish/api",
+    "processing": {
+      "css": "!important"
     }
   },
+  "plugins": [
+    {
+      "package": "@netlify/imaginary-plugin"
+    }
+  ],
   "redirects": [
     {
       "from": "/$netlify-snapshot-preserve/from-config",
@@ -19,5 +26,6 @@
       "status": 418,
       "force": true
     }
-  ]
+  ],
+  "unknown_property": 42
 }
