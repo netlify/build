@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.33.7](https://github.com/netlify/build/compare/build-v29.33.6...build-v29.33.7) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.11.0 to ^20.11.1
+
 ## [29.33.6](https://github.com/netlify/build/compare/build-v29.33.5...build-v29.33.6) (2024-02-08)
 
 

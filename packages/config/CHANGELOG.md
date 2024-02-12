@@ -76,6 +76,21 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.11.1](https://github.com/netlify/build/compare/config-v20.11.0...config-v20.11.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.1.3 to ^7.1.4
+    * netlify-redirect-parser bumped from ^14.2.1 to ^14.2.2
+
 ## [20.11.0](https://github.com/netlify/build/compare/config-v20.10.3...config-v20.11.0) (2024-02-02)
 
 
