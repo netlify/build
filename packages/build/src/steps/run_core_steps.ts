@@ -42,8 +42,7 @@ export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildFla
 }
 
 const getBuildSteps = function (buildSteps: string[]) {
-  const foo = getSteps([])
-  const allSteps = foo.steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
+  const allSteps = getSteps([]).steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
 }
