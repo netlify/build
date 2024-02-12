@@ -19,5 +19,8 @@
       "status": 418,
       "force": true
     }
-  ]
+  ],
+  "images": {
+    "remote_images": ["domain1.netlify", "domain2.netlify"]
+  }
 }
