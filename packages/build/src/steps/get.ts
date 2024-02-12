@@ -10,7 +10,7 @@ import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
-import { CoreStep } from '../plugins_core/types.js'
+import { CoreStep, Event } from '../plugins_core/types.js'
 
 // Get all build steps
 export const getSteps = function (steps, eventHandlers?: any[]) {
@@ -56,7 +56,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
     }
 
     return {
-      event,
+      event: event as Event,
       coreStep: (args) => {
         const { constants, event } = args
         const utils = getUtils({ event, constants, runState: {} })
@@ -85,8 +85,14 @@ const addCoreSteps = function (steps): CoreStep[] {
   ]
 }
 
-// Sort plugin steps by event order.
-const sortSteps = function (steps, events) {
+/**
+ * Sorts a list of plugin steps according to the following rules:
+ *
+ * 1. The step's `event` property is matched against the `events` list, so that
+ *    events for earlier stages of the build come first, and
+ * 2. Events with a higher `priority` field (which defaults to 0) come first
+ */
+const sortSteps = function (steps: CoreStep[], events: string[]) {
   return events.flatMap((event) => {
     const groupedSteps = steps.filter((step) => step.event === event)
     const sortedSteps = groupedSteps.sort((stepA, stepB) => (stepB.priority || 0) - (stepA.priority || 0))
