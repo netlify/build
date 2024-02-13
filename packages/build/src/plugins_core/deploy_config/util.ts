@@ -35,10 +35,14 @@ export const filterConfig = (
     const keyPath = [...path, key]
 
     if (!isAllowedProperty(keyPath, allowedProperties)) {
+      systemLog(`Discarding property that is not supported by the Deploy Configuration API: ${keyPath.join('.')}`)
+
       return mapObjectSkip
     }
 
     if (!isPlainObject(value)) {
+      systemLog(`Loading property from Deploy Configuration API: ${keyPath.join('.')}`)
+
       return [key, value]
     }
 

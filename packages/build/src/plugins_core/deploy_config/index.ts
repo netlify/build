@@ -8,6 +8,9 @@ import { CoreStep, CoreStepFunction } from '../types.js'
 
 import { filterConfig } from './util.js'
 
+// The properties that can be set using this API. Each element represents a
+// path using dot-notation — e.g. `["build", "functions"]` represents the
+// `build.functions` property.
 const ALLOWED_PROPERTIES = [
   ['build', 'edge_functions'],
   ['build', 'functions'],
@@ -19,6 +22,11 @@ const ALLOWED_PROPERTIES = [
   ['redirects'],
 ]
 
+// For array properties, any values set in this API will be merged with the
+// main configuration file in such a way that user-defined values always take
+// precedence. The exception are these properties that let frameworks set
+// values that should be evaluated before any user-defined values. They use
+// a special notation where `headers!` represents "forced headers", etc.
 const OVERRIDE_PROPERTIES = new Set(['headers!', 'redirects!'])
 
 const coreStep: CoreStepFunction = async function ({
@@ -44,7 +52,7 @@ const coreStep: CoreStepFunction = async function ({
 
     systemLog(`Failed to read Deploy Configuration API: ${err.message}`)
 
-    throw new Error('An error occured while processing the platform configurarion defined by your framework.')
+    throw new Error('An error occured while processing the platform configurarion defined by your framework')
   }
 
   const configOverrides: Partial<NetlifyConfig> = {}

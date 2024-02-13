@@ -35,7 +35,7 @@ test('Throws an error if the deploy configuration file is malformed', async (t) 
     })
     .runWithBuild()
   t.true(
-    output.includes(`Error: An error occured while processing the platform configurarion defined by your framework.`),
+    output.includes(`Error: An error occured while processing the platform configurarion defined by your framework`),
   )
 })
 
