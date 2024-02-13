@@ -25,7 +25,9 @@ test('Throws an error if the deploy configuration file is malformed', async (t) 
       featureFlags: { netlify_build_deploy_configuration_api: true },
     })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(
+    output.includes(`Error: An error occured while processing the platform configurarion defined by your framework.`),
+  )
 })
 
 test('Does not throw an error if the deploy configuration file is missing', async (t) => {

@@ -42,7 +42,7 @@ const coreStep: CoreStepFunction = async function ({
       return {}
     }
 
-    systemLog(`Failed to read Deploy Configuration API: ${err.toString()}`)
+    systemLog(`Failed to read Deploy Configuration API: ${err.message}`)
 
     throw new Error('An error occured while processing the platform configurarion defined by your framework.')
   }
