@@ -7,10 +7,11 @@ import { removeUndefined } from './utils/remove_falsy.js'
 // Merge an array of configuration objects.
 // Last items have higher priority.
 // Configuration objects are deeply merged.
-//   - Arrays are overridden, not concatenated.
-export const mergeConfigs = function (configs) {
+//   - By default, Arrays are overridden, not concatenated. This behavior can
+//     be changed by setting the `concatenateArrays` property to `true`.
+export const mergeConfigs = function (configs, { concatenateArrays } = {}) {
   const cleanedConfigs = configs.map(removeUndefinedProps)
-  return deepmerge.all(cleanedConfigs, { arrayMerge })
+  return deepmerge.all(cleanedConfigs, { arrayMerge: concatenateArrays ? arrayConcatenate : arrayMerge })
 }
 
 const removeUndefinedProps = function ({ build = {}, ...config }) {
@@ -26,6 +27,12 @@ const arrayMerge = function (arrayA, arrayB) {
   }
 
   return arrayB
+}
+
+// Concatenate two arrays such that elements from array A come after elements
+// from array B.
+const arrayConcatenate = function (arrayA, arrayB) {
+  return [...arrayB, ...arrayA]
 }
 
 // `deepmerge` does not allow retrieving the name of the array property being

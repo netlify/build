@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { resolve } from 'path'
 
-import merge from 'deepmerge'
+import { mergeConfigs } from '@netlify/config'
 
 import type { NetlifyConfig } from '../../index.js'
 import { CoreStep, CoreStepFunction } from '../types.js'
@@ -36,7 +36,7 @@ const coreStep: CoreStepFunction = async function ({
     // no-op
   },
 }) {
-  const configPath = resolve(buildDir, '.netlify', 'deploy', 'v1', 'config.json')
+  const configPath = resolve(buildDir, '.netlify/deploy/v1/config.json')
 
   let config: Partial<NetlifyConfig> = {}
 
@@ -75,7 +75,7 @@ const coreStep: CoreStepFunction = async function ({
 
   // Merging the different configuration sources. The order here is important.
   // Leftmost elements of the array take precedence.
-  const newConfig = merge.all([configOverrides, netlifyConfig, config])
+  const newConfig = mergeConfigs([config, netlifyConfig, configOverrides])
 
   for (const key in newConfig) {
     netlifyConfig[key] = newConfig[key]

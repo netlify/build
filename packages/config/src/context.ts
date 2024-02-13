@@ -106,3 +106,5 @@ export const ensureConfigPriority = function ({ build = {}, ...config }, context
     },
   }
 }
+
+export { mergeConfigs }
