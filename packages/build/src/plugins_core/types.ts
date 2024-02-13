@@ -44,7 +44,6 @@ export type CoreStep = {
   coreStepName: string
   coreStepDescription: () => string
   condition?: CoreStepCondition
-  priority?: number
   quiet?: boolean
 }
 

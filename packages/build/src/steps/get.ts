@@ -74,8 +74,8 @@ const addCoreSteps = function (steps): CoreStep[] {
   return [
     preCleanup,
     buildCommandCore,
-    ...steps,
     applyDeployConfig,
+    ...steps,
     bundleFunctions,
     bundleEdgeFunctions,
     scanForSecrets,
@@ -85,20 +85,9 @@ const addCoreSteps = function (steps): CoreStep[] {
   ]
 }
 
-/**
- * Sorts a list of plugin steps according to the following rules:
- *
- * 1. The step's `event` property is matched against the `events` list, so that
- *    events for earlier stages of the build come first, and
- * 2. Events with a higher `priority` field (which defaults to 0) come first
- */
+// Sort plugin steps by event order.
 const sortSteps = function (steps: CoreStep[], events: string[]) {
-  return events.flatMap((event) => {
-    const groupedSteps = steps.filter((step) => step.event === event)
-    const sortedSteps = groupedSteps.sort((stepA, stepB) => (stepB.priority || 0) - (stepA.priority || 0))
-
-    return sortedSteps
-  })
+  return events.flatMap((event) => steps.filter((step) => step.event === event))
 }
 
 // Retrieve list of unique events

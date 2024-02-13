@@ -1,0 +1,10 @@
+[build]
+command = "node write_config.mjs"
+
+[[plugins]]
+package = "./plugin.js"
+
+[[redirects]]
+from = "/$netlify-snapshot-preserve/from"
+status = 200
+to = "/$netlify-snapshot-preserve/to"
