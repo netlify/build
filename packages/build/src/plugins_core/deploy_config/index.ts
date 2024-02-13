@@ -75,7 +75,7 @@ const coreStep: CoreStepFunction = async function ({
 
   // Merging the different configuration sources. The order here is important.
   // Leftmost elements of the array take precedence.
-  const newConfig = mergeConfigs([config, netlifyConfig, configOverrides])
+  const newConfig = mergeConfigs([config, netlifyConfig, configOverrides], { concatenateArrays: true })
 
   for (const key in newConfig) {
     netlifyConfig[key] = newConfig[key]
