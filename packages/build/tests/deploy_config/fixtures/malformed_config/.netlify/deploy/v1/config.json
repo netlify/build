@@ -1,14 +1,1 @@
-{
-  "functions": {
-    "my_framework*": {
-      "included_files": ["files/**"]
-    }
-  },
-  "redirects": [
-    {
-      "from": "/$netlify-snapshot-preserve/from-config",
-      "to": "/$netlify-snapshot-preserve/to-config",
-      "status": 418,
-      "force": true
-    }
-  ]
+not json
