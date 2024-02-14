@@ -15,6 +15,7 @@ export const handleBuildError = async function (
   error: Error,
   { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: ErrorParam,
 ) {
+  console.log(error)
   const basicErrorInfo = parseErrorInfo(error)
 
   if (await isCancelCrash(error)) {
