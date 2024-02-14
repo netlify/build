@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.12.0](https://github.com/netlify/build/compare/config-v20.11.1...config-v20.12.0) (2024-02-14)
+
+
+### Features
+
+* initial support for Deploy Configuration API ([#5509](https://github.com/netlify/build/issues/5509)) ([70ef75f](https://github.com/netlify/build/commit/70ef75fa8afbfb84e726bf5e0fd65544e8b46c7a))
+
 ## [20.11.1](https://github.com/netlify/build/compare/config-v20.11.0...config-v20.11.1) (2024-02-12)
 
 
