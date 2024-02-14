@@ -3,13 +3,14 @@ import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
 import { uploadBlobs } from '../plugins_core/blobs_upload/index.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
+import { applyDeployConfig } from '../plugins_core/deploy_config/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
-import { CoreStep } from '../plugins_core/types.js'
+import { CoreStep, Event } from '../plugins_core/types.js'
 
 // Get all build steps
 export const getSteps = function (steps, eventHandlers?: any[]) {
@@ -55,7 +56,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
     }
 
     return {
-      event,
+      event: event as Event,
       coreStep: (args) => {
         const { constants, event } = args
         const utils = getUtils({ event, constants, runState: {} })
@@ -73,6 +74,7 @@ const addCoreSteps = function (steps): CoreStep[] {
   return [
     preCleanup,
     buildCommandCore,
+    applyDeployConfig,
     ...steps,
     bundleFunctions,
     bundleEdgeFunctions,
@@ -84,7 +86,7 @@ const addCoreSteps = function (steps): CoreStep[] {
 }
 
 // Sort plugin steps by event order.
-const sortSteps = function (steps, events) {
+const sortSteps = function (steps: CoreStep[], events: string[]) {
   return events.flatMap((event) => steps.filter((step) => step.event === event))
 }
 
