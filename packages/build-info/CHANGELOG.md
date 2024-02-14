@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.12.1](https://github.com/netlify/build/compare/build-info-v7.12.0...build-info-v7.12.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
 ## [7.12.0](https://github.com/netlify/build/compare/build-info-v7.11.5...build-info-v7.12.0) (2024-01-30)
 
 

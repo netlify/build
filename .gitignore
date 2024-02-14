@@ -29,5 +29,6 @@ packages/*/lib/
 !**/fixtures/**/functions_*/.netlify
 !**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
 !**/fixtures/**/monorepo/**/.netlify
+!**/tests/deploy_config/fixtures/**/.netlify
 
 lib
