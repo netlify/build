@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.34.0](https://github.com/netlify/build/compare/build-v29.33.7...build-v29.34.0) (2024-02-14)
+
+
+### Features
+
+* initial support for Deploy Configuration API ([#5509](https://github.com/netlify/build/issues/5509)) ([70ef75f](https://github.com/netlify/build/commit/70ef75fa8afbfb84e726bf5e0fd65544e8b46c7a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.11.1 to ^20.12.0
+
 ## [29.33.7](https://github.com/netlify/build/compare/build-v29.33.6...build-v29.33.7) (2024-02-12)
 
 
