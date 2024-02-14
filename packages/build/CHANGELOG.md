@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.34.1](https://github.com/netlify/build/compare/build-v29.34.0...build-v29.34.1) (2024-02-14)
+
+
+### Bug Fixes
+
+* use `configMutations` for deploy config API ([#5517](https://github.com/netlify/build/issues/5517)) ([a3b3298](https://github.com/netlify/build/commit/a3b3298ffdb059d18e1002cb879dee315f64f01c))
+
 ## [29.34.0](https://github.com/netlify/build/compare/build-v29.33.7...build-v29.34.0) (2024-02-14)
 
 
