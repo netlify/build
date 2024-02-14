@@ -1,31 +1,10 @@
 {
-  "build": {
-    "command": "echo Goodbye",
-    "publish": "publish/api",
-    "processing": {
-      "css": "!important"
-    }
-  },
   "plugins": [
     {
       "package": "@netlify/imaginary-plugin"
     }
   ],
-  "redirects": [
-    {
-      "from": "/$netlify-snapshot-preserve/from-config",
-      "to": "/$netlify-snapshot-preserve/to-config",
-      "status": 418,
-      "force": true
-    }
-  ],
-  "redirects!": [
-    {
-      "from": "/$netlify-snapshot-preserve/from-config-override",
-      "to": "/$netlify-snapshot-preserve/to-config-override",
-      "status": 418,
-      "force": true
-    }
-  ],
-  "unknown_property": 42
+  "images": {
+    "remote_images": ["domain1.netlify", "domain2.netlify"]
+  }
 }
