@@ -1,6 +1,8 @@
 import { promises as fs } from 'fs'
 import { resolve } from 'path'
 
+import { mergeConfigs } from '@netlify/config'
+
 import type { NetlifyConfig } from '../../index.js'
 import { getConfigMutations } from '../../plugins/child/diff.js'
 import { CoreStep, CoreStepFunction } from '../types.js'
@@ -14,6 +16,7 @@ const ALLOWED_PROPERTIES = [['images', 'remote_images']]
 
 const coreStep: CoreStepFunction = async function ({
   buildDir,
+  netlifyConfig,
   systemLog = () => {
     // no-op
   },
@@ -38,9 +41,14 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   // Filtering out any properties that can't be mutated using this API.
-  config = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
+  const filteredConfig = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
 
-  const configMutations = getConfigMutations({}, config, applyDeployConfig.event)
+  // Merging the config extracted from the API with the initial config.
+  const newConfig = mergeConfigs([filteredConfig, netlifyConfig], { concatenateArrays: true }) as Partial<NetlifyConfig>
+
+  // Diffing the initial and the new configs to compute the mutations (what
+  // changed between them).
+  const configMutations = getConfigMutations(netlifyConfig, newConfig, applyDeployConfig.event)
 
   return {
     configMutations,
