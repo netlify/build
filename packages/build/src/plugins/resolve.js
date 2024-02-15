@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join, resolve } from 'path'
 
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
@@ -180,15 +180,17 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
         autoPluginsDir,
         buildDir,
         context,
+        testOpts,
       }),
     ),
   )
 }
 
-const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context }) {
+const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
   if (typeof integration.dev !== 'undefined' && context === 'dev') {
     const { path } = integration.dev
-    const pluginPath = await resolvePath(`${path}/.ntli/build`, buildDir)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
 
     return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
   }
