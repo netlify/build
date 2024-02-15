@@ -180,15 +180,16 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
         autoPluginsDir,
         buildDir,
         context,
+        testOpts,
       }),
     ),
   )
 }
 
-const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context }) {
+const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
   if (typeof integration.dev !== 'undefined' && context === 'dev') {
     const { path } = integration.dev
-    const integrationDir = resolve(path)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
     const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
 
     return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
