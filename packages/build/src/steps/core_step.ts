@@ -90,6 +90,7 @@ export const fireCoreStep = async function ({
       errorParams,
       logs,
       debug,
+      source: 'coreStep',
     })
     return {
       newEnvChanges,
