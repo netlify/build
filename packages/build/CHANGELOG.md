@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.35.1](https://github.com/netlify/build/compare/build-v29.35.0...build-v29.35.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.29.2 ([#5518](https://github.com/netlify/build/issues/5518)) ([608caca](https://github.com/netlify/build/commit/608caca4d72ff52f1ad8088d0509a97c4d0863e7))
+* don't wipe functions created in `onPreDev` ([#5524](https://github.com/netlify/build/issues/5524)) ([fcad0f4](https://github.com/netlify/build/commit/fcad0f4d7b160abf9a623347cb2ac0f898e58bb3))
+* pass absolute path to resolvePath for resolveIntegration ([#5515](https://github.com/netlify/build/issues/5515)) ([7bec6b7](https://github.com/netlify/build/commit/7bec6b71e9a204f2530b74e46588bedb478cc6c3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.50 to ^5.2.51
+
 ## [29.35.0](https://github.com/netlify/build/compare/build-v29.34.1...build-v29.35.0) (2024-02-15)
 
 
