@@ -80,13 +80,31 @@ test('Functions: custom path on event-triggered function', async (t) => {
 })
 
 test('Functions: internal functions are cleared on the dev timeline', async (t) => {
-  const fixture = await new Fixture('./fixtures/internal_functions')
+  const fixture = await new Fixture('./fixtures/functions_leftover')
     .withFlags({ debug: false, timeline: 'dev' })
     .withCopyRoot()
+
+  // Before starting Netlify Build, the leftover files should exist and the
+  // generated files should not.
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`)
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
+
   const output = await fixture.runDev(() => {})
 
-  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/`), { code: 'ENOENT' })
-  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/`), { code: 'ENOENT' })
+  // After running Netlify Build, the leftover files should have been removed
+  // but the generated files should have been preserved.
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`), { code: 'ENOENT' })
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`)
 
   t.true(output.includes('Cleaning up leftover files from previous builds'))
   t.true(output.includes(`Cleaned up .netlify${sep}functions-internal, .netlify${sep}edge-functions`))

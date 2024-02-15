@@ -39,7 +39,7 @@ export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
 
   const eventSteps = getEventSteps(eventHandlers)
 
-  const sortedSteps = sortSteps([...steps, eventSteps, preDevCleanup, devCommandStep], DEV_EVENTS)
+  const sortedSteps = sortSteps([preDevCleanup, ...steps, eventSteps, devCommandStep], DEV_EVENTS)
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
