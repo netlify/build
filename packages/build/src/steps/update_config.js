@@ -21,13 +21,21 @@ export const updateNetlifyConfig = async function ({
   errorParams,
   logs,
   debug,
+  source = '',
 }) {
   if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, headersPath, redirectsPath }))) {
     return { netlifyConfig, configMutations }
   }
 
   validateConfigMutations(newConfigMutations)
-  logConfigMutations(logs, newConfigMutations, debug)
+
+  // Don't log configuration mutations performed by code that has been authored
+  // by Netlify (i.e. core steps or build plugins in the `@netlify/` scope),
+  // since that won't give users any useful or actionable information.
+  if (source !== '' && !source.startsWith('@netlify/')) {
+    logConfigMutations(logs, newConfigMutations, debug)
+  }
+
   const configMutationsA = [...configMutations, ...newConfigMutations]
   const {
     config: netlifyConfigA,

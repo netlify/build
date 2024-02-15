@@ -72,6 +72,7 @@ export const firePluginStep = async function ({
       errorParams,
       logs,
       debug,
+      source: packageName,
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
