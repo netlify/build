@@ -105,6 +105,18 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.35.0](https://github.com/netlify/build/compare/build-v29.34.1...build-v29.35.0) (2024-02-15)
+
+
+### Features
+
+* stop logging internal config mutations ([#5522](https://github.com/netlify/build/issues/5522)) ([4721709](https://github.com/netlify/build/commit/4721709059beed467edfa42acbe1458c19a6a033))
+
+
+### Bug Fixes
+
+* merge deploy config API with user config ([#5520](https://github.com/netlify/build/issues/5520)) ([63c6579](https://github.com/netlify/build/commit/63c6579ad5351771dec2237edcf4e3162db8fa49))
+
 ## [29.34.1](https://github.com/netlify/build/compare/build-v29.34.0...build-v29.34.1) (2024-02-14)
 
 
