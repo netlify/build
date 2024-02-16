@@ -15,6 +15,6 @@ test('detect an Observable project', async ({ fs }) => {
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('observable')
   expect(detected?.[0].name).toBe('Observable Framework')
-  expect(detected?.[0].build?.command).toBe('npm run build')
-  expect(detected?.[0].dev?.command).toBe('npm run dev')
+  expect(detected?.[0].build?.command).toBe('observable build')
+  expect(detected?.[0].dev?.command).toBe('observable preview')
 })

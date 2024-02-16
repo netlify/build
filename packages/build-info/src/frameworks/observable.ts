@@ -7,13 +7,13 @@ export class Observable extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'npm run dev',
+    command: 'observable preview',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
   }
 
   build = {
-    command: 'npm run build',
+    command: 'observable build',
     directory: 'dist',
   }
 
