@@ -22,4 +22,8 @@ export class Observable extends BaseFramework implements Framework {
     light: '/logos/observable/default.svg',
     dark: '/logos/observable/default.svg',
   }
+
+  env = {
+    NODE_VERSION: '20',
+  }
 }
