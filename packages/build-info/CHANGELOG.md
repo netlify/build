@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.13.0](https://github.com/netlify/build/compare/build-info-v7.12.1...build-info-v7.13.0) (2024-02-16)
+
+
+### Features
+
+* add detection for observable framework ([#5526](https://github.com/netlify/build/issues/5526)) ([e1b7b5e](https://github.com/netlify/build/commit/e1b7b5e4a712fe6f4fccc830bf1542f7a30879a0))
+
 ## [7.12.1](https://github.com/netlify/build/compare/build-info-v7.12.0...build-info-v7.12.1) (2024-02-12)
 
 
