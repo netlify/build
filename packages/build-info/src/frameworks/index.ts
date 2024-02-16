@@ -22,6 +22,7 @@ import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
 import { Next } from './next.js'
 import { Nuxt } from './nuxt.js'
+import { Observable } from './observable.js'
 import { Parcel } from './parcel.js'
 import { Phenomic } from './phenomic.js'
 import { Quasar } from './quasar.js'
@@ -76,6 +77,7 @@ export const frameworks = [
   Wintersmith,
   Cecil,
   Zola,
+  Observable,
 
   // Front-end frameworks
   Angular,
