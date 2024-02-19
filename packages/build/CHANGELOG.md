@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.0](https://github.com/netlify/build/compare/build-v29.35.1...build-v29.36.0) (2024-02-19)
+
+
+### Features
+
+* emit system log for config mutations ([#5525](https://github.com/netlify/build/issues/5525)) ([47a50ac](https://github.com/netlify/build/commit/47a50acb1b615bb15f0636bea87039c4685c3428))
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo ([#5528](https://github.com/netlify/build/issues/5528)) ([d6cc768](https://github.com/netlify/build/commit/d6cc7681af3ec78a434650d96dc051beebfd7a44))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ^1.0.1 to ^1.0.2
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.2 to ^1.0.3
+
 ## [29.35.1](https://github.com/netlify/build/compare/build-v29.35.0...build-v29.35.1) (2024-02-15)
 
 

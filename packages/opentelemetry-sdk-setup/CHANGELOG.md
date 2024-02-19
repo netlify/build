@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.2...opentelemetry-sdk-setup-v1.0.3) (2024-02-19)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo ([#5528](https://github.com/netlify/build/issues/5528)) ([d6cc768](https://github.com/netlify/build/commit/d6cc7681af3ec78a434650d96dc051beebfd7a44))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ^1.0.1 to ^1.0.2
+
 ## [1.0.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.1...opentelemetry-sdk-setup-v1.0.2) (2024-01-08)
 
 
