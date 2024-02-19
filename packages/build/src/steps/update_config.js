@@ -6,7 +6,7 @@ import { pathExists } from 'path-exists'
 import { resolveUpdatedConfig } from '../core/config.js'
 import { addErrorInfo } from '../error/info.js'
 import { logConfigOnUpdate } from '../log/messages/config.js'
-import { logConfigMutations } from '../log/messages/mutations.js'
+import { logConfigMutations, systemLogConfigMutations } from '../log/messages/mutations.js'
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
@@ -20,6 +20,7 @@ export const updateNetlifyConfig = async function ({
   configSideFiles,
   errorParams,
   logs,
+  systemLog,
   debug,
   source = '',
 }) {
@@ -31,9 +32,14 @@ export const updateNetlifyConfig = async function ({
 
   // Don't log configuration mutations performed by code that has been authored
   // by Netlify (i.e. core steps or build plugins in the `@netlify/` scope),
-  // since that won't give users any useful or actionable information.
-  if (source !== '' && !source.startsWith('@netlify/')) {
+  // since that won't give users any useful or actionable information. For
+  // these, emit a system log instead.
+  const shouldLogConfigMutationsToUser = source !== '' && !source.startsWith('@netlify/')
+
+  if (shouldLogConfigMutationsToUser) {
     logConfigMutations(logs, newConfigMutations, debug)
+  } else {
+    systemLogConfigMutations(systemLog, newConfigMutations)
   }
 
   const configMutationsA = [...configMutations, ...newConfigMutations]
