@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.1](https://github.com/netlify/build/compare/build-v29.36.0...build-v29.36.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.75.0 ([#5458](https://github.com/netlify/build/issues/5458)) ([74602ac](https://github.com/netlify/build/commit/74602ac792054290455767fd9a1bc476d7f1e2f2))
+* remove cli_fetch_integrations and cli_fetch_integrations ([#5534](https://github.com/netlify/build/issues/5534)) ([281c12b](https://github.com/netlify/build/commit/281c12ba31de6622cbd3796b3de1f0cff7f256ba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.0 to ^20.12.1
+
 ## [29.36.0](https://github.com/netlify/build/compare/build-v29.35.1...build-v29.36.0) (2024-02-19)
 
 

@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.12.1](https://github.com/netlify/build/compare/config-v20.12.0...config-v20.12.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* remove cli_fetch_integrations and cli_fetch_integrations ([#5534](https://github.com/netlify/build/issues/5534)) ([281c12b](https://github.com/netlify/build/commit/281c12ba31de6622cbd3796b3de1f0cff7f256ba))
+
 ## [20.12.0](https://github.com/netlify/build/compare/config-v20.11.1...config-v20.12.0) (2024-02-14)
 
 
