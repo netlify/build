@@ -207,7 +207,6 @@ test('Integrations are returned if feature flag is true', async (t) => {
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
@@ -225,7 +224,6 @@ test('Integration specified in config is also returned if integration is availab
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_RESPONSE])
 
@@ -244,7 +242,6 @@ test('Integration specified in config is not returned if integration is not avai
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
@@ -260,7 +257,6 @@ test('In integration dev mode, integration specified in config is returned even 
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -280,7 +276,6 @@ test('In integration dev mode, integration specified in config is returned even 
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -299,7 +294,6 @@ test('In integration dev mode, integration specified in config is returned and b
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -318,7 +312,6 @@ test('Integrations are returned if feature flag is true, mode buildbot', async (
     .withFlags({
       siteId: 'test',
       mode: 'buildbot',
-      featureFlags: { buildbot_fetch_integrations: true },
     })
     .runConfigServer([SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
@@ -337,7 +330,6 @@ test('Integrations are not returned if offline', async (t) => {
       offline: true,
       siteId: 'test',
       mode: 'buildbot',
-      featureFlags: { buildbot_fetch_integrations: true },
     })
     .runConfigServer([SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
