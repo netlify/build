@@ -1,5 +1,20 @@
 # Changelog
 
+## [11.3.0](https://github.com/netlify/edge-bundler/compare/v11.2.2...v11.3.0) (2024-02-21)
+
+
+### Features
+
+* remove feature flag for PCRE engine ([#580](https://github.com/netlify/edge-bundler/issues/580)) ([7ba2769](https://github.com/netlify/edge-bundler/commit/7ba276991fc0de4062124c333d4517fc4093c3ab))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to v0.26.3 ([#572](https://github.com/netlify/edge-bundler/issues/572)) ([e9860c5](https://github.com/netlify/edge-bundler/commit/e9860c57bdfd0aea13f76ba15b98aea8e231e4ae))
+* **deps:** update dependency esbuild to v0.20.0 ([#576](https://github.com/netlify/edge-bundler/issues/576)) ([0901b98](https://github.com/netlify/edge-bundler/commit/0901b98ec3b976de9014eb2dc9250e8d971157c1))
+* **deps:** update dependency jsonc-parser to v3.2.1 ([#573](https://github.com/netlify/edge-bundler/issues/573)) ([c76d6d8](https://github.com/netlify/edge-bundler/commit/c76d6d8e30688b2719d0040cf7a888728b2f1dea))
+* **deps:** update dependency semver to v7.6.0 ([#577](https://github.com/netlify/edge-bundler/issues/577)) ([dd0e231](https://github.com/netlify/edge-bundler/commit/dd0e23111e7b9577cc406f93fcd381bef6593356))
+
 ## [11.2.2](https://github.com/netlify/edge-bundler/compare/v11.2.1...v11.2.2) (2024-01-22)
 
 
