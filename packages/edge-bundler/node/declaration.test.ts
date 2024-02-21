@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 
 import { FunctionConfig } from './config.js'
-import { Declaration, mergeDeclarations, parsePattern } from './declaration.js'
+import { Declaration, mergeDeclarations, normalizePattern } from './declaration.js'
 
 const deployConfigDeclarations: Declaration[] = []
 
@@ -164,22 +164,19 @@ test('Does not escape front slashes in a regex pattern if they are already escap
   const regexPattern = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
   const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[\\/#\\?]?$'
 
-  expect(parsePattern(regexPattern, false)).toEqual(expected)
-  expect(parsePattern(regexPattern, true)).toEqual(expected)
+  expect(normalizePattern(regexPattern)).toEqual(expected)
 })
 
 test('Escapes front slashes in a regex pattern', () => {
   const regexPattern = '^(?:/(_next/data/[^/]{1,}))?(?:/([^/.]{1,}))/shows(?:/(.*))(.json)?[/#\\?]?$'
   const expected = '^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/([^/.]{1,}))\\/shows(?:\\/(.*))(.json)?[/#\\?]?$'
 
-  expect(parsePattern(regexPattern, false)).toEqual(expected)
-  expect(parsePattern(regexPattern, true)).toEqual(expected)
+  expect(normalizePattern(regexPattern)).toEqual(expected)
 })
 
 test('Ensures pattern match on the whole path', () => {
   const regexPattern = '/foo/.*/bar'
   const expected = '^\\/foo\\/.*\\/bar$'
 
-  expect(parsePattern(regexPattern, false)).toEqual(expected)
-  expect(parsePattern(regexPattern, true)).toEqual(expected)
+  expect(normalizePattern(regexPattern)).toEqual(expected)
 })

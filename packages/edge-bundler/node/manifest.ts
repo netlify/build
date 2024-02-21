@@ -4,7 +4,7 @@ import { join } from 'path'
 import type { Bundle } from './bundle.js'
 import { wrapBundleError } from './bundle_error.js'
 import { Cache, FunctionConfig, Path } from './config.js'
-import { Declaration, parsePattern } from './declaration.js'
+import { Declaration, normalizePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags } from './feature_flags.js'
 import { Layer } from './layer.js'
@@ -108,7 +108,6 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
 const generateManifest = ({
   bundles = [],
   declarations = [],
-  featureFlags,
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
@@ -154,7 +153,7 @@ const generateManifest = ({
       return
     }
 
-    const pattern = getRegularExpression(declaration, Boolean(featureFlags?.edge_bundler_pcre_regexp))
+    const pattern = getRegularExpression(declaration)
 
     // If there is no `pattern`, the declaration will never be triggered, so we
     // can discard it.
@@ -164,7 +163,7 @@ const generateManifest = ({
 
     routedFunctions.add(declaration.function)
 
-    const excludedPattern = getExcludedRegularExpressions(declaration, Boolean(featureFlags?.edge_bundler_pcre_regexp))
+    const excludedPattern = getExcludedRegularExpressions(declaration)
     const route: Route = {
       function: func.name,
       pattern: serializePattern(pattern),
@@ -226,10 +225,10 @@ const pathToRegularExpression = (path: string) => {
   }
 }
 
-const getRegularExpression = (declaration: Declaration, pcreRegexpEngine: boolean) => {
+const getRegularExpression = (declaration: Declaration) => {
   if ('pattern' in declaration) {
     try {
-      return parsePattern(declaration.pattern, pcreRegexpEngine)
+      return normalizePattern(declaration.pattern)
     } catch (error: unknown) {
       throw wrapBundleError(
         new Error(
@@ -242,7 +241,7 @@ const getRegularExpression = (declaration: Declaration, pcreRegexpEngine: boolea
   return pathToRegularExpression(declaration.path)
 }
 
-const getExcludedRegularExpressions = (declaration: Declaration, pcreRegexpEngine: boolean): string[] => {
+const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
   if ('excludedPattern' in declaration && declaration.excludedPattern) {
     const excludedPatterns: string[] = Array.isArray(declaration.excludedPattern)
       ? declaration.excludedPattern
@@ -250,7 +249,7 @@ const getExcludedRegularExpressions = (declaration: Declaration, pcreRegexpEngin
 
     return excludedPatterns.map((excludedPattern) => {
       try {
-        return parsePattern(excludedPattern, pcreRegexpEngine)
+        return normalizePattern(excludedPattern)
       } catch (error: unknown) {
         throw wrapBundleError(
           new Error(
