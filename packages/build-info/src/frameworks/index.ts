@@ -38,6 +38,7 @@ import { Solid } from './solid.js'
 import { Stencil } from './stencil.js'
 import { SvelteKit } from './svelte-kit.js'
 import { Svelte } from './svelte.js'
+import { Vinxi } from './vinxi.js'
 import { Vite } from './vite.js'
 import { Vue } from './vue.js'
 import { VuePress } from './vuepress.js'
@@ -89,6 +90,7 @@ export const frameworks = [
   Svelte,
   SvelteKit,
   Vue,
+  Vinxi,
 
   // Build tools
   Brunch,
