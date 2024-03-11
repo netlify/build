@@ -17,11 +17,12 @@ const ALLOWED_PROPERTIES = [['images', 'remote_images']]
 const coreStep: CoreStepFunction = async function ({
   buildDir,
   netlifyConfig,
+  packagePath,
   systemLog = () => {
     // no-op
   },
 }) {
-  const configPath = resolve(buildDir, '.netlify/deploy/v1/config.json')
+  const configPath = resolve(buildDir, packagePath ?? '', '.netlify/deploy/v1/config.json')
 
   let config: Partial<NetlifyConfig> = {}
 
