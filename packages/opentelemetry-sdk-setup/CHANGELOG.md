@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.3...opentelemetry-sdk-setup-v1.0.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* **deps:** bump honeycomb-otel ([#5542](https://github.com/netlify/build/issues/5542)) ([239de6f](https://github.com/netlify/build/commit/239de6fa1178ad3d906155b8edf7c96c03edc3cd))
+
 ## [1.0.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.2...opentelemetry-sdk-setup-v1.0.3) (2024-02-19)
 
 
