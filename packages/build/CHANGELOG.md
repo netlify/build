@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.3](https://github.com/netlify/build/compare/build-v29.36.2...build-v29.36.3) (2024-03-11)
+
+
+### Bug Fixes
+
+* support deploy config API in monorepos ([#5543](https://github.com/netlify/build/issues/5543)) ([cc36c3b](https://github.com/netlify/build/commit/cc36c3b739083c5ded27ff850990703719ea62d9))
+
 ## [29.36.2](https://github.com/netlify/build/compare/build-v29.36.1...build-v29.36.2) (2024-03-11)
 
 
