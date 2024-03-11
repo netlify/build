@@ -1,6 +1,6 @@
 {
   "name": "@netlify/opentelemetry-sdk-setup",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Opentelemetry SDK setup script",
   "type": "module",
   "bin": {

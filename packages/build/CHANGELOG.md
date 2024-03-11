@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.2](https://github.com/netlify/build/compare/build-v29.36.1...build-v29.36.2) (2024-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v11.3.0 ([#5537](https://github.com/netlify/build/issues/5537)) ([d87ea02](https://github.com/netlify/build/commit/d87ea021a5a115d2a4c30584c6f059e895da5bea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.3 to ^1.0.4
+
 ## [29.36.1](https://github.com/netlify/build/compare/build-v29.36.0...build-v29.36.1) (2024-02-20)
 
 
