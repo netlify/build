@@ -9,6 +9,7 @@ import { BundleError } from './bundle_error.js'
 import { Cache, FunctionConfig } from './config.js'
 import { Declaration } from './declaration.js'
 import { generateManifest } from './manifest.js'
+import { RateLimitAction, RateLimitAggregator } from './rate_limit.js'
 
 test('Generates a manifest with different bundles', () => {
   const bundle1 = {
@@ -485,4 +486,89 @@ test('Returns functions without a declaration and unrouted functions', () => {
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(declarationsWithoutFunction).toEqual(['func-3'])
   expect(unroutedFunctions).toEqual(['func-2', 'func-4'])
+})
+
+test('Generates a manifest with rate limit config', () => {
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1/*' }]
+
+  const userFunctionConfig: Record<string, FunctionConfig> = {
+    'func-1': { rateLimit: { windowLimit: 100, windowSize: 60 } },
+  }
+  const { manifest } = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    userFunctionConfig,
+  })
+
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [], path: '/f1/*' }]
+  const expectedFunctionConfig = {
+    'func-1': {
+      traffic_rules: {
+        action: {
+          type: 'rate_limit',
+          config: {
+            rate_limit_config: {
+              window_limit: 100,
+              window_size: 60,
+              algorithm: 'sliding_window',
+            },
+            aggregate: {
+              keys: [{ type: 'domain' }],
+            },
+          },
+        },
+      },
+    },
+  }
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.function_config).toEqual(expectedFunctionConfig)
+})
+
+test('Generates a manifest with rewrite config', () => {
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1/*' }]
+
+  const userFunctionConfig: Record<string, FunctionConfig> = {
+    'func-1': {
+      rateLimit: {
+        action: RateLimitAction.Rewrite,
+        to: '/new_path',
+        windowLimit: 100,
+        windowSize: 60,
+        aggregateBy: [RateLimitAggregator.Domain, RateLimitAggregator.IP],
+      },
+    },
+  }
+  const { manifest } = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    userFunctionConfig,
+  })
+
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1(?:/(.*))/?$', excluded_patterns: [], path: '/f1/*' }]
+  const expectedFunctionConfig = {
+    'func-1': {
+      traffic_rules: {
+        action: {
+          type: 'rewrite',
+          config: {
+            to: '/new_path',
+            rate_limit_config: {
+              window_limit: 100,
+              window_size: 60,
+              algorithm: 'sliding_window',
+            },
+            aggregate: {
+              keys: [{ type: 'domain' }, { type: 'ip' }],
+            },
+          },
+        },
+      },
+    },
+  }
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.function_config).toEqual(expectedFunctionConfig)
 })

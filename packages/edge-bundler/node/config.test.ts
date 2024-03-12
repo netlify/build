@@ -13,6 +13,7 @@ import { bundle } from './bundler.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
+import { RateLimitAction, RateLimitAggregator } from './rate_limit.js'
 
 const importMapFile = {
   baseURL: new URL('file:///some/path/import-map.json'),
@@ -83,7 +84,7 @@ const functions: TestFunctions[] = [
   },
   {
     testName: 'config with wrong onError',
-    name: 'func7',
+    name: 'func6',
     source: `
       export default async () => new Response("Hello from function two")
       export const config = { onError: "foo" }
@@ -93,7 +94,7 @@ const functions: TestFunctions[] = [
   {
     testName: 'config with `path`',
     expectedConfig: { path: '/home' },
-    name: 'func6',
+    name: 'func7',
     source: `
         export default async () => new Response("Hello from function three")
 
@@ -108,14 +109,71 @@ const functions: TestFunctions[] = [
       name: 'a displayName',
       onError: 'bypass',
     },
-    name: 'func6',
+    name: 'func8',
     source: `
         export default async () => new Response("Hello from function three")
 
-        export const config = { path: "/home",
+        export const config = {
+          path: "/home",
           generator: '@netlify/fake-plugin@1.0.0',
           name: 'a displayName',
           onError: 'bypass',
+        }
+      `,
+  },
+  {
+    testName: 'config with ratelimit',
+    expectedConfig: {
+      path: '/ratelimit',
+      name: 'a limit rate',
+      rateLimit: {
+        windowSize: 10,
+        windowLimit: 100,
+        aggregateBy: [RateLimitAggregator.IP, RateLimitAggregator.Domain],
+      },
+    },
+    name: 'func9',
+    source: `
+        export default async () => new Response("Rate my limits")
+
+        export const config = {
+          path: "/ratelimit",
+          rateLimit: {
+            windowSize: 10,
+            windowLimit: 100,
+            aggregateBy: ["ip", "domain"],
+          },
+          name: 'a limit rate',
+        }
+      `,
+  },
+  {
+    testName: 'config with rewrite',
+    expectedConfig: {
+      path: '/rewrite',
+      name: 'a limit rewrite',
+      rateLimit: {
+        action: RateLimitAction.Rewrite,
+        to: '/rewritten',
+        windowSize: 20,
+        windowLimit: 200,
+        aggregateBy: [RateLimitAggregator.IP, RateLimitAggregator.Domain],
+      },
+    },
+    name: 'func9',
+    source: `
+        export default async () => new Response("Rate my limits")
+
+        export const config = {
+          path: "/rewrite",
+          rateLimit: {
+            action: "rewrite",
+            to: "/rewritten",
+            windowSize: 20,
+            windowLimit: 200,
+            aggregateBy: ["ip", "domain"],
+          },
+          name: 'a limit rewrite',
         }
       `,
   },
