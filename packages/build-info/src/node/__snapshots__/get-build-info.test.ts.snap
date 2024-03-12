@@ -55,6 +55,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "baseDirectory": "",
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "devEnv": undefined,
       "dist": "packages/blog/dist",
       "env": {},
       "framework": {
@@ -75,6 +76,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "baseDirectory": "",
       "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
+      "devEnv": undefined,
       "dist": "packages/website/.next",
       "env": {},
       "framework": {
@@ -190,6 +192,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "baseDirectory": "",
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "devEnv": undefined,
       "dist": "packages/blog/dist",
       "env": {},
       "framework": {
@@ -265,6 +268,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "baseDirectory": "",
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
+      "devEnv": undefined,
       "dist": "packages/blog/dist",
       "env": {},
       "framework": {
@@ -285,6 +289,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "baseDirectory": "",
       "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
+      "devEnv": undefined,
       "dist": "packages/website/.next",
       "env": {},
       "framework": {

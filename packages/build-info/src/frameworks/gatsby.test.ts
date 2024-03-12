@@ -60,6 +60,9 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
         GATSBY_PRECOMPILE_DEVELOP_FUNCTIONS: 'true',
         NODE_VERSION: '14',
       },
+      devEnv: {
+        ENABLE_GATSBY_REFRESH_ENDPOINT: 'true',
+      },
       framework: {
         id: 'gatsby',
         name: 'Gatsby',
