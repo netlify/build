@@ -24,6 +24,7 @@ export type Settings = {
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
+  devEnv?: Record<string, string | undefined>
   /** Plugins installed via the netlify.toml */
   plugins_from_config_file: string[]
   /** Plugins that are detected via the framework detection and therefore recommended */
@@ -91,6 +92,7 @@ export async function getSettings(framework: Framework, project: Project, baseDi
     frameworkPort: framework.dev?.port,
     dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
+    devEnv: framework.dev?.env,
     plugins_from_config_file: [],
     plugins_recommended: framework.plugins || [],
     framework: {

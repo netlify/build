@@ -14,6 +14,9 @@ export class Gatsby extends BaseFramework implements Framework {
     command: 'gatsby develop',
     port: 8000,
     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    env: {
+      ENABLE_GATSBY_REFRESH_ENDPOINT: 'true',
+    },
   }
 
   build = {
