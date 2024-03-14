@@ -1,6 +1,6 @@
 {
   "name": "@netlify/opentelemetry-sdk-setup",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Opentelemetry SDK setup script",
   "type": "module",
   "bin": {
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@honeycombio/opentelemetry-node": "~0.6.1",
-    "@netlify/opentelemetry-utils": "^1.0.2",
+    "@netlify/opentelemetry-utils": "^1.0.3",
     "@opentelemetry/core": "^1.17.1",
     "@opentelemetry/resources": "^1.18.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",

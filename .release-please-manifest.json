@@ -1,6 +1,6 @@
 {
   "packages/build-info": "7.13.0",
-  "packages/build": "29.36.3",
+  "packages/build": "29.36.4",
   "packages/cache-utils": "5.1.5",
   "packages/config": "20.12.1",
   "packages/framework-info": "9.8.10",
@@ -11,6 +11,6 @@
   "packages/nock-udp": "3.1.2",
   "packages/redirect-parser": "14.2.2",
   "packages/run-utils": "5.1.1",
-  "packages/opentelemetry-sdk-setup": "1.0.4",
-  "packages/opentelemetry-utils": "1.0.2"
+  "packages/opentelemetry-sdk-setup": "1.0.5",
+  "packages/opentelemetry-utils": "1.0.3"
 }
