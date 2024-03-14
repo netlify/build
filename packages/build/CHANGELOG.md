@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.4](https://github.com/netlify/build/compare/build-v29.36.3...build-v29.36.4) (2024-03-14)
+
+
+### Bug Fixes
+
+* **otel:** make the otel-api package a peer dep of our build ecosystem ([#5547](https://github.com/netlify/build/issues/5547)) ([a24f68f](https://github.com/netlify/build/commit/a24f68fc67f4f6d464e0f86c2309debb70d22cd9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ^1.0.2 to ^1.0.3
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.4 to ^1.0.5
+
 ## [29.36.3](https://github.com/netlify/build/compare/build-v29.36.2...build-v29.36.3) (2024-03-11)
 
 
