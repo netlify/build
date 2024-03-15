@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.4](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.3...netlify-headers-parser-v7.1.4) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
 ## [7.1.3](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.2...netlify-headers-parser-v7.1.3) (2024-01-08)
 
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.3](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.2...opentelemetry-utils-v1.0.3) (2024-03-14)
+
+
+### Bug Fixes
+
+* **otel:** make the otel-api package a peer dep of our build ecosystem ([#5547](https://github.com/netlify/build/issues/5547)) ([a24f68f](https://github.com/netlify/build/commit/a24f68fc67f4f6d464e0f86c2309debb70d22cd9))
+
+## [1.0.2](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.1...opentelemetry-utils-v1.0.2) (2024-02-19)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo ([#5528](https://github.com/netlify/build/issues/5528)) ([d6cc768](https://github.com/netlify/build/commit/d6cc7681af3ec78a434650d96dc051beebfd7a44))
+
 ## [1.0.1](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.0...opentelemetry-utils-v1.0.1) (2024-01-08)
 
 

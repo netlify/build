@@ -83,6 +83,7 @@ export const runSteps = async function ({
         loadedFrom,
         origin,
         condition,
+        quiet: coreStepQuiet,
       },
     ) => {
       const {
@@ -105,6 +106,7 @@ export const runSteps = async function ({
         coreStepId,
         coreStepName,
         coreStepDescription,
+        coreStepQuiet,
         pluginPackageJson,
         loadedFrom,
         origin,

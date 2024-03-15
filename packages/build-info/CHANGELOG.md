@@ -64,6 +64,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.13.0](https://github.com/netlify/build/compare/build-info-v7.12.1...build-info-v7.13.0) (2024-02-16)
+
+
+### Features
+
+* add detection for observable framework ([#5526](https://github.com/netlify/build/issues/5526)) ([e1b7b5e](https://github.com/netlify/build/commit/e1b7b5e4a712fe6f4fccc830bf1542f7a30879a0))
+
+## [7.12.1](https://github.com/netlify/build/compare/build-info-v7.12.0...build-info-v7.12.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+## [7.12.0](https://github.com/netlify/build/compare/build-info-v7.11.5...build-info-v7.12.0) (2024-01-30)
+
+
+### Features
+
+* add latest nx executors to detection ([#5494](https://github.com/netlify/build/issues/5494)) ([ab39be0](https://github.com/netlify/build/commit/ab39be0c5f3788ddd5c981a502d8783cf5ad9263))
+
 ## [7.11.5](https://github.com/netlify/build/compare/build-info-v7.11.4...build-info-v7.11.5) (2024-01-15)
 
 

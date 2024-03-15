@@ -76,6 +76,60 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.12.1](https://github.com/netlify/build/compare/config-v20.12.0...config-v20.12.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* remove cli_fetch_integrations and cli_fetch_integrations ([#5534](https://github.com/netlify/build/issues/5534)) ([281c12b](https://github.com/netlify/build/commit/281c12ba31de6622cbd3796b3de1f0cff7f256ba))
+
+## [20.12.0](https://github.com/netlify/build/compare/config-v20.11.1...config-v20.12.0) (2024-02-14)
+
+
+### Features
+
+* initial support for Deploy Configuration API ([#5509](https://github.com/netlify/build/issues/5509)) ([70ef75f](https://github.com/netlify/build/commit/70ef75fa8afbfb84e726bf5e0fd65544e8b46c7a))
+
+## [20.11.1](https://github.com/netlify/build/compare/config-v20.11.0...config-v20.11.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.1.3 to ^7.1.4
+    * netlify-redirect-parser bumped from ^14.2.1 to ^14.2.2
+
+## [20.11.0](https://github.com/netlify/build/compare/config-v20.10.3...config-v20.11.0) (2024-02-02)
+
+
+### Features
+
+* allow mutating images field in NetlifyConfig ([#5464](https://github.com/netlify/build/issues/5464)) ([8d33d21](https://github.com/netlify/build/commit/8d33d217c2ee13643d3c8d6818bde01da7217093))
+
+## [20.10.3](https://github.com/netlify/build/compare/config-v20.10.2...config-v20.10.3) (2024-01-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.13 to ^13.1.14
+
+## [20.10.2](https://github.com/netlify/build/compare/config-v20.10.1...config-v20.10.2) (2024-01-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.12 to ^13.1.13
+
 ## [20.10.1](https://github.com/netlify/build/compare/config-v20.10.0...config-v20.10.1) (2024-01-08)
 
 

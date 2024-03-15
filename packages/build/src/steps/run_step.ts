@@ -23,6 +23,7 @@ export const runStep = async function ({
   coreStepId,
   coreStepName,
   coreStepDescription,
+  coreStepQuiet,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -99,6 +100,7 @@ export const runStep = async function ({
       saveConfig,
       explicitSecretKeys,
       deployId,
+      featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
     if (!shouldRun) {
@@ -106,7 +108,7 @@ export const runStep = async function ({
       return {}
     }
 
-    if (!quiet) {
+    if (!quiet && !coreStepQuiet) {
       logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
     }
 
@@ -190,7 +192,7 @@ export const runStep = async function ({
       durationNs,
       testOpts,
       systemLog,
-      quiet,
+      quiet: quiet || coreStepQuiet,
       metrics,
     })
 
@@ -244,6 +246,7 @@ const shouldRunStep = async function ({
   saveConfig,
   explicitSecretKeys,
   deployId,
+  featureFlags = {},
 }) {
   if (
     failedPlugins.includes(packageName) ||
@@ -257,6 +260,7 @@ const shouldRunStep = async function ({
         saveConfig,
         explicitSecretKeys,
         deployId,
+        featureFlags,
       })))
   ) {
     return false
@@ -378,6 +382,7 @@ const tFireStep = function ({
     steps,
     error,
     logs,
+    systemLog,
     featureFlags,
     debug,
     verbose,

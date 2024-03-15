@@ -1,4 +1,4 @@
-import { parse as loadToml } from 'toml'
+import { parse as loadToml } from '@iarna/toml'
 import tomlify from 'tomlify-j0.4'
 
 // Parse from TOML to JavaScript

@@ -35,7 +35,7 @@ export type CoreStepFunctionArgs = {
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
 export type CoreStepCondition = (args: CoreStepFunctionArgs) => Promise<boolean> | boolean
 
-type Event = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onPreDev' | 'onDev' | 'onPostDev'
+export type Event = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onPreDev' | 'onDev' | 'onPostDev'
 
 export type CoreStep = {
   event: Event
@@ -43,5 +43,8 @@ export type CoreStep = {
   coreStepId: string
   coreStepName: string
   coreStepDescription: () => string
-  condition: CoreStepCondition
+  condition?: CoreStepCondition
+  quiet?: boolean
 }
+
+export type SystemLogger = (...args: any[]) => void

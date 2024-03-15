@@ -29,6 +29,7 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  systemLog,
   featureFlags,
   debug,
   verbose,
@@ -71,7 +72,9 @@ export const firePluginStep = async function ({
       configSideFiles,
       errorParams,
       logs,
+      systemLog,
       debug,
+      source: packageName,
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
