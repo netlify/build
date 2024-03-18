@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.13.1](https://github.com/netlify/build/compare/build-info-v7.13.0...build-info-v7.13.1) (2024-03-18)
+
+
+### Bug Fixes
+
+* **metrics:** add validation/formatting before sending errors to BugSnag ([#5455](https://github.com/netlify/build/issues/5455)) ([e48532f](https://github.com/netlify/build/commit/e48532fc616eaf4e49e49316e424f13179163294))
+
 ## [7.13.0](https://github.com/netlify/build/compare/build-info-v7.12.1...build-info-v7.13.0) (2024-02-16)
 
 
