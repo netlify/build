@@ -39,7 +39,18 @@ export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
 
   const eventSteps = getEventSteps(eventHandlers)
 
-  const sortedSteps = sortSteps([preDevCleanup, ...steps, eventSteps, devCommandStep], DEV_EVENTS)
+  const sortedSteps = sortSteps(
+    [
+      preDevCleanup,
+      ...steps,
+      // Trigger the uploadBlobs step during development to allow users to test file-based blob
+      // uploads locally and to allow frameworks to capture file-based blobs written by frameworks
+      { ...uploadBlobs, event: 'onDev' },
+      eventSteps,
+      devCommandStep,
+    ],
+    DEV_EVENTS,
+  )
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
