@@ -108,17 +108,14 @@ const pinPlugin = async function ({
 }) {
   const pinnedVersion = getMajorVersion(version)
   try {
-    const body = {
-      pinned_version: pinnedVersion
+    if (!(packageName === '@netlify/plugin-nextjs' && pinnedVersion === 5)) {
+      // TODO: remove this condition after Next.js Runtime v5 GA
+      await api.updatePlugin({
+        package: encodeURIComponent(packageName),
+        site_id: siteId,
+        body: { pinned_version: pinnedVersion }
+      })
     }
-    if (packageName === '@netlify/plugin-nextjs' && pinnedVersion === 5) {
-      body.pinned_version = 'rc'
-    }
-    await api.updatePlugin({
-      package: encodeURIComponent(packageName),
-      site_id: siteId,
-      body,
-    })
     // Bitballoon API randomly fails with 502.
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
