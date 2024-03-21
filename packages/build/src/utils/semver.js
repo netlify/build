@@ -34,7 +34,5 @@ export const getMajorVersion = function (version) {
 }
 
 export const isPrerelease = function (version) {
-  // Prerelease versions are excluded from ranges unless `includePrerelease` is
-  // set to `true`.
-  return !semver.satisfies(version, '>=0.0.0', { includePrerelease: false })
+  return semver.prerelease(version)
 }
