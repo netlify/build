@@ -411,6 +411,12 @@ test('Pinning plugin versions takes into account the compatibility field', async
   })
 })
 
+test('Do not pin plugin with prerelease versions', async (t) => {
+  // By setting the status to 500 we ensure that the endpoint for pinning is
+  // not being called, otherwise an error would be thrown.
+  await runWithUpdatePluginMock(t, 'pin_prerelease', { status: 500, testPlugin: { version: '1.2.3-rc' } })
+})
+
 const runWithPluginRunsMock = async function (
   t,
   fixtureName,

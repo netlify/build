@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.36.5](https://github.com/netlify/build/compare/build-v29.36.4...build-v29.36.5) (2024-03-21)
+
+
+### Bug Fixes
+
+* stop pinning plugins with prerelease versions ([#5554](https://github.com/netlify/build/issues/5554)) ([3e0670f](https://github.com/netlify/build/commit/3e0670fa2bb220f2be0e7ecc6e0fcd00d8fcd8ad))
+
 ## [29.36.4](https://github.com/netlify/build/compare/build-v29.36.3...build-v29.36.4) (2024-03-14)
 
 
