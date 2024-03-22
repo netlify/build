@@ -1,19 +1,21 @@
 import { fileURLToPath } from 'url'
 
-import { execaNode } from 'execa'
+import { trace } from '@opentelemetry/api'
+import { ExecaChildProcess, execaNode } from 'execa'
 
 import { addErrorInfo } from '../error/info.js'
+import { BufferedLogs } from '../log/logger.js'
 import {
-  logRuntime,
-  logLoadingPlugins,
-  logOutdatedPlugins,
   logIncompatiblePlugins,
   logLoadingIntegration,
+  logLoadingPlugins,
+  logOutdatedPlugins,
+  logRuntime,
 } from '../log/messages/compatibility.js'
 import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
-import { getEventFromChild } from './ipc.js'
+import { callChild, getEventFromChild } from './ipc.js'
 import { getSpawnInfo } from './options.js'
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
@@ -45,7 +47,17 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
 const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }) {
-  const childProcess = execaNode(CHILD_MAIN_FILE, [], {
+  const ctx = trace.getActiveSpan()?.spanContext()
+
+  // the baggage will be passed to the child process when sending the run event
+  const args = [
+    ...process.argv.filter((arg) => arg.startsWith('--tracing')),
+    `--tracing.traceId=${ctx?.traceId}`,
+    `--tracing.parentSpanId=${ctx?.spanId}`,
+    `--tracing.traceFlags=${ctx?.traceFlags}`,
+  ]
+
+  const childProcess = execaNode(CHILD_MAIN_FILE, args, {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
@@ -72,14 +84,38 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
 }
 
 // Stop all plugins child processes
-export const stopPlugins = function (childProcesses) {
-  childProcesses.forEach(stopPlugin)
+export const stopPlugins = async function ({
+  childProcesses,
+  logs,
+  verbose,
+}: {
+  logs: BufferedLogs
+  verbose: boolean
+  childProcesses: { childProcess: ExecaChildProcess }[]
+}) {
+  await Promise.all(childProcesses.map(({ childProcess }) => stopPlugin({ childProcess, verbose, logs })))
 }
 
-const stopPlugin = function ({ childProcess }) {
+const stopPlugin = async function ({
+  childProcess,
+  logs,
+  verbose,
+}: {
+  childProcess: ExecaChildProcess
+  verbose: boolean
+  logs: BufferedLogs
+}) {
+  // reliable stop tracing inside child processes
+  await callChild({
+    childProcess,
+    eventName: 'shutdown',
+    payload: {},
+    logs,
+    verbose,
+  })
+
   if (childProcess.connected) {
     childProcess.disconnect()
   }
-
   childProcess.kill()
 }

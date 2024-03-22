@@ -79,9 +79,15 @@ export const runStep = async function ({
     'build.execution.step.origin': origin,
     'build.execution.step.event': event,
   }
+
+  if (pluginPackageJson?.name && pluginPackageJson?.version) {
+    attributes['build.execution.step.plugin_name'] = pluginPackageJson.name
+    attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
+  }
+
   const spanCtx = setMultiSpanAttributes(attributes)
   // If there's no `coreStepId` then this is a plugin execution
-  const spanName = `run-step-${coreStepId || 'plugin'}`
+  const spanName = `run-step-${coreStepId || `plugin-${event}`}`
 
   return tracer.startActiveSpan(spanName, {}, spanCtx, async (span) => {
     const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })

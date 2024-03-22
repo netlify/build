@@ -1,7 +1,10 @@
-import { setInspectColors } from '../../log/colors.js'
-import { sendEventToParent, getEventsFromParent } from '../ipc.js'
+import '@netlify/opentelemetry-sdk-setup/bin.js'
+import { stopTracing } from '@netlify/opentelemetry-sdk-setup'
 
-import { handleProcessErrors, handleError } from './error.js'
+import { setInspectColors } from '../../log/colors.js'
+import { getEventsFromParent, sendEventToParent } from '../ipc.js'
+
+import { handleError, handleProcessErrors } from './error.js'
 import { load } from './load.js'
 import { run } from './run.js'
 
@@ -46,6 +49,14 @@ const handleEvent = async function ({
   }
 }
 
-const EVENTS = { load, run }
+const EVENTS = {
+  load,
+  run,
+  // async shutdown hook to stop tracing reliably
+  shutdown: async () => {
+    await stopTracing()
+    return { context: {} }
+  },
+}
 
 bootPlugin()

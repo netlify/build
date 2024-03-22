@@ -1,3 +1,5 @@
+import { context, propagation } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../error/info.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
@@ -36,6 +38,9 @@ export const firePluginStep = async function ({
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
 
+  const otelCarrier = {}
+  propagation.inject(context.active(), otelCarrier)
+
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
@@ -52,6 +57,7 @@ export const firePluginStep = async function ({
         featureFlags: isTrustedPlugin(pluginPackageJson?.name) ? featureFlags : undefined,
         netlifyConfig,
         constants,
+        otelCarrier,
       },
       logs,
       verbose,

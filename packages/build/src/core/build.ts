@@ -543,7 +543,7 @@ const initAndRunBuild = async function ({
     // the build is finished. The exception is when running in the dev timeline
     // since those are long-running events by nature.
     if (timeline !== 'dev') {
-      stopPlugins(childProcesses)
+      await stopPlugins({ childProcesses, logs, verbose })
     }
   }
 }
