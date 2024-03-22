@@ -1,5 +1,5 @@
 import { context, trace, SpanStatusCode, ROOT_CONTEXT } from '@opentelemetry/api'
-import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
+import { getBaggage } from '@opentelemetry/api/build/esm/baggage/context-helpers.js'
 import type { Span } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { expect, test, beforeAll, afterAll } from 'vitest'
