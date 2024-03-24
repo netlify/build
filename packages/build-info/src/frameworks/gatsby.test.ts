@@ -16,7 +16,7 @@ test('should not add the plugin if the node version is below 12.13.0', async ({ 
   fs.cwd = cwd
   const detected = await new Project(fs, cwd).setNodeVersion('12.12.9').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
-  expect(detected?.[0].plugins).toMatchObject([])
+  expect(detected?.[0].plugins).toHaveLength(0)
 })
 
 test('should detect a simple Gatsby project and add the plugin if the node version is large enough', async ({ fs }) => {
@@ -27,7 +27,7 @@ test('should detect a simple Gatsby project and add the plugin if the node versi
   fs.cwd = cwd
   const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
-  expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-gatsby'])
+  expect(detected?.[0].plugins).toMatchObject([{ package: '@netlify/plugin-gatsby' }])
 })
 
 test('should detect a simple Gatsby 4 project', async ({ fs }) => {
@@ -67,8 +67,7 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
       frameworkPort: 8000,
       name: 'Gatsby',
       packagePath: '',
-      plugins_from_config_file: [],
-      plugins_recommended: [],
+      plugins: [],
       pollingStrategies: ['TCP', 'HTTP'],
     },
   ])

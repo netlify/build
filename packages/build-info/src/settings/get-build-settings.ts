@@ -1,4 +1,4 @@
-import { type Framework } from '../frameworks/framework.js'
+import { BuildPlugin, type Framework } from '../frameworks/framework.js'
 import { type Project } from '../project.js'
 
 export type Settings = {
@@ -24,10 +24,8 @@ export type Settings = {
   /** The dist directory that contains the build output */
   dist: string
   env: Record<string, string | undefined>
-  /** Plugins installed via the netlify.toml */
-  plugins_from_config_file: string[]
   /** Plugins that are detected via the framework detection and therefore recommended */
-  plugins_recommended: string[]
+  plugins: BuildPlugin[]
   pollingStrategies: string[]
   /** The baseDirectory for the UI to configure (used to run the command in this working directory) */
   baseDirectory?: string
@@ -91,8 +89,7 @@ export async function getSettings(framework: Framework, project: Project, baseDi
     frameworkPort: framework.dev?.port,
     dist: project.fs.join(baseDirectory, framework.build.directory),
     env: framework.env || {},
-    plugins_from_config_file: [],
-    plugins_recommended: framework.plugins || [],
+    plugins: framework.plugins || [],
     framework: {
       id: framework.id,
       name: framework.name,

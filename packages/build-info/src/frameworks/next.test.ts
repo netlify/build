@@ -38,7 +38,15 @@ describe('Next.js Plugin', () => {
     const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual(['@netlify/plugin-nextjs'])
+    expect(frameworks?.[0].plugins).toEqual([{ package: '@netlify/plugin-nextjs', autoInstall: true }])
+  })
+
+  test('Should use the old runtime if the next.js version is not >= 13.5.0', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v18.0.0')
+    project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime' }
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual([{ package: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
@@ -46,6 +54,44 @@ describe('Next.js Plugin', () => {
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
     expect(frameworks?.[0].plugins).toHaveLength(0)
+  })
+})
+
+describe('New Next.js Runtime', () => {
+  beforeEach((ctx) => {
+    ctx.cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        name: 'my-next-app',
+        version: '0.1.0',
+        private: true,
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          start: 'next start',
+        },
+        dependencies: {
+          next: '13.5.0',
+          react: '17.0.1',
+          'react-dom': '17.0.1',
+        },
+      }),
+    })
+  })
+
+  test('Should not use the new runtime if the node version is below 18', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v16.0.0')
+    project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime@latest' }
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual([{ package: '@netlify/plugin-nextjs', autoInstall: true }])
+  })
+
+  test('Should use the old runtime if the next.js version is not >= 13.5.0', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v18.0.0')
+    project.featureFlags = { project_ceruledge_ui: '@netlify/next-runtime@latest' }
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual([{ package: '@netlify/next-runtime@latest', autoInstall: true }])
   })
 })
 
@@ -90,7 +136,7 @@ describe('simple Next.js project', async () => {
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).setEnvironment({ NODE_VERSION: '18.x' }).detectFrameworks()
     expect(detected?.[0].id).toBe('next')
-    expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-nextjs'])
+    expect(detected?.[0].plugins).toMatchObject([{ package: '@netlify/plugin-nextjs', autoInstall: true }])
   })
 })
 
@@ -134,7 +180,7 @@ describe('Nx monorepo', () => {
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website'),
       frameworkPort: 4200,
-      plugins_recommended: ['@netlify/plugin-nextjs'],
+      plugins: [{ package: '@netlify/plugin-nextjs', autoInstall: true }],
     })
   })
 })
@@ -152,7 +198,7 @@ describe('Nx turborepo', () => {
       devCommand: 'turbo run dev --filter web',
       dist: join('apps/web/.next'),
       frameworkPort: 3000,
-      plugins_recommended: ['@netlify/plugin-nextjs'],
+      plugins: [{ package: '@netlify/plugin-nextjs', autoInstall: true }],
     })
   })
 })

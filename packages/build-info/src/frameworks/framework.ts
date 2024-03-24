@@ -39,6 +39,19 @@ export type Detection = {
 
 export type FrameworkInfo = ReturnType<Framework['toJSON']>
 
+export type BuildPlugin = {
+  package: string
+  /**
+   * This setting is for runtimes that are expected to be "automatically"
+   * installed. Even though they can be installed on package/toml, we always
+   * want them installed in the site settings. When installed our build will
+   * automatically install the latest version without the need of the user
+   * managing the version plugin.
+   */
+  autoInstall?: boolean
+  source?: 'toml'
+}
+
 export interface Framework {
   project: Project
 
@@ -67,7 +80,7 @@ export interface Framework {
     light?: string
     dark?: string
   }
-  plugins: string[]
+  plugins: BuildPlugin[]
   env: Record<string, string>
 
   detect(): Promise<DetectedFramework | undefined>
@@ -93,7 +106,7 @@ export interface Framework {
     staticAssetsDirectory?: string
     env: Record<string, string>
     logo?: Record<string, string>
-    plugins: string[]
+    plugins: BuildPlugin[]
   }
 }
 
@@ -147,7 +160,7 @@ export abstract class BaseFramework implements Framework {
   configFiles: string[] = []
   npmDependencies: string[] = []
   excludedNpmDependencies: string[] = []
-  plugins: string[] = []
+  plugins: BuildPlugin[] = []
   staticAssetsDirectory?: string
   env = {}
   dev?: {

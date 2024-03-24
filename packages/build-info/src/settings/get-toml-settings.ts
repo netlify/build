@@ -31,16 +31,21 @@ export async function getTomlSettingsFromPath(
   const tomlFilePath = fs.join(directory, 'netlify.toml')
 
   try {
-    const settings: Partial<Settings> = {}
+    const settings: Partial<Settings> & Pick<Settings, 'plugins'> = {
+      plugins: [],
+    }
     const { build, dev, functions, template, plugins } = gracefulParseToml<NetlifyTOML>(await fs.readFile(tomlFilePath))
 
     settings.buildCommand = build?.command ?? settings.buildCommand
     settings.dist = build?.publish ?? settings.dist
     settings.devCommand = dev?.command ?? settings.devCommand
     settings.frameworkPort = dev?.port ?? settings.frameworkPort
-    settings.plugins_from_config_file = plugins?.map((p) => p.package) ?? settings.plugins_from_config_file
     settings.functionsDir = (build?.functions || functions?.directory) ?? settings.functionsDir
     settings.template = template ?? settings.template
+
+    for (const plugin of plugins || []) {
+      settings.plugins.push({ package: plugin.package, source: 'toml' })
+    }
 
     return settings
   } catch {

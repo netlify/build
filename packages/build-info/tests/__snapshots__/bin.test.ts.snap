@@ -6,9 +6,10 @@ exports[`CLI --help flag 1`] = `
 Print relevant build information from a project.
 
 Options:
-  --help          Show help                                            [boolean]
-  --version       Show version number                                  [boolean]
-  --rootDir       The root directory of the project if different from projectDir
-                                                                        [string]
-  --featureFlags  comma separated list of feature flags                 [string]"
+  --help                Show help                                      [boolean]
+  --version             Show version number                            [boolean]
+  --rootDir             The root directory of the project if different from proj
+                        ectDir                                          [string]
+  --featureFlags, --ff  JSON stringified list of feature flags with values
+                                                                        [string]"
 `;

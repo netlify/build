@@ -45,7 +45,7 @@ export async function getBuildInfo(
   config: {
     projectDir?: string
     rootDir?: string
-    featureFlags?: Record<string, boolean>
+    featureFlags?: Record<string, boolean | number | string>
     bugsnagClient?: Client
   } = { featureFlags: {} },
 ): Promise<Info> {
@@ -54,6 +54,7 @@ export async function getBuildInfo(
   fs.logger = new NoopLogger()
   const project = new Project(fs, config.projectDir, config.rootDir)
     .setBugsnag(config.bugsnagClient)
+    .setFeatureFlags(config.featureFlags)
     .setEnvironment(process.env)
     .setNodeVersion(process.version)
 
