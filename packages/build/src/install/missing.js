@@ -82,7 +82,7 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
         throw new Error(res.stdout)
       }
     } catch (e) {
-      throw new Error(`Failed to build integration`)
+      throw new Error(`Failed to build integration: ${e.message ? e.message : e}`)
     }
 
     return undefined
