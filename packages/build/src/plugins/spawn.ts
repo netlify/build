@@ -4,6 +4,7 @@ import { trace } from '@opentelemetry/api'
 import { ExecaChildProcess, execaNode } from 'execa'
 
 import { addErrorInfo } from '../error/info.js'
+import { NetlifyConfig } from '../index.js'
 import { BufferedLogs } from '../log/logger.js'
 import {
   logIncompatiblePlugins,
@@ -16,6 +17,7 @@ import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
 import { callChild, getEventFromChild } from './ipc.js'
+import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
@@ -93,33 +95,51 @@ export const stopPlugins = async function ({
   childProcesses,
   logs,
   verbose,
+  pluginOptions,
+  netlifyConfig,
 }: {
   logs: BufferedLogs
   verbose: boolean
   childProcesses: { childProcess: ExecaChildProcess }[]
+  pluginOptions: PluginsOptions[]
+  netlifyConfig: NetlifyConfig
 }) {
-  await Promise.all(childProcesses.map(({ childProcess }) => stopPlugin({ childProcess, verbose, logs })))
+  await Promise.all(
+    childProcesses.map(({ childProcess }, index) => {
+      return stopPlugin({ childProcess, verbose, logs, pluginOptions: pluginOptions[index], netlifyConfig })
+    }),
+  )
 }
 
 const stopPlugin = async function ({
   childProcess,
   logs,
+  pluginOptions: { packageName, inputs, pluginPath, pluginPackageJson: packageJson = {} },
+  netlifyConfig,
   verbose,
 }: {
   childProcess: ExecaChildProcess
+  pluginOptions: PluginsOptions
+  netlifyConfig: NetlifyConfig
   verbose: boolean
   logs: BufferedLogs
 }) {
-  // reliable stop tracing inside child processes
-  await callChild({
-    childProcess,
-    eventName: 'shutdown',
-    payload: {},
-    logs,
-    verbose,
-  })
-
   if (childProcess.connected) {
+    // reliable stop tracing inside child processes
+    await callChild({
+      childProcess,
+      eventName: 'shutdown',
+      payload: {
+        packageName,
+        pluginPath,
+        inputs,
+        packageJson,
+        verbose,
+        netlifyConfig,
+      },
+      logs,
+      verbose,
+    })
     childProcess.disconnect()
   }
   childProcess.kill()
