@@ -2,7 +2,6 @@ import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { DiagLogLevel, TraceFlags, context, diag, trace } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-pkg-up'
 
 import { getDiagLogger, loadBaggageFromFile } from './util.js'
@@ -35,11 +34,14 @@ export const startTracing = async function (options: TracingOptions, packageJson
   if (!options.preloadingEnabled) return
   if (sdk) return
 
+  const serviceName = process.env.OTEL_SERVICE_NAME || packageJson.name
+
   sdk = new HoneycombSDK({
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_VERSION]: process.env.OTEL_SERVICE_VERSION || packageJson.version,
+      SEMRESATTRS_SERVICE_NAME: serviceName,
+      SEMRESATTRS_SERVICE_VERSION: process.env.OTEL_SERVICE_VERSION || packageJson.version,
     }),
-    serviceName: process.env.OTEL_SERVICE_NAME || packageJson.name,
+    serviceName,
     protocol: 'grpc',
     apiKey: options.apiKey,
     endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,

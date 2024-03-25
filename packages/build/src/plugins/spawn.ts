@@ -67,7 +67,7 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     nodeOptions: [],
     execPath: nodePath,
     env: {
-      childEnv,
+      ...childEnv,
       OTEL_SERVICE_NAME: pluginPackageJson?.name,
       OTEL_SERVICE_VERSION: pluginPackageJson?.version,
     },
