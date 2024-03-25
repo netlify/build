@@ -55,6 +55,7 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     `--tracing.traceId=${ctx?.traceId}`,
     `--tracing.parentSpanId=${ctx?.spanId}`,
     `--tracing.traceFlags=${ctx?.traceFlags}`,
+    `--tracing.enabled=${!!isTrustedPlugin(pluginPackageJson?.name)}`,
   ]
 
   const childProcess = execaNode(CHILD_MAIN_FILE, args, {
@@ -65,7 +66,11 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     // make sure we don't pass build's node cli properties for now (e.g. --import)
     nodeOptions: [],
     execPath: nodePath,
-    env: childEnv,
+    env: {
+      childEnv,
+      OTEL_SERVICE_NAME: pluginPackageJson?.name,
+      OTEL_SERVICE_VERSION: pluginPackageJson?.version,
+    },
     extendEnv: false,
     stdio:
       isTrustedPlugin(pluginPackageJson?.name) && systemLogFile
