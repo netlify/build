@@ -1,9 +1,9 @@
 {
-  "packages/build-info": "7.13.1",
-  "packages/build": "29.36.5",
+  "packages/build-info": "7.13.2",
+  "packages/build": "29.36.6",
   "packages/cache-utils": "5.1.5",
   "packages/config": "20.12.1",
-  "packages/framework-info": "9.8.10",
+  "packages/framework-info": "9.8.11",
   "packages/functions-utils": "5.2.51",
   "packages/git-utils": "5.1.1",
   "packages/headers-parser": "7.1.4",
