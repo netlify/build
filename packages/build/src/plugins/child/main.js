@@ -1,6 +1,3 @@
-import '@netlify/opentelemetry-sdk-setup/bin.js'
-import { stopTracing } from '@netlify/opentelemetry-sdk-setup'
-
 import { setInspectColors } from '../../log/colors.js'
 import { getEventsFromParent, sendEventToParent } from '../ipc.js'
 
@@ -54,7 +51,13 @@ const EVENTS = {
   run,
   // async shutdown hook to stop tracing reliably
   shutdown: async () => {
-    await stopTracing()
+    try {
+      const { stopTracing } = await import('@netlify/opentelemetry-sdk-setup')
+      await stopTracing()
+    } catch {
+      // noop as the opentelemetry-sdk-setup is an optional dependency
+      // and might not be present in the CLI
+    }
     return { context: {} }
   },
 }

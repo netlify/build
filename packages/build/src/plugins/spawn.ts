@@ -1,3 +1,4 @@
+import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 
 import { trace } from '@opentelemetry/api'
@@ -21,6 +22,8 @@ import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
+
+const require = createRequire(import.meta.url)
 
 // Start child processes used by all plugins
 // We fire plugins through child processes so that:
@@ -60,13 +63,23 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
     `--tracing.enabled=${!!isTrustedPlugin(pluginPackageJson?.name)}`,
   ]
 
+  const nodeOptions: string[] = []
+
+  // the sdk setup is a optional dependency that might not exist
+  // only use it if it exists
+  try {
+    const entry = require.resolve('@netlify/opentelemetry-sdk-setup/bin.js')
+    nodeOptions.push('--import', entry)
+  } catch {
+    // noop
+  }
+
   const childProcess = execaNode(CHILD_MAIN_FILE, args, {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
     nodePath,
-    // make sure we don't pass build's node cli properties for now (e.g. --import)
-    nodeOptions: [],
+    nodeOptions,
     execPath: nodePath,
     env: {
       ...childEnv,
