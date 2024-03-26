@@ -69,7 +69,7 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
       packagePath: '',
       plugins_from_config_file: [],
       plugins_recommended: [],
-      pollingStrategies: ['TCP', 'HTTP'],
+      pollingStrategies: ['TCP'],
     },
   ])
 })

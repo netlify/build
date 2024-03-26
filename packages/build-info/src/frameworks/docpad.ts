@@ -9,7 +9,7 @@ export class DocPad extends BaseFramework implements Framework {
   dev = {
     command: 'docpad run',
     port: 9778,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

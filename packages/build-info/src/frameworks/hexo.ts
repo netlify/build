@@ -10,7 +10,7 @@ export class Hexo extends BaseFramework implements Framework {
   dev = {
     command: 'hexo server',
     port: 4000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

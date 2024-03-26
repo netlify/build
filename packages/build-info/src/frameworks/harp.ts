@@ -9,7 +9,7 @@ export class Harp extends BaseFramework implements Framework {
   dev = {
     command: 'harp server',
     port: 9000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

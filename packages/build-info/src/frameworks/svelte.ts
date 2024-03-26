@@ -11,7 +11,7 @@ export class Svelte extends BaseFramework implements Framework {
   dev = {
     command: 'npm run dev',
     port: 5000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

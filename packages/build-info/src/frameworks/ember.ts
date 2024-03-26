@@ -10,7 +10,7 @@ export class Ember extends BaseFramework implements Framework {
   dev = {
     command: 'ember serve',
     port: 4200,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
