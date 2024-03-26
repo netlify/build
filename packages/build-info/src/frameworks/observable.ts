@@ -9,7 +9,7 @@ export class Observable extends BaseFramework implements Framework {
   dev = {
     command: 'observable preview',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

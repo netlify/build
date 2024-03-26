@@ -9,7 +9,7 @@ export class Vue extends BaseFramework implements Framework {
   dev = {
     command: 'vue-cli-service serve',
     port: 8080,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

@@ -9,7 +9,7 @@ export class Middleman extends BaseFramework implements Framework {
   dev = {
     command: 'bundle exec middleman server',
     port: 4567,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

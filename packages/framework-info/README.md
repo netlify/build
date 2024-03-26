@@ -29,7 +29,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     dev: {
 //       commands: ['gatsby develop'],
 //       port: 8000,
-//       pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+//       pollingStrategies: [{ name: 'TCP' }]
 //     },
 //     build: {
 //       commands: ['gatsby build'],
@@ -50,7 +50,7 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     dev: {
 //       commands: ['npm run serve'],
 //       port: 8080,
-//       pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+//       pollingStrategies: [{ name: 'TCP' }]
 //     },
 //     build: {
 //       commands: ['vue-cli-service build'],
@@ -72,7 +72,7 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   dev: {
 //     commands: ['npm run serve'],
 //     port: 8080,
-//     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+//     pollingStrategies: [{ name: 'TCP' }]
 //   },
 //   build: {
 //     commands: ['vue-cli-service build'],
@@ -90,7 +90,7 @@ console.log(getFrameworkById('vue'))
 //   dev: {
 //     commands: ['npm run serve'],
 //     port: 8080,
-//     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+//     pollingStrategies: [{ name: 'TCP' }]
 //   },
 //   build: {
 //     commands: ['vue-cli-service build'],

@@ -10,7 +10,7 @@ export class SvelteKit extends BaseFramework implements Framework {
   dev = {
     command: 'vite dev',
     port: 5173,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

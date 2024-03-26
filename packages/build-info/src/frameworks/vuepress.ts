@@ -9,7 +9,7 @@ export class VuePress extends BaseFramework implements Framework {
   dev = {
     command: 'vuepress dev',
     port: 8080,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
