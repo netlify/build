@@ -1,5 +1,5 @@
 import { createRequire } from 'module'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 
 import { trace } from '@opentelemetry/api'
 import { ExecaChildProcess, execaNode } from 'execa'
@@ -90,7 +90,8 @@ const startPlugin = async function ({
     // plugins that run on a lower node version will not be able to be instrumented with opentelemetry
     if (gte(nodeVersion, '18.18.0')) {
       const entry = require.resolve('@netlify/opentelemetry-sdk-setup/bin.js')
-      nodeOptions.push('--import', entry)
+      // on windows only file:// urls are allowed
+      nodeOptions.push('--import', pathToFileURL(entry).toString())
     }
   } catch {
     // noop
