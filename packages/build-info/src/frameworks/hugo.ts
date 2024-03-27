@@ -9,7 +9,7 @@ export class Hugo extends BaseFramework implements Framework {
   dev = {
     command: 'hugo server -w',
     port: 1313,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

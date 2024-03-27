@@ -22,6 +22,9 @@ test.each([
   expect(detected?.[0].build.directory).toBe('dist')
   expect(detected?.[0].dev?.command).toBe('astro dev')
   expect(detected?.[0].dev?.port).toBe(4321)
+  // Astro makes passthrough requests to the dev server, which will be an infinite loop before the dev server started.
+  // we can prevent this by only checking the TCP port, and not HTTP.
+  expect(detected?.[0].dev?.pollingStrategies).toEqual([{ name: 'TCP' }])
 })
 
 test('should return 3000 for less than 3.0.0', async () => {

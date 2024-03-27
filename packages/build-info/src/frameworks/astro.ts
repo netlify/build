@@ -13,7 +13,7 @@ export class Astro extends BaseFramework implements Framework {
   dev = {
     port: 4321,
     command: 'astro dev',
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

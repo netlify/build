@@ -9,7 +9,7 @@ export class Jekyll extends BaseFramework implements Framework {
   dev = {
     command: 'bundle exec jekyll serve -w',
     port: 4000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

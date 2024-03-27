@@ -12,7 +12,7 @@ export class Angular extends BaseFramework implements Framework {
   dev = {
     port: 4200,
     command: 'ng serve',
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

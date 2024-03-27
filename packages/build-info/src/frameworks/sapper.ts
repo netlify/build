@@ -10,7 +10,7 @@ export class Sapper extends BaseFramework implements Framework {
   dev = {
     command: 'sapper dev',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

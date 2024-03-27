@@ -9,7 +9,7 @@ export class Cecil extends BaseFramework implements Framework {
   dev = {
     command: 'cecil serve',
     port: 8000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

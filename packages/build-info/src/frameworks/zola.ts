@@ -9,7 +9,7 @@ export class Zola extends BaseFramework implements Framework {
   dev = {
     command: 'zola serve',
     port: 1111,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

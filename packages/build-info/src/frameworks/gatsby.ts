@@ -13,7 +13,7 @@ export class Gatsby extends BaseFramework implements Framework {
   dev = {
     command: 'gatsby develop',
     port: 8000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
