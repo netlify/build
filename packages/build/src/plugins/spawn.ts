@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 
 import { trace } from '@opentelemetry/api'
 import { ExecaChildProcess, execaNode } from 'execa'
+import { gte } from 'semver'
 
 import { addErrorInfo } from '../error/info.js'
 import { NetlifyConfig } from '../index.js'
@@ -42,8 +43,8 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
-    pluginsOptions.map(({ pluginDir, nodePath, pluginPackageJson }) =>
-      startPlugin({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }),
+    pluginsOptions.map(({ pluginDir, nodePath, nodeVersion, pluginPackageJson }) =>
+      startPlugin({ pluginDir, nodePath, nodeVersion, buildDir, childEnv, systemLogFile, pluginPackageJson }),
     ),
   )
   return { childProcesses }
@@ -51,7 +52,24 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
-const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, systemLogFile, pluginPackageJson }) {
+const startPlugin = async function ({
+  pluginDir,
+  nodeVersion,
+  nodePath,
+  buildDir,
+  childEnv,
+  systemLogFile,
+  pluginPackageJson,
+}: {
+  nodeVersion: string
+  nodePath: string
+  pluginDir: string
+  /** The process cwd that is used to spawn the child process */
+  buildDir: string
+  childEnv: Record<string, string>
+  pluginPackageJson: Record<string, string>
+  systemLogFile: number
+}) {
   const ctx = trace.getActiveSpan()?.spanContext()
 
   // the baggage will be passed to the child process when sending the run event
@@ -68,8 +86,12 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, s
   // the sdk setup is a optional dependency that might not exist
   // only use it if it exists
   try {
-    const entry = require.resolve('@netlify/opentelemetry-sdk-setup/bin.js')
-    nodeOptions.push('--import', entry)
+    // the --import preloading is only available in node 18.18.0 and above
+    // plugins that run on a lower node version will not be able to be instrumented with opentelemetry
+    if (gte(nodeVersion, '18.18.0')) {
+      const entry = require.resolve('@netlify/opentelemetry-sdk-setup/bin.js')
+      nodeOptions.push('--import', entry)
+    }
   } catch {
     // noop
   }
