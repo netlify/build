@@ -24,7 +24,6 @@ const coreStep = async function ({
 }) {
   return tracer.withActiveSpan('build.command', async (span) => {
     span.setAttributes({
-      'build.command': buildCommand,
       'build.command.origin': buildCommandOrigin,
       'build.cwd': buildDir,
     })
