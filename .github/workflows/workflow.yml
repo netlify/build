@@ -80,7 +80,7 @@ jobs:
         run: npm install -g npm@7
         if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -187,7 +187,7 @@ jobs:
         run: npm install -g npm@7
         if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
