@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.37.0](https://github.com/netlify/build/compare/build-v29.36.6...build-v29.37.0) (2024-03-28)
+
+
+### Features
+
+* instrument child process with open telemetry ([#5556](https://github.com/netlify/build/issues/5556)) ([e93feb4](https://github.com/netlify/build/commit/e93feb4fe6510fd92abd94652ecce0bebfd31ab1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ^1.0.3 to ^1.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.0.5 to ^1.1.0
+
 ## [29.36.6](https://github.com/netlify/build/compare/build-v29.36.5...build-v29.36.6) (2024-03-26)
 
 
