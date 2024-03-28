@@ -76,7 +76,7 @@ const siteDependencyTest = async function ({
 
   // if this is a valid version we can apply the rule directly
   if (semver.clean(siteDependency) !== null) {
-    return semver.satisfies(siteDependency, allowedVersion)
+    return semver.satisfies(siteDependency, allowedVersion, { includePrerelease: true })
   }
 
   try {

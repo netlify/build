@@ -130,6 +130,37 @@ test('`getExpectedVersion` should retrieve the plugin based on conditions and fe
   expect(version3).toBe('5.0.0-beta.1')
 })
 
+test('`getExpectedVersion` should work with rc versions inside the siteDependencies constraints', async () => {
+  const versions: PluginVersion[] = [
+    {
+      version: '5.0.0-beta.1',
+      conditions: [
+        { type: 'nodeVersion', condition: '>= 18.0.0' },
+        { type: 'siteDependencies', condition: { next: '>=13.5.0' } },
+      ],
+      overridePinnedVersion: '>=4.0.0',
+    },
+    {
+      version: '4.42.0',
+      conditions: [{ type: 'siteDependencies', condition: { next: '>=10.0.9' } }],
+    },
+    { version: '4.41.2', conditions: [] },
+    {
+      version: '3.9.2',
+      conditions: [{ type: 'siteDependencies', condition: { next: '<10.0.9' } }],
+    },
+  ]
+
+  const { version } = await getExpectedVersion({
+    versions,
+    nodeVersion: '18.19.0',
+    packageJson: { dependencies: { next: '14.1.1-canary.36' } },
+    buildDir: '/some/path',
+    pinnedVersion: '4',
+  })
+  expect(version).toBe('5.0.0-beta.1')
+})
+
 test('`getExpectedVersion` should retrieve the plugin based on conditions and feature flag due to pinned version', async () => {
   const versions: PluginVersion[] = [
     {
