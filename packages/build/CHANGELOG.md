@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.37.2](https://github.com/netlify/build/compare/build-v29.37.1...build-v29.37.2) (2024-03-28)
+
+
+### Bug Fixes
+
+* deal with pre-releases in plugins siteDependency constraints ([#5563](https://github.com/netlify/build/issues/5563)) ([83fc040](https://github.com/netlify/build/commit/83fc0409d1f7a04f8fb8d24278fae27775f59a86))
+
 ## [29.37.1](https://github.com/netlify/build/compare/build-v29.37.0...build-v29.37.1) (2024-03-28)
 
 
