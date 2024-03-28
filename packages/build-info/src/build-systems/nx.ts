@@ -154,10 +154,19 @@ export class Nx extends BaseBuildTool {
       if (target) {
         const pattern = 'outputs' in target ? target.outputs?.[0] : target.options?.outputPath
         if (pattern) {
+          const framework = this.project.frameworks?.get(packagePath)?.[0]
+          let frameworkDist = ''
+
+          // for next we still want to get the .next directory on the framework dist path
+          if (framework?.id === 'next') {
+            frameworkDist = framework.build.directory
+          }
+
           return this.project.fs.join(
             pattern
               .replace('{workspaceRoot}/', '')
               .replace(/\{(.+)\}/g, (_match, group) => getProperty({ ...target, projectRoot: packagePath }, group)),
+            frameworkDist,
           )
         }
       }
