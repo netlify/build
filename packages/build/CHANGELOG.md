@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.37.1](https://github.com/netlify/build/compare/build-v29.37.0...build-v29.37.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.77.0 ([#5557](https://github.com/netlify/build/issues/5557)) ([96f1e5f](https://github.com/netlify/build/commit/96f1e5f19e89d30463cd367a47c55d89c838986b))
+
 ## [29.37.0](https://github.com/netlify/build/compare/build-v29.36.6...build-v29.37.0) (2024-03-28)
 
 
