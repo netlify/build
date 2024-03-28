@@ -151,14 +151,14 @@ test('`getExpectedVersion` should work with rc versions inside the siteDependenc
     },
   ]
 
-  const { version: version3 } = await getExpectedVersion({
+  const { version } = await getExpectedVersion({
     versions,
     nodeVersion: '18.19.0',
     packageJson: { dependencies: { next: '14.1.1-canary.36' } },
     buildDir: '/some/path',
     pinnedVersion: '4',
   })
-  expect(version3).toBe('5.0.0-beta.1')
+  expect(version).toBe('5.0.0-beta.1')
 })
 
 test('`getExpectedVersion` should retrieve the plugin based on conditions and feature flag due to pinned version', async () => {
