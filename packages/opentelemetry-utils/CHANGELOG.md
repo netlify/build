@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.3...opentelemetry-utils-v1.1.0) (2024-03-28)
+
+
+### Features
+
+* instrument child process with open telemetry ([#5556](https://github.com/netlify/build/issues/5556)) ([e93feb4](https://github.com/netlify/build/commit/e93feb4fe6510fd92abd94652ecce0bebfd31ab1))
+
 ## [1.0.3](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.2...opentelemetry-utils-v1.0.3) (2024-03-14)
 
 

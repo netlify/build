@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.5...opentelemetry-sdk-setup-v1.1.0) (2024-03-28)
+
+
+### Features
+
+* instrument child process with open telemetry ([#5556](https://github.com/netlify/build/issues/5556)) ([e93feb4](https://github.com/netlify/build/commit/e93feb4fe6510fd92abd94652ecce0bebfd31ab1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.0.3 to ~1.1.0
+
 ## [1.0.5](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.4...opentelemetry-sdk-setup-v1.0.5) (2024-03-14)
 
 

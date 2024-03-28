@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "29.36.6",
+  "version": "29.37.0",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -75,7 +75,7 @@
     "@netlify/framework-info": "^9.8.11",
     "@netlify/functions-utils": "^5.2.51",
     "@netlify/git-utils": "^5.1.1",
-    "@netlify/opentelemetry-utils": "^1.0.3",
+    "@netlify/opentelemetry-utils": "^1.1.0",
     "@netlify/plugins-list": "^6.75.0",
     "@netlify/run-utils": "^5.1.1",
     "@netlify/zip-it-and-ship-it": "9.29.2",
@@ -154,7 +154,7 @@
   },
   "peerDependencies": {
     "@opentelemetry/api": "~1.8.0",
-    "@netlify/opentelemetry-sdk-setup": "^1.0.5"
+    "@netlify/opentelemetry-sdk-setup": "^1.1.0"
   },
   "peerDependenciesMeta": {
     "@netlify/opentelemetry-sdk-setup": {
