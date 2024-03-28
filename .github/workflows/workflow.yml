@@ -25,7 +25,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: nrwl/nx-set-shas@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -71,7 +71,7 @@ jobs:
       - uses: nrwl/nx-set-shas@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -178,7 +178,7 @@ jobs:
           deno-version: v1.x
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
