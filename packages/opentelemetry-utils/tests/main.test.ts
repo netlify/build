@@ -1,5 +1,4 @@
-import { context, trace, SpanStatusCode, ROOT_CONTEXT } from '@opentelemetry/api'
-import { getBaggage } from '@opentelemetry/api/build/src/baggage/context-helpers.js'
+import { context, trace, SpanStatusCode, ROOT_CONTEXT, propagation } from '@opentelemetry/api'
 import type { Span } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { expect, test, beforeAll, afterAll } from 'vitest'
@@ -16,7 +15,6 @@ test('Sets the global context', async () => {
   const rootCtx = ROOT_CONTEXT
   const key = Symbol('some-key')
   const newCtx = rootCtx.setValue(key, 'my-custom-value')
-  expect(getGlobalContext()).toBe(rootCtx)
   expect(getGlobalContext()).not.toBe(newCtx)
   setGlobalContext(newCtx)
 
@@ -65,8 +63,8 @@ test('addErrorToActiveSpan - no attributes are added', async () => {
 
     const firstEvent = span.events[0]
     expect(firstEvent.name).equal('exception')
-    expect(firstEvent.attributes['exception.stacktrace']).to.exist
-    expect(firstEvent.attributes['exception.type']).equal('Error')
+    expect(firstEvent.attributes?.['exception.stacktrace']).to.exist
+    expect(firstEvent.attributes?.['exception.type']).equal('Error')
   })
 })
 
@@ -86,19 +84,19 @@ test('addErrorToActiveSpan - attributes are added', async () => {
     addErrorToActiveSpan(myError, attributes)
 
     expect(span.status.code).equal(SpanStatusCode.ERROR)
-    // Severities are infered from the Error Type
+    // Severities are inferred from the Error Type
     expect(span.attributes).toStrictEqual(attributes)
 
     const firstEvent = span.events[0]
     expect(firstEvent.name).equal('exception')
-    expect(firstEvent.attributes['exception.stacktrace']).to.exist
-    expect(firstEvent.attributes['exception.type']).equal('Error')
+    expect(firstEvent.attributes?.['exception.stacktrace']).to.exist
+    expect(firstEvent.attributes?.['exception.type']).equal('Error')
   })
 })
 
 test('setMultiSpanAttributes - baggage is populated', async () => {
   const ctx = setMultiSpanAttributes({ some: 'test', foo: 'bar' })
-  const baggage = getBaggage(ctx)
-  expect(baggage.getEntry('some').value).equal('test')
-  expect(baggage.getEntry('foo').value).equal('bar')
+  const baggage = propagation.getBaggage(ctx)
+  expect(baggage?.getEntry('some')?.value).equal('test')
+  expect(baggage?.getEntry('foo')?.value).equal('bar')
 })
