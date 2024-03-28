@@ -4,6 +4,7 @@ import { uploadBlobs } from '../plugins_core/blobs_upload/index.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
 import { applyDeployConfig } from '../plugins_core/deploy_config/index.js'
+import { devUploadBlobs } from '../plugins_core/dev_blobs_upload/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
@@ -39,18 +40,7 @@ export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
 
   const eventSteps = getEventSteps(eventHandlers)
 
-  const sortedSteps = sortSteps(
-    [
-      preDevCleanup,
-      ...steps,
-      // Trigger the uploadBlobs step during development to allow users to test file-based blob
-      // uploads locally and to allow frameworks to capture file-based blobs written by frameworks
-      { ...uploadBlobs, event: 'onDev' },
-      eventSteps,
-      devCommandStep,
-    ],
-    DEV_EVENTS,
-  )
+  const sortedSteps = sortSteps([preDevCleanup, ...steps, devUploadBlobs, eventSteps, devCommandStep], DEV_EVENTS)
   const events = getEvents(sortedSteps)
 
   return { steps: sortedSteps, events }
