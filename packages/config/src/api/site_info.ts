@@ -13,6 +13,7 @@ type GetSiteInfoOpts = {
   siteFeatureFlagPrefix: string
   offline?: boolean
   api?: NetlifyAPI
+  context?: string
   featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
 }
@@ -30,6 +31,7 @@ export const getSiteInfo = async function ({
   siteId,
   mode,
   siteFeatureFlagPrefix,
+  context,
   offline = false,
   testOpts = {},
 }: GetSiteInfoOpts) {
@@ -53,7 +55,7 @@ export const getSiteInfo = async function ({
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
 
     siteInfo.build_settings.env = envelope
   }
