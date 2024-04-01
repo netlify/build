@@ -14,15 +14,16 @@ const TOKEN = 'test'
 
 test.beforeEach(async (t) => {
   const port = await getPort()
-  t.context.blobRequestCount = { set: 0, get: 0 }
+  t.context.blobRequests = {}
 
   const tmpDir = await tmp.dir()
   t.context.blobServer = new BlobsServer({
     port,
     token: TOKEN,
     directory: tmpDir.path,
-    onRequest: ({ type }) => {
-      t.context.blobRequestCount[type] = (t.context.blobRequestCount[type] || 0) + 1
+    onRequest: ({ type, url }) => {
+      t.context.blobRequests[type] = t.context.blobRequests[type] || []
+      t.context.blobRequests[type].push(url)
     },
   })
 
@@ -30,7 +31,7 @@ test.beforeEach(async (t) => {
 
   process.env.NETLIFY_BLOBS_CONTEXT = Buffer.from(
     JSON.stringify({
-      edgeURL: `http://localhost:${port}`,
+      apiURL: `http://localhost:${port}`,
     }),
   ).toString('base64')
 })
@@ -50,27 +51,74 @@ test.serial("blobs upload, don't run when deploy id is provided and no files in 
     .runBuildProgrammatic()
 
   t.true(success)
-  t.is(t.context.blobRequestCount.set, 0)
+  t.is(t.context.blobRequests.set, undefined)
 
   t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
-test.serial("blobs upload, don't run when there are files but deploy id is not provided", async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+test.serial(
+  "blobs upload, don't run when there are files but deploy id is not provided using legacy API",
+  async (t) => {
+    const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
+
+    const {
+      success,
+      logs: { stdout },
+    } = await fixture.withFlags({ token: TOKEN, offline: true, cwd: fixture.repositoryRoot }).runBuildProgrammatic()
+
+    t.true(success)
+
+    const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
+    await t.notThrowsAsync(access(blobsDir))
+
+    t.is(t.context.blobRequests.set, undefined)
+
+    t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
+  },
+)
+
+test.serial('blobs upload, uploads files to deploy store using legacy API', async (t) => {
+  const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
   const {
     success,
     logs: { stdout },
-  } = await fixture.withFlags({ token: TOKEN, offline: true, cwd: fixture.repositoryRoot }).runBuildProgrammatic()
+  } = await fixture
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
+    .runBuildProgrammatic()
 
   t.true(success)
+  t.is(t.context.blobRequests.set.length, 6)
 
-  const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
-  await t.notThrowsAsync(access(blobsDir))
+  const regionRequests = t.context.blobRequests.set.filter((urlPath) => {
+    const url = new URL(urlPath, 'http://localhost')
 
-  t.is(t.context.blobRequestCount.set, 0)
+    return url.searchParams.has('region')
+  })
 
-  t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
+  t.is(regionRequests.length, 0)
+
+  const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
+  if (semver.lt(nodeVersion, '18.0.0')) {
+    const nodeFetch = await import('node-fetch')
+    storeOpts.fetch = nodeFetch.default
+  }
+
+  const store = getDeployStore(storeOpts)
+
+  const blob1 = await store.getWithMetadata('something.txt')
+  t.is(blob1.data, 'some value')
+  t.deepEqual(blob1.metadata, {})
+
+  const blob2 = await store.getWithMetadata('with-metadata.txt')
+  t.is(blob2.data, 'another value')
+  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+
+  const blob3 = await store.getWithMetadata('nested/file.txt')
+  t.is(blob3.data, 'file value')
+  t.deepEqual(blob3.metadata, { some: 'metadata' })
+
+  t.true(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
 test.serial('blobs upload, uploads files to deploy store', async (t) => {
@@ -84,7 +132,17 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
     .runBuildProgrammatic()
 
   t.true(success)
-  t.is(t.context.blobRequestCount.set, 3)
+
+  // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
+  t.is(t.context.blobRequests.set.length, 6)
+
+  const regionAutoRequests = t.context.blobRequests.set.filter((urlPath) => {
+    const url = new URL(urlPath, 'http://localhost')
+
+    return url.searchParams.get('region') === 'auto'
+  })
+
+  t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   if (semver.lt(nodeVersion, '18.0.0')) {
@@ -118,7 +176,7 @@ test.serial('blobs upload, cancels deploy if blob metadata is malformed', async 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
   await t.notThrowsAsync(access(blobsDir))
 
-  t.is(t.context.blobRequestCount.set, 0)
+  t.is(t.context.blobRequests.set, undefined)
 
   t.false(success)
   t.is(severityCode, 4)
@@ -136,7 +194,7 @@ if (semver.gte(nodeVersion, '16.9.0')) {
       .runBuildProgrammatic()
 
     t.true(success)
-    t.is(t.context.blobRequestCount.set, 3)
+    t.is(t.context.blobRequests.set.length, 6)
 
     const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
     if (semver.lt(nodeVersion, '18.0.0')) {
