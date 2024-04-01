@@ -5,10 +5,8 @@ import pMap from 'p-map'
 import semver from 'semver'
 
 import { log, logError } from '../../log/logger.js'
-import { scanForBlobs } from '../../utils/blobs.js'
-import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-
-import { getKeysToUpload, getFileWithMetadata } from './utils.js'
+import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
 const coreStep: CoreStepFunction = async function ({
   debug,
@@ -35,11 +33,8 @@ const coreStep: CoreStepFunction = async function ({
 
   // If we don't have native `fetch` in the global scope, add a polyfill.
   if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-
-    // @ts-expect-error The types between `node-fetch` and the native `fetch`
-    // are not a 100% match, even though the APIs are mostly compatible.
-    storeOpts.fetch = nodeFetch.default
+    const nodeFetch = (await import('node-fetch')).default as unknown as typeof fetch
+    storeOpts.fetch = nodeFetch
   }
 
   const blobs = await scanForBlobs(buildDir, packagePath)
@@ -72,16 +67,18 @@ const coreStep: CoreStepFunction = async function ({
     log(logs, `Uploading ${keys.length} blobs to deploy store...`)
   }
 
-  const uploadBlob = async (key) => {
-    if (debug && !quiet) {
-      log(logs, `- Uploading blob ${key}`, { indent: true })
-    }
-    const { data, metadata } = await getFileWithMetadata(blobs.directory, key)
-    await blobStore.set(key, data, { metadata })
-  }
-
   try {
-    await pMap(keys, uploadBlob, { concurrency: 10 })
+    await pMap(
+      keys,
+      async (key: string) => {
+        if (debug && !quiet) {
+          log(logs, `- Uploading blob ${key}`, { indent: true })
+        }
+        const { data, metadata } = await getFileWithMetadata(blobs.directory, key)
+        await blobStore.set(key, data, { metadata })
+      },
+      { concurrency: 10 },
+    )
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
 
