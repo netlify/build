@@ -105,6 +105,19 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.38.0](https://github.com/netlify/build/compare/build-v29.37.2...build-v29.38.0) (2024-04-01)
+
+
+### Features
+
+* support deploy config API with Blobs ([#5565](https://github.com/netlify/build/issues/5565)) ([a94079a](https://github.com/netlify/build/commit/a94079a9366f5d95e16c697dc8519406952afe69))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^7.2.0 ([#5568](https://github.com/netlify/build/issues/5568)) ([626fa44](https://github.com/netlify/build/commit/626fa44fcbda7e6090989df00fd30289c5389487))
+* **deps:** update dependency @netlify/blobs to v7 ([#5545](https://github.com/netlify/build/issues/5545)) ([0a43a9c](https://github.com/netlify/build/commit/0a43a9cd3f978d82b54506a0a6f38fbabd011986))
+
 ## [29.37.2](https://github.com/netlify/build/compare/build-v29.37.1...build-v29.37.2) (2024-03-28)
 
 
