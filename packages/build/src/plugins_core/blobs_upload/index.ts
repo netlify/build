@@ -26,14 +26,19 @@ const coreStep: CoreStepFunction = async function ({
   // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
   const apiHost = NETLIFY_API_HOST || 'api.netlify.com'
 
-  const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
+  const storeOpts: Parameters<typeof getDeployStore>[0] = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
     apiURL: `https://${apiHost}`,
   }
+
+  // If we don't have native `fetch` in the global scope, add a polyfill.
   if (semver.lt(nodeVersion, '18.0.0')) {
     const nodeFetch = await import('node-fetch')
+
+    // @ts-expect-error The types between `node-fetch` and the native `fetch`
+    // are not a 100% match, even though the APIs are mostly compatible.
     storeOpts.fetch = nodeFetch.default
   }
 
@@ -50,7 +55,7 @@ const coreStep: CoreStepFunction = async function ({
   // If using the deploy config API, configure the store to use the region that
   // was configured for the deploy.
   if (!blobs.isLegacyDirectory) {
-    // storeOpts.experimentalRegion = 'auto'
+    storeOpts.experimentalRegion = 'auto'
   }
 
   const blobStore = getDeployStore(storeOpts)
