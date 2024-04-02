@@ -1,4 +1,5 @@
 import { supportedRuntimes } from '@netlify/framework-info'
+import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
@@ -457,6 +458,17 @@ const initAndRunBuild = async function ({
     context,
     systemLog,
   })
+
+  if (pluginsOptionsA?.length) {
+    const buildPlugins = {}
+    for (const plugin of pluginsOptionsA) {
+      if (plugin?.pluginPackageJson?.name) {
+        buildPlugins[`build.plugins['${plugin.pluginPackageJson.name}']`] = plugin?.pluginPackageJson?.version ?? 'N/A'
+      }
+    }
+
+    addAttributesToActiveSpan(buildPlugins)
+  }
 
   errorParams.pluginsOptions = pluginsOptionsA
 
