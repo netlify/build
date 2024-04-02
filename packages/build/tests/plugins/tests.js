@@ -2,8 +2,9 @@ import * as fs from 'fs/promises'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
+import getPort from 'get-port'
 import tmp, { tmpName } from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
@@ -342,5 +343,40 @@ test('Does not transpile already transpiled local plugins', async (t) => {
 
 test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
   const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Plugins have a pre-populated Blobs context', async (t) => {
+  const serverPort = await getPort()
+  const deployId = 'deploy123'
+  const siteId = 'site321'
+  const token = 'some-token'
+  const { scheme, host, stopServer } = await startServer(
+    [
+      {
+        response: { url: `http://localhost:${serverPort}/some-signed-url` },
+        path: `/api/v1/blobs/${siteId}/deploy:${deployId}/my-key`,
+      },
+      {
+        response: { msg: 'Hello there' },
+        path: `/some-signed-url`,
+      },
+    ],
+    serverPort,
+  )
+
+  const output = await new Fixture('./fixtures/blobs_read')
+    .withFlags({
+      apiHost: host,
+      deployId,
+      featureFlags: { build_inject_blobs_context: true },
+      testOpts: { scheme },
+      siteId,
+      token,
+    })
+    .runWithBuild()
+
+  await stopServer()
+
   t.snapshot(normalizeOutput(output))
 })

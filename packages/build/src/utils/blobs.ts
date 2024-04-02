@@ -1,6 +1,9 @@
+import { Buffer } from 'node:buffer'
 import { resolve } from 'node:path'
 
 import { fdir } from 'fdir'
+
+import { DEFAULT_API_HOST } from '../core/normalize_flags.js'
 
 const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
 const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
@@ -10,6 +13,40 @@ export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
   resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH),
   resolve(buildDir, packagePath || '', LEGACY_BLOBS_PATH),
 ]
+
+interface EnvironmentContext {
+  api?: {
+    host: string
+    scheme: string
+  }
+  deployId?: string
+  siteId?: string
+  token?: string
+}
+
+// TODO: Move this work to a method exported by `@netlify/blobs`.
+export const getBlobsEnvironmentContext = ({
+  api = { host: DEFAULT_API_HOST, scheme: 'https' },
+  deployId,
+  siteId,
+  token,
+}: EnvironmentContext) => {
+  if (!deployId || !siteId || !token) {
+    return {}
+  }
+
+  const payload = {
+    apiURL: `${api.scheme}://${api.host}`,
+    deployID: deployId,
+    siteID: siteId,
+    token,
+  }
+  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+  return {
+    NETLIFY_BLOBS_CONTEXT: encodedPayload,
+  }
+}
 
 /**
  * Detect if there are any blobs to upload, and if so, what directory they're
