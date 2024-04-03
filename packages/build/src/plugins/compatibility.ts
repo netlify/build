@@ -126,10 +126,16 @@ const getCompatibleEntry = async function ({
   })
 
   if (compatibleEntry) {
+    systemLog(
+      `Used compatible version '${compatibleEntry.version}' for plugin '${packageName}' (pinned version is ${pinnedVersion})`,
+    )
+
     return compatibleEntry
   }
 
   if (pinnedVersion) {
+    systemLog(`Used pinned version '${pinnedVersion}' for plugin '${packageName}'`)
+
     return { version: pinnedVersion, conditions: [] }
   }
 
