@@ -1,5 +1,4 @@
 import _pEvery from 'p-every'
-import pLocate from 'p-locate'
 import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
@@ -81,29 +80,37 @@ const getCompatibleEntry = async function ({
   packagePath?: string
   pinnedVersion?: string
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
-  const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
-    // Detect if the overridePinnedVersion intersects with the pinned version in this case we don't care about filtering
-    const overridesPin = Boolean(
-      pinnedVersion && overridePinnedVersion && semver.intersects(overridePinnedVersion, pinnedVersion),
-    )
+  const versionsWithCheckConditions = await Promise.all(
+    versions.map(async (versionInfo) => {
+      const { version, overridePinnedVersion, conditions } = versionInfo
+      // Detect if the overridePinnedVersion intersects with the pinned version in this case we don't care about filtering
+      const overridesPin = Boolean(
+        pinnedVersion && overridePinnedVersion && semver.intersects(overridePinnedVersion, pinnedVersion),
+      )
 
-    // ignore versions that don't satisfy the pinned version here if a pinned version is set
-    if (!overridesPin && pinnedVersion && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
-      return false
-    }
+      // ignore versions that don't satisfy the pinned version here if a pinned version is set
+      if (!overridesPin && pinnedVersion && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
+        return { versionInfo, compatible: false, constraintsScore: 0 }
+      }
 
-    // no conditions means nothing to filter
-    if (conditions.length === 0 && pinnedVersion === undefined) {
-      return false
-    }
+      // no conditions means nothing to filter
+      if (conditions.length === 0 && pinnedVersion === undefined) {
+        return { versionInfo, compatible: true, constraintsScore: 0 }
+      }
 
-    return await pEvery(conditions, async ({ type, condition }) =>
-      CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
-    )
-  })
+      const satisfyConditions = await pEvery(conditions, async ({ type, condition }) =>
+        CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+      )
 
-  return (
-    compatibleEntry ||
-    (pinnedVersion ? { version: pinnedVersion, conditions: [] } : { version: versions[0].version, conditions: [] })
+      return { versionInfo, compatible: satisfyConditions, constraintsScore: conditions.length }
+    }),
   )
+
+  const sortedCompatibleVersions = versionsWithCheckConditions
+    .filter(({ compatible }) => compatible)
+    .sort((a, b) => {
+      return b.constraintsScore - a.constraintsScore
+    })
+
+  return sortedCompatibleVersions.length > 0 ? sortedCompatibleVersions[0].versionInfo : versions[0]
 }
