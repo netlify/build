@@ -20,4 +20,5 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   buildbot_zisi_system_log: false,
   edge_functions_cache_cli: false,
   edge_functions_system_logger: false,
+  netlify_build_updated_plugin_compatibility: false,
 }

@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.2.53](https://github.com/netlify/build/compare/functions-utils-v5.2.52...functions-utils-v5.2.53) (2024-04-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.1 ([#5576](https://github.com/netlify/build/issues/5576)) ([866fb7e](https://github.com/netlify/build/commit/866fb7eefb9ea42b130257ae535c73e85c2a2550))
+
+## [5.2.52](https://github.com/netlify/build/compare/functions-utils-v5.2.51...functions-utils-v5.2.52) (2024-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.30.0 ([#5539](https://github.com/netlify/build/issues/5539)) ([4a76de2](https://github.com/netlify/build/commit/4a76de263a20669277e86a9baa28484ffc57089f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.0 ([#5570](https://github.com/netlify/build/issues/5570)) ([b9f9a8a](https://github.com/netlify/build/commit/b9f9a8ab7976ac101f7a2194b1522477a693a650))
+
 ## [5.2.51](https://github.com/netlify/build/compare/functions-utils-v5.2.50...functions-utils-v5.2.51) (2024-02-15)
 
 
