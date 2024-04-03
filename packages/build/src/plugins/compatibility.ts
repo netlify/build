@@ -82,7 +82,11 @@ const getCompatibleEntry = async function ({
   pinnedVersion?: string
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
-    // Detect if the overridePinnedVersion intersects with the pinned version in this case we don't care about filtering
+    // When there's a `pinnedVersion`, we typically pick the first version that
+    // matches that range. The exception is if `overridePinnedVersion` is also
+    // present. This property says that if the pinned version is within a given
+    // range, the entry that has this property can be used instead, even if its
+    // own version doesn't satisfy the pinned version.
     const overridesPin = Boolean(
       pinnedVersion && overridePinnedVersion && semver.intersects(overridePinnedVersion, pinnedVersion),
     )
@@ -104,6 +108,46 @@ const getCompatibleEntry = async function ({
 
   return (
     compatibleEntry ||
-    (pinnedVersion ? { version: pinnedVersion, conditions: [] } : { version: versions[0].version, conditions: [] })
+    (pinnedVersion
+      ? { version: pinnedVersion, conditions: [] }
+      : await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir }))
   )
+}
+
+/**
+ * Takes a list of plugin versions and returns the first entry that satisfies
+ * the conditions (if any), without taking into account the pinned version.
+ */
+const getFirstCompatibleEntry = async function ({
+  versions,
+  nodeVersion,
+  packageJson,
+  packagePath,
+  buildDir,
+}: {
+  versions: PluginVersion[]
+  packageJson: PackageJson
+  buildDir: string
+  nodeVersion: string
+  packagePath?: string
+  pinnedVersion?: string
+}): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
+  const compatibleEntry = await pLocate(versions, async ({ conditions }) => {
+    if (conditions.length === 0) {
+      return true
+    }
+
+    return await pEvery(conditions, async ({ type, condition }) =>
+      CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+    )
+  })
+
+  if (compatibleEntry) {
+    return compatibleEntry
+  }
+
+  // We should never get here, because it means there are no plugin versions
+  // that we can install. We're keeping this here because it has been the
+  // default behavior for a long time, but we should look to remove it.
+  return { version: versions[0].version, conditions: [] }
 }
