@@ -58,6 +58,7 @@ export const resolvePluginsPath = async function ({
     buildDir,
     testOpts,
     featureFlags,
+    systemLog,
   })
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
