@@ -61,7 +61,7 @@ test('`getExpectedVersion`should retrieve a new major version if the overridePin
   expect(version).toBe('5.0.0')
 })
 
-test('`getExpectedVersion`should retrieve the plugin based on the condition of a nodeVersion', async () => {
+test('`getExpectedVersion` should retrieve the plugin based on the condition of a nodeVersion', async () => {
   const versions: PluginVersion[] = [
     {
       version: '4.42.0',
@@ -196,4 +196,31 @@ test('`getExpectedVersion` should retrieve the plugin based on conditions and fe
     pinnedVersion: '4',
   })
   expect(version2).toBe('4.41.2')
+})
+
+test('`getExpectedVersion` matches the first entry that satisfies the constraints, even if it also matches another entry further down with more specific constraints', async () => {
+  const versions: PluginVersion[] = [
+    { version: '4.41.2', conditions: [] },
+    {
+      version: '5.0.0-beta.1',
+      conditions: [
+        { type: 'nodeVersion', condition: '>= 18.0.0' },
+        { type: 'siteDependencies', condition: { next: '>=13.5.0' } },
+      ],
+      overridePinnedVersion: '>=4.0.0',
+    },
+    {
+      version: '3.9.2',
+      conditions: [{ type: 'siteDependencies', condition: { next: '<10.0.9' } }],
+    },
+  ]
+
+  const { version } = await getExpectedVersion({
+    versions,
+    nodeVersion: '20.0.0',
+    packageJson: { dependencies: { next: '14.0.0' } },
+    buildDir: '/some/path',
+    pinnedVersion: '4',
+  })
+  expect(version).toBe('4.41.2')
 })
