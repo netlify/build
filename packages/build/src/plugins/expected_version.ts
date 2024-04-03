@@ -88,13 +88,23 @@ const addExpectedVersion = async function ({
       versions,
       nodeVersion,
       packageJson,
+      packageName,
       packagePath,
       buildDir,
       pinnedVersion,
       featureFlags,
       systemLog,
     }),
-    getExpectedVersion({ versions, nodeVersion, packageJson, packagePath, buildDir, featureFlags, systemLog }),
+    getExpectedVersion({
+      versions,
+      nodeVersion,
+      packageJson,
+      packageName,
+      packagePath,
+      buildDir,
+      featureFlags,
+      systemLog,
+    }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
