@@ -102,8 +102,19 @@ const getCompatibleEntry = async function ({
     )
   })
 
+  if (compatibleEntry) {
+    return compatibleEntry
+  }
+
+  if (pinnedVersion) {
+    return { version: pinnedVersion, conditions: [] }
+  }
+
   return (
-    compatibleEntry ||
-    (pinnedVersion ? { version: pinnedVersion, conditions: [] } : { version: versions[0].version, conditions: [] })
+    (await pLocate(versions, async ({ conditions }) => {
+      return await pEvery(conditions, async ({ type, condition }) =>
+        CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+      )
+    })) ?? { version: versions[0].version, conditions: [] }
   )
 }
