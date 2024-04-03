@@ -6,6 +6,8 @@ import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
 import tmp, { tmpName } from 'tmp-promise'
 
+import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
+
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Pass packageJson to plugins', async (t) => {
@@ -196,18 +198,12 @@ test('Trusted plugins are passed featureflags and system log', async (t) => {
     t.true(systemLog.includes(expectedSystemLogs))
   }
 
-  t.true(
-    output.includes(
-      JSON.stringify({
-        buildbot_zisi_trace_nft: false,
-        buildbot_zisi_esbuild_parser: false,
-        buildbot_zisi_system_log: false,
-        edge_functions_cache_cli: false,
-        edge_functions_system_logger: false,
-        test_flag: true,
-      }),
-    ),
-  )
+  const expectedFlags = {
+    ...DEFAULT_FEATURE_FLAGS,
+    test_flag: true,
+  }
+
+  t.true(output.includes(JSON.stringify(expectedFlags)))
 
   const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
     .withFlags({
