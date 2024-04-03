@@ -27,6 +27,7 @@ export const getExpectedVersion = async function ({
   versions,
   nodeVersion,
   packageJson,
+  packageName,
   packagePath,
   buildDir,
   pinnedVersion,
@@ -36,6 +37,7 @@ export const getExpectedVersion = async function ({
   versions: PluginVersion[]
   /** The package.json of the repository */
   packageJson: PackageJson
+  packageName: string
   packagePath?: string
   buildDir: string
   nodeVersion: string
@@ -47,6 +49,7 @@ export const getExpectedVersion = async function ({
     versions,
     nodeVersion,
     packageJson,
+    packageName,
     packagePath,
     buildDir,
     pinnedVersion,
@@ -79,6 +82,7 @@ const getCompatibleEntry = async function ({
   versions,
   nodeVersion,
   packageJson,
+  packageName,
   packagePath,
   buildDir,
   pinnedVersion,
@@ -89,6 +93,7 @@ const getCompatibleEntry = async function ({
   packageJson: PackageJson
   buildDir: string
   nodeVersion: string
+  packageName: string
   packagePath?: string
   pinnedVersion?: string
   featureFlags?: FeatureFlags
@@ -134,7 +139,7 @@ const getCompatibleEntry = async function ({
   if (featureFlags?.netlify_build_updated_plugin_compatibility) {
     if (legacyFallback.version !== fallback.version) {
       systemLog(
-        `Detected mismatch in selected version for plugin '${packageJson?.name}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
+        `Detected mismatch in selected version for plugin '${packageName}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
       )
     }
 
@@ -143,7 +148,7 @@ const getCompatibleEntry = async function ({
 
   if (legacyFallback.version !== fallback.version) {
     systemLog(
-      `Detected mismatch in selected version for plugin '${packageJson?.name}': used legacy version '${legacyFallback.version}' over new version '${fallback.version}'`,
+      `Detected mismatch in selected version for plugin '${packageName}': used legacy version '${legacyFallback.version}' over new version '${fallback.version}'`,
     )
   }
 

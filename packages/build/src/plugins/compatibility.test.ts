@@ -17,6 +17,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: {},
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -36,6 +37,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: {},
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       systemLog: noopSystemLog,
     })
@@ -43,6 +45,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: {},
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -62,6 +65,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: {},
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -83,6 +87,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '17.19.0',
       packageJson: {},
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -116,6 +121,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '17.19.0',
       packageJson: { dependencies: { next: '10.0.8' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '3',
       systemLog: noopSystemLog,
@@ -126,6 +132,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '17.19.0',
       packageJson: { dependencies: { next: '11.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -136,6 +143,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: { dependencies: { next: '13.5.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -168,6 +176,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '18.19.0',
       packageJson: { dependencies: { next: '14.1.1-canary.36' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -196,6 +205,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '20.0.0',
       packageJson: { dependencies: { next: '14.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -207,6 +217,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '20.0.0',
       packageJson: { dependencies: { next: '13.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -235,6 +246,7 @@ describe(`getExpectedVersion`, () => {
       versions,
       nodeVersion: '20.0.0',
       packageJson: { dependencies: { next: '14.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       pinnedVersion: '4',
       systemLog: noopSystemLog,
@@ -264,7 +276,8 @@ describe(`getExpectedVersion`, () => {
     const { version } = await getExpectedVersion({
       versions,
       nodeVersion: '20.0.0',
-      packageJson: { name: '@netlify/a-cool-plugin', dependencies: { next: '12.0.0' } },
+      packageJson: { dependencies: { next: '12.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       systemLog: (message: string) => {
         logMessages.push(message)
@@ -273,7 +286,7 @@ describe(`getExpectedVersion`, () => {
 
     expect(logMessages.length).toBe(1)
     expect(logMessages[0]).toBe(
-      `Detected mismatch in selected version for plugin '@netlify/a-cool-plugin': used legacy version '5.0.0-beta.1' over new version '4.41.2'`,
+      `Detected mismatch in selected version for plugin '@netlify/cool-plugin': used legacy version '5.0.0-beta.1' over new version '4.41.2'`,
     )
     expect(version).toBe('5.0.0-beta.1')
   })
@@ -300,7 +313,8 @@ describe(`getExpectedVersion`, () => {
     const { version } = await getExpectedVersion({
       versions,
       nodeVersion: '20.0.0',
-      packageJson: { name: '@netlify/a-cool-plugin', dependencies: { next: '12.0.0' } },
+      packageJson: { dependencies: { next: '12.0.0' } },
+      packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
       systemLog: (message: string) => {
         logMessages.push(message)
@@ -312,7 +326,7 @@ describe(`getExpectedVersion`, () => {
 
     expect(logMessages.length).toBe(1)
     expect(logMessages[0]).toBe(
-      `Detected mismatch in selected version for plugin '@netlify/a-cool-plugin': used new version of '4.41.2' over legacy version '5.0.0-beta.1'`,
+      `Detected mismatch in selected version for plugin '@netlify/cool-plugin': used new version of '4.41.2' over legacy version '5.0.0-beta.1'`,
     )
     expect(version).toBe('4.41.2')
   })
