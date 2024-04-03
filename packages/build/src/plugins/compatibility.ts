@@ -3,6 +3,9 @@ import pLocate from 'p-locate'
 import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
+import { FeatureFlags } from '../core/feature_flags.js'
+import { SystemLogger } from '../plugins_core/types.js'
+
 import { PluginVersion } from './list.js'
 import { CONDITIONS } from './plugin_conditions.js'
 
@@ -27,6 +30,8 @@ export const getExpectedVersion = async function ({
   packagePath,
   buildDir,
   pinnedVersion,
+  featureFlags,
+  systemLog,
 }: {
   versions: PluginVersion[]
   /** The package.json of the repository */
@@ -35,6 +40,8 @@ export const getExpectedVersion = async function ({
   buildDir: string
   nodeVersion: string
   pinnedVersion?: string
+  featureFlags?: FeatureFlags
+  systemLog: SystemLogger
 }) {
   const { version, conditions = [] } = await getCompatibleEntry({
     versions,
@@ -43,6 +50,8 @@ export const getExpectedVersion = async function ({
     packagePath,
     buildDir,
     pinnedVersion,
+    featureFlags,
+    systemLog,
   })
 
   // Retrieve warning message shown when using an older version with `compatibility`
@@ -73,6 +82,8 @@ const getCompatibleEntry = async function ({
   packagePath,
   buildDir,
   pinnedVersion,
+  featureFlags,
+  systemLog,
 }: {
   versions: PluginVersion[]
   packageJson: PackageJson
@@ -80,6 +91,8 @@ const getCompatibleEntry = async function ({
   nodeVersion: string
   packagePath?: string
   pinnedVersion?: string
+  featureFlags?: FeatureFlags
+  systemLog: SystemLogger
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
     // When there's a `pinnedVersion`, we typically pick the first version that
@@ -91,8 +104,9 @@ const getCompatibleEntry = async function ({
       pinnedVersion && overridePinnedVersion && semver.intersects(overridePinnedVersion, pinnedVersion),
     )
 
-    // ignore versions that don't satisfy the pinned version here if a pinned version is set
-    if (!overridesPin && pinnedVersion && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
+    // If there's a pinned version and this entry doesn't satisfy that range,
+    // discard it. The exception is if this entry overrides the pinned version.
+    if (pinnedVersion && !overridesPin && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
       return false
     }
 
@@ -106,12 +120,34 @@ const getCompatibleEntry = async function ({
     )
   })
 
-  return (
-    compatibleEntry ||
-    (pinnedVersion
-      ? { version: pinnedVersion, conditions: [] }
-      : await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir }))
-  )
+  if (compatibleEntry) {
+    return compatibleEntry
+  }
+
+  if (pinnedVersion) {
+    return { version: pinnedVersion, conditions: [] }
+  }
+
+  const legacyFallback = { version: versions[0].version, conditions: [] }
+  const fallback = await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir })
+
+  if (featureFlags?.netlify_build_updated_plugin_compatibility) {
+    if (legacyFallback.version !== fallback.version) {
+      systemLog(
+        `Detected mismatch in selected version for plugin '${packageJson?.name}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
+      )
+    }
+
+    return fallback
+  }
+
+  if (legacyFallback.version !== fallback.version) {
+    systemLog(
+      `Detected mismatch in selected version for plugin '${packageJson?.name}': used legacy version '${legacyFallback.version}' over new version '${fallback.version}'`,
+    )
+  }
+
+  return legacyFallback
 }
 
 /**
