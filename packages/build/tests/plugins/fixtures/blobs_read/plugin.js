@@ -1,7 +1,16 @@
+import {version as nodeVersion} from "process"
+
 import { getDeployStore } from '@netlify/blobs'
+import semver from 'semver'
 
 export const onPreBuild = async function () {
-  const store = getDeployStore()
+  const storeOptions = {}
+
+  if (semver.lt(nodeVersion, '18.0.0')) {
+    storeOptions.fetch = await import('node-fetch')
+  }
+
+  const store = getDeployStore(storeOptions)
 
   console.log(await store.get("my-key"))
 }
