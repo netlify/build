@@ -33,6 +33,7 @@ export const getExpectedVersion = async function ({
   pinnedVersion,
   featureFlags,
   systemLog,
+  authoritative,
 }: {
   versions: PluginVersion[]
   /** The package.json of the repository */
@@ -44,6 +45,11 @@ export const getExpectedVersion = async function ({
   pinnedVersion?: string
   featureFlags?: FeatureFlags
   systemLog: SystemLogger
+  /* Defines whether the version returned from this method is the authoritative
+  version that will be used for the plugin; if not, the method may be called
+  just to get information about other compatible versions that will not be
+  selected */
+  authoritative?: boolean
 }) {
   const { version, conditions = [] } = await getCompatibleEntry({
     versions,
@@ -54,7 +60,7 @@ export const getExpectedVersion = async function ({
     buildDir,
     pinnedVersion,
     featureFlags,
-    systemLog,
+    systemLog: authoritative ? systemLog : undefined,
   })
 
   // Retrieve warning message shown when using an older version with `compatibility`
@@ -87,7 +93,9 @@ const getCompatibleEntry = async function ({
   buildDir,
   pinnedVersion,
   featureFlags,
-  systemLog,
+  systemLog = () => {
+    // no-op
+  },
 }: {
   versions: PluginVersion[]
   packageJson: PackageJson
@@ -97,7 +105,7 @@ const getCompatibleEntry = async function ({
   packagePath?: string
   pinnedVersion?: string
   featureFlags?: FeatureFlags
-  systemLog: SystemLogger
+  systemLog?: SystemLogger
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
     // When there's a `pinnedVersion`, we typically pick the first version that
