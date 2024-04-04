@@ -7,7 +7,7 @@ export const onPreBuild = async function () {
   const storeOptions = {}
 
   if (semver.lt(nodeVersion, '18.0.0')) {
-    storeOptions.fetch = await import('node-fetch')
+    storeOptions.fetch = await import('node-fetch').default
   }
 
   const store = getDeployStore(storeOptions)
