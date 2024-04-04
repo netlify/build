@@ -105,6 +105,19 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.39.0](https://github.com/netlify/build/compare/build-v29.38.2...build-v29.39.0) (2024-04-04)
+
+
+### Features
+
+* upload blobs on onDev event ([#5552](https://github.com/netlify/build/issues/5552)) ([9b8ed35](https://github.com/netlify/build/commit/9b8ed35fdbc19e06995a0a8c48453bb825923b37))
+
+
+### Bug Fixes
+
+* limit logging to authoritative plugin version ([#5579](https://github.com/netlify/build/issues/5579)) ([6263d87](https://github.com/netlify/build/commit/6263d87a342cf504b608c046f254d67d8de1e75f))
+* use correct plugin name in system log ([#5577](https://github.com/netlify/build/issues/5577)) ([f8e9a09](https://github.com/netlify/build/commit/f8e9a0934bec70124ae9800f186187af84e717ff))
+
 ## [29.38.2](https://github.com/netlify/build/compare/build-v29.38.1...build-v29.38.2) (2024-04-03)
 
 
