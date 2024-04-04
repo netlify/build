@@ -282,6 +282,7 @@ describe(`getExpectedVersion`, () => {
       systemLog: (message: string) => {
         logMessages.push(message)
       },
+      authoritative: true,
     })
 
     expect(logMessages.length).toBe(1)
@@ -322,6 +323,7 @@ describe(`getExpectedVersion`, () => {
       featureFlags: {
         netlify_build_updated_plugin_compatibility: true,
       },
+      authoritative: true,
     })
 
     expect(logMessages.length).toBe(1)

@@ -94,6 +94,7 @@ const addExpectedVersion = async function ({
       pinnedVersion,
       featureFlags,
       systemLog,
+      authoritative: true,
     }),
     getExpectedVersion({
       versions,
