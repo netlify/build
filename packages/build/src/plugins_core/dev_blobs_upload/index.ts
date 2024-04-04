@@ -99,11 +99,11 @@ const deployAndBlobsPresent: CoreStepCondition = async ({
   constants: { NETLIFY_API_TOKEN },
 }) => Boolean(NETLIFY_API_TOKEN && deployId && (await scanForBlobs(buildDir, packagePath)))
 
-export const uploadBlobs: CoreStep = {
-  event: 'onPostBuild',
+export const devUploadBlobs: CoreStep = {
+  event: 'onDev',
   coreStep,
-  coreStepId: 'blobs_upload',
+  coreStepId: 'dev_blobs_upload',
   coreStepName: 'Uploading blobs',
-  coreStepDescription: () => 'Uploading blobs to deploy store',
+  coreStepDescription: () => 'Uploading blobs to development deploy store',
   condition: deployAndBlobsPresent,
 }
