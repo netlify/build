@@ -4,7 +4,6 @@ import { getDeployStore } from '@netlify/blobs'
 import pMap from 'p-map'
 import semver from 'semver'
 
-import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
 import { log, logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
@@ -23,7 +22,7 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
   // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
-  const apiHost = NETLIFY_API_HOST || DEFAULT_API_HOST
+  const apiHost = NETLIFY_API_HOST || 'api.netlify.com'
 
   const storeOpts: Parameters<typeof getDeployStore>[0] = {
     siteID: SITE_ID,
@@ -100,11 +99,11 @@ const deployAndBlobsPresent: CoreStepCondition = async ({
   constants: { NETLIFY_API_TOKEN },
 }) => Boolean(NETLIFY_API_TOKEN && deployId && (await scanForBlobs(buildDir, packagePath)))
 
-export const uploadBlobs: CoreStep = {
-  event: 'onPostBuild',
+export const devUploadBlobs: CoreStep = {
+  event: 'onDev',
   coreStep,
-  coreStepId: 'blobs_upload',
+  coreStepId: 'dev_blobs_upload',
   coreStepName: 'Uploading blobs',
-  coreStepDescription: () => 'Uploading blobs to deploy store',
+  coreStepDescription: () => 'Uploading blobs to development deploy store',
   condition: deployAndBlobsPresent,
 }

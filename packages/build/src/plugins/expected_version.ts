@@ -3,6 +3,7 @@ import semver from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
+import { SystemLogger } from '../plugins_core/types.js'
 import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'
 
@@ -23,6 +24,7 @@ export const addExpectedVersions = async function ({
   buildDir,
   testOpts,
   featureFlags,
+  systemLog,
 }) {
   if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
@@ -40,6 +42,7 @@ export const addExpectedVersions = async function ({
         buildDir,
         featureFlags,
         testOpts,
+        systemLog,
       }),
     ),
   )
@@ -56,6 +59,7 @@ const addExpectedVersion = async function ({
   buildDir,
   featureFlags,
   testOpts,
+  systemLog,
 }: {
   pluginsList: PluginList
   packageJson: PackageJson
@@ -65,6 +69,7 @@ const addExpectedVersion = async function ({
   featureFlags: FeatureFlags
   testOpts: Record<string, unknown>
   autoPluginsDir: string
+  systemLog: SystemLogger
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
@@ -79,8 +84,28 @@ const addExpectedVersion = async function ({
   const versions = filterVersions(unfilteredVersions, featureFlags)
   const [{ version: latestVersion, migrationGuide }] = versions
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
-    getExpectedVersion({ versions, nodeVersion, packageJson, packagePath, buildDir, pinnedVersion }),
-    getExpectedVersion({ versions, nodeVersion, packageJson, packagePath, buildDir }),
+    getExpectedVersion({
+      versions,
+      nodeVersion,
+      packageJson,
+      packageName,
+      packagePath,
+      buildDir,
+      pinnedVersion,
+      featureFlags,
+      systemLog,
+      authoritative: true,
+    }),
+    getExpectedVersion({
+      versions,
+      nodeVersion,
+      packageJson,
+      packageName,
+      packagePath,
+      buildDir,
+      featureFlags,
+      systemLog,
+    }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })

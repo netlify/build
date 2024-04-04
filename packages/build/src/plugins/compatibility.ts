@@ -3,6 +3,9 @@ import pLocate from 'p-locate'
 import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
+import { FeatureFlags } from '../core/feature_flags.js'
+import { SystemLogger } from '../plugins_core/types.js'
+
 import { PluginVersion } from './list.js'
 import { CONDITIONS } from './plugin_conditions.js'
 
@@ -24,25 +27,40 @@ export const getExpectedVersion = async function ({
   versions,
   nodeVersion,
   packageJson,
+  packageName,
   packagePath,
   buildDir,
   pinnedVersion,
+  featureFlags,
+  systemLog,
+  authoritative,
 }: {
   versions: PluginVersion[]
   /** The package.json of the repository */
   packageJson: PackageJson
+  packageName: string
   packagePath?: string
   buildDir: string
   nodeVersion: string
   pinnedVersion?: string
+  featureFlags?: FeatureFlags
+  systemLog: SystemLogger
+  /* Defines whether the version returned from this method is the authoritative
+  version that will be used for the plugin; if not, the method may be called
+  just to get information about other compatible versions that will not be
+  selected */
+  authoritative?: boolean
 }) {
   const { version, conditions = [] } = await getCompatibleEntry({
     versions,
     nodeVersion,
     packageJson,
+    packageName,
     packagePath,
     buildDir,
     pinnedVersion,
+    featureFlags,
+    systemLog: authoritative ? systemLog : undefined,
   })
 
   // Retrieve warning message shown when using an older version with `compatibility`
@@ -70,25 +88,38 @@ const getCompatibleEntry = async function ({
   versions,
   nodeVersion,
   packageJson,
+  packageName,
   packagePath,
   buildDir,
   pinnedVersion,
+  featureFlags,
+  systemLog = () => {
+    // no-op
+  },
 }: {
   versions: PluginVersion[]
   packageJson: PackageJson
   buildDir: string
   nodeVersion: string
+  packageName: string
   packagePath?: string
   pinnedVersion?: string
+  featureFlags?: FeatureFlags
+  systemLog?: SystemLogger
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
-    // Detect if the overridePinnedVersion intersects with the pinned version in this case we don't care about filtering
+    // When there's a `pinnedVersion`, we typically pick the first version that
+    // matches that range. The exception is if `overridePinnedVersion` is also
+    // present. This property says that if the pinned version is within a given
+    // range, the entry that has this property can be used instead, even if its
+    // own version doesn't satisfy the pinned version.
     const overridesPin = Boolean(
       pinnedVersion && overridePinnedVersion && semver.intersects(overridePinnedVersion, pinnedVersion),
     )
 
-    // ignore versions that don't satisfy the pinned version here if a pinned version is set
-    if (!overridesPin && pinnedVersion && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
+    // If there's a pinned version and this entry doesn't satisfy that range,
+    // discard it. The exception is if this entry overrides the pinned version.
+    if (pinnedVersion && !overridesPin && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
       return false
     }
 
@@ -102,8 +133,76 @@ const getCompatibleEntry = async function ({
     )
   })
 
-  return (
-    compatibleEntry ||
-    (pinnedVersion ? { version: pinnedVersion, conditions: [] } : { version: versions[0].version, conditions: [] })
-  )
+  if (compatibleEntry) {
+    systemLog(
+      `Used compatible version '${compatibleEntry.version}' for plugin '${packageName}' (pinned version is ${pinnedVersion})`,
+    )
+
+    return compatibleEntry
+  }
+
+  if (pinnedVersion) {
+    systemLog(`Used pinned version '${pinnedVersion}' for plugin '${packageName}'`)
+
+    return { version: pinnedVersion, conditions: [] }
+  }
+
+  const legacyFallback = { version: versions[0].version, conditions: [] }
+  const fallback = await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir })
+
+  if (featureFlags?.netlify_build_updated_plugin_compatibility) {
+    if (legacyFallback.version !== fallback.version) {
+      systemLog(
+        `Detected mismatch in selected version for plugin '${packageName}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
+      )
+    }
+
+    return fallback
+  }
+
+  if (legacyFallback.version !== fallback.version) {
+    systemLog(
+      `Detected mismatch in selected version for plugin '${packageName}': used legacy version '${legacyFallback.version}' over new version '${fallback.version}'`,
+    )
+  }
+
+  return legacyFallback
+}
+
+/**
+ * Takes a list of plugin versions and returns the first entry that satisfies
+ * the conditions (if any), without taking into account the pinned version.
+ */
+const getFirstCompatibleEntry = async function ({
+  versions,
+  nodeVersion,
+  packageJson,
+  packagePath,
+  buildDir,
+}: {
+  versions: PluginVersion[]
+  packageJson: PackageJson
+  buildDir: string
+  nodeVersion: string
+  packagePath?: string
+  pinnedVersion?: string
+}): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
+  const compatibleEntry = await pLocate(versions, async ({ conditions }) => {
+    if (conditions.length === 0) {
+      return true
+    }
+
+    return await pEvery(conditions, async ({ type, condition }) =>
+      CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+    )
+  })
+
+  if (compatibleEntry) {
+    return compatibleEntry
+  }
+
+  // We should never get here, because it means there are no plugin versions
+  // that we can install. We're keeping this here because it has been the
+  // default behavior for a long time, but we should look to remove it.
+  return { version: versions[0].version, conditions: [] }
 }

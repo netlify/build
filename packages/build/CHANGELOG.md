@@ -105,6 +105,35 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.39.0](https://github.com/netlify/build/compare/build-v29.38.2...build-v29.39.0) (2024-04-04)
+
+
+### Features
+
+* upload blobs on onDev event ([#5552](https://github.com/netlify/build/issues/5552)) ([9b8ed35](https://github.com/netlify/build/commit/9b8ed35fdbc19e06995a0a8c48453bb825923b37))
+
+
+### Bug Fixes
+
+* limit logging to authoritative plugin version ([#5579](https://github.com/netlify/build/issues/5579)) ([6263d87](https://github.com/netlify/build/commit/6263d87a342cf504b608c046f254d67d8de1e75f))
+* use correct plugin name in system log ([#5577](https://github.com/netlify/build/issues/5577)) ([f8e9a09](https://github.com/netlify/build/commit/f8e9a0934bec70124ae9800f186187af84e717ff))
+
+## [29.38.2](https://github.com/netlify/build/compare/build-v29.38.1...build-v29.38.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^7.3.0 ([#5572](https://github.com/netlify/build/issues/5572)) ([c9bcb2e](https://github.com/netlify/build/commit/c9bcb2ea26e8702b29ff6c25dfd19124b5ff176e))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.1 ([#5576](https://github.com/netlify/build/issues/5576)) ([866fb7e](https://github.com/netlify/build/commit/866fb7eefb9ea42b130257ae535c73e85c2a2550))
+* update logic for plugin selection fallback ([#5575](https://github.com/netlify/build/issues/5575)) ([69913c8](https://github.com/netlify/build/commit/69913c88b4e0559898a08f1df12092db05400bab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.52 to ^5.2.53
+
 ## [29.38.1](https://github.com/netlify/build/compare/build-v29.38.0...build-v29.38.1) (2024-04-01)
 
 
