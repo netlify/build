@@ -1,4 +1,4 @@
-import {version as nodeVersion} from "process"
+import { version as nodeVersion } from "process"
 
 import { getDeployStore } from '@netlify/blobs'
 import semver from 'semver'
