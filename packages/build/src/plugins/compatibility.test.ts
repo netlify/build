@@ -292,7 +292,48 @@ describe(`getExpectedVersion`, () => {
     expect(version).toBe('5.0.0-beta.1')
   })
 
-  test('if no pinned version is set, it matches the first version whose requirements match the conditions', async () => {
+  test('if no pinned version is set, it matches the first version whose requirements match the conditions for Next.js plugin', async () => {
+    const versions: PluginVersion[] = [
+      {
+        version: '5.0.0-beta.1',
+        conditions: [
+          { type: 'nodeVersion', condition: '>= 18.0.0' },
+          { type: 'siteDependencies', condition: { next: '>=13.5.0' } },
+        ],
+        overridePinnedVersion: '>=4.0.0',
+      },
+      { version: '4.41.2', conditions: [] },
+      {
+        version: '3.9.2',
+        conditions: [{ type: 'siteDependencies', condition: { next: '<10.0.9' } }],
+      },
+    ]
+
+    const logMessages: string[] = []
+
+    const { version } = await getExpectedVersion({
+      versions,
+      nodeVersion: '20.0.0',
+      packageJson: { dependencies: { next: '12.0.0' } },
+      packageName: '@netlify/plugin-nextjs',
+      buildDir: '/some/path',
+      systemLog: (message: string) => {
+        logMessages.push(message)
+      },
+      featureFlags: {
+        netlify_build_updated_plugin_compatibility: true,
+      },
+      authoritative: true,
+    })
+
+    expect(logMessages.length).toBe(1)
+    expect(logMessages[0]).toBe(
+      `Detected mismatch in selected version for plugin '@netlify/plugin-nextjs': used new version of '4.41.2' over legacy version '5.0.0-beta.1'`,
+    )
+    expect(version).toBe('4.41.2')
+  })
+
+  test('if no pinned version is set, it matches the first version regardless of whether its requirements match the conditions (legacy behavior) for non-Next.js plugins with feature flag enabled', async () => {
     const versions: PluginVersion[] = [
       {
         version: '5.0.0-beta.1',
@@ -328,8 +369,8 @@ describe(`getExpectedVersion`, () => {
 
     expect(logMessages.length).toBe(1)
     expect(logMessages[0]).toBe(
-      `Detected mismatch in selected version for plugin '@netlify/cool-plugin': used new version of '4.41.2' over legacy version '5.0.0-beta.1'`,
+      `Detected mismatch in selected version for plugin '@netlify/cool-plugin': used legacy version '5.0.0-beta.1' over new version '4.41.2'`,
     )
-    expect(version).toBe('4.41.2')
+    expect(version).toBe('5.0.0-beta.1')
   })
 })

@@ -150,7 +150,8 @@ const getCompatibleEntry = async function ({
   const legacyFallback = { version: versions[0].version, conditions: [] }
   const fallback = await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir })
 
-  if (featureFlags?.netlify_build_updated_plugin_compatibility) {
+  // at least temporarily limit new version selection logic to Next.js plugin
+  if (featureFlags?.netlify_build_updated_plugin_compatibility && packageName === '@netlify/plugin-nextjs') {
     if (legacyFallback.version !== fallback.version) {
       systemLog(
         `Detected mismatch in selected version for plugin '${packageName}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
