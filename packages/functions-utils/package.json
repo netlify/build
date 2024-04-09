@@ -1,6 +1,6 @@
 {
   "name": "@netlify/functions-utils",
-  "version": "5.2.53",
+  "version": "5.2.54",
   "description": "Utility for adding Functions files in Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",
