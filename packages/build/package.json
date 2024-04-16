@@ -71,7 +71,7 @@
     "@netlify/blobs": "^7.3.0",
     "@netlify/cache-utils": "^5.1.5",
     "@netlify/config": "^20.12.1",
-    "@netlify/edge-bundler": "11.3.0",
+    "@netlify/edge-bundler": "11.4.0",
     "@netlify/framework-info": "^9.8.11",
     "@netlify/functions-utils": "^5.2.54",
     "@netlify/git-utils": "^5.1.1",
