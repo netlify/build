@@ -1,5 +1,19 @@
 # Changelog
 
+## [11.4.0](https://github.com/netlify/edge-bundler/compare/v11.3.0...v11.4.0) (2024-03-25)
+
+
+### Features
+
+* ratelimit config from source ([#583](https://github.com/netlify/edge-bundler/issues/583)) ([4f3a3d4](https://github.com/netlify/edge-bundler/commit/4f3a3d4ce51ef3422fa2bd04fe3172111b34ff42))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to v0.26.4 ([#584](https://github.com/netlify/edge-bundler/issues/584)) ([3b9e578](https://github.com/netlify/edge-bundler/commit/3b9e578d0b875d5dcd8040e0a1c4758e5d037501))
+* **deps:** update dependency esbuild to v0.20.1 ([#586](https://github.com/netlify/edge-bundler/issues/586)) ([50edb15](https://github.com/netlify/edge-bundler/commit/50edb15a89aabbe1746897af57a68041f08b0e19))
+* **deps:** update dependency esbuild to v0.20.2 ([#588](https://github.com/netlify/edge-bundler/issues/588)) ([9088602](https://github.com/netlify/edge-bundler/commit/90886029bd187562f59bb84aa37282593c1f4f47))
+
 ## [11.3.0](https://github.com/netlify/edge-bundler/compare/v11.2.2...v11.3.0) (2024-02-21)
 
 
