@@ -5,7 +5,6 @@ import { createInterface } from 'node:readline'
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
 
-
 export interface ScanResults {
   matches: MatchResult[]
   scannedFilesCount: number
