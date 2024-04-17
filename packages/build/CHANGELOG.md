@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.40.0](https://github.com/netlify/build/compare/build-v29.39.2...build-v29.40.0) (2024-04-17)
+
+
+### Features
+
+* **secrets scanning:** support globs ([#5594](https://github.com/netlify/build/issues/5594)) ([c5c79df](https://github.com/netlify/build/commit/c5c79dfa9930d3d0cd7b320a978a463938db112f))
+
 ## [29.39.2](https://github.com/netlify/build/compare/build-v29.39.1...build-v29.39.2) (2024-04-16)
 
 
