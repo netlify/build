@@ -97,6 +97,7 @@
     "log-process-errors": "^8.0.0",
     "map-obj": "^5.0.0",
     "memoize-one": "^6.0.0",
+    "minimatch": "^9.0.4",
     "node-fetch": "^3.3.2",
     "os-name": "^5.0.0",
     "p-event": "^5.0.0",
@@ -127,8 +128,8 @@
   },
   "devDependencies": {
     "@netlify/nock-udp": "^3.1.2",
-    "@opentelemetry/sdk-trace-base": "~1.22.0",
     "@opentelemetry/api": "~1.8.0",
+    "@opentelemetry/sdk-trace-base": "~1.22.0",
     "@types/node": "^14.18.53",
     "@vitest/coverage-c8": "^0.33.0",
     "atob": "^2.1.2",
@@ -153,8 +154,8 @@
     "yarn": "^1.22.4"
   },
   "peerDependencies": {
-    "@opentelemetry/api": "~1.8.0",
-    "@netlify/opentelemetry-sdk-setup": "^1.1.0"
+    "@netlify/opentelemetry-sdk-setup": "^1.1.0",
+    "@opentelemetry/api": "~1.8.0"
   },
   "peerDependenciesMeta": {
     "@netlify/opentelemetry-sdk-setup": {
