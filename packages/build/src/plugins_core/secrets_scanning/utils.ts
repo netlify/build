@@ -3,6 +3,7 @@ import path from 'node:path'
 import { createInterface } from 'node:readline'
 
 import { fdir } from 'fdir'
+import { minimatch } from 'minimatch'
 
 export interface ScanResults {
   matches: MatchResult[]
@@ -135,7 +136,12 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
 }
 
 // omit paths are relative path substrings.
-const omitPathMatches = (relativePath, omitPaths) => omitPaths.some((oPath) => relativePath.startsWith(oPath))
+const omitPathMatches = (relativePath, omitPaths) => {
+  return omitPaths.some((oPath) => {
+    // check if the substring matches or glob pattern
+    return relativePath.startsWith(oPath) || minimatch(relativePath, oPath, { dot: true })
+  })
+}
 
 /**
  * Given the env vars, the current keys, paths, etc. Look across the provided files to find the values
