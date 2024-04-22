@@ -9,7 +9,7 @@ export class Nuxt extends BaseFramework implements Framework {
   dev = {
     command: 'nuxt',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
     clearPublishDirectory: true,
   }
 
@@ -32,7 +32,7 @@ export class Nuxt extends BaseFramework implements Framework {
         this.name = 'Nuxt 3'
 
         this.build.command = `nuxt build`
-        this.build.directory = `.nuxt/dist`
+        this.build.directory = `dist`
         this.dev.command = `nuxt dev`
 
         this.env = {

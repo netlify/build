@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join, resolve } from 'path'
 
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
@@ -32,27 +32,33 @@ export const resolvePluginsPath = async function ({
   featureFlags,
   integrations,
   context,
+  systemLog,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = addPluginsNodeVersion({
+  const pluginsOptionsB = await addPluginsNodeVersion({
+    featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
     logs,
+    systemLog,
   })
+
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({
     pluginsOptions: pluginsOptionsC,
     autoPluginsDir,
     packageJson,
+    packagePath,
     debug,
     logs,
     buildDir,
     testOpts,
     featureFlags,
+    systemLog,
   })
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
@@ -63,17 +69,15 @@ export const resolvePluginsPath = async function ({
 
   let integrationPluginOptions = []
 
-  if (featureFlags.buildbot_fetch_integrations || featureFlags.cli_fetch_integrations) {
-    integrationPluginOptions = await handleIntegrations({
-      integrations,
-      autoPluginsDir,
-      mode,
-      logs,
-      buildDir,
-      context,
-      testOpts,
-    })
-  }
+  integrationPluginOptions = await handleIntegrations({
+    integrations,
+    autoPluginsDir,
+    mode,
+    logs,
+    buildDir,
+    context,
+    testOpts,
+  })
 
   return [...pluginsOptionsE, ...integrationPluginOptions]
 }
@@ -175,15 +179,17 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
         autoPluginsDir,
         buildDir,
         context,
+        testOpts,
       }),
     ),
   )
 }
 
-const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context }) {
+const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
   if (typeof integration.dev !== 'undefined' && context === 'dev') {
     const { path } = integration.dev
-    const pluginPath = await resolvePath(`${path}/.ntli/build`, buildDir)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
 
     return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
   }

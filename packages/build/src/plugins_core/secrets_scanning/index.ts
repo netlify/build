@@ -7,6 +7,7 @@ import {
   logSecretsScanSkipMessage,
   logSecretsScanSuccessMessage,
 } from '../../log/messages/core_steps.js'
+import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
 import {
   ScanResults,
@@ -19,13 +20,13 @@ import {
 
 const tracer = trace.getTracer('secrets-scanning')
 
-const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
+const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
 
-  systemLog({ passedSecretKeys, buildDir })
+  systemLog?.({ passedSecretKeys, buildDir })
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
@@ -83,7 +84,7 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
         keysToSearchFor,
       }
 
-      systemLog(attributesForLogsAndSpan)
+      systemLog?.(attributesForLogsAndSpan)
       span.setAttributes(attributesForLogsAndSpan)
       span.end()
     },
@@ -110,7 +111,7 @@ const coreStep = async function ({ buildDir, logs, netlifyConfig, explicitSecret
 // We run this core step if the build was run with explicit secret keys. This
 // is passed from BB to build so only accounts that are allowed to have explicit
 // secrets and actually have them will have them.
-const hasExplicitSecretsKeys = function ({ explicitSecretKeys }): boolean {
+const hasExplicitSecretsKeys: CoreStepCondition = function ({ explicitSecretKeys }): boolean {
   if (typeof explicitSecretKeys !== 'string') {
     return false
   }
@@ -118,7 +119,7 @@ const hasExplicitSecretsKeys = function ({ explicitSecretKeys }): boolean {
   return explicitSecretKeys.length > 0
 }
 
-export const scanForSecrets = {
+export const scanForSecrets: CoreStep = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'secrets_scanning',

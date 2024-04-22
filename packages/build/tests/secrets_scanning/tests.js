@@ -48,6 +48,13 @@ test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PA
   t.snapshot(normalizeOutput(output))
 })
 
+test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PATHS omits globbed files', async (t) => {
+  const output = await new Fixture('./fixtures/src_scanning_omit_glob_path')
+    .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('secrets scanning, should fail build when it finds secrets in the src and build output', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
     .withFlags({

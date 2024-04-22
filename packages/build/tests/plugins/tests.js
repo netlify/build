@@ -4,7 +4,9 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
-import { tmpName } from 'tmp-promise'
+import tmp, { tmpName } from 'tmp-promise'
+
+import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -104,9 +106,27 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
+  const systemLog = await tmp.file()
+
   const nodePath = getNodePath('16.14.0')
-  const output = await new Fixture('./fixtures/engines').withFlags({ nodePath }).runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  const output = await new Fixture('./fixtures/engines')
+    .withFlags({
+      nodePath,
+      featureFlags: { build_warn_upcoming_system_version_change: true },
+      systemLogFile: systemLog.fd,
+      debug: false,
+    })
+    .runWithBuild()
+  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
+  t.true(
+    output.includes(
+      'Warning: Starting January 30, 2024 plugin "./plugin.js" will be executed with Node.js version 20.',
+    ),
+  )
+  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+  await systemLog.cleanup()
+
+  t.true(systemLogContents.includes('plugin "./plugin.js" probably not affected by node.js 20 change'))
 })
 
 test('Validate --node-path exists', async (t) => {
@@ -122,6 +142,20 @@ test('Provided --node-path version is unused in buildbot for local plugin execut
     .withFlags({ nodePath, mode: 'buildbot' })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('UI plugins dont use provided --node-path', async (t) => {
+  const nodePath = getNodePath('12.19.0')
+  const output = await new Fixture('./fixtures/ui_auto_install')
+    .withFlags({
+      nodePath,
+      mode: 'buildbot',
+      defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] },
+      testOpts: { skipPluginList: true },
+    })
+    .runWithBuild()
+  const systemNodeVersion = process.version
+  t.true(output.includes(`node.js version used to execute this plugin: ${systemNodeVersion}`))
 })
 
 test('Plugins can execute local binaries', async (t) => {
@@ -164,18 +198,12 @@ test('Trusted plugins are passed featureflags and system log', async (t) => {
     t.true(systemLog.includes(expectedSystemLogs))
   }
 
-  t.true(
-    output.includes(
-      JSON.stringify({
-        buildbot_zisi_trace_nft: false,
-        buildbot_zisi_esbuild_parser: false,
-        buildbot_zisi_system_log: false,
-        edge_functions_cache_cli: false,
-        edge_functions_system_logger: false,
-        test_flag: true,
-      }),
-    ),
-  )
+  const expectedFlags = {
+    ...DEFAULT_FEATURE_FLAGS,
+    test_flag: true,
+  }
+
+  t.true(output.includes(JSON.stringify(expectedFlags)))
 
   const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
     .withFlags({

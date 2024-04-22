@@ -9,7 +9,7 @@ export class Parcel extends BaseFramework implements Framework {
   dev = {
     command: 'parcel',
     port: 1234,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

@@ -14,6 +14,10 @@ export const doDryRun = async function ({ buildDir, steps, netlifyConfig, consta
   logDryRunStart({ logs, eventWidth, stepsCount })
 
   successSteps.forEach((step, index) => {
+    if (step.quiet) {
+      return
+    }
+
     logDryRunStep({ logs, step, index, netlifyConfig, eventWidth, stepsCount })
   })
 

@@ -68,7 +68,6 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
     {
@@ -123,9 +122,6 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
         "pollingStrategies": [
           {
             "name": "TCP",
-          },
-          {
-            "name": "HTTP",
           },
         ],
         "port": 3000,
@@ -203,7 +199,6 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
   ],
@@ -278,7 +273,6 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
     {

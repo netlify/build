@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs'
 import { realpath, readFile } from 'node:fs/promises'
 
-import { diag, context, DiagLogger, Context } from '@opentelemetry/api'
+import { diag, DiagLogger } from '@opentelemetry/api'
 import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
 import { readPackageUp, PackageJson } from 'read-pkg-up'
 
@@ -62,7 +62,7 @@ export const getDiagLogger = function (
   }
 }
 
-//** Loads the baggage attributes from a baggage file which follows W3C Baggage specification */
+/** Loads the baggage attributes from a baggage file which follows W3C Baggage specification */
 export const loadBaggageFromFile = async function (baggageFilePath?: string) {
   if (baggageFilePath === undefined || baggageFilePath.length === 0) {
     diag.warn('No baggage file path provided, no context loaded')
@@ -100,23 +100,4 @@ export const findExecutablePackageJSON = async function (path: string): Promise<
     // packageJson read failed, we ignore the error and return an empty obj
     return {}
   }
-}
-
-/**
- * Sets global context to be used when initialising our root span
- * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
- */
-export const setGlobalContext = function (ctx: Context) {
-  global['NETLIFY_GLOBAL_CONTEXT'] = ctx
-}
-
-/**
- * Gets the global context to be used when initialising our root span
- * TODO this will move to a shared package (opentelemetry-utils) to scope the usage of this global property there
- */
-export const getGlobalContext = function (): Context {
-  if (global['NETLIFY_GLOBAL_CONTEXT'] === undefined) {
-    return context.active()
-  }
-  return global['NETLIFY_GLOBAL_CONTEXT']
 }

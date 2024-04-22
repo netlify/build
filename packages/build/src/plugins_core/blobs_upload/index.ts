@@ -5,34 +5,57 @@ import pMap from 'p-map'
 import semver from 'semver'
 
 import { log, logError } from '../../log/logger.js'
-import { anyBlobsToUpload, getBlobsDir } from '../../utils/blobs.js'
+import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
-import { getKeysToUpload, getFileWithMetadata } from './utils.js'
-
-const coreStep = async function ({
+const coreStep: CoreStepFunction = async function ({
   debug,
   logs,
   deployId,
   buildDir,
   quiet,
-  constants: { PUBLISH_DIR, SITE_ID, NETLIFY_API_TOKEN, API_URL },
+  packagePath,
+  constants: { SITE_ID, NETLIFY_API_TOKEN, NETLIFY_API_HOST },
 }) {
-  const storeOpts: { siteID: string; deployID: string; token: string; apiURL: string; fetch?: any } = {
+  // This should never happen due to the condition check
+  if (!deployId || !NETLIFY_API_TOKEN) {
+    return {}
+  }
+  // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
+  const apiHost = NETLIFY_API_HOST || 'api.netlify.com'
+
+  const storeOpts: Parameters<typeof getDeployStore>[0] = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
-    apiURL: API_URL,
+    apiURL: `https://${apiHost}`,
   }
+
+  // If we don't have native `fetch` in the global scope, add a polyfill.
   if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
+    const nodeFetch = (await import('node-fetch')).default as unknown as typeof fetch
+    storeOpts.fetch = nodeFetch
+  }
+
+  const blobs = await scanForBlobs(buildDir, packagePath)
+
+  // We checked earlier, but let's be extra safe
+  if (blobs === null) {
+    if (!quiet) {
+      log(logs, 'No blobs to upload to deploy store.')
+    }
+    return {}
+  }
+
+  // If using the deploy config API, configure the store to use the region that
+  // was configured for the deploy.
+  if (!blobs.isLegacyDirectory) {
+    storeOpts.experimentalRegion = 'auto'
   }
 
   const blobStore = getDeployStore(storeOpts)
-  const blobsDir = getBlobsDir({ buildDir, publishDir: PUBLISH_DIR })
-  const keys = await getKeysToUpload(blobsDir)
+  const keys = await getKeysToUpload(blobs.directory)
 
-  // We checked earlier, but let's be extra safe
   if (keys.length === 0) {
     if (!quiet) {
       log(logs, 'No blobs to upload to deploy store.')
@@ -44,16 +67,18 @@ const coreStep = async function ({
     log(logs, `Uploading ${keys.length} blobs to deploy store...`)
   }
 
-  const uploadBlob = async (key) => {
-    if (debug && !quiet) {
-      log(logs, `- Uploading blob ${key}`, { indent: true })
-    }
-    const { data, metadata } = await getFileWithMetadata(blobsDir, key)
-    await blobStore.set(key, data, { metadata })
-  }
-
   try {
-    await pMap(keys, uploadBlob, { concurrency: 10 })
+    await pMap(
+      keys,
+      async (key: string) => {
+        if (debug && !quiet) {
+          log(logs, `- Uploading blob ${key}`, { indent: true })
+        }
+        const { data, metadata } = await getFileWithMetadata(blobs.directory, key)
+        await blobStore.set(key, data, { metadata })
+      },
+      { concurrency: 10 },
+    )
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
 
@@ -67,11 +92,14 @@ const coreStep = async function ({
   return {}
 }
 
-const deployAndBlobsPresent = async function ({ deployId, buildDir, constants: { PUBLISH_DIR } }): Promise<boolean> {
-  return deployId && (await anyBlobsToUpload({ buildDir, publishDir: PUBLISH_DIR }))
-}
+const deployAndBlobsPresent: CoreStepCondition = async ({
+  deployId,
+  buildDir,
+  packagePath,
+  constants: { NETLIFY_API_TOKEN },
+}) => Boolean(NETLIFY_API_TOKEN && deployId && (await scanForBlobs(buildDir, packagePath)))
 
-export const uploadBlobs = {
+export const uploadBlobs: CoreStep = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'blobs_upload',

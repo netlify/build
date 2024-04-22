@@ -120,6 +120,7 @@ export class Nx extends BaseBuildTool {
     switch (executor) {
       case '@nxtensions/astro:dev':
         return 3000
+      case '@nx/next:server':
       case '@nrwl/next:server':
       case '@nrwl/web:dev-server':
       case '@nx/webpack:dev-server':
@@ -128,13 +129,19 @@ export class Nx extends BaseBuildTool {
       case '@nx-plus/vue:dev-server':
         return 8000
       // some targets like run command don't have an executor
+      case 'nx:run-commands':
       case undefined:
         return null
       default:
-        this.project.report({
-          name: 'UndetectedExecutor',
-          message: `Undetected executor for Nx integrated: ${executor}`,
-        })
+        this.project.report(
+          {
+            name: 'UndetectedExecutor',
+            message: `Undetected executor for Nx integrated: ${executor}`,
+          },
+          {
+            metadata: { executor },
+          },
+        )
         return null
     }
   }
@@ -176,6 +183,7 @@ export class Nx extends BaseBuildTool {
 
     switch (executor) {
       case '@nrwl/next:build':
+      case '@nx/next:build':
         return 'next'
       case '@nxtensions/astro:build':
         return 'astro'
@@ -205,10 +213,15 @@ export class Nx extends BaseBuildTool {
         // some targets like run command don't have an executor
         return
       default:
-        this.project.report({
-          name: 'UndetectedExecutor',
-          message: `Undetected executor for Nx integrated: ${executor}`,
-        })
+        this.project.report(
+          {
+            name: 'UndetectedExecutor',
+            message: `Undetected executor for Nx integrated: ${executor}`,
+          },
+          {
+            metadata: { executor },
+          },
+        )
     }
   }
 

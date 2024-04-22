@@ -41,7 +41,7 @@ export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildFla
   }
 }
 
-const getBuildSteps = function (buildSteps) {
+const getBuildSteps = function (buildSteps: string[]) {
   const allSteps = getSteps([]).steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
@@ -115,6 +115,7 @@ const executeBuildStep = async function ({
       debug,
       constants,
       featureFlags,
+      packagePath,
       childEnv,
       buildSteps,
       repositoryRoot: repositoryRootA,
@@ -154,6 +155,7 @@ const runBuildStep = async function ({
   logs,
   debug,
   featureFlags,
+  packagePath,
   childEnv,
   buildSteps,
   repositoryRoot,
@@ -171,6 +173,7 @@ const runBuildStep = async function ({
     logs,
     debug,
     timers: [],
+    packagePath,
     featureFlags,
     childEnv,
     repositoryRoot,

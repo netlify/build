@@ -2,11 +2,9 @@ import { promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
-import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
 import cpy from 'cpy'
-
-import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -413,6 +411,12 @@ test('Pinning plugin versions takes into account the compatibility field', async
   })
 })
 
+test('Do not pin plugin with prerelease versions', async (t) => {
+  // By setting the status to 500 we ensure that the endpoint for pinning is
+  // not being called, otherwise an error would be thrown.
+  await runWithUpdatePluginMock(t, 'pin_prerelease', { status: 500, testPlugin: { version: '1.2.3-rc' } })
+})
+
 const runWithPluginRunsMock = async function (
   t,
   fixtureName,
@@ -482,32 +486,4 @@ test('Does not pin netlify.toml-only plugin versions if there are no API token',
 
 test('Does not pin netlify.toml-only plugin versions if there are no site ID', async (t) => {
   await runWithPluginRunsMock(t, 'pin_config_success', { flags: { siteId: '' } })
-})
-
-test('`getExpectedVersion` matches prerelease versions', async (t) => {
-  const versions = [
-    {
-      version: '1.0.0',
-      conditions: [],
-    },
-    {
-      version: '0.3.1-rc.1',
-      conditions: [],
-    },
-    {
-      version: '0.3.0',
-      conditions: [],
-    },
-  ]
-
-  const { version: version1 } = await getExpectedVersion({
-    versions,
-  })
-  const { version: version2 } = await getExpectedVersion({
-    versions,
-    pinnedVersion: '0',
-  })
-
-  t.is(version1, '1.0.0')
-  t.is(version2, '0.3.1-rc.1')
 })

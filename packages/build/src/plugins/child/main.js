@@ -1,7 +1,7 @@
 import { setInspectColors } from '../../log/colors.js'
-import { sendEventToParent, getEventsFromParent } from '../ipc.js'
+import { getEventsFromParent, sendEventToParent } from '../ipc.js'
 
-import { handleProcessErrors, handleError } from './error.js'
+import { handleError, handleProcessErrors } from './error.js'
 import { load } from './load.js'
 import { run } from './run.js'
 
@@ -46,6 +46,20 @@ const handleEvent = async function ({
   }
 }
 
-const EVENTS = { load, run }
+const EVENTS = {
+  load,
+  run,
+  // async shutdown hook to stop tracing reliably
+  shutdown: async () => {
+    try {
+      const { stopTracing } = await import('@netlify/opentelemetry-sdk-setup')
+      await stopTracing()
+    } catch {
+      // noop as the opentelemetry-sdk-setup is an optional dependency
+      // and might not be present in the CLI
+    }
+    return { context: {} }
+  },
+}
 
 bootPlugin()

@@ -1,10 +1,11 @@
 import process from 'node:process'
 
+import { setGlobalContext } from '@netlify/opentelemetry-utils'
 import { diag } from '@opentelemetry/api'
 import argsParser from 'yargs-parser'
 
 import { startTracing, stopTracing, TracingOptions } from './sdk-setup.js'
-import { findExecutablePackageJSON, setGlobalContext } from './util.js'
+import { findExecutablePackageJSON } from './util.js'
 
 const DEFAULT_OTEL_TRACING_PORT = 4317
 const DEFAULT_OTEL_ENDPOINT_PROTOCOL = 'http'

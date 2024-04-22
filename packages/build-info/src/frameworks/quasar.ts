@@ -9,7 +9,7 @@ export class Quasar extends BaseFramework implements Framework {
   dev = {
     command: 'quasar dev -p 8081',
     port: 8081,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

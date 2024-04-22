@@ -1,3 +1,4 @@
+import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
@@ -5,7 +6,7 @@ import { logStepStart } from '../log/messages/steps.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
-import { setMultiSpanAttributes, StepExecutionAttributes } from '../tracing/main.js'
+import { StepExecutionAttributes } from '../tracing/main.js'
 
 import { fireCoreStep } from './core_step.js'
 import { firePluginStep } from './plugin.js'
@@ -22,6 +23,7 @@ export const runStep = async function ({
   coreStepId,
   coreStepName,
   coreStepDescription,
+  coreStepQuiet,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -77,9 +79,15 @@ export const runStep = async function ({
     'build.execution.step.origin': origin,
     'build.execution.step.event': event,
   }
+
+  if (pluginPackageJson?.name && pluginPackageJson?.version) {
+    attributes['build.execution.step.plugin_name'] = pluginPackageJson.name
+    attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
+  }
+
   const spanCtx = setMultiSpanAttributes(attributes)
   // If there's no `coreStepId` then this is a plugin execution
-  const spanName = `run-step-${coreStepId || 'plugin'}`
+  const spanName = `run-step-${coreStepId || `plugin-${event}`}`
 
   return tracer.startActiveSpan(spanName, {}, spanCtx, async (span) => {
     const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
@@ -98,6 +106,7 @@ export const runStep = async function ({
       saveConfig,
       explicitSecretKeys,
       deployId,
+      featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
     if (!shouldRun) {
@@ -105,7 +114,7 @@ export const runStep = async function ({
       return {}
     }
 
-    if (!quiet) {
+    if (!quiet && !coreStepQuiet) {
       logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
     }
 
@@ -189,7 +198,7 @@ export const runStep = async function ({
       durationNs,
       testOpts,
       systemLog,
-      quiet,
+      quiet: quiet || coreStepQuiet,
       metrics,
     })
 
@@ -243,6 +252,7 @@ const shouldRunStep = async function ({
   saveConfig,
   explicitSecretKeys,
   deployId,
+  featureFlags = {},
 }) {
   if (
     failedPlugins.includes(packageName) ||
@@ -256,6 +266,7 @@ const shouldRunStep = async function ({
         saveConfig,
         explicitSecretKeys,
         deployId,
+        featureFlags,
       })))
   ) {
     return false
@@ -377,6 +388,7 @@ const tFireStep = function ({
     steps,
     error,
     logs,
+    systemLog,
     featureFlags,
     debug,
     verbose,

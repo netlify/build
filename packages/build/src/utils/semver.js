@@ -32,3 +32,7 @@ export const getMajorVersion = function (version) {
   const patchVersion = semver.patch(version)
   return `${majorVersion}.${minorVersion}.${patchVersion}`
 }
+
+export const isPrerelease = function (version) {
+  return semver.prerelease(version)
+}

@@ -10,7 +10,7 @@ export class ReactStatic extends BaseFramework implements Framework {
   dev = {
     command: 'react-static start',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

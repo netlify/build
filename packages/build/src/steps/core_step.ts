@@ -89,6 +89,7 @@ export const fireCoreStep = async function ({
       configSideFiles,
       errorParams,
       logs,
+      systemLog,
       debug,
     })
     return {

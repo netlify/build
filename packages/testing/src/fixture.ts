@@ -199,9 +199,21 @@ export class Fixture {
   }
 
   async runWithBuild(): Promise<string> {
+    const { output } = await this.runWithBuildAndIntrospect()
+    return output
+  }
+
+  async runWithBuildAndIntrospect() {
     const { default: build } = await import('@netlify/build')
-    const { logs } = await build(this.getBuildFlags())
-    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+    const buildResult = await build(this.getBuildFlags())
+    const output = [buildResult.logs?.stdout.join('\n'), buildResult.logs?.stderr.join('\n')]
+      .filter(Boolean)
+      .join('\n\n')
+
+    return {
+      ...buildResult,
+      output,
+    }
   }
 
   // TODO: provide better typing if we know what's possible

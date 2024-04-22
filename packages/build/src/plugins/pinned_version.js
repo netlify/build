@@ -1,5 +1,5 @@
 import { handleBuildError } from '../error/handle.js'
-import { getMajorVersion } from '../utils/semver.js'
+import { getMajorVersion, isPrerelease } from '../utils/semver.js'
 
 // Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
 // Only applies to `netlify.toml`-only installed plugins.
@@ -80,10 +80,17 @@ export const pinPlugins = async function ({
 //  - the plugin was installed in the UI
 //  - both the build and the plugin succeeded
 const shouldPinVersion = function ({
-  pluginOptions: { packageName, pinnedVersion, loadedFrom, origin },
+  pluginOptions: {
+    packageName,
+    pinnedVersion,
+    pluginPackageJson: { version },
+    loadedFrom,
+    origin,
+  },
   failedPlugins,
 }) {
   return (
+    !isPrerelease(version) &&
     pinnedVersion === undefined &&
     loadedFrom === 'auto_install' &&
     origin === 'ui' &&

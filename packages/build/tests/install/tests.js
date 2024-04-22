@@ -144,7 +144,6 @@ test('In integration dev mode, install local plugins and install the integration
   const output = await new Fixture('./fixtures/local_missing_integration')
     .withFlags({
       context: 'dev',
-      featureFlags: { cli_fetch_integrations: true },
       testOpts: {
         cwd: './tests/install/fixtures/local_missing_integration/',
       },

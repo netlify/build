@@ -10,7 +10,7 @@ export class Brunch extends BaseFramework implements Framework {
   dev = {
     command: 'brunch watch --server',
     port: 3333,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

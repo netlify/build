@@ -1,11 +1,12 @@
 import { rm } from 'node:fs/promises'
 
-import { anyBlobsToUpload, getBlobsDir } from '../../utils/blobs.js'
+import { scanForBlobs, getBlobsDirs } from '../../utils/blobs.js'
+import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
-const coreStep = async function ({ buildDir, constants: { PUBLISH_DIR } }) {
-  const blobsDir = getBlobsDir({ buildDir, publishDir: PUBLISH_DIR })
+const coreStep: CoreStepFunction = async ({ buildDir, packagePath }) => {
+  const blobsDirs = getBlobsDirs(buildDir, packagePath)
   try {
-    await rm(blobsDir, { recursive: true, force: true })
+    await Promise.all(blobsDirs.map((dir) => rm(dir, { recursive: true, force: true })))
   } catch {
     // Ignore errors if it fails, we can continue anyway.
   }
@@ -13,11 +14,10 @@ const coreStep = async function ({ buildDir, constants: { PUBLISH_DIR } }) {
   return {}
 }
 
-const blobsPresent = async function ({ buildDir, constants: { PUBLISH_DIR } }): Promise<boolean> {
-  return await anyBlobsToUpload({ buildDir, publishDir: PUBLISH_DIR })
-}
+const blobsPresent: CoreStepCondition = async ({ buildDir, packagePath }) =>
+  Boolean(await scanForBlobs(buildDir, packagePath))
 
-export const preCleanup = {
+export const preCleanup: CoreStep = {
   event: 'onPreBuild',
   coreStep,
   coreStepId: 'pre_cleanup',

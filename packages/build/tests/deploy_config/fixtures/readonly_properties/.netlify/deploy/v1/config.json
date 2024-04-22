@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "package": "@netlify/imaginary-plugin"
+    }
+  ],
+  "images": {
+    "remote_images": ["domain1.netlify", "domain2.netlify"]
+  }
+}

@@ -1,7 +1,6 @@
 import type { NetlifyPluginConstants, NetlifyPluginOptions, OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
-
-import type { JSONValue } from '../types/utils/json_value.d.ts'
+import type { JSONValue } from '../lib/types/utils/json_value.js'
 
 export const testConstants: OnPreBuild = function ({ constants }: { constants: NetlifyPluginConstants }) {
   expectType<string | undefined>(constants.CONFIG_PATH)

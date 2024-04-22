@@ -9,7 +9,7 @@ export class Roots extends BaseFramework implements Framework {
   dev = {
     command: 'roots watch',
     port: 1111,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

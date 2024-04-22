@@ -1,12 +1,14 @@
+import { setMultiSpanAttributes, getGlobalContext } from '@netlify/opentelemetry-utils'
 import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
 import { getSystemLogger } from '../log/logger.js'
+import type { BufferedLogs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
-import { stopTracing, setMultiSpanAttributes, RootExecutionAttributes } from '../tracing/main.js'
+import { RootExecutionAttributes } from '../tracing/main.js'
 
 import { execBuild, startBuild } from './build.js'
 import { reportMetrics } from './report_metrics.js'
@@ -24,7 +26,7 @@ const tracer = trace.getTracer('core')
 export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   success: boolean
   severityCode: number
-  logs: any
+  logs: BufferedLogs | undefined
   netlifyConfig?: any
   configMutations?: any
 }> {
@@ -41,7 +43,6 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
     telemetry,
     buildId,
     deployId,
-    rootTracingContext,
     eventHandlers,
     ...flagsA
   }: any = startBuild(flags)
@@ -55,7 +56,9 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
     'site.id': flagsA.siteId,
     'build.info.primary_framework': framework,
   }
-  const rootCtx = context.with(rootTracingContext, () => setMultiSpanAttributes(attributes))
+  // Gets the initial root context passed to the build process and adds a series of attributes we're going to use across
+  // the trace
+  const rootCtx = context.with(getGlobalContext(), () => setMultiSpanAttributes(attributes))
 
   return await tracer.startActiveSpan('exec-build', {}, rootCtx, async (span) => {
     try {
@@ -141,8 +144,6 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
       return { success, severityCode, logs }
     } finally {
       span.end()
-      // Ensure we flush the resulting spans
-      await stopTracing()
     }
   })
 }
