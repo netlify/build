@@ -7,5 +7,8 @@ export default defineConfig({
   test: {
     include: ['node/**/*.test.ts'],
     testTimeout: 30_000,
+    env: {
+      FORCE_COLOR: '0',
+    },
   },
 })

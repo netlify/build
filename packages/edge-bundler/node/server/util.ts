@@ -25,7 +25,6 @@ const isServerReady = async (port: number, successRef: SuccessRef, ps?: ExecaChi
   try {
     await fetch(`http://127.0.0.1:${port}`)
 
-    // eslint-disable-next-line no-param-reassign
     successRef.success = true
   } catch {
     return false

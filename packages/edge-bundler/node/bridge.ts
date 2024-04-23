@@ -261,7 +261,6 @@ class DenoBridge {
     const ps = DenoBridge.runWithBinary(binaryPath, args, { options, pipeOutput, stderr, stdout })
 
     if (ref !== undefined) {
-      // eslint-disable-next-line no-param-reassign
       ref.ps = ps
     }
   }

@@ -8,7 +8,6 @@ import { validateManifest, ManifestValidationError } from './index.js'
 chalk.level = 0
 
 // Factory so we have a new object per test
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getBaseManifest = (): Record<string, any> => ({
   bundles: [
     {
