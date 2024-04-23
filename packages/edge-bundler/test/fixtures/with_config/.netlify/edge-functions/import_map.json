@@ -1,5 +1,0 @@
-{
-  "imports": {
-    "alias:helper": "../../helper.ts"
-  }
-}

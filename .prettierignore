@@ -1,13 +1,8 @@
 # don't format fixtures (sometimes faulty behaviour is desired)
 packages/*/tests/**/fixtures/**
-packages/*/test/**/fixtures/**
 packages/framework-info/test/fixtures/**
 # don't lint outputs
 packages/*/lib
-# don't lint deno files
-packages/edge-bundler/deno/**
-# don't lint vendored files
-packages/edge-bundler/*/vendor/**
 # don't lint changelog files as they get auto-generated
 CHANGELOG.md
 coverage

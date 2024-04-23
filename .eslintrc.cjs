@@ -24,11 +24,6 @@ const config = {
     'packages/framework-info/test/fixtures/**',
     'packages/framework-info/dist/**',
     'packages/*/lib/**',
-
-    'packages/edge-bundler/deno/**/*',
-    'packages/edge-bundler/node/vendor/**',
-    'packages/edge-bundler/test/deno/**/*',
-    'packages/edge-bundler/test/fixtures/**/*',
   ],
   rules: {
     // -----------------------------------------------------------
