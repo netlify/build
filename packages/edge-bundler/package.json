@@ -16,7 +16,7 @@
     "build": "tsc",
     "build:dev": "tsc -w",
     "prepack": "npm run build",
-    "test": "run-s build format test:dev",
+    "test": "run-s build test:dev",
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:vitest": "vitest run",
