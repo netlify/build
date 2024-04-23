@@ -1,7 +1,8 @@
 import { context, Context, propagation, trace, SpanStatusCode, Attributes } from '@opentelemetry/api'
 
 /**
- * Sets attributes to be propagated across child spans under the current active context
+ * Sets attributes to be propagated across child spans under the current active context. Contexts are immutable so the
+ * newly returned context must be used when instantiating a new span for these new properties to be used.
  */
 export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
   const currentBaggage = propagation.getBaggage(context.active())
@@ -12,6 +13,18 @@ export const setMultiSpanAttributes = function (attributes: { [key: string]: str
   })
 
   return propagation.setBaggage(context.active(), baggage)
+}
+
+/**
+ * Add the provided attributes to the current active span (if any).
+ */
+export const addAttributesToActiveSpan = function (attributes?: Attributes) {
+  const span = trace.getActiveSpan()
+  if (!span) return
+
+  if (attributes !== undefined) {
+    span.setAttributes(attributes)
+  }
 }
 
 /**

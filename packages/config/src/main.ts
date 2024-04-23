@@ -68,6 +68,7 @@ export const resolveConfig = async function (opts) {
 
   const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
     api,
+    context,
     siteId,
     mode,
     offline,

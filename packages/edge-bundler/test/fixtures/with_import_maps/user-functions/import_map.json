@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "helper": "../helper.ts"
+  },
+  "scopes": {
+    "func3/": {
+      "helper": "../helper2.ts"
+    }
+  }
+}
