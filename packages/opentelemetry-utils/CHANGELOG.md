@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.1.0...opentelemetry-utils-v1.2.0) (2024-04-23)
+
+
+### Features
+
+* **otel-utils:** add `addAttributesToActiveSpan` method ([#5587](https://github.com/netlify/build/issues/5587)) ([7aff54c](https://github.com/netlify/build/commit/7aff54cacea8f35b29c35b349e23b6660d3c32f8))
+
 ## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.3...opentelemetry-utils-v1.1.0) (2024-03-28)
 
 
