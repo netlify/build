@@ -1,5 +1,5 @@
 import { access } from 'node:fs/promises'
-import { join, sep } from 'path'
+import { join } from 'path'
 
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
@@ -16,7 +16,7 @@ test('Build removes blobs directory before starting', async (t) => {
   const output = await fixture.runDev(() => {})
 
   t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify${sep}deploy${sep}v1${sep}blobs${sep}deploy`))
+  t.true(output.includes(`Cleaned up .netlify/deploy/v1/blobs/deploy`))
 
   await t.throwsAsync(access(blobsDir))
 })
@@ -33,7 +33,7 @@ test('Build removes legacy blobs directory before starting', async (t) => {
   const output = await fixture.runDev(() => {})
 
   t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify${sep}blobs${sep}deploy`))
+  t.true(output.includes(`Cleaned up .netlify/blobs/deploy`))
 
   await t.throwsAsync(access(blobsDir))
 })
