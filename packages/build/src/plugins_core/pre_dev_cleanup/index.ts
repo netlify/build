@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { listFrameworks } from '@netlify/framework-info'
 
 import { log } from '../../log/logger.js'
+import { getBlobsDirs } from '../../utils/blobs.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
 
 const dirExists = async (path: string): Promise<boolean> => {
@@ -18,18 +19,25 @@ const dirExists = async (path: string): Promise<boolean> => {
 const getDirtyDirs = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC },
+  packagePath,
 }: CoreStepFunctionArgs): Promise<string[]> {
-  const dirs: string[] = []
+  const directories: string[] = []
 
   if (INTERNAL_FUNCTIONS_SRC && (await dirExists(resolve(buildDir, INTERNAL_FUNCTIONS_SRC)))) {
-    dirs.push(INTERNAL_FUNCTIONS_SRC)
+    directories.push(INTERNAL_FUNCTIONS_SRC)
   }
 
   if (INTERNAL_EDGE_FUNCTIONS_SRC && (await dirExists(resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)))) {
-    dirs.push(INTERNAL_EDGE_FUNCTIONS_SRC)
+    directories.push(INTERNAL_EDGE_FUNCTIONS_SRC)
   }
 
-  return dirs
+  for (const blobDirectory of getBlobsDirs(buildDir, packagePath)) {
+    if (await dirExists(blobDirectory)) {
+      directories.push(blobDirectory)
+    }
+  }
+
+  return directories
 }
 
 const coreStep: CoreStepFunction = async (input) => {
