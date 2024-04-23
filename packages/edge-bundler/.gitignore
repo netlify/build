@@ -1,0 +1,15 @@
+*~
+*.swp
+npm-debug.log
+node_modules
+!test/fixtures/**/node_modules
+**/.netlify/edge-functions-serve
+/core
+.eslintcache
+.npmrc
+.yarn-error.log
+.nyc_output
+/coverage
+/build
+.vscode
+/dist
