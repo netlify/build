@@ -38,7 +38,6 @@ const findFunctionInDirectory = async (directory: string): Promise<EdgeFunction 
     try {
       const stats = await fs.stat(candidatePath)
 
-      // eslint-disable-next-line max-depth
       if (stats.isFile()) {
         functionPath = candidatePath
 

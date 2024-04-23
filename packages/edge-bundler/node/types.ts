@@ -11,6 +11,7 @@ const TYPES_URL = 'https://edge.netlify.com'
 const ensureLatestTypes = async (deno: DenoBridge, logger: Logger, customTypesURL?: string) => {
   const typesURL = customTypesURL ?? TYPES_URL
 
+  // eslint-disable-next-line prefer-const
   let [localVersion, remoteVersion] = [await getLocalVersion(deno), '']
 
   try {

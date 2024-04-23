@@ -29,7 +29,6 @@ export const mergeDeclarations = (
   deployConfigDeclarations: Declaration[],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _featureFlags: FeatureFlags = {},
-  // eslint-disable-next-line max-params
 ) => {
   const functionsVisited: Set<string> = new Set()
 
@@ -74,6 +73,7 @@ const getDeclarationsFromInput = (
       })
     } else {
       // With an in-source config without a path, add the config to the declaration.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { path, excludedPath, ...rest } = config
 
       declarations.push({ ...declaration, ...rest })

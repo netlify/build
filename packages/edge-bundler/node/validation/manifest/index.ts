@@ -47,5 +47,4 @@ export const validateManifest = (manifestData: unknown, _featureFlags: FeatureFl
   }
 }
 
-// eslint-disable-next-line unicorn/prefer-export-from
 export { ManifestValidationError }

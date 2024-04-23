@@ -131,7 +131,6 @@ const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, r
 
       return fs.readFile(filePath, 'utf8')
     },
-    // eslint-disable-next-line require-await
     resolve: async (specifier, ...args) => {
       // Start by checking whether the specifier matches any import map defined
       // by the user.

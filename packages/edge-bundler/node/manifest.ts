@@ -159,6 +159,7 @@ const generateManifest = ({
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [name, { excludedPath, path, onError, rateLimit, ...rest }] of Object.entries(internalFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {

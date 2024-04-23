@@ -36,7 +36,6 @@ const installPackage = async () => {
 
   console.log(`Uncompressing the tarball at '${filename}'...`)
 
-  // eslint-disable-next-line id-length
   await tar.x({ C: path, file: filename, strip: 1 })
 
   pathsToCleanup.add(path)
@@ -52,7 +51,6 @@ const bundleFunction = async (bundlerDir) => {
 
   const bundlerPath = require.resolve(bundlerDir)
   const bundlerURL = pathToFileURL(bundlerPath)
-  // eslint-disable-next-line import/no-dynamic-require
   const { bundle } = await import(bundlerURL)
   const { path: basePath } = await tmp.dir()
 
@@ -112,7 +110,6 @@ installPackage()
   .then(bundleFunction)
   .then(runAssertions)
   .then(cleanup)
-  // eslint-disable-next-line promise/prefer-await-to-callbacks
   .catch((error) => {
     console.error(error)
 

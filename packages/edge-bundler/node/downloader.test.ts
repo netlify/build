@@ -40,7 +40,6 @@ interface TestContext extends VitestTestContext {
 beforeEach(async (ctx: TestContext) => {
   const tmpDir = await tmp.dir()
 
-  // eslint-disable-next-line no-param-reassign
   ctx.tmpDir = tmpDir.path
 })
 
