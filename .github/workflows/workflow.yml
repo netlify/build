@@ -109,50 +109,6 @@ jobs:
           retry_on: error
           command: npx nx affected --target=test:ci --exclude=@netlify/build --parallel=3
 
-  test-edge-bundler-integration:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: [14.16.0, '*']
-        exclude:
-          - os: macOS-latest
-            node-version: 14.16.0
-          - os: windows-latest
-            node-version: 14.16.0
-      fail-fast: false
-    steps:
-      # Sets an output parameter if this is a release PR
-      - name: Check for release
-        id: release-check
-        # For windows we have to use $env:
-        run: |-
-          echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
-          echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
-        if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: nrwl/nx-set-shas@v3
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install dependencies
-        run: npm ci
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Test
-        run: npx lerna run test:integration --scope @netlify/edge-bundler
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-
   test-build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30

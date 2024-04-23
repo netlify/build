@@ -18,7 +18,7 @@
     "prepack": "npm run build",
     "test": "run-s build test:dev",
     "test:dev": "run-s test:dev:*",
-    "test:ci": "run-s test:ci:*",
+    "test:ci": "run-s test:integration test:ci:*",
     "test:dev:vitest": "vitest run",
     "test:dev:vitest:watch": "vitest watch",
     "test:dev:deno": "deno test --allow-all deno",
