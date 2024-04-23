@@ -29,7 +29,11 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "https://github.com/netlify/build",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/build"
+  },
   "bugs": {
     "url": "https://github.com/netlify/build/issues"
   },
