@@ -1,0 +1,5 @@
+export const LEGACY_PUBLIC_SPECIFIER = 'netlify:edge'
+export const PUBLIC_SPECIFIER = '@netlify/edge-functions'
+export const STAGE1_SPECIFIER = 'netlify:bootstrap-stage1'
+export const STAGE2_SPECIFIER = 'netlify:bootstrap-stage2'
+export const virtualRoot = 'file:///root/'
