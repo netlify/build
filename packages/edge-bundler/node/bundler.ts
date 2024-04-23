@@ -80,8 +80,8 @@ export const bundle = async (
   await ensureLatestTypes(deno, logger)
 
   // The name of the bundle will be the hash of its contents, which we can't
-  // compute until we run the bundle process. For now, we'll use a random ID
-  // to create the bundle artifacts and rename them later.
+  // compute until we run the bundle process.
+  // For now, we'll use a random ID to create the bundle artifacts and rename them later.
   const buildID = uuidv4()
 
   // Loading any configuration options from the deploy configuration API, if it
