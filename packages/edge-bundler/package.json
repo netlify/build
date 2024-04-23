@@ -32,7 +32,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/netlify/build.git",
-    "directory": "packages/build"
+    "directory": "packages/edge-bundler"
   },
   "bugs": {
     "url": "https://github.com/netlify/build/issues"
