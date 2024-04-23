@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.12.2](https://github.com/netlify/build/compare/config-v20.12.1...config-v20.12.2) (2024-04-23)
+
+
+### Bug Fixes
+
+* when fetching env from envelope, pass context ([#5426](https://github.com/netlify/build/issues/5426)) ([8301161](https://github.com/netlify/build/commit/8301161d88d343eb9abbca226cba397a20bc581e))
+
 ## [20.12.1](https://github.com/netlify/build/compare/config-v20.12.0...config-v20.12.1) (2024-02-20)
 
 

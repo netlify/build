@@ -89,6 +89,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno dependencies
         run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v4
         with:

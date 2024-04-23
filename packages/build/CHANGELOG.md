@@ -105,6 +105,24 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.41.0](https://github.com/netlify/build/compare/build-v29.40.0...build-v29.41.0) (2024-04-23)
+
+
+### Features
+
+* add used build plugins and their versions to exec-build span ([#5584](https://github.com/netlify/build/issues/5584)) ([0be6927](https://github.com/netlify/build/commit/0be69273b86811a39b90584aef5a259372b361c9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.1 to ^20.12.2
+    * @netlify/edge-bundler bumped from 11.4.0 to 12.0.0
+    * @netlify/opentelemetry-utils bumped from ^1.1.0 to ^1.2.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.1
+
 ## [29.40.0](https://github.com/netlify/build/compare/build-v29.39.2...build-v29.40.0) (2024-04-17)
 
 

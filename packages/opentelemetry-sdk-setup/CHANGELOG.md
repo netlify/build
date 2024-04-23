@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.0...opentelemetry-sdk-setup-v1.1.1) (2024-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.1.0 to ~1.2.0
+
 ## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.5...opentelemetry-sdk-setup-v1.1.0) (2024-03-28)
 
 

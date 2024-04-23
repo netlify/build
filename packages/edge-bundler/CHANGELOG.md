@@ -1,5 +1,86 @@
 # Changelog
 
+## [12.0.0](https://github.com/netlify/build/compare/edge-bundler-v11.4.0...edge-bundler-v12.0.0) (2024-04-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* provide import maps when starting the isolate, not server (netlify/edge-bundler#548)
+* `generateManifest` exported method now returns an object with a `manifest` property
+* support npm modules when serving (netlify/edge-bundler#475)
+
+### Features
+
+* add `ModuleGraph` type (netlify/edge-bundler[#528](https://github.com/netlify/build/issues/528)) ([078f0e1](https://github.com/netlify/build/commit/078f0e1c21331fd17f89e3c4859047ca80691ae1))
+* add `path` to manifest (netlify/edge-bundler[#455](https://github.com/netlify/build/issues/455)) ([7d3da79](https://github.com/netlify/build/commit/7d3da79591f9c3b138f1bad47921352607e360fb))
+* add `rootPath` for monorepo setups (netlify/edge-bundler[#521](https://github.com/netlify/build/issues/521)) ([79a94ae](https://github.com/netlify/build/commit/79a94ae4a88bfcd3d1e4303084bd1793e8483875))
+* add support for JSON imports (netlify/edge-bundler[#513](https://github.com/netlify/build/issues/513)) ([c1169f7](https://github.com/netlify/build/commit/c1169f7fde1e0d99d71795f16b47cdd953903cbc))
+* add support for npm modules (netlify/edge-bundler[#454](https://github.com/netlify/build/issues/454)) ([91847c7](https://github.com/netlify/build/commit/91847c7c978d9cc929a1004ab6333cda06fc8c4c))
+* allow custom `stderr` and `stdout` in server (netlify/edge-bundler[#564](https://github.com/netlify/build/issues/564)) ([b2ad700](https://github.com/netlify/build/commit/b2ad700dcfa643c5e1ae44a37f29d59984c70953))
+* allow injecting user-facing logger (netlify/edge-bundler[#493](https://github.com/netlify/build/issues/493)) ([f48bc6e](https://github.com/netlify/build/commit/f48bc6eb794947abddcf9cbe042c6771939e8227))
+* detect Typescript typings for NPM modules and reference them from barrel files (netlify/edge-bundler[#505](https://github.com/netlify/build/issues/505)) ([feb4b15](https://github.com/netlify/build/commit/feb4b153aa0e4646f35035a27587a1108a80cc2d))
+* match on http methods (netlify/edge-bundler[#458](https://github.com/netlify/build/issues/458)) ([af7bda1](https://github.com/netlify/build/commit/af7bda196d5b5b79bae923b99c0524d61666f631))
+* provide import maps when starting the isolate, not server (netlify/edge-bundler[#548](https://github.com/netlify/build/issues/548)) ([53a9366](https://github.com/netlify/build/commit/53a93663cb451964e50ce208bfeb272e1e129436))
+* ratelimit config from source (netlify/edge-bundler[#583](https://github.com/netlify/build/issues/583)) ([7a69f62](https://github.com/netlify/build/commit/7a69f62ae750bbe5f1caa5a581e5b30c66d245eb))
+* remove `URLPattern` feature flag (netlify/edge-bundler[#460](https://github.com/netlify/build/issues/460)) ([cf3da0d](https://github.com/netlify/build/commit/cf3da0d4d00d3d4aa45d9a67d2273aa7cb4f2466))
+* remove feature flag for PCRE engine (netlify/edge-bundler[#580](https://github.com/netlify/build/issues/580)) ([824d596](https://github.com/netlify/build/commit/824d596ef02061c8392f0939fdbc4d041bf1b86d))
+* remove support for `npm:` prefix (netlify/edge-bundler[#472](https://github.com/netlify/build/issues/472)) ([306af45](https://github.com/netlify/build/commit/306af4513c29e66a1642565cf469b32eddfdeb0a))
+* replace `glob-to-regexp` with `URLPattern` (netlify/edge-bundler[#392](https://github.com/netlify/build/issues/392)) ([8f18407](https://github.com/netlify/build/commit/8f184074f30fbc786ffb7a54fa2f9a68c94a6019))
+* return `features` from server (netlify/edge-bundler[#481](https://github.com/netlify/build/issues/481)) ([ec14e99](https://github.com/netlify/build/commit/ec14e995a243946236d4839d0cf69f2326565db3))
+* return declarations without function and unrouted functions (netlify/edge-bundler[#523](https://github.com/netlify/build/issues/523)) ([3bfd10e](https://github.com/netlify/build/commit/3bfd10ef66cde96342b0d84a186d0c554625de06))
+* simplify `ImportMap` (netlify/edge-bundler[#453](https://github.com/netlify/build/issues/453)) ([84acc2f](https://github.com/netlify/build/commit/84acc2f512b2f82ded64d9cccd288598146f4fa2))
+* support `@netlify/edge-functions` specifier (netlify/edge-bundler[#459](https://github.com/netlify/build/issues/459)) ([d585f3f](https://github.com/netlify/build/commit/d585f3f4e7a9443be982fb6bd1b0b042e4567685))
+* support npm modules when serving (netlify/edge-bundler[#475](https://github.com/netlify/build/issues/475)) ([b67acea](https://github.com/netlify/build/commit/b67aceae4efcad92b851963c2ed0ddfee8e18621))
+* support PCRE regexp engine (netlify/edge-bundler[#563](https://github.com/netlify/build/issues/563)) ([891f23a](https://github.com/netlify/build/commit/891f23ac5b4a115e44863a710b02c6069f2927f4))
+* trace npm modules with NFT (netlify/edge-bundler[#499](https://github.com/netlify/build/issues/499)) ([07d8d7f](https://github.com/netlify/build/commit/07d8d7fa72199f95456126def1e64a90a02e5bf6))
+* transform negative lookaheads (netlify/edge-bundler[#560](https://github.com/netlify/build/issues/560)) ([23d0b93](https://github.com/netlify/build/commit/23d0b935b7daae758ccf476b5bb029d16f297665))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to ^0.26.0 (netlify/edge-bundler[#551](https://github.com/netlify/build/issues/551)) ([b53a618](https://github.com/netlify/build/commit/b53a618e138984ddc212d52e02abc9df11b6aefe))
+* **deps:** update dependency @vercel/nft to v0.24.4 (netlify/edge-bundler[#545](https://github.com/netlify/build/issues/545)) ([10170bc](https://github.com/netlify/build/commit/10170bca618e97ffa80488c9421babebf74be7b6))
+* **deps:** update dependency @vercel/nft to v0.26.2 (netlify/edge-bundler[#559](https://github.com/netlify/build/issues/559)) ([a1ec43b](https://github.com/netlify/build/commit/a1ec43bfdf4123fa4172f205a0b545a0553131d9))
+* **deps:** update dependency @vercel/nft to v0.26.3 (netlify/edge-bundler[#572](https://github.com/netlify/build/issues/572)) ([2177b09](https://github.com/netlify/build/commit/2177b090e14334918b524a0b9166b8b03092207b))
+* **deps:** update dependency @vercel/nft to v0.26.4 (netlify/edge-bundler[#584](https://github.com/netlify/build/issues/584)) ([3dd122b](https://github.com/netlify/build/commit/3dd122be3de12fe711377892c709818d30147d19))
+* **deps:** update dependency esbuild to v0.19.10 (netlify/edge-bundler[#554](https://github.com/netlify/build/issues/554)) ([2d62aad](https://github.com/netlify/build/commit/2d62aadd7df0bb4671364b4615a59d2142934161))
+* **deps:** update dependency esbuild to v0.19.11 (netlify/edge-bundler[#556](https://github.com/netlify/build/issues/556)) ([62c50b3](https://github.com/netlify/build/commit/62c50b3265806ecf89509a6d483fa80c57ffaaa6))
+* **deps:** update dependency esbuild to v0.19.4 (netlify/edge-bundler[#487](https://github.com/netlify/build/issues/487)) ([6ef6887](https://github.com/netlify/build/commit/6ef6887bdb34be4be9dff5afbc138b303a04147f))
+* **deps:** update dependency esbuild to v0.19.5 (netlify/edge-bundler[#525](https://github.com/netlify/build/issues/525)) ([231fcf2](https://github.com/netlify/build/commit/231fcf269e944dac30f397e0ee18bcd31c9711c8))
+* **deps:** update dependency esbuild to v0.19.6 (netlify/edge-bundler[#538](https://github.com/netlify/build/issues/538)) ([5388062](https://github.com/netlify/build/commit/538806246ba7e7f8de2bb98339488429b921cc2d))
+* **deps:** update dependency esbuild to v0.19.8 (netlify/edge-bundler[#542](https://github.com/netlify/build/issues/542)) ([042925d](https://github.com/netlify/build/commit/042925d7e70d1529221e741919b99490edf2754c))
+* **deps:** update dependency esbuild to v0.19.9 (netlify/edge-bundler[#550](https://github.com/netlify/build/issues/550)) ([0268a61](https://github.com/netlify/build/commit/0268a61aef87b643aa8a765d85b1431513799761))
+* **deps:** update dependency esbuild to v0.20.0 (netlify/edge-bundler[#576](https://github.com/netlify/build/issues/576)) ([a003902](https://github.com/netlify/build/commit/a00390241bb9a43777294994f0ecd99f5bf92fa4))
+* **deps:** update dependency esbuild to v0.20.1 (netlify/edge-bundler[#586](https://github.com/netlify/build/issues/586)) ([2c792a7](https://github.com/netlify/build/commit/2c792a7cc95e845bedc3053bc221aa5729ab1565))
+* **deps:** update dependency esbuild to v0.20.2 (netlify/edge-bundler[#588](https://github.com/netlify/build/issues/588)) ([0ab15b6](https://github.com/netlify/build/commit/0ab15b6bfa07c38d751d69eac1561ce9694dc8fe))
+* **deps:** update dependency jsonc-parser to v3.2.1 (netlify/edge-bundler[#573](https://github.com/netlify/build/issues/573)) ([6785035](https://github.com/netlify/build/commit/67850358a3ac868e938e929fcae4fb306e5417bc))
+* **deps:** update dependency semver to v7.5.4 (netlify/edge-bundler[#445](https://github.com/netlify/build/issues/445)) ([e52a228](https://github.com/netlify/build/commit/e52a2289e8b62b05c1a3d6c8a6450144cfd7aeeb))
+* **deps:** update dependency semver to v7.6.0 (netlify/edge-bundler[#577](https://github.com/netlify/build/issues/577)) ([52b4f36](https://github.com/netlify/build/commit/52b4f3667f80592a65fe2de53d505722b5c0fb6e))
+* **deps:** update dependency uuid to v9.0.1 (netlify/edge-bundler[#489](https://github.com/netlify/build/issues/489)) ([2e8d39f](https://github.com/netlify/build/commit/2e8d39f7de7ab197288283ce0a85dc6b7c26b51d))
+* detect .mjs files (netlify/edge-bundler[#483](https://github.com/netlify/build/issues/483)) ([a5b8113](https://github.com/netlify/build/commit/a5b81138eafcbb1c32571483098f08d7e07d3eb2))
+* don't delete dist directory in between builds on local dev (netlify/edge-bundler[#512](https://github.com/netlify/build/issues/512)) ([7663bd5](https://github.com/netlify/build/commit/7663bd549c7c9b71577bf51d9db5db3c0a10d57d))
+* enclose regexp when using PCRE (netlify/edge-bundler[#566](https://github.com/netlify/build/issues/566)) ([2e7154f](https://github.com/netlify/build/commit/2e7154fa39863b1458307a209f3f283e47acc759))
+* ensure patterns match on whole path (netlify/edge-bundler[#442](https://github.com/netlify/build/issues/442)) ([5600df9](https://github.com/netlify/build/commit/5600df9ed5a55d15b9e4a709ca8e425fae503ea8))
+* fix `ModuleGraph` type export (netlify/edge-bundler[#537](https://github.com/netlify/build/issues/537)) ([535068a](https://github.com/netlify/build/commit/535068ad9f16fd7888117a22fd2dc4c0a501a51c))
+* give stable barrel file names (netlify/edge-bundler[#509](https://github.com/netlify/build/issues/509)) ([8e36cf5](https://github.com/netlify/build/commit/8e36cf5ece46d1816e85fdc866be0d900a5a118c))
+* hide stack trace on syntax errors (netlify/edge-bundler[#464](https://github.com/netlify/build/issues/464)) ([7288803](https://github.com/netlify/build/commit/7288803dc75ecacaf7e4d9e92f3e4d4a6ba0bec4))
+* mark invalid url patterns as user error (netlify/edge-bundler[#450](https://github.com/netlify/build/issues/450)) ([f3f6ab5](https://github.com/netlify/build/commit/f3f6ab5889fa517a11914c21799b6a6e3f29d56f))
+* mute esbuild while parsing for NPM modules (netlify/edge-bundler[#497](https://github.com/netlify/build/issues/497)) ([7c7e23e](https://github.com/netlify/build/commit/7c7e23e494e95d83b1d6f9bba25f7f2bd898714f))
+* NPM bundling should use ESM format (netlify/edge-bundler[#494](https://github.com/netlify/build/issues/494)) ([2496728](https://github.com/netlify/build/commit/2496728384b381fabf73ce4ae06c3913ea27dcd5))
+* NPM parsing shouldn't try loading Deno URL imports (netlify/edge-bundler[#496](https://github.com/netlify/build/issues/496)) ([2946613](https://github.com/netlify/build/commit/2946613f06352c71e044a2d34cb32ba1e549c8ba))
+* parse TSX files for module detection, define NODE_ENV, polyfill missing Node.js globals (netlify/edge-bundler[#519](https://github.com/netlify/build/issues/519)) ([612776e](https://github.com/netlify/build/commit/612776e41f58f63a9c2b3ae2cd03f18b87254675))
+* parseConfig stumbling over `globalThis.Netlify` usage in global scope (netlify/edge-bundler[#427](https://github.com/netlify/build/issues/427)) ([539f6d3](https://github.com/netlify/build/commit/539f6d35e7a30dfe4435a435c8fc67ec9ced5d94))
+* pin bootstrap version used in config extraction (netlify/edge-bundler[#469](https://github.com/netlify/build/issues/469)) ([21b0e96](https://github.com/netlify/build/commit/21b0e9663f71c535771dbf0b8a3cfa778f0749c2))
+* pipe log output in server (netlify/edge-bundler[#568](https://github.com/netlify/build/issues/568)) ([1e0d3ad](https://github.com/netlify/build/commit/1e0d3ad6a302c5b37cd4b67a17d0d590ef99b171))
+* prefer ESM if available (netlify/edge-bundler[#517](https://github.com/netlify/build/issues/517)) ([bd1f282](https://github.com/netlify/build/commit/bd1f282cdb97b4292b56995a3dcab7987eff4d94))
+* prevent global namespace clash for `Buffer` (netlify/edge-bundler[#535](https://github.com/netlify/build/issues/535)) ([ac18d25](https://github.com/netlify/build/commit/ac18d25dd1e7e4310ce7aad9a83b90e469e4c844))
+* relative path needs to be from directory, not from file (netlify/edge-bundler[#510](https://github.com/netlify/build/issues/510)) ([967bd67](https://github.com/netlify/build/commit/967bd67cff6d88684c6e0069275321d38ef010fe))
+* remap `netlify:edge` specifier (netlify/edge-bundler[#467](https://github.com/netlify/build/issues/467)) ([f4e2838](https://github.com/netlify/build/commit/f4e2838ca9926c25fd222b2c0c741368ac85d231))
+* remove npm_modules and fail_unsupported_regex flags (netlify/edge-bundler[#514](https://github.com/netlify/build/issues/514)) ([bbd8ce8](https://github.com/netlify/build/commit/bbd8ce81d465dd42069c0bdb4696ed81fe79c61c))
+* respect import map files containing only scopes (netlify/edge-bundler[#495](https://github.com/netlify/build/issues/495)) ([94f3b54](https://github.com/netlify/build/commit/94f3b54194109e27616df0b03103c8d2ba7a490b))
+* revert "feat: transform negative lookaheads" (netlify/edge-bundler[#561](https://github.com/netlify/build/issues/561)) ([adee482](https://github.com/netlify/build/commit/adee48293ef2dca1203b7e3385b4716c14e99838))
+* support import maps in npm module resolution (netlify/edge-bundler[#471](https://github.com/netlify/build/issues/471)) ([ad78051](https://github.com/netlify/build/commit/ad78051b3572d419e872f8db801de06180809be6))
+
 ## [11.4.0](https://github.com/netlify/edge-bundler/compare/v11.3.0...v11.4.0) (2024-03-25)
 
 
