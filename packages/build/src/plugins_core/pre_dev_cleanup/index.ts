@@ -1,9 +1,10 @@
 import { rm, stat } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 
 import { listFrameworks } from '@netlify/framework-info'
 
 import { log } from '../../log/logger.js'
+import { DEPLOY_CONFIG_BLOBS_PATH, LEGACY_BLOBS_PATH } from '../../utils/blobs.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
 
 const dirExists = async (path: string): Promise<boolean> => {
@@ -18,18 +19,27 @@ const dirExists = async (path: string): Promise<boolean> => {
 const getDirtyDirs = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC },
+  packagePath,
 }: CoreStepFunctionArgs): Promise<string[]> {
-  const dirs: string[] = []
+  const directories: string[] = []
 
   if (INTERNAL_FUNCTIONS_SRC && (await dirExists(resolve(buildDir, INTERNAL_FUNCTIONS_SRC)))) {
-    dirs.push(INTERNAL_FUNCTIONS_SRC)
+    directories.push(INTERNAL_FUNCTIONS_SRC)
   }
 
   if (INTERNAL_EDGE_FUNCTIONS_SRC && (await dirExists(resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)))) {
-    dirs.push(INTERNAL_EDGE_FUNCTIONS_SRC)
+    directories.push(INTERNAL_EDGE_FUNCTIONS_SRC)
   }
 
-  return dirs
+  if (await dirExists(resolve(buildDir, packagePath || '', LEGACY_BLOBS_PATH))) {
+    directories.push(join(packagePath || '', LEGACY_BLOBS_PATH))
+  }
+
+  if (await dirExists(resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH))) {
+    directories.push(join(packagePath || '', DEPLOY_CONFIG_BLOBS_PATH))
+  }
+
+  return directories
 }
 
 const coreStep: CoreStepFunction = async (input) => {

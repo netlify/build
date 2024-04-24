@@ -1,0 +1,3 @@
+[build]
+command = "pnpm --filter with-blobs build"
+publish = "apps/with-blobs/dist"
