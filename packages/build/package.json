@@ -78,7 +78,7 @@
     "@netlify/opentelemetry-utils": "^1.2.0",
     "@netlify/plugins-list": "^6.77.0",
     "@netlify/run-utils": "^5.1.1",
-    "@netlify/zip-it-and-ship-it": "9.31.3",
+    "@netlify/zip-it-and-ship-it": "9.32.1",
     "@sindresorhus/slugify": "^2.0.0",
     "ansi-escapes": "^6.0.0",
     "chalk": "^5.0.0",
