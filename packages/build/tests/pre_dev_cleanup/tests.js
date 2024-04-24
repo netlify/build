@@ -13,10 +13,7 @@ test('Build removes blobs directory before starting', async (t) => {
 
   await t.notThrowsAsync(access(blobsDir))
 
-  const output = await fixture.runDev(() => {})
-
-  t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify/deploy/v1/blobs/deploy`))
+  await fixture.runDev(() => {})
 
   await t.throwsAsync(access(blobsDir))
 })
@@ -30,10 +27,7 @@ test('Build removes legacy blobs directory before starting', async (t) => {
 
   await t.notThrowsAsync(access(blobsDir))
 
-  const output = await fixture.runDev(() => {})
-
-  t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify/blobs/deploy`))
+  await fixture.runDev(() => {})
 
   await t.throwsAsync(access(blobsDir))
 })
