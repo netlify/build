@@ -1,0 +1,3 @@
+[build]
+command = "pnpm --filter with-leftover-functions build"
+publish = "apps/with-leftover-functions/dist"

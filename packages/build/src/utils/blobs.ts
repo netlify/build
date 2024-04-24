@@ -3,8 +3,8 @@ import path from 'node:path'
 
 import { fdir } from 'fdir'
 
-const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
-const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
+export const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
+export const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
 
 /** Retrieve the absolute path of the deploy scoped internal blob directories */
 export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
