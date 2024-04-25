@@ -1,111 +1,152 @@
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../helpers/main.js'
-
 test('constants.CONFIG_PATH', async (t) => {
-  await runFixture(t, 'config_path')
+  const output = await new Fixture('./fixtures/config_path').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.PUBLISH_DIR default value', async (t) => {
-  await runFixture(t, 'publish_default')
+  const output = await new Fixture('./fixtures/publish_default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.PUBLISH_DIR default value with build.base', async (t) => {
-  await runFixture(t, 'publish_default_base')
+  const output = await new Fixture('./fixtures/publish_default_base').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.PUBLISH_DIR absolute path', async (t) => {
-  await runFixture(t, 'publish_absolute')
+  const output = await new Fixture('./fixtures/publish_absolute').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.PUBLISH_DIR relative path', async (t) => {
-  await runFixture(t, 'publish_relative')
+  const output = await new Fixture('./fixtures/publish_relative').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.PUBLISH_DIR missing path', async (t) => {
-  await runFixture(t, 'publish_missing')
+  const output = await new Fixture('./fixtures/publish_missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC default value', async (t) => {
-  await runFixture(t, 'functions_src_default')
+  const output = await new Fixture('./fixtures/functions_src_default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC uses legacy default functions directory if it exists', async (t) => {
-  await runFixture(t, 'functions_src_legacy')
+  const output = await new Fixture('./fixtures/functions_src_legacy').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
-  await runFixture(t, 'functions_src_default_and_legacy')
+  const output = await new Fixture('./fixtures/functions_src_default_and_legacy').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC relative path', async (t) => {
-  await runFixture(t, 'functions_src_relative')
+  const output = await new Fixture('./fixtures/functions_src_relative').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
-  await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/functions_src_dynamic_ignore')
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
-  await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/functions_src_dynamic_bundle')
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC automatic value', async (t) => {
-  await runFixture(t, 'functions_src_auto')
+  const output = await new Fixture('./fixtures/functions_src_auto').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC missing path', async (t) => {
-  await runFixture(t, 'functions_src_missing')
+  const output = await new Fixture('./fixtures/functions_src_missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_SRC created dynamically', async (t) => {
-  await runFixture(t, 'functions_src_dynamic', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/functions_src_dynamic')
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.INTERNAL_FUNCTIONS_SRC default value', async (t) => {
-  await runFixture(t, 'internal_functions_src_default')
+  const output = await new Fixture('./fixtures/internal_functions_src_default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.FUNCTIONS_DIST', async (t) => {
-  await runFixture(t, 'functions_dist')
+  const output = await new Fixture('./fixtures/functions_dist').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.CACHE_DIR local', async (t) => {
-  await runFixture(t, 'cache')
+  const output = await new Fixture('./fixtures/cache').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.CACHE_DIR CI', async (t) => {
-  await runFixture(t, 'cache', { flags: { cacheDir: '/opt/build/cache' } })
+  const output = await new Fixture('./fixtures/cache').withFlags({ cacheDir: '/opt/build/cache' }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.IS_LOCAL CI', async (t) => {
-  await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
+  const output = await new Fixture('./fixtures/is_local').withFlags({ mode: 'buildbot' }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.SITE_ID', async (t) => {
-  await runFixture(t, 'site_id', { flags: { siteId: 'test' } })
+  const output = await new Fixture('./fixtures/site_id').withFlags({ siteId: 'test' }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.IS_LOCAL local', async (t) => {
-  await runFixture(t, 'is_local')
+  const output = await new Fixture('./fixtures/is_local').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.NETLIFY_BUILD_VERSION', async (t) => {
-  await runFixture(t, 'netlify_build_version')
+  const output = await new Fixture('./fixtures/netlify_build_version').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.NETLIFY_API_TOKEN', async (t) => {
-  await runFixture(t, 'netlify_api_token', { flags: { token: 'test', testOpts: { env: false } } })
+  const output = await new Fixture('./fixtures/netlify_api_token')
+    .withFlags({
+      token: 'test',
+      testOpts: { env: true },
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.NETLIFY_API_HOST', async (t) => {
-  await runFixture(t, 'netlify_api_host', { flags: { apiHost: 'test.api.netlify.com' } })
+  const output = await new Fixture('./fixtures/netlify_api_host')
+    .withFlags({
+      apiHost: 'test.api.netlify.com',
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.NETLIFY_API_HOST default value is set to api.netlify.com', async (t) => {
-  await runFixture(t, 'netlify_api_host')
+  const output = await new Fixture('./fixtures/netlify_api_host').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.INTERNAL_EDGE_FUNCTIONS_SRC default value', async (t) => {
-  await runFixture(t, 'internal_edge_functions_src')
+  const output = await new Fixture('./fixtures/internal_edge_functions_src').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })

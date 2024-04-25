@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "start": "sirv public"
+  },
+  "devDependencies": {
+    "svelte": "^3.0.0"
+  }
+}

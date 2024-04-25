@@ -1,10 +1,10 @@
-import { parse as loadToml } from 'toml'
+import { parse as loadToml } from '@iarna/toml'
 import tomlify from 'tomlify-j0.4'
 
 // Parse from TOML to JavaScript
 export const parseToml = function (configString) {
   const config = loadToml(configString)
-  // `toml.parse()` returns a object with `null` prototype deeply, which can
+  // `toml.parse()` returns an object with `null` prototype deeply, which can
   // sometimes create problems with some utilities. We convert it.
   // TOML can return Date instances, but JSON will stringify those, and we
   // don't use Date in netlify.toml, so this should be ok.

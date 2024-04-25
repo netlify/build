@@ -1,0 +1,3 @@
+{
+  "description": "This is only here so fixtures never reach outside of this folder when finding package.json"
+}

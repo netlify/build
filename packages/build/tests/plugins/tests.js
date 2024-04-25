@@ -1,67 +1,98 @@
-import test from 'ava'
+import * as fs from 'fs/promises'
+import { platform } from 'process'
+import { fileURLToPath } from 'url'
 
-import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
+import test from 'ava'
+import tmp, { tmpName } from 'tmp-promise'
+
+import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Pass packageJson to plugins', async (t) => {
-  await runFixture(t, 'package_json_valid')
+  const output = await new Fixture('./fixtures/package_json_valid').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Pass empty packageJson to plugins if no package.json', async (t) => {
-  await runFixture(t, 'package_json_none', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/package_json_none')
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Pass empty packageJson to plugins if package.json invalid', async (t) => {
-  await runFixture(t, 'package_json_invalid')
+  const output = await new Fixture('./fixtures/package_json_invalid').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Can use pure ES modules with local plugins', async (t) => {
-  await runFixture(t, 'es_modules_local')
+  const output = await new Fixture('./fixtures/es_modules_local').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Can use pure ES modules with module plugins', async (t) => {
-  await runFixture(t, 'es_modules_module')
+  const output = await new Fixture('./fixtures/es_modules_module').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Can use CommonJS with local plugins', async (t) => {
-  await runFixture(t, 'commonjs_local')
+  const output = await new Fixture('./fixtures/commonjs_local').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Local plugins', async (t) => {
-  await runFixture(t, 'local')
+  const output = await new Fixture('./fixtures/local').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Local plugins directory', async (t) => {
-  await runFixture(t, 'local_dir')
+  const output = await new Fixture('./fixtures/local_dir').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Local plugins absolute path', async (t) => {
-  await runFixture(t, 'local_absolute')
+  const output = await new Fixture('./fixtures/local_absolute').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Local plugins invalid path', async (t) => {
-  await runFixture(t, 'local_invalid')
+  const output = await new Fixture('./fixtures/local_invalid').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Node module plugins', async (t) => {
-  await runFixture(t, 'module')
+  const output = await new Fixture('./fixtures/module').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('UI plugins', async (t) => {
-  const defaultConfig = { plugins: [{ package: 'netlify-plugin-test' }] }
-  await runFixture(t, 'ui', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/ui')
+    .withFlags({
+      defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] },
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Resolution is relative to the build directory', async (t) => {
-  await runFixture(t, 'module_base', { flags: { config: `${FIXTURES_DIR}/module_base/netlify.toml` } })
+  const output = await new Fixture('./fixtures/module_base')
+    .withFlags({
+      config: `${FIXTURES_DIR}/module_base/netlify.toml`,
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Non-existing plugins', async (t) => {
-  await runFixture(t, 'non_existing')
+  const output = await new Fixture('./fixtures/non_existing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test.skip('Do not allow overriding core plugins', async (t) => {
-  await runFixture(t, 'core_override')
+  const output = await new Fixture('./fixtures/core_override').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 const getNodePath = function (nodeVersion) {
@@ -70,131 +101,242 @@ const getNodePath = function (nodeVersion) {
 
 test('Validate --node-path unsupported version does not fail when no plugins are used', async (t) => {
   const nodePath = getNodePath('8.2.0')
-  await runFixture(t, 'empty', {
-    flags: { nodePath },
-  })
+  const output = await new Fixture('./fixtures/empty').withFlags({ nodePath }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
-  const nodePath = getNodePath('14.14.0')
-  await runFixture(t, 'engines', {
-    flags: { nodePath },
-  })
+  const systemLog = await tmp.file()
+
+  const nodePath = getNodePath('16.14.0')
+  const output = await new Fixture('./fixtures/engines')
+    .withFlags({
+      nodePath,
+      featureFlags: { build_warn_upcoming_system_version_change: true },
+      systemLogFile: systemLog.fd,
+      debug: false,
+    })
+    .runWithBuild()
+  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
+  t.true(
+    output.includes(
+      'Warning: Starting January 30, 2024 plugin "./plugin.js" will be executed with Node.js version 20.',
+    ),
+  )
+  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+  await systemLog.cleanup()
+
+  t.true(systemLogContents.includes('plugin "./plugin.js" probably not affected by node.js 20 change'))
 })
 
 test('Validate --node-path exists', async (t) => {
-  await runFixture(t, 'node_version_simple', {
-    flags: { nodePath: '/doesNotExist' },
-  })
+  const output = await new Fixture('./fixtures/node_version_simple')
+    .withFlags({ nodePath: '/doesNotExist' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Provided --node-path version is unused in buildbot for local plugin executions if older than supported version', async (t) => {
   const nodePath = getNodePath('12.19.0')
-  await runFixture(t, 'version_greater_than_minimum', {
-    flags: { nodePath, mode: 'buildbot' },
-  })
+  const output = await new Fixture('./fixtures/version_greater_than_minimum')
+    .withFlags({ nodePath, mode: 'buildbot' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('UI plugins dont use provided --node-path', async (t) => {
+  const nodePath = getNodePath('12.19.0')
+  const output = await new Fixture('./fixtures/ui_auto_install')
+    .withFlags({
+      nodePath,
+      mode: 'buildbot',
+      defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] },
+      testOpts: { skipPluginList: true },
+    })
+    .runWithBuild()
+  const systemNodeVersion = process.version
+  t.true(output.includes(`node.js version used to execute this plugin: ${systemNodeVersion}`))
 })
 
 test('Plugins can execute local binaries', async (t) => {
-  await runFixture(t, 'local_bin')
+  const output = await new Fixture('./fixtures/local_bin').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Plugin output can interleave stdout and stderr', async (t) => {
-  await runFixture(t, 'interleave')
+  const output = await new Fixture('./fixtures/interleave').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 // TODO: check output length once big outputs are actually fixed
 test.serial('Big plugin output is not truncated', async (t) => {
-  await runFixture(t, 'big', { snapshot: false })
+  await new Fixture('./fixtures/big').runWithBuild()
   t.pass()
 })
 
 test('Plugins can have inputs', async (t) => {
-  await runFixture(t, 'inputs')
+  const output = await new Fixture('./fixtures/inputs').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Trusted plugins are passed featureflags and system log', async (t) => {
+  const systemLogFile = await tmpName()
+  const output = await new Fixture('./fixtures/feature_flags')
+    .withFlags({
+      featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
+    })
+    .runWithBuild()
+
+  // windows doesn't support the `/dev/fd/` API we're relying on for system logging.
+  if (platform !== 'win32') {
+    const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
+
+    const expectedSystemLogs = 'some system-facing logs'
+    t.false(output.includes(expectedSystemLogs))
+    t.true(systemLog.includes(expectedSystemLogs))
+  }
+
+  const expectedFlags = {
+    ...DEFAULT_FEATURE_FLAGS,
+    test_flag: true,
+  }
+
+  t.true(output.includes(JSON.stringify(expectedFlags)))
+
+  const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
+    .withFlags({
+      featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
+    })
+    .runWithBuild()
+
+  t.true(outputUntrusted.includes('typeof featureflags: undefined'))
 })
 
 test('process.env changes are propagated to other plugins', async (t) => {
-  await runFixture(t, 'env_changes_plugin')
+  const output = await new Fixture('./fixtures/env_changes_plugin').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('process.env changes are propagated to onError and onEnd', async (t) => {
-  await runFixture(t, 'env_changes_on_error')
+  const output = await new Fixture('./fixtures/env_changes_on_error').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('process.env changes are propagated to build.command', async (t) => {
-  await runFixture(t, 'env_changes_command')
+  const output = await new Fixture('./fixtures/env_changes_command').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.environment changes are propagated to other plugins', async (t) => {
-  await runFixture(t, 'env_changes_build_plugin')
+  const output = await new Fixture('./fixtures/env_changes_build_plugin').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.environment changes are propagated to onError and onEnd', async (t) => {
-  await runFixture(t, 'env_changes_build_on_error')
+  const output = await new Fixture('./fixtures/env_changes_build_on_error').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.environment changes are propagated to build.command', async (t) => {
-  await runFixture(t, 'env_changes_build_command')
+  const output = await new Fixture('./fixtures/env_changes_build_command').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.environment and process.env changes can be mixed', async (t) => {
-  await runFixture(t, 'env_changes_build_mix')
+  const output = await new Fixture('./fixtures/env_changes_build_mix').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Expose some utils', async (t) => {
-  await runFixture(t, 'keys')
+  const output = await new Fixture('./fixtures/keys').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Utils are defined', async (t) => {
-  await runFixture(t, 'defined')
+  const output = await new Fixture('./fixtures/defined').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Can run utils', async (t) => {
   const functionsDir = `${FIXTURES_DIR}/functions_add/.netlify/functions-internal`
   await removeDir(functionsDir)
   try {
-    await runFixture(t, 'functions_add')
+    const output = await new Fixture('./fixtures/functions_add').runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await removeDir(functionsDir)
   }
 })
 
+test('Cache utils are caching .dot directories as well', async (t) => {
+  // cleanup cache first
+  await removeDir([`${FIXTURES_DIR}/cache_utils/dist`, `${FIXTURES_DIR}/cache_utils/.netlify`])
+  // generate cache
+  await new Fixture('./fixtures/cache_utils').runWithBuild()
+  // should have cached files in the output message
+  const output = await new Fixture('./fixtures/cache_utils').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('Can run list util', async (t) => {
-  await runFixture(t, 'functions_list')
+  const output = await new Fixture('./fixtures/functions_list').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Git utils fails if no root', async (t) => {
-  await runFixture(t, 'git_no_root', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/git_no_root')
+    .withCopyRoot({ git: false })
+    .then((fixtures) => fixtures.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Git utils does not fail if no root and not used', async (t) => {
-  await runFixture(t, 'keys', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/keys')
+    .withCopyRoot({ git: false })
+    .then((fixtures) => fixtures.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Validate plugin is an object', async (t) => {
-  await runFixture(t, 'object')
+  const output = await new Fixture('./fixtures/object').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Validate plugin event handler names', async (t) => {
-  await runFixture(t, 'handler_name')
+  const output = await new Fixture('./fixtures/handler_name').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Validate plugin event handler function', async (t) => {
-  await runFixture(t, 'handler_function')
+  const output = await new Fixture('./fixtures/handler_function').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Transpile TypeScript local plugins', async (t) => {
-  await runFixture(t, 'ts_transpile')
+  const output = await new Fixture('./fixtures/ts_transpile').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Type-checks TypeScript local plugins', async (t) => {
-  await runFixture(t, 'ts_type_check')
+  const output = await new Fixture('./fixtures/ts_type_check').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Type-checks TypeScript local plugins using tsconfig.json', async (t) => {
-  await runFixture(t, 'ts_type_check_tsconfig')
+  const output = await new Fixture('./fixtures/ts_type_check_tsconfig').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Does not transpile already transpiled local plugins', async (t) => {
-  await runFixture(t, 'ts_transpile_already')
+  const output = await new Fixture('./fixtures/ts_transpile_already').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
+  const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })

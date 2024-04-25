@@ -1,22 +1,28 @@
 {
   "name": "@netlify/config",
-  "version": "18.1.2",
+  "version": "20.12.3",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
-    "netlify-config": "src/bin/main.js"
+    "netlify-config": "./bin.js"
   },
   "files": [
-    "src/**/*.js"
+    "bin.js",
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "ava",
+    "test:dev": "ava -w",
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
   "keywords": [
     "javascript",
@@ -51,39 +57,41 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
     "dot-prop": "^7.0.0",
     "execa": "^6.0.0",
     "fast-safe-stringify": "^2.0.7",
-    "figures": "^4.0.0",
-    "filter-obj": "^3.0.0",
+    "figures": "^5.0.0",
+    "filter-obj": "^5.0.0",
     "find-up": "^6.0.0",
     "indent-string": "^5.0.0",
     "is-plain-obj": "^4.0.0",
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
-    "netlify": "^12.0.0",
-    "netlify-headers-parser": "^6.0.2",
-    "netlify-redirect-parser": "13.0.5",
+    "netlify": "^13.1.15",
+    "netlify-headers-parser": "^7.1.4",
+    "netlify-redirect-parser": "^14.2.2",
+    "node-fetch": "^3.3.1",
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
-    "path-exists": "^5.0.0",
     "path-type": "^5.0.0",
-    "toml": "^3.0.0",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^4.0.0",
-    "yargs": "^17.3.1"
+    "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@types/node": "^14.18.53",
     "ava": "^4.0.0",
-    "del": "^6.0.0",
+    "c8": "^7.12.0",
     "has-ansi": "^5.0.0",
     "is-ci": "^3.0.0",
-    "tmp-promise": "^3.0.2"
+    "tmp-promise": "^3.0.2",
+    "typescript": "^5.0.0"
   },
   "engines": {
-    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+    "node": "^14.16.0 || >=16.0.0"
   }
 }

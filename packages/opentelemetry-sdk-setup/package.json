@@ -1,0 +1,55 @@
+{
+  "name": "@netlify/opentelemetry-sdk-setup",
+  "version": "1.1.1",
+  "description": "Opentelemetry SDK setup script",
+  "type": "module",
+  "bin": {
+    "otel-sdk-setup": "./bin.js"
+  },
+  "main": "./lib/index.js",
+  "files": [
+    "bin.js",
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:logos": "vite build",
+    "test": "vitest run",
+    "test:dev": "vitest --ui",
+    "test:ci": "vitest run --reporter=default"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/opentelemetry-sdk-setup"
+  },
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
+  "author": "Netlify Inc.",
+  "peerDependencies": {
+    "@opentelemetry/api": "~1.8.0"
+  },
+  "dependencies": {
+    "@honeycombio/opentelemetry-node": "~0.7.1",
+    "@netlify/opentelemetry-utils": "~1.2.0",
+    "@opentelemetry/core": "~1.22.0",
+    "@opentelemetry/resources": "~1.22.0",
+    "@opentelemetry/semantic-conventions": "~1.22.0",
+    "yargs-parser": "^21.1.1"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "~1.8.0",
+    "@types/node": "^14.18.53",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/ui": "^0.34.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.0.4",
+    "vitest": "^0.34.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

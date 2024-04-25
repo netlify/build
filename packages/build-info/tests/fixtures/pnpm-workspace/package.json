@@ -1,0 +1,5 @@
+{
+  "name": "pnpm-workspaces",
+  "packageManager": "pnpm@6.32.18",
+  "version": "1.0.0"
+}

@@ -1,3 +1,3 @@
 import missing from './missing.js'
 
-export default () => missing()
+export const handler = () => missing()

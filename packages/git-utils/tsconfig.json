@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "lib" /* Specify an output folder for all emitted files. */,
+    "target": "ES2019" /** Needed to compile down optional chaining until we remove support for node 12 inside the plugins */
+  },
+  "include": ["src/**/*.js", "src/**/*.ts"],
+  "exclude": ["tests/**"]
+}

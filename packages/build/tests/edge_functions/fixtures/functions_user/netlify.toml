@@ -1,3 +1,6 @@
+[functions]
+deno_import_map = "netlify/edge-functions/import-map.json"
+
 [[edge_functions]]
 function = "function-1"
 path = "/one"

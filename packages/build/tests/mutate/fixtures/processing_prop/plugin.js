@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 export const onPreBuild = function ({ netlifyConfig }) {
   netlifyConfig.build.processing.css = { bundle: true, minify: true }
   netlifyConfig.build.processing.css.bundle = true
@@ -13,7 +12,6 @@ export const onPreBuild = function ({ netlifyConfig }) {
   netlifyConfig.build.processing.skip_processing = true
 }
 
-/* eslint-enable no-param-reassign */
 export const onBuild = function ({
   netlifyConfig: {
     build: { processing },

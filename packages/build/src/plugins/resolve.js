@@ -1,10 +1,14 @@
+import { join, resolve } from 'path'
+
 import { addErrorInfo } from '../error/info.js'
-import { installMissingPlugins } from '../install/missing.js'
+import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
 import { addExpectedVersions } from './expected_version.js'
 import { addPluginsNodeVersion } from './node_version.js'
 import { addPinnedVersions } from './pinned_version.js'
+
+const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
@@ -15,6 +19,7 @@ export const resolvePluginsPath = async function ({
   pluginsOptions,
   siteInfo,
   buildDir,
+  packagePath,
   nodePath,
   packageJson,
   userNodeVersion,
@@ -25,27 +30,35 @@ export const resolvePluginsPath = async function ({
   sendStatus,
   testOpts,
   featureFlags,
+  integrations,
+  context,
+  systemLog,
 }) {
-  const autoPluginsDir = getAutoPluginsDir(buildDir)
+  const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = addPluginsNodeVersion({
+  const pluginsOptionsB = await addPluginsNodeVersion({
+    featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
     logs,
+    systemLog,
   })
+
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({
     pluginsOptions: pluginsOptionsC,
     autoPluginsDir,
     packageJson,
+    packagePath,
     debug,
     logs,
     buildDir,
     testOpts,
     featureFlags,
+    systemLog,
   })
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
@@ -53,17 +66,33 @@ export const resolvePluginsPath = async function ({
     mode,
     logs,
   })
-  return pluginsOptionsE
+
+  let integrationPluginOptions = []
+
+  integrationPluginOptions = await handleIntegrations({
+    integrations,
+    autoPluginsDir,
+    mode,
+    logs,
+    buildDir,
+    context,
+    testOpts,
+  })
+
+  return [...pluginsOptionsE, ...integrationPluginOptions]
 }
 
-// Find the path to the directory used to install plugins automatically.
-// It is a subdirectory of `buildDir`, so that the plugin can require the
-// project's dependencies (peer dependencies).
-const getAutoPluginsDir = function (buildDir) {
-  return `${buildDir}/${AUTO_PLUGINS_DIR}`
+/**
+ * Find the path to the directory used to install plugins automatically.
+ * It is a subdirectory of `buildDir`, so that the plugin can require the
+ * project's dependencies (peer dependencies).
+ * @param {string} buildDir
+ * @param {string} [packagePath]
+ * @returns
+ */
+const getAutoPluginsDir = function (buildDir, packagePath) {
+  return join(buildDir, packagePath || '', AUTO_PLUGINS_DIR)
 }
-
-const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
 const resolvePluginPath = async function ({
   pluginOptions,
@@ -132,9 +161,42 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   }
 
   await installMissingPlugins({ missingPlugins, autoPluginsDir, mode, logs })
-  return await Promise.all(
-    pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
+  return Promise.all(pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })))
+}
+
+const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context, testOpts }) {
+  const toInstall = integrations.filter((integration) => integration.has_build)
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts })
+
+  if (toInstall.length === 0) {
+    return []
+  }
+
+  return Promise.all(
+    toInstall.map((integration) =>
+      resolveIntegration({
+        integration,
+        autoPluginsDir,
+        buildDir,
+        context,
+        testOpts,
+      }),
+    ),
   )
+}
+
+const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
+  if (typeof integration.dev !== 'undefined' && context === 'dev') {
+    const { path } = integration.dev
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
+
+    return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
+  }
+
+  const pluginPath = await resolvePath(`${integration.slug}-buildhooks`, autoPluginsDir)
+
+  return { pluginPath, packageName: `${integration.slug}-buildhooks`, isIntegration: true, integration }
 }
 
 // Resolve the plugins that just got automatically installed

@@ -23,6 +23,7 @@ export const getConfigOpts = function ({
   defaultConfig,
   cwd,
   repositoryRoot,
+  packagePath,
   apiHost,
   token,
   siteId,
@@ -41,6 +42,7 @@ export const getConfigOpts = function ({
     config,
     defaultConfig,
     cwd,
+    packagePath,
     repositoryRoot,
     context,
     branch,
@@ -59,7 +61,17 @@ export const getConfigOpts = function ({
 }
 
 // Retrieve configuration object
-const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath, envOpt, debug, logs, nodePath }) {
+const tLoadConfig = async function ({
+  configOpts,
+  cachedConfig,
+  cachedConfigPath,
+  envOpt,
+  debug,
+  logs,
+  nodePath,
+  quiet,
+  featureFlags,
+}) {
   const {
     configPath,
     headersPath,
@@ -73,8 +85,12 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     api,
     siteInfo,
     env,
-  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
-  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+    integrations,
+  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath, featureFlags)
+
+  if (!quiet) {
+    logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+  }
 
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])
@@ -95,6 +111,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     token: tokenA,
     api: apiA,
     siteInfo,
+    integrations,
   }
 }
 
@@ -103,8 +120,8 @@ export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
-const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
-  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
+const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath, featureFlags) {
+  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath, featureFlags })
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
@@ -117,7 +134,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // Retrieve the configuration after it's been changed.
 // This ensures any configuration changes done by plugins is validated and
 // normalized.
-// We use `debug: false` to avoid any debug logs. Otherwise every configuration
+// We use `debug: false` to avoid any debug logs. Otherwise, every configuration
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
@@ -134,12 +151,13 @@ export const resolveUpdatedConfig = async function (configOpts, configMutations)
 // If `netlify.toml` does not exist, create it inside repository root.
 // This is only done when `saveConfig` is `true`. This allows performing this
 // in the buildbot but not in local builds, since only the latter run in a
-// container and we want to avoid saving files on local machines.
+// container, and we want to avoid saving files on local machines.
 export const saveUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
+  outputConfigPath = configPath,
   headersPath,
   redirectsPath,
   logs,
@@ -156,6 +174,7 @@ export const saveUpdatedConfig = async function ({
   await updateConfig(configMutations, {
     buildDir,
     configPath,
+    outputConfigPath,
     headersPath,
     redirectsPath,
     context,

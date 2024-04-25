@@ -1,16 +1,21 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "4.1.4",
+  "version": "5.1.5",
   "description": "Utility for caching files in Netlify Build",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
+  "types": "./lib.main.d.ts",
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "test:ci": "vitest run --reporter=default"
   },
   "keywords": [
     "nodejs",
@@ -45,8 +50,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cpy": "^8.1.0",
-    "del": "^6.0.0",
+    "cpy": "^9.0.0",
     "get-stream": "^6.0.0",
     "globby": "^13.0.0",
     "junk": "^4.0.0",
@@ -56,10 +60,12 @@
     "readdirp": "^3.4.0"
   },
   "devDependencies": {
-    "ava": "^4.0.0",
-    "tmp-promise": "^3.0.0"
+    "@types/node": "^14.18.53",
+    "tmp-promise": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
   },
   "engines": {
-    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+    "node": "^14.16.0 || >=16.0.0"
   }
 }

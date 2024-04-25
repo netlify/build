@@ -18,7 +18,7 @@ ${indentString(serializeToml(exampleA), 2)}`
 
 const getInvalidValue = function (value, prevPath, formatInvalid) {
   // slice() is temporary, so it does not mutate
-  // eslint-disable-next-line fp/no-mutating-methods
+
   const invalidValue = [...prevPath].reverse().reduce(setInvalidValuePart, value)
 
   // If `formatInvalid` is supplied, we use it to format the invalid value

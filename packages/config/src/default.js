@@ -1,7 +1,7 @@
 import { addBuildSettings } from './api/build_settings.js'
 import { logDefaultConfig } from './log/main.js'
 
-// Retrieve default configuration file. It has less priority and it also does
+// Retrieve default configuration file. It has less priority, and it also does
 // not get normalized, merged with contexts, etc.
 export const parseDefaultConfig = function ({ defaultConfig, base, baseRelDir, siteInfo, logs, debug }) {
   const defaultConfigB = addDefaultConfigBase(defaultConfig, base)
@@ -25,7 +25,7 @@ const addDefaultConfigBase = function (defaultConfig, base) {
   return { ...defaultConfig, build: { ...build, base } }
 }
 
-// `baseRelDir` should default to `true` only if the option was not passed and
+// `baseRelDir` should default to `true` only if the option was not passed, and
 // it could be retrieved from the `siteInfo`, which is why the default value
 // is assigned later than other properties.
 const DEFAULT_BASE_REL_DIR = true

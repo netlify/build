@@ -8,7 +8,17 @@ import { log, logMessage, logSubHeader } from '../logger.js'
 export const logConfigMutations = function (logs, newConfigMutations, debug) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
   configMutationsToLog.forEach(({ keysString, value }) => {
-    logConfigMutation(logs, keysString, value)
+    const message = getConfigMutationLog(keysString, value)
+
+    log(logs, message)
+  })
+}
+
+export const systemLogConfigMutations = function (systemLog, configMutations) {
+  configMutations.forEach(({ keysString, value }) => {
+    const message = getConfigMutationLog(keysString, value)
+
+    systemLog(message)
   })
 }
 
@@ -22,9 +32,10 @@ const shouldLogConfigMutation = function ({ keysString }) {
 // many function files like Essential Next.js
 const HIDDEN_PROPS = ['functions']
 
-const logConfigMutation = function (logs, keysString, value) {
+const getConfigMutationLog = function (keysString, value) {
   const newValue = shouldHideConfigValue(keysString) ? '' : ` to ${inspect(value, { colors: false })}`
-  log(logs, `Netlify configuration property "${keysString}" value changed${newValue}.`)
+
+  return `Netlify configuration property "${keysString}" value changed${newValue}.`
 }
 
 const shouldHideConfigValue = function (keysString) {

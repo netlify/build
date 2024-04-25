@@ -40,6 +40,7 @@ const INTERNAL_FLAGS = [
   'sendStatus',
   'saveConfig',
   'statsd',
+  'tracing',
   'framework',
   'featureFlags',
   'buildbotServerSocket',
@@ -52,9 +53,14 @@ const INTERNAL_FLAGS = [
   'mode',
   'apiHost',
   'cacheDir',
+  'systemLogFile',
+  'timeline',
+  'explicitSecretKeys',
+  'edgeFunctionsBootstrapURL',
+  'eventHandlers',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
-const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
+const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, 'eventHandlers']
 
 export const logBuildDir = function (logs, buildDir) {
   logSubHeader(logs, 'Current directory')

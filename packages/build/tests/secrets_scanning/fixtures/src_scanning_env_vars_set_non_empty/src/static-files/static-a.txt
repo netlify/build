@@ -1,0 +1,25 @@
+val2-val2-val2val2-val2-val2
+
+
+
+
+val2-val2-val2
+
+
+
+val2-val2-val1
+
+val1-val1-val1
+
+https://example.com?token=val%2Cwith%2Ccommas  <this will be env var 3 uri encoded
+
+dmFsLHdpdGgsY29tbWFz <this will be env var 3 base64 encoded
+
+
+
+754321
+
+
+true
+
+false

@@ -15,7 +15,6 @@ export const getUtils = function ({
   constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR },
   runState,
 }) {
-  // eslint-disable-next-line fp/no-mutation
   run.command = runCommand
 
   const build = getBuildUtils(event)

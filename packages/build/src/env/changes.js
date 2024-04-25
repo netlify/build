@@ -1,6 +1,6 @@
 import { env } from 'process'
 
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 import mapObj from 'map-obj'
 
 // If plugins modify `process.env`, this is propagated in other plugins and in
@@ -13,8 +13,8 @@ export const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfi
 }
 
 const diffEnv = function (envBefore, envAfter) {
-  const envChanges = filterObj(envAfter, (name, value) => value !== envBefore[name])
-  const deletedEnv = filterObj(envBefore, (name) => envAfter[name] === undefined)
+  const envChanges = includeKeys(envAfter, (name, value) => value !== envBefore[name])
+  const deletedEnv = includeKeys(envBefore, (name) => envAfter[name] === undefined)
   const deletedEnvA = mapObj(deletedEnv, setToNull)
   return { ...envChanges, ...deletedEnvA }
 }
@@ -43,7 +43,6 @@ const setEnvChange = function (name, value, currentEnv) {
 
   if (value === null) {
     // `currentEnv` is a mutable variable
-    // eslint-disable-next-line fp/no-delete
     delete currentEnv[name]
     return
   }

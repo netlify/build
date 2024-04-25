@@ -1,10 +1,12 @@
 import { promises as fs } from 'fs'
-import { normalize } from 'path'
+import { normalize, resolve } from 'path'
 
+import { execa } from 'execa'
 import { pathExists } from 'path-exists'
 import { isFile } from 'path-type'
 
-import { logInstallMissingPlugins } from '../log/messages/install.js'
+import { logArray, logSubHeader } from '../log/logger.js'
+import { logInstallMissingPlugins, logInstallIntegrations } from '../log/messages/install.js'
 
 import { addExactDependencies } from './main.js'
 
@@ -17,8 +19,76 @@ export const installMissingPlugins = async function ({ missingPlugins, autoPlugi
   const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(logs, packages)
 
+  if (packages.length === 0) {
+    return
+  }
+
   await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+}
+
+export const installIntegrationPlugins = async function ({
+  integrations,
+  autoPluginsDir,
+  mode,
+  logs,
+  context,
+  testOpts,
+}) {
+  const integrationsToBuild = integrations.filter(
+    (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
+  )
+  if (integrationsToBuild.length) {
+    logSubHeader(logs, 'Building integrations')
+    logArray(
+      logs,
+      integrationsToBuild.map(({ slug, dev: { path } }) => `${slug} from ${path}`),
+    )
+  }
+  const packages = (
+    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts })))
+  ).filter(Boolean)
+  logInstallIntegrations(
+    logs,
+    integrations.filter((integration) =>
+      integrationsToBuild.every((compiledIntegration) => integration.slug !== compiledIntegration.slug),
+    ),
+  )
+
+  if (packages.length === 0) {
+    return
+  }
+
+  await createAutoPluginsDir(logs, autoPluginsDir)
+
+  await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+}
+
+const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {} }) {
+  if (typeof version !== 'undefined') {
+    return `${version}/packages/buildhooks.tgz`
+  }
+
+  if (typeof dev !== 'undefined' && context === 'dev') {
+    const { path } = dev
+
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    try {
+      const res = await execa('npm', ['run', 'build'], { cwd: integrationDir })
+
+      // This is horrible and hacky, but `npm run build` will
+      // return status code 0 even if it fails
+      if (!res.stdout.includes('Build complete!')) {
+        throw new Error(res.stdout)
+      }
+    } catch (e) {
+      throw new Error(`Failed to build integration`)
+    }
+
+    return undefined
+  }
+
+  return undefined
 }
 
 // We pin the version without using semver ranges ^ nor ~

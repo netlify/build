@@ -1,0 +1,50 @@
+{
+  "name": "netlify-redirect-parser",
+  "version": "14.2.2",
+  "description": "Parses netlify redirects into a js object representation",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "vitest run",
+    "test:bench": "vitest bench",
+    "test:dev": "vitest",
+    "test:ci": "vitest run --reporter=default && vitest bench --run --passWithNoTests"
+  },
+  "keywords": [
+    "netlify"
+  ],
+  "engines": {
+    "node": "^14.16.0 || >=16.0.0"
+  },
+  "author": "Netlify",
+  "license": "MIT",
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "fast-safe-stringify": "^2.1.1",
+    "filter-obj": "^5.0.0",
+    "is-plain-obj": "^4.0.0",
+    "path-exists": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.18.53",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/redirect-parser"
+  },
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
+  "homepage": "https://github.com/netlify/build#readme"
+}

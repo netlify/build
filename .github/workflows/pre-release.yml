@@ -26,9 +26,9 @@ jobs:
           package=${package_tag%/*}
           tag=${package_tag#*/}
           version=${info##*/}
-          echo "::set-output name=package::${package}"
-          echo "::set-output name=tag::${tag}"
-          echo "::set-output name=version::${version}"
+          echo "package=${package}" >> $GITHUB_OUTPUT
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
+          echo "version=${version}" >> $GITHUB_OUTPUT
       - name: Log extracted information
         run: |-
           echo package=${{ steps.extract.outputs.package }}
@@ -55,7 +55,9 @@ jobs:
       - name: Push changes
         run: git push --follow-tags
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+      - name: Build workspaces
+        run: npx lerna run build
       - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

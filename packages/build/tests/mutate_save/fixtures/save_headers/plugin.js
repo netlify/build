@@ -5,7 +5,6 @@ const fixtureHeadersPath = fileURLToPath(new URL('_headers_file', import.meta.ur
 const headersPath = fileURLToPath(new URL('_headers', import.meta.url))
 
 export const onPreBuild = function ({ netlifyConfig }) {
-  // eslint-disable-next-line no-param-reassign
   netlifyConfig.headers = [...netlifyConfig.headers, { for: '/path', values: { test: 'two' } }]
 }
 

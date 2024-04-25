@@ -1,9 +1,7 @@
 import { versions } from 'process'
 
+import { Fixture, normalizeOutput, startServer } from '@netlify/testing'
 import test from 'ava'
-
-import { runFixture } from '../helpers/main.js'
-import { startServer } from '../helpers/server.js'
 
 const TELEMETRY_PATH = '/track'
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
@@ -65,23 +63,39 @@ const runWithApiMock = async function (
     wait: waitTelemetryServer,
     status: responseStatusCode,
   })
-  const testOpts = {
-    // null disables the request timeout
-    telemetryTimeout: disableTelemetryTimeout ? null : undefined,
-    telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-    // Any telemetry errors will be logged
-    errorMonitor: true,
-    ...flags.testOps,
-  }
 
+  const { testOpts = {}, ...restFlags } = flags
   try {
-    const { exitCode } = await runFixture(t, fixture, {
-      flags: { siteId: 'test', testOpts, telemetry, bugsnagKey: BUGSNAG_TEST_KEY, ...flags },
-      env,
-      snapshot,
-      useBinary,
+    const fix = new Fixture(`./fixtures/${fixture}`).withEnv(env).withFlags({
+      siteId: 'test',
+      testOpts: {
+        // {} disables all request timeouts
+        telemetryTimeout: disableTelemetryTimeout ? {} : undefined,
+        telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
+        // Any telemetry errors will be logged
+        errorMonitor: true,
+        ...testOpts,
+      },
+      telemetry,
+      bugsnagKey: BUGSNAG_TEST_KEY,
+      ...restFlags,
     })
-    return { exitCode, telemetryRequests }
+
+    if (useBinary) {
+      const { exitCode, output } = await fix.runBuildBinary()
+
+      if (snapshot) {
+        t.snapshot(normalizeOutput(output))
+      }
+      return { exitCode, telemetryRequests }
+    }
+
+    const output = await fix.runWithBuild()
+    if (snapshot) {
+      t.snapshot(normalizeOutput(output))
+    }
+
+    return { exitCode: undefined, telemetryRequests }
   } finally {
     await stopServer()
   }
@@ -122,7 +136,7 @@ test('Telemetry reports package.json plugins success', async (t) => {
 
 test('Telemetry reports netlify.toml-only plugins success', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'plugins_cache_config', {
-    testOps: { pluginsListUrl: undefined },
+    testOpts: { pluginsListUrl: undefined },
   })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
@@ -131,7 +145,7 @@ test('Telemetry reports netlify.toml-only plugins success', async (t) => {
 test('Telemetry reports UI plugins success', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'plugins_cache_ui', {
     defaultConfig: { plugins: [{ package: 'netlify-plugin-contextual-env' }] },
-    testOps: { pluginsListUrl: undefined },
+    testOpts: { pluginsListUrl: undefined },
   })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)

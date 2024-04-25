@@ -1,0 +1,3 @@
+[[redirects]]
+  from = "/old-path"
+  to = "/new-path"

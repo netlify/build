@@ -1,0 +1,2 @@
+[build]
+publish = "apps/app-2/dist"

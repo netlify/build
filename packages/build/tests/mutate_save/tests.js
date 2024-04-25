@@ -1,12 +1,13 @@
-import { promises as fs } from 'fs'
+import { copyFile, readFile, rm } from 'fs/promises'
 import { platform } from 'process'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
-import del from 'del'
 import { pathExists } from 'path-exists'
+import tmp from 'tmp-promise'
 
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
-import { startTcpServer } from '../helpers/tcp_server.js'
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const startDeployServer = function (opts = {}) {
   const useUnixSocket = platform !== 'win32'
@@ -19,24 +20,25 @@ test('--saveConfig deletes headers file if headers were changed', async (t) => {
   const configPath = `${fixtureDir}/test_netlify.toml`
   const fixtureHeadersPath = `${fixtureDir}/_headers_file`
   const headersPath = `${fixtureDir}/_headers`
-  await Promise.all([fs.copyFile(fixtureConfigPath, configPath), fs.copyFile(fixtureHeadersPath, headersPath)])
+  await Promise.all([copyFile(fixtureConfigPath, configPath), copyFile(fixtureHeadersPath, headersPath)])
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'save_headers', {
-        flags: {
+      const output = await new Fixture('./fixtures/save_headers')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(headersPath)
+    await rm(headersPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -46,24 +48,25 @@ test('--saveConfig deletes headers file if any configuration property was change
   const configPath = `${fixtureDir}/test_netlify.toml`
   const fixtureHeadersPath = `${fixtureDir}/_headers_file`
   const headersPath = `${fixtureDir}/_headers`
-  await Promise.all([fs.copyFile(fixtureConfigPath, configPath), fs.copyFile(fixtureHeadersPath, headersPath)])
+  await Promise.all([copyFile(fixtureConfigPath, configPath), copyFile(fixtureHeadersPath, headersPath)])
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'delete_headers', {
-        flags: {
+      const output = await new Fixture('./fixtures/delete_headers')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(headersPath)
+    await rm(headersPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -72,25 +75,25 @@ test('Erroneous headers created by a build command are handled', async (t) => {
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
   const headersPath = `${fixtureDir}/_headers`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'headers_command_error', {
-        flags: {
+      const { output } = await new Fixture('./fixtures/headers_command_error')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-        useBinary: true,
-      })
+        })
+        .runBuildBinary()
+      t.true(output.includes('Warning: some headers have syntax errors'))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(headersPath)
+    await rm(headersPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -99,25 +102,25 @@ test('Erroneous headers created by a plugin are handled', async (t) => {
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
   const headersPath = `${fixtureDir}/_headers`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'headers_plugin_error', {
-        flags: {
+      const { output } = await new Fixture('./fixtures/headers_plugin_error')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-        useBinary: true,
-      })
+        })
+        .runBuildBinary()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(headersPath)
+    await rm(headersPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -127,24 +130,25 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
   const configPath = `${fixtureDir}/test_netlify.toml`
   const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
   const redirectsPath = `${fixtureDir}/_redirects`
-  await Promise.all([fs.copyFile(fixtureConfigPath, configPath), fs.copyFile(fixtureRedirectsPath, redirectsPath)])
+  await Promise.all([copyFile(fixtureConfigPath, configPath), copyFile(fixtureRedirectsPath, redirectsPath)])
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'save_redirects', {
-        flags: {
+      const output = await new Fixture('./fixtures/save_redirects')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(redirectsPath)
+    await rm(redirectsPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -154,24 +158,25 @@ test('--saveConfig deletes redirects file if any configuration property was chan
   const configPath = `${fixtureDir}/test_netlify.toml`
   const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
   const redirectsPath = `${fixtureDir}/_redirects`
-  await Promise.all([fs.copyFile(fixtureConfigPath, configPath), fs.copyFile(fixtureRedirectsPath, redirectsPath)])
+  await Promise.all([copyFile(fixtureConfigPath, configPath), copyFile(fixtureRedirectsPath, redirectsPath)])
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'delete_redirects', {
-        flags: {
+      const output = await new Fixture('./fixtures/delete_redirects')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
   } finally {
-    await del(redirectsPath)
+    await rm(redirectsPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
@@ -179,18 +184,19 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
   const fixtureDir = `${FIXTURES_DIR}/save_changes`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_changes', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_changes')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -200,24 +206,23 @@ test('--saveConfig does not truncate high amount of redirects', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/many_redirects`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer({
     async onRequest() {
-      const newConfigContents = await fs.readFile(configPath, 'utf8')
+      const newConfigContents = await readFile(configPath, 'utf8')
       t.true(newConfigContents.includes('999'))
     },
   })
   try {
-    await runFixture(t, 'many_redirects', {
-      flags: {
+    await new Fixture('./fixtures/many_redirects')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-      snapshot: false,
-    })
+      })
+      .runWithBuild()
   } finally {
     await stopServer()
   }
@@ -227,24 +232,23 @@ test('--saveConfig does not truncate high amount of headers', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/many_headers`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer({
     async onRequest() {
-      const newConfigContents = await fs.readFile(configPath, 'utf8')
+      const newConfigContents = await readFile(configPath, 'utf8')
       t.true(newConfigContents.includes('999'))
     },
   })
   try {
-    await runFixture(t, 'many_headers', {
-      flags: {
+    await new Fixture('./fixtures/many_headers')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-      snapshot: false,
-    })
+      })
+      .runWithBuild()
   } finally {
     await stopServer()
   }
@@ -254,12 +258,13 @@ test('--saveConfig is required to save the configuration changes as netlify.toml
   const fixtureDir = `${FIXTURES_DIR}/save_none`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_none', {
-      flags: { buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' },
-    })
+    const output = await new Fixture('./fixtures/save_none')
+      .withFlags({ buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -268,18 +273,21 @@ test('--saveConfig is required to save the configuration changes as netlify.toml
 test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/save_empty`
   const configPath = `${fixtureDir}/netlify.toml`
-  await del(configPath)
+
+  await rm(configPath, { force: true, recursive: true, maxRetries: 10 })
+
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_empty', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_empty')
+      .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
         context: 'production',
         branch: 'main',
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
     t.false(await pathExists(configPath))
   } finally {
     await stopServer()
@@ -290,18 +298,19 @@ test('--saveConfig gives higher priority to configuration changes than context p
   const fixtureDir = `${FIXTURES_DIR}/save_context`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await fs.copyFile(fixtureConfigPath, configPath)
+  await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_context', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_context')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -310,19 +319,48 @@ test('--saveConfig gives higher priority to configuration changes than context p
 test('--saveConfig is performed before deploy', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/save_deploy`
   const configPath = `${fixtureDir}/netlify.toml`
-  await del(configPath)
+
+  await rm(configPath, { force: true, recursive: true, maxRetries: 10 })
+
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_deploy', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_deploy')
+      .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
         context: 'production',
         branch: 'main',
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
+})
+
+test('--saveConfig writes the mutated config to the path in --outputConfigPath', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/save_changes`
+  const configPath = `${fixtureDir}/netlify.toml`
+  const configBeforeBuild = await readFile(configPath, 'utf8')
+  const tempConfig = await tmp.file()
+  const output = await new Fixture('./fixtures/save_changes')
+    .withFlags({
+      saveConfig: true,
+      outputConfigPath: tempConfig.path,
+      context: 'production',
+      branch: 'main',
+      defaultConfig: { plugins: [{ package: './plugin.js' }] },
+    })
+    .runWithBuild()
+
+  t.snapshot(normalizeOutput(output))
+
+  const configAfterBuild = await readFile(configPath, 'utf8')
+  const mutatedConfig = await readFile(tempConfig.path, 'utf8')
+
+  await tempConfig.cleanup()
+
+  t.is(configAfterBuild, configBeforeBuild)
+  t.true(mutatedConfig.includes('command = "node --version"'))
 })

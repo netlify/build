@@ -1,13 +1,12 @@
-import { OnPreBuild } from '@netlify/build'
+import type { OnPreBuild } from '@netlify/build'
 import { expectAssignable, expectError, expectType } from 'tsd'
+import type { JSONValue } from '../../lib/types/utils/json_value.js'
 
-import { JSONValue } from '../../types/utils/json_value'
-
-const testGenericInputs: OnPreBuild = function ({ inputs }) {
+export const testGenericInputs: OnPreBuild = function ({ inputs }) {
   expectAssignable<JSONValue | undefined>(inputs.testVar)
 }
 
-const testSpecificInputs: OnPreBuild<{ testVar: boolean }> = function ({ inputs }) {
+export const testSpecificInputs: OnPreBuild<{ testVar: boolean }> = function ({ inputs }) {
   expectType<boolean>(inputs.testVar)
   expectError(inputs.otherTestVar)
 }
@@ -16,7 +15,7 @@ interface InputsInterface {
   testVar: string
 }
 
-const testSpecificInputsInterface: OnPreBuild<InputsInterface> = function ({ inputs }) {
+export const testSpecificInputsInterface: OnPreBuild<InputsInterface> = function ({ inputs }) {
   expectType<string>(inputs.testVar)
   expectError(inputs.otherTestVar)
 }

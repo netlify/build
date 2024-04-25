@@ -1,9 +1,8 @@
-/* eslint-disable max-lines */
-
 import CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
+import { validations as edgeFunctionValidations } from '../edge_functions.js'
 import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
 import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
@@ -197,6 +196,14 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.deno_import_map',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { deno_import_map: 'path/to/import_map.json' } },
+    }),
+  },
+  {
     property: 'functions.*.external_node_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
@@ -253,40 +260,5 @@ export const POST_NORMALIZE_VALIDATIONS = [
       functions: { directory: 'my-functions' },
     }),
   },
-  {
-    property: 'edge_functions.*',
-    ...validProperties(['path', 'function'], []),
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (edgeFunction) => edgeFunction.path !== undefined,
-    message: '"path" property is required.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (edgeFunction) => edgeFunction.function !== undefined,
-    message: '"function" property is required.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    check: isString,
-    message: 'must be a string.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.function',
-    check: isString,
-    message: 'must be a string.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    check: (pathName) => pathName.startsWith('/'),
-    message: 'must be a valid path.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
+  ...edgeFunctionValidations,
 ]
-/* eslint-enable max-lines */

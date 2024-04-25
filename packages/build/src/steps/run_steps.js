@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import pReduce from 'p-reduce'
 
 import { addErrorInfo } from '../error/info.js'
@@ -16,9 +15,11 @@ export const runSteps = async function ({
   buildbotServerSocket,
   events,
   configPath,
+  outputConfigPath,
   headersPath,
   redirectsPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   childEnv,
@@ -34,11 +35,16 @@ export const runSteps = async function ({
   configOpts,
   logs,
   debug,
+  systemLog,
   verbose,
   saveConfig,
   timers,
   testOpts,
   featureFlags,
+  quiet,
+  userNodeVersion,
+  explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const {
     index: stepsCount,
@@ -48,6 +54,7 @@ export const runSteps = async function ({
     failedPlugins: failedPluginsA,
     timers: timersC,
     configMutations: configMutationsB,
+    metrics: metricsC,
   } = await pReduce(
     steps,
     async (
@@ -62,6 +69,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathA,
         statuses,
         timers: timersA,
+        metrics: metricsA,
       },
       {
         event,
@@ -75,6 +83,7 @@ export const runSteps = async function ({
         loadedFrom,
         origin,
         condition,
+        quiet: coreStepQuiet,
       },
     ) => {
       const {
@@ -88,6 +97,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB = redirectsPathA,
         newStatus,
         timers: timersB = timersA,
+        metrics: metricsB = [],
       } = await runStep({
         event,
         childProcess,
@@ -96,12 +106,15 @@ export const runSteps = async function ({
         coreStepId,
         coreStepName,
         coreStepDescription,
+        coreStepQuiet,
         pluginPackageJson,
         loadedFrom,
         origin,
         condition,
         configPath,
+        outputConfigPath,
         buildDir,
+        packagePath,
         repositoryRoot,
         nodePath,
         index,
@@ -127,12 +140,18 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathA,
         logs,
         debug,
+        systemLog,
         verbose,
         saveConfig,
         timers: timersA,
         testOpts,
         featureFlags,
+        quiet,
+        userNodeVersion,
+        explicitSecretKeys,
+        edgeFunctionsBootstrapURL,
       })
+
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
       return {
         index: newIndex,
@@ -145,6 +164,7 @@ export const runSteps = async function ({
         redirectsPath: redirectsPathB,
         statuses: statusesA,
         timers: timersB,
+        metrics: [...metricsA, ...metricsB],
       }
     },
     {
@@ -157,6 +177,7 @@ export const runSteps = async function ({
       redirectsPath,
       statuses: [],
       timers,
+      metrics: [],
     },
   )
 
@@ -174,6 +195,6 @@ export const runSteps = async function ({
     failedPlugins: failedPluginsA,
     timers: timersC,
     configMutations: configMutationsB,
+    metrics: metricsC,
   }
 }
-/* eslint-enable max-lines */

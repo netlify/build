@@ -1,0 +1,4 @@
+[[edge_functions]]
+cache = "manual"
+function = "function1"
+path = "/function1"

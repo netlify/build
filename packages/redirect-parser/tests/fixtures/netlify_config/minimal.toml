@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/here"
+  to = "/there"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+  query = {path = ":path"}
+  conditions = {Language = ["en"], Country = ["US"], Role = ["admin"]}
+  signed = "API_SIGNATURE_TOKEN"

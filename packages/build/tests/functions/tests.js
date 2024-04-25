@@ -1,60 +1,123 @@
-import { promises as fs } from 'fs'
+import { readdir, rm, stat, writeFile } from 'fs/promises'
+import { sep } from 'path'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
 import test from 'ava'
-import del from 'del'
 import { pathExists } from 'path-exists'
 
-import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
-import { getTempName } from '../helpers/temp.js'
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Functions: missing source directory', async (t) => {
-  await runFixture(t, 'missing')
+  const output = await new Fixture('./fixtures/missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: must not be a regular file', async (t) => {
-  await runFixture(t, 'regular_file')
+  const output = await new Fixture('./fixtures/regular_file').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: can be a symbolic link', async (t) => {
-  await runFixture(t, 'symlink')
+  const output = await new Fixture('./fixtures/symlink').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: default directory', async (t) => {
-  await runFixture(t, 'default')
+  const output = await new Fixture('./fixtures/default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: simple setup', async (t) => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-  await runFixture(t, 'simple')
+  const output = await new Fixture('./fixtures/simple').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: no functions', async (t) => {
-  await runFixture(t, 'none')
+  const output = await new Fixture('./fixtures/none').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: invalid package.json', async (t) => {
-  const fixtureName = 'functions_package_json_invalid'
-  const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
+  const packageJsonPath = `${FIXTURES_DIR}/functions_package_json_invalid/package.json`
   // We need to create that file during tests. Otherwise, ESLint fails when
   // detecting an invalid *.json file.
-  await fs.writeFile(packageJsonPath, '{{}')
+  await writeFile(packageJsonPath, '{{}')
   try {
-    await runFixture(t, fixtureName)
+    const output = await new Fixture('./fixtures/functions_package_json_invalid').runWithBuild()
+    // This shape of this error can change with different Node.js versions.
+    t.true(output.includes('in JSON at position 1'))
   } finally {
-    await del(packageJsonPath)
+    await rm(packageJsonPath, { force: true, recursive: true, maxRetries: 10 })
   }
 })
 
 test('Functions: --functionsDistDir', async (t) => {
   const functionsDistDir = await getTempName()
   try {
-    await runFixture(t, 'simple', { flags: { mode: 'buildbot', functionsDistDir } })
+    const output = await new Fixture('./fixtures/simple')
+      .withFlags({ mode: 'buildbot', functionsDistDir })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
     t.true(await pathExists(functionsDistDir))
-    const files = await fs.readdir(functionsDistDir)
+    const files = await readdir(functionsDistDir)
     // We're expecting two files: the function ZIP and the manifest.
     t.is(files.length, 2)
   } finally {
     await removeDir(functionsDistDir)
   }
+})
+
+test('Functions: custom path on scheduled function', async (t) => {
+  const output = await new Fixture('./fixtures/custom_path_scheduled').runWithBuild()
+  t.true(output.includes('Scheduled functions must not specify a custom path.'))
+})
+
+test('Functions: custom path on event-triggered function', async (t) => {
+  const output = await new Fixture('./fixtures/custom_path_event_triggered').runWithBuild()
+  t.true(output.includes('Event-triggered functions must not specify a custom path.'))
+})
+
+test('Functions: internal functions are cleared on the dev timeline', async (t) => {
+  const fixture = await new Fixture('./fixtures/functions_leftover')
+    .withFlags({ debug: false, timeline: 'dev' })
+    .withCopyRoot()
+
+  // Before starting Netlify Build, the leftover files should exist and the
+  // generated files should not.
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`)
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
+
+  const output = await fixture.runDev(() => {})
+
+  // After running Netlify Build, the leftover files should have been removed
+  // but the generated files should have been preserved.
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`), { code: 'ENOENT' })
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`)
+
+  t.true(output.includes('Cleaning up leftover files from previous builds'))
+  t.true(output.includes(`Cleaned up .netlify${sep}functions-internal, .netlify${sep}edge-functions`))
+})
+
+test('Functions: cleanup is only triggered when there are internal functions', async (t) => {
+  const fixture = await new Fixture('./fixtures/internal_functions')
+    .withFlags({ debug: false, timeline: 'dev' })
+    .withCopyRoot()
+
+  await rm(`${fixture.repositoryRoot}/.netlify/functions-internal/`, { force: true, recursive: true })
+  await rm(`${fixture.repositoryRoot}/.netlify/edge-functions/`, { force: true, recursive: true })
+
+  const output = await fixture.runDev(() => {})
+  t.false(output.includes('Cleaning up leftover files from previous builds'))
 })

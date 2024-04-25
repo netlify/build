@@ -1,0 +1,6 @@
+{
+  "name": "with-blobs",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

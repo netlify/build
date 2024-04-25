@@ -74,5 +74,7 @@ const MUTABLE_PROPS = {
   'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
   'functions.*.*': { lastEvent: 'onBuild' },
   headers: { lastEvent: 'onPostBuild' },
+  images: { lastEvent: 'onPostBuild' },
+  'images.remote_images': { lastEvent: 'onPostBuild' },
   redirects: { lastEvent: 'onPostBuild' },
 }

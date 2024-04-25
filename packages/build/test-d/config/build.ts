@@ -1,7 +1,7 @@
-import { OnPreBuild } from '@netlify/build'
+import type { OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
 
-const testNetlifyConfigBuild: OnPreBuild = function ({ netlifyConfig: { build } }) {
+export const testNetlifyConfigBuild: OnPreBuild = function ({ netlifyConfig: { build } }) {
   expectType<string | undefined>(build.command)
   expectType<string>(build.publish)
   expectType<string>(build.base)
@@ -11,7 +11,7 @@ const testNetlifyConfigBuild: OnPreBuild = function ({ netlifyConfig: { build } 
   expectType<string | undefined>(build.environment.TEST_VAR)
 }
 
-const testNetlifyConfigBuildProcessing: OnPreBuild = function ({
+export const testNetlifyConfigBuildProcessing: OnPreBuild = function ({
   netlifyConfig: {
     build: { processing },
   },

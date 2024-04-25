@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'fs'
 import process from 'process'
 
-import filterObj from 'filter-obj'
+import { includeKeys } from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { normalizeCliFeatureFlags } from './feature_flags.js'
 import { FLAGS } from './flags.js'
-import build from './main.js'
+import { buildSite } from './main.js'
 import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
+
+const packJson = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
@@ -18,12 +21,12 @@ import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 // sense only in CLI, such as CLI flags parsing and exit code.
 const runCli = async function () {
   const flags = parseFlags()
-  const flagsA = filterObj(flags, isUserFlag)
+  const flagsA = includeKeys(flags, isUserFlag)
 
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
 
-  const { severityCode, logs } = await build(flagsA)
+  const { severityCode, logs } = await buildSite(flagsA)
   printLogs(logs)
   process.exitCode = severityCode
 
@@ -34,6 +37,7 @@ const parseFlags = function () {
   const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
     .options(FLAGS)
     .usage(USAGE)
+    .version(packJson.version)
     .parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   return { ...flags, featureFlags }

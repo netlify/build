@@ -20,7 +20,6 @@ export const setProp = function (parent, keys, value) {
 const setArrayProp = function (parent, [index, ...keys], value) {
   const arrayParent = Array.isArray(parent) ? parent : []
   const missingItems = index - arrayParent.length + 1
-  // eslint-disable-next-line unicorn/no-new-array
   const normalizedParent = missingItems > 0 ? [...arrayParent, ...new Array(missingItems)] : arrayParent
   const newValue = setProp(normalizedParent[index], keys, value)
   return [...normalizedParent.slice(0, index), newValue, ...normalizedParent.slice(index + 1)]

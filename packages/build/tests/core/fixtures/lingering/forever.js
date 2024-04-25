@@ -1,2 +1,4 @@
-// eslint-disable-next-line fp/no-loops, no-empty
-while (true) {}
+// eslint-disable-next-line no-constant-condition
+while (true) {
+  // intentional endless loop
+}

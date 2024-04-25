@@ -2,7 +2,7 @@ import isPlainObj from 'is-plain-obj'
 
 import { isDefined } from './utils/remove_falsy.js'
 
-export const bundlers = ['esbuild', 'nft', 'zisi']
+export const bundlers = ['esbuild', 'nft', 'zisi', 'none']
 export const WILDCARD_ALL = '*'
 
 // Removing the legacy `functions` from the `build` block.
@@ -48,6 +48,7 @@ const isConfigLeaf = (functionConfig) =>
 const isConfigProperty = (propName) => FUNCTION_CONFIG_PROPERTIES.has(propName)
 
 export const FUNCTION_CONFIG_PROPERTIES = new Set([
+  'deno_import_map',
   'directory',
   'external_node_modules',
   'ignored_node_modules',

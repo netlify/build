@@ -1,0 +1,2 @@
+# this contains fixtures like an nx workspace that would infer with the root one.
+packages/build-info/tests

@@ -1,174 +1,241 @@
 import { promises as fs } from 'fs'
 import { relative } from 'path'
 import { cwd } from 'process'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import { tmpName } from 'tmp-promise'
 
-import { resolveConfig } from '../../src/main.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { resolveConfig } from '../../lib/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Empty configuration', async (t) => {
-  await runFixture(t, 'empty')
+  const output = await new Fixture('./fixtures/empty').runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('No --config but none found', async (t) => {
-  await runFixture(t, 'none', { copyRoot: {} })
+  const output = await new Fixture('./fixtures/none').withCopyRoot().then((fixture) => fixture.runWithConfig())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--config with an absolute path', async (t) => {
-  await runFixture(t, '', { flags: { config: `${FIXTURES_DIR}/empty/netlify.toml` } })
+  const output = await new Fixture().withFlags({ config: `${FIXTURES_DIR}/empty/netlify.toml` }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--config with a relative path', async (t) => {
-  await runFixture(t, '', { flags: { config: `${relative(cwd(), FIXTURES_DIR)}/empty/netlify.toml` } })
+  const output = await new Fixture()
+    .withFlags({ config: `${relative(cwd(), FIXTURES_DIR)}/empty/netlify.toml` })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--config with an invalid relative path', async (t) => {
-  await runFixture(t, '', { flags: { config: '/invalid' } })
+  const output = await new Fixture().withFlags({ config: '/invalid' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig CLI flag', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { publish: 'publish' } })
-  await runFixture(t, 'default_merge', { flags: { defaultConfig }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/default_merge')
+    .withFlags({ defaultConfig: JSON.stringify({ build: { publish: 'publish' } }) })
+    .runConfigBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig merge', async (t) => {
-  const defaultConfig = { build: { publish: 'publish' } }
-  await runFixture(t, 'default_merge', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/default_merge')
+    .withFlags({ defaultConfig: { build: { publish: 'publish' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig priority', async (t) => {
-  const defaultConfig = { build: { command: 'echo commandDefault' } }
-  await runFixture(t, 'default_priority', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({ defaultConfig: { build: { command: 'echo commandDefault' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig merges UI plugins with config plugins', async (t) => {
-  const defaultConfig = { plugins: [{ package: 'one', inputs: { test: false, testThree: true } }] }
-  await runFixture(t, 'plugins_merge', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/plugins_merge')
+    .withFlags({ defaultConfig: { plugins: [{ package: 'one', inputs: { test: false, testThree: true } }] } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig can specify pinned versions', async (t) => {
-  await runFixture(t, 'empty', { flags: { defaultConfig: { plugins: [{ package: 'one', pinned_version: '1' }] } } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ defaultConfig: { plugins: [{ package: 'one', pinned_version: '1' }] } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig ignores pinned versions that are empty strings', async (t) => {
-  await runFixture(t, 'empty', { flags: { defaultConfig: { plugins: [{ package: 'one', pinned_version: '' }] } } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ defaultConfig: { plugins: [{ package: 'one', pinned_version: '' }] } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig CLI flag', async (t) => {
-  const inlineConfig = JSON.stringify({ build: { publish: 'publish' } })
-  await runFixture(t, 'default_merge', { flags: { inlineConfig }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/default_merge')
+    .withFlags({ inlineConfig: JSON.stringify({ build: { publish: 'publish' } }) })
+    .runConfigBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig is merged', async (t) => {
-  const inlineConfig = { build: { publish: 'publish' } }
-  await runFixture(t, 'default_merge', { flags: { inlineConfig } })
+  const output = await new Fixture('./fixtures/default_merge')
+    .withFlags({ inlineConfig: { build: { publish: 'publish' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig is merged with priority', async (t) => {
-  const inlineConfig = { build: { command: 'echo commandInline' } }
-  await runFixture(t, 'default_priority', { flags: { inlineConfig } })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({ inlineConfig: { build: { command: 'echo commandInline' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig falsy values are ignored', async (t) => {
-  const inlineConfig = { build: { command: undefined, publish: undefined } }
-  await runFixture(t, 'default_priority', { flags: { inlineConfig } })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({ inlineConfig: { build: { command: undefined, publish: undefined } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig can override the "base"', async (t) => {
-  const defaultConfig = { build: { base: 'defaultBase' } }
-  const inlineConfig = { build: { base: 'base' } }
-  await runFixture(t, 'merge_base', { flags: { defaultConfig, inlineConfig } })
+  const output = await new Fixture('./fixtures/merge_base')
+    .withFlags({
+      defaultConfig: { build: { base: 'defaultBase' } },
+      inlineConfig: { build: { base: 'base' } },
+    })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig cannot use contexts', async (t) => {
-  const inlineConfig = { context: { testContext: { build: { command: 'echo commandPriority' } } } }
-  await runFixture(t, 'default_priority', { flags: { context: 'testContext', inlineConfig } })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({
+      context: 'testContext',
+      inlineConfig: { context: { testContext: { build: { command: 'echo commandPriority' } } } },
+    })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--inlineConfig cannot be overridden by contexts', async (t) => {
-  const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
-  const inlineConfig = { build: { command: 'echo commandPriority' } }
-  await runFixture(t, 'default_priority', { flags: { context: 'testContext', defaultConfig, inlineConfig } })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({
+      context: 'testContext',
+      defaultConfig: { context: { testContext: { build: { command: 'echo commandDefault' } } } },
+      inlineConfig: { build: { command: 'echo commandPriority' } },
+    })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--configMutations can override properties', async (t) => {
-  await runFixture(t, 'default_priority', {
-    flags: { configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onPreBuild' }] },
-  })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({ configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onPreBuild' }] })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--configMutations cannot be overridden by contexts', async (t) => {
   const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
-  await runFixture(t, 'default_priority', {
-    flags: {
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({
       defaultConfig,
       configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onPreBuild' }],
-    },
-  })
+    })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--configMutations events are validated', async (t) => {
-  await runFixture(t, 'default_priority', {
-    flags: { configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onBuild' }] },
-  })
+  const output = await new Fixture('./fixtures/default_priority')
+    .withFlags({ configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onBuild' }] })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--configMutations cannot be applied on readonly properties', async (t) => {
-  await runFixture(t, 'empty', {
-    flags: { configMutations: [{ keys: ['build', 'base'], value: 'testMutation', event: 'onPreBuild' }] },
-  })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ configMutations: [{ keys: ['build', 'base'], value: 'testMutation', event: 'onPreBuild' }] })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--configMutations can mutate functions top-level properties', async (t) => {
-  await runFixture(t, 'empty', {
-    flags: { configMutations: [{ keys: ['functions', 'directory'], value: 'testMutation', event: 'onPreBuild' }] },
-  })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ configMutations: [{ keys: ['functions', 'directory'], value: 'testMutation', event: 'onPreBuild' }] })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfig CLI flags', async (t) => {
-  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
-  await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue }, useBinary: true })
+  const returnValue = await new Fixture('./fixtures/cached_config').runWithConfig()
+  const { output } = await new Fixture('./fixtures/default_merge')
+    .withFlags({ cachedConfig: returnValue })
+    .runConfigBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfigPath CLI flag', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
-    await runFixture(t, 'cached_config', { flags: { output: cachedConfigPath }, snapshot: false, useBinary: true })
-    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' }, useBinary: true })
+    await new Fixture('./fixtures/cached_config').withFlags({ output: cachedConfigPath }).runConfigBinary()
+    await new Fixture('./fixtures/cached_config').withFlags({ cachedConfigPath, context: 'test' }).runConfigBinary()
+    t.pass()
   } finally {
     await fs.unlink(cachedConfigPath)
   }
 })
 
 test('--cachedConfig', async (t) => {
-  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
-  const cachedConfig = JSON.parse(returnValue)
-  await runFixture(t, 'cached_config', { flags: { cachedConfig } })
+  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
+  const output = await new Fixture('./fixtures/cached_config').withFlags({ cachedConfig }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfigPath', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
-    const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
+    const returnValue = await new Fixture('./fixtures/cached_config').runWithConfig()
     await fs.writeFile(cachedConfigPath, returnValue)
-    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' } })
+
+    const output = await new Fixture('./fixtures/cached_config')
+      .withFlags({ cachedConfigPath, context: 'test' })
+      .runWithConfig()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await fs.unlink(cachedConfigPath)
   }
 })
 
 test('--cachedConfig with a token', async (t) => {
-  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
-  const cachedConfig = JSON.parse(returnValue)
-  await runFixture(t, 'cached_config', { flags: { cachedConfig, token: 'test' } })
+  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
+
+  const output = await new Fixture('./fixtures/cached_config')
+    .withFlags({ cachedConfig, token: 'test' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfig with a siteId', async (t) => {
-  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false, flags: { siteId: 'test' } })
-  const cachedConfig = JSON.parse(returnValue)
-  await runFixture(t, 'cached_config', { flags: { cachedConfig, siteId: 'test' } })
+  const cachedConfig = await new Fixture('./fixtures/cached_config')
+    .withFlags({ siteId: 'test' })
+    .runWithConfigAsObject()
+
+  const output = await new Fixture('./fixtures/cached_config')
+    .withFlags({ cachedConfig, siteId: 'test' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Programmatic', async (t) => {
@@ -182,13 +249,22 @@ test('Programmatic no options', async (t) => {
 })
 
 test('featureFlags can be used programmatically', async (t) => {
-  await runFixture(t, 'empty', { flags: { featureFlags: { test: true, testTwo: false } } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ featureFlags: { test: true, testTwo: false } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('featureFlags can be used in the CLI', async (t) => {
-  await runFixture(t, 'empty', { flags: { featureFlags: { test: true, testTwo: false } }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ featureFlags: { test: true, testTwo: false } })
+    .runConfigBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('featureFlags can be not used', async (t) => {
-  await runFixture(t, 'empty', { flags: { featureFlags: undefined, debug: true } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ featureFlags: undefined, debug: true })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })

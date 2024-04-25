@@ -14,16 +14,25 @@ export const loadPlugins = async function ({
   logs,
   debug,
   verbose,
+  netlifyConfig,
 }) {
   return pluginsOptions.length === 0
     ? { pluginsSteps: [], timers }
-    : await loadAllPlugins({ pluginsOptions, childProcesses, packageJson, timers, logs, debug, verbose })
+    : await loadAllPlugins({ pluginsOptions, childProcesses, packageJson, timers, logs, debug, verbose, netlifyConfig })
 }
 
-const tLoadAllPlugins = async function ({ pluginsOptions, childProcesses, packageJson, logs, debug, verbose }) {
+const tLoadAllPlugins = async function ({
+  pluginsOptions,
+  childProcesses,
+  packageJson,
+  logs,
+  debug,
+  verbose,
+  netlifyConfig,
+}) {
   const pluginsSteps = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, { childProcesses, index, packageJson, logs, debug, verbose }),
+      loadPlugin(pluginOptions, { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig }),
     ),
   )
   const pluginsStepsA = pluginsSteps.flat()
@@ -37,7 +46,7 @@ const loadAllPlugins = measureDuration(tLoadAllPlugins, 'load_plugins')
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
   { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
-  { childProcesses, index, packageJson, logs, debug, verbose },
+  { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
@@ -46,7 +55,7 @@ const loadPlugin = async function (
     const { events } = await callChild({
       childProcess,
       eventName: 'load',
-      payload: { pluginPath, inputs, packageJson, verbose },
+      payload: { pluginPath, inputs, packageJson, verbose, netlifyConfig },
       logs,
       verbose: false,
     })

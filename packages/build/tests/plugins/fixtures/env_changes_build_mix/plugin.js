@@ -5,10 +5,9 @@ export const onPreBuild = function ({
     build: { environment },
   },
 }) {
-  // eslint-disable-next-line no-param-reassign
   environment.TEST_ONE = 'one_environment'
   env.TEST_ONE = 'one_env'
-  // eslint-disable-next-line no-param-reassign
+
   environment.TEST_TWO = 'two'
   env.LANGUAGE = ''
 }

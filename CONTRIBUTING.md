@@ -53,8 +53,32 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 ### Testing in CI
 
-To speed up CI, we load balance the tests across multiple machines. The information required to load balance the tests is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10).
-To regenerate the data (e.g. when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
+To speed up CI, we load balance the tests across multiple machines. The information required to load balance the tests
+is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10). To regenerate the data (e.g.
+when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
+
+### Testing locally
+
+The `@netlify/testing` package will need to be built regardless of which package you are working on. In order to do this
+run the following from the root directory:
+
+```
+npm run build -- --scope=@netlify/testing
+```
+
+If you wish to build all of the projects for whatever reason, the command is `npm run build`.
+
+From there, you can run tests for a particular package by running:
+
+```
+npm run test -- --scope=<name of package as it appears in 'name' field in package.json>
+```
+
+For example, if you wished to run tests for the `build` package:
+
+```
+npm run test -- --scope=@netlify/build
+```
 
 ## Releasing
 
@@ -91,30 +115,27 @@ updating `@netlify/build` and let Renovate bundle those two changes together whe
 
 ### Buildbot
 
-When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a release PR in the
-buildbot after a short while.
+When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a **release PR** in
+Buildbot after a short while.
 
 Unless the release does not contain any production code changes, that PR should be directly tested and merged by the
 person who made the `@netlify/build` or `@netlify/config` release.
 
-Once the Jenkins build has passed and finished building, the PR can be tested in production by updating the
-`Site.build_image` property of any test Site. This can be done with the following
-[Netlify CLI commands](https://github.com/netlify/buildbot#using-netlify-cli-or-netlify-api):
-
-```bash
-netlify api updateSite --data='{ "site_id": "{{siteId}}", "body": { "build_image": "{{buildImage}}" }}'
-```
-
-The `{{buildImage}}` can be the buildbot commit hash or `git` branch name.
+In order to test that particular PR before releasing it, refer to Buildbot's
+[README.md](https://github.com/netlify/buildbot/#testing-builds-on-a-live-test-site)
 
 _Note:_ Once the `release-please` GitHub action has completed on main (not on the release-please PR,
 [example](https://github.com/netlify/build/actions/runs/1254006395)), you can tick the last checkbox on
 [the `buildbot` Dependency Dashboard](https://github.com/netlify/buildbot/issues/912) to force-generate a `buildbot`
 release PR.
 
-## Beta release
+## Test pre-release
 
-To test a prerelease of `@netlify/<package>` in a site:
+To test a prerelease of `@netlify/<package>` in a site you have 2 options. Creating a Beta release or using remlink.
+
+This is especially useful to test how an ongoing PR in `@netlify/<package>` would behave in production.
+
+### Create a Beta release
 
 - Create a branch named `releases/<package>/<tag>/<version>` with the package and version you'd like to release. For
   example, a branch named `releases/cache-utils/rc/2.0.0` will create the version `v2.0.0-rc` and publish it under the
@@ -123,4 +144,14 @@ To test a prerelease of `@netlify/<package>` in a site:
 - Make a PR in the buildbot to use this version
 - Update the `build_image` of a site to use this PR
 
-This is especially useful to test how an ongoing PR in `@netlify/<package>` would behave in production.
+### Use remlink
+
+Remlink allows you to link to a particular on-going branch in this repo and create a Buildbot release you can use for
+testing. Refer to [`remlink`'s docs for more info](https://github.com/netlify/remlink)
+
+- Create a [PR in Buildbot](https://github.com/netlify/buildbot/pull/2778/files) with a `remlink.config.json` your
+  desired setup. Refer to the
+  [example config](https://github.com/netlify/buildbot/blob/main/remlink.config.json.example) in main for a base
+  structure you can use.
+- Refer to the test notes for a particular PR in order to create builds using said Buildbot version. Note that whenever
+  you make changes to your `@netlify/<package>` branch you need to trigger a new Buildbot build.

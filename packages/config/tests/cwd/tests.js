@@ -1,58 +1,82 @@
 import { relative } from 'path'
 import { cwd } from 'process'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('--cwd with no config', async (t) => {
-  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty`, defaultConfig: { build: { publish: '/' } } } })
+  const output = await new Fixture()
+    .withFlags({ cwd: `${FIXTURES_DIR}/empty`, defaultConfig: { build: { publish: '/' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cwd with a relative path config', async (t) => {
-  await runFixture(t, '', {
-    flags: { cwd: relative(cwd(), FIXTURES_DIR), config: 'relative_cwd/netlify.toml' },
-  })
+  const output = await new Fixture()
+    .withFlags({ cwd: relative(cwd(), FIXTURES_DIR), config: 'relative_cwd/netlify.toml' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.base current directory', async (t) => {
-  await runFixture(t, 'build_base_cwd')
+  const output = await new Fixture('./fixtures/build_base_cwd').runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('build.base override', async (t) => {
-  await runFixture(t, 'build_base_override', { flags: { cwd: `${FIXTURES_DIR}/build_base_override/subdir` } })
+  const output = await new Fixture('./fixtures/build_base_override')
+    .withFlags({ cwd: `${FIXTURES_DIR}/build_base_override/subdir` })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--repository-root', async (t) => {
-  await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
+  const output = await new Fixture().withFlags({ repositoryRoot: `${FIXTURES_DIR}/empty` }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--repository-root with cwd', async (t) => {
-  await runFixture(t, '', { flags: { repositoryRoot: 'empty' }, cwd: FIXTURES_DIR, useBinary: true })
+  const { output } = await new Fixture().withFlags({ repositoryRoot: 'empty' }).runConfigBinary(FIXTURES_DIR)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('No .git', async (t) => {
-  await runFixture(t, 'empty', { copyRoot: { cwd: true, git: false } })
+  const output = await new Fixture('./fixtures/empty')
+    .withCopyRoot({ git: false, cwd: true })
+    .then((fixture) => fixture.runWithConfig())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cwd non-existing', async (t) => {
-  await runFixture(t, '', { flags: { cwd: '/invalid', repositoryRoot: `${FIXTURES_DIR}/empty` } })
+  const output = await new Fixture()
+    .withFlags({ cwd: '/invalid', repositoryRoot: `${FIXTURES_DIR}/empty` })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--cwd points to a non-directory file', async (t) => {
-  await runFixture(t, '', {
-    flags: { cwd: `${FIXTURES_DIR}/empty/netlify.toml`, repositoryRoot: `${FIXTURES_DIR}/empty` },
-  })
+  const output = await new Fixture()
+    .withFlags({ cwd: `${FIXTURES_DIR}/empty/netlify.toml`, repositoryRoot: `${FIXTURES_DIR}/empty` })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--repositoryRoot non-existing', async (t) => {
-  await runFixture(t, '', { flags: { repositoryRoot: '/invalid' } })
+  const output = await new Fixture().withFlags({ repositoryRoot: '/invalid' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--repositoryRoot points to a non-directory file', async (t) => {
-  await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty/netlify.toml` } })
+  const output = await new Fixture().withFlags({ repositoryRoot: `${FIXTURES_DIR}/empty/netlify.toml` }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('should detect base directory using package.json in sub dir', async (t) => {
-  await runFixture(t, 'build_base_package_json', { flags: { cwd: `${FIXTURES_DIR}/build_base_package_json/subdir` } })
+  const output = await new Fixture('./fixtures/build_base_package_json')
+    .withFlags({ cwd: `${FIXTURES_DIR}/build_base_package_json/subdir` })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })

@@ -1,0 +1,4 @@
+[[edge_functions]]
+cache = "this-wont-work"
+function = "function2"
+path = "/function2"

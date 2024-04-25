@@ -1,4 +1,7 @@
 export const onPreBuild = function ({ netlifyConfig }) {
-  // eslint-disable-next-line no-param-reassign
-  netlifyConfig.functions.node_bundler = 'esbuild'
+  netlifyConfig.functions.test = {}
+
+  netlifyConfig.functions.test.included_files = []
+
+  netlifyConfig.functions.test = { included_files: [] }
 }

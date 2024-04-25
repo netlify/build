@@ -1,70 +1,60 @@
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import chalk from 'chalk'
 import hasAnsi from 'has-ansi'
-// import isCI from 'is-ci'
-
-import { runFixture } from '../helpers/main.js'
-
-// Common options for color-related tests
-const opts = { snapshot: false, normalize: false, useBinary: true }
 
 test('Colors in parent process', async (t) => {
-  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true }, env: { FORCE_COLOR: '1' } })
-  t.true(hasAnsi(returnValue))
+  const { output } = await new Fixture('./fixtures/parent')
+    .withFlags({ dry: true })
+    .withEnv({ FORCE_COLOR: '1' })
+    .runBuildBinary()
+  t.true(hasAnsi(output))
 })
 
 test('Colors in child process', async (t) => {
-  const { returnValue } = await runFixture(t, 'child', { ...opts, env: { FORCE_COLOR: '1' } })
-  t.true(returnValue.includes(chalk.red('onPreBuild')))
+  const { output } = await new Fixture('./fixtures/child').withEnv({ FORCE_COLOR: '1' }).runBuildBinary()
+  t.true(output.includes(chalk.red('onPreBuild')))
 })
 
 test('Netlify CI', async (t) => {
-  const { returnValue } = await runFixture(t, 'parent', {
-    ...opts,
-    flags: { dry: true, mode: 'buildbot' },
-    env: { FORCE_COLOR: '1' },
-  })
-  t.true(hasAnsi(returnValue))
+  const { output } = await new Fixture('./fixtures/parent')
+    .withFlags({ dry: true, mode: 'buildbot' })
+    .withEnv({ FORCE_COLOR: '1' })
+    .runBuildBinary()
+  t.true(hasAnsi(output))
 })
 
 test('No TTY', async (t) => {
-  const { returnValue } = await runFixture(t, 'parent', { ...opts, env: { FORCE_COLOR: '0' }, flags: { dry: true } })
-  t.false(hasAnsi(returnValue))
+  const { output } = await new Fixture('./fixtures/parent')
+    .withFlags({ dry: true })
+    .withEnv({ FORCE_COLOR: '0' })
+    .runBuildBinary()
+  t.false(hasAnsi(output))
 })
 
-// In GitHub actions, `update-notifier` is never enabled
-// @todo: uncomment after upgrading to Ava v4.
-// See https://github.com/netlify/build/issues/3615
-// if (!isCI) {
-//   test('Print a warning when using an old version through Netlify CLI', async (t) => {
-//     // We need to unset some environment variables which would otherwise disable `update-notifier`
-//     await runFixture(t, 'error', {
-//       flags: { mode: 'cli', testOpts: { oldCliLogs: true } },
-//       env: { NODE_ENV: '' },
-//       useBinary: true,
-//     })
-//   })
-// }
-
 test('Logs whether the build commands came from the UI', async (t) => {
-  const defaultConfig = { build: { command: 'node --invalid' } }
-  await runFixture(t, 'empty', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ defaultConfig: { build: { command: 'node --invalid' } } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('The verbose flag enables verbosity', async (t) => {
-  await runFixture(t, 'verbose', { flags: { verbose: true } })
+  const output = await new Fixture('./fixtures/verbose').withFlags({ verbose: true }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Verbosity works with plugin errors', async (t) => {
-  await runFixture(t, 'verbose_error', { flags: { verbose: true } })
+  const output = await new Fixture('./fixtures/verbose_error').withFlags({ verbose: true }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Does not truncate long headers in logs', async (t) => {
-  const { returnValue } = await runFixture(t, 'truncate_headers', { snapshot: false })
-  t.false(returnValue.includes('999'))
+  const output = await new Fixture('./fixtures/truncate_headers').runWithBuild()
+  t.false(output.includes('999'))
 })
 
 test('Does not truncate long redirects in logs', async (t) => {
-  const { returnValue } = await runFixture(t, 'truncate_redirects', { snapshot: false })
-  t.false(returnValue.includes('999'))
+  const output = await new Fixture('./fixtures/truncate_redirects').runWithBuild()
+  t.false(output.includes('999'))
 })

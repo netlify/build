@@ -1,0 +1,8 @@
+{
+  "name": "pnpm-workspaces",
+  "packageManager": "yarn@3.2.4",
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ]
+}

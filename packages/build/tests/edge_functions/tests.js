@@ -1,10 +1,16 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
+import { platform } from 'process'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import tmp from 'tmp-promise'
 
-import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
+import { importJsonFile } from '../../lib/utils/json.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const assertManifest = async (t, fixtureName) => {
   const distPath = join(FIXTURES_DIR, fixtureName, '.netlify', 'edge-functions-dist')
@@ -12,96 +18,198 @@ const assertManifest = async (t, fixtureName) => {
 
   t.true(await pathExists(manifestPath))
 
-  const manifestFile = await fs.readFile(manifestPath)
-  const { bundles } = JSON.parse(manifestFile)
+  const manifestFile = await fs.readFile(manifestPath, 'utf8')
+  const manifest = JSON.parse(manifestFile)
 
   await Promise.all(
-    bundles.map(async (bundle) => {
+    manifest.bundles.map(async (bundle) => {
       const bundlePath = join(distPath, bundle.asset)
 
       t.true(await pathExists(bundlePath))
     }),
   )
+
+  return manifest
 }
 
 test('constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
-  await runFixture(t, 'src_default', { flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_default').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_SRC automatic value', async (t) => {
-  await runFixture(t, 'src_auto', { flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_auto').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_SRC relative path', async (t) => {
-  await runFixture(t, 'src_relative', { flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_relative').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_SRC missing path', async (t) => {
-  await runFixture(t, 'src_missing', { flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_missing').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_SRC created dynamically', async (t) => {
-  await runFixture(t, 'src_dynamic', { copyRoot: { git: false }, flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_dynamic')
+    .withFlags({ debug: false })
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_SRC dynamic is ignored if EDGE_FUNCTIONS_SRC is specified', async (t) => {
-  await runFixture(t, 'src_dynamic_ignore', { copyRoot: { git: false }, flags: { debug: false } })
+  const output = await new Fixture('./fixtures/src_dynamic_ignore')
+    .withFlags({ debug: false })
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
-  await runFixture(t, 'print_dist', { flags: { debug: false } })
+  const output = await new Fixture('./fixtures/print_dist').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
-  await runFixture(t, 'print_dist', {
-    flags: { debug: false, mode: 'buildbot', edgeFunctionsDistDir: '/another/path' },
-  })
+  const output = await new Fixture('./fixtures/print_dist')
+    .withFlags({ debug: false, mode: 'buildbot', edgeFunctionsDistDir: '/another/path' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test.serial('builds Edge Functions from the user-defined directory', async (t) => {
-  const fixtureName = 'functions_user'
-
-  await runFixture(t, 'functions_user', { flags: { debug: false, mode: 'buildbot' } })
-  await assertManifest(t, fixtureName)
+  const output = await new Fixture('./fixtures/functions_user')
+    .withFlags({ debug: false, mode: 'buildbot' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  await assertManifest(t, 'functions_user')
 })
 
 test.serial('builds Edge Functions from the internal directory', async (t) => {
-  const fixtureName = 'functions_internal'
+  const output = await new Fixture('./fixtures/functions_internal')
+    .withFlags({ debug: false, mode: 'buildbot' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  await assertManifest(t, 'functions_internal')
+  const manifestPath = join(FIXTURES_DIR, 'functions_internal/.netlify/edge-functions-dist/manifest.json')
 
-  await runFixture(t, 'functions_internal', { flags: { debug: false, mode: 'buildbot' } })
-  await assertManifest(t, fixtureName)
+  const { routes, function_config } = await importJsonFile(manifestPath)
+
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^(?:/(.*))/?$', excluded_patterns: [], path: '/*' }])
+  t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
-test.serial('builds Edge Functions from both the user and the internal directoriws', async (t) => {
-  const fixtureName = 'functions_user_internal'
-
-  await runFixture(t, fixtureName, { flags: { debug: false, mode: 'buildbot' } })
-  await assertManifest(t, fixtureName)
+test.serial('builds Edge Functions from both the user and the internal directories', async (t) => {
+  const output = await new Fixture('./fixtures/functions_user_internal')
+    .withFlags({ debug: false, mode: 'buildbot' })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  await assertManifest(t, 'functions_user_internal')
 })
 
-test.serial('handles failure when bundling Edge Functions', async (t) => {
-  await runFixture(t, 'functions_invalid', { flags: { debug: false } })
+// TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
+// out which regex is causing the problem and fix it.
+if (platform !== 'win32') {
+  test.serial('handles failure when bundling Edge Functions', async (t) => {
+    const output = await new Fixture('./fixtures/functions_invalid').withFlags({ debug: false }).runWithBuild()
+    t.snapshot(normalizeOutput(output))
+  })
+}
+
+// Does not work because the validator is memoized in edge-bundler and the ff has no effect during runtime.
+// Enable test once removing FF
+test.serial.skip('handles failure when validating Edge Functions', async (t) => {
+  const output = await new Fixture('./fixtures/functions_validation_failed')
+    .withFlags({ debug: false, featureFlags: { edge_functions_manifest_validate_slash: true } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('bundles Edge Functions via runCoreSteps function', async (t) => {
-  const fixtureName = 'functions_user'
-
-  await runFixture(t, fixtureName, { flags: { buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true } })
-  await assertManifest(t, fixtureName)
+  const output = await new Fixture('./fixtures/functions_user')
+    .withFlags({ buildSteps: ['edge_functions_bundling'], debug: false, useRunCoreSteps: true })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  await assertManifest(t, 'functions_user')
 })
 
 test('handles failure when bundling Edge Functions via runCoreSteps function', async (t) => {
-  const { returnValue } = await runFixture(t, 'functions_invalid', {
-    flags: { buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
-    snapshot: false,
-  })
+  const output = await new Fixture('./fixtures/functions_invalid')
+    .withFlags({ buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
+    .runWithBuild()
 
-  t.true(returnValue.includes("The module's source code could not be parsed"))
+  t.true(output.includes("The module's source code could not be parsed"))
 })
 
-test.serial('outputs manifest contents if debug is true', async (t) => {
-  const { returnValue } = await runFixture(t, 'functions_user', {
-    flags: { debug: true, mode: 'buildbot', buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
+// TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
+// out which regex is causing the problem and fix it.
+if (platform !== 'win32') {
+  test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
+    // This file descriptor doesn't exist, but it won't be used anyway since
+    // `debug` is set.
+    const systemLogFile = 7
+    const output = await new Fixture('./fixtures/functions_user')
+      .withFlags({
+        debug: true,
+        mode: 'buildbot',
+        systemLogFile,
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
+
+    t.regex(output, /Edge Functions manifest: \{/)
   })
-  t.true(returnValue.includes('Edge Functions Manifest'))
+}
+
+test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
+  const { fd, cleanup, path } = await tmp.file()
+
+  const output = await new Fixture('./fixtures/functions_user')
+    .withFlags({ debug: false, mode: 'buildbot', systemLogFile: fd })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+
+  const fileContents = await fs.readFile(path, 'utf8')
+
+  await cleanup()
+
+  t.regex(fileContents, /Edge Functions manifest: \{/)
+})
+
+test('build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+  const output = await new Fixture('./fixtures/functions_plugin_mutations').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  await assertManifest(t, 'functions_plugin_mutations')
+  const manifestPath = join(FIXTURES_DIR, 'functions_plugin_mutations/.netlify/edge-functions-dist/manifest.json')
+
+  const { routes } = await importJsonFile(manifestPath)
+
+  t.deepEqual(routes, [
+    { function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [], path: '/test-test' },
+  ])
+})
+
+test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
+  const fixture = new Fixture('./fixtures/functions_user')
+  const distDirectory = join(fixture.repositoryRoot, '.netlify', 'edge-functions-dist')
+  const oldBundlePath = join(distDirectory, 'old.eszip')
+  const manifestPath = join(distDirectory, 'manifest.json')
+
+  await fs.writeFile(oldBundlePath, 'some-data')
+  await fs.writeFile(manifestPath, '{}')
+
+  t.true(await pathExists(oldBundlePath))
+  t.true(await pathExists(manifestPath))
+
+  await fixture.withFlags({ debug: false, mode: 'buildbot' }).runWithBuild()
+
+  const manifest = await assertManifest(t, 'functions_user')
+
+  t.is(manifest.bundles.length, 1)
+  t.not(manifest.bundles[0].asset, 'old.eszip')
+
+  t.false(await pathExists(oldBundlePath))
 })

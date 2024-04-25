@@ -1,0 +1,80 @@
+on:
+  pull_request:
+    paths:
+      - '**.js'
+      - '**.cjs'
+      - '**.mjs'
+      - '**.ts'
+      - '**.mts'
+      - '**.cts'
+name: TypeScript conversion nudge
+jobs:
+  Nudge-to-convert-to-TypeScript-if-JavaScript-found:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 🔎 Get changed JavaScript files
+        id: changed-javascript-files
+        uses: tj-actions/changed-files@v36
+        with:
+          base_sha: ${{ github.event.pull_request.base.sha }}
+          files: |
+            **/*.js
+            **/*.cjs
+            **/*.mjs
+      - name: 📃 List added files
+        run: |
+          for file in ${{ steps.changed-javascript-files.outputs.added_files }}; do
+            echo "$file was added"
+          done
+
+      - name: 📃 List modified files
+        run: |
+          for file in ${{ steps.changed-javascript-files.outputs.modified_files }}; do
+            echo "$file was modified"
+          done
+
+      - name: 💬 Post comment to nudge contributor(s) to consider converting files to TypeScript
+        if:
+          steps.changed-javascript-files.outputs.modified_files != '' ||
+          steps.changed-javascript-files.outputs.added_files != ''
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files.
+            Consider converting them to TypeScript.
+          comment_tag: tsnudge
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Add a label to the PR to help track how many pull requests adds or modifies JavaScript files
+        if:
+          steps.changed-javascript-files.outputs.modified_files != '' ||
+          steps.changed-javascript-files.outputs.added_files != ''
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 'Adds or modifies js files'
+
+      - name: 💬 Update the comment if JavaScript files were deleted or renamed to .ts / .tsx
+        if:
+          contains(github.event.pull_request.labels.*.name, 'Adds or modifies js files') &&
+          steps.changed-javascript-files.outputs.modified_files == '' &&
+          steps.changed-javascript-files.outputs.added_files == ''
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ~This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files. Consider converting them to TypeScript.~
+            Thank you for converting JavaScript files to TypeScript 🎉"
+          comment_tag: tsnudge
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Remove the label if JavaScript was converted
+        if:
+          contains(github.event.pull_request.labels.*.name, 'Adds or modifies js files') &&
+          steps.changed-javascript-files.outputs.modified_files == '' &&
+          steps.changed-javascript-files.outputs.added_files == ''
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: 'Adds or modifies js files'

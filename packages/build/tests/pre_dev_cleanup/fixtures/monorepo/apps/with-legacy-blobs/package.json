@@ -1,0 +1,6 @@
+{
+  "name": "with-legacy-blobs",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

@@ -97,7 +97,9 @@ const updateErrorName = function (error, type) {
   // This might fail if `name` is a getter or is non-writable.
   try {
     error.name = type
-  } catch {}
+  } catch {
+    // continue regardless error
+  }
   return name
 }
 
@@ -126,11 +128,10 @@ const getEventProps = function ({ severity, group, groupingHash, metadata, app }
 // Add more information to Bugsnag events
 const onError = function (event, eventProps) {
   // Bugsnag client requires directly mutating the `event`
-  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(event, {
     ...eventProps,
     unhandled: event.unhandled || eventProps.unhandled,
-    // eslint-disable-next-line no-underscore-dangle
+
     _metadata: { ...event._metadata, ...eventProps._metadata },
     app: { ...event.app, ...eventProps.app },
   })

@@ -21,7 +21,7 @@ export const log = function (logs, string, { color } = {}) {
 
   if (logs !== undefined) {
     // `logs` is a stateful variable
-    // eslint-disable-next-line fp/no-mutating-methods
+
     logs.stderr.push(stringB)
     return
   }
@@ -29,7 +29,7 @@ export const log = function (logs, string, { color } = {}) {
   console.warn(stringB)
 }
 
-// We need to add a zero width space character in empty lines. Otherwise the
+// We need to add a zero width space character in empty lines. Otherwise, the
 // buildbot removes those due to a bug: https://github.com/netlify/buildbot/issues/595
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200B}'

@@ -1,6 +1,4 @@
-import { promises as fs } from 'fs'
-
-import { pathExists } from 'path-exists'
+import { existsSync, promises as fs } from 'fs'
 
 import { ensureConfigPriority } from '../context.js'
 import { addHeaders } from '../headers.js'
@@ -16,7 +14,17 @@ import { applyMutations } from './apply.js'
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
 export const updateConfig = async function (
   configMutations,
-  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs, featureFlags },
+  {
+    buildDir,
+    configPath,
+    headersPath,
+    outputConfigPath = configPath,
+    redirectsPath,
+    context,
+    branch,
+    logs,
+    featureFlags,
+  },
 ) {
   if (configMutations.length === 0) {
     return
@@ -28,9 +36,10 @@ export const updateConfig = async function (
   const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
   const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
   const simplifiedConfig = simplifyConfig(finalConfig)
+
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
-    saveConfig(configPath, simplifiedConfig),
+    saveConfig(outputConfigPath, simplifiedConfig),
     deleteSideFile(headersPath),
     deleteSideFile(redirectsPath),
   ])
@@ -52,7 +61,7 @@ const saveConfig = async function (configPath, simplifiedConfig) {
 // Deletes `_headers/_redirects` since they are merged to `netlify.toml`,
 // to fix any priority problem.
 const deleteSideFile = async function (filePath) {
-  if (filePath === undefined || !(await pathExists(filePath))) {
+  if (filePath === undefined || !existsSync(filePath)) {
     return
   }
 
@@ -60,7 +69,7 @@ const deleteSideFile = async function (filePath) {
 }
 
 // Modifications to `netlify.toml` and `_headers/_redirects` are only meant for
-// the deploy API call. After it's been performed, we restore their former
+// the deployment API call. After it's been performed, we restore their former
 // state.
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
@@ -94,7 +103,7 @@ const backupFile = async function (original, backup) {
   // this makes sure we don't restore stale files
   await deleteNoError(backup)
 
-  if (!(await pathExists(original))) {
+  if (!existsSync(original)) {
     return
   }
 
@@ -104,11 +113,13 @@ const backupFile = async function (original, backup) {
 const deleteNoError = async (path) => {
   try {
     await fs.unlink(path)
-  } catch {}
+  } catch {
+    // continue regardless error
+  }
 }
 
 const copyOrDelete = async function (src, dest) {
-  if (await pathExists(src)) {
+  if (existsSync(src)) {
     await fs.copyFile(src, dest)
     return
   }

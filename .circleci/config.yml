@@ -1,0 +1,123 @@
+version: 2.1
+
+workflows:
+  release:
+    jobs:
+      - release:
+          context: [shared-secrets]
+          filters:
+            branches:
+              only: [main]
+
+  release-please:
+    jobs:
+      - release-please:
+          context: [shared-secrets]
+          filters:
+            branches:
+              only: [main]
+
+  # Workflow responsible for correctly updating the root lockfile for the release-please PR
+  # See: https://github.com/googleapis/release-please/issues/1101
+  release-pull-request:
+    jobs:
+      - update-lockfile:
+          context: [shared-secrets]
+          filters:
+            branches:
+              only: [release-please--branches--main]
+
+  'Test & Check 🕵️‍♀️':
+    jobs:
+      - formatting
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:18.19.0
+  windows:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.xlarge
+    shell: powershell.exe -ExecutionPolicy Bypass
+  linux:
+    machine:
+      image: ubuntu-2004:202201-02
+    resource_class: large
+  macos:
+    resource_class: macos.x86.medium.gen2 # new generation resources
+    macos:
+      xcode: 13.0.0
+
+commands:
+  npm-install-deps:
+    parameters:
+      command:
+        description: The install command that is used
+        type: string
+        default: npm ci
+    steps:
+      - restore_cache:
+          keys:
+            - npm-{{ arch }}-v1-{{ checksum "package-lock.json" }}
+            - npm-{{ arch }}-v1
+      - run: curl -fsSL https://deno.land/install.sh | sh -s -- v1.42.3
+      - run: << parameters.command >>
+      - save_cache:
+          key: npm-{{ arch }}-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+jobs:
+  release:
+    description: The release action that runs on the main branch
+    executor: node
+    steps:
+      - checkout
+      - npm-install-deps
+      - run: npm run build
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - run: npx lerna publish from-package --yes --no-private
+      - run:
+          name: Create Github Release
+          command: |
+            npx release-please github-release \
+              --token "${GITHUB_RELEASES_TOKEN}" \
+              --repo-url "${CIRCLE_REPOSITORY_URL}" \
+
+  release-please:
+    description: Update and creates release PRs on the main branch
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Run release-please
+          command: |
+            npx release-please release-pr \
+              --token "${GITHUB_RELEASES_TOKEN}" \
+              --repo-url "${CIRCLE_REPOSITORY_URL}" \
+
+  update-lockfile:
+    description: Update lockfile in a release please PR
+    executor: node
+    steps:
+      - checkout
+      - run: npm install
+      - run:
+          name: Commit and push lockfile
+          command: |
+            git remote remove origin
+            git remote add origin "https://${GITHUB_RELEASES_TOKEN}@github.com/netlify/build.git"
+            git config  user.email "33464286+netlify-jenkins@users.noreply.github.com"
+            git config  user.name "netlify-jenkins"
+            git add package-lock.json && \
+            git commit -m "chore: update lockfile" || true && \
+            git push --set-upstream origin release-please--branches--main
+  formatting:
+    description: Checks if the codebase satisfies wit the lint and style rules
+    executor: node
+    steps:
+      - checkout
+      - npm-install-deps
+      - run: npm run format:ci
+      - run: npm run lint:ci

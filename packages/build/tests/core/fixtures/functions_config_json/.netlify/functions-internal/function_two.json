@@ -1,0 +1,4 @@
+{
+  "config": { "nodeBundler": "none", "name": "Function One", "generator": "@netlify/mock-plugin@1.0.0" },
+  "version": 1
+}

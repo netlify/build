@@ -1,5 +1,3 @@
-/* eslint eslint-comments/no-use: off, max-lines: off */
-
 const jsonParse = function (value) {
   return value === undefined ? undefined : JSON.parse(value)
 }
@@ -14,7 +12,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
   defaultConfig: {
     string: true,
     describe: `JSON configuration object containing default values.
-Each configuration default value is used unless overriden through the main configuration file.
+Each configuration default value is used unless overridden through the main configuration file.
 Default: none.`,
     coerce: jsonParse,
     hidden: true,
@@ -45,6 +43,10 @@ Default: current directory`,
     string: true,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
+  },
+  packagePath: {
+    string: true,
+    describe: `When using a monorepo, specifies the relative path from the repository root to the package being built`,
   },
   apiHost: {
     string: true,
@@ -145,6 +147,11 @@ Default: false`,
     describe: 'Print user-facing debugging information',
     hidden: true,
   },
+  systemLogFile: {
+    type: 'number',
+    describe: 'File descriptor to where system logs should be piped',
+    hidden: true,
+  },
   verbose: {
     boolean: true,
     describe: 'Print internal debugging information',
@@ -158,6 +165,12 @@ Default: false`,
   saveConfig: {
     boolean: true,
     describe: 'Whether configuration changes should be saved to netlify.toml',
+    hidden: true,
+  },
+  outputConfigPath: {
+    type: 'string',
+    describe:
+      'Path where to save the netlify.toml resulting from configuration changes. Only applicable if `saveConfig` is set. Defaults to "netlify.toml" in the root directory.',
     hidden: true,
   },
   testOpts: {
@@ -190,5 +203,15 @@ Default: false`,
   buffer: {
     boolean: true,
     describe: 'Buffer output instead of printing it',
+  },
+  timeline: {
+    string: true,
+    describe: 'The sequence of lifecycle events to run',
+    hidden: true,
+  },
+  explicitSecretKeys: {
+    type: 'string',
+    describe: 'Env var keys that are marked as secret explicitly.',
+    hidden: true,
   },
 }

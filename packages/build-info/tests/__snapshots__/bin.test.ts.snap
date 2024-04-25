@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CLI --help flag 1`] = `
+"bin.js [projectDir]
+
+Print relevant build information from a project.
+
+Options:
+  --help          Show help                                            [boolean]
+  --version       Show version number                                  [boolean]
+  --rootDir       The root directory of the project if different from projectDir
+                                                                        [string]
+  --featureFlags  comma separated list of feature flags                 [string]"
+`;

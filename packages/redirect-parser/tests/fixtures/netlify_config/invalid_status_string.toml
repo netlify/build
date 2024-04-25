@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/old-path"
+  to = "new-path"
+  status = "not_a_status"

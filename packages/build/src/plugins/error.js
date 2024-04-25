@@ -28,9 +28,9 @@ export const failPluginWithWarning = function (methodName, event, message, opts)
 
 // An `error` option can be passed to keep the original error message and
 // stack trace. An additional `message` string is always required.
-const normalizeError = function (type, func, message, { error } = {}) {
+const normalizeError = function (type, func, message, { error, errorMetadata } = {}) {
   const errorA = getError(error, message, func)
-  addErrorInfo(errorA, { type })
+  addErrorInfo(errorA, { type, errorMetadata })
   return errorA
 }
 
@@ -39,7 +39,9 @@ const getError = function (error, message, func) {
     // This might fail if `name` is a getter or is non-writable.
     try {
       error.message = `${message}\n${error.message}`
-    } catch {}
+    } catch {
+      // continue regardless error
+    }
     return error
   }
 

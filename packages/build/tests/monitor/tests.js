@@ -1,121 +1,199 @@
 import { platform } from 'process'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import hasAnsi from 'has-ansi'
 import sinon from 'sinon'
 
-import { CUSTOM_ERROR_KEY } from '../../src/error/info.js'
-import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
-import { runFixture } from '../helpers/main.js'
+import { CUSTOM_ERROR_KEY } from '../../lib/error/info.js'
+import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
-const flags = { testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY }
 
 test('Report build.command failure', async (t) => {
-  await runFixture(t, 'command', { flags })
+  const output = await new Fixture('./fixtures/command')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report configuration user error', async (t) => {
-  await runFixture(t, 'config', { flags })
+  const output = await new Fixture('./fixtures/config')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin input error', async (t) => {
-  await runFixture(t, 'plugin_input', { flags })
+  const output = await new Fixture('./fixtures/plugin_input')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin validation error', async (t) => {
-  await runFixture(t, 'plugin_validation', { flags })
+  const output = await new Fixture('./fixtures/plugin_validation')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin internal error', async (t) => {
-  await runFixture(t, 'plugin_internal', { flags })
+  const output = await new Fixture('./fixtures/plugin_internal')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.failBuild()', async (t) => {
-  await runFixture(t, 'monitor_fail_build', { flags })
+  const output = await new Fixture('./fixtures/monitor_fail_build')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.failPlugin()', async (t) => {
-  await runFixture(t, 'monitor_fail_plugin', { flags })
+  const output = await new Fixture('./fixtures/monitor_fail_plugin')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.cancelBuild()', async (t) => {
-  await runFixture(t, 'cancel_build', { flags })
+  const output = await new Fixture('./fixtures/cancel_build')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report IPC error', async (t) => {
-  await runFixture(t, 'ipc', { flags })
+  const output = await new Fixture('./fixtures/ipc')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test.serial('Report API error', async (t) => {
-  await runFixture(t, 'cancel_build', {
-    flags: { ...flags, token: 'test', deployId: 'test', testOpts: { ...flags.testOpts, env: false } },
-  })
+  const output = await new Fixture('./fixtures/cancel_build')
+    .withFlags({
+      token: 'test',
+      deployId: 'test',
+      testOpts: { errorMonitor: true, env: true },
+      bugsnagKey: BUGSNAG_TEST_KEY,
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 // ts-node prints error messages differently on Windows and does so in a way
 // that is hard to normalize in test snapshots.
 if (platform !== 'win32') {
   test('Report TypeScript error', async (t) => {
-    await runFixture(t, 'typescript', { flags, copyRoot: { git: false } })
+    const output = await new Fixture('./fixtures/typescript')
+      .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+      .withCopyRoot({ git: false })
+      .then((fixture) => fixture.runWithBuild())
+
+    t.true(
+      output.includes(`Could not import plugin:
+  TSError: ⨯ Unable to compile TypeScript:
+  plugin.ts(1,28): error TS2307: Cannot find module '@netlify/build' or its corresponding type declarations.
+  plugin.ts(3,51): error TS7031: Binding element 'constants' implicitly has an 'any' type.`),
+    )
   })
 }
 
 test('Report dependencies error', async (t) => {
-  await runFixture(t, 'dependencies', { flags })
+  const output = await new Fixture('./fixtures/dependencies')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report buildbot mode as releaseStage', async (t) => {
-  await runFixture(t, 'command', { flags: { ...flags, mode: 'buildbot' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/command')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'buildbot' })
+    .runBuildBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report CLI mode as releaseStage', async (t) => {
-  await runFixture(t, 'command', { flags: { ...flags, mode: 'cli' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/command')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'cli' })
+    .runBuildBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report programmatic mode as releaseStage', async (t) => {
-  await runFixture(t, 'command', { flags: { ...flags, mode: 'require' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/command')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'require' })
+    .runBuildBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Remove colors in error.message', async (t) => {
-  const { returnValue } = await runFixture(t, 'colors', { flags, snapshot: false })
-  const lines = returnValue.split('\n').filter((line) => line.includes('ColorTest'))
+  const output = await new Fixture('./fixtures/colors')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  const lines = output.split('\n').filter((line) => line.includes('ColorTest'))
   t.true(lines.every((line) => !hasAnsi(line)))
 })
 
 test('Report BUILD_ID', async (t) => {
-  await runFixture(t, 'command', { flags, env: { BUILD_ID: 'test' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/command')
+    .withEnv({ BUILD_ID: 'test' })
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runBuildBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin homepage', async (t) => {
-  await runFixture(t, 'plugin_homepage', { flags })
+  const output = await new Fixture('./fixtures/plugin_homepage')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin homepage without a repository', async (t) => {
-  await runFixture(t, 'plugin_homepage_no_repo', { flags })
+  const output = await new Fixture('./fixtures/plugin_homepage_no_repo')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin origin', async (t) => {
-  const defaultConfig = { plugins: [{ package: './plugin.js' }] }
-  await runFixture(t, 'plugin_origin', { flags: { ...flags, defaultConfig } })
+  const output = await new Fixture('./fixtures/plugin_origin')
+    .withFlags({
+      defaultConfig: { plugins: [{ package: './plugin.js' }] },
+      testOpts: { errorMonitor: true },
+      bugsnagKey: BUGSNAG_TEST_KEY,
+    })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Report build logs URLs', async (t) => {
-  await runFixture(t, 'command', {
-    flags,
-    env: { DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' },
-    useBinary: true,
-  })
+  const { output } = await new Fixture('./fixtures/command')
+    .withEnv({ DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' })
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runBuildBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
-test('Normalizes error messages resulting from bundling edge functions', async (t) => {
-  await runFixture(t, 'edge_function_error', {
-    flags: {
-      ...flags,
-      debug: false,
-    },
+// TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
+// out which regex is causing the problem and fix it.
+if (platform !== 'win32') {
+  test('Normalizes error messages resulting from bundling edge functions', async (t) => {
+    const output = await new Fixture('./fixtures/edge_function_error')
+      .withFlags({
+        debug: false,
+        testOpts: { errorMonitor: true },
+        bugsnagKey: BUGSNAG_TEST_KEY,
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   })
-})
+}
 
 test.serial('Normalizes error messages resulting from bundling TypeScript serverless functions', async (t) => {
   const customError = new Error(`Build failed with 2 errors:
@@ -129,8 +207,11 @@ test.serial('Normalizes error messages resulting from bundling TypeScript server
 
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
 
-  await runFixture(t, 'serverless_function', { flags })
+  const output = await new Fixture('./fixtures/serverless_function')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
 
+  t.snapshot(normalizeOutput(output))
   stub.restore()
 })
 
@@ -160,7 +241,10 @@ error: expected one of \`!\` or \`::\`, found keyword \`use\`
 
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
 
-  await runFixture(t, 'serverless_function', { flags })
+  const output = await new Fixture('./fixtures/serverless_function')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 
   stub.restore()
 })
@@ -176,7 +260,26 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
 
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
 
-  await runFixture(t, 'serverless_function', { flags })
+  const output = await new Fixture('./fixtures/serverless_function')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 
   stub.restore()
+})
+
+test.serial('Throws a user error when the wrong go version is used', async (t) => {
+  const logs = await new Fixture('./fixtures/go_version_error')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+
+  t.true(logs.includes('"errorClass": "resolveConfig"'))
+})
+
+test.serial('Throws a dependency error when go dependency is missing', async (t) => {
+  const logs = await new Fixture('./fixtures/go_missing_dependency')
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
+    .runWithBuild()
+
+  t.true(logs.includes('"errorClass": "dependencies"'))
 })

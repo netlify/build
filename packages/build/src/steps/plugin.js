@@ -1,3 +1,5 @@
+import { context, propagation } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../error/info.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
@@ -7,11 +9,14 @@ import { getSuccessStatus } from '../status/success.js'
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
+export const isTrustedPlugin = (packageName) => packageName?.startsWith('@netlify/')
+
 // Fire a plugin step
 export const firePluginStep = async function ({
   event,
   childProcess,
   packageName,
+  packagePath,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -26,10 +31,15 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  systemLog,
+  featureFlags,
   debug,
   verbose,
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
+
+  const otelCarrier = {}
+  propagation.inject(context.active(), otelCarrier)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -40,7 +50,15 @@ export const firePluginStep = async function ({
     } = await callChild({
       childProcess,
       eventName: 'run',
-      payload: { event, error, envChanges, netlifyConfig, constants },
+      payload: {
+        event,
+        error,
+        envChanges,
+        featureFlags: isTrustedPlugin(pluginPackageJson?.name) ? featureFlags : undefined,
+        netlifyConfig,
+        constants,
+        otelCarrier,
+      },
       logs,
       verbose,
     })
@@ -53,13 +71,16 @@ export const firePluginStep = async function ({
       configOpts,
       netlifyConfig,
       headersPath,
+      packagePath,
       redirectsPath,
       configMutations,
       newConfigMutations,
       configSideFiles,
       errorParams,
       logs,
+      systemLog,
       debug,
+      source: packageName,
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
@@ -71,7 +92,7 @@ export const firePluginStep = async function ({
       newStatus,
     }
   } catch (newError) {
-    const errorType = getPluginErrorType(newError, loadedFrom)
+    const errorType = getPluginErrorType(newError, loadedFrom, packageName)
     addErrorInfo(newError, {
       ...errorType,
       plugin: { pluginPackageJson, packageName },

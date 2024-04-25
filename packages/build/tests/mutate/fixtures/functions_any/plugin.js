@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 export const onPreBuild = function ({ netlifyConfig }) {
   netlifyConfig.functions.node_bundler = 'zisi'
   netlifyConfig.functions.external_node_modules = ['test']
@@ -15,4 +14,3 @@ export const onPreBuild = function ({ netlifyConfig }) {
   netlifyConfig.functions.test.ignored_node_modules = []
   netlifyConfig.functions.test.included_files = []
 }
-/* eslint-enable no-param-reassign */

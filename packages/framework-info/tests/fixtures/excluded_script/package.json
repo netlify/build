@@ -1,0 +1,13 @@
+{
+  "name": "create-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "react-scripts": "*"
+  },
+  "scripts": {
+    "start": "netlify dev",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  }
+}

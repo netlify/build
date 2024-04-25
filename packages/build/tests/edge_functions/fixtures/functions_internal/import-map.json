@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "alias:util": "./util.ts"
+  }
+}

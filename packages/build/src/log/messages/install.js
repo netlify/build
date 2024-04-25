@@ -1,8 +1,32 @@
+import { isRuntime } from '../../utils/runtime.js'
 import { log, logArray, logSubHeader } from '../logger.js'
 
 export const logInstallMissingPlugins = function (logs, packages) {
-  logSubHeader(logs, 'Installing plugins')
-  logArray(logs, packages)
+  const runtimes = packages.filter((pkg) => isRuntime(pkg))
+  const plugins = packages.filter((pkg) => !isRuntime(pkg))
+
+  if (plugins.length !== 0) {
+    logSubHeader(logs, 'Installing plugins')
+    logArray(logs, packages)
+  }
+
+  if (runtimes.length !== 0) {
+    const [nextRuntime] = runtimes
+
+    logSubHeader(logs, `Using Next.js Runtime - v${nextRuntime.pluginPackageJson.version}`)
+  }
+}
+
+export const logInstallIntegrations = function (logs, integrations) {
+  if (integrations.length === 0) {
+    return
+  }
+
+  logSubHeader(logs, 'Installing integrations')
+  logArray(
+    logs,
+    integrations.map((integration) => integration.slug),
+  )
 }
 
 export const logInstallLocalPluginsDeps = function (logs, localPluginsOptions) {

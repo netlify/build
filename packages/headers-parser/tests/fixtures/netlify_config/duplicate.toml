@@ -1,0 +1,9 @@
+[[headers]]
+for = "/path"
+  [headers.values]
+  test = "one"
+
+[[headers]]
+for = "/path"
+  [headers.values]
+  test = "two"

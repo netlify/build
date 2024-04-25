@@ -1,120 +1,72 @@
-const { overrides } = require('@netlify/eslint-config-node/.eslintrc_esm.cjs')
+/** @type {import('eslint').Linter.Config} */
+const config = {
+  env: {
+    es2021: true,
+    node: true,
+  },
+  settings: {
+    'import/extensions': ['.js'],
+  },
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+  plugins: ['import', '@typescript-eslint'],
 
-module.exports = {
-  extends: ['plugin:fp/recommended', '@netlify/eslint-config-node/.eslintrc_esm.cjs'],
+  ignorePatterns: [
+    // TODO: remove when they are migrated to typescript
+    'packages/build/test-d/**',
+    'packages/build/types/**',
+    // don't lint fixtures
+    'packages/*/tests/**/fixtures/**',
+    'packages/framework-info/test/fixtures/**',
+    'packages/framework-info/dist/**',
+    'packages/*/lib/**',
+
+    'packages/edge-bundler/deno/**/*',
+    'packages/edge-bundler/node/vendor/**',
+    'packages/edge-bundler/test/deno/**/*',
+    'packages/edge-bundler/test/fixtures/**/*',
+  ],
   rules: {
-    strict: 2,
+    // -----------------------------------------------------------
+    // General rules
+    strict: 'error',
 
-    // eslint-plugin-ava needs to know where test files are located
-    'ava/no-ignored-test-files': [
-      2,
-      { files: ['tests/**/*.{cjs,mjs,js}', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
-    ],
-    'ava/no-import-test-files': [
-      2,
-      { files: ['tests/**/*.{cjs,mjs,js}', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
-    ],
+    // -----------------------------------------------------------
+    // Typescript rules
+    '@typescript-eslint/no-explicit-any': ['off'],
 
-    // Avoid state mutation except for some known state variables
-    'fp/no-mutating-methods': [
-      2,
+    // -----------------------------------------------------------
+    // Import rules
+    'import/extensions': ['error', 'ignorePackages'], // This requires for esm modules .js file extensions on relative paths
+    'import/no-absolute-path': ['error'],
+    'import/no-cycle': ['error', { ignoreExternal: true }],
+    'import/no-duplicates': ['error', { considerQueryString: true }],
+    'import/no-self-import': ['error'],
+    'import/no-mutable-exports': ['error'],
+    'import/no-useless-path-segments': ['error'],
+    'import/order': [
+      'error',
       {
-        allowedObjects: [
-          'error',
-          'errorA',
-          'req',
-          'request',
-          'res',
-          'response',
-          'state',
-          'runState',
-          'logs',
-          'logsArray',
-          'currentEnv',
-          't',
-        ],
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
       },
     ],
-    'fp/no-mutation': [
-      2,
-      {
-        commonjs: true,
-        exceptions: [
-          { object: 'error' },
-          { object: 'errorA' },
-          { object: 'res' },
-          { object: 'state' },
-          { object: 'runState' },
-          { object: 'logs' },
-          { object: 'logsArray' },
-          { object: 'currentEnv' },
-          { object: 'process', property: 'exitCode' },
-        ],
-      },
-    ],
-    // `eslint-plugin-node` seems to have a bug finding `chalk`
-    'n/no-missing-import': [2, { allowModules: ['chalk'] }],
   },
   overrides: [
-    ...overrides,
     {
-      files: ['**/fixtures/**/*.{cjs,mjs,js}'],
+      files: ['packages/*/tests/**'],
       rules: {
-        'import/no-unresolved': 0,
-        'n/no-missing-import': 0,
-      },
-    },
-    // @todo As it stands, this rule is problematic with methods that get+send
-    // many parameters, such as `runStep` in `src/steps/run_step.js`.
-    // We should discuss whether we want to keep this rule or discontinue it.
-    {
-      files: ['packages/build/**/*.{cjs,mjs,js}'],
-      rules: {
-        'max-lines-per-function': 'off',
-      },
-    },
-    {
-      files: ['**/test-d/**/*.ts'],
-      rules: {
-        // We use `tsd` which sometimes require declaring variables without
-        // using them
-        '@typescript-eslint/no-unused-vars': 0,
-        // Allow self-imports
-        'n/no-extraneous-import': 0,
-      },
-    },
-    {
-      // **/*.md/*.js references code blocks inside markdown files
-      files: ['**/*.md/*.js'],
-      rules: {
-        // Allow self-imports
-        'n/no-extraneous-import': 0,
-      },
-    },
-    // `@netlify/config` currently imports some test helpers from
-    // `@netlify/build`.
-    // This is creating linting issues, but only on Windows for some reason.
-    {
-      files: ['packages/config/tests/helpers/main.js'],
-      rules: {
-        'import/named': 0,
-      },
-    },
-    // TODO: remove once we use named exports in test fixtures
-    {
-      files: ['packages/build/tests/**/fixtures/**/*.{mjs,js}'],
-      rules: {
-        'import/no-anonymous-default-export': 0,
-      },
-    },
-    // Disabling certain rules for test files.
-    {
-      files: ['packages/build/tests/**/*.{mjs,js}'],
-      rules: {
-        'import/no-named-as-default-member': 'off',
-        'max-statements': 'off',
-        'no-magic-numbers': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
       },
     },
   ],
 }
+
+module.exports = config

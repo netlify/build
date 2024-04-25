@@ -60,16 +60,18 @@ Every test follows this template:
 <!-- eslint-disable-next-line ava/no-ignored-test-files -->
 
 ```js
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../../helpers/main.js'
-
 test('test title', async (t) => {
-  await runFixture(t, 'fixture_name')
+  const output = await new Fixture('./fixtures/fixture_name').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 ```
 
 This calls under the hood:
+
+<!-- eslint-disable-next-line import/default -->
 
 ```js
 import netlifyBuild from '@netlify/build'
@@ -77,25 +79,16 @@ import netlifyBuild from '@netlify/build'
 const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
 ```
 
-Then snapshots the output.
-
-## Options
-
-An additional object can be passed to `runFixture()` with the following options:
-
-- `flags` `{object}`: any flags/options passed to the main command
-- `env` `{object}`: environment variables passed to child processes. To set environment variables in the parent process
-  too, spawn a new process with the `useBinary: true` option.
-- `useBinary` `{boolean}`: use the CLI entry point instead of the Node.js main function
-- `repositoryRoot` `{string}`: fixture directory. Defaults to `./fixtures/fixture_name`.
-- `copyRoot` `{object}`: when defined, copy the fixture directory to a temporary directory This is useful when no parent
-  directory should have a `.git` or `package.json`.
-- `copyRoot.git` `{boolean}`: whether the copied directory should have a `.git`. Default: `true`
-- `copyRoot.branch` `{string}`: create a git branch after copy
-
-Most tests do not need to specify any of the options above.
-
 ## Running tests
+
+Prerequisites:
+
+```
+npx lerna run build
+```
+
+To successfully run or update the snapshot tests, you need to
+[install deno](https://deno.land/manual@v1.29.1/getting_started/installation)
 
 To run all tests:
 
@@ -135,26 +128,3 @@ PRINT=1 npx ava /path/to/tests.js
 
 Using [`test.only()`](https://github.com/avajs/ava/blob/main/docs/01-writing-tests.md#running-specific-tests) to target
 a specific test is recommended.
-
-## Output normalization
-
-Sometimes the `@netlify/build` output contains non-deterministic information such as:
-
-- timestamps and time durations
-- package versions
-- machine-specific information such as file paths (including in stack traces)
-- OS-specific information (e.g. file paths use backslashes on Windows)
-- output different on older Node.js versions
-
-Those would make the test snapshot non-reproducible. To fix this, the output is normalized by `./helpers/normalize.js`.
-This basically performs a series of regular expressions replacements.
-
-If you want to remove the normalization during debugging, use the `normalize` option:
-
-```js
-test('test title', async (t) => {
-  await runFixture(t, 'fixture_name', { normalize: false })
-})
-```
-
-`normalize` is `false` when `PRINT=1` is used, `true` otherwise.

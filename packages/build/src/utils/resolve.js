@@ -23,7 +23,7 @@ export const resolvePath = async function (path, basedir) {
     // Fallback.
     // `resolve` sometimes gives unhelpful error messages.
     // https://github.com/browserify/resolve/issues/223
-  } catch {
+  } catch (e) {
     return require.resolve(path, { paths: [basedir] })
   }
 }
@@ -34,7 +34,6 @@ export const resolvePath = async function (path, basedir) {
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
 const resolvePathWithBasedir = function (path, basedir) {
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line promise/prefer-await-to-callbacks
     resolveLib(path, { basedir }, (error, resolvedPath) => {
       if (error) {
         return reject(error)

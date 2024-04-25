@@ -12,6 +12,7 @@ const coreStep = async function ({
   buildDir,
   configPath,
   repositoryRoot,
+  packagePath,
   constants,
   buildbotServerSocket,
   events,
@@ -31,6 +32,7 @@ const coreStep = async function ({
     await saveUpdatedConfig({
       configMutations,
       buildDir,
+      packagePath,
       repositoryRoot,
       configPath,
       headersPath,
@@ -59,7 +61,7 @@ const coreStep = async function ({
   }
 }
 
-const shouldDeploy = function ({ buildbotServerSocket }) {
+export const shouldDeploy = function ({ buildbotServerSocket }) {
   return buildbotServerSocket !== undefined
 }
 
