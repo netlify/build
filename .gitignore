@@ -26,9 +26,6 @@ packages/*/lib/
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
 !**/fixtures/with_preexisting_blobs/**/.netlify
-!**/fixtures/with-blobs/**/.netlify
-!**/fixtures/with-legacy-blobs/**/.netlify
-!**/fixtures/with-leftover-functions/**/.netlify
 !**/fixtures/**/functions_*/.netlify
 !**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
 !**/fixtures/**/monorepo/**/.netlify
