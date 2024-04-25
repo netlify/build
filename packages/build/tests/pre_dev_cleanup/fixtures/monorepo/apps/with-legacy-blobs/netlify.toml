@@ -1,3 +1,0 @@
-[build]
-command = "pnpm --filter with-legacy-blobs build"
-publish = "apps/with-legacy-blobs/dist"

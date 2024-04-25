@@ -1,6 +1,0 @@
-{
-  "name": "with-leftover-functions",
-  "scripts": {
-    "build": "node build.mjs"
-  }
-}
