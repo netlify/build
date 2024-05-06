@@ -102,7 +102,7 @@ jobs:
         run: npx nx affected --target=build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           timeout_minutes: 30
@@ -209,7 +209,7 @@ jobs:
         run: npm run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         env:
           # split tests across multiple machines
