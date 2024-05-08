@@ -125,6 +125,38 @@ test.each([
       },
     ],
   ],
+  [
+    'with rate limits',
+    { netlifyConfigPath: 'with_ratelimit' },
+    [
+      {
+        from: '/old-path',
+        path: '/old-path',
+        to: '/new-path',
+        status: 301,
+        query: { path: ':path' },
+        conditions: { Country: ['US'], Language: ['en'], Role: ['admin'] },
+        rate_limit: {
+          window_limit: 40,
+          aggregate_by: ['ip'],
+        },
+      },
+      {
+        from: '/other/*',
+        path: '/other/*',
+        to: '/maybe_rewritten',
+        proxy: false,
+        force: false,
+        rate_limit: {
+          action: 'rewrite',
+          to: '/rewritten',
+          window_limit: 40,
+          window_size: 20,
+          aggregate_by: ['ip', 'domain'],
+        },
+      },
+    ],
+  ],
 ])(`Parses netlify.toml redirects | %s`, async (_, input, output) => {
   const { redirects } = await parseRedirects(input)
   const normalized = output.map((redirect) => normalizeRedirect(redirect, input))

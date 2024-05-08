@@ -54,6 +54,7 @@ const parseRedirectObject = function (
     signing = sign,
     signed = signing,
     headers = {},
+    rate_limit,
   },
   minimal,
 ) {
@@ -82,6 +83,7 @@ const parseRedirectObject = function (
     conditions: normalizedConditions,
     signed,
     headers,
+    rate_limit,
     // If `minimal: true`, does not add additional properties that are not
     // valid in `netlify.toml`
     ...(!minimal && { scheme, host, path, proxy }),
