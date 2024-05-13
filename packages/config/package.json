@@ -79,7 +79,7 @@
     "p-locate": "^6.0.0",
     "path-type": "^5.0.0",
     "tomlify-j0.4": "^3.0.0",
-    "validate-npm-package-name": "^4.0.0",
+    "validate-npm-package-name": "^5.0.0",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
