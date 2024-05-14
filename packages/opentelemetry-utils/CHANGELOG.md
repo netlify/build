@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/netlify/build/compare/opentelemetry-utils-v1.2.0...opentelemetry-utils-v1.2.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo to ~1.24.0 ([#5614](https://github.com/netlify/build/issues/5614)) ([79b9935](https://github.com/netlify/build/commit/79b9935fe9e233e01febe74a996ceb582db16a6f))
+
 ## [1.2.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.1.0...opentelemetry-utils-v1.2.0) (2024-04-23)
 
 

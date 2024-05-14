@@ -1,6 +1,6 @@
 {
   "name": "@netlify/opentelemetry-utils",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Opentelemetry utility methods",
   "type": "module",
   "exports": "./lib/index.js",

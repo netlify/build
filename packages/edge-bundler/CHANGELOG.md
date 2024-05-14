@@ -1,5 +1,13 @@
 # Changelog
 
+## [12.0.1](https://github.com/netlify/build/compare/edge-bundler-v12.0.0...edge-bundler-v12.0.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vercel/nft to ^0.27.0 ([#5630](https://github.com/netlify/build/issues/5630)) ([da449eb](https://github.com/netlify/build/commit/da449eb0085e52b19db72d37a9aad11f4b66b04a))
+* **deps:** update dependency esbuild to v0.21.2 ([#5639](https://github.com/netlify/build/issues/5639)) ([4f3c398](https://github.com/netlify/build/commit/4f3c3982229cffdfff810253d87581fa8ec6f204))
+
 ## [12.0.0](https://github.com/netlify/build/compare/edge-bundler-v11.4.0...edge-bundler-v12.0.0) (2024-04-23)
 
 
