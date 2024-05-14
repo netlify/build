@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.41.5](https://github.com/netlify/build/compare/build-v29.41.4...build-v29.41.5) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#5504](https://github.com/netlify/build/issues/5504)) ([d32e5bd](https://github.com/netlify/build/commit/d32e5bd871752aa5b895fc4f5e1a8656b9257126))
+* **deps:** update dependency @netlify/plugins-list to ^6.78.0 ([#5615](https://github.com/netlify/build/issues/5615)) ([2b13c1a](https://github.com/netlify/build/commit/2b13c1ac4be98110dfce7924661e50825af3948a))
+* **deps:** update opentelemetry-js monorepo to ~1.24.0 ([#5614](https://github.com/netlify/build/issues/5614)) ([79b9935](https://github.com/netlify/build/commit/79b9935fe9e233e01febe74a996ceb582db16a6f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 12.0.0 to 12.0.1
+    * @netlify/framework-info bumped from ^9.8.11 to ^9.8.12
+    * @netlify/opentelemetry-utils bumped from ^1.2.0 to ^1.2.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.2
+
 ## [29.41.4](https://github.com/netlify/build/compare/build-v29.41.3...build-v29.41.4) (2024-05-08)
 
 
