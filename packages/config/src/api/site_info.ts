@@ -31,36 +31,48 @@ export const getSiteInfo = async function ({
   siteId,
   mode,
   siteFeatureFlagPrefix,
+  featureFlags,
   context,
   offline = false,
   testOpts = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
-  if (api === undefined || mode === 'buildbot' || testEnv) {
-    const siteInfo = siteId === undefined ? {} : { id: siteId }
+  const useV1Endpoint = !featureFlags?.integration_installations_meta
 
-    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
+  if (useV1Endpoint) {
+    // Question: When would we ever hit this condition? I.e. what user flow would lead to this?
+    // Answer: Ask Karin, she may know 🤷
+    //
+    // If we can't make a call to getSite then we can't get integrations as we need the accountId for the site
+    if (api === undefined || mode === 'buildbot' || testEnv) {
+      const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-    return { siteInfo, accounts: [], addons: [], integrations }
+      const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
+
+      return { siteInfo, accounts: [], addons: [], integrations }
+    }
+
+    const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
+
+    const promises = [
+      getAccounts(api),
+      getAddons(api, siteId),
+      getIntegrations({ siteId, testOpts, offline, accountId: siteInfo.account_id, featureFlags }),
+    ]
+
+    const [accounts, addons, integrations] = await Promise.all(promises)
+
+    if (siteInfo.use_envelope) {
+      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+
+      siteInfo.build_settings.env = envelope
+    }
+
+    return { siteInfo, accounts, addons, integrations }
+  } else {
+    // add old code back here
   }
-
-  const promises = [
-    getSite(api, siteId, siteFeatureFlagPrefix),
-    getAccounts(api),
-    getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline }),
-  ]
-
-  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
-
-  if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
-
-    siteInfo.build_settings.env = envelope
-  }
-
-  return { siteInfo, accounts, addons, integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string | null = null) {
@@ -100,14 +112,18 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
 
 type GetIntegrationsOpts = {
   siteId?: string
+  accountId?: string
   testOpts: TestOptions
   offline: boolean
+  featureFlags?: Record<string, boolean>
 }
 
 const getIntegrations = async function ({
   siteId,
+  accountId,
   testOpts,
   offline,
+  featureFlags,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
@@ -117,13 +133,20 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
+  const useV1Endpoint = !featureFlags?.integration_installations_meta
+
+  const url = useV1Endpoint
+    ? `${baseUrl}site/${siteId}/integrations/safe`
+    : `${baseUrl}team/${accountId}/integrations/installations/meta`
+
   try {
-    const response = await fetch(`${baseUrl}site/${siteId}/integrations/safe`)
+    const response = await fetch(url)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    // for now, we'll just ignore errors, as this is early days
+    // Integrations should not block the build if they fail to load
+    // TODO: We should consider blocking the build as integrations are a critical part of the build process
     return []
   }
 }
