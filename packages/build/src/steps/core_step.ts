@@ -37,8 +37,10 @@ export const fireCoreStep = async function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
-  outputManager,
+  outputGate,
 }) {
+  const logsA = logs === undefined ? { logFn: console.log, outputGate } : { ...logs, outputGate }
+
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
@@ -56,7 +58,7 @@ export const fireCoreStep = async function ({
       packagePath,
       buildbotServerSocket,
       events,
-      logs,
+      logs: logsA,
       quiet,
       context,
       branch,
@@ -92,7 +94,7 @@ export const fireCoreStep = async function ({
       logs,
       systemLog,
       debug,
-      outputManager,
+      outputGate,
     })
     return {
       newEnvChanges,

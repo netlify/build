@@ -1,7 +1,8 @@
 import { stdout, stderr } from 'process'
 import { promisify } from 'util'
 
-import { OutputManagerTransformer } from './output_manager.js'
+import { logsAreBuffered } from './logger.js'
+import { OutputGateTransformer } from './output_gate.js'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -9,9 +10,9 @@ const pSetTimeout = promisify(setTimeout)
 // We try to use `stdio: inherit` because it keeps `stdout/stderr` as `TTY`,
 // which solves many problems. However we can only do it in build.command.
 // Plugins have several events, so need to be switch on and off instead.
-// In buffer mode (`logs` not `undefined`), `pipe` is necessary.
+// In buffer mode, `pipe` is necessary.
 export const getBuildCommandStdio = function (logs) {
-  if (logs !== undefined) {
+  if (logsAreBuffered(logs)) {
     return 'pipe'
   }
 
@@ -20,7 +21,7 @@ export const getBuildCommandStdio = function (logs) {
 
 // Add build command output
 export const handleBuildCommandOutput = function ({ stdout: commandStdout, stderr: commandStderr }, logs) {
-  if (logs === undefined) {
+  if (!logsAreBuffered(logs)) {
     return
   }
 
@@ -37,12 +38,12 @@ const pushBuildCommandOutput = function (output, logsArray) {
 }
 
 // Start plugin step output
-export const pipePluginOutput = function (childProcess, logs, outputManager) {
-  if (logs === undefined) {
-    return streamOutput(childProcess, outputManager)
+export const pipePluginOutput = function (childProcess, logs, outputGate) {
+  if (!logsAreBuffered(logs)) {
+    return streamOutput(childProcess, outputGate)
   }
 
-  return pushOutputToLogs(childProcess, logs, outputManager)
+  return pushOutputToLogs(childProcess, logs, outputGate)
 }
 
 // Stop streaming/buffering plugin step output
@@ -50,7 +51,7 @@ export const unpipePluginOutput = async function (childProcess, logs, listeners)
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)
 
-  if (logs === undefined) {
+  if (!logsAreBuffered(logs)) {
     return unstreamOutput(childProcess)
   }
 
@@ -58,10 +59,10 @@ export const unpipePluginOutput = async function (childProcess, logs, listeners)
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess, outputManager) {
-  if (outputManager) {
-    childProcess.stdout.pipe(new OutputManagerTransformer(outputManager)).pipe(stdout)
-    childProcess.stderr.pipe(new OutputManagerTransformer(outputManager)).pipe(stderr)
+const streamOutput = function (childProcess, outputGate) {
+  if (outputGate) {
+    childProcess.stdout.pipe(new OutputGateTransformer(outputGate)).pipe(stdout)
+    childProcess.stderr.pipe(new OutputGateTransformer(outputGate)).pipe(stderr)
 
     return
   }
@@ -76,9 +77,9 @@ const unstreamOutput = function (childProcess) {
 }
 
 // In tests, we push to the `logs` array instead
-const pushOutputToLogs = function (childProcess, logs, outputManager) {
-  const stdoutListener = logsListener.bind(null, logs.stdout, outputManager)
-  const stderrListener = logsListener.bind(null, logs.stderr, outputManager)
+const pushOutputToLogs = function (childProcess, logs, outputGate) {
+  const stdoutListener = logsListener.bind(null, logs.stdout, outputGate)
+  const stderrListener = logsListener.bind(null, logs.stderr, outputGate)
 
   childProcess.stdout.on('data', stdoutListener)
   childProcess.stderr.on('data', stderrListener)
@@ -86,9 +87,9 @@ const pushOutputToLogs = function (childProcess, logs, outputManager) {
   return { stdoutListener, stderrListener }
 }
 
-const logsListener = function (logs, outputManager, chunk) {
-  if (outputManager) {
-    outputManager.registerWrite()
+const logsListener = function (logs, outputGate, chunk) {
+  if (outputGate) {
+    outputGate.open()
   }
 
   logs.push(chunk.toString().trimEnd())

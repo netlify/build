@@ -7,7 +7,7 @@ import { roundTimerToMillisecs } from '../../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
 import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, BufferedLogs } from '../logger.js'
-import { OutputManager } from '../output_manager.js'
+import { OutputGate } from '../output_gate.js'
 import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
@@ -30,18 +30,14 @@ export const logBuildError = function ({ error, netlifyConfig, logs, debug }) {
 
 export const logBuildSuccess = function (logs) {
   logHeader(logs, 'Netlify Build Complete')
-  logMessage(logs, '')
 }
 
-export const logTimer = function (logs, prefix, durationNs, timerName, systemLog, outputManager?: OutputManager) {
+export const logTimer = function (logs, durationNs, timerName, systemLog, outputGate?: OutputGate) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
 
-  if (!outputManager || outputManager.isOpen()) {
-    if (typeof prefix === 'string') {
-      log(logs, prefix)
-    }
-
+  if (!outputGate || outputGate.isOpen) {
+    log(logs, '')
     log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
   }
 

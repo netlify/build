@@ -3,7 +3,7 @@ import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
-import { OutputManager } from '../log/output_manager.js'
+import { OutputGate } from '../log/output_gate.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
@@ -117,10 +117,10 @@ export const runStep = async function ({
 
     const logPluginStart = () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
 
-    let outputManager: OutputManager | undefined
+    let outputGate: OutputGate | undefined
 
-    if (coreStepId === undefined && featureFlags.netlify_build_reduced_output) {
-      outputManager = new OutputManager(logPluginStart)
+    if (featureFlags.netlify_build_reduced_output) {
+      outputGate = new OutputGate(logPluginStart)
     } else if (!quiet && !coreStepQuiet) {
       logPluginStart()
     }
@@ -143,7 +143,7 @@ export const runStep = async function ({
       packageName,
       pluginPackageJson,
       loadedFrom,
-      outputManager,
+      outputGate,
       origin,
       coreStep,
       coreStepId,
@@ -201,7 +201,7 @@ export const runStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       logs,
-      outputManager,
+      outputGate,
       debug,
       timers: timersA,
       durationNs,
@@ -304,7 +304,7 @@ const tFireStep = function ({
   packageName,
   pluginPackageJson,
   loadedFrom,
-  outputManager,
+  outputGate,
   origin,
   coreStep,
   coreStepId,
@@ -356,7 +356,7 @@ const tFireStep = function ({
       buildbotServerSocket,
       events,
       logs,
-      outputManager,
+      outputGate,
       quiet,
       nodePath,
       childEnv,
@@ -387,7 +387,7 @@ const tFireStep = function ({
     packagePath,
     pluginPackageJson,
     loadedFrom,
-    outputManager,
+    outputGate,
     origin,
     envChanges,
     errorParams,

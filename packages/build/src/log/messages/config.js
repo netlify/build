@@ -83,13 +83,13 @@ export const logConfig = function ({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-export const logConfigOnUpdate = function ({ logs, netlifyConfig, debug, outputManager }) {
+export const logConfigOnUpdate = function ({ logs, netlifyConfig, debug, outputGate }) {
   if (!debug) {
     return
   }
 
-  if (outputManager) {
-    outputManager.registerWrite()
+  if (outputGate) {
+    outputGate.open()
   }
 
   logSubHeader(logs, 'Updated config')

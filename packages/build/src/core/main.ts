@@ -165,7 +165,7 @@ const handleBuildSuccess = async function ({
 
   logBuildSuccess(logs)
 
-  logTimer(logs, null, durationNs, 'Netlify Build', systemLog)
+  logTimer(logs, durationNs, 'Netlify Build', systemLog)
   await reportTimers(timers, statsdOpts, framework)
   await reportMetrics(statsdOpts, metrics)
 }

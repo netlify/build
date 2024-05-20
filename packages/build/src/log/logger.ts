@@ -4,10 +4,17 @@ import figures from 'figures'
 import indentString from 'indent-string'
 
 import { getHeader } from './header.js'
+import { OutputGate } from './output_gate.js'
 import { serializeArray, serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
-export type BufferedLogs = { stdout: string[]; stderr: string[] }
+export type Logs = BufferedLogs | StreamedLogs
+export type BufferedLogs = { stdout: string[]; stderr: string[]; outputGate?: OutputGate }
+export type StreamedLogs = { logFn: typeof console.log; outputGate?: OutputGate }
+
+export const logsAreBuffered = (logs: Logs): logs is BufferedLogs => {
+  return logs !== undefined && 'stdout' in logs
+}
 
 const INDENT_SIZE = 2
 
@@ -35,7 +42,7 @@ export const getBufferLogs = (config: { buffer?: boolean }): BufferedLogs | unde
 // This should be used instead of `console.log()` as it allows us to instrument
 // how any build logs is being printed.
 export const log = function (
-  logs: BufferedLogs | undefined,
+  logs: Logs | undefined,
   string: string,
   config: { indent?: boolean; color?: (string: string) => string } = {},
 ) {
@@ -44,14 +51,22 @@ export const log = function (
   const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  if (logs !== undefined) {
-    // `logs` is a stateful variable
+  logs?.outputGate?.open()
 
-    logs.stdout.push(stringC)
+  if (logs === undefined) {
+    console.log(stringC)
+
     return
   }
 
-  console.log(stringC)
+  if (logsAreBuffered(logs)) {
+    // `logs` is a stateful variable
+    logs.stdout.push(stringC)
+
+    return
+  }
+
+  logs.logFn(stringC)
 }
 
 const serializeIndentedArray = function (array) {

@@ -20,7 +20,7 @@ export const updateNetlifyConfig = async function ({
   configSideFiles,
   errorParams,
   logs,
-  outputManager,
+  outputGate,
   systemLog,
   debug,
   source = '',
@@ -38,7 +38,7 @@ export const updateNetlifyConfig = async function ({
   const shouldLogConfigMutationsToUser = source !== '' && !source.startsWith('@netlify/')
 
   if (shouldLogConfigMutationsToUser) {
-    logConfigMutations(logs, newConfigMutations, debug, outputManager)
+    logConfigMutations(logs, newConfigMutations, debug, outputGate)
   } else {
     systemLogConfigMutations(systemLog, newConfigMutations)
   }
@@ -49,7 +49,7 @@ export const updateNetlifyConfig = async function ({
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
   } = await resolveUpdatedConfig(configOpts, configMutationsA)
-  logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug, outputManager })
+  logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug, outputGate })
 
   errorParams.netlifyConfig = netlifyConfigA
   return {

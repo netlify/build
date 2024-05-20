@@ -21,7 +21,7 @@ export const getStepReturn = function ({
   headersPath,
   redirectsPath,
   logs,
-  outputManager,
+  outputGate,
   debug,
   timers,
   durationNs,
@@ -48,7 +48,7 @@ export const getStepReturn = function ({
   }
 
   if (!quiet) {
-    logTimer(logs, '', durationNs, timerName, systemLog, outputManager)
+    logTimer(logs, durationNs, timerName, systemLog, outputGate)
   }
 
   return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers, metrics }
