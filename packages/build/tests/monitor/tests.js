@@ -268,12 +268,10 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
   stub.restore()
 })
 
-test.serial.only('Throws a user error when the wrong go version is used', async (t) => {
+test.serial('Throws a user error when the wrong go version is used', async (t) => {
   const logs = await new Fixture('./fixtures/go_version_error')
-    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, debug: true })
+    .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
-
-  console.log(logs)
 
   t.true(logs.includes('"errorClass": "resolveConfig"'))
 })

@@ -1,5 +1,4 @@
 import { readdir, rm, stat, writeFile } from 'fs/promises'
-import { sep } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'

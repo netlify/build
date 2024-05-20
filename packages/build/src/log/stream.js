@@ -1,8 +1,7 @@
 import { stdout, stderr } from 'process'
-import { Transform } from 'stream'
 import { promisify } from 'util'
 
-import { OutputManagerTransformer, OutputManager } from './output_manager.js'
+import { OutputManagerTransformer } from './output_manager.js'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
