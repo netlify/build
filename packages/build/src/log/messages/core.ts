@@ -7,6 +7,7 @@ import { roundTimerToMillisecs } from '../../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
 import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, BufferedLogs } from '../logger.js'
+import { OutputManager } from '../output_manager.js'
 import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
@@ -32,10 +33,18 @@ export const logBuildSuccess = function (logs) {
   logMessage(logs, '')
 }
 
-export const logTimer = function (logs, durationNs, timerName, systemLog) {
+export const logTimer = function (logs, prefix, durationNs, timerName, systemLog, outputManager?: OutputManager) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
-  log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
+
+  if (!outputManager || outputManager.isOpen()) {
+    if (typeof prefix === 'string') {
+      log(logs, prefix)
+    }
+
+    log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
+  }
+
   systemLog(`Build step duration: ${timerName} completed in ${durationMs}ms`)
 }
 

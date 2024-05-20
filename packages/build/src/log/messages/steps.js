@@ -16,7 +16,3 @@ const getDescription = function ({ coreStepDescription, netlifyConfig, packageNa
 export const logBuildCommandStart = function (logs, buildCommand) {
   log(logs, THEME.highlightWords(`$ ${buildCommand}`))
 }
-
-export const logStepSuccess = function (logs) {
-  logMessage(logs, '')
-}

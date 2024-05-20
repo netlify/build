@@ -37,6 +37,7 @@ export const fireCoreStep = async function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
+  outputManager,
 }) {
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -91,6 +92,7 @@ export const fireCoreStep = async function ({
       logs,
       systemLog,
       debug,
+      outputManager,
     })
     return {
       newEnvChanges,

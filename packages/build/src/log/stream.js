@@ -1,5 +1,8 @@
 import { stdout, stderr } from 'process'
+import { Transform } from 'stream'
 import { promisify } from 'util'
+
+import { OutputManagerTransformer, OutputManager } from './output_manager.js'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -35,12 +38,12 @@ const pushBuildCommandOutput = function (output, logsArray) {
 }
 
 // Start plugin step output
-export const pipePluginOutput = function (childProcess, logs) {
+export const pipePluginOutput = function (childProcess, logs, outputManager) {
   if (logs === undefined) {
-    return streamOutput(childProcess)
+    return streamOutput(childProcess, outputManager)
   }
 
-  return pushOutputToLogs(childProcess, logs)
+  return pushOutputToLogs(childProcess, logs, outputManager)
 }
 
 // Stop streaming/buffering plugin step output
@@ -56,7 +59,14 @@ export const unpipePluginOutput = async function (childProcess, logs, listeners)
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess) {
+const streamOutput = function (childProcess, outputManager) {
+  if (outputManager) {
+    childProcess.stdout.pipe(new OutputManagerTransformer(outputManager)).pipe(stdout)
+    childProcess.stderr.pipe(new OutputManagerTransformer(outputManager)).pipe(stderr)
+
+    return
+  }
+
   childProcess.stdout.pipe(stdout)
   childProcess.stderr.pipe(stderr)
 }
@@ -67,15 +77,21 @@ const unstreamOutput = function (childProcess) {
 }
 
 // In tests, we push to the `logs` array instead
-const pushOutputToLogs = function (childProcess, logs) {
-  const stdoutListener = logsListener.bind(null, logs.stdout)
-  const stderrListener = logsListener.bind(null, logs.stderr)
+const pushOutputToLogs = function (childProcess, logs, outputManager) {
+  const stdoutListener = logsListener.bind(null, logs.stdout, outputManager)
+  const stderrListener = logsListener.bind(null, logs.stderr, outputManager)
+
   childProcess.stdout.on('data', stdoutListener)
   childProcess.stderr.on('data', stderrListener)
+
   return { stdoutListener, stderrListener }
 }
 
-const logsListener = function (logs, chunk) {
+const logsListener = function (logs, outputManager, chunk) {
+  if (outputManager) {
+    outputManager.registerWrite()
+  }
+
   logs.push(chunk.toString().trimEnd())
 }
 

@@ -95,7 +95,7 @@ test('Functions: internal functions are cleared on the dev timeline', async (t) 
     code: 'ENOENT',
   })
 
-  const output = await fixture.runDev(() => {})
+  await fixture.runDev(() => {})
 
   // After running Netlify Build, the leftover files should have been removed
   // but the generated files should have been preserved.
@@ -105,9 +105,6 @@ test('Functions: internal functions are cleared on the dev timeline', async (t) 
   await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`), { code: 'ENOENT' })
   await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`)
   await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`)
-
-  t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify${sep}functions-internal, .netlify${sep}edge-functions`))
 })
 
 test('Functions: cleanup is only triggered when there are internal functions', async (t) => {

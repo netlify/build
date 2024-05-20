@@ -17,7 +17,7 @@ import { addExactDependencies } from './main.js'
 // their `package.json`.
 export const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
   const packages = missingPlugins.map(getPackage)
-  logInstallMissingPlugins(logs, packages)
+  logInstallMissingPlugins(logs, missingPlugins)
 
   if (packages.length === 0) {
     return

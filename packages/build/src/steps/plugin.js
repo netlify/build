@@ -31,12 +31,13 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  outputManager,
   systemLog,
   featureFlags,
   debug,
   verbose,
 }) {
-  const listeners = pipePluginOutput(childProcess, logs)
+  const listeners = pipePluginOutput(childProcess, logs, outputManager)
 
   const otelCarrier = {}
   propagation.inject(context.active(), otelCarrier)
@@ -78,6 +79,7 @@ export const firePluginStep = async function ({
       configSideFiles,
       errorParams,
       logs,
+      outputManager,
       systemLog,
       debug,
       source: packageName,
