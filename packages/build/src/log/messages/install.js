@@ -1,8 +1,8 @@
 import { isRuntime } from '../../utils/runtime.js'
 import { log, logArray, logSubHeader } from '../logger.js'
 
-export const logInstallMissingPlugins = function (logs, packages) {
-  const plugins = packages.filter((pkg) => !isRuntime(pkg))
+export const logInstallMissingPlugins = function (logs, missingPlugins, packages) {
+  const plugins = missingPlugins.filter((pkg) => !isRuntime(pkg))
 
   if (plugins.length !== 0) {
     logSubHeader(logs, 'Installing plugins')
