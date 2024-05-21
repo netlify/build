@@ -1,4 +1,4 @@
-const module = require('encoding')
+const module = require('missing-dep')
 
 console.log(module)
 
