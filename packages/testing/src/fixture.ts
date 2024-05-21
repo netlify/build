@@ -270,6 +270,7 @@ export class Fixture {
 
   /** Run the @netlify/config wrapped with a server and and the provided handler */
   runConfigServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+    console.log('test')
     return this.runServer(this.runWithConfig, handler)
   }
 
