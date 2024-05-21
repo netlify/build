@@ -3,6 +3,7 @@ import { version as nodeVersion } from 'process'
 
 import { findUp } from 'find-up'
 import { pathExists } from 'path-exists'
+// @ts-expect-error doesnt export async
 import { async as asyncResolve } from 'resolve'
 import semver from 'semver'
 

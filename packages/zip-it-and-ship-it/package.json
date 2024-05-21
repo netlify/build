@@ -16,7 +16,7 @@
     "build": "tsc",
     "build:dev": "tsc -w",
     "benchmark": "./benchmarks/run.sh",
-    "test": "run-s build format && vitest run",
+    "test": "vitest run",
     "test:dev": "vitest",
     "test:ci": "npm run build && vitest run"
   },

@@ -1,5 +1,5 @@
 import { URLPattern } from 'urlpattern-polyfill'
 
 export class ExtendedURLPattern extends URLPattern {
-  regexp: Record<string, RegExp>
+  declare regexp: Record<string, RegExp>
 }
