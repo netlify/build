@@ -45,21 +45,13 @@ export const getSiteInfo = async function ({
   const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
   const featureFlags = siteInfo.feature_flags
 
-  const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
+  const useV2Endpoint = featureFlags?.cli_integration_installations_meta
 
-  if (useV1Endpoint) {
-    if (mode === 'buildbot') {
-      const siteInfo = siteId === undefined ? {} : { id: siteId }
-
-      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
-
-      return { siteInfo, accounts: [], addons: [], integrations }
-    }
-
+  if (useV2Endpoint) {
     const promises = [
       getAccounts(api),
       getAddons(api, siteId),
-      getIntegrations({ siteId, testOpts, offline, featureFlags }),
+      getIntegrations({ siteId, testOpts, offline, accountId: siteInfo.account_id, featureFlags }),
     ]
 
     const [accounts, addons, integrations] = await Promise.all(promises)
@@ -72,10 +64,18 @@ export const getSiteInfo = async function ({
 
     return { siteInfo, accounts, addons, integrations }
   } else {
+    if (mode === 'buildbot') {
+      const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
+
+      return { siteInfo, accounts: [], addons: [], integrations }
+    }
+
     const promises = [
       getAccounts(api),
       getAddons(api, siteId),
-      getIntegrations({ siteId, testOpts, offline, accountId: siteInfo.account_id, featureFlags }),
+      getIntegrations({ siteId, testOpts, offline, featureFlags }),
     ]
 
     const [accounts, addons, integrations] = await Promise.all(promises)
@@ -154,11 +154,11 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
-  const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
+  const useV2Endpoint = featureFlags?.cli_integration_installations_meta
 
-  const url = useV1Endpoint
-    ? `${baseUrl}site/${siteId}/integrations/safe`
-    : `${baseUrl}team/${accountId}/integrations/installations/meta`
+  const url = useV2Endpoint
+    ? `${baseUrl}team/${accountId}/integrations/installations/meta`
+    : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
     const response = await fetch(url)
