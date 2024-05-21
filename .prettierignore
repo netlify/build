@@ -4,6 +4,7 @@ packages/*/test/**/fixtures/**
 packages/framework-info/test/fixtures/**
 # don't lint outputs
 packages/*/lib
+packages/*/dist
 # don't lint deno files
 packages/edge-bundler/deno/**
 # don't lint vendored files
