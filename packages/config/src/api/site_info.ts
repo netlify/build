@@ -14,7 +14,6 @@ type GetSiteInfoOpts = {
   offline?: boolean
   api?: NetlifyAPI
   context?: string
-  //featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
 }
 /**
