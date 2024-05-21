@@ -89,7 +89,7 @@ const pushOutputToLogs = function (childProcess, logs, outputFlusher) {
 
 const logsListener = function (logs, outputFlusher, chunk) {
   if (outputFlusher) {
-    outputFlusher.open()
+    outputFlusher.flush()
   }
 
   logs.push(chunk.toString().trimEnd())
