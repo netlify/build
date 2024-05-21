@@ -14,8 +14,6 @@ declare global {
 
 // CLI entry point
 const runCli = async function () {
-  // @ts-expect-error TODO: `destFolder` and  `srcFolder` are not being passed
-  // back from `parseArgs()`.
   const { destFolder, srcFolder, ...options } = parseArgs()
 
   try {

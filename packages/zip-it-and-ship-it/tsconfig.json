@@ -1,22 +1,8 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "incremental": true,
-    "lib": ["es2020"],
-    "target": "es2020",
-    "module": "node16",
-    "moduleResolution": "Node16",
-    "declaration": true,
-    "declarationMap": false,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "removeComments": false,
-    "downlevelIteration": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "useUnknownInCatchVariables": false,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "outDir": "dist", /* Specify an output folder for all emitted files. */
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["tests/**"]
 }
