@@ -14,7 +14,7 @@ type GetSiteInfoOpts = {
   offline?: boolean
   api?: NetlifyAPI
   context?: string
-  featureFlags?: Record<string, boolean>
+  //featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
 }
 /**
@@ -31,28 +31,49 @@ export const getSiteInfo = async function ({
   siteId,
   mode,
   siteFeatureFlagPrefix,
-  featureFlags,
   context,
   offline = false,
   testOpts = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
-  const useV1Endpoint = !featureFlags?.integration_installations_meta
+  if (api === undefined || testEnv) {
+    const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+    return { siteInfo, accounts: [], addons: [], integrations: [] }
+  }
+
+  const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
+  const featureFlags = siteInfo.feature_flags
+
+  const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
+  console.log(useV1Endpoint, featureFlags)
 
   if (useV1Endpoint) {
-    // Question: When would we ever hit this condition? I.e. what user flow would lead to this?
-    // Answer: Ask Karin, she may know 🤷
-    //
-    // If we can't make a call to getSite then we can't get integrations as we need the accountId for the site
-    if (api === undefined || mode === 'buildbot' || testEnv) {
+    if (mode === 'buildbot') {
       const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-      const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
+      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
 
       return { siteInfo, accounts: [], addons: [], integrations }
     }
 
+    const promises = [
+      getAccounts(api),
+      getAddons(api, siteId),
+      getIntegrations({ siteId, testOpts, offline, featureFlags }),
+    ]
+
+    const [accounts, addons, integrations] = await Promise.all(promises)
+
+    if (siteInfo.use_envelope) {
+      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+
+      siteInfo.build_settings.env = envelope
+    }
+
+    return { siteInfo, accounts, addons, integrations }
+  } else {
     const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
 
     const promises = [
@@ -70,8 +91,6 @@ export const getSiteInfo = async function ({
     }
 
     return { siteInfo, accounts, addons, integrations }
-  } else {
-    // add old code back here
   }
 }
 

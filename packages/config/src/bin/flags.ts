@@ -15,6 +15,8 @@ export const parseFlags = function () {
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   const flagsA = { ...flags, featureFlags }
   const flagsB = includeKeys(flagsA, isUserFlag)
+  // log every single flag declaration here
+
   return flagsB
 }
 
@@ -168,6 +170,11 @@ Default: false`,
   buffer: {
     boolean: true,
     describe: 'Buffer output instead of streaming it',
+    hidden: true,
+  },
+  lewistest: {
+    boolean: true,
+    describe: 'Enable Lewis test mode',
     hidden: true,
   },
 }
