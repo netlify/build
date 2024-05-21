@@ -76,7 +76,7 @@
     "@netlify/functions-utils": "^5.2.56",
     "@netlify/git-utils": "^5.1.1",
     "@netlify/opentelemetry-utils": "^1.2.1",
-    "@netlify/plugins-list": "^6.78.0",
+    "@netlify/plugins-list": "^6.79.0",
     "@netlify/run-utils": "^5.1.1",
     "@netlify/zip-it-and-ship-it": "9.32.2",
     "@sindresorhus/slugify": "^2.0.0",
