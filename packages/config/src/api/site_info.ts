@@ -37,28 +37,24 @@ export const getSiteInfo = async function ({
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
-  console.log('siteInfo', testEnv, api)
-  if (api === undefined || testEnv) {
+  if (api === undefined || testEnv || offline) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
     return { siteInfo, accounts: [], addons: [], integrations: [] }
   }
 
   const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
-  console.log(siteInfo, 'siteInfo')
   const featureFlags = siteInfo.feature_flags
 
   const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
-  console.log(useV1Endpoint, featureFlags)
 
   if (useV1Endpoint) {
     if (mode === 'buildbot') {
-      throw new Error('ava sucks')
-      // const siteInfo = siteId === undefined ? {} : { id: siteId }
-      //
-      // const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
-      //
-      // return { siteInfo, accounts: [], addons: [], integrations }
+      const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
+
+      return { siteInfo, accounts: [], addons: [], integrations }
     }
 
     const promises = [
@@ -77,8 +73,6 @@ export const getSiteInfo = async function ({
 
     return { siteInfo, accounts, addons, integrations }
   } else {
-    const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
-
     const promises = [
       getAccounts(api),
       getAddons(api, siteId),
