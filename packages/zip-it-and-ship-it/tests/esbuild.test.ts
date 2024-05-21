@@ -6,7 +6,6 @@ import { NODE_BUNDLER } from '../src/runtimes/node/bundlers/types.js'
 
 import { zipFixture } from './helpers/main.js'
 
-// eslint-disable-next-line import/no-unassigned-import
 import 'source-map-support/register'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))

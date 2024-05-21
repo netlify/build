@@ -1,4 +1,3 @@
-/* eslint-disable max-statements */
 import assert from 'assert'
 import { performance, PerformanceObserver } from 'perf_hooks'
 import { fileURLToPath } from 'url'

@@ -4,7 +4,7 @@ import { TestAPI, describe, test } from 'vitest'
 
 import type { Config } from '../../src/config'
 import type { FeatureFlags } from '../../src/feature_flags'
-import { NodeBundlerName, NODE_BUNDLER } from '../../src/main'
+import { NodeBundlerName, NODE_BUNDLER } from '../../src/main.js'
 
 interface TestRunnerOptions {
   config: Config
