@@ -12,31 +12,14 @@
     "dist/**/*.d.ts"
   ],
   "scripts": {
-    "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
-    "prepublishOnly": "npm ci && npm test",
     "prepack": "npm run build",
     "build": "tsc",
     "build:dev": "tsc -w",
     "benchmark": "./benchmarks/run.sh",
-    "format": "run-s build format:check-fix:*",
-    "format:ci": "run-s build format:check:*",
-    "format:check-fix:lint": "run-e format:check:lint format:fix:lint",
-    "format:check:lint": "cross-env-shell eslint $npm_package_config_eslint",
-    "format:fix:lint": "cross-env-shell eslint --fix $npm_package_config_eslint",
-    "format:check-fix:prettier": "run-e format:check:prettier format:fix:prettier",
-    "format:check:prettier": "cross-env-shell prettier --check $npm_package_config_prettier",
-    "format:fix:prettier": "cross-env-shell prettier --write $npm_package_config_prettier",
     "test": "run-s build format && vitest run",
     "test:dev": "vitest",
     "test:ci": "npm run build && vitest run"
   },
-  "config": {
-    "eslint": "--report-unused-disable-directives --ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,tests,.github}/**/*.{mjs,cjs,js,mts,cts,ts,md,html}\" \"*.{cjs,mjs,js,cts,mts,ts,md,html}\" \".*.{cjs,mjs,js,cts,mts,ts,md,html}\"",
-    "prettier": "--loglevel=warn \"{src,tests,.github}/**/*.{cjs,mjs,js,cts,mts,ts,md,yml,json,html}\" \"*.{cjs,mjs,js,cts,mts,ts,yml,json,html}\" \".*.{cjs,mjs,js,cts,mts,ts,yml,json,html}\" \"!package-lock.json\""
-  },
-  "eslintIgnore": [
-    "benchmarks/fixtures/**"
-  ],
   "keywords": [
     "api",
     "bundler",
@@ -48,10 +31,14 @@
   ],
   "author": "Netlify, Inc",
   "license": "MIT",
-  "repository": "https://github.com/netlify/zip-it-and-ship-it",
-  "homepage": "https://github.com/netlify/zip-it-and-ship-it#README",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/zip-it-and-ship-it"
+  },
+  "homepage": "https://github.com/netlify/build/tree/main/packages/zip-it-and-ship-it#README",
   "bugs": {
-    "url": "https://github.com/netlify/zip-it-and-ship-it/issues"
+    "url": "https://github.com/netlify/build/issues"
   },
   "dependencies": {
     "@babel/parser": "^7.22.5",
@@ -89,7 +76,6 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "@netlify/eslint-config-node": "7.0.1",
     "@types/archiver": "5.3.4",
     "@types/glob": "8.1.0",
     "@types/is-ci": "3.0.4",
@@ -108,7 +94,6 @@
     "decompress": "4.2.1",
     "deepmerge": "4.3.1",
     "get-stream": "8.0.1",
-    "husky": "8.0.3",
     "is-ci": "3.0.1",
     "lambda-local": "2.2.0",
     "npm-run-all": "4.1.5",
