@@ -5,14 +5,10 @@ import { pathExists } from 'path-exists'
 
 import { log, logMessage, logSubHeader } from '../logger.js'
 
-export const logConfigMutations = function (logs, newConfigMutations, debug, outputGate) {
+export const logConfigMutations = function (logs, newConfigMutations, debug) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
   configMutationsToLog.forEach(({ keysString, value }) => {
     const message = getConfigMutationLog(keysString, value)
-
-    if (outputGate) {
-      outputGate.open()
-    }
 
     log(logs, message)
   })

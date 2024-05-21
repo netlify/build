@@ -115,13 +115,18 @@ export const runStep = async function ({
       return {}
     }
 
-    const logPluginStart = () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+    const logPluginStart =
+      !quiet && !coreStepQuiet
+        ? () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+        : () => {
+            // no-op
+          }
 
     let outputGate: OutputGate | undefined
 
     if (featureFlags.netlify_build_reduced_output) {
       outputGate = new OutputGate(logPluginStart)
-    } else if (!quiet && !coreStepQuiet) {
+    } else {
       logPluginStart()
     }
 

@@ -1,5 +1,6 @@
 import { setEnvChanges } from '../env/changes.js'
 import { addErrorInfo, isBuildError } from '../error/info.js'
+import { addOutputGate } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
@@ -39,7 +40,7 @@ export const fireCoreStep = async function ({
   deployId,
   outputGate,
 }) {
-  const logsA = logs === undefined ? { logFn: console.log, outputGate } : { ...logs, outputGate }
+  const logsA = addOutputGate(logs, outputGate)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -91,10 +92,9 @@ export const fireCoreStep = async function ({
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
       systemLog,
       debug,
-      outputGate,
     })
     return {
       newEnvChanges,

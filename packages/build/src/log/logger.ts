@@ -10,9 +10,9 @@ import { THEME } from './theme.js'
 
 export type Logs = BufferedLogs | StreamedLogs
 export type BufferedLogs = { stdout: string[]; stderr: string[]; outputGate?: OutputGate }
-export type StreamedLogs = { logFn: typeof console.log; outputGate?: OutputGate }
+export type StreamedLogs = { outputGate?: OutputGate }
 
-export const logsAreBuffered = (logs: Logs): logs is BufferedLogs => {
+export const logsAreBuffered = (logs: Logs | undefined): logs is BufferedLogs => {
   return logs !== undefined && 'stdout' in logs
 }
 
@@ -53,12 +53,6 @@ export const log = function (
 
   logs?.outputGate?.open()
 
-  if (logs === undefined) {
-    console.log(stringC)
-
-    return
-  }
-
   if (logsAreBuffered(logs)) {
     // `logs` is a stateful variable
     logs.stdout.push(stringC)
@@ -66,7 +60,7 @@ export const log = function (
     return
   }
 
-  logs.logFn(stringC)
+  console.log(stringC)
 }
 
 const serializeIndentedArray = function (array) {
@@ -192,4 +186,17 @@ export const getSystemLogger = function (
   })
 
   return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
+}
+
+export const addOutputGate = (logs: Logs, outputGate: OutputGate): Logs => {
+  if (logsAreBuffered(logs)) {
+    return {
+      ...logs,
+      outputGate,
+    }
+  }
+
+  return {
+    outputGate,
+  }
 }
