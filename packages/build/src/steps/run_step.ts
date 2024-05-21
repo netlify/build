@@ -3,7 +3,7 @@ import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
-import { OutputGate } from '../log/output_gate.js'
+import { OutputFlusher } from '../log/output_flusher.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
@@ -122,10 +122,10 @@ export const runStep = async function ({
             // no-op
           }
 
-    let outputGate: OutputGate | undefined
+    let outputFlusher: OutputFlusher | undefined
 
     if (featureFlags.netlify_build_reduced_output) {
-      outputGate = new OutputGate(logPluginStart)
+      outputFlusher = new OutputFlusher(logPluginStart)
     } else {
       logPluginStart()
     }
@@ -148,7 +148,7 @@ export const runStep = async function ({
       packageName,
       pluginPackageJson,
       loadedFrom,
-      outputGate,
+      outputFlusher,
       origin,
       coreStep,
       coreStepId,
@@ -206,7 +206,7 @@ export const runStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       logs,
-      outputGate,
+      outputFlusher,
       debug,
       timers: timersA,
       durationNs,
@@ -309,7 +309,7 @@ const tFireStep = function ({
   packageName,
   pluginPackageJson,
   loadedFrom,
-  outputGate,
+  outputFlusher,
   origin,
   coreStep,
   coreStepId,
@@ -361,7 +361,7 @@ const tFireStep = function ({
       buildbotServerSocket,
       events,
       logs,
-      outputGate,
+      outputFlusher,
       quiet,
       nodePath,
       childEnv,
@@ -392,7 +392,7 @@ const tFireStep = function ({
     packagePath,
     pluginPackageJson,
     loadedFrom,
-    outputGate,
+    outputFlusher,
     origin,
     envChanges,
     errorParams,

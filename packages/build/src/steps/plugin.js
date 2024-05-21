@@ -32,18 +32,18 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
-  outputGate,
+  outputFlusher,
   systemLog,
   featureFlags,
   debug,
   verbose,
 }) {
-  const listeners = pipePluginOutput(childProcess, logs, outputGate)
+  const listeners = pipePluginOutput(childProcess, logs, outputFlusher)
 
   const otelCarrier = {}
   propagation.inject(context.active(), otelCarrier)
 
-  const logsA = addOutputGate(logs, outputGate)
+  const logsA = addOutputGate(logs, outputFlusher)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])

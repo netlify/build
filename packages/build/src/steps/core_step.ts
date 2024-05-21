@@ -38,9 +38,9 @@ export const fireCoreStep = async function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
-  outputGate,
+  outputFlusher,
 }) {
-  const logsA = addOutputGate(logs, outputGate)
+  const logsA = addOutputGate(logs, outputFlusher)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])

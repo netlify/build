@@ -4,13 +4,13 @@ import figures from 'figures'
 import indentString from 'indent-string'
 
 import { getHeader } from './header.js'
-import { OutputGate } from './output_gate.js'
+import { OutputFlusher } from './output_flusher.js'
 import { serializeArray, serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
 export type Logs = BufferedLogs | StreamedLogs
-export type BufferedLogs = { stdout: string[]; stderr: string[]; outputGate?: OutputGate }
-export type StreamedLogs = { outputGate?: OutputGate }
+export type BufferedLogs = { stdout: string[]; stderr: string[]; outputFlusher?: OutputFlusher }
+export type StreamedLogs = { outputFlusher?: OutputFlusher }
 
 export const logsAreBuffered = (logs: Logs | undefined): logs is BufferedLogs => {
   return logs !== undefined && 'stdout' in logs
@@ -51,7 +51,7 @@ export const log = function (
   const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  logs?.outputGate?.open()
+  logs?.outputFlusher?.flush()
 
   if (logsAreBuffered(logs)) {
     // `logs` is a stateful variable
@@ -188,15 +188,15 @@ export const getSystemLogger = function (
   return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
 }
 
-export const addOutputGate = (logs: Logs, outputGate: OutputGate): Logs => {
+export const addOutputGate = (logs: Logs, outputFlusher: OutputFlusher): Logs => {
   if (logsAreBuffered(logs)) {
     return {
       ...logs,
-      outputGate,
+      outputFlusher,
     }
   }
 
   return {
-    outputGate,
+    outputFlusher,
   }
 }
