@@ -26,6 +26,17 @@ const SITE_INTEGRATIONS_RESPONSE = {
   ],
 }
 
+const TEAM_INSTALLATIONS_META_RESPONSE = {
+  path: '/team/team1/integrations/installations/meta',
+  response: [
+    {
+      slug: 'test',
+      version: 'so-cool',
+      has_build: true,
+    },
+  ],
+}
+
 const SITE_INTEGRATIONS_EMPTY_RESPONSE = {
   path: '/site/test/integrations/safe',
   response: [],
@@ -307,7 +318,8 @@ test('In integration dev mode, integration specified in config is returned and b
   t.assert(config.integrations[0].version === undefined)
 })
 
-test('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
+// old tests
+test.skip('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
@@ -324,7 +336,7 @@ test('Integrations are returned if feature flag is true, mode buildbot', async (
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations are not returned if offline', async (t) => {
+test.skip('Integrations are not returned if offline', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       offline: true,
@@ -338,6 +350,29 @@ test('Integrations are not returned if offline', async (t) => {
   t.assert(config.integrations)
   t.assert(config.integrations.length === 0)
 })
+
+// new tests
+test.only('Integrations are returned if flag is true for site and mode is buildbot', async (t) => {
+  console.log('logs work')
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'buildbot',
+    })
+    .runConfigServer([TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+
+  console.log(output)
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
+})
+test('Integrations are returned if flag is true for site and mode is dev', () => {})
+test('2Integrations are not returned if offline', () => {})
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
   const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)

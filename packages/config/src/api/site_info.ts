@@ -37,6 +37,7 @@ export const getSiteInfo = async function ({
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
+  console.log('siteInfo', testEnv, api)
   if (api === undefined || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
@@ -44,6 +45,7 @@ export const getSiteInfo = async function ({
   }
 
   const siteInfo = await getSite(api, siteId, siteFeatureFlagPrefix)
+  console.log(siteInfo, 'siteInfo')
   const featureFlags = siteInfo.feature_flags
 
   const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
@@ -51,11 +53,12 @@ export const getSiteInfo = async function ({
 
   if (useV1Endpoint) {
     if (mode === 'buildbot') {
-      const siteInfo = siteId === undefined ? {} : { id: siteId }
-
-      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
-
-      return { siteInfo, accounts: [], addons: [], integrations }
+      throw new Error('ava sucks')
+      // const siteInfo = siteId === undefined ? {} : { id: siteId }
+      //
+      // const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
+      //
+      // return { siteInfo, accounts: [], addons: [], integrations }
     }
 
     const promises = [
@@ -104,6 +107,8 @@ const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlag
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    // Added to satisfy TypeScript only an object can be returned
+    return { id: siteId }
   }
 }
 
@@ -113,6 +118,8 @@ const getAccounts = async function (api: NetlifyAPI) {
     return Array.isArray(accounts) ? accounts : []
   } catch (error) {
     throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    // Added to satisfy TypeScript only an array can be returned
+    return []
   }
 }
 
@@ -126,6 +133,8 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
     return Array.isArray(addons) ? addons : []
   } catch (error) {
     throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    // Added to satisfy TypeScript only an array can be returned
+    return []
   }
 }
 
@@ -160,6 +169,8 @@ const getIntegrations = async function ({
 
   try {
     const response = await fetch(url)
+
+    console.log(response.status, response.statusText, url)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
