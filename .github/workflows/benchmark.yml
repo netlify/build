@@ -1,10 +1,12 @@
-name: Benchmark
+name: Benchmark ZISI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+    paths:
+      - 'packages/zip-it-and-ship-it/**'
   workflow_dispatch:
 
 jobs:
@@ -25,6 +27,7 @@ jobs:
 
       - name: Run benchmarks
         run: npm run benchmark
+        working-directory: packages/zip-it-and-ship-it
 
       - name: Run Delta
         uses: netlify/delta-action@v4
