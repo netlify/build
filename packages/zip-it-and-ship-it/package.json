@@ -5,7 +5,7 @@
   "main": "./dist/main.js",
   "type": "module",
   "bin": {
-    "zip-it-and-ship-it": "dist/bin.js"
+    "zip-it-and-ship-it": "./bin.js"
   },
   "files": [
     "dist/**/*.js",
