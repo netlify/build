@@ -164,8 +164,6 @@ const getIntegrations = async function ({
   try {
     const response = await fetch(url)
 
-    console.log(response.status, response.statusText, url)
-
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
