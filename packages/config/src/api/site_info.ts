@@ -152,7 +152,7 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
-  const useV1Endpoint = !featureFlags?.integration_installations_meta
+  const useV1Endpoint = !featureFlags?.cli_integration_installations_meta
 
   const url = useV1Endpoint
     ? `${baseUrl}site/${siteId}/integrations/safe`
