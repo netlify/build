@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.42.0](https://github.com/netlify/build/compare/build-v29.41.6...build-v29.42.0) (2024-05-22)
+
+
+### Features
+
+* reduce build log verbosity ([#5643](https://github.com/netlify/build/issues/5643)) ([58def4f](https://github.com/netlify/build/commit/58def4f72eec4c1eb20cddceab0d8fd3c4420e45))
+
 ## [29.41.6](https://github.com/netlify/build/compare/build-v29.41.5...build-v29.41.6) (2024-05-22)
 
 
