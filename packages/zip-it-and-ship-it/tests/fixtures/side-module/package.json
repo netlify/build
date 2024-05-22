@@ -1,0 +1,7 @@
+{
+  "name": "local-node-module",
+  "version": "1.0.0",
+  "dependencies": {
+    "@prisma/client": "^3.0.0"
+  }
+}
