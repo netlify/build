@@ -8,7 +8,8 @@ import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
 
 // Parse CLI flags
 export const parseFlags = function () {
-  // @ts-expect-error: `yargs` types are incorrect
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: `yargs` types are incorrect
   const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
     .options(FLAGS)
     .usage(USAGE)
