@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.42.1](https://github.com/netlify/build/compare/build-v29.42.0...build-v29.42.1) (2024-05-22)
+
+
+### Bug Fixes
+
+* flush output from "Deploy site" step ([#5652](https://github.com/netlify/build/issues/5652)) ([076b4b0](https://github.com/netlify/build/commit/076b4b07c4595d943b0375edffe97eac22910cfd))
+
 ## [29.42.0](https://github.com/netlify/build/compare/build-v29.41.6...build-v29.42.0) (2024-05-22)
 
 
