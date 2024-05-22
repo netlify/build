@@ -1,0 +1,3 @@
+paths-ignore:
+  - packages/zip-it-and-ship-it/benchmarks/fixtures
+  - packages/zip-it-and-ship-it/tests/fixtures
