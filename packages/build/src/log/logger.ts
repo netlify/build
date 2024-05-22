@@ -3,6 +3,8 @@ import { createWriteStream } from 'fs'
 import figures from 'figures'
 import indentString from 'indent-string'
 
+import type { SystemLogger } from '../plugins_core/types.js'
+
 import { getHeader } from './header.js'
 import { OutputFlusher } from './output_flusher.js'
 import { serializeArray, serializeObject } from './serialize.js'
@@ -162,7 +164,7 @@ export const getSystemLogger = function (
   debug: boolean,
   /** A system log file descriptor, if non is provided it will be a noop logger */
   systemLogFile?: number,
-): (...args: any[]) => void {
+): SystemLogger {
   // If the `debug` flag is used, we return a function that pipes system logs
   // to the regular logger, as the intention is for them to end up in stdout.
   if (debug) {
