@@ -3,6 +3,7 @@ import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
+import { OutputFlusher } from '../log/output_flusher.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
@@ -114,8 +115,19 @@ export const runStep = async function ({
       return {}
     }
 
-    if (!quiet && !coreStepQuiet) {
-      logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+    const logPluginStart =
+      !quiet && !coreStepQuiet
+        ? () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+        : () => {
+            // no-op
+          }
+
+    let outputFlusher: OutputFlusher | undefined
+
+    if (featureFlags.netlify_build_reduced_output) {
+      outputFlusher = new OutputFlusher(logPluginStart)
+    } else {
+      logPluginStart()
     }
 
     const fireStep = getFireStep(packageName, coreStepId, event)
@@ -136,6 +148,7 @@ export const runStep = async function ({
       packageName,
       pluginPackageJson,
       loadedFrom,
+      outputFlusher,
       origin,
       coreStep,
       coreStepId,
@@ -193,6 +206,7 @@ export const runStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       logs,
+      outputFlusher,
       debug,
       timers: timersA,
       durationNs,
@@ -295,6 +309,7 @@ const tFireStep = function ({
   packageName,
   pluginPackageJson,
   loadedFrom,
+  outputFlusher,
   origin,
   coreStep,
   coreStepId,
@@ -346,6 +361,7 @@ const tFireStep = function ({
       buildbotServerSocket,
       events,
       logs,
+      outputFlusher,
       quiet,
       nodePath,
       childEnv,
@@ -376,6 +392,7 @@ const tFireStep = function ({
     packagePath,
     pluginPackageJson,
     loadedFrom,
+    outputFlusher,
     origin,
     envChanges,
     errorParams,

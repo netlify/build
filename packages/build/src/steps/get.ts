@@ -67,6 +67,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
       coreStepId: `options_${event}`,
       coreStepName: `options.${event}`,
       coreStepDescription: () => description,
+      quiet: eventHandler.quiet,
     }
   })
 }
