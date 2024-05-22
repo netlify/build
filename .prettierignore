@@ -1,9 +1,11 @@
 # don't format fixtures (sometimes faulty behaviour is desired)
 packages/*/tests/**/fixtures/**
-packages/*/test/**/fixtures/**
+packages/*/test/**/fixtures*/**
+packages/*/benchmarks/**/fixtures*/**
 packages/framework-info/test/fixtures/**
 # don't lint outputs
 packages/*/lib
+packages/*/dist
 # don't lint deno files
 packages/edge-bundler/deno/**
 # don't lint vendored files

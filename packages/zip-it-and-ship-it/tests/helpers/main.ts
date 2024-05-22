@@ -131,7 +131,6 @@ export const unzipFiles = async function (files: FunctionResult[]): Promise<Test
       const dest = join(dirname(path), name)
       await unzipFile(path, dest)
 
-      // eslint-disable-next-line no-param-reassign
       files[key].unzipPath = dest
     }),
   )
@@ -142,7 +141,6 @@ export const unzipFiles = async function (files: FunctionResult[]): Promise<Test
 const unzipFile = async function (path: string, dest: string): Promise<void> {
   await mkdir(dest, { recursive: true })
 
-  // eslint-disable-next-line unicorn/prefer-ternary
   if (platform === 'win32') {
     await execa('tar', ['-xf', path, '-C', dest])
   } else {
@@ -190,7 +188,6 @@ export const getRequires = async function (
 // Import a file exporting a function.
 // Returns `default` exports as is.
 export const importFunctionFile = async function <T = any>(functionPath: string): Promise<T> {
-  // eslint-disable-next-line import/no-dynamic-require
   const result = await import(functionPath)
   return result.default === undefined ? result : result.default
 }

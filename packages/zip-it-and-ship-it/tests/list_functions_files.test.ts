@@ -3,9 +3,9 @@ import { join } from 'path'
 import merge from 'deepmerge'
 import { describe, expect, test, vi } from 'vitest'
 
-import { listFunctionsFiles } from '../src/main'
+import { listFunctionsFiles } from '../src/main.js'
 
-import { FIXTURES_DIR, normalizeFiles } from './helpers/main'
+import { FIXTURES_DIR, normalizeFiles } from './helpers/main.js'
 import { allBundleConfigs, testMany } from './helpers/test_many.js'
 
 describe('listFunctionsFiles', () => {

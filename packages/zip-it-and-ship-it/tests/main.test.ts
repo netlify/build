@@ -36,7 +36,6 @@ import {
 import { computeSha1 } from './helpers/sha.js'
 import { allBundleConfigs, testMany } from './helpers/test_many.js'
 
-// eslint-disable-next-line import/no-unassigned-import
 import 'source-map-support/register'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
@@ -1566,7 +1565,6 @@ describe('zip-it-and-ship-it', () => {
     const values = func('one')
     const expectedLength = 5
 
-    // eslint-disable-next-line unicorn/new-for-builtins
     expect(values).toEqual(Array(expectedLength).fill(true))
     expect(() => func('two')).toThrowError()
   })
@@ -1582,7 +1580,7 @@ describe('zip-it-and-ship-it', () => {
     const functionSource = await readFile(`${files[0].unzipPath}/function.js`, 'utf8')
 
     expect(functionSource).toMatch('const require1 = require(number)')
-    // eslint-disable-next-line no-template-curly-in-string
+
     expect(functionSource).toMatch('const require2 = require(`${number}.json`);')
     expect(functionSource).toMatch('const require3 = require(foo(number));')
   })
@@ -1953,7 +1951,6 @@ describe('zip-it-and-ship-it', () => {
     const tmpDirectory = await tmpName({ prefix: `zip-it-test` })
 
     vi.mocked(shellUtils.runCommand).mockImplementation(async (...args) => {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       const [rootCommand, , { cwd = undefined, env: environment = undefined } = {}] = args
 
       if (rootCommand === 'cargo') {

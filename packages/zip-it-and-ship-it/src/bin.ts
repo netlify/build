@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readFileSync } from 'fs'
 import { argv, exit } from 'process'
 
 import yargs from 'yargs'
@@ -7,6 +8,8 @@ import { hideBin } from 'yargs/helpers'
 import { ARCHIVE_FORMAT } from './archive.js'
 import { zipFunctions } from './main.js'
 
+const packJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+
 declare global {
   // eslint-disable-next-line no-var
   var ZISI_CLI: boolean
@@ -14,8 +17,7 @@ declare global {
 
 // CLI entry point
 const runCli = async function () {
-  // @ts-expect-error TODO: `destFolder` and  `srcFolder` are not being passed
-  // back from `parseArgs()`.
+  // @ts-expect-error TODO: not returning the right types
   const { destFolder, srcFolder, ...options } = parseArgs()
 
   try {
@@ -35,6 +37,7 @@ const parseArgs = function () {
     .command('* <srcFolder> <destFolder>', 'Create ZIP archives from a directory')
     .options(OPTIONS)
     .usage(USAGE)
+    .version(packJson.version)
     .strict()
     .parse()
 }

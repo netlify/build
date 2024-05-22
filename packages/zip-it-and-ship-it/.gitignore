@@ -1,14 +1,4 @@
-*~
-*.swp
-npm-debug.log
-node_modules
-/core
-.eslintcache
-.npmrc
-.yarn-error.log
-/coverage
 /build
-.vscode
 !tests/fixtures/**/node_modules
 !tests/fixtures-esm/**/node_modules
 benchmarks/fixtures/*/package*.json

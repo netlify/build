@@ -17,7 +17,6 @@ const packageName = /^([^@][^/]*|@[^/]*\/[^/]+)(?:\/|$)/
 
 const findNativeModule = (packageJsonPath: string, cache: NativeModuleCache) => {
   if (cache[packageJsonPath] === undefined) {
-    // eslint-disable-next-line no-param-reassign, promise/prefer-await-to-then
     cache[packageJsonPath] = readPackageJson(packageJsonPath).then(
       (data) => [Boolean(isNativeModule(data)), data],
       () => [undefined, {}],
@@ -39,27 +38,23 @@ export const getNativeModulesPlugin = (externalizedModules: NativeNodeModules): 
 
       let directory = args.resolveDir
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         if (path.basename(directory) !== 'node_modules') {
           const modulePath = path.join(directory, 'node_modules', pkg[1])
           const packageJsonPath = path.join(modulePath, 'package.json')
           const [isNative, packageJsonData] = await findNativeModule(packageJsonPath, cache)
 
-          // eslint-disable-next-line max-depth
           if (isNative === true) {
-            // eslint-disable-next-line max-depth
             if (externalizedModules[args.path] === undefined) {
-              // eslint-disable-next-line no-param-reassign
               externalizedModules[args.path] = {}
             }
 
-            // eslint-disable-next-line no-param-reassign
             externalizedModules[args.path][modulePath] = packageJsonData.version
 
             return { path: args.path, external: true }
           }
 
-          // eslint-disable-next-line max-depth
           if (isNative === false) {
             return
           }

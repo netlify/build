@@ -47,7 +47,9 @@ export const getPathWithExtension = (path: string, extension: string) =>
 export const safeUnlink = async (path: string) => {
   try {
     await fs.unlink(path)
-  } catch {}
+  } catch {
+    // no-op
+  }
 }
 
 // Takes a list of absolute paths and returns an array containing all the
