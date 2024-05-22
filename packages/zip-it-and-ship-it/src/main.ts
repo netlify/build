@@ -68,7 +68,7 @@ interface ListFunctionsOptions {
   parseISC?: boolean
 }
 
-// List all Netlify Functions main entry files for a specific directory
+// List all Netlify Functions main entry files for a specific directory.
 export const listFunctions = async function (
   relativeSrcFolders: string | string[],
   { featureFlags: inputFeatureFlags, config, configFileDirectories, parseISC = false }: ListFunctionsOptions = {},
