@@ -28,6 +28,9 @@ const coreStep = async function ({
 }) {
   const client = createBuildbotClient(buildbotServerSocket)
   try {
+    // buildbot will emit logs. Flush the output to preserve the right order.
+    logs?.outputFlusher?.flush()
+
     await connectBuildbotClient(client)
     await saveUpdatedConfig({
       configMutations,

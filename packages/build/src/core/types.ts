@@ -52,6 +52,7 @@ type EventHandlers = {
     | {
         handler: NetlifyPlugin[K]
         description: string
+        quiet?: boolean
       }
 }
 

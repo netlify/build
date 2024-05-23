@@ -340,3 +340,10 @@ test('Plugins which export a factory function receive the inputs and a metadata 
   const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
+
+test('Plugin events that do not emit to stderr/stdout are hidden from the logs', async (t) => {
+  const output = await new Fixture('./fixtures/mixed_events')
+    .withFlags({ debug: false, featureFlags: { netlify_build_reduced_output: true } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})

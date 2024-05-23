@@ -1,6 +1,7 @@
 import { context, propagation } from '@opentelemetry/api'
 
 import { addErrorInfo } from '../error/info.js'
+import { addOutputGate } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
 import { callChild } from '../plugins/ipc.js'
@@ -31,15 +32,18 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  outputFlusher,
   systemLog,
   featureFlags,
   debug,
   verbose,
 }) {
-  const listeners = pipePluginOutput(childProcess, logs)
+  const listeners = pipePluginOutput(childProcess, logs, outputFlusher)
 
   const otelCarrier = {}
   propagation.inject(context.active(), otelCarrier)
+
+  const logsA = addOutputGate(logs, outputFlusher)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -77,7 +81,7 @@ export const firePluginStep = async function ({
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
       systemLog,
       debug,
       source: packageName,
