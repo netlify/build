@@ -3,6 +3,10 @@ import figures from 'figures'
 import { serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
+export const logsAreBuffered = (logs) => {
+  return logs !== undefined && 'stdout' in logs
+}
+
 // When the `buffer` option is true, we return logs instead of printing them
 // on the console. The logs are accumulated in a `logs` array variable.
 export const getBufferLogs = function ({ buffer }) {
@@ -19,10 +23,14 @@ export const log = function (logs, string, { color } = {}) {
   const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringB = color === undefined ? stringA : color(stringA)
 
-  if (logs !== undefined) {
-    // `logs` is a stateful variable
+  if (logs && logs.outputFlusher) {
+    logs.outputFlusher.flush()
+  }
 
+  if (logsAreBuffered(logs)) {
+    // `logs` is a stateful variable
     logs.stderr.push(stringB)
+
     return
   }
 
