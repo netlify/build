@@ -63,31 +63,30 @@ export const getSiteInfo = async function ({
     }
 
     return { siteInfo, accounts, addons, integrations }
-  } else {
-    if (mode === 'buildbot') {
-      const siteInfo = siteId === undefined ? {} : { id: siteId }
-
-      const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
-
-      return { siteInfo, accounts: [], addons: [], integrations }
-    }
-
-    const promises = [
-      getAccounts(api),
-      getAddons(api, siteId),
-      getIntegrations({ siteId, testOpts, offline, featureFlags }),
-    ]
-
-    const [accounts, addons, integrations] = await Promise.all(promises)
-
-    if (siteInfo.use_envelope) {
-      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
-
-      siteInfo.build_settings.env = envelope
-    }
-
-    return { siteInfo, accounts, addons, integrations }
   }
+  if (mode === 'buildbot') {
+    const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+    const integrations = await getIntegrations({ siteId, testOpts, offline, featureFlags })
+
+    return { siteInfo, accounts: [], addons: [], integrations }
+  }
+
+  const promises = [
+    getAccounts(api),
+    getAddons(api, siteId),
+    getIntegrations({ siteId, testOpts, offline, featureFlags }),
+  ]
+
+  const [accounts, addons, integrations] = await Promise.all(promises)
+
+  if (siteInfo.use_envelope) {
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+
+    siteInfo.build_settings.env = envelope
+  }
+
+  return { siteInfo, accounts, addons, integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string | null = null) {
