@@ -37,10 +37,6 @@ const NORMALIZE_REGEXPS = [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
 
     (_, prefix, pathMatch, winDrive, pathTrail) => {
-      if (pathMatch.includes('/$netlify-snapshot-preserve/')) {
-        return pathMatch
-      }
-
       // If we're dealing with a file URL, we convert it to a path.
       const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch
 

@@ -1,7 +1,42 @@
+import { promises as fs } from 'fs'
+import { resolve } from 'path'
+
 import isPlainObject from 'is-plain-obj'
 import mapObject, { mapObjectSkip } from 'map-obj'
 
+import type { NetlifyConfig } from '../../index.js'
 import { SystemLogger } from '../types.js'
+
+export const loadConfigFile = async (buildDir: string, packagePath?: string) => {
+  const configPath = resolve(buildDir, packagePath ?? '', '.netlify/v1/config.json')
+
+  try {
+    const data = await fs.readFile(configPath, 'utf8')
+
+    return JSON.parse(data) as Partial<NetlifyConfig>
+  } catch (err) {
+    // If the file doesn't exist, this is a non-error.
+    if (err.code !== 'ENOENT') {
+      throw err
+    }
+  }
+
+  // The first version of this API was called "Deploy Configuration API" and it
+  // had `.netlify/deploy` as its base directory. For backwards-compatibility,
+  // we need to support that path for the config file.
+  const legacyConfigPath = resolve(buildDir, packagePath ?? '', '.netlify/deploy/v1/config.json')
+
+  try {
+    const data = await fs.readFile(legacyConfigPath, 'utf8')
+
+    return JSON.parse(data) as Partial<NetlifyConfig>
+  } catch (err) {
+    // If the file doesn't exist, this is a non-error.
+    if (err.code !== 'ENOENT') {
+      throw err
+    }
+  }
+}
 
 /**
  * Checks whether a property matches a template that may contain wildcards.
