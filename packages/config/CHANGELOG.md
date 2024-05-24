@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.12.6](https://github.com/netlify/build/compare/config-v20.12.5...config-v20.12.6) (2024-05-23)
+
+
+### Bug Fixes
+
+* update config logger ([#5658](https://github.com/netlify/build/issues/5658)) ([bbbba76](https://github.com/netlify/build/commit/bbbba7604f01163a9f790694ddb247d5ea6242f3))
+
 ## [20.12.5](https://github.com/netlify/build/compare/config-v20.12.4...config-v20.12.5) (2024-05-08)
 
 
