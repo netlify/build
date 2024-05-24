@@ -100,8 +100,6 @@ const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlag
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-    // Added to satisfy TypeScript only an object can be returned
-    return { id: siteId }
   }
 }
 
@@ -111,8 +109,6 @@ const getAccounts = async function (api: NetlifyAPI) {
     return Array.isArray(accounts) ? accounts : []
   } catch (error) {
     throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-    // Added to satisfy TypeScript only an array can be returned
-    return []
   }
 }
 
@@ -126,8 +122,6 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
     return Array.isArray(addons) ? addons : []
   } catch (error) {
     throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-    // Added to satisfy TypeScript only an array can be returned
-    return []
   }
 }
 
