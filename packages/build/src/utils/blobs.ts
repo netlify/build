@@ -5,6 +5,7 @@ import { fdir } from 'fdir'
 
 const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
 const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
+const FRAMEWORKS_BLOBS_PATH = '.netlify/v1/blobs/deploy'
 
 /** Retrieve the absolute path of the deploy scoped internal blob directories */
 export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
@@ -22,12 +23,22 @@ export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
  * @returns
  */
 export const scanForBlobs = async function (buildDir: string, packagePath?: string) {
-  const blobsDir = path.resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH)
-  const blobsDirScan = await new fdir().onlyCounts().crawl(blobsDir).withPromise()
+  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_BLOBS_PATH)
+  const frameworkBlobsDirScan = await new fdir().onlyCounts().crawl(frameworkBlobsDir).withPromise()
 
-  if (blobsDirScan.files > 0) {
+  if (frameworkBlobsDirScan.files > 0) {
     return {
-      directory: blobsDir,
+      directory: frameworkBlobsDir,
+      isLegacyDirectory: false,
+    }
+  }
+
+  const deployConfigBlobsDir = path.resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH)
+  const deployConfigBlobsDirScan = await new fdir().onlyCounts().crawl(deployConfigBlobsDir).withPromise()
+
+  if (deployConfigBlobsDirScan.files > 0) {
+    return {
+      directory: deployConfigBlobsDir,
       isLegacyDirectory: false,
     }
   }
