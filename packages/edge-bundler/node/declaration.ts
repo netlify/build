@@ -99,12 +99,15 @@ const createDeclarationsFromFunctionConfigs = (
       const paths = Array.isArray(path) ? path : [path]
 
       paths.forEach((singlePath) => {
-        const declaration: Declaration = { excludedPath, function: name, path: singlePath }
+        const declaration: Declaration = { function: name, path: singlePath }
         if (cache) {
           declaration.cache = cache
         }
         if (method) {
           declaration.method = method
+        }
+        if (excludedPath) {
+          declaration.excludedPath = excludedPath
         }
         declarations.push(declaration)
       })
