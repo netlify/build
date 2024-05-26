@@ -3,9 +3,10 @@ import path from 'node:path'
 
 import { fdir } from 'fdir'
 
+import { FRAMEWORKS_API_BLOBS_ENDPOINT } from './frameworks_api.js'
+
 const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
 const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
-const FRAMEWORKS_BLOBS_PATH = '.netlify/v1/blobs/deploy'
 
 /** Retrieve the absolute path of the deploy scoped internal blob directories */
 export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
@@ -23,7 +24,7 @@ export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
  * @returns
  */
 export const scanForBlobs = async function (buildDir: string, packagePath?: string) {
-  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_BLOBS_PATH)
+  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_API_BLOBS_ENDPOINT, 'deploy')
   const frameworkBlobsDirScan = await new fdir().onlyCounts().crawl(frameworkBlobsDir).withPromise()
 
   if (frameworkBlobsDirScan.files > 0) {

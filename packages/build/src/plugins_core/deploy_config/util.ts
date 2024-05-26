@@ -5,10 +5,11 @@ import isPlainObject from 'is-plain-obj'
 import mapObject, { mapObjectSkip } from 'map-obj'
 
 import type { NetlifyConfig } from '../../index.js'
+import { FRAMEWORKS_API_CONFIG_ENDPOINT } from '../../utils/frameworks_api.js'
 import { SystemLogger } from '../types.js'
 
 export const loadConfigFile = async (buildDir: string, packagePath?: string) => {
-  const configPath = resolve(buildDir, packagePath ?? '', '.netlify/v1/config.json')
+  const configPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_CONFIG_ENDPOINT)
 
   try {
     const data = await fs.readFile(configPath, 'utf8')
