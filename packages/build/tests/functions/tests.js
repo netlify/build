@@ -143,7 +143,7 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     const app1 = await fixture
       .withFlags({
         cwd: fixture.repositoryRoot,
-        featureFlags: { netlify_build_frameworks_api: true, netlify_build_deploy_configuration_api: true },
+        featureFlags: { netlify_build_frameworks_api: true },
         packagePath: 'apps/app-1',
       })
       .runWithBuildAndIntrospect()
@@ -153,7 +153,7 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     const app2 = await fixture
       .withFlags({
         cwd: fixture.repositoryRoot,
-        featureFlags: { netlify_build_frameworks_api: true, netlify_build_deploy_configuration_api: true },
+        featureFlags: { netlify_build_frameworks_api: true },
         packagePath: 'apps/app-2',
       })
       .runWithBuildAndIntrospect()

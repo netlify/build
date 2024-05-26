@@ -87,6 +87,5 @@ export const applyDeployConfig: CoreStep = {
   coreStepId: 'frameworks_api_config',
   coreStepName: 'Applying configuration from Frameworks API',
   coreStepDescription: () => '',
-  condition: ({ featureFlags }) => featureFlags?.netlify_build_deploy_configuration_api,
   quiet: true,
 }

@@ -218,7 +218,7 @@ test.serial('builds edge functions generated with the Frameworks API', async (t)
   const output = await new Fixture('./fixtures/functions_user_framework')
     .withFlags({
       debug: false,
-      featureFlags: { netlify_build_frameworks_api: true, netlify_build_deploy_configuration_api: true },
+      featureFlags: { netlify_build_frameworks_api: true },
       mode: 'buildbot',
     })
     .runWithBuild()
