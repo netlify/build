@@ -1,3 +1,5 @@
 export const FRAMEWORKS_API_BLOBS_ENDPOINT = '.netlify/v1/blobs'
 export const FRAMEWORKS_API_CONFIG_ENDPOINT = '.netlify/v1/config.json'
+export const FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT = '.netlify/v1/edge-functions'
+export const FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP = 'import_map.json'
 export const FRAMEWORKS_API_FUNCTIONS_ENDPOINT = '.netlify/v1/functions'

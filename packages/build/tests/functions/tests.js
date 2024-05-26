@@ -138,7 +138,7 @@ test('Functions: loads functions generated with the Frameworks API', async (t) =
 
 // pnpm is not available in Node 14.
 if (semver.gte(nodeVersion, '16.9.0')) {
-  test.only('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
+  test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
     const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
     const app1 = await fixture
       .withFlags({
