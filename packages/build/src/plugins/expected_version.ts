@@ -1,4 +1,4 @@
-import { PackageJson } from 'read-pkg-up'
+import { PackageJson } from 'read-package-up'
 import semver from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
