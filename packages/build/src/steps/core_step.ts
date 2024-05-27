@@ -40,7 +40,7 @@ export const fireCoreStep = async function ({
   deployId,
   outputFlusher,
 }) {
-  const logsA = addOutputFlusher(logs, outputFlusher)
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
