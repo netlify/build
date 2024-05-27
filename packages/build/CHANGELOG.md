@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.42.4](https://github.com/netlify/build/compare/build-v29.42.3...build-v29.42.4) (2024-05-27)
+
+
+### Bug Fixes
+
+* troubleshoot failing builds on Node 14 ([#5671](https://github.com/netlify/build/issues/5671)) ([412d35e](https://github.com/netlify/build/commit/412d35ed90a566d1b9b09260a6544e1542105bbf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.58 to ^5.2.59
+    * @netlify/zip-it-and-ship-it bumped from 9.33.1 to 9.33.2
+
 ## [29.42.3](https://github.com/netlify/build/compare/build-v29.42.2...build-v29.42.3) (2024-05-23)
 
 
