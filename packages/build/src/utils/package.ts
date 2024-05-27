@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import { Options, PackageJson, readPackageUp } from 'read-package-up'
+import { Options, PackageJson, readPackageUp } from 'read-pkg-up'
 
 type PackageResult = {
   packageJson: PackageJson
