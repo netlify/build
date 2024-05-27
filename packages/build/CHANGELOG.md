@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.42.6](https://github.com/netlify/build/compare/build-v29.42.5...build-v29.42.6) (2024-05-27)
+
+
+### Bug Fixes
+
+* stop changing `logs` if flusher is not set ([#5676](https://github.com/netlify/build/issues/5676)) ([1adebca](https://github.com/netlify/build/commit/1adebca5126521a50f515c4d20efa9a5565ea54c))
+
 ## [29.42.5](https://github.com/netlify/build/compare/build-v29.42.4...build-v29.42.5) (2024-05-27)
 
 
