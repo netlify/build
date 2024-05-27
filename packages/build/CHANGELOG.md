@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.42.5](https://github.com/netlify/build/compare/build-v29.42.4...build-v29.42.5) (2024-05-27)
+
+
+### Bug Fixes
+
+* revert update of `read-pkg-up` ([#5672](https://github.com/netlify/build/issues/5672)) ([d30cea9](https://github.com/netlify/build/commit/d30cea9db5ca1262540554fc53eac9fe011bbe8a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.12 to ^9.8.13
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.3
+
 ## [29.42.4](https://github.com/netlify/build/compare/build-v29.42.3...build-v29.42.4) (2024-05-27)
 
 
