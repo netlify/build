@@ -190,7 +190,11 @@ export const getSystemLogger = function (
   return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
 }
 
-export const addOutputGate = (logs: Logs, outputFlusher: OutputFlusher): Logs => {
+export const addOutputFlusher = (logs: Logs, outputFlusher?: OutputFlusher): Logs => {
+  if (!outputFlusher) {
+    return logs
+  }
+
   if (logsAreBuffered(logs)) {
     return {
       ...logs,

@@ -1,6 +1,6 @@
 import { setEnvChanges } from '../env/changes.js'
 import { addErrorInfo, isBuildError } from '../error/info.js'
-import { addOutputGate } from '../log/logger.js'
+import { addOutputFlusher } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
@@ -40,7 +40,7 @@ export const fireCoreStep = async function ({
   deployId,
   outputFlusher,
 }) {
-  const logsA = addOutputGate(logs, outputFlusher)
+  const logsA = addOutputFlusher(logs, outputFlusher)
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
