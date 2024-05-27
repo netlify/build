@@ -51,9 +51,7 @@ export const log = function (
   const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  if (logs && logs.outputFlusher) {
-    logs.outputFlusher.flush()
-  }
+  logs?.outputFlusher?.flush()
 
   if (logsAreBuffered(logs)) {
     // `logs` is a stateful variable
