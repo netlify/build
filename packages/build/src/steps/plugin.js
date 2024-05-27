@@ -43,7 +43,7 @@ export const firePluginStep = async function ({
   const otelCarrier = {}
   propagation.inject(context.active(), otelCarrier)
 
-  const logsA = addOutputFlusher(logs, outputFlusher)
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
