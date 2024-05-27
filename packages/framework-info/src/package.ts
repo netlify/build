@@ -1,6 +1,6 @@
 import { includeKeys } from 'filter-obj'
 import isPlainObj from 'is-plain-obj'
-import type { PackageJson } from 'read-pkg-up'
+import type { PackageJson } from 'read-package-up'
 
 export const getPackageJsonContent = function (packageJson: PackageJson | undefined) {
   if (packageJson === undefined) {
