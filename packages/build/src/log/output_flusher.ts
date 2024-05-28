@@ -1,6 +1,8 @@
 import { stdout, stderr } from 'process'
 import { Transform } from 'stream'
 
+import type { StandardStreams } from './stream.js'
+
 const flusherSymbol = Symbol.for('@netlify/output-gate')
 
 /**
@@ -48,7 +50,7 @@ export class OutputFlusherTransform extends Transform {
   }
 }
 
-export const getStandardStreams = (outputFlusher?: OutputFlusher) => {
+export const getStandardStreams = (outputFlusher?: OutputFlusher): StandardStreams => {
   if (!outputFlusher) {
     return {
       stdout,

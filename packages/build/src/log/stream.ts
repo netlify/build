@@ -1,6 +1,18 @@
 import { promisify } from 'util'
 
-import { logsAreBuffered } from './logger.js'
+import type { ChildProcess } from '../plugins/spawn.js'
+
+import { BufferedLogs, logsAreBuffered, Logs } from './logger.js'
+import type { OutputFlusher } from './output_flusher.js'
+
+export type StandardStreams = {
+  stderr: NodeJS.WriteStream
+  stdout: NodeJS.WriteStream
+  outputFlusher?: OutputFlusher
+}
+
+type LogsListener = (logs: string[], outputFlusher: OutputFlusher | undefined, chunk: Buffer) => void
+type LogsListeners = { stderrListener: LogsListener; stdoutListener: LogsListener }
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -9,7 +21,7 @@ const pSetTimeout = promisify(setTimeout)
 // which solves many problems. However we can only do it in build.command.
 // Plugins have several events, so need to be switch on and off instead.
 // In buffer mode, `pipe` is necessary.
-export const getBuildCommandStdio = function (logs) {
+export const getBuildCommandStdio = function (logs: Logs) {
   if (logsAreBuffered(logs)) {
     return 'pipe'
   }
@@ -18,7 +30,10 @@ export const getBuildCommandStdio = function (logs) {
 }
 
 // Add build command output
-export const handleBuildCommandOutput = function ({ stdout: commandStdout, stderr: commandStderr }, logs) {
+export const handleBuildCommandOutput = function (
+  { stdout: commandStdout, stderr: commandStderr }: { stdout: string; stderr: string },
+  logs: Logs,
+) {
   if (!logsAreBuffered(logs)) {
     return
   }
@@ -27,7 +42,7 @@ export const handleBuildCommandOutput = function ({ stdout: commandStdout, stder
   pushBuildCommandOutput(commandStderr, logs.stderr)
 }
 
-const pushBuildCommandOutput = function (output, logsArray) {
+const pushBuildCommandOutput = function (output: string, logsArray: string[]) {
   if (output === '') {
     return
   }
@@ -36,7 +51,7 @@ const pushBuildCommandOutput = function (output, logsArray) {
 }
 
 // Start plugin step output
-export const pipePluginOutput = function (childProcess, logs, standardStreams) {
+export const pipePluginOutput = function (childProcess: ChildProcess, logs: Logs, standardStreams: StandardStreams) {
   if (!logsAreBuffered(logs)) {
     return streamOutput(childProcess, standardStreams)
   }
@@ -45,7 +60,12 @@ export const pipePluginOutput = function (childProcess, logs, standardStreams) {
 }
 
 // Stop streaming/buffering plugin step output
-export const unpipePluginOutput = async function (childProcess, logs, listeners, standardStreams) {
+export const unpipePluginOutput = async function (
+  childProcess: ChildProcess,
+  logs: Logs,
+  listeners: LogsListeners,
+  standardStreams: StandardStreams,
+) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)
 
@@ -57,18 +77,22 @@ export const unpipePluginOutput = async function (childProcess, logs, listeners,
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess, standardStreams) {
+const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
   childProcess.stdout?.pipe(standardStreams.stdout)
   childProcess.stderr?.pipe(standardStreams.stderr)
 }
 
-const unstreamOutput = function (childProcess, standardStreams) {
+const unstreamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
   childProcess.stdout?.unpipe(standardStreams.stdout)
   childProcess.stderr?.unpipe(standardStreams.stderr)
 }
 
 // In tests, we push to the `logs` array instead
-const pushOutputToLogs = function (childProcess, logs, outputFlusher) {
+const pushOutputToLogs = function (
+  childProcess: ChildProcess,
+  logs: BufferedLogs,
+  outputFlusher?: OutputFlusher,
+): LogsListeners {
   const stdoutListener = logsListener.bind(null, logs.stdout, outputFlusher)
   const stderrListener = logsListener.bind(null, logs.stderr, outputFlusher)
 
@@ -78,7 +102,7 @@ const pushOutputToLogs = function (childProcess, logs, outputFlusher) {
   return { stdoutListener, stderrListener }
 }
 
-const logsListener = function (logs, outputFlusher, chunk) {
+const logsListener: LogsListener = function (logs, outputFlusher, chunk) {
   if (outputFlusher) {
     outputFlusher.flush()
   }
@@ -86,7 +110,11 @@ const logsListener = function (logs, outputFlusher, chunk) {
   logs.push(chunk.toString().trimEnd())
 }
 
-const unpushOutputToLogs = function (childProcess, stdoutListener, stderrListener) {
+const unpushOutputToLogs = function (
+  childProcess: ChildProcess,
+  stdoutListener: LogsListener,
+  stderrListener: LogsListener,
+) {
   childProcess.stdout?.removeListener('data', stdoutListener)
   childProcess.stderr?.removeListener('data', stderrListener)
 }
