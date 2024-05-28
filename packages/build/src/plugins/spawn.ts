@@ -22,6 +22,8 @@ import { callChild, getEventFromChild } from './ipc.js'
 import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 
+export type ChildProcess = ExecaChildProcess<string>
+
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 
 const require = createRequire(import.meta.url)
