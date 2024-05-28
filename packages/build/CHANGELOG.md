@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.43.0](https://github.com/netlify/build/compare/build-v29.42.6...build-v29.43.0) (2024-05-28)
+
+
+### Features
+
+* pass output flusher to `callChild` ([#5677](https://github.com/netlify/build/issues/5677)) ([2a4e213](https://github.com/netlify/build/commit/2a4e2134d17268837677c73d1b9016bd853a2785))
+
 ## [29.42.6](https://github.com/netlify/build/compare/build-v29.42.5...build-v29.42.6) (2024-05-27)
 
 
