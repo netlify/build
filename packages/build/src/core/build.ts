@@ -618,6 +618,8 @@ const runBuild = async function ({
     debug,
     verbose,
     netlifyConfig,
+    featureFlags,
+    systemLog,
   })
 
   const { steps, events } =
