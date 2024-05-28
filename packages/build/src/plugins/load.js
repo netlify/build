@@ -84,10 +84,14 @@ const loadPlugin = async function (
   // this to system logs if we fail to load the plugin.
   const bufferedStdErr = []
 
+  let bufferedStdListener
+
   if (featureFlags.netlify_build_plugin_system_log && childProcess.stderr) {
-    childProcess.stderr.on('data', (data) => {
+    bufferedStdListener = (data) => {
       bufferedStdErr.push(data.toString().trimEnd())
-    })
+    }
+
+    childProcess.stderr.on('data', bufferedStdListener)
   }
 
   try {
@@ -123,5 +127,9 @@ const loadPlugin = async function (
     })
     addPluginLoadErrorStatus({ error, packageName, version, debug })
     throw error
+  } finally {
+    if (bufferedStdListener) {
+      childProcess.stderr.removeListener('data', bufferedStdListener)
+    }
   }
 }
