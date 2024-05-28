@@ -1,8 +1,12 @@
+import { promisify } from 'util'
+
 import { addErrorInfo } from '../error/info.js'
 import { addPluginLoadErrorStatus } from '../status/load_error.js'
 import { measureDuration } from '../time/main.js'
 
 import { callChild } from './ipc.js'
+
+const pSetTimeout = promisify(setTimeout)
 
 // Retrieve all plugins steps
 // Can use either a module name or a file path to the plugin.
@@ -15,10 +19,23 @@ export const loadPlugins = async function ({
   debug,
   verbose,
   netlifyConfig,
+  featureFlags,
+  systemLog,
 }) {
   return pluginsOptions.length === 0
     ? { pluginsSteps: [], timers }
-    : await loadAllPlugins({ pluginsOptions, childProcesses, packageJson, timers, logs, debug, verbose, netlifyConfig })
+    : await loadAllPlugins({
+        pluginsOptions,
+        childProcesses,
+        packageJson,
+        timers,
+        logs,
+        debug,
+        verbose,
+        netlifyConfig,
+        featureFlags,
+        systemLog,
+      })
 }
 
 const tLoadAllPlugins = async function ({
@@ -29,10 +46,22 @@ const tLoadAllPlugins = async function ({
   debug,
   verbose,
   netlifyConfig,
+  featureFlags,
+  systemLog,
 }) {
   const pluginsSteps = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig }),
+      loadPlugin(pluginOptions, {
+        childProcesses,
+        index,
+        packageJson,
+        logs,
+        debug,
+        verbose,
+        netlifyConfig,
+        featureFlags,
+        systemLog,
+      }),
     ),
   )
   const pluginsStepsA = pluginsSteps.flat()
@@ -46,10 +75,20 @@ const loadAllPlugins = measureDuration(tLoadAllPlugins, 'load_plugins')
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
   { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
-  { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig },
+  { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig, featureFlags, systemLog },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
+
+  // A buffer for any data piped into the child process' stderr. We'll pipe
+  // this to system logs if we fail to load the plugin.
+  const bufferedStdErr = []
+
+  if (featureFlags.netlify_build_plugin_system_log) {
+    childProcess.stderr.on('data', (data) => {
+      bufferedStdErr.push(data.toString().trimEnd())
+    })
+  }
 
   try {
     const { events } = await callChild({
@@ -69,6 +108,15 @@ const loadPlugin = async function (
     }))
     return pluginSteps
   } catch (error) {
+    if (featureFlags.netlify_build_plugin_system_log) {
+      // Wait for stderr to be flushed.
+      await pSetTimeout(0)
+
+      bufferedStdErr.forEach((line) => {
+        systemLog(line)
+      })
+    }
+
     addErrorInfo(error, {
       plugin: { packageName, pluginPackageJson },
       location: { event: loadEvent, packageName, loadedFrom, origin },

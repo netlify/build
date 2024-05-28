@@ -347,3 +347,22 @@ test('Plugin events that do not emit to stderr/stdout are hidden from the logs',
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
+
+test('Plugin errors that occur during the loading phase are piped to system logs', async (t) => {
+  const systemLogFile = await tmp.file()
+  const output = await new Fixture('./fixtures/syntax_error')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_reduced_output: true, netlify_build_plugin_system_log: true },
+      systemLogFile: systemLogFile.fd,
+    })
+    .runWithBuild()
+
+  if (platform !== 'win32') {
+    const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+
+    t.is(systemLog.trim(), 'An error message thrown by Node.js')
+  }
+
+  t.snapshot(normalizeOutput(output))
+})
