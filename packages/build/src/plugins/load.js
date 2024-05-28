@@ -5,6 +5,7 @@ import { addPluginLoadErrorStatus } from '../status/load_error.js'
 import { measureDuration } from '../time/main.js'
 
 import { callChild } from './ipc.js'
+import { captureStandardError } from './system_log.js'
 
 const pSetTimeout = promisify(setTimeout)
 
@@ -79,20 +80,7 @@ const loadPlugin = async function (
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
-
-  // A buffer for any data piped into the child process' stderr. We'll pipe
-  // this to system logs if we fail to load the plugin.
-  const bufferedStdErr = []
-
-  let bufferedStdListener
-
-  if (featureFlags.netlify_build_plugin_system_log && childProcess.stderr) {
-    bufferedStdListener = (data) => {
-      bufferedStdErr.push(data.toString().trimEnd())
-    }
-
-    childProcess.stderr.on('data', bufferedStdListener)
-  }
+  const cleanup = captureStandardError(childProcess, systemLog, loadEvent, featureFlags)
 
   try {
     const { events } = await callChild({
@@ -115,10 +103,6 @@ const loadPlugin = async function (
     if (featureFlags.netlify_build_plugin_system_log) {
       // Wait for stderr to be flushed.
       await pSetTimeout(0)
-
-      bufferedStdErr.forEach((line) => {
-        systemLog(line)
-      })
     }
 
     addErrorInfo(error, {
@@ -128,8 +112,6 @@ const loadPlugin = async function (
     addPluginLoadErrorStatus({ error, packageName, version, debug })
     throw error
   } finally {
-    if (bufferedStdListener) {
-      childProcess.stderr.removeListener('data', bufferedStdListener)
-    }
+    cleanup()
   }
 }

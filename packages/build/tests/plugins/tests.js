@@ -360,8 +360,10 @@ test('Plugin errors that occur during the loading phase are piped to system logs
 
   if (platform !== 'win32') {
     const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+    const lines = systemLog.split('\n')
 
-    t.is(systemLog.trim(), 'An error message thrown by Node.js')
+    t.is(lines[0].trim(), 'Plugin failed to initialize during the "load" phase')
+    t.is(lines[1].trim(), 'An error message thrown by Node.js')
   }
 
   t.snapshot(normalizeOutput(output))
