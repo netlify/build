@@ -1,8 +1,6 @@
-import { stdout, stderr } from 'process'
 import { promisify } from 'util'
 
 import { logsAreBuffered } from './logger.js'
-import { OutputFlusherTransform } from './output_flusher.js'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -38,42 +36,35 @@ const pushBuildCommandOutput = function (output, logsArray) {
 }
 
 // Start plugin step output
-export const pipePluginOutput = function (childProcess, logs, outputFlusher) {
+export const pipePluginOutput = function (childProcess, logs, standardStreams) {
   if (!logsAreBuffered(logs)) {
-    return streamOutput(childProcess, outputFlusher)
+    return streamOutput(childProcess, standardStreams)
   }
 
-  return pushOutputToLogs(childProcess, logs, outputFlusher)
+  return pushOutputToLogs(childProcess, logs, standardStreams.outputFlusher)
 }
 
 // Stop streaming/buffering plugin step output
-export const unpipePluginOutput = async function (childProcess, logs, listeners) {
+export const unpipePluginOutput = async function (childProcess, logs, listeners, standardStreams) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)
 
   if (!logsAreBuffered(logs)) {
-    return unstreamOutput(childProcess)
+    return unstreamOutput(childProcess, standardStreams)
   }
 
-  unpushOutputToLogs(childProcess, logs, listeners)
+  unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess, outputFlusher) {
-  if (outputFlusher) {
-    childProcess.stdout.pipe(new OutputFlusherTransform(outputFlusher)).pipe(stdout)
-    childProcess.stderr.pipe(new OutputFlusherTransform(outputFlusher)).pipe(stderr)
-
-    return
-  }
-
-  childProcess.stdout.pipe(stdout)
-  childProcess.stderr.pipe(stderr)
+const streamOutput = function (childProcess, standardStreams) {
+  childProcess.stdout?.pipe(standardStreams.stdout)
+  childProcess.stderr?.pipe(standardStreams.stderr)
 }
 
-const unstreamOutput = function (childProcess) {
-  childProcess.stdout.unpipe(stdout)
-  childProcess.stderr.unpipe(stderr)
+const unstreamOutput = function (childProcess, standardStreams) {
+  childProcess.stdout?.unpipe(standardStreams.stdout)
+  childProcess.stderr?.unpipe(standardStreams.stderr)
 }
 
 // In tests, we push to the `logs` array instead
@@ -81,8 +72,8 @@ const pushOutputToLogs = function (childProcess, logs, outputFlusher) {
   const stdoutListener = logsListener.bind(null, logs.stdout, outputFlusher)
   const stderrListener = logsListener.bind(null, logs.stderr, outputFlusher)
 
-  childProcess.stdout.on('data', stdoutListener)
-  childProcess.stderr.on('data', stderrListener)
+  childProcess.stdout?.on('data', stdoutListener)
+  childProcess.stderr?.on('data', stderrListener)
 
   return { stdoutListener, stderrListener }
 }
@@ -95,7 +86,7 @@ const logsListener = function (logs, outputFlusher, chunk) {
   logs.push(chunk.toString().trimEnd())
 }
 
-const unpushOutputToLogs = function (childProcess, logs, { stdoutListener, stderrListener }) {
-  childProcess.stdout.removeListener('data', stdoutListener)
-  childProcess.stderr.removeListener('data', stderrListener)
+const unpushOutputToLogs = function (childProcess, stdoutListener, stderrListener) {
+  childProcess.stdout?.removeListener('data', stdoutListener)
+  childProcess.stderr?.removeListener('data', stderrListener)
 }
