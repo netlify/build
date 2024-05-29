@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.46.0](https://github.com/netlify/build/compare/build-v29.45.0...build-v29.46.0) (2024-05-29)
+
+
+### Features
+
+* log plugin initialisation error on single line ([#5684](https://github.com/netlify/build/issues/5684)) ([3aecbfc](https://github.com/netlify/build/commit/3aecbfccd2a3eef5cf4889432550423fd594e876))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.6 to ^20.13.0
+    * @netlify/functions-utils bumped from ^5.2.59 to ^5.2.60
+    * @netlify/zip-it-and-ship-it bumped from 9.33.2 to 9.34.0
+
 ## [29.45.0](https://github.com/netlify/build/compare/build-v29.44.0...build-v29.45.0) (2024-05-29)
 
 
