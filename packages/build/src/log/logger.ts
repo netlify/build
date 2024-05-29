@@ -51,7 +51,9 @@ export const log = function (
   const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  logs?.outputFlusher?.flush()
+  if (logs && logs.outputFlusher) {
+    logs.outputFlusher.flush()
+  }
 
   if (logsAreBuffered(logs)) {
     // `logs` is a stateful variable
@@ -188,7 +190,7 @@ export const getSystemLogger = function (
   return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
 }
 
-export const addOutputGate = (logs: Logs, outputFlusher: OutputFlusher): Logs => {
+export const addOutputFlusher = (logs: Logs, outputFlusher: OutputFlusher): Logs => {
   if (logsAreBuffered(logs)) {
     return {
       ...logs,

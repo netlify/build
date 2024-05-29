@@ -481,6 +481,7 @@ const initAndRunBuild = async function ({
     timers: timersA,
     featureFlags,
     quiet,
+    systemLog,
     systemLogFile,
   })
 
@@ -618,6 +619,8 @@ const runBuild = async function ({
     debug,
     verbose,
     netlifyConfig,
+    featureFlags,
+    systemLog,
   })
 
   const { steps, events } =
