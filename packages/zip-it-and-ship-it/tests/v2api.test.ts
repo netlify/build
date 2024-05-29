@@ -529,7 +529,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     })
   })
 
-  test('Name and Generator are taken from ISC and take precedence over deploy config', async () => {
+  test('Name, Generator and Timeout are taken from ISC and take precedence over deploy config', async () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
     const manifestPath = join(tmpDir, 'manifest.json')
 
@@ -548,7 +548,15 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     })
 
     expect(func.displayName).toBe('SSR Function')
+    expect(func.timeout).toBe(60)
     expect(func.generator).toBe('next-runtime@1.2.3')
+
+    const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
+    const manifest = JSON.parse(manifestString)
+    expect(manifest.functions).toHaveLength(1)
+    expect(manifest.functions[0].timeout).toEqual(60)
+    expect(manifest.functions[0].displayName).toEqual('SSR Function')
+    expect(manifest.functions[0].generator).toEqual('next-runtime@1.2.3')
   })
 
   testMany(

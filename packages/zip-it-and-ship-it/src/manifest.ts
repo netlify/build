@@ -38,6 +38,7 @@ interface ManifestFunction {
   displayName?: string
   bundler?: string
   generator?: string
+  timeout?: number
   priority?: number
   trafficRules?: TrafficRules
 }
@@ -81,11 +82,13 @@ const formatFunctionForManifest = ({
   runtimeVersion,
   runtimeAPIVersion,
   schedule,
+  timeout,
 }: FunctionResult): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
     bundler,
     displayName,
     generator,
+    timeout,
     invocationMode,
     buildData: { runtimeAPIVersion },
     mainFile,

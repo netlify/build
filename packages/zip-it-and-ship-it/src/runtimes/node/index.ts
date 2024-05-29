@@ -141,7 +141,12 @@ const zipFunction: ZipFunction = async function ({
     invocationMode = INVOCATION_MODE.Background
   }
 
-  const { trafficRules, generator: staticAnalysisGenerator, name: staticAnalysisName } = staticAnalysisResult
+  const {
+    trafficRules,
+    generator: staticAnalysisGenerator,
+    name: staticAnalysisName,
+    timeout: staticAnalysisTimeout,
+  } = staticAnalysisResult
 
   const outputModuleFormat =
     extname(finalMainFile) === MODULE_FILE_EXTENSION.MJS ? MODULE_FORMAT.ESM : MODULE_FORMAT.COMMONJS
@@ -154,6 +159,7 @@ const zipFunction: ZipFunction = async function ({
     displayName: staticAnalysisName || config?.name,
     entryFilename: zipPath.entryFilename,
     generator: staticAnalysisGenerator || config?.generator || getInternalValue(isInternal),
+    timeout: staticAnalysisTimeout || config?.timeout,
     inputs,
     includedFiles,
     staticAnalysisResult,
