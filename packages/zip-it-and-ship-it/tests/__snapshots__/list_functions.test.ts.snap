@@ -12,6 +12,7 @@ exports[`listFunctions > V2 API > listFunctions includes runtimeAPIVersion when 
   "runtimeAPIVersion": 2,
   "schedule": undefined,
   "srcFile": undefined,
+  "timeout": undefined,
 }
 `;
 
@@ -28,6 +29,7 @@ exports[`listFunctions > v1 > Can list function main files from multiple source 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -40,6 +42,7 @@ exports[`listFunctions > v1 > Can list function main files from multiple source 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -52,6 +55,7 @@ exports[`listFunctions > v1 > Can list function main files from multiple source 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -64,6 +68,7 @@ exports[`listFunctions > v1 > Can list function main files from multiple source 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
 ]
 `;
@@ -81,6 +86,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -93,6 +99,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -105,6 +112,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -117,6 +125,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -129,6 +138,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -141,6 +151,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -153,6 +164,7 @@ exports[`listFunctions > v1 > Can list function main files with listFunctions() 
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": undefined,
+    "timeout": undefined,
   },
 ]
 `;
@@ -170,6 +182,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -182,6 +195,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -194,6 +208,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -206,6 +221,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -218,6 +234,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -230,6 +247,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -242,6 +260,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -254,6 +273,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -266,6 +286,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -278,6 +299,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -290,6 +312,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -302,6 +325,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -314,6 +338,7 @@ exports[`listFunctions > v1 > listFunctions includes in-source config declaratio
     "runtimeAPIVersion": 1,
     "schedule": "@daily",
     "srcFile": undefined,
+    "timeout": undefined,
   },
 ]
 `;
