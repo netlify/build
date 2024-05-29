@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.13.0](https://github.com/netlify/build/compare/config-v20.12.6...config-v20.13.0) (2024-05-29)
+
+
+### Features
+
+* retrieve integration meta data from new endpoint ([#5647](https://github.com/netlify/build/issues/5647)) ([b8899e0](https://github.com/netlify/build/commit/b8899e06a31f5615ef41d8a4ab251bcc96717837))
+
 ## [20.12.6](https://github.com/netlify/build/compare/config-v20.12.5...config-v20.12.6) (2024-05-23)
 
 
