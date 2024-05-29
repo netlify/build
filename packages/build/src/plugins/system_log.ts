@@ -15,22 +15,20 @@ export const captureStandardError = (
     }
   }
 
-  let receivedChunks = false
+  let buffer = ''
 
   const listener = (chunk: Buffer) => {
-    if (!receivedChunks) {
-      receivedChunks = true
-
-      systemLog(`Plugin failed to initialize during the "${eventName}" phase`)
-    }
-
-    systemLog(chunk.toString().trimEnd())
+    buffer += chunk.toString()
   }
 
   childProcess.stderr?.on('data', listener)
 
   const cleanup = () => {
     childProcess.stderr?.removeListener('data', listener)
+
+    if (buffer.length !== 0) {
+      systemLog(`Plugin failed to initialize during the "${eventName}" phase: ${buffer.trim()}`)
+    }
   }
 
   return cleanup
