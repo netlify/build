@@ -48,6 +48,7 @@ export interface ZipFunctionResult {
   config: FunctionConfig
   displayName?: string
   generator?: string
+  timeout?: number
   inputs?: string[]
   includedFiles?: string[]
   invocationMode?: InvocationMode

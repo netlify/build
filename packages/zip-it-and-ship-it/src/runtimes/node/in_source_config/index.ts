@@ -25,6 +25,7 @@ export type ISCValues = {
   trafficRules?: TrafficRules
   name?: string
   generator?: string
+  timeout?: number
 }
 
 export interface StaticAnalysisResult extends ISCValues {
@@ -185,6 +186,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 
     if (typeof configExport.generator === 'string') {
       result.generator = configExport.generator
+    }
+
+    if (typeof configExport.timeout === 'number') {
+      result.timeout = configExport.timeout
     }
 
     if (configExport.method !== undefined) {

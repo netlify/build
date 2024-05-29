@@ -29,6 +29,7 @@ export interface ListedFunction {
   schedule?: string
   displayName?: string
   generator?: string
+  timeout?: number
   inputModuleFormat?: ModuleFormat
 }
 
@@ -151,6 +152,7 @@ const getListedFunction = function ({
     displayName: config.name,
     extension,
     generator: config.generator,
+    timeout: config.timeout,
     mainFile,
     name,
     runtime: runtime.name,

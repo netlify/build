@@ -718,4 +718,18 @@ describe('V2 API', () => {
       generator: 'bar@1.2.3',
     })
   })
+
+  test('Understands timeout', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { timeout: 60 }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      inputModuleFormat: 'esm',
+      routes: [],
+      runtimeAPIVersion: 2,
+      timeout: 60,
+    })
+  })
 })
