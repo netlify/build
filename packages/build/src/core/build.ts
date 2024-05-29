@@ -481,6 +481,7 @@ const initAndRunBuild = async function ({
     timers: timersA,
     featureFlags,
     quiet,
+    systemLog,
     systemLogFile,
   })
 

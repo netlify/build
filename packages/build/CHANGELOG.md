@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.45.0](https://github.com/netlify/build/compare/build-v29.44.0...build-v29.45.0) (2024-05-29)
+
+
+### Features
+
+* capture plugin errors during `ready` phase ([#5681](https://github.com/netlify/build/issues/5681)) ([afb6816](https://github.com/netlify/build/commit/afb68169cb2f5c1b96c53527ca4566af096b68ce))
+
 ## [29.44.0](https://github.com/netlify/build/compare/build-v29.43.0...build-v29.44.0) (2024-05-28)
 
 
