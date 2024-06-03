@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.14.0](https://github.com/netlify/build/compare/config-v20.13.2...config-v20.14.0) (2024-06-03)
+
+
+### Features
+
+* added dev.processing.html.injections to mutable props [CRE-1203] ([#5692](https://github.com/netlify/build/issues/5692)) ([2ee98a5](https://github.com/netlify/build/commit/2ee98a5daa6c71c800acdb908cfaca25ffc9c6fc))
+
 ## [20.13.2](https://github.com/netlify/build/compare/config-v20.13.1...config-v20.13.2) (2024-05-29)
 
 
