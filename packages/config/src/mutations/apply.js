@@ -77,6 +77,7 @@ const MUTABLE_PROPS = {
   images: { lastEvent: 'onPostBuild' },
   'images.remote_images': { lastEvent: 'onPostBuild' },
   redirects: { lastEvent: 'onPostBuild' },
+  dev: { lastEvent: 'onPreDev' },
   'dev.processing': { lastEvent: 'onPreDev' },
   'dev.processing.html': { lastEvent: 'onPreDev' },
   'dev.processing.html.injections': { lastEvent: 'onPreDev' },
