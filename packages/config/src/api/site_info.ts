@@ -10,7 +10,6 @@ import { ModeOption, TestOptions } from '../types/options.js'
 type GetSiteInfoOpts = {
   siteId: string
   mode: ModeOption
-  siteFeatureFlagPrefix: string
   offline?: boolean
   api?: NetlifyAPI
   context?: string
@@ -30,7 +29,6 @@ export const getSiteInfo = async function ({
   api,
   siteId,
   mode,
-  siteFeatureFlagPrefix,
   context,
   offline = false,
   testOpts = {},
@@ -51,7 +49,7 @@ export const getSiteInfo = async function ({
   }
 
   const promises = [
-    getSite(api, siteId, siteFeatureFlagPrefix),
+    getSite(api, siteId),
     getAccounts(api),
     getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline }),

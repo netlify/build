@@ -74,7 +74,6 @@ export const resolveConfig = async function (opts) {
     siteId,
     mode,
     offline,
-    siteFeatureFlagPrefix,
     featureFlags,
     testOpts,
   })
