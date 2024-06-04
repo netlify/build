@@ -67,4 +67,5 @@ export const preDevCleanup: CoreStep = {
   coreStepName: 'Pre Dev cleanup',
   coreStepDescription: () => 'Cleaning up leftover files from previous builds',
   condition,
+  quiet: true,
 }

@@ -5,8 +5,8 @@ import test from 'ava'
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const LIST_ACCOUNTS_PATH = '/api/v1/accounts'
 const LIST_ADDONS_PATH = '/api/v1/sites/test/service-instances'
-const TEAM_ENVELOPE_PATH = '/api/v1/accounts/team/env'
-const SITE_ENVELOPE_PATH = '/api/v1/accounts/team/env?site_id=test'
+const TEAM_ENVELOPE_PATH = '/api/v1/accounts/team/env?context_name=production'
+const SITE_ENVELOPE_PATH = '/api/v1/accounts/team/env?context_name=production&site_id=test'
 
 // List of API mock URLs, responses and status codes
 const SITE_INFO_RESPONSE_URL = {

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.1](https://github.com/netlify/build/compare/opentelemetry-utils-v1.2.0...opentelemetry-utils-v1.2.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo to ~1.24.0 ([#5614](https://github.com/netlify/build/issues/5614)) ([79b9935](https://github.com/netlify/build/commit/79b9935fe9e233e01febe74a996ceb582db16a6f))
+
+## [1.2.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.1.0...opentelemetry-utils-v1.2.0) (2024-04-23)
+
+
+### Features
+
+* **otel-utils:** add `addAttributesToActiveSpan` method ([#5587](https://github.com/netlify/build/issues/5587)) ([7aff54c](https://github.com/netlify/build/commit/7aff54cacea8f35b29c35b349e23b6660d3c32f8))
+
 ## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.0.3...opentelemetry-utils-v1.1.0) (2024-03-28)
 
 

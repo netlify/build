@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.1.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.2...opentelemetry-sdk-setup-v1.1.3) (2024-05-27)
+
+
+### Bug Fixes
+
+* revert update of `read-pkg-up` ([#5672](https://github.com/netlify/build/issues/5672)) ([d30cea9](https://github.com/netlify/build/commit/d30cea9db5ca1262540554fc53eac9fe011bbe8a))
+
+## [1.1.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.1...opentelemetry-sdk-setup-v1.1.2) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#5504](https://github.com/netlify/build/issues/5504)) ([d32e5bd](https://github.com/netlify/build/commit/d32e5bd871752aa5b895fc4f5e1a8656b9257126))
+* **deps:** update opentelemetry-js monorepo to ~1.24.0 ([#5614](https://github.com/netlify/build/issues/5614)) ([79b9935](https://github.com/netlify/build/commit/79b9935fe9e233e01febe74a996ceb582db16a6f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.2.0 to ~1.2.1
+
+## [1.1.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.0...opentelemetry-sdk-setup-v1.1.1) (2024-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.1.0 to ~1.2.0
+
 ## [1.1.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.0.5...opentelemetry-sdk-setup-v1.1.0) (2024-03-28)
 
 

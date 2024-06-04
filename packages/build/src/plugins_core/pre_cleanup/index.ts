@@ -24,4 +24,5 @@ export const preCleanup: CoreStep = {
   coreStepName: 'Pre cleanup',
   coreStepDescription: () => 'Cleaning up leftover files from previous builds',
   condition: blobsPresent,
+  quiet: true,
 }

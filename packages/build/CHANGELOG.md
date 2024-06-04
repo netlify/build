@@ -105,6 +105,258 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.46.3](https://github.com/netlify/build/compare/build-v29.46.2...build-v29.46.3) (2024-06-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.2 to ^20.14.0
+    * @netlify/functions-utils bumped from ^5.2.60 to ^5.2.61
+    * @netlify/zip-it-and-ship-it bumped from 9.34.0 to 9.34.1
+
+## [29.46.2](https://github.com/netlify/build/compare/build-v29.46.1...build-v29.46.2) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.1 to ^20.13.2
+
+## [29.46.1](https://github.com/netlify/build/compare/build-v29.46.0...build-v29.46.1) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.0 to ^20.13.1
+
+## [29.46.0](https://github.com/netlify/build/compare/build-v29.45.0...build-v29.46.0) (2024-05-29)
+
+
+### Features
+
+* log plugin initialisation error on single line ([#5684](https://github.com/netlify/build/issues/5684)) ([3aecbfc](https://github.com/netlify/build/commit/3aecbfccd2a3eef5cf4889432550423fd594e876))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.6 to ^20.13.0
+    * @netlify/functions-utils bumped from ^5.2.59 to ^5.2.60
+    * @netlify/zip-it-and-ship-it bumped from 9.33.2 to 9.34.0
+
+## [29.45.0](https://github.com/netlify/build/compare/build-v29.44.0...build-v29.45.0) (2024-05-29)
+
+
+### Features
+
+* capture plugin errors during `ready` phase ([#5681](https://github.com/netlify/build/issues/5681)) ([afb6816](https://github.com/netlify/build/commit/afb68169cb2f5c1b96c53527ca4566af096b68ce))
+
+## [29.44.0](https://github.com/netlify/build/compare/build-v29.43.0...build-v29.44.0) (2024-05-28)
+
+
+### Features
+
+* emit system log when plugin has failed to load ([#5679](https://github.com/netlify/build/issues/5679)) ([0efec6d](https://github.com/netlify/build/commit/0efec6d25e8d4804b853fd6a71ecbe2a198cb1ee))
+
+## [29.43.0](https://github.com/netlify/build/compare/build-v29.42.6...build-v29.43.0) (2024-05-28)
+
+
+### Features
+
+* pass output flusher to `callChild` ([#5677](https://github.com/netlify/build/issues/5677)) ([2a4e213](https://github.com/netlify/build/commit/2a4e2134d17268837677c73d1b9016bd853a2785))
+
+## [29.42.6](https://github.com/netlify/build/compare/build-v29.42.5...build-v29.42.6) (2024-05-27)
+
+
+### Bug Fixes
+
+* stop changing `logs` if flusher is not set ([#5676](https://github.com/netlify/build/issues/5676)) ([1adebca](https://github.com/netlify/build/commit/1adebca5126521a50f515c4d20efa9a5565ea54c))
+
+## [29.42.5](https://github.com/netlify/build/compare/build-v29.42.4...build-v29.42.5) (2024-05-27)
+
+
+### Bug Fixes
+
+* revert update of `read-pkg-up` ([#5672](https://github.com/netlify/build/issues/5672)) ([d30cea9](https://github.com/netlify/build/commit/d30cea9db5ca1262540554fc53eac9fe011bbe8a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.12 to ^9.8.13
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.3
+
+## [29.42.4](https://github.com/netlify/build/compare/build-v29.42.3...build-v29.42.4) (2024-05-27)
+
+
+### Bug Fixes
+
+* troubleshoot failing builds on Node 14 ([#5671](https://github.com/netlify/build/issues/5671)) ([412d35e](https://github.com/netlify/build/commit/412d35ed90a566d1b9b09260a6544e1542105bbf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.58 to ^5.2.59
+    * @netlify/zip-it-and-ship-it bumped from 9.33.1 to 9.33.2
+
+## [29.42.3](https://github.com/netlify/build/compare/build-v29.42.2...build-v29.42.3) (2024-05-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.57 to ^5.2.58
+    * @netlify/zip-it-and-ship-it bumped from 9.33.0 to 9.33.1
+
+## [29.42.2](https://github.com/netlify/build/compare/build-v29.42.1...build-v29.42.2) (2024-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.80.0 ([#5653](https://github.com/netlify/build/issues/5653)) ([439a846](https://github.com/netlify/build/commit/439a846297bf14c4440e91084a459ab6da6a8e2f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.5 to ^20.12.6
+
+## [29.42.1](https://github.com/netlify/build/compare/build-v29.42.0...build-v29.42.1) (2024-05-22)
+
+
+### Bug Fixes
+
+* flush output from "Deploy site" step ([#5652](https://github.com/netlify/build/issues/5652)) ([076b4b0](https://github.com/netlify/build/commit/076b4b07c4595d943b0375edffe97eac22910cfd))
+
+## [29.42.0](https://github.com/netlify/build/compare/build-v29.41.6...build-v29.42.0) (2024-05-22)
+
+
+### Features
+
+* reduce build log verbosity ([#5643](https://github.com/netlify/build/issues/5643)) ([58def4f](https://github.com/netlify/build/commit/58def4f72eec4c1eb20cddceab0d8fd3c4420e45))
+
+## [29.41.6](https://github.com/netlify/build/compare/build-v29.41.5...build-v29.41.6) (2024-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.78.1 ([#5641](https://github.com/netlify/build/issues/5641)) ([f7260d1](https://github.com/netlify/build/commit/f7260d16edaa04a5e9e43b7b08ecfff3bdf3d074))
+* **deps:** update dependency @netlify/plugins-list to ^6.79.0 ([#5646](https://github.com/netlify/build/issues/5646)) ([578e950](https://github.com/netlify/build/commit/578e9503e316c3d7338ff73d6a10b4e676c099a1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.56 to ^5.2.57
+    * @netlify/zip-it-and-ship-it bumped from 9.32.2 to 9.33.0
+
+## [29.41.5](https://github.com/netlify/build/compare/build-v29.41.4...build-v29.41.5) (2024-05-14)
+
+
+### Bug Fixes
+
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#5504](https://github.com/netlify/build/issues/5504)) ([d32e5bd](https://github.com/netlify/build/commit/d32e5bd871752aa5b895fc4f5e1a8656b9257126))
+* **deps:** update dependency @netlify/plugins-list to ^6.78.0 ([#5615](https://github.com/netlify/build/issues/5615)) ([2b13c1a](https://github.com/netlify/build/commit/2b13c1ac4be98110dfce7924661e50825af3948a))
+* **deps:** update opentelemetry-js monorepo to ~1.24.0 ([#5614](https://github.com/netlify/build/issues/5614)) ([79b9935](https://github.com/netlify/build/commit/79b9935fe9e233e01febe74a996ceb582db16a6f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 12.0.0 to 12.0.1
+    * @netlify/framework-info bumped from ^9.8.11 to ^9.8.12
+    * @netlify/opentelemetry-utils bumped from ^1.2.0 to ^1.2.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.2
+
+## [29.41.4](https://github.com/netlify/build/compare/build-v29.41.3...build-v29.41.4) (2024-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.4 to ^20.12.5
+
+## [29.41.3](https://github.com/netlify/build/compare/build-v29.41.2...build-v29.41.3) (2024-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.32.2 ([#5620](https://github.com/netlify/build/issues/5620)) ([2c45268](https://github.com/netlify/build/commit/2c452688fcb6e90779c65e2275d491124bf4b8a1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.3 to ^20.12.4
+    * @netlify/functions-utils bumped from ^5.2.55 to ^5.2.56
+
+## [29.41.2](https://github.com/netlify/build/compare/build-v29.41.1...build-v29.41.2) (2024-04-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.54 to ^5.2.55
+
+## [29.41.1](https://github.com/netlify/build/compare/build-v29.41.0...build-v29.41.1) (2024-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.2 to ^20.12.3
+
+## [29.41.0](https://github.com/netlify/build/compare/build-v29.40.0...build-v29.41.0) (2024-04-23)
+
+
+### Features
+
+* add used build plugins and their versions to exec-build span ([#5584](https://github.com/netlify/build/issues/5584)) ([0be6927](https://github.com/netlify/build/commit/0be69273b86811a39b90584aef5a259372b361c9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.1 to ^20.12.2
+    * @netlify/edge-bundler bumped from 11.4.0 to 12.0.0
+    * @netlify/opentelemetry-utils bumped from ^1.1.0 to ^1.2.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.1
+
+## [29.40.0](https://github.com/netlify/build/compare/build-v29.39.2...build-v29.40.0) (2024-04-17)
+
+
+### Features
+
+* **secrets scanning:** support globs ([#5594](https://github.com/netlify/build/issues/5594)) ([c5c79df](https://github.com/netlify/build/commit/c5c79dfa9930d3d0cd7b320a978a463938db112f))
+
+## [29.39.2](https://github.com/netlify/build/compare/build-v29.39.1...build-v29.39.2) (2024-04-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v11.4.0 ([#5592](https://github.com/netlify/build/issues/5592)) ([aab1d9d](https://github.com/netlify/build/commit/aab1d9d7aedd504ed6f24a0d56c5318eb1f87660))
+
 ## [29.39.1](https://github.com/netlify/build/compare/build-v29.39.0...build-v29.39.1) (2024-04-09)
 
 

@@ -1,0 +1,6 @@
+{
+  "parserOptions": { "sourceType": "module" },
+  "rules": {
+    "n/no-unsupported-features/es-syntax": 0
+  }
+}

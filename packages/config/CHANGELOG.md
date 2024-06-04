@@ -76,6 +76,77 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.14.0](https://github.com/netlify/build/compare/config-v20.13.2...config-v20.14.0) (2024-06-03)
+
+
+### Features
+
+* added dev.processing.html.injections to mutable props [CRE-1203] ([#5692](https://github.com/netlify/build/issues/5692)) ([2ee98a5](https://github.com/netlify/build/commit/2ee98a5daa6c71c800acdb908cfaca25ffc9c6fc))
+
+## [20.13.2](https://github.com/netlify/build/compare/config-v20.13.1...config-v20.13.2) (2024-05-29)
+
+
+### Bug Fixes
+
+* revert b8899e06a31f5615ef41d8a4ab251bcc96717837 ([#5689](https://github.com/netlify/build/issues/5689)) ([15bec28](https://github.com/netlify/build/commit/15bec2818f0c4dfe07265a2b16d7bec09ce9f01d))
+
+## [20.13.1](https://github.com/netlify/build/compare/config-v20.13.0...config-v20.13.1) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.16 to ^13.1.17
+
+## [20.13.0](https://github.com/netlify/build/compare/config-v20.12.6...config-v20.13.0) (2024-05-29)
+
+
+### Features
+
+* retrieve integration meta data from new endpoint ([#5647](https://github.com/netlify/build/issues/5647)) ([b8899e0](https://github.com/netlify/build/commit/b8899e06a31f5615ef41d8a4ab251bcc96717837))
+
+## [20.12.6](https://github.com/netlify/build/compare/config-v20.12.5...config-v20.12.6) (2024-05-23)
+
+
+### Bug Fixes
+
+* update config logger ([#5658](https://github.com/netlify/build/issues/5658)) ([bbbba76](https://github.com/netlify/build/commit/bbbba7604f01163a9f790694ddb247d5ea6242f3))
+
+## [20.12.5](https://github.com/netlify/build/compare/config-v20.12.4...config-v20.12.5) (2024-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-redirect-parser bumped from ^14.2.2 to ^14.3.0
+
+## [20.12.4](https://github.com/netlify/build/compare/config-v20.12.3...config-v20.12.4) (2024-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.15 to ^13.1.16
+
+## [20.12.3](https://github.com/netlify/build/compare/config-v20.12.2...config-v20.12.3) (2024-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.14 to ^13.1.15
+
+## [20.12.2](https://github.com/netlify/build/compare/config-v20.12.1...config-v20.12.2) (2024-04-23)
+
+
+### Bug Fixes
+
+* when fetching env from envelope, pass context ([#5426](https://github.com/netlify/build/issues/5426)) ([8301161](https://github.com/netlify/build/commit/8301161d88d343eb9abbca226cba397a20bc581e))
+
 ## [20.12.1](https://github.com/netlify/build/compare/config-v20.12.0...config-v20.12.1) (2024-02-20)
 
 

@@ -20,10 +20,17 @@ const config = {
     'packages/build/test-d/**',
     'packages/build/types/**',
     // don't lint fixtures
-    'packages/*/tests/**/fixtures/**',
+    'packages/*/tests/**/fixtures*/**',
+    'packages/*/benchmarks/**/fixtures*/**',
     'packages/framework-info/test/fixtures/**',
     'packages/framework-info/dist/**',
     'packages/*/lib/**',
+    'packages/*/dist/**',
+
+    'packages/edge-bundler/deno/**/*',
+    'packages/edge-bundler/node/vendor/**',
+    'packages/edge-bundler/test/deno/**/*',
+    'packages/edge-bundler/test/fixtures/**/*',
   ],
   rules: {
     // -----------------------------------------------------------
@@ -59,6 +66,12 @@ const config = {
       files: ['packages/*/tests/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
+      },
+    },
+    {
+      files: ['packages/zip-it-and-ship-it/tests/**'],
+      rules: {
+        '@typescript-eslint/no-non-null-assertion': 'off',
       },
     },
   ],

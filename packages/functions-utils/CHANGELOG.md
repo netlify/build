@@ -1,5 +1,64 @@
 # Changelog
 
+## [5.2.61](https://github.com/netlify/build/compare/functions-utils-v5.2.60...functions-utils-v5.2.61) (2024-06-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.34.0 to 9.34.1
+
+## [5.2.60](https://github.com/netlify/build/compare/functions-utils-v5.2.59...functions-utils-v5.2.60) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.33.2 to 9.34.0
+
+## [5.2.59](https://github.com/netlify/build/compare/functions-utils-v5.2.58...functions-utils-v5.2.59) (2024-05-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.33.1 to 9.33.2
+
+## [5.2.58](https://github.com/netlify/build/compare/functions-utils-v5.2.57...functions-utils-v5.2.58) (2024-05-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.33.0 to 9.33.1
+
+## [5.2.57](https://github.com/netlify/build/compare/functions-utils-v5.2.56...functions-utils-v5.2.57) (2024-05-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.32.2 to 9.33.0
+
+## [5.2.56](https://github.com/netlify/build/compare/functions-utils-v5.2.55...functions-utils-v5.2.56) (2024-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.32.2 ([#5620](https://github.com/netlify/build/issues/5620)) ([2c45268](https://github.com/netlify/build/commit/2c452688fcb6e90779c65e2275d491124bf4b8a1))
+
+## [5.2.55](https://github.com/netlify/build/compare/functions-utils-v5.2.54...functions-utils-v5.2.55) (2024-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.32.1 ([#5596](https://github.com/netlify/build/issues/5596)) ([67094d6](https://github.com/netlify/build/commit/67094d60c07c75f335b52a6b076e69e864299097))
+
 ## [5.2.54](https://github.com/netlify/build/compare/functions-utils-v5.2.53...functions-utils-v5.2.54) (2024-04-09)
 
 

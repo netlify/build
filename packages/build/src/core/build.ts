@@ -1,4 +1,5 @@
 import { supportedRuntimes } from '@netlify/framework-info'
+import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
@@ -467,6 +468,17 @@ const initAndRunBuild = async function ({
     ? { ...childEnv, ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }) }
     : childEnv
 
+  if (pluginsOptionsA?.length) {
+    const buildPlugins = {}
+    for (const plugin of pluginsOptionsA) {
+      if (plugin?.pluginPackageJson?.name) {
+        buildPlugins[`build.plugins['${plugin.pluginPackageJson.name}']`] = plugin?.pluginPackageJson?.version ?? 'N/A'
+      }
+    }
+
+    addAttributesToActiveSpan(buildPlugins)
+  }
+
   errorParams.pluginsOptions = pluginsOptionsA
 
   const { childProcesses, timers: timersB } = await startPlugins({
@@ -478,6 +490,7 @@ const initAndRunBuild = async function ({
     timers: timersA,
     featureFlags,
     quiet,
+    systemLog,
     systemLogFile,
   })
 
@@ -615,6 +628,8 @@ const runBuild = async function ({
     debug,
     verbose,
     netlifyConfig,
+    featureFlags,
+    systemLog,
   })
 
   const { steps, events } =
