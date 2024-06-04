@@ -14,7 +14,7 @@ type GetSiteInfoOpts = {
   offline?: boolean
   api?: NetlifyAPI
   context?: string
-  featureFlags?: Record<string, boolean>
+  featureFlags: FeatureFlags
   testOpts?: TestOptions
 }
 /**
@@ -34,8 +34,13 @@ export const getSiteInfo = async function ({
   context,
   offline = false,
   testOpts = {},
+  featureFlags,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
+
+  if (featureFlags.foo) {
+    // do something
+  }
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
@@ -74,6 +79,26 @@ const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlag
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
+}
+
+export type FeatureFlags = Record<string, boolean>
+
+export const getFeatureFlags = async function (
+  api?: NetlifyAPI,
+  siteId?: string,
+  featureFlagsFromOpts?: FeatureFlags,
+  siteFeatureFlagPrefix?: string,
+): Promise<FeatureFlags> {
+  if (featureFlagsFromOpts) {
+    return featureFlagsFromOpts
+  }
+
+  if (!api || !siteId || !siteFeatureFlagPrefix) {
+    return {}
+  }
+
+  const site = await getSite(api, siteId, siteFeatureFlagPrefix)
+  return site.feature_flags
 }
 
 const getAccounts = async function (api: NetlifyAPI) {

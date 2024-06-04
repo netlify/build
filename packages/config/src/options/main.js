@@ -10,7 +10,6 @@ import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { getBaseOverride } from './base.js'
 import { getBranch } from './branch.js'
-import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
 import { getRepositoryRoot } from './repository_root.js'
 
 // Assign default options
@@ -21,7 +20,6 @@ export const addDefaultOpts = function (opts = {}) {
   const mergedOpts = {
     ...defaultOpts,
     ...rawOpts,
-    featureFlags: { ...defaultOpts.featureFlags, ...rawOpts.featureFlags },
   }
   const normalizedOpts = removeFalsy(mergedOpts)
 
@@ -50,7 +48,6 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     offline: false,
     debug: getDefaultDebug(combinedEnv, defaultConfig),
     buffer: false,
-    featureFlags: DEFAULT_FEATURE_FLAGS,
     inlineConfig: {},
     configMutations: [],
   }

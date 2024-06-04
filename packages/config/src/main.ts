@@ -1,5 +1,5 @@
 import { getApiClient } from './api/client.js'
-import { getSiteInfo } from './api/site_info.js'
+import { getSiteInfo, getFeatureFlags } from './api/site_info.js'
 import { getInitialBase, getBase, addBase } from './base.js'
 import { getBuildDir } from './build_dir.js'
 import { getCachedConfig } from './cached_config.js'
@@ -63,8 +63,10 @@ export const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
-    featureFlags,
+    featureFlags: featureFlagsFromOpts,
   } = await normalizeOpts(optsA)
+
+  const featureFlags = await getFeatureFlags(api, siteId, featureFlagsFromOpts, siteFeatureFlagPrefix)
 
   const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
     api,
