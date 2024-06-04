@@ -380,14 +380,14 @@ test('Plugins have a pre-populated Blobs context', async (t) => {
         path: `/api/v1/blobs/${siteId}/deploy:${deployId}/my-key`,
       },
       {
-        response: { msg: 'Hello there' },
+        response: 'Hello there',
         path: `/some-signed-url`,
       },
     ],
     serverPort,
   )
 
-  const output = await new Fixture('./fixtures/blobs_read')
+  const { netlifyConfig } = await new Fixture('./fixtures/blobs_read')
     .withFlags({
       apiHost: host,
       deployId,
@@ -396,9 +396,9 @@ test('Plugins have a pre-populated Blobs context', async (t) => {
       siteId,
       token,
     })
-    .runWithBuild()
+    .runWithBuildAndIntrospect()
 
   await stopServer()
 
-  t.snapshot(normalizeOutput(output))
+  t.is(netlifyConfig.build.command, `echo ""Hello there""`)
 })
