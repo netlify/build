@@ -57,6 +57,7 @@ export const resolveConfig = async function (opts) {
     base,
     branch,
     siteId,
+    accountId,
     deployId,
     buildId,
     baseRelDir,
@@ -72,7 +73,6 @@ export const resolveConfig = async function (opts) {
     siteId,
     mode,
     offline,
-    siteFeatureFlagPrefix,
     featureFlags,
     testOpts,
   })
