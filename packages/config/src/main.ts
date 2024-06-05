@@ -71,6 +71,7 @@ export const resolveConfig = async function (opts) {
     api,
     context,
     siteId,
+    accountId,
     mode,
     offline,
     featureFlags,
