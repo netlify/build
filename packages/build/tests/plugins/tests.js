@@ -2,8 +2,9 @@ import * as fs from 'fs/promises'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
+import getPort from 'get-port'
 import tmp, { tmpName } from 'tmp-promise'
 
 import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
@@ -365,4 +366,39 @@ test('Plugin errors that occur during the loading phase are piped to system logs
   }
 
   t.snapshot(normalizeOutput(output))
+})
+
+test('Plugins have a pre-populated Blobs context', async (t) => {
+  const serverPort = await getPort()
+  const deployId = 'deploy123'
+  const siteId = 'site321'
+  const token = 'some-token'
+  const { scheme, host, stopServer } = await startServer(
+    [
+      {
+        response: { url: `http://localhost:${serverPort}/some-signed-url` },
+        path: `/api/v1/blobs/${siteId}/deploy:${deployId}/my-key`,
+      },
+      {
+        response: 'Hello there',
+        path: `/some-signed-url`,
+      },
+    ],
+    serverPort,
+  )
+
+  const { netlifyConfig } = await new Fixture('./fixtures/blobs_read')
+    .withFlags({
+      apiHost: host,
+      deployId,
+      featureFlags: { build_inject_blobs_context: true },
+      testOpts: { scheme },
+      siteId,
+      token,
+    })
+    .runWithBuildAndIntrospect()
+
+  await stopServer()
+
+  t.is(netlifyConfig.build.command, `echo ""Hello there""`)
 })

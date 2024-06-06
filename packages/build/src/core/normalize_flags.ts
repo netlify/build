@@ -6,6 +6,7 @@ import { removeFalsy } from '../utils/remove_falsy.js'
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
 import type { BuildFlags, Mode, TestOptions } from './types.js'
 
+export const DEFAULT_API_HOST = 'api.netlify.com'
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
@@ -91,7 +92,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
     sendStatus: false,
     saveConfig: false,
-    apiHost: 'api.netlify.com',
+    apiHost: DEFAULT_API_HOST,
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
