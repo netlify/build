@@ -40,11 +40,40 @@ export const getSiteInfo = async function ({
 
   const useV2Endpoint = !!accountId && featureFlags.cli_integration_installations_meta
 
+  if (useV2Endpoint) {
+    if (api === undefined || mode === 'buildbot' || testEnv) {
+      const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+      const integrations =
+        mode === 'buildbot' && !offline
+          ? await getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId })
+          : []
+
+      return { siteInfo, accounts: [], addons: [], integrations }
+    }
+
+    const promises = [
+      getSite(api, siteId),
+      getAccounts(api),
+      getAddons(api, siteId),
+      getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId }),
+    ]
+
+    const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+
+    if (siteInfo.use_envelope) {
+      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+
+      siteInfo.build_settings.env = envelope
+    }
+
+    return { siteInfo, accounts, addons, integrations }
+  }
+
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
 
-    const integrations =
-      mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline, useV2Endpoint }) : []
+    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -53,7 +82,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, useV2Endpoint }),
+    getIntegrations({ siteId, testOpts, offline }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -107,7 +136,7 @@ type GetIntegrationsOpts = {
   accountId?: string
   testOpts: TestOptions
   offline: boolean
-  useV2Endpoint: boolean
+  useV2Endpoint?: boolean
 }
 
 const getIntegrations = async function ({
