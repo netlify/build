@@ -123,6 +123,10 @@ The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
     string: true,
     describe: `Netlify Site ID.`,
   },
+  accountId: {
+    string: true,
+    describe: 'Netlify Account ID. This will only be available in buildbot mode.',
+  },
   context: {
     string: true,
     describe: `Build context.
