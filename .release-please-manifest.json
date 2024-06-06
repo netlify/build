@@ -1,9 +1,9 @@
 {
   "packages/build-info": "7.13.2",
-  "packages/build": "29.46.5",
+  "packages/build": "29.47.0",
   "packages/edge-bundler": "12.0.1",
   "packages/cache-utils": "5.1.5",
-  "packages/config": "20.14.1",
+  "packages/config": "20.15.0",
   "packages/framework-info": "9.8.13",
   "packages/functions-utils": "5.2.62",
   "packages/git-utils": "5.1.1",

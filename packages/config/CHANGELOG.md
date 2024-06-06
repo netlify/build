@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.15.0](https://github.com/netlify/build/compare/config-v20.14.1...config-v20.15.0) (2024-06-06)
+
+
+### Features
+
+* add new endpoint that uses flags and accountId ([#5700](https://github.com/netlify/build/issues/5700)) ([07def29](https://github.com/netlify/build/commit/07def2916208d1acf6eee1d24b56547b81222f3a))
+
 ## [20.14.1](https://github.com/netlify/build/compare/config-v20.14.0...config-v20.14.1) (2024-06-04)
 
 
