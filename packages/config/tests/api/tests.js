@@ -370,7 +370,6 @@ test('Integrations are returned if feature flag is false and mode is dev', async
   t.assert(config.integrations[0].has_build === true)
 })
 
-// new tests
 test('Integrations are returned if flag is true for site and mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
