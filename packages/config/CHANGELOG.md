@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.14.1](https://github.com/netlify/build/compare/config-v20.14.0...config-v20.14.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* [CRE-1203] adds `dev` to config mutable props ([#5695](https://github.com/netlify/build/issues/5695)) ([f560fc1](https://github.com/netlify/build/commit/f560fc18a5f6a2b3fca131706d45bb292923d0c4))
+
 ## [20.14.0](https://github.com/netlify/build/compare/config-v20.13.2...config-v20.14.0) (2024-06-03)
 
 
