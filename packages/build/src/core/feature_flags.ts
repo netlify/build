@@ -15,6 +15,7 @@ const getFeatureFlag = function (name: string): FeatureFlags {
 
 // Default values for feature flags
 export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
+  build_inject_blobs_context: false,
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
   buildbot_zisi_system_log: false,
