@@ -9,8 +9,8 @@ import { ModeOption, TestOptions } from '../types/options.js'
 
 type GetSiteInfoOpts = {
   siteId: string
+  accountId?: string
   mode: ModeOption
-  siteFeatureFlagPrefix: string
   offline?: boolean
   api?: NetlifyAPI
   context?: string
@@ -29,13 +29,46 @@ type GetSiteInfoOpts = {
 export const getSiteInfo = async function ({
   api,
   siteId,
+  accountId,
   mode,
-  siteFeatureFlagPrefix,
   context,
   offline = false,
   testOpts = {},
+  featureFlags = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
+
+  const useV2Endpoint = !!accountId && featureFlags.cli_integration_installations_meta
+
+  if (useV2Endpoint) {
+    if (api === undefined || mode === 'buildbot' || testEnv) {
+      const siteInfo = siteId === undefined ? {} : { id: siteId }
+
+      const integrations =
+        mode === 'buildbot' && !offline
+          ? await getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId })
+          : []
+
+      return { siteInfo, accounts: [], addons: [], integrations }
+    }
+
+    const promises = [
+      getSite(api, siteId),
+      getAccounts(api),
+      getAddons(api, siteId),
+      getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId }),
+    ]
+
+    const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+
+    if (siteInfo.use_envelope) {
+      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+
+      siteInfo.build_settings.env = envelope
+    }
+
+    return { siteInfo, accounts, addons, integrations }
+  }
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
@@ -46,7 +79,7 @@ export const getSiteInfo = async function ({
   }
 
   const promises = [
-    getSite(api, siteId, siteFeatureFlagPrefix),
+    getSite(api, siteId),
     getAccounts(api),
     getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline }),
@@ -63,13 +96,13 @@ export const getSiteInfo = async function ({
   return { siteInfo, accounts, addons, integrations }
 }
 
-const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string | null = null) {
+const getSite = async function (api: NetlifyAPI, siteId: string) {
   if (siteId === undefined) {
     return {}
   }
 
   try {
-    const site = await (api as any).getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
+    const site = await (api as any).getSite({ siteId })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
@@ -100,14 +133,18 @@ const getAddons = async function (api: NetlifyAPI, siteId: string) {
 
 type GetIntegrationsOpts = {
   siteId?: string
+  accountId?: string
   testOpts: TestOptions
   offline: boolean
+  useV2Endpoint?: boolean
 }
 
 const getIntegrations = async function ({
   siteId,
+  accountId,
   testOpts,
   offline,
+  useV2Endpoint,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
@@ -117,13 +154,19 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
+  const url = useV2Endpoint
+    ? `${baseUrl}team/${accountId}/integrations/installations/meta`
+    : `${baseUrl}site/${siteId}/integrations/safe`
+
   try {
-    const response = await fetch(`${baseUrl}site/${siteId}/integrations/safe`)
+    const response = await fetch(url)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    // for now, we'll just ignore errors, as this is early days
+    // Integrations should not block the build if they fail to load
+    // TODO: We should consider blocking the build as integrations are a critical part of the build process
+    // https://linear.app/netlify/issue/CT-1214/implement-strategy-in-builds-to-deal-with-integrations-that-we-fail-to
     return []
   }
 }
