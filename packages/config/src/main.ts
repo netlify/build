@@ -63,7 +63,7 @@ export const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
-    featureFlags,
+    featureFlags: passedFeatureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
@@ -73,9 +73,14 @@ export const resolveConfig = async function (opts) {
     mode,
     offline,
     siteFeatureFlagPrefix,
-    featureFlags,
+    featureFlags: passedFeatureFlags,
     testOpts,
   })
+
+  // Feature flags can also be loaded from the call to `getSiteInfo()`, in the CLI
+  // these won't be accessible within the calls to `netlify-config` as they're fetched
+  // too late. We merge them here to ensure they're available to this package.
+  const featureFlags = { ...passedFeatureFlags, ...(siteInfo.feature_flags ?? {}) }
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
