@@ -14,6 +14,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
+import { getBlobsEnvironmentContext } from '../utils/blobs.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -197,6 +198,7 @@ const tExecBuild = async function ({
     dry,
     mode,
     api,
+    token,
     errorMonitor,
     deployId,
     errorParams,
@@ -258,6 +260,7 @@ export const runAndReportBuild = async function ({
   dry,
   mode,
   api,
+  token,
   errorMonitor,
   deployId,
   errorParams,
@@ -310,6 +313,7 @@ export const runAndReportBuild = async function ({
       dry,
       mode,
       api,
+      token,
       errorMonitor,
       deployId,
       errorParams,
@@ -414,6 +418,7 @@ const initAndRunBuild = async function ({
   dry,
   mode,
   api,
+  token,
   errorMonitor,
   deployId,
   errorParams,
@@ -459,6 +464,10 @@ const initAndRunBuild = async function ({
     systemLog,
   })
 
+  const pluginsEnv = featureFlags.build_inject_blobs_context
+    ? { ...childEnv, ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }) }
+    : childEnv
+
   if (pluginsOptionsA?.length) {
     const buildPlugins = {}
     for (const plugin of pluginsOptionsA) {
@@ -475,12 +484,13 @@ const initAndRunBuild = async function ({
   const { childProcesses, timers: timersB } = await startPlugins({
     pluginsOptions: pluginsOptionsA,
     buildDir,
-    childEnv,
+    childEnv: pluginsEnv,
     logs,
     debug,
     timers: timersA,
     featureFlags,
     quiet,
+    systemLog,
     systemLogFile,
   })
 
@@ -618,6 +628,8 @@ const runBuild = async function ({
     debug,
     verbose,
     netlifyConfig,
+    featureFlags,
+    systemLog,
   })
 
   const { steps, events } =

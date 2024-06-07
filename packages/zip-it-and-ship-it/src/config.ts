@@ -22,6 +22,7 @@ interface FunctionConfig {
   zipGo?: boolean
   name?: string
   generator?: string
+  timeout?: number
 
   // Temporary configuration property, only meant to be used by the deploy
   // configuration API. Once we start emitting ESM files for all ESM functions,

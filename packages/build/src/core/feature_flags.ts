@@ -15,6 +15,7 @@ const getFeatureFlag = function (name: string): FeatureFlags {
 
 // Default values for feature flags
 export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
+  build_inject_blobs_context: false,
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
   buildbot_zisi_system_log: false,
@@ -23,4 +24,5 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   netlify_build_reduced_output: false,
   netlify_build_updated_plugin_compatibility: false,
   netlify_build_frameworks_api: false,
+  netlify_build_plugin_system_log: false,
 }
