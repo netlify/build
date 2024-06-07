@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.47.0](https://github.com/netlify/build/compare/build-v29.46.5...build-v29.47.0) (2024-06-06)
+
+
+### Features
+
+* populate Blobs context in build plugins ([#5571](https://github.com/netlify/build/issues/5571)) ([e037fbf](https://github.com/netlify/build/commit/e037fbf0b4ecddc6775c56eb6f58eb8570226827))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.14.1 to ^20.15.0
+
 ## [29.46.5](https://github.com/netlify/build/compare/build-v29.46.4...build-v29.46.5) (2024-06-05)
 
 
