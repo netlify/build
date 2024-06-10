@@ -76,6 +76,15 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.15.1](https://github.com/netlify/build/compare/config-v20.15.0...config-v20.15.1) (2024-06-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.17 to ^13.1.18
+
 ## [20.15.0](https://github.com/netlify/build/compare/config-v20.14.1...config-v20.15.0) (2024-06-06)
 
 
