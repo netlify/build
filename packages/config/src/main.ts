@@ -25,8 +25,19 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
  * `config` together with related properties such as the `configPath`.
  */
 export const resolveConfig = async function (opts) {
-  const { cachedConfig, cachedConfigPath, host, scheme, packagePath, pathPrefix, testOpts, token, offline, ...optsA } =
-    addDefaultOpts(opts) as $TSFixMe
+  const {
+    cachedConfig,
+    cachedConfigPath,
+    host,
+    scheme,
+    packagePath,
+    pathPrefix,
+    testOpts,
+    token,
+    offline,
+    siteFeatureFlagPrefix,
+    ...optsA
+  } = addDefaultOpts(opts) as $TSFixMe
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
@@ -62,6 +73,7 @@ export const resolveConfig = async function (opts) {
     siteId,
     accountId,
     mode,
+    siteFeatureFlagPrefix,
     offline,
     featureFlags,
     testOpts,
