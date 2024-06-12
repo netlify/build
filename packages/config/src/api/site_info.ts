@@ -16,6 +16,7 @@ type GetSiteInfoOpts = {
   context?: string
   featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
+  siteFeatureFlagPrefix: string
 }
 /**
  * Retrieve Netlify Site information, if available.
@@ -35,6 +36,7 @@ export const getSiteInfo = async function ({
   offline = false,
   testOpts = {},
   featureFlags = {},
+  siteFeatureFlagPrefix,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
@@ -53,7 +55,7 @@ export const getSiteInfo = async function ({
     }
 
     const promises = [
-      getSite(api, siteId),
+      getSite(api, siteId, siteFeatureFlagPrefix),
       getAccounts(api),
       getAddons(api, siteId),
       getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId }),
@@ -79,7 +81,7 @@ export const getSiteInfo = async function ({
   }
 
   const promises = [
-    getSite(api, siteId),
+    getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline }),
@@ -96,13 +98,13 @@ export const getSiteInfo = async function ({
   return { siteInfo, accounts, addons, integrations }
 }
 
-const getSite = async function (api: NetlifyAPI, siteId: string) {
+const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
   if (siteId === undefined) {
     return {}
   }
 
   try {
-    const site = await (api as any).getSite({ siteId })
+    const site = await (api as any).getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
