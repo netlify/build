@@ -76,6 +76,22 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.15.2](https://github.com/netlify/build/compare/config-v20.15.1...config-v20.15.2) (2024-06-12)
+
+
+### Bug Fixes
+
+* re-add siteFeatureFlagPrefix ([#5709](https://github.com/netlify/build/issues/5709)) ([055e9a7](https://github.com/netlify/build/commit/055e9a745a5b0071b31a3952fc311454aca7fb72))
+
+## [20.15.1](https://github.com/netlify/build/compare/config-v20.15.0...config-v20.15.1) (2024-06-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.17 to ^13.1.18
+
 ## [20.15.0](https://github.com/netlify/build/compare/config-v20.14.1...config-v20.15.0) (2024-06-06)
 
 
