@@ -52,41 +52,46 @@ export const getBlobsEnvironmentContext = ({
 
 /**
  * Detect if there are any blobs to upload, and if so, what directory they're
- * in and whether that directory is the legacy `.netlify/blobs` path or the
- * newer deploy config API endpoint.
+ * in and what version of the file-based API is being used.
  *
  * @param buildDir The build directory. (current working directory where the build is executed)
- * @param packagePath An optional package path for mono repositories
+ * @param packagePath An optional package path for monorepos
  * @returns
  */
 export const scanForBlobs = async function (buildDir: string, packagePath?: string) {
+  // We start by looking for files using the Frameworks API.
   const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_API_BLOBS_ENDPOINT, 'deploy')
   const frameworkBlobsDirScan = await new fdir().onlyCounts().crawl(frameworkBlobsDir).withPromise()
 
   if (frameworkBlobsDirScan.files > 0) {
     return {
+      apiVersion: 3,
       directory: frameworkBlobsDir,
-      isLegacyDirectory: false,
     }
   }
 
+  // Next, we look for files using the legacy Deploy Configuration API. It was
+  // short-lived and not really documented, but we do have sites relying on
+  // it, so we must support it for backwards-compatibility.
   const deployConfigBlobsDir = path.resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH)
   const deployConfigBlobsDirScan = await new fdir().onlyCounts().crawl(deployConfigBlobsDir).withPromise()
 
   if (deployConfigBlobsDirScan.files > 0) {
     return {
+      apiVersion: 2,
       directory: deployConfigBlobsDir,
-      isLegacyDirectory: false,
     }
   }
 
+  // Finally, we look for files using the initial spec for file-based Blobs
+  // uploads.
   const legacyBlobsDir = path.resolve(buildDir, packagePath || '', LEGACY_BLOBS_PATH)
   const legacyBlobsDirScan = await new fdir().onlyCounts().crawl(legacyBlobsDir).withPromise()
 
   if (legacyBlobsDirScan.files > 0) {
     return {
+      apiVersion: 1,
       directory: legacyBlobsDir,
-      isLegacyDirectory: true,
     }
   }
 
@@ -96,29 +101,49 @@ export const scanForBlobs = async function (buildDir: string, packagePath?: stri
 const METADATA_PREFIX = '$'
 const METADATA_SUFFIX = '.json'
 
-/** Given output directory, find all file paths to upload excluding metadata files */
-export const getKeysToUpload = async (blobsDir: string): Promise<string[]> => {
+/**
+ * Returns the blobs that should be uploaded for a given directory tree. The
+ * result is an array with the blob key, the path to its data file, and the
+ * path to its metadata file.
+ */
+export const getKeysToUpload = async (blobsDir: string) => {
+  const blobsToUpload: { key: string; contentPath: string; metadataPath: string }[] = []
   const files = await new fdir()
     .withRelativePaths() // we want the relative path from the blobsDir
     .filter((fpath) => !path.basename(fpath).startsWith(METADATA_PREFIX))
     .crawl(blobsDir)
     .withPromise()
 
-  // normalize the path separators to all use the forward slash
-  return files.map((f) => f.split(path.sep).join('/'))
+  files.forEach((filePath) => {
+    const key = filePath.split(path.sep).join('/')
+    const contentPath = path.resolve(blobsDir, filePath)
+    const basename = path.basename(filePath)
+    const metadataPath = path.resolve(
+      blobsDir,
+      path.dirname(filePath),
+      `${METADATA_PREFIX}${basename}${METADATA_SUFFIX}`,
+    )
+
+    blobsToUpload.push({
+      key,
+      contentPath,
+      metadataPath,
+    })
+  })
+
+  return blobsToUpload
 }
 
 /** Read a file and its metadata file from the blobs directory */
 export const getFileWithMetadata = async (
-  blobsDir: string,
   key: string,
+  contentPath: string,
+  metadataPath?: string,
 ): Promise<{ data: Buffer; metadata: Record<string, string> }> => {
-  const contentPath = path.join(blobsDir, key)
-  const dirname = path.dirname(key)
-  const basename = path.basename(key)
-  const metadataPath = path.join(blobsDir, dirname, `${METADATA_PREFIX}${basename}${METADATA_SUFFIX}`)
-
-  const [data, metadata] = await Promise.all([readFile(contentPath), readMetadata(metadataPath)]).catch((err) => {
+  const [data, metadata] = await Promise.all([
+    readFile(contentPath),
+    metadataPath ? readMetadata(metadataPath) : {},
+  ]).catch((err) => {
     throw new Error(`Failed while reading '${key}' and its metadata: ${err.message}`)
   })
 

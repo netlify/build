@@ -10,7 +10,6 @@ import { filterConfig, loadConfigFile } from './util.js'
 // path using dot-notation — e.g. `["build", "functions"]` represents the
 // `build.functions` property.
 const ALLOWED_PROPERTIES = [
-  ['build', 'edge_functions'],
   ['build', 'functions'],
   ['build', 'publish'],
   ['functions', '*'],
@@ -24,8 +23,8 @@ const ALLOWED_PROPERTIES = [
 // main configuration file in such a way that user-defined values always take
 // precedence. The exception are these properties that let frameworks set
 // values that should be evaluated before any user-defined values. They use
-// a special notation where `headers!` represents "forced headers", etc.
-const OVERRIDE_PROPERTIES = new Set(['headers!', 'redirects!'])
+// a special notation where `redirects!` represents "forced redirects", etc.
+const OVERRIDE_PROPERTIES = new Set(['redirects!'])
 
 const coreStep: CoreStepFunction = async function ({
   buildDir,

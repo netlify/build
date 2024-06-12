@@ -7,6 +7,7 @@ import semver from 'semver'
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
 import { log, logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { getBlobs } from '../../utils/frameworks_api.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
 const coreStep: CoreStepFunction = async function ({
@@ -48,16 +49,17 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
 
-  // If using the deploy config API, configure the store to use the region that
-  // was configured for the deploy.
-  if (!blobs.isLegacyDirectory) {
+  // If using the deploy config API or the Frameworks API, configure the store
+  // to use the region that was configured for the deploy. We don't do it for
+  // the legacy file-based upload API since that would be a breaking change.
+  if (blobs.apiVersion > 1) {
     storeOpts.experimentalRegion = 'auto'
   }
 
   const blobStore = getDeployStore(storeOpts)
-  const keys = await getKeysToUpload(blobs.directory)
+  const blobsToUpload = blobs.apiVersion >= 3 ? await getBlobs(blobs.directory) : await getKeysToUpload(blobs.directory)
 
-  if (keys.length === 0) {
+  if (blobsToUpload.length === 0) {
     if (!quiet) {
       log(logs, 'No blobs to upload to deploy store.')
     }
@@ -65,17 +67,17 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   if (!quiet) {
-    log(logs, `Uploading ${keys.length} blobs to deploy store...`)
+    log(logs, `Uploading ${blobsToUpload.length} blobs to deploy store...`)
   }
 
   try {
     await pMap(
-      keys,
-      async (key: string) => {
+      blobsToUpload,
+      async ({ key, contentPath, metadataPath }) => {
         if (debug && !quiet) {
           log(logs, `- Uploading blob ${key}`, { indent: true })
         }
-        const { data, metadata } = await getFileWithMetadata(blobs.directory, key)
+        const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
         await blobStore.set(key, data, { metadata })
       },
       { concurrency: 10 },

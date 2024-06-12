@@ -203,7 +203,7 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
   t.is(blob2.data, 'another value')
   t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
 
-  const blob3 = await store.getWithMetadata('nested/file.txt')
+  const blob3 = await store.getWithMetadata('nested/blob')
   t.is(blob3.data, 'file value')
   t.deepEqual(blob3.metadata, { some: 'metadata' })
 
