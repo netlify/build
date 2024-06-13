@@ -4,6 +4,7 @@ import { copyFile } from 'cp-file'
 
 import { INVOCATION_MODE } from '../../function.js'
 import { Priority } from '../../priority.js'
+import { getTrafficRulesConfig } from '../../rate_limit.js'
 import getInternalValue from '../../utils/get_internal_value.js'
 import { GetSrcFilesFunction, Runtime, RUNTIME, ZipFunction } from '../runtime.js'
 
@@ -144,6 +145,7 @@ const zipFunction: ZipFunction = async function ({
   const outputModuleFormat =
     extname(finalMainFile) === MODULE_FILE_EXTENSION.MJS ? MODULE_FORMAT.ESM : MODULE_FORMAT.COMMONJS
   const priority = isInternal ? Priority.GeneratedFunction : Priority.UserFunction
+  const trafficRules = mergedConfig?.rateLimit ? getTrafficRulesConfig(mergedConfig.rateLimit) : undefined
 
   return {
     bundler: bundlerName,
@@ -161,7 +163,7 @@ const zipFunction: ZipFunction = async function ({
     nativeNodeModules,
     path: zipPath.path,
     priority,
-    trafficRules: mergedConfig?.trafficRules,
+    trafficRules,
     runtimeVersion:
       runtimeAPIVersion === 2
         ? getNodeRuntimeForV2(mergedConfig.nodeVersion)

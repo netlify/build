@@ -1,15 +1,14 @@
 import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
-import deepmerge from 'deepmerge'
+import mergeOptions from 'merge-options'
+import { z } from 'zod'
 
-import type { FunctionConfig } from '../../../config.js'
+import { FunctionConfig, functionConfig } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
-import { TrafficRules } from '../../../manifest.js'
-import { RateLimitAction, RateLimitAggregator, RateLimitAlgorithm } from '../../../rate_limit.js'
+import { rateLimit } from '../../../rate_limit.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
 import { nonNullable } from '../../../utils/non_nullable.js'
 import { getRoutes, Route } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
-import { NODE_BUNDLER, NodeBundlerName } from '../bundlers/types.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
@@ -20,29 +19,41 @@ import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
-export type ISCValues = {
-  externalNodeModules?: string[]
-  ignoredNodeModules?: string[]
-  generator?: string
-  includedFiles?: string[]
-  methods?: string[]
-  name?: string
-  nodeBundler?: NodeBundlerName
-  routes?: Route[]
-  schedule?: string
-  timeout?: number
-  trafficRules?: TrafficRules
-}
-
 export interface StaticAnalysisResult extends ISCValues {
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
+  routes?: Route[]
   runtimeAPIVersion?: number
 }
 
 interface FindISCDeclarationsOptions {
   functionName: string
 }
+
+const httpMethods = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toUpperCase() : input),
+  z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD']),
+)
+
+export const isc = functionConfig
+  .pick({
+    externalNodeModules: true,
+    generator: true,
+    includedFiles: true,
+    ignoredNodeModules: true,
+    name: true,
+    nodeBundler: true,
+    schedule: true,
+    timeout: true,
+  })
+  .extend({
+    methods: z.array(httpMethods).optional().catch(undefined),
+    path: z.string().optional().catch(undefined),
+    preferStatic: z.boolean().optional(),
+    rateLimit: rateLimit.optional().catch(undefined),
+  })
+
+export type ISCValues = z.infer<typeof isc>
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
   if (!functionFound) {
@@ -57,83 +68,6 @@ const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean
       'Unable to find cron expression for scheduled function. The cron expression (first argument) for the `schedule` helper needs to be accessible inside the file and cannot be imported.',
       { functionName, runtime: RUNTIME.JAVASCRIPT },
     )
-  }
-}
-
-/**
- * Normalizes method names into arrays of uppercase strings.
- * (e.g. "get" becomes ["GET"])
- */
-const normalizeMethods = (input: unknown, name: string): string[] | undefined => {
-  const methods = Array.isArray(input) ? input : [input]
-
-  return methods.map((method) => {
-    if (typeof method !== 'string') {
-      throw new FunctionBundlingUserError(
-        `Could not parse method declaration of function '${name}'. Expecting HTTP Method, got ${method}`,
-        {
-          functionName: name,
-          runtime: RUNTIME.JAVASCRIPT,
-          bundler: NODE_BUNDLER.ESBUILD,
-        },
-      )
-    }
-
-    return method.toUpperCase()
-  })
-}
-
-/**
- * Extracts the `ratelimit` configuration from the exported config.
- */
-const getTrafficRulesConfig = (input: unknown, name: string): TrafficRules | undefined => {
-  if (typeof input !== 'object' || input === null) {
-    throw new FunctionBundlingUserError(
-      `Could not parse ratelimit declaration of function '${name}'. Expecting an object, got ${input}`,
-      {
-        functionName: name,
-        runtime: RUNTIME.JAVASCRIPT,
-        bundler: NODE_BUNDLER.ESBUILD,
-      },
-    )
-  }
-
-  const { windowSize, windowLimit, algorithm, aggregateBy, action } = input as Record<string, unknown>
-
-  if (
-    typeof windowSize !== 'number' ||
-    typeof windowLimit !== 'number' ||
-    !Number.isInteger(windowSize) ||
-    !Number.isInteger(windowLimit)
-  ) {
-    throw new FunctionBundlingUserError(
-      `Could not parse ratelimit declaration of function '${name}'. Expecting 'windowSize' and 'limitSize' integer properties, got ${input}`,
-      {
-        functionName: name,
-        runtime: RUNTIME.JAVASCRIPT,
-        bundler: NODE_BUNDLER.ESBUILD,
-      },
-    )
-  }
-
-  const rateLimitAgg = Array.isArray(aggregateBy) ? aggregateBy : [RateLimitAggregator.Domain]
-  const rewriteConfig = 'to' in input && typeof input.to === 'string' ? { to: input.to } : undefined
-
-  return {
-    action: {
-      type: (action as RateLimitAction) || RateLimitAction.Limit,
-      config: {
-        ...rewriteConfig,
-        rateLimitConfig: {
-          windowLimit,
-          windowSize,
-          algorithm: (algorithm as RateLimitAlgorithm) || RateLimitAlgorithm.SlidingWindow,
-        },
-        aggregate: {
-          keys: rateLimitAgg.map((agg) => ({ type: agg })),
-        },
-      },
-    },
   }
 }
 
@@ -182,58 +116,24 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       runtimeAPIVersion: 2,
     }
 
-    if (typeof configExport.schedule === 'string') {
-      result.schedule = configExport.schedule
+    try {
+      const iscValues = isc.parse(configExport)
+      console.log('-----> ISC', iscValues)
+      const routes = getRoutes({
+        functionName,
+        methods: iscValues.methods as string[],
+        path: iscValues.path,
+        preferStatic: iscValues.preferStatic === true,
+      })
+
+      return {
+        ...result,
+        ...iscValues,
+        routes,
+      }
+    } catch (error) {
+      return result
     }
-
-    if (typeof configExport.name === 'string') {
-      result.name = configExport.name
-    }
-
-    if (
-      configExport.nodeBundler === 'esbuild' ||
-      configExport.nodeBundler === 'nft' ||
-      configExport.nodeBundler === 'none'
-    ) {
-      result.nodeBundler = configExport.nodeBundler
-    }
-
-    if (typeof configExport.generator === 'string') {
-      result.generator = configExport.generator
-    }
-
-    if (typeof configExport.timeout === 'number') {
-      result.timeout = configExport.timeout
-    }
-
-    if (configExport.method !== undefined) {
-      result.methods = normalizeMethods(configExport.method, functionName)
-    }
-
-    if (configExport.includedFiles !== undefined) {
-      result.includedFiles = getArrayOfType<string>(configExport.includedFiles, 'string')
-    }
-
-    if (configExport.externalNodeModules !== undefined) {
-      result.externalNodeModules = getArrayOfType<string>(configExport.externalNodeModules, 'string')
-    }
-
-    if (configExport.ignoredNodeModules !== undefined) {
-      result.ignoredNodeModules = getArrayOfType<string>(configExport.ignoredNodeModules, 'string')
-    }
-
-    result.routes = getRoutes({
-      functionName,
-      methods: result.methods ?? [],
-      path: configExport.path,
-      preferStatic: configExport.preferStatic === true,
-    })
-
-    if (configExport.rateLimit !== undefined) {
-      result.trafficRules = getTrafficRulesConfig(configExport.rateLimit, functionName)
-    }
-
-    return result
   }
 
   const iscExports = handlerExports
@@ -286,27 +186,19 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   return { ...mergedExports, inputModuleFormat, runtimeAPIVersion: 1 }
 }
 
-const getArrayOfType = <T>(input: any, type: string): T[] => {
-  if (!Array.isArray(input)) {
-    return []
-  }
-
-  return input.filter((element) => typeof element === type) as T[]
-}
-
 export const augmentFunctionConfig = (
   config: FunctionConfig,
   staticAnalysisResult: StaticAnalysisResult,
 ): FunctionConfig & StaticAnalysisResult => {
-  return deepmerge(config, {
-    ...staticAnalysisResult,
+  const iscConfig: FunctionConfig = {}
 
-    // These are generated properties, so we don't wnat them to be part of
-    // the merged config object.
-    inputModuleFormat: undefined,
-    invocationMode: undefined,
-    runtimeAPIVersion: undefined,
-  })
+  for (const key in staticAnalysisResult) {
+    if (key in isc.shape) {
+      iscConfig[key] = staticAnalysisResult[key]
+    }
+  }
+
+  return mergeOptions(config, iscConfig)
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName
