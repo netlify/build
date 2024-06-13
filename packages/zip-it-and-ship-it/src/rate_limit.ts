@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-interface TrafficRules {
+export interface TrafficRules {
   action: {
     type: string
     config: {
