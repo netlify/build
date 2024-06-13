@@ -298,7 +298,15 @@ export const augmentFunctionConfig = (
   config: FunctionConfig,
   staticAnalysisResult: StaticAnalysisResult,
 ): FunctionConfig & StaticAnalysisResult => {
-  return deepmerge(config, staticAnalysisResult)
+  return deepmerge(config, {
+    ...staticAnalysisResult,
+
+    // These are generated properties, so we don't wnat them to be part of
+    // the merged config object.
+    inputModuleFormat: undefined,
+    invocationMode: undefined,
+    runtimeAPIVersion: undefined,
+  })
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName
