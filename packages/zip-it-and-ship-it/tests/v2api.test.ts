@@ -581,4 +581,51 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       expect(positionOfBootstrapImport).toBeLessThan(positionOfUserCodeImport)
     },
   )
+
+  testMany(
+    'Includes in the bundle files included in the TOML and in the function source',
+    ['bundler_default'],
+    async (options) => {
+      const fixtureName = 'v2-api-included-files'
+      const { files, tmpDir } = await zipFixture(fixtureName, {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: merge(options, {
+          archiveFormat: ARCHIVE_FORMAT.NONE,
+          config: {
+            '*': {
+              includedFiles: ['blog/post*'],
+            },
+          },
+        }),
+      })
+
+      const [{ name: archive, entryFilename, includedFiles, runtimeAPIVersion }] = files
+      const func = await importFunctionFile(`${tmpDir}/${archive}/${entryFilename}`)
+      const { body: bodyStream, multiValueHeaders = {}, statusCode } = await invokeLambda(func)
+      const body = await readAsBuffer(bodyStream)
+
+      expect(body).toBe('<h1>Hello world</h1>')
+      expect(multiValueHeaders['content-type']).toEqual(['text/html'])
+      expect(statusCode).toBe(200)
+      expect(runtimeAPIVersion).toBe(2)
+      expect(includedFiles).toEqual([
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/author1.md'),
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post1.md'),
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post2.md'),
+      ])
+    },
+  )
+
+  test('Uses the bundler specified in the `nodeBundler` property from the in-source configuration', async () => {
+    const fixtureName = 'v2-api-bundler-none'
+    const { files } = await zipFixture(fixtureName, {
+      fixtureDir: FIXTURES_ESM_DIR,
+    })
+
+    const unzippedFunctions = await unzipFiles(files)
+    const originalFile = await readFile(join(FIXTURES_ESM_DIR, fixtureName, 'function.js'), 'utf8')
+    const bundledFile = await readFile(join(unzippedFunctions[0].unzipPath, 'function.js'), 'utf8')
+
+    expect(originalFile).toBe(bundledFile)
+  })
 })

@@ -10,7 +10,7 @@ import { GetSrcFilesFunction, Runtime, RUNTIME, ZipFunction } from '../runtime.j
 import { getBundler, getBundlerName } from './bundlers/index.js'
 import { NODE_BUNDLER } from './bundlers/types.js'
 import { findFunctionsInPaths, findFunctionInPath } from './finder.js'
-import { parseFile } from './in_source_config/index.js'
+import { augmentFunctionConfig, parseFile } from './in_source_config/index.js'
 import { MODULE_FORMAT, MODULE_FILE_EXTENSION } from './utils/module_format.js'
 import { getNodeRuntime, getNodeRuntimeForV2 } from './utils/node_runtime.js'
 import { createAliases as createPluginsModulesPathAliases, getPluginsModulesPath } from './utils/plugin_modules_path.js'
@@ -64,10 +64,10 @@ const zipFunction: ZipFunction = async function ({
 
   const staticAnalysisResult = await parseFile(mainFile, { functionName: name })
   const runtimeAPIVersion = staticAnalysisResult.runtimeAPIVersion === 2 ? 2 : 1
-
+  const mergedConfig = augmentFunctionConfig(config, staticAnalysisResult)
   const pluginsModulesPath = await getPluginsModulesPath(srcDir)
   const bundlerName = await getBundlerName({
-    config,
+    config: mergedConfig,
     extension,
     featureFlags,
     mainFile,
@@ -89,7 +89,7 @@ const zipFunction: ZipFunction = async function ({
   } = await bundler.bundle({
     basePath,
     cache,
-    config,
+    config: mergedConfig,
     extension,
     featureFlags,
     filename,
@@ -141,13 +141,6 @@ const zipFunction: ZipFunction = async function ({
     invocationMode = INVOCATION_MODE.Background
   }
 
-  const {
-    trafficRules,
-    generator: staticAnalysisGenerator,
-    name: staticAnalysisName,
-    timeout: staticAnalysisTimeout,
-  } = staticAnalysisResult
-
   const outputModuleFormat =
     extname(finalMainFile) === MODULE_FILE_EXTENSION.MJS ? MODULE_FORMAT.ESM : MODULE_FORMAT.COMMONJS
   const priority = isInternal ? Priority.GeneratedFunction : Priority.UserFunction
@@ -155,11 +148,11 @@ const zipFunction: ZipFunction = async function ({
   return {
     bundler: bundlerName,
     bundlerWarnings,
-    config,
-    displayName: staticAnalysisName || config?.name,
+    config: mergedConfig,
+    displayName: mergedConfig?.name,
     entryFilename: zipPath.entryFilename,
-    generator: staticAnalysisGenerator || config?.generator || getInternalValue(isInternal),
-    timeout: staticAnalysisTimeout || config?.timeout,
+    generator: mergedConfig?.generator || getInternalValue(isInternal),
+    timeout: mergedConfig?.timeout,
     inputs,
     includedFiles,
     staticAnalysisResult,
@@ -168,9 +161,11 @@ const zipFunction: ZipFunction = async function ({
     nativeNodeModules,
     path: zipPath.path,
     priority,
-    trafficRules,
+    trafficRules: mergedConfig?.trafficRules,
     runtimeVersion:
-      runtimeAPIVersion === 2 ? getNodeRuntimeForV2(config.nodeVersion) : getNodeRuntime(config.nodeVersion),
+      runtimeAPIVersion === 2
+        ? getNodeRuntimeForV2(mergedConfig.nodeVersion)
+        : getNodeRuntime(mergedConfig.nodeVersion),
   }
 }
 

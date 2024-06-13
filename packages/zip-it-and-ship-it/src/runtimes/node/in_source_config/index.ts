@@ -1,5 +1,7 @@
 import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+import deepmerge from 'deepmerge'
 
+import type { FunctionConfig } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { TrafficRules } from '../../../manifest.js'
 import { RateLimitAction, RateLimitAggregator, RateLimitAlgorithm } from '../../../rate_limit.js'
@@ -7,7 +9,7 @@ import { FunctionBundlingUserError } from '../../../utils/error.js'
 import { nonNullable } from '../../../utils/non_nullable.js'
 import { getRoutes, Route } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
-import { NODE_BUNDLER } from '../bundlers/types.js'
+import { NODE_BUNDLER, NodeBundlerName } from '../bundlers/types.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
@@ -19,13 +21,17 @@ import { parse as parseSchedule } from './properties/schedule.js'
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
 export type ISCValues = {
+  externalNodeModules?: string[]
+  ignoredNodeModules?: string[]
+  generator?: string
+  includedFiles?: string[]
+  methods?: string[]
+  name?: string
+  nodeBundler?: NodeBundlerName
   routes?: Route[]
   schedule?: string
-  methods?: string[]
-  trafficRules?: TrafficRules
-  name?: string
-  generator?: string
   timeout?: number
+  trafficRules?: TrafficRules
 }
 
 export interface StaticAnalysisResult extends ISCValues {
@@ -184,6 +190,14 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       result.name = configExport.name
     }
 
+    if (
+      configExport.nodeBundler === 'esbuild' ||
+      configExport.nodeBundler === 'nft' ||
+      configExport.nodeBundler === 'none'
+    ) {
+      result.nodeBundler = configExport.nodeBundler
+    }
+
     if (typeof configExport.generator === 'string') {
       result.generator = configExport.generator
     }
@@ -194,6 +208,18 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 
     if (configExport.method !== undefined) {
       result.methods = normalizeMethods(configExport.method, functionName)
+    }
+
+    if (configExport.includedFiles !== undefined) {
+      result.includedFiles = getArrayOfType<string>(configExport.includedFiles, 'string')
+    }
+
+    if (configExport.externalNodeModules !== undefined) {
+      result.externalNodeModules = getArrayOfType<string>(configExport.externalNodeModules, 'string')
+    }
+
+    if (configExport.ignoredNodeModules !== undefined) {
+      result.ignoredNodeModules = getArrayOfType<string>(configExport.ignoredNodeModules, 'string')
     }
 
     result.routes = getRoutes({
@@ -258,6 +284,21 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   const mergedExports: ISCValues = iscExports.reduce((acc, obj) => ({ ...acc, ...obj }), {})
 
   return { ...mergedExports, inputModuleFormat, runtimeAPIVersion: 1 }
+}
+
+const getArrayOfType = <T>(input: any, type: string): T[] => {
+  if (!Array.isArray(input)) {
+    return []
+  }
+
+  return input.filter((element) => typeof element === type) as T[]
+}
+
+export const augmentFunctionConfig = (
+  config: FunctionConfig,
+  staticAnalysisResult: StaticAnalysisResult,
+): FunctionConfig & StaticAnalysisResult => {
+  return deepmerge(config, staticAnalysisResult)
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName
