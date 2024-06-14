@@ -105,6 +105,193 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.47.5](https://github.com/netlify/build/compare/build-v29.47.4...build-v29.47.5) (2024-06-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.65 to ^5.2.66
+    * @netlify/zip-it-and-ship-it bumped from 9.35.0 to 9.35.1
+
+## [29.47.4](https://github.com/netlify/build/compare/build-v29.47.3...build-v29.47.4) (2024-06-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.64 to ^5.2.65
+    * @netlify/zip-it-and-ship-it bumped from 9.34.4 to 9.35.0
+
+## [29.47.3](https://github.com/netlify/build/compare/build-v29.47.2...build-v29.47.3) (2024-06-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.63 to ^5.2.64
+    * @netlify/zip-it-and-ship-it bumped from 9.34.3 to 9.34.4
+
+## [29.47.2](https://github.com/netlify/build/compare/build-v29.47.1...build-v29.47.2) (2024-06-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.15.1 to ^20.15.2
+
+## [29.47.1](https://github.com/netlify/build/compare/build-v29.47.0...build-v29.47.1) (2024-06-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.15.0 to ^20.15.1
+    * @netlify/functions-utils bumped from ^5.2.62 to ^5.2.63
+    * @netlify/zip-it-and-ship-it bumped from 9.34.2 to 9.34.3
+
+## [29.47.0](https://github.com/netlify/build/compare/build-v29.46.5...build-v29.47.0) (2024-06-06)
+
+
+### Features
+
+* populate Blobs context in build plugins ([#5571](https://github.com/netlify/build/issues/5571)) ([e037fbf](https://github.com/netlify/build/commit/e037fbf0b4ecddc6775c56eb6f58eb8570226827))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.14.1 to ^20.15.0
+
+## [29.46.5](https://github.com/netlify/build/compare/build-v29.46.4...build-v29.46.5) (2024-06-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.61 to ^5.2.62
+    * @netlify/zip-it-and-ship-it bumped from 9.34.1 to 9.34.2
+
+## [29.46.4](https://github.com/netlify/build/compare/build-v29.46.3...build-v29.46.4) (2024-06-04)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.14.0 to ^20.14.1
+
+## [29.46.3](https://github.com/netlify/build/compare/build-v29.46.2...build-v29.46.3) (2024-06-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.2 to ^20.14.0
+    * @netlify/functions-utils bumped from ^5.2.60 to ^5.2.61
+    * @netlify/zip-it-and-ship-it bumped from 9.34.0 to 9.34.1
+
+## [29.46.2](https://github.com/netlify/build/compare/build-v29.46.1...build-v29.46.2) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.1 to ^20.13.2
+
+## [29.46.1](https://github.com/netlify/build/compare/build-v29.46.0...build-v29.46.1) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.13.0 to ^20.13.1
+
+## [29.46.0](https://github.com/netlify/build/compare/build-v29.45.0...build-v29.46.0) (2024-05-29)
+
+
+### Features
+
+* log plugin initialisation error on single line ([#5684](https://github.com/netlify/build/issues/5684)) ([3aecbfc](https://github.com/netlify/build/commit/3aecbfccd2a3eef5cf4889432550423fd594e876))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.12.6 to ^20.13.0
+    * @netlify/functions-utils bumped from ^5.2.59 to ^5.2.60
+    * @netlify/zip-it-and-ship-it bumped from 9.33.2 to 9.34.0
+
+## [29.45.0](https://github.com/netlify/build/compare/build-v29.44.0...build-v29.45.0) (2024-05-29)
+
+
+### Features
+
+* capture plugin errors during `ready` phase ([#5681](https://github.com/netlify/build/issues/5681)) ([afb6816](https://github.com/netlify/build/commit/afb68169cb2f5c1b96c53527ca4566af096b68ce))
+
+## [29.44.0](https://github.com/netlify/build/compare/build-v29.43.0...build-v29.44.0) (2024-05-28)
+
+
+### Features
+
+* emit system log when plugin has failed to load ([#5679](https://github.com/netlify/build/issues/5679)) ([0efec6d](https://github.com/netlify/build/commit/0efec6d25e8d4804b853fd6a71ecbe2a198cb1ee))
+
+## [29.43.0](https://github.com/netlify/build/compare/build-v29.42.6...build-v29.43.0) (2024-05-28)
+
+
+### Features
+
+* pass output flusher to `callChild` ([#5677](https://github.com/netlify/build/issues/5677)) ([2a4e213](https://github.com/netlify/build/commit/2a4e2134d17268837677c73d1b9016bd853a2785))
+
+## [29.42.6](https://github.com/netlify/build/compare/build-v29.42.5...build-v29.42.6) (2024-05-27)
+
+
+### Bug Fixes
+
+* stop changing `logs` if flusher is not set ([#5676](https://github.com/netlify/build/issues/5676)) ([1adebca](https://github.com/netlify/build/commit/1adebca5126521a50f515c4d20efa9a5565ea54c))
+
+## [29.42.5](https://github.com/netlify/build/compare/build-v29.42.4...build-v29.42.5) (2024-05-27)
+
+
+### Bug Fixes
+
+* revert update of `read-pkg-up` ([#5672](https://github.com/netlify/build/issues/5672)) ([d30cea9](https://github.com/netlify/build/commit/d30cea9db5ca1262540554fc53eac9fe011bbe8a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.12 to ^9.8.13
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.1.3
+
+## [29.42.4](https://github.com/netlify/build/compare/build-v29.42.3...build-v29.42.4) (2024-05-27)
+
+
+### Bug Fixes
+
+* troubleshoot failing builds on Node 14 ([#5671](https://github.com/netlify/build/issues/5671)) ([412d35e](https://github.com/netlify/build/commit/412d35ed90a566d1b9b09260a6544e1542105bbf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.58 to ^5.2.59
+    * @netlify/zip-it-and-ship-it bumped from 9.33.1 to 9.33.2
+
 ## [29.42.3](https://github.com/netlify/build/compare/build-v29.42.2...build-v29.42.3) (2024-05-23)
 
 

@@ -3,31 +3,35 @@ import { basename, extname, dirname, join } from 'path'
 
 import isPathInside from 'is-path-inside'
 import mergeOptions from 'merge-options'
+import { z } from 'zod'
 
 import { FunctionSource } from './function.js'
-import type { NodeBundlerName } from './runtimes/node/bundlers/types.js'
-import type { ModuleFormat } from './runtimes/node/utils/module_format.js'
+import { nodeBundler } from './runtimes/node/bundlers/types.js'
+import { moduleFormat } from './runtimes/node/utils/module_format.js'
 import { minimatch } from './utils/matching.js'
 
-interface FunctionConfig {
-  externalNodeModules?: string[]
-  includedFiles?: string[]
-  includedFilesBasePath?: string
-  ignoredNodeModules?: string[]
-  nodeBundler?: NodeBundlerName
-  nodeSourcemap?: boolean
-  nodeVersion?: string
-  rustTargetDirectory?: string
-  schedule?: string
-  zipGo?: boolean
-  name?: string
-  generator?: string
+export const functionConfig = z.object({
+  externalNodeModules: z.array(z.string()).optional().catch([]),
+  generator: z.string().optional().catch(undefined),
+  includedFiles: z.array(z.string()).optional().catch([]),
+  includedFilesBasePath: z.string().optional().catch(undefined),
+  ignoredNodeModules: z.array(z.string()).optional().catch([]),
+  name: z.string().optional().catch(undefined),
+  nodeBundler: nodeBundler.optional().catch(undefined),
+  nodeSourcemap: z.boolean().optional().catch(undefined),
+  nodeVersion: z.string().optional().catch(undefined),
+  rustTargetDirectory: z.string().optional().catch(undefined),
+  schedule: z.string().optional().catch(undefined),
+  timeout: z.number().optional().catch(undefined),
+  zipGo: z.boolean().optional().catch(undefined),
 
   // Temporary configuration property, only meant to be used by the deploy
   // configuration API. Once we start emitting ESM files for all ESM functions,
   // we can remove this.
-  nodeModuleFormat?: ModuleFormat
-}
+  nodeModuleFormat: moduleFormat.optional().catch(undefined),
+})
+
+type FunctionConfig = z.infer<typeof functionConfig>
 
 interface FunctionConfigFile {
   config: FunctionConfig

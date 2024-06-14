@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import type { FeatureFlags } from '../../../feature_flags.js'
 import { ObjectValues } from '../../../types/utils.js'
 
@@ -8,7 +10,9 @@ export const MODULE_FORMAT = {
   ESM: 'esm',
 } as const
 
-export type ModuleFormat = ObjectValues<typeof MODULE_FORMAT>
+export const moduleFormat = z.nativeEnum(MODULE_FORMAT)
+
+export type ModuleFormat = z.infer<typeof moduleFormat>
 
 export const MODULE_FILE_EXTENSION = {
   CJS: '.cjs',

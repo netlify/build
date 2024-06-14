@@ -1,10 +1,12 @@
 import { createRequire } from 'module'
 import { fileURLToPath, pathToFileURL } from 'url'
+import { promisify } from 'util'
 
 import { trace } from '@opentelemetry/api'
 import { ExecaChildProcess, execaNode } from 'execa'
 import { gte } from 'semver'
 
+import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
 import { NetlifyConfig } from '../index.js'
 import { BufferedLogs } from '../log/logger.js'
@@ -15,15 +17,19 @@ import {
   logOutdatedPlugins,
   logRuntime,
 } from '../log/messages/compatibility.js'
+import { SystemLogger } from '../plugins_core/types.js'
 import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
 import { callChild, getEventFromChild } from './ipc.js'
 import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
+import { captureStandardError } from './system_log.js'
+
+export type ChildProcess = ExecaChildProcess<string>
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
-
+const pSetTimeout = promisify(setTimeout)
 const require = createRequire(import.meta.url)
 
 // Start child processes used by all plugins
@@ -32,7 +38,17 @@ const require = createRequire(import.meta.url)
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug, quiet, systemLogFile }) {
+const tStartPlugins = async function ({
+  pluginsOptions,
+  buildDir,
+  childEnv,
+  logs,
+  debug,
+  quiet,
+  systemLog,
+  systemLogFile,
+  featureFlags,
+}) {
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
     logLoadingPlugins(logs, pluginsOptions, debug)
@@ -44,7 +60,17 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 
   const childProcesses = await Promise.all(
     pluginsOptions.map(({ pluginDir, nodePath, nodeVersion, pluginPackageJson }) =>
-      startPlugin({ pluginDir, nodePath, nodeVersion, buildDir, childEnv, systemLogFile, pluginPackageJson }),
+      startPlugin({
+        pluginDir,
+        nodePath,
+        nodeVersion,
+        buildDir,
+        childEnv,
+        systemLog,
+        systemLogFile,
+        pluginPackageJson,
+        featureFlags,
+      }),
     ),
   )
   return { childProcesses }
@@ -58,8 +84,10 @@ const startPlugin = async function ({
   nodePath,
   buildDir,
   childEnv,
+  systemLog,
   systemLogFile,
   pluginPackageJson,
+  featureFlags,
 }: {
   nodeVersion: string
   nodePath: string
@@ -68,7 +96,9 @@ const startPlugin = async function ({
   buildDir: string
   childEnv: Record<string, string>
   pluginPackageJson: Record<string, string>
+  systemLog: SystemLogger
   systemLogFile: number
+  featureFlags: FeatureFlags
 }) {
   const ctx = trace.getActiveSpan()?.spanContext()
 
@@ -115,14 +145,23 @@ const startPlugin = async function ({
         ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile]
         : undefined,
   })
+  const readyEvent = 'ready'
+  const cleanup = captureStandardError(childProcess, systemLog, readyEvent, featureFlags)
 
   try {
-    await getEventFromChild(childProcess, 'ready')
+    await getEventFromChild(childProcess, readyEvent)
     return { childProcess }
   } catch (error) {
+    if (featureFlags.netlify_build_plugin_system_log) {
+      // Wait for stderr to be flushed.
+      await pSetTimeout(0)
+    }
+
     const spawnInfo = getSpawnInfo()
     addErrorInfo(error, spawnInfo)
     throw error
+  } finally {
+    cleanup()
   }
 }
 

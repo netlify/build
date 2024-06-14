@@ -13,6 +13,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -25,6 +26,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -37,6 +39,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -49,6 +52,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -61,6 +65,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -73,6 +78,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -85,6 +91,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -97,6 +104,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -109,6 +117,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -121,6 +130,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -133,6 +143,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -145,6 +156,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
 ]
 `;
@@ -162,6 +174,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -174,6 +187,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -186,6 +200,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -198,6 +213,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -210,6 +226,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -222,6 +239,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -234,6 +252,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -246,6 +265,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -258,6 +278,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -270,6 +291,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -282,6 +304,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -294,6 +317,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
 ]
 `;
@@ -311,6 +335,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -323,6 +348,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -335,6 +361,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -347,6 +374,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
 ]
 `;
@@ -364,6 +392,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -376,6 +405,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -388,6 +418,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -400,6 +431,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
 ]
 `;
@@ -417,6 +449,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -429,6 +462,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -441,6 +475,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -453,6 +488,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -465,6 +501,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -477,6 +514,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -489,6 +527,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -501,6 +540,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -513,6 +553,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -525,6 +566,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -537,6 +579,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -549,6 +592,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "node_modules/test/package.json",
+    "timeout": undefined,
   },
 ]
 `;
@@ -566,6 +610,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -578,6 +623,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -590,6 +636,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -602,6 +649,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "netlify/functions/function_user.js",
+    "timeout": undefined,
   },
 ]
 `;
@@ -619,6 +667,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -631,6 +680,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -643,6 +693,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -655,6 +706,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -667,6 +719,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -679,6 +732,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/three.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -691,6 +745,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -703,6 +758,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;
@@ -720,6 +776,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -732,6 +789,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -744,6 +802,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -756,6 +815,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -768,6 +828,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -780,6 +841,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -792,6 +854,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/three.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -804,6 +867,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;
@@ -821,6 +885,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -833,6 +898,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -845,6 +911,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -857,6 +924,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -869,6 +937,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -881,6 +950,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -893,6 +963,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;
@@ -910,6 +981,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -922,6 +994,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -934,6 +1007,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -946,6 +1020,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -958,6 +1033,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -970,6 +1046,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -982,6 +1059,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;
@@ -999,6 +1077,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1011,6 +1090,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1023,6 +1103,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1035,6 +1116,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/util.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1047,6 +1129,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1059,6 +1142,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1071,6 +1155,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1083,6 +1168,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/three.json",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1095,6 +1181,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;
@@ -1112,6 +1199,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.zip",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1124,6 +1212,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1136,6 +1225,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "five/index.ts",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1148,6 +1238,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "four.js/four.js.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1160,6 +1251,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "one/index.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1172,6 +1264,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "two/two.js",
+    "timeout": undefined,
   },
   {
     "displayName": undefined,
@@ -1184,6 +1277,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "runtimeAPIVersion": undefined,
     "schedule": undefined,
     "srcFile": "test",
+    "timeout": undefined,
   },
 ]
 `;

@@ -13,7 +13,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'cjs', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
   })
 
   test('CommonJS file with `schedule` helper renamed locally', () => {
@@ -23,7 +23,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'cjs', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
   })
 
   test('CommonJS file importing from a package other than "@netlify/functions"', () => {
@@ -33,7 +33,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: {}, inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
   })
 
   test.todo('CommonJS file with `schedule` helper exported from a variable', () => {
@@ -45,7 +45,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'cjs', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
   })
 
   test('ESM file with `schedule` helper', () => {
@@ -55,7 +55,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
   })
 
   test('ESM file with `schedule` helper renamed locally', () => {
@@ -65,7 +65,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
   })
 
   test('ESM file importing from a package other than "@netlify/functions"', () => {
@@ -75,7 +75,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
   })
 
   test('ESM file with `handler` exported from a variable', () => {
@@ -87,7 +87,7 @@ describe('`schedule` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', schedule: '@daily', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: { schedule: '@daily' }, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
   })
 })
 
@@ -101,7 +101,7 @@ describe('`stream` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', invocationMode: 'stream', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', invocationMode: 'stream', runtimeAPIVersion: 1 })
   })
 
   test('CommonJS file importing from a package other than "@netlify/functions"', () => {
@@ -111,7 +111,7 @@ describe('`stream` helper', () => {
 
     const isc = parseSource(source, options)
 
-    expect(isc).toEqual({ inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
+    expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
   })
 })
 
@@ -128,7 +128,7 @@ describe('V2 API', () => {
       }`
       const isc = parseSource(source, { ...options })
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('ESM file with a default export and a `handler` export', () => {
@@ -140,7 +140,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
     })
 
     test('ESM file with no default export and a `handler` export', () => {
@@ -150,7 +150,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
     })
 
     test('ESM file with default exporting a function', () => {
@@ -159,7 +159,7 @@ describe('V2 API', () => {
       export default handler;`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('ESM file with default export of variable and separate handler export', () => {
@@ -169,7 +169,7 @@ describe('V2 API', () => {
       export const handler = () => ({ statusCode: 200, body: "Hello" })`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', runtimeAPIVersion: 1 })
     })
 
     test('ESM file with default export wrapped in a literal from an arrow function', () => {
@@ -179,7 +179,12 @@ describe('V2 API', () => {
       export { handler as default };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], schedule: '@daily', runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: { schedule: '@daily' },
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with separate config export', () => {
@@ -190,7 +195,12 @@ describe('V2 API', () => {
       export default handler
       `
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], schedule: '@daily', runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: { schedule: '@daily' },
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with default export and named export', () => {
@@ -200,7 +210,12 @@ describe('V2 API', () => {
       export { handler as default, config };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], schedule: '@daily', runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: { schedule: '@daily' },
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     // This is the Remix handler
@@ -220,6 +235,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
       expect(isc).toEqual({
+        config: { path: ['/*'] },
         inputModuleFormat: 'esm',
         routes: [
           {
@@ -262,7 +278,7 @@ describe('V2 API', () => {
       export { handler as default };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('ESM file with default export exporting a constant', () => {
@@ -271,7 +287,7 @@ describe('V2 API', () => {
       export { foo as default };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('TypeScript file with a default export and no `handler` export', () => {
@@ -281,7 +297,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('CommonJS file with a default export and a `handler` export', () => {
@@ -293,7 +309,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'cjs', runtimeAPIVersion: 1 })
     })
 
     test('CommonJS file with a default export and no `handler` export', () => {
@@ -303,7 +319,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'cjs', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'cjs', routes: [], runtimeAPIVersion: 2 })
     })
 
     test('ESM file with a default export consisting of a function call', () => {
@@ -314,7 +330,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
     })
   })
 
@@ -330,7 +346,12 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2, schedule: '@daily' })
+      expect(isc).toEqual({
+        config: { schedule: '@daily' },
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
   })
 
@@ -344,9 +365,9 @@ describe('V2 API', () => {
         method: ["GET", "POST"]
       }`
 
-      const { methods } = parseSource(source, options)
+      const { config } = parseSource(source, options)
 
-      expect(methods).toEqual(['GET', 'POST'])
+      expect(config?.method).toEqual(['GET', 'POST'])
     })
 
     test('Using single method', () => {
@@ -358,9 +379,9 @@ describe('V2 API', () => {
         method: "GET"
       }`
 
-      const { methods } = parseSource(source, options)
+      const { config } = parseSource(source, options)
 
-      expect(methods).toEqual(['GET'])
+      expect(config?.method).toEqual(['GET'])
     })
   })
 
@@ -369,20 +390,20 @@ describe('V2 API', () => {
       test('Missing a leading slash', () => {
         expect.assertions(4)
 
+        const source = `export default async () => {
+          return new Response("Hello!")
+        }
+
+        export const config = {
+          path: "missing-slash"
+        }`
+
         try {
-          const source = `export default async () => {
-            return new Response("Hello!")
-          }
-
-          export const config = {
-            path: "missing-slash"
-          }`
-
           parseSource(source, options)
         } catch (error) {
           const { customErrorInfo, message } = error
 
-          expect(message).toBe(`'path' property must start with a '/'`)
+          expect(message).toBe(`Function func1 has a configuration error on 'path': Must start with a '/'`)
           expect(customErrorInfo.type).toBe('functionsBundling')
           expect(customErrorInfo.location.functionName).toBe('func1')
           expect(customErrorInfo.location.runtime).toBe('js')
@@ -392,15 +413,15 @@ describe('V2 API', () => {
       test('An invalid pattern', () => {
         expect.assertions(4)
 
+        const source = `export default async () => {
+          return new Response("Hello!")
+        }
+
+        export const config = {
+          path: "/products("
+        }`
+
         try {
-          const source = `export default async () => {
-            return new Response("Hello!")
-          }
-
-          export const config = {
-            path: "/products("
-          }`
-
           parseSource(source, options)
         } catch (error) {
           const { customErrorInfo, message } = error
@@ -415,22 +436,24 @@ describe('V2 API', () => {
       test('A non-string value', () => {
         expect.assertions(4)
 
-        try {
-          const source = `export default async () => {
-            return new Response("Hello!")
+        const source = `export default async () => {
+          return new Response("Hello!")
+        }
+
+        export const config = {
+          path: {
+            url: "/products"
           }
+        }`
 
-          export const config = {
-            path: {
-              url: "/products"
-            }
-          }`
-
+        try {
           parseSource(source, options)
         } catch (error) {
           const { customErrorInfo, message } = error
 
-          expect(message).toBe(`'path' property must be a string, found '{"url":"/products"}'`)
+          expect(message).toBe(
+            `Function func1 has a configuration error on 'path': Must be a string or array of strings`,
+          )
           expect(customErrorInfo.type).toBe('functionsBundling')
           expect(customErrorInfo.location.functionName).toBe('func1')
           expect(customErrorInfo.location.runtime).toBe('js')
@@ -476,7 +499,9 @@ describe('V2 API', () => {
         } catch (error) {
           const { customErrorInfo, message } = error
 
-          expect(message).toBe(`'path' property must be a string, found '42'`)
+          expect(message).toBe(
+            `Function func1 has a configuration error on 'path': Must be a string or array of strings`,
+          )
           expect(customErrorInfo.type).toBe('functionsBundling')
           expect(customErrorInfo.location.functionName).toBe('func1')
           expect(customErrorInfo.location.runtime).toBe('js')
@@ -499,7 +524,9 @@ describe('V2 API', () => {
         } catch (error) {
           const { customErrorInfo, message } = error
 
-          expect(message).toBe(`'path' property must be a string, found 'null'`)
+          expect(message).toBe(
+            `Function func1 has a configuration error on 'path': Must be a string or array of strings`,
+          )
           expect(customErrorInfo.type).toBe('functionsBundling')
           expect(customErrorInfo.location.functionName).toBe('func1')
           expect(customErrorInfo.location.runtime).toBe('js')
@@ -522,7 +549,9 @@ describe('V2 API', () => {
         } catch (error) {
           const { customErrorInfo, message } = error
 
-          expect(message).toBe(`'path' property must be a string, found 'undefined'`)
+          expect(message).toBe(
+            `Function func1 has a configuration error on 'path': Must be a string or array of strings`,
+          )
           expect(customErrorInfo.type).toBe('functionsBundling')
           expect(customErrorInfo.location.functionName).toBe('func1')
           expect(customErrorInfo.location.runtime).toBe('js')
@@ -711,11 +740,24 @@ describe('V2 API', () => {
 
     const isc = parseSource(source, options)
     expect(isc).toEqual({
+      config: { generator: 'bar@1.2.3', name: 'foo' },
+      inputModuleFormat: 'esm',
+      runtimeAPIVersion: 2,
+      routes: [],
+    })
+  })
+
+  test('Understands timeout', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { timeout: 60 }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      config: { timeout: 60 },
       inputModuleFormat: 'esm',
       routes: [],
       runtimeAPIVersion: 2,
-      name: 'foo',
-      generator: 'bar@1.2.3',
     })
   })
 })

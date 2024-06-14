@@ -17,7 +17,7 @@ export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export { NodeBundlerName, NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 export { RuntimeName, RUNTIME } from './runtimes/runtime.js'
 export { ModuleFormat, MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
-export { TrafficRules, Manifest } from './manifest.js'
+export { Manifest } from './manifest.js'
 export { FunctionResult } from './utils/format_result.js'
 
 export interface ListedFunction {
@@ -29,6 +29,7 @@ export interface ListedFunction {
   schedule?: string
   displayName?: string
   generator?: string
+  timeout?: number
   inputModuleFormat?: ModuleFormat
 }
 
@@ -151,11 +152,12 @@ const getListedFunction = function ({
     displayName: config.name,
     extension,
     generator: config.generator,
+    timeout: config.timeout,
     mainFile,
     name,
     runtime: runtime.name,
     runtimeAPIVersion: staticAnalysisResult ? staticAnalysisResult?.runtimeAPIVersion ?? 1 : undefined,
-    schedule: staticAnalysisResult?.schedule ?? config.schedule,
+    schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,
     inputModuleFormat: staticAnalysisResult?.inputModuleFormat,
   }
 }
