@@ -65,7 +65,7 @@ const zipFunction: ZipFunction = async function ({
 
   const staticAnalysisResult = await parseFile(mainFile, { functionName: name })
   const runtimeAPIVersion = staticAnalysisResult.runtimeAPIVersion === 2 ? 2 : 1
-  const mergedConfig = augmentFunctionConfig(config, staticAnalysisResult)
+  const mergedConfig = augmentFunctionConfig(config, staticAnalysisResult.config)
   const pluginsModulesPath = await getPluginsModulesPath(srcDir)
   const bundlerName = await getBundlerName({
     config: mergedConfig,

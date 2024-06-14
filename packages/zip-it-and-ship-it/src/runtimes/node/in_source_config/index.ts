@@ -6,8 +6,7 @@ import { FunctionConfig, functionConfig } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
-import { nonNullable } from '../../../utils/non_nullable.js'
-import { getRoutes, Route } from '../../../utils/routes.js'
+import { Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
@@ -19,7 +18,8 @@ import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
-export interface StaticAnalysisResult extends ISCValues {
+export interface StaticAnalysisResult {
+  config: InSourceConfig
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
   routes?: Route[]
@@ -34,8 +34,9 @@ const httpMethods = z.preprocess(
   (input) => (typeof input === 'string' ? input.toUpperCase() : input),
   z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD']),
 )
+const path = z.string().startsWith('/', { message: "Must start with a '/'" })
 
-export const isc = functionConfig
+export const inSourceConfig = functionConfig
   .pick({
     externalNodeModules: true,
     generator: true,
@@ -47,13 +48,19 @@ export const isc = functionConfig
     timeout: true,
   })
   .extend({
-    methods: z.array(httpMethods).optional().catch(undefined),
-    path: z.string().optional().catch(undefined),
-    preferStatic: z.boolean().optional(),
+    method: z
+      .union([httpMethods, z.array(httpMethods)])
+      .transform((input) => (Array.isArray(input) ? input : [input]))
+      .optional(),
+    path: z
+      .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
+      .transform((input) => (Array.isArray(input) ? input : [input]))
+      .optional(),
+    preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
   })
 
-export type ISCValues = z.infer<typeof isc>
+export type InSourceConfig = z.infer<typeof inSourceConfig>
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
   if (!functionFound) {
@@ -82,7 +89,9 @@ export const parseFile = async (
   const source = await safelyReadSource(sourcePath)
 
   if (source === null) {
-    return {}
+    return {
+      config: {},
+    }
   }
 
   return parseSource(source, { functionName })
@@ -97,7 +106,9 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   const ast = safelyParseSource(source)
 
   if (ast === null) {
-    return {}
+    return {
+      config: {},
+    }
   }
 
   const imports = ast.body.flatMap((node) => getImports(node, IN_SOURCE_CONFIG_MODULE))
@@ -112,95 +123,97 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 
   if (isV2API) {
     const result: StaticAnalysisResult = {
+      config: {},
       inputModuleFormat,
       runtimeAPIVersion: 2,
     }
+    const { data, error, success } = inSourceConfig.safeParse(configExport)
 
-    try {
-      const iscValues = isc.parse(configExport)
-      const routes = getRoutes({
+    if (success) {
+      result.config = data
+      result.routes = getRoutes({
         functionName,
-        methods: iscValues.methods as string[],
-        path: iscValues.path,
-        preferStatic: iscValues.preferStatic === true,
+        methods: data.method ?? [],
+        path: data.path,
+        preferStatic: data.preferStatic,
       })
+    } else {
+      // TODO: Handle multiple errors.
+      const [issue] = error.issues
 
-      return {
-        ...result,
-        ...iscValues,
-        routes,
-      }
-    } catch (error) {
-      return result
+      throw new FunctionBundlingUserError(
+        `Function ${functionName} has a configuration error on '${issue.path.join('.')}': ${issue.message}`,
+        {
+          functionName,
+          runtime: RUNTIME.JAVASCRIPT,
+        },
+      )
     }
+
+    return result
   }
 
-  const iscExports = handlerExports
-    .map((node) => {
-      // We're only interested in exports with call expressions, since that's
-      // the pattern we use for the wrapper functions.
-      if (node.type !== 'call-expression') {
-        return null
-      }
+  const result: StaticAnalysisResult = {
+    config: {},
+    inputModuleFormat,
+    runtimeAPIVersion: 1,
+  }
 
-      const { args, local: exportName } = node
-      const matchingImport = imports.find(({ local: importName }) => importName === exportName)
+  handlerExports.forEach((node) => {
+    // We're only interested in exports with call expressions, since that's
+    // the pattern we use for the wrapper functions.
+    if (node.type !== 'call-expression') {
+      return
+    }
 
-      if (matchingImport === undefined) {
-        return null
-      }
+    const { args, local: exportName } = node
+    const matchingImport = imports.find(({ local: importName }) => importName === exportName)
 
-      switch (matchingImport.imported) {
-        case 'schedule': {
-          const parsed = parseSchedule({ args }, getAllBindings)
+    if (matchingImport === undefined) {
+      return
+    }
 
-          scheduledFunctionFound = true
-          if (parsed.schedule) {
-            scheduleFound = true
-          }
+    switch (matchingImport.imported) {
+      case 'schedule': {
+        const parsed = parseSchedule({ args }, getAllBindings)
 
-          return parsed
+        scheduledFunctionFound = true
+        if (parsed.schedule) {
+          scheduleFound = true
         }
 
-        case 'stream': {
-          return {
-            invocationMode: INVOCATION_MODE.Stream,
-          }
+        if (parsed.schedule !== undefined) {
+          result.config.schedule = parsed.schedule
         }
 
-        default:
-        // no-op
+        return
       }
 
-      return null
-    })
-    .filter(nonNullable)
+      case 'stream': {
+        result.invocationMode = INVOCATION_MODE.Stream
+
+        return
+      }
+
+      default:
+      // no-op
+    }
+
+    return
+  })
 
   if (scheduledFunctionExpected) {
     validateScheduleFunction(scheduledFunctionFound, scheduleFound, functionName)
   }
 
-  const mergedExports: ISCValues = iscExports.reduce((acc, obj) => ({ ...acc, ...obj }), {})
-
-  return { ...mergedExports, inputModuleFormat, runtimeAPIVersion: 1 }
+  return result
 }
 
 export const augmentFunctionConfig = (
-  config: FunctionConfig,
-  staticAnalysisResult: StaticAnalysisResult,
-): FunctionConfig & StaticAnalysisResult => {
-  const iscConfig: FunctionConfig = {}
-
-  // Some of the properties in the static analysis result are generated by us.
-  // They don't belong in the config file, so we filter those out by checking
-  // whether they belong to the ISC schema.
-  for (const key in staticAnalysisResult) {
-    if (key in isc.shape) {
-      iscConfig[key] = staticAnalysisResult[key]
-    }
-  }
-
-  return mergeOptions(config, iscConfig)
+  tomlConfig: FunctionConfig,
+  inSourceConfig: InSourceConfig = {},
+): FunctionConfig & InSourceConfig => {
+  return mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig)
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName
