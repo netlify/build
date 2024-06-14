@@ -5,6 +5,7 @@ import { promisify } from 'util'
 
 import merge from 'deepmerge'
 import glob from 'glob'
+import { pathExists } from 'path-exists'
 import semver from 'semver'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
@@ -626,6 +627,10 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post1.md'),
       resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post2.md'),
     ])
+
+    for (const path of includedFiles as string[]) {
+      expect(await pathExists(path)).toBeTruthy()
+    }
   })
 
   test('Uses the bundler specified in the `nodeBundler` property from the in-source configuration', async () => {
