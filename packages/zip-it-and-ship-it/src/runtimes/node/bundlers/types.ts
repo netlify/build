@@ -1,9 +1,9 @@
 import type { Message } from 'esbuild'
+import { z } from 'zod'
 
 import type { FunctionConfig } from '../../../config.js'
 import type { FeatureFlags } from '../../../feature_flags.js'
 import type { FunctionSource } from '../../../function.js'
-import { ObjectValues } from '../../../types/utils.js'
 import type { RuntimeCache } from '../../../utils/cache.js'
 import { Logger } from '../../../utils/logger.js'
 import type { ModuleFormat } from '../utils/module_format.js'
@@ -16,7 +16,9 @@ export const NODE_BUNDLER = {
   NONE: 'none',
 } as const
 
-export type NodeBundlerName = ObjectValues<typeof NODE_BUNDLER>
+export const nodeBundler = z.nativeEnum(NODE_BUNDLER)
+
+export type NodeBundlerName = z.infer<typeof nodeBundler>
 
 // TODO: Create a generic warning type
 type BundlerWarning = Message

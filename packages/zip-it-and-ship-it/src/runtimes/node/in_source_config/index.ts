@@ -1,13 +1,15 @@
-import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+import { dirname } from 'path'
 
+import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+import mergeOptions from 'merge-options'
+import { z } from 'zod'
+
+import { FunctionConfig, functionConfig } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
-import { TrafficRules } from '../../../manifest.js'
-import { RateLimitAction, RateLimitAggregator, RateLimitAlgorithm } from '../../../rate_limit.js'
+import { rateLimit } from '../../../rate_limit.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
-import { nonNullable } from '../../../utils/non_nullable.js'
-import { getRoutes, Route } from '../../../utils/routes.js'
+import { Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
-import { NODE_BUNDLER } from '../bundlers/types.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
@@ -18,25 +20,54 @@ import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
-export type ISCValues = {
-  routes?: Route[]
-  schedule?: string
-  methods?: string[]
-  trafficRules?: TrafficRules
-  name?: string
-  generator?: string
-  timeout?: number
-}
-
-export interface StaticAnalysisResult extends ISCValues {
+export interface StaticAnalysisResult {
+  config: InSourceConfig
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
+  routes?: Route[]
   runtimeAPIVersion?: number
 }
 
 interface FindISCDeclarationsOptions {
   functionName: string
 }
+
+const ensureArray = (input: unknown) => (Array.isArray(input) ? input : [input])
+
+const httpMethods = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toUpperCase() : input),
+  z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD']),
+)
+const path = z.string().startsWith('/', { message: "Must start with a '/'" })
+
+export const inSourceConfig = functionConfig
+  .pick({
+    externalNodeModules: true,
+    generator: true,
+    includedFiles: true,
+    ignoredNodeModules: true,
+    name: true,
+    nodeBundler: true,
+    nodeVersion: true,
+    schedule: true,
+    timeout: true,
+  })
+  .extend({
+    method: z
+      .union([httpMethods, z.array(httpMethods)], {
+        errorMap: () => ({ message: 'Must be a string or array of strings' }),
+      })
+      .transform(ensureArray)
+      .optional(),
+    path: z
+      .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
+      .transform(ensureArray)
+      .optional(),
+    preferStatic: z.boolean().optional().catch(undefined),
+    rateLimit: rateLimit.optional().catch(undefined),
+  })
+
+export type InSourceConfig = z.infer<typeof inSourceConfig>
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
   if (!functionFound) {
@@ -55,83 +86,6 @@ const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean
 }
 
 /**
- * Normalizes method names into arrays of uppercase strings.
- * (e.g. "get" becomes ["GET"])
- */
-const normalizeMethods = (input: unknown, name: string): string[] | undefined => {
-  const methods = Array.isArray(input) ? input : [input]
-
-  return methods.map((method) => {
-    if (typeof method !== 'string') {
-      throw new FunctionBundlingUserError(
-        `Could not parse method declaration of function '${name}'. Expecting HTTP Method, got ${method}`,
-        {
-          functionName: name,
-          runtime: RUNTIME.JAVASCRIPT,
-          bundler: NODE_BUNDLER.ESBUILD,
-        },
-      )
-    }
-
-    return method.toUpperCase()
-  })
-}
-
-/**
- * Extracts the `ratelimit` configuration from the exported config.
- */
-const getTrafficRulesConfig = (input: unknown, name: string): TrafficRules | undefined => {
-  if (typeof input !== 'object' || input === null) {
-    throw new FunctionBundlingUserError(
-      `Could not parse ratelimit declaration of function '${name}'. Expecting an object, got ${input}`,
-      {
-        functionName: name,
-        runtime: RUNTIME.JAVASCRIPT,
-        bundler: NODE_BUNDLER.ESBUILD,
-      },
-    )
-  }
-
-  const { windowSize, windowLimit, algorithm, aggregateBy, action } = input as Record<string, unknown>
-
-  if (
-    typeof windowSize !== 'number' ||
-    typeof windowLimit !== 'number' ||
-    !Number.isInteger(windowSize) ||
-    !Number.isInteger(windowLimit)
-  ) {
-    throw new FunctionBundlingUserError(
-      `Could not parse ratelimit declaration of function '${name}'. Expecting 'windowSize' and 'limitSize' integer properties, got ${input}`,
-      {
-        functionName: name,
-        runtime: RUNTIME.JAVASCRIPT,
-        bundler: NODE_BUNDLER.ESBUILD,
-      },
-    )
-  }
-
-  const rateLimitAgg = Array.isArray(aggregateBy) ? aggregateBy : [RateLimitAggregator.Domain]
-  const rewriteConfig = 'to' in input && typeof input.to === 'string' ? { to: input.to } : undefined
-
-  return {
-    action: {
-      type: (action as RateLimitAction) || RateLimitAction.Limit,
-      config: {
-        ...rewriteConfig,
-        rateLimitConfig: {
-          windowLimit,
-          windowSize,
-          algorithm: (algorithm as RateLimitAlgorithm) || RateLimitAlgorithm.SlidingWindow,
-        },
-        aggregate: {
-          keys: rateLimitAgg.map((agg) => ({ type: agg })),
-        },
-      },
-    },
-  }
-}
-
-/**
  * Loads a file at a given path, parses it into an AST, and returns a series of
  * data points, such as in-source configuration properties and other metadata.
  */
@@ -142,7 +96,9 @@ export const parseFile = async (
   const source = await safelyReadSource(sourcePath)
 
   if (source === null) {
-    return {}
+    return {
+      config: {},
+    }
   }
 
   return parseSource(source, { functionName })
@@ -157,7 +113,9 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   const ast = safelyParseSource(source)
 
   if (ast === null) {
-    return {}
+    return {
+      config: {},
+    }
   }
 
   const imports = ast.body.flatMap((node) => getImports(node, IN_SOURCE_CONFIG_MODULE))
@@ -172,92 +130,113 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 
   if (isV2API) {
     const result: StaticAnalysisResult = {
+      config: {},
       inputModuleFormat,
       runtimeAPIVersion: 2,
     }
+    const { data, error, success } = inSourceConfig.safeParse(configExport)
 
-    if (typeof configExport.schedule === 'string') {
-      result.schedule = configExport.schedule
-    }
+    if (success) {
+      result.config = data
+      result.routes = getRoutes({
+        functionName,
+        methods: data.method ?? [],
+        path: data.path,
+        preferStatic: data.preferStatic,
+      })
+    } else {
+      // TODO: Handle multiple errors.
+      const [issue] = error.issues
 
-    if (typeof configExport.name === 'string') {
-      result.name = configExport.name
-    }
-
-    if (typeof configExport.generator === 'string') {
-      result.generator = configExport.generator
-    }
-
-    if (typeof configExport.timeout === 'number') {
-      result.timeout = configExport.timeout
-    }
-
-    if (configExport.method !== undefined) {
-      result.methods = normalizeMethods(configExport.method, functionName)
-    }
-
-    result.routes = getRoutes({
-      functionName,
-      methods: result.methods ?? [],
-      path: configExport.path,
-      preferStatic: configExport.preferStatic === true,
-    })
-
-    if (configExport.rateLimit !== undefined) {
-      result.trafficRules = getTrafficRulesConfig(configExport.rateLimit, functionName)
+      throw new FunctionBundlingUserError(
+        `Function ${functionName} has a configuration error on '${issue.path.join('.')}': ${issue.message}`,
+        {
+          functionName,
+          runtime: RUNTIME.JAVASCRIPT,
+        },
+      )
     }
 
     return result
   }
 
-  const iscExports = handlerExports
-    .map((node) => {
-      // We're only interested in exports with call expressions, since that's
-      // the pattern we use for the wrapper functions.
-      if (node.type !== 'call-expression') {
-        return null
-      }
+  const result: StaticAnalysisResult = {
+    config: {},
+    inputModuleFormat,
+    runtimeAPIVersion: 1,
+  }
 
-      const { args, local: exportName } = node
-      const matchingImport = imports.find(({ local: importName }) => importName === exportName)
+  handlerExports.forEach((node) => {
+    // We're only interested in exports with call expressions, since that's
+    // the pattern we use for the wrapper functions.
+    if (node.type !== 'call-expression') {
+      return
+    }
 
-      if (matchingImport === undefined) {
-        return null
-      }
+    const { args, local: exportName } = node
+    const matchingImport = imports.find(({ local: importName }) => importName === exportName)
 
-      switch (matchingImport.imported) {
-        case 'schedule': {
-          const parsed = parseSchedule({ args }, getAllBindings)
+    if (matchingImport === undefined) {
+      return
+    }
 
-          scheduledFunctionFound = true
-          if (parsed.schedule) {
-            scheduleFound = true
-          }
+    switch (matchingImport.imported) {
+      case 'schedule': {
+        const parsed = parseSchedule({ args }, getAllBindings)
 
-          return parsed
+        scheduledFunctionFound = true
+        if (parsed.schedule) {
+          scheduleFound = true
         }
 
-        case 'stream': {
-          return {
-            invocationMode: INVOCATION_MODE.Stream,
-          }
+        if (parsed.schedule !== undefined) {
+          result.config.schedule = parsed.schedule
         }
 
-        default:
-        // no-op
+        return
       }
 
-      return null
-    })
-    .filter(nonNullable)
+      case 'stream': {
+        result.invocationMode = INVOCATION_MODE.Stream
+
+        return
+      }
+
+      default:
+      // no-op
+    }
+
+    return
+  })
 
   if (scheduledFunctionExpected) {
     validateScheduleFunction(scheduledFunctionFound, scheduleFound, functionName)
   }
 
-  const mergedExports: ISCValues = iscExports.reduce((acc, obj) => ({ ...acc, ...obj }), {})
+  return result
+}
 
-  return { ...mergedExports, inputModuleFormat, runtimeAPIVersion: 1 }
+export const augmentFunctionConfig = (
+  mainFile: string,
+  tomlConfig: FunctionConfig,
+  inSourceConfig: InSourceConfig = {},
+) => {
+  const mergedConfig = mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig &
+    InSourceConfig
+
+  // We can't simply merge included files from the TOML and from in-source
+  // configuration because their globs are relative to different base paths.
+  // In the future, we could shift things around so we resolve each glob
+  // relative to the right base, but for now we say that included files in
+  // the source override any files defined in the TOML. It doesn't make a lot
+  // of sense to be defining include files for a framework-generated function
+  // in the TOML anyway.
+  if (inSourceConfig?.includedFiles && inSourceConfig.includedFiles.length !== 0) {
+    mergedConfig.includedFiles = inSourceConfig.includedFiles
+    mergedConfig.includedFilesBasePath = dirname(mainFile)
+  }
+
+  return mergedConfig
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName

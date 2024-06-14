@@ -18,7 +18,7 @@ export const formatZipResult = (archive: FunctionArchive) => {
     staticAnalysisResult: undefined,
     routes: archive.staticAnalysisResult?.routes,
     runtime: archive.runtime.name,
-    schedule: archive.staticAnalysisResult?.schedule ?? archive?.config?.schedule,
+    schedule: archive.staticAnalysisResult?.config?.schedule ?? archive?.config?.schedule,
     runtimeAPIVersion: archive.staticAnalysisResult?.runtimeAPIVersion,
   }
 
