@@ -5,18 +5,17 @@ import pMap from 'p-map'
 import semver from 'semver'
 
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
-import { log, logError } from '../../log/logger.js'
+import { logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
 const coreStep: CoreStepFunction = async function ({
-  debug,
   logs,
   deployId,
   buildDir,
-  quiet,
   packagePath,
   constants: { SITE_ID, NETLIFY_API_TOKEN, NETLIFY_API_HOST },
+  systemLog,
 }) {
   // This should never happen due to the condition check
   if (!deployId || !NETLIFY_API_TOKEN) {
@@ -42,9 +41,8 @@ const coreStep: CoreStepFunction = async function ({
 
   // We checked earlier, but let's be extra safe
   if (blobs === null) {
-    if (!quiet) {
-      log(logs, 'No blobs to upload to deploy store.')
-    }
+    systemLog('No blobs to upload to deploy store.')
+
     return {}
   }
 
@@ -58,23 +56,19 @@ const coreStep: CoreStepFunction = async function ({
   const keys = await getKeysToUpload(blobs.directory)
 
   if (keys.length === 0) {
-    if (!quiet) {
-      log(logs, 'No blobs to upload to deploy store.')
-    }
+    systemLog('No blobs to upload to deploy store.')
+
     return {}
   }
 
-  if (!quiet) {
-    log(logs, `Uploading ${keys.length} blobs to deploy store...`)
-  }
+  systemLog(`Uploading ${keys.length} blobs to deploy store`)
 
   try {
     await pMap(
       keys,
       async (key: string) => {
-        if (debug && !quiet) {
-          log(logs, `- Uploading blob ${key}`, { indent: true })
-        }
+        systemLog(`Uploading blob ${key}`)
+
         const { data, metadata } = await getFileWithMetadata(blobs.directory, key)
         await blobStore.set(key, data, { metadata })
       },
@@ -86,9 +80,7 @@ const coreStep: CoreStepFunction = async function ({
     throw new Error(`Failed while uploading blobs to deploy store`)
   }
 
-  if (!quiet) {
-    log(logs, `Done uploading blobs to deploy store.`)
-  }
+  systemLog(`Done uploading blobs to deploy store.`)
 
   return {}
 }

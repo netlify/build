@@ -21,9 +21,8 @@ export type CoreStepFunctionArgs = {
   quiet?: boolean
   debug?: boolean
   logs?: BufferedLogs
-  systemLog?: (message: unknown) => void
+  systemLog: SystemLogger
   edgeFunctionsBootstrapURL?: string
-  // systemLog(...args: any[]): void
   featureFlags?: Record<string, any>
 
   netlifyConfig: NetlifyConfig
