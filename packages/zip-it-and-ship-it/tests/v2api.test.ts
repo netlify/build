@@ -392,7 +392,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
     const { files } = await zipFixture('v2-api-with-path', {
       fixtureDir: FIXTURES_ESM_DIR,
-      length: 5,
+      length: 6,
       opts: {
         manifest: manifestPath,
       },
@@ -445,6 +445,25 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
           {
             pattern: '/products/sale*',
             expression: '^\\/products\\/sale(.*)\\/?$',
+          },
+        ],
+      },
+      'with-excluded-mixed': {
+        routes: [
+          {
+            pattern: '/products/:id',
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: [],
+          },
+        ],
+        excludedRoutes: [
+          {
+            pattern: '/products/sale*',
+            expression: '^\\/products\\/sale(.*)\\/?$',
+          },
+          {
+            pattern: '/products/jacket',
+            literal: '/products/jacket',
           },
         ],
       },
