@@ -7,7 +7,6 @@ import type { TrafficRules } from '../rate_limit.js'
 import { ObjectValues } from '../types/utils.js'
 import type { RuntimeCache } from '../utils/cache.js'
 import { Logger } from '../utils/logger.js'
-import type { Route } from '../utils/routes.js'
 
 import type { NodeBundlerName } from './node/bundlers/types.js'
 import type { StaticAnalysisResult } from './node/in_source_config/index.js'
@@ -57,7 +56,6 @@ export interface ZipFunctionResult {
   nativeNodeModules?: object
   path: string
   priority?: number
-  routes?: Route[]
   trafficRules?: TrafficRules
   runtimeVersion?: string
   staticAnalysisResult?: StaticAnalysisResult

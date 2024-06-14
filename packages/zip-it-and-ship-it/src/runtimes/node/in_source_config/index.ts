@@ -30,6 +30,8 @@ interface FindISCDeclarationsOptions {
   functionName: string
 }
 
+const ensureArray = (input: unknown) => (Array.isArray(input) ? input : [input])
+
 const httpMethods = z.preprocess(
   (input) => (typeof input === 'string' ? input.toUpperCase() : input),
   z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD']),
@@ -49,12 +51,14 @@ export const inSourceConfig = functionConfig
   })
   .extend({
     method: z
-      .union([httpMethods, z.array(httpMethods)])
-      .transform((input) => (Array.isArray(input) ? input : [input]))
+      .union([httpMethods, z.array(httpMethods)], {
+        errorMap: () => ({ message: 'Must be a string or array of strings' }),
+      })
+      .transform(ensureArray)
       .optional(),
     path: z
       .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
-      .transform((input) => (Array.isArray(input) ? input : [input]))
+      .transform(ensureArray)
       .optional(),
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
