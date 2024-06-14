@@ -6,5 +6,5 @@ export default async () =>
   })
 
 export const config = {
-  includedFiles: ['blog/author*'],
+  includedFiles: ['../../blog/post*'],
 }

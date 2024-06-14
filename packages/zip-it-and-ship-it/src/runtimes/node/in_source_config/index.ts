@@ -1,3 +1,5 @@
+import { dirname } from 'path'
+
 import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
@@ -215,10 +217,26 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 }
 
 export const augmentFunctionConfig = (
+  mainFile: string,
   tomlConfig: FunctionConfig,
   inSourceConfig: InSourceConfig = {},
-): FunctionConfig & InSourceConfig => {
-  return mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig)
+) => {
+  const mergedConfig = mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig &
+    InSourceConfig
+
+  // We can't simply merge included files from the TOML and from in-source
+  // configuration because their globs are relative to different base paths.
+  // In the future, we could shift things around so we resolve each glob
+  // relative to the right base, but for now we say that included files in
+  // the source override any files defined in the TOML. It doesn't make a lot
+  // of sense to be defining include files for a framework-generated function
+  // in the TOML anyway.
+  if (inSourceConfig?.includedFiles?.length !== 0) {
+    mergedConfig.includedFiles = inSourceConfig.includedFiles
+    mergedConfig.includedFilesBasePath = dirname(mainFile)
+  }
+
+  return mergedConfig
 }
 
 export type ISCHandlerArg = ArgumentPlaceholder | Expression | SpreadElement | JSXNamespacedName
