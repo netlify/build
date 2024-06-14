@@ -10,6 +10,7 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { ARCHIVE_FORMAT } from '../src/archive.js'
+import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
@@ -396,34 +397,42 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect.assertions(files.length + 2)
+    expect(files.some(({ name }) => name === 'with-literal')).toBeTruthy()
+    expect(files.some(({ name }) => name === 'with-named-group')).toBeTruthy()
+    expect(files.some(({ name }) => name === 'with-regex')).toBeTruthy()
+
+    const expectedRoutes = [
+      [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }],
+      [
+        {
+          pattern: '/products/:id',
+          expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+          methods: [],
+        },
+      ],
+      [
+        {
+          pattern: '/numbers/(\\d+)',
+          expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
+          methods: [],
+        },
+      ],
+    ]
 
     for (const file of files) {
       switch (file.name) {
         case 'with-literal':
-          expect(file.routes).toEqual([{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }])
+          expect(file.routes).toEqual(expectedRoutes[0])
 
           break
 
         case 'with-named-group':
-          expect(file.routes).toEqual([
-            {
-              pattern: '/products/:id',
-              expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
-              methods: [],
-            },
-          ])
+          expect(file.routes).toEqual(expectedRoutes[1])
 
           break
 
         case 'with-regex':
-          expect(file.routes).toEqual([
-            {
-              pattern: '/numbers/(\\d+)',
-              expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
-              methods: [],
-            },
-          ])
+          expect(file.routes).toEqual(expectedRoutes[2])
 
           break
 
@@ -434,8 +443,15 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
     const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
     const manifest = JSON.parse(manifestString)
-    expect(manifest.functions[0].routes[0].methods).toEqual(['GET', 'POST'])
+
+    expect(manifest.functions[0].routes).toEqual(expectedRoutes[0])
     expect(manifest.functions[0].buildData.runtimeAPIVersion).toEqual(2)
+
+    expect(manifest.functions[1].routes).toEqual(expectedRoutes[1])
+    expect(manifest.functions[1].buildData.runtimeAPIVersion).toEqual(2)
+
+    expect(manifest.functions[2].routes).toEqual(expectedRoutes[2])
+    expect(manifest.functions[2].buildData.runtimeAPIVersion).toEqual(2)
   })
 
   test('Flags invalid values of the `path` in-source configuration property as user errors', async () => {
@@ -581,4 +597,65 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       expect(positionOfBootstrapImport).toBeLessThan(positionOfUserCodeImport)
     },
   )
+
+  testMany(
+    'Includes in the bundle files included in the TOML and in the function source',
+    ['bundler_default'],
+    async (options) => {
+      const fixtureName = 'v2-api-included-files'
+      const { files, tmpDir } = await zipFixture(fixtureName, {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: merge(options, {
+          archiveFormat: ARCHIVE_FORMAT.NONE,
+          config: {
+            '*': {
+              includedFiles: ['blog/post*'],
+            },
+          },
+        }),
+      })
+
+      const [{ name: archive, entryFilename, includedFiles, runtimeAPIVersion }] = files
+      const func = await importFunctionFile(`${tmpDir}/${archive}/${entryFilename}`)
+      const { body: bodyStream, multiValueHeaders = {}, statusCode } = await invokeLambda(func)
+      const body = await readAsBuffer(bodyStream)
+
+      expect(body).toBe('<h1>Hello world</h1>')
+      expect(multiValueHeaders['content-type']).toEqual(['text/html'])
+      expect(statusCode).toBe(200)
+      expect(runtimeAPIVersion).toBe(2)
+      expect(includedFiles).toEqual([
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/author1.md'),
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post1.md'),
+        resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post2.md'),
+      ])
+    },
+  )
+
+  test('Uses the bundler specified in the `nodeBundler` property from the in-source configuration', async () => {
+    const fixtureName = 'v2-api-bundler-none'
+    const { files } = await zipFixture(fixtureName, {
+      fixtureDir: FIXTURES_ESM_DIR,
+    })
+
+    const unzippedFunctions = await unzipFiles(files)
+    const originalFile = await readFile(join(FIXTURES_ESM_DIR, fixtureName, 'function.js'), 'utf8')
+    const bundledFile = await readFile(join(unzippedFunctions[0].unzipPath, 'function.js'), 'utf8')
+
+    expect(originalFile).toBe(bundledFile)
+  })
+
+  test('Uses the Node.js version specified in the `nodeVersion` property from the in-source configuration', async () => {
+    const fixtureName = 'v2-api-node-version'
+    const { files } = await zipFixture(fixtureName, {
+      fixtureDir: FIXTURES_ESM_DIR,
+    })
+
+    expect(
+      `nodejs${DEFAULT_NODE_VERSION}.x`,
+      'The Node.js version extracted from the function is the same as the default version, which defeats the point of the assertion. If you have updated the default Node.js version, please update the fixture to use a different version.',
+    ).not.toBe(files[0].runtimeVersion)
+    expect(files[0].config.nodeVersion).toBe('20')
+    expect(files[0].runtimeVersion).toBe('nodejs20.x')
+  })
 })

@@ -3,27 +3,9 @@ import { resolve } from 'path'
 import { arch, platform } from 'process'
 
 import type { InvocationMode } from './function.js'
+import type { TrafficRules } from './rate_limit.js'
 import type { FunctionResult } from './utils/format_result.js'
 import type { Route } from './utils/routes.js'
-
-export interface TrafficRules {
-  action: {
-    type: string
-    config: {
-      rateLimitConfig: {
-        algorithm: string
-        windowSize: number
-        windowLimit: number
-      }
-      aggregate: {
-        keys: {
-          type: string
-        }[]
-      }
-      to?: string
-    }
-  }
-}
 
 interface ManifestFunction {
   buildData?: Record<string, unknown>
