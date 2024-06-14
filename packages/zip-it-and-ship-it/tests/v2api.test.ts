@@ -598,7 +598,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     },
   )
 
-  test('Includes in the bundle files included in the function source', async (t) => {
+  test('Includes in the bundle files included in the function source', async () => {
     const fixtureName = 'v2-api-included-files'
     const { files, tmpDir } = await zipFixture(`${fixtureName}/netlify/functions`, {
       fixtureDir: FIXTURES_ESM_DIR,
