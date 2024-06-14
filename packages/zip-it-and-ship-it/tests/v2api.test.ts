@@ -396,34 +396,42 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect.assertions(files.length + 2)
+    expect(files.some(({ name }) => name === 'with-literal')).toBeTruthy()
+    expect(files.some(({ name }) => name === 'with-named-group')).toBeTruthy()
+    expect(files.some(({ name }) => name === 'with-regex')).toBeTruthy()
+
+    const expectedRoutes = [
+      [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }],
+      [
+        {
+          pattern: '/products/:id',
+          expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+          methods: [],
+        },
+      ],
+      [
+        {
+          pattern: '/numbers/(\\d+)',
+          expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
+          methods: [],
+        },
+      ],
+    ]
 
     for (const file of files) {
       switch (file.name) {
         case 'with-literal':
-          expect(file.routes).toEqual([{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }])
+          expect(file.routes).toEqual(expectedRoutes[0])
 
           break
 
         case 'with-named-group':
-          expect(file.routes).toEqual([
-            {
-              pattern: '/products/:id',
-              expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
-              methods: [],
-            },
-          ])
+          expect(file.routes).toEqual(expectedRoutes[1])
 
           break
 
         case 'with-regex':
-          expect(file.routes).toEqual([
-            {
-              pattern: '/numbers/(\\d+)',
-              expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
-              methods: [],
-            },
-          ])
+          expect(file.routes).toEqual(expectedRoutes[2])
 
           break
 
@@ -434,8 +442,15 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
     const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
     const manifest = JSON.parse(manifestString)
-    expect(manifest.functions[0].routes[0].methods).toEqual(['GET', 'POST'])
+
+    expect(manifest.functions[0].routes).toEqual(expectedRoutes[0])
     expect(manifest.functions[0].buildData.runtimeAPIVersion).toEqual(2)
+
+    expect(manifest.functions[1].routes).toEqual(expectedRoutes[1])
+    expect(manifest.functions[1].buildData.runtimeAPIVersion).toEqual(2)
+
+    expect(manifest.functions[2].routes).toEqual(expectedRoutes[2])
+    expect(manifest.functions[2].buildData.runtimeAPIVersion).toEqual(2)
   })
 
   test('Flags invalid values of the `path` in-source configuration property as user errors', async () => {
