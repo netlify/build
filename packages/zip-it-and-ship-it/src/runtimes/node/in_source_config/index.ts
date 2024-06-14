@@ -231,7 +231,7 @@ export const augmentFunctionConfig = (
   // the source override any files defined in the TOML. It doesn't make a lot
   // of sense to be defining include files for a framework-generated function
   // in the TOML anyway.
-  if (inSourceConfig?.includedFiles?.length !== 0) {
+  if (inSourceConfig?.includedFiles && inSourceConfig.includedFiles.length !== 0) {
     mergedConfig.includedFiles = inSourceConfig.includedFiles
     mergedConfig.includedFilesBasePath = dirname(mainFile)
   }
