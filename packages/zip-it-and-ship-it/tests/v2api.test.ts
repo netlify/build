@@ -10,6 +10,7 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { ARCHIVE_FORMAT } from '../src/archive.js'
+import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
@@ -642,5 +643,19 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     const bundledFile = await readFile(join(unzippedFunctions[0].unzipPath, 'function.js'), 'utf8')
 
     expect(originalFile).toBe(bundledFile)
+  })
+
+  test('Uses the Node.js version specified in the `nodeVersion` property from the in-source configuration', async () => {
+    const fixtureName = 'v2-api-node-version'
+    const { files } = await zipFixture(fixtureName, {
+      fixtureDir: FIXTURES_ESM_DIR,
+    })
+
+    expect(
+      `nodejs${DEFAULT_NODE_VERSION}.x`,
+      'The Node.js version extracted from the function is the same as the default version, which defeats the point of the assertion. If you have updated the default Node.js version, please update the fixture to use a different version.',
+    ).not.toBe(files[0].runtimeVersion)
+    expect(files[0].config.nodeVersion).toBe('20')
+    expect(files[0].runtimeVersion).toBe('nodejs20.x')
   })
 })

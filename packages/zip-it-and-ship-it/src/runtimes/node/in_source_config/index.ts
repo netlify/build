@@ -46,6 +46,7 @@ export const inSourceConfig = functionConfig
     ignoredNodeModules: true,
     name: true,
     nodeBundler: true,
+    nodeVersion: true,
     schedule: true,
     timeout: true,
   })
