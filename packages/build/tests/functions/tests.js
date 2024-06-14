@@ -136,6 +136,22 @@ test('Functions: loads functions generated with the Frameworks API', async (t) =
   t.snapshot(normalizeOutput(output))
 })
 
+test('Functions: legacy `.netlify/functions-internal` directory is ignored if there are functions generated with the Frameworks API', async (t) => {
+  const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
+    .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+
+  t.true(functionsDist.includes('manifest.json'))
+  t.true(functionsDist.includes('server.zip'))
+  t.true(functionsDist.includes('user.zip'))
+  t.false(functionsDist.includes('server-internal.zip'))
+
+  t.snapshot(normalizeOutput(output))
+})
+
 // pnpm is not available in Node 14.
 if (semver.gte(nodeVersion, '16.9.0')) {
   test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
