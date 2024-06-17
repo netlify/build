@@ -14,6 +14,8 @@ export { Config, FunctionConfig } from './config.js'
 export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
+export type { TrafficRules } from './rate_limit.js'
+export type { ExtendedRoute, Route } from './utils/routes.js'
 export { NodeBundlerName, NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 export { RuntimeName, RUNTIME } from './runtimes/runtime.js'
 export { ModuleFormat, MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
