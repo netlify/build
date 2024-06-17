@@ -128,7 +128,13 @@ describe('V2 API', () => {
       }`
       const isc = parseSource(source, { ...options })
 
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with a default export and a `handler` export', () => {
@@ -159,7 +165,13 @@ describe('V2 API', () => {
       export default handler;`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with default export of variable and separate handler export', () => {
@@ -181,6 +193,7 @@ describe('V2 API', () => {
       const isc = parseSource(source, options)
       expect(isc).toEqual({
         config: { schedule: '@daily' },
+        excludedRoutes: [],
         inputModuleFormat: 'esm',
         routes: [],
         runtimeAPIVersion: 2,
@@ -197,6 +210,7 @@ describe('V2 API', () => {
       const isc = parseSource(source, options)
       expect(isc).toEqual({
         config: { schedule: '@daily' },
+        excludedRoutes: [],
         inputModuleFormat: 'esm',
         routes: [],
         runtimeAPIVersion: 2,
@@ -212,6 +226,7 @@ describe('V2 API', () => {
       const isc = parseSource(source, options)
       expect(isc).toEqual({
         config: { schedule: '@daily' },
+        excludedRoutes: [],
         inputModuleFormat: 'esm',
         routes: [],
         runtimeAPIVersion: 2,
@@ -236,6 +251,7 @@ describe('V2 API', () => {
       const isc = parseSource(source, options)
       expect(isc).toEqual({
         config: { path: ['/*'] },
+        excludedRoutes: [],
         inputModuleFormat: 'esm',
         routes: [
           {
@@ -278,7 +294,13 @@ describe('V2 API', () => {
       export { handler as default };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with default export exporting a constant', () => {
@@ -287,7 +309,13 @@ describe('V2 API', () => {
       export { foo as default };`
 
       const isc = parseSource(source, options)
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('TypeScript file with a default export and no `handler` export', () => {
@@ -297,7 +325,13 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('CommonJS file with a default export and a `handler` export', () => {
@@ -319,7 +353,13 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'cjs', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'cjs',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
 
     test('ESM file with a default export consisting of a function call', () => {
@@ -330,7 +370,13 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc).toEqual({ config: {}, inputModuleFormat: 'esm', routes: [], runtimeAPIVersion: 2 })
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
     })
   })
 
@@ -348,6 +394,7 @@ describe('V2 API', () => {
 
       expect(isc).toEqual({
         config: { schedule: '@daily' },
+        excludedRoutes: [],
         inputModuleFormat: 'esm',
         routes: [],
         runtimeAPIVersion: 2,
@@ -741,6 +788,7 @@ describe('V2 API', () => {
     const isc = parseSource(source, options)
     expect(isc).toEqual({
       config: { generator: 'bar@1.2.3', name: 'foo' },
+      excludedRoutes: [],
       inputModuleFormat: 'esm',
       runtimeAPIVersion: 2,
       routes: [],
@@ -755,6 +803,7 @@ describe('V2 API', () => {
     const isc = parseSource(source, options)
     expect(isc).toEqual({
       config: { timeout: 60 },
+      excludedRoutes: [],
       inputModuleFormat: 'esm',
       routes: [],
       runtimeAPIVersion: 2,

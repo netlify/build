@@ -4,10 +4,8 @@ import { FunctionBundlingUserError } from './error.js'
 import { nonNullable } from './non_nullable.js'
 import { ExtendedURLPattern } from './urlpattern.js'
 
-export type Route = { pattern: string; methods: string[]; prefer_static?: boolean } & (
-  | { literal: string }
-  | { expression: string }
-)
+export type Route = { pattern: string } & ({ literal: string } | { expression: string })
+export type ExtendedRoute = Route & { methods?: string[]; prefer_static?: boolean }
 
 // Based on https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API.
 const isExpression = (part: string) =>
@@ -21,18 +19,11 @@ const isPathLiteral = (path: string) => {
   return parts.every((part) => !isExpression(part))
 }
 
-interface GetRouteOption {
-  functionName: string
-  methods: string[]
-  path: unknown
-  preferStatic: boolean
-}
-
 /**
  * Takes an element from a `path` declaration and returns a Route element that
  * represents it.
  */
-const getRoute = ({ functionName, methods, path, preferStatic }: GetRouteOption): Route | undefined => {
+const getRoute = (functionName: string, path: string): ExtendedRoute | undefined => {
   if (typeof path !== 'string') {
     throw new FunctionBundlingUserError(`'path' property must be a string, found '${JSON.stringify(path)}'`, {
       functionName,
@@ -48,7 +39,7 @@ const getRoute = ({ functionName, methods, path, preferStatic }: GetRouteOption)
   }
 
   if (isPathLiteral(path)) {
-    return { pattern: path, literal: path, methods, prefer_static: preferStatic || undefined }
+    return { pattern: path, literal: path }
   }
 
   try {
@@ -63,7 +54,7 @@ const getRoute = ({ functionName, methods, path, preferStatic }: GetRouteOption)
     // for both `/foo` and `/foo/`.
     const normalizedRegex = `^${regex}\\/?$`
 
-    return { pattern: path, expression: normalizedRegex, methods, prefer_static: preferStatic || undefined }
+    return { pattern: path, expression: normalizedRegex }
   } catch {
     throw new FunctionBundlingUserError(`'${path}' is not a valid path according to the URLPattern specification`, {
       functionName,
@@ -72,38 +63,17 @@ const getRoute = ({ functionName, methods, path, preferStatic }: GetRouteOption)
   }
 }
 
-interface GetRoutesOptions {
-  functionName: string
-  methods: string[]
-  path: unknown
-  preferStatic?: boolean
-}
-
 /**
  * Takes a `path` declaration, normalizes it into an array, and processes the
  * individual elements to obtain an array of `Route` expressions.
  */
-export const getRoutes = ({
-  functionName,
-  methods,
-  path: pathOrPaths,
-  preferStatic = false,
-}: GetRoutesOptions): Route[] => {
+export const getRoutes = (functionName: string, pathOrPaths: unknown): ExtendedRoute[] => {
   if (!pathOrPaths) {
     return []
   }
 
   const paths = [...new Set(Array.isArray(pathOrPaths) ? pathOrPaths : [pathOrPaths])]
-  const routes = paths
-    .map((path) =>
-      getRoute({
-        functionName,
-        methods,
-        path,
-        preferStatic,
-      }),
-    )
-    .filter(nonNullable)
+  const routes = paths.map((path) => getRoute(functionName, path)).filter(nonNullable)
 
   return routes
 }
