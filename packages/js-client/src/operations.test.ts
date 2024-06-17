@@ -1,7 +1,17 @@
 import test from 'ava'
 
-import { getOperations } from './operations.js'
+import { openApiSpec } from './open_api.js'
+
+import { NetlifyAPI } from './index.js'
 
 test('Exported methods', (t) => {
-  t.snapshot(getOperations())
+  const api = new NetlifyAPI()
+
+  for (const path in openApiSpec.paths) {
+    const { parameters: _, ...verbs } = openApiSpec.paths[path]
+
+    for (const verb in verbs) {
+      t.is(typeof api[verbs[verb].operationId], 'function')
+    }
+  }
 })
