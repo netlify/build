@@ -5,7 +5,7 @@ import { arch, platform } from 'process'
 import type { InvocationMode } from './function.js'
 import type { TrafficRules } from './rate_limit.js'
 import type { FunctionResult } from './utils/format_result.js'
-import type { Route } from './utils/routes.js'
+import type { ExtendedRoute, Route } from './utils/routes.js'
 
 interface ManifestFunction {
   buildData?: Record<string, unknown>
@@ -13,7 +13,8 @@ interface ManifestFunction {
   mainFile: string
   name: string
   path: string
-  routes?: Route[]
+  routes?: ExtendedRoute[]
+  excludedRoutes?: Route[]
   runtime: string
   runtimeVersion?: string
   schedule?: string
