@@ -478,6 +478,8 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
       if (expectedRoutes[file.name].excludedRoutes) {
         expect(file.excludedRoutes).toEqual(expectedRoutes[file.name].excludedRoutes)
+      } else {
+        expect(file.excludedRoutes).toEqual([])
       }
     }
 
@@ -486,10 +488,18 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
     for (const entry of manifest.functions) {
       const match = Object.keys(expectedRoutes).find((key) => key === entry.name)
-
       expect(match).not.toBeUndefined()
-      expect(entry.routes).toEqual(expectedRoutes[match!].routes)
+
+      const expected = expectedRoutes[match!]
+
+      expect(entry.routes).toEqual(expected.routes)
       expect(entry.buildData.runtimeAPIVersion).toEqual(2)
+
+      if (expected.excludedRoutes) {
+        expect(entry.excludedRoutes).toEqual(expected.excludedRoutes)
+      } else {
+        expect(entry.excludedRoutes).toBeUndefined()
+      }
     }
   })
 
