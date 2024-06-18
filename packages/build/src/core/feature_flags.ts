@@ -17,7 +17,6 @@ const getFeatureFlag = function (name: string): FeatureFlags {
 export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
-  buildbot_zisi_system_log: false,
   edge_functions_cache_cli: false,
   edge_functions_system_logger: false,
   netlify_build_reduced_output: false,

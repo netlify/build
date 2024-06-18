@@ -68,7 +68,7 @@ export const getZisiParameters = ({
     repositoryRoot,
     configFileDirectories,
     internalSrcFolder: internalFunctionsSrc,
-    systemLog: featureFlags.buildbot_zisi_system_log ? systemLog : undefined,
+    systemLog,
   }
 }
 
