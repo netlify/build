@@ -49,10 +49,9 @@ const coreStep = async function ({
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
-  // If we're running in buildbot and the feature flag is enabled, we set the
-  // Deno cache dir to a directory that is persisted between builds.
-  const cacheDirectory =
-    !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
+  // If we're running in buildbot, we set the Deno cache dir to a directory
+  // that is persisted between builds.
+  const cacheDirectory = !isRunningLocally ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
   // Cleaning up the dist directory, in case it has any artifacts from previous
   // builds.
