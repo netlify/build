@@ -53,6 +53,7 @@ export const createManifest = async ({ functions, path }: { functions: FunctionR
 const formatFunctionForManifest = ({
   bundler,
   displayName,
+  excludedRoutes,
   generator,
   invocationMode,
   mainFile,
@@ -86,6 +87,10 @@ const formatFunctionForManifest = ({
 
   if (routes?.length !== 0) {
     manifestFunction.routes = routes
+  }
+
+  if (excludedRoutes && excludedRoutes.length !== 0) {
+    manifestFunction.excludedRoutes = excludedRoutes
   }
 
   return manifestFunction
