@@ -87,7 +87,7 @@ const coreStep = async function ({
       featureFlags,
       importMapPaths: [userDefinedImportMap],
       userLogger: (...args) => log(logs, reduceLogLines(args)),
-      systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
+      systemLogger: systemLog,
       internalSrcFolder: internalSrcPath,
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
