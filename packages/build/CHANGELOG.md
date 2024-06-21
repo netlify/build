@@ -105,6 +105,42 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.48.2](https://github.com/netlify/build/compare/build-v29.48.1...build-v29.48.2) (2024-06-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.68 to ^5.2.69
+    * @netlify/zip-it-and-ship-it bumped from 9.37.0 to 9.37.1
+
+## [29.48.1](https://github.com/netlify/build/compare/build-v29.48.0...build-v29.48.1) (2024-06-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.67 to ^5.2.68
+    * @netlify/zip-it-and-ship-it bumped from 9.36.0 to 9.37.0
+
+## [29.48.0](https://github.com/netlify/build/compare/build-v29.47.5...build-v29.48.0) (2024-06-17)
+
+
+### Features
+
+* move "Uploading blobs" output to system logs ([#5655](https://github.com/netlify/build/issues/5655)) ([9474a72](https://github.com/netlify/build/commit/9474a72bb1fe9550431047603acc8cf55407e67b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.15.2 to ^20.15.3
+    * @netlify/functions-utils bumped from ^5.2.66 to ^5.2.67
+    * @netlify/zip-it-and-ship-it bumped from 9.35.1 to 9.36.0
+
 ## [29.47.5](https://github.com/netlify/build/compare/build-v29.47.4...build-v29.47.5) (2024-06-14)
 
 

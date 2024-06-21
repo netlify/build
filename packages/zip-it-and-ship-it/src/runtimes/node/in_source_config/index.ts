@@ -7,8 +7,9 @@ import { z } from 'zod'
 import { FunctionConfig, functionConfig } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
+import { ensureArray } from '../../../utils/ensure_array.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
-import { Route, getRoutes } from '../../../utils/routes.js'
+import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
@@ -22,9 +23,10 @@ export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
 export interface StaticAnalysisResult {
   config: InSourceConfig
+  excludedRoutes?: Route[]
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
-  routes?: Route[]
+  routes?: ExtendedRoute[]
   runtimeAPIVersion?: number
 }
 
@@ -32,13 +34,12 @@ interface FindISCDeclarationsOptions {
   functionName: string
 }
 
-const ensureArray = (input: unknown) => (Array.isArray(input) ? input : [input])
-
-const httpMethods = z.preprocess(
-  (input) => (typeof input === 'string' ? input.toUpperCase() : input),
-  z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD']),
-)
+const httpMethod = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD'])
+const httpMethods = z.preprocess((input) => (typeof input === 'string' ? input.toUpperCase() : input), httpMethod)
 const path = z.string().startsWith('/', { message: "Must start with a '/'" })
+
+export type HttpMethod = z.infer<typeof httpMethod>
+export type HttpMethods = z.infer<typeof httpMethods>
 
 export const inSourceConfig = functionConfig
   .pick({
@@ -60,6 +61,10 @@ export const inSourceConfig = functionConfig
       .transform(ensureArray)
       .optional(),
     path: z
+      .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
+      .transform(ensureArray)
+      .optional(),
+    excludedPath: z
       .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
       .transform(ensureArray)
       .optional(),
@@ -138,12 +143,12 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
 
     if (success) {
       result.config = data
-      result.routes = getRoutes({
-        functionName,
+      result.excludedRoutes = getRoutes(functionName, data.excludedPath)
+      result.routes = getRoutes(functionName, data.path).map((route) => ({
+        ...route,
         methods: data.method ?? [],
-        path: data.path,
-        preferStatic: data.preferStatic,
-      })
+        prefer_static: data.preferStatic || undefined,
+      }))
     } else {
       // TODO: Handle multiple errors.
       const [issue] = error.issues

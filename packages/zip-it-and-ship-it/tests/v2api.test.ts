@@ -386,73 +386,121 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     expect(systemLog).not.toHaveBeenCalled()
   })
 
-  test('Extracts routes from the `path` in-source configuration property', async () => {
+  test('Extracts routes and excluded routes from the `path` and `excludedPath` properties', async () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const { files } = await zipFixture('v2-api-with-path', {
       fixtureDir: FIXTURES_ESM_DIR,
-      length: 3,
+      length: 6,
       opts: {
         manifest: manifestPath,
       },
     })
 
-    expect(files.some(({ name }) => name === 'with-literal')).toBeTruthy()
-    expect(files.some(({ name }) => name === 'with-named-group')).toBeTruthy()
-    expect(files.some(({ name }) => name === 'with-regex')).toBeTruthy()
+    const expectedRoutes = {
+      'with-literal': { routes: [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }] },
+      'with-named-group': {
+        routes: [
+          {
+            pattern: '/products/:id',
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: [],
+          },
+        ],
+      },
+      'with-regex': {
+        routes: [
+          {
+            pattern: '/numbers/(\\d+)',
+            expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
+            methods: [],
+          },
+        ],
+      },
+      'with-excluded-literal': {
+        routes: [
+          {
+            pattern: '/products/:id',
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: ['GET', 'POST'],
+          },
+        ],
+        excludedRoutes: [
+          {
+            pattern: '/products/jacket',
+            literal: '/products/jacket',
+          },
+        ],
+      },
+      'with-excluded-expression': {
+        routes: [
+          {
+            pattern: '/products/:id',
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: [],
+          },
+        ],
+        excludedRoutes: [
+          {
+            pattern: '/products/sale*',
+            expression: '^\\/products\\/sale(.*)\\/?$',
+          },
+        ],
+      },
+      'with-excluded-mixed': {
+        routes: [
+          {
+            pattern: '/products/:id',
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: [],
+          },
+        ],
+        excludedRoutes: [
+          {
+            pattern: '/products/sale*',
+            expression: '^\\/products\\/sale(.*)\\/?$',
+          },
+          {
+            pattern: '/products/jacket',
+            literal: '/products/jacket',
+          },
+        ],
+      },
+    }
 
-    const expectedRoutes = [
-      [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }],
-      [
-        {
-          pattern: '/products/:id',
-          expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
-          methods: [],
-        },
-      ],
-      [
-        {
-          pattern: '/numbers/(\\d+)',
-          expression: '^\\/numbers(?:\\/(\\d+))\\/?$',
-          methods: [],
-        },
-      ],
-    ]
+    for (const name in expectedRoutes) {
+      expect(files.some((file) => file.name === name)).toBeTruthy()
+    }
 
     for (const file of files) {
-      switch (file.name) {
-        case 'with-literal':
-          expect(file.routes).toEqual(expectedRoutes[0])
+      expect(file.routes).toEqual(expectedRoutes[file.name].routes)
 
-          break
-
-        case 'with-named-group':
-          expect(file.routes).toEqual(expectedRoutes[1])
-
-          break
-
-        case 'with-regex':
-          expect(file.routes).toEqual(expectedRoutes[2])
-
-          break
-
-        default:
-          continue
+      if (expectedRoutes[file.name].excludedRoutes) {
+        expect(file.excludedRoutes).toEqual(expectedRoutes[file.name].excludedRoutes)
+      } else {
+        expect(file.excludedRoutes).toEqual([])
       }
     }
 
     const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
     const manifest = JSON.parse(manifestString)
 
-    expect(manifest.functions[0].routes).toEqual(expectedRoutes[0])
-    expect(manifest.functions[0].buildData.runtimeAPIVersion).toEqual(2)
+    for (const entry of manifest.functions) {
+      const match = Object.keys(expectedRoutes).find((key) => key === entry.name)
+      expect(match).not.toBeUndefined()
 
-    expect(manifest.functions[1].routes).toEqual(expectedRoutes[1])
-    expect(manifest.functions[1].buildData.runtimeAPIVersion).toEqual(2)
+      const expected = expectedRoutes[match!]
 
-    expect(manifest.functions[2].routes).toEqual(expectedRoutes[2])
-    expect(manifest.functions[2].buildData.runtimeAPIVersion).toEqual(2)
+      expect(entry.routes).toEqual(expected.routes)
+      expect(entry.buildData.runtimeAPIVersion).toEqual(2)
+
+      if (expected.excludedRoutes) {
+        expect(entry.excludedRoutes).toEqual(expected.excludedRoutes)
+      } else {
+        expect(entry.excludedRoutes).toBeUndefined()
+      }
+    }
   })
 
   test('Flags invalid values of the `path` in-source configuration property as user errors', async () => {
