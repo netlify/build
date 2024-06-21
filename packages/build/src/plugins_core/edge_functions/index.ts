@@ -7,6 +7,10 @@ import { pathExists } from 'path-exists'
 import { Metric } from '../../core/report_metrics.js'
 import { log, reduceLogLines } from '../../log/logger.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import {
+  FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+  FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
+} from '../../utils/frameworks_api.js'
 
 import { tagBundlingError } from './lib/error.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
@@ -17,6 +21,7 @@ const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
 const coreStep = async function ({
   buildDir,
+  packagePath,
   constants: {
     EDGE_FUNCTIONS_DIST: distDirectory,
     EDGE_FUNCTIONS_SRC: srcDirectory,
@@ -40,14 +45,37 @@ const coreStep = async function ({
   netlifyConfig: any
   edgeFunctionsBootstrapURL?: string
 }) {
-  const { edge_functions: declarations = [] } = netlifyConfig
-  const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
+  const { edge_functions: declarations = [], functions } = netlifyConfig
+  const { deno_import_map: userDefinedImportMap } = functions['*']
+  const importMapPaths: string[] = [userDefinedImportMap]
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
-  logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
+  const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+
+  let generatedFunctionsPath = internalSrcPath
+
+  if (featureFlags.netlify_build_frameworks_api) {
+    if (await pathExists(frameworksAPISrcPath)) {
+      generatedFunctionsPath = frameworksAPISrcPath
+    }
+
+    const frameworkImportMap = resolve(
+      buildDir,
+      packagePath || '',
+      FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+      FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
+    )
+
+    if (await pathExists(frameworkImportMap)) {
+      importMapPaths.push(frameworkImportMap)
+    }
+  }
+
+  const sourcePaths = [generatedFunctionsPath, srcPath].filter(Boolean) as string[]
+
+  logFunctions({ frameworksAPISrcPath, internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
   // If we're running in buildbot and the feature flag is enabled, we set the
   // Deno cache dir to a directory that is persisted between builds.
@@ -85,10 +113,10 @@ const coreStep = async function ({
       debug,
       distImportMapPath,
       featureFlags,
-      importMapPaths: [userDefinedImportMap],
+      importMapPaths,
       userLogger: (...args) => log(logs, reduceLogLines(args)),
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
-      internalSrcFolder: internalSrcPath,
+      internalSrcFolder: generatedFunctionsPath,
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
@@ -132,6 +160,8 @@ const getMetrics = (manifest): Metric[] => {
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
+  featureFlags,
+  packagePath,
 }): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
@@ -141,26 +171,39 @@ const hasEdgeFunctionsDirectories = async function ({
 
   const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
 
-  return await pathExists(internalFunctionsSrc)
+  if (await pathExists(internalFunctionsSrc)) {
+    return true
+  }
+
+  if (featureFlags.netlify_build_frameworks_api) {
+    const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+
+    return await pathExists(frameworkFunctionsSrc)
+  }
+
+  return false
 }
 
 const logFunctions = async ({
+  frameworksAPISrcPath,
   internalSrcDirectory,
   internalSrcPath,
   logs,
   srcDirectory: userFunctionsSrc,
   srcPath,
 }: {
+  frameworksAPISrcPath?: string
   internalSrcDirectory: string
   internalSrcPath: string
   logs: any
   srcDirectory?: string
   srcPath?: string
 }): Promise<void> => {
-  const [userFunctionsSrcExists, userFunctions, internalFunctions] = await Promise.all([
+  const [userFunctionsSrcExists, userFunctions, internalFunctions, frameworkFunctions] = await Promise.all([
     srcPath ? pathExists(srcPath) : Promise.resolve(false),
     srcPath ? find([srcPath]) : Promise.resolve([]),
     find([internalSrcPath]),
+    frameworksAPISrcPath ? find([frameworksAPISrcPath]) : Promise.resolve([]),
   ])
 
   logFunctionsToBundle({
@@ -170,6 +213,7 @@ const logFunctions = async ({
     userFunctionsSrcExists,
     internalFunctions: internalFunctions.map(({ name }) => name),
     internalFunctionsSrc: internalSrcDirectory,
+    frameworkFunctions: frameworkFunctions.map(({ name }) => name),
     type: 'Edge Functions',
   })
 }
