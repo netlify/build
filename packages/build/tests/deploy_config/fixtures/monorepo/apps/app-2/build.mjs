@@ -6,5 +6,5 @@ const config = {
   }
 }
 
-await mkdir('.netlify/deploy/v1', { recursive: true });
-await writeFile('.netlify/deploy/v1/config.json', JSON.stringify(config));
+await mkdir('.netlify/v1', { recursive: true });
+await writeFile('.netlify/v1/config.json', JSON.stringify(config));

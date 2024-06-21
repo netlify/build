@@ -568,3 +568,40 @@ test('Supports TSX and process.env', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
   delete process.env.FOO
 })
+
+test('Loads edge functions from the Frameworks API', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_frameworks_api')
+  const directories = [resolve(basePath, 'netlify/edge-functions'), resolve(basePath, '.netlify/v1/edge-functions')]
+  const result = await bundle(directories, distPath, [], {
+    basePath,
+    internalSrcFolder: directories[1],
+    importMapPaths: [resolve(basePath, '.netlify/v1/edge-functions/import_map.json')],
+  })
+  const generatedFiles = await readdir(distPath)
+
+  expect(result.functions.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const { bundles, function_config: functionConfig, routes } = manifest
+
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+
+  expect(routes[0].excluded_patterns).toEqual(['^/func2/skip/?$'])
+  expect(functionConfig.func2).toEqual({
+    excluded_patterns: ['^/func2/skip/?$'],
+    name: 'Function two',
+    generator: '@netlify/fake-plugin@1.0.0',
+  })
+
+  expect(functionConfig.func3).toEqual({
+    name: 'in-config-function',
+    on_error: 'bypass',
+    generator: 'internalFunc',
+  })
+
+  await cleanup()
+})

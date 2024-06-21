@@ -92,7 +92,7 @@ const createDeclarationsFromFunctionConfigs = (
   const declarations: Declaration[] = []
 
   for (const name in functionConfigs) {
-    const { cache, path, method } = functionConfigs[name]
+    const { cache, excludedPath, path, method } = functionConfigs[name]
 
     // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name) && path) {
@@ -105,6 +105,9 @@ const createDeclarationsFromFunctionConfigs = (
         }
         if (method) {
           declaration.method = method
+        }
+        if (excludedPath) {
+          declaration.excludedPath = excludedPath
         }
         declarations.push(declaration)
       })

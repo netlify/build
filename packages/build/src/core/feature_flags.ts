@@ -23,5 +23,6 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   edge_functions_system_logger: false,
   netlify_build_reduced_output: false,
   netlify_build_updated_plugin_compatibility: false,
+  netlify_build_frameworks_api: false,
   netlify_build_plugin_system_log: false,
 }

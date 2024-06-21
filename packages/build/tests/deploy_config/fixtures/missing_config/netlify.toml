@@ -5,6 +5,6 @@ command = "echo Hello"
 package = "./plugin.js"
 
 [[redirects]]
-from = "/$netlify-snapshot-preserve/from"
+from = "/from"
 status = 200
-to = "/$netlify-snapshot-preserve/to"
+to = "/to"
