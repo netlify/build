@@ -213,3 +213,25 @@ test.serial('cleans up the edge functions dist directory before bundling', async
 
   t.false(await pathExists(oldBundlePath))
 })
+
+test.serial('builds edge functions generated with the Frameworks API', async (t) => {
+  const output = await new Fixture('./fixtures/functions_user_framework')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_frameworks_api: true },
+      mode: 'buildbot',
+    })
+    .runWithBuild()
+
+  t.snapshot(normalizeOutput(output))
+
+  const { routes } = await assertManifest(t, 'functions_user_framework')
+
+  t.is(routes.length, 1)
+  t.deepEqual(routes[0], {
+    function: 'function-2',
+    pattern: '^/framework(?:/(.*))/?$',
+    excluded_patterns: ['^/framework/skip_(.*)/?$'],
+    path: '/framework/*',
+  })
+})

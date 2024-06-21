@@ -286,7 +286,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   expect(routes[5]).toEqual({
     function: 'user-func5',
     pattern: '^/user-func5(?:/(.*))/?$',
-    excluded_patterns: [],
+    excluded_patterns: ['^/user-func5/excluded/?$'],
     path: '/user-func5/*',
     methods: ['GET'],
   })

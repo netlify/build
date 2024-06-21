@@ -41,7 +41,7 @@ test.afterEach.always(async (t) => {
   delete process.env.NETLIFY_BLOBS_CONTEXT
 })
 
-test.serial("blobs upload, don't run when deploy id is provided and no files in directory", async (t) => {
+test.serial('Blobs upload step uploads files when deploy ID is provided and no files in directory', async (t) => {
   const {
     success,
     logs: { stdout },
@@ -57,7 +57,7 @@ test.serial("blobs upload, don't run when deploy id is provided and no files in 
 })
 
 test.serial(
-  "blobs upload, don't run when there are files but deploy id is not provided using legacy API",
+  'Blobs upload step uploads files when there are files but deploy ID is not provided (legacy API)',
   async (t) => {
     const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
@@ -77,7 +77,7 @@ test.serial(
   },
 )
 
-test.serial('blobs upload, uploads files to deploy store using legacy API', async (t) => {
+test.serial('Blobs upload step uploads files to deploy store (legacy API)', async (t) => {
   const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
   const {
@@ -121,7 +121,50 @@ test.serial('blobs upload, uploads files to deploy store using legacy API', asyn
   t.true(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
-test.serial('blobs upload, uploads files to deploy store', async (t) => {
+test.serial('Blobs upload step uploads files to deploy store (legacy deploy config API)', async (t) => {
+  const fixture = await new Fixture('./fixtures/src_with_blobs_legacy_deploy_config').withCopyRoot({ git: false })
+
+  const {
+    success,
+    logs: { stdout },
+  } = await fixture
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
+    .runBuildProgrammatic()
+  t.true(success)
+  t.is(t.context.blobRequests.set.length, 6)
+
+  const regionRequests = t.context.blobRequests.set.filter((urlPath) => {
+    const url = new URL(urlPath, 'http://localhost')
+
+    return url.searchParams.has('region')
+  })
+
+  t.is(regionRequests.length, 3)
+
+  const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
+  if (semver.lt(nodeVersion, '18.0.0')) {
+    const nodeFetch = await import('node-fetch')
+    storeOpts.fetch = nodeFetch.default
+  }
+
+  const store = getDeployStore(storeOpts)
+
+  const blob1 = await store.getWithMetadata('something.txt')
+  t.is(blob1.data, 'some value')
+  t.deepEqual(blob1.metadata, {})
+
+  const blob2 = await store.getWithMetadata('with-metadata.txt')
+  t.is(blob2.data, 'another value')
+  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+
+  const blob3 = await store.getWithMetadata('nested/file.txt')
+  t.is(blob3.data, 'file value')
+  t.deepEqual(blob3.metadata, { some: 'metadata' })
+
+  t.true(stdout.join('\n').includes('Uploading blobs to deploy store'))
+})
+
+test.serial('Blobs upload step uploads files to deploy store', async (t) => {
   const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const {
@@ -160,20 +203,20 @@ test.serial('blobs upload, uploads files to deploy store', async (t) => {
   t.is(blob2.data, 'another value')
   t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
 
-  const blob3 = await store.getWithMetadata('nested/file.txt')
+  const blob3 = await store.getWithMetadata('nested/blob')
   t.is(blob3.data, 'file value')
   t.deepEqual(blob3.metadata, { some: 'metadata' })
 
   t.true(stdout.join('\n').includes('Uploading blobs to deploy store'))
 })
 
-test.serial('blobs upload, cancels deploy if blob metadata is malformed', async (t) => {
+test.serial('Blobs upload step cancels deploy if blob metadata is malformed', async (t) => {
   const fixture = await new Fixture('./fixtures/src_with_malformed_blobs_metadata').withCopyRoot({ git: false })
   const { success, severityCode } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, debug: false })
     .runBuildProgrammatic()
 
-  const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
+  const blobsDir = join(fixture.repositoryRoot, '.netlify', 'v1', 'blobs', 'deploy')
   await t.notThrowsAsync(access(blobsDir))
 
   t.is(t.context.blobRequests.set, undefined)

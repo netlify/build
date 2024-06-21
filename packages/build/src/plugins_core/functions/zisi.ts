@@ -14,7 +14,7 @@ type GetZisiParametersType = {
   featureFlags: FeatureFlags
   functionsConfig: Record<string, any>
   functionsDist: string
-  internalFunctionsSrc: string
+  internalFunctionsSrc: string | undefined
   isRunningLocally: boolean
   repositoryRoot: string
   userNodeVersion: string
@@ -58,8 +58,11 @@ export const getZisiParameters = ({
     normalizeFunctionConfig({ buildDir, functionConfig: object, isRunningLocally, nodeVersion }),
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
-  // Only internal functions are allowed to have a json config file
-  const configFileDirectories = [resolve(internalFunctionsSrc)]
+
+  // Only the legacy internal functions directory is allowed to have a JSON
+  // config file.
+  const configFileDirectories = internalFunctionsSrc ? [resolve(internalFunctionsSrc)] : undefined
+
   return {
     basePath: buildDir,
     config,
