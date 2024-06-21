@@ -42,7 +42,7 @@ executors:
     shell: powershell.exe -ExecutionPolicy Bypass
   linux:
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2004:2024.04.4
     resource_class: large
   macos:
     resource_class: macos.x86.medium.gen2 # new generation resources
