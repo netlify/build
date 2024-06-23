@@ -464,9 +464,10 @@ const initAndRunBuild = async function ({
     systemLog,
   })
 
-  const pluginsEnv = featureFlags.build_inject_blobs_context
-    ? { ...childEnv, ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }) }
-    : childEnv
+  const pluginsEnv = {
+    ...childEnv,
+    ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }),
+  }
 
   if (pluginsOptionsA?.length) {
     const buildPlugins = {}

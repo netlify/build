@@ -391,7 +391,6 @@ test('Plugins have a pre-populated Blobs context', async (t) => {
     .withFlags({
       apiHost: host,
       deployId,
-      featureFlags: { build_inject_blobs_context: true },
       testOpts: { scheme },
       siteId,
       token,
