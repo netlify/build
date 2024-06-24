@@ -53,12 +53,11 @@ const coreStep = async function ({
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
-
-  let generatedFunctionsPath = internalSrcPath
+  const generatedFunctionPaths = [internalSrcPath]
 
   if (featureFlags.netlify_build_frameworks_api) {
     if (await pathExists(frameworksAPISrcPath)) {
-      generatedFunctionsPath = frameworksAPISrcPath
+      generatedFunctionPaths.unshift(frameworksAPISrcPath)
     }
 
     const frameworkImportMap = resolve(
@@ -73,7 +72,7 @@ const coreStep = async function ({
     }
   }
 
-  const sourcePaths = [generatedFunctionsPath, srcPath].filter(Boolean) as string[]
+  const sourcePaths = [...generatedFunctionPaths, srcPath].filter(Boolean) as string[]
 
   logFunctions({ frameworksAPISrcPath, internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
@@ -89,7 +88,7 @@ const coreStep = async function ({
     // no-op
   }
 
-  let vendorDirectory
+  let vendorDirectory: string | undefined
 
   // If we're building locally, set a vendor directory in `internalSrcPath`.
   // This makes Edge Bundler keep the vendor files around after the build,
@@ -115,7 +114,7 @@ const coreStep = async function ({
       importMapPaths,
       userLogger: (...args) => log(logs, reduceLogLines(args)),
       systemLogger: systemLog,
-      internalSrcFolder: generatedFunctionsPath,
+      internalSrcFolder: generatedFunctionPaths,
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
