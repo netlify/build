@@ -1,4 +1,4 @@
-import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
+import { resolveConfig, mergeConfigs, updateConfig, restoreConfig } from '@netlify/config'
 import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'
@@ -138,9 +138,10 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-export const resolveUpdatedConfig = async function (configOpts, configMutations) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations, netlifyConfig) {
   try {
-    return await resolveConfig({ ...configOpts, configMutations, debug: false })
+    const resolved = await resolveConfig({ ...configOpts, configMutations, debug: false })
+    return mergeConfigs([resolved, { config: netlifyConfig }], { concatenateArrays: true })
   } catch (error) {
     changeErrorType(error, 'resolveConfig', 'pluginValidation')
     throw error
