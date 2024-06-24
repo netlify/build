@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.49.0](https://github.com/netlify/build/compare/build-v29.48.2...build-v29.49.0) (2024-06-24)
+
+
+### Features
+
+* add Frameworks API ([#5668](https://github.com/netlify/build/issues/5668)) ([ec3bcc8](https://github.com/netlify/build/commit/ec3bcc88165ae6b1be1145a5bded9f538afd5bdb))
+* clean up feature flags ([#5728](https://github.com/netlify/build/issues/5728)) ([80226dd](https://github.com/netlify/build/commit/80226ddea6e4cc14cb50666b5c2e788b354768bb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.15.3 to ^20.15.4
+    * @netlify/edge-bundler bumped from 12.0.1 to 12.1.0
+
 ## [29.48.2](https://github.com/netlify/build/compare/build-v29.48.1...build-v29.48.2) (2024-06-18)
 
 
