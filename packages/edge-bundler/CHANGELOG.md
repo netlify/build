@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.1.0](https://github.com/netlify/build/compare/edge-bundler-v12.0.1...edge-bundler-v12.1.0) (2024-06-24)
+
+
+### Features
+
+* add Frameworks API ([#5668](https://github.com/netlify/build/issues/5668)) ([ec3bcc8](https://github.com/netlify/build/commit/ec3bcc88165ae6b1be1145a5bded9f538afd5bdb))
+
 ## [12.0.1](https://github.com/netlify/build/compare/edge-bundler-v12.0.0...edge-bundler-v12.0.1) (2024-05-14)
 
 
