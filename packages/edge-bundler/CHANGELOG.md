@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.1.1](https://github.com/netlify/build/compare/edge-bundler-v12.1.0...edge-bundler-v12.1.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* combine functions from Frameworks API and internal directories ([#5734](https://github.com/netlify/build/issues/5734)) ([9a087b1](https://github.com/netlify/build/commit/9a087b1a8f8142321b144afb1e5358723369ac4b))
+
 ## [12.1.0](https://github.com/netlify/build/compare/edge-bundler-v12.0.1...edge-bundler-v12.1.0) (2024-06-24)
 
 
