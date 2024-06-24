@@ -151,14 +151,12 @@ const coreStep = async function ({
     }
   }
 
-  const hasFrameworkFunctions = frameworkFunctions.length !== 0
-
   logFunctionsToBundle({
     logs,
     userFunctions,
     userFunctionsSrc: relativeFunctionsSrc,
     userFunctionsSrcExists: functionsSrcExists,
-    internalFunctions: hasFrameworkFunctions ? [] : internalFunctions,
+    internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
     frameworkFunctions,
   })
@@ -175,7 +173,7 @@ const coreStep = async function ({
     functionsDist,
     functionsSrc,
     frameworkFunctionsSrc,
-    internalFunctionsSrc: hasFrameworkFunctions ? undefined : internalFunctionsSrc,
+    internalFunctionsSrc,
     isRunningLocally,
     logs,
     repositoryRoot,

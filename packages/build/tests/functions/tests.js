@@ -147,7 +147,7 @@ test('Functions: legacy `.netlify/functions-internal` directory is ignored if th
   t.true(functionsDist.includes('manifest.json'))
   t.true(functionsDist.includes('server.zip'))
   t.true(functionsDist.includes('user.zip'))
-  t.false(functionsDist.includes('server-internal.zip'))
+  t.true(functionsDist.includes('server-internal.zip'))
 
   t.snapshot(normalizeOutput(output))
 })

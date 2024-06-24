@@ -235,3 +235,40 @@ test.serial('builds edge functions generated with the Frameworks API', async (t)
     path: '/framework/*',
   })
 })
+
+test.serial(
+  'builds both edge functions generated with the Frameworks API and the ones in the internal directory',
+  async (t) => {
+    const output = await new Fixture('./fixtures/functions_user_internal_framework')
+      .withFlags({
+        debug: false,
+        featureFlags: { netlify_build_frameworks_api: true },
+        mode: 'buildbot',
+      })
+      .runWithBuild()
+
+    t.snapshot(normalizeOutput(output))
+
+    const { routes } = await assertManifest(t, 'functions_user_internal_framework')
+
+    t.is(routes.length, 3)
+    t.deepEqual(routes[0], {
+      function: 'function-2',
+      pattern: '^/framework(?:/(.*))/?$',
+      excluded_patterns: ['^/framework/skip_(.*)/?$'],
+      path: '/framework/*',
+    })
+    t.deepEqual(routes[1], {
+      function: 'function-3',
+      pattern: '^/internal(?:/(.*))/?$',
+      excluded_patterns: ['^/internal/skip_(.*)/?$'],
+      path: '/internal/*',
+    })
+    t.deepEqual(routes[2], {
+      function: 'function-1',
+      pattern: '^/user/?$',
+      excluded_patterns: [],
+      path: '/user',
+    })
+  },
+)

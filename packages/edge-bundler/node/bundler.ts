@@ -20,6 +20,7 @@ import { getLogger, LogFunction, Logger } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
+import { nonNullable } from './utils/non_nullable.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -30,7 +31,7 @@ export interface BundleOptions {
   distImportMapPath?: string
   featureFlags?: FeatureFlags
   importMapPaths?: (string | undefined)[]
-  internalSrcFolder?: string
+  internalSrcFolder?: string | string[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   rootPath?: string
@@ -92,14 +93,16 @@ export const bundle = async (
   // not actually included in the bundle.
   const externals = deployConfig.layers.map((layer) => layer.name)
 
-  const userSourceDirectories = sourceDirectories.filter((dir) => dir !== internalSrcFolder)
+  const internalSrcFolders = (Array.isArray(internalSrcFolder) ? internalSrcFolder : [internalSrcFolder]).filter(
+    nonNullable,
+  )
+  const userSourceDirectories = sourceDirectories.filter((dir) => !internalSrcFolders.includes(dir))
 
   const importMap = new ImportMap()
-
   await importMap.addFiles([deployConfig?.importMap, ...importMapPaths], logger)
 
   const userFunctions = userSourceDirectories.length === 0 ? [] : await findFunctions(userSourceDirectories)
-  const internalFunctions = internalSrcFolder ? await findFunctions([internalSrcFolder]) : []
+  const internalFunctions = internalSrcFolder ? await findFunctions(internalSrcFolders) : []
   const functions = [...internalFunctions, ...userFunctions]
   const vendor = await safelyVendorNPMSpecifiers({
     basePath,
