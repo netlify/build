@@ -1,2 +1,5 @@
+[build]
+command = "node build.mjs"
+
 [[plugins]]
 package = "./plugin.js"

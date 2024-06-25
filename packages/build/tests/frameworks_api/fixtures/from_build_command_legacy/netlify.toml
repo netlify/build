@@ -1,2 +1,5 @@
+[build]
+command = "node build.mjs"
+
 [images]
 remote_images = ["domain1.from-toml.netlify", "domain2.from-toml.netlify"]

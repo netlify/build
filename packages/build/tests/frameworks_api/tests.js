@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import { dirname, resolve } from 'path'
 import { platform, version as nodeVersion } from 'process'
 
 import { Fixture } from '@netlify/testing'
@@ -131,4 +132,22 @@ test('Throws an error if the deploy configuration file is malformed', async (t) 
 test('Does not throw an error if the deploy configuration file is missing', async (t) => {
   const { success } = await new Fixture('./fixtures/missing_config').runWithBuildAndIntrospect()
   t.true(success)
+})
+
+test.only('Removes any leftover files from a previous build', async (t) => {
+  const systemLogFile = await tmp.file()
+  const fixture = new Fixture('./fixtures/leftover_config').withFlags({
+    debug: false,
+    systemLogFile: systemLogFile.fd,
+  })
+  const configPath = resolve(fixture.repositoryRoot, '.netlify/v1/config.json')
+
+  await fs.mkdir(dirname(configPath), { force: true, recursive: true })
+  await fs.copyFile(resolve(fixture.repositoryRoot, 'config.seed.json'), configPath)
+
+  const { netlifyConfig } = await fixture.runWithBuildAndIntrospect()
+
+  t.deepEqual(netlifyConfig.images, {
+    remote_images: ['domain1.from-toml.netlify', 'domain2.from-toml.netlify'],
+  })
 })

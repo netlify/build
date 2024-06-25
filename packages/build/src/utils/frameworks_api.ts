@@ -2,11 +2,12 @@ import { basename, dirname, resolve, sep } from 'node:path'
 
 import { fdir } from 'fdir'
 
-export const FRAMEWORKS_API_BLOBS_ENDPOINT = '.netlify/v1/blobs'
-export const FRAMEWORKS_API_CONFIG_ENDPOINT = '.netlify/v1/config.json'
-export const FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT = '.netlify/v1/edge-functions'
+export const FRAMEWORKS_API_ENDPOINT = '.netlify/v1'
+export const FRAMEWORKS_API_BLOBS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/blobs`
+export const FRAMEWORKS_API_CONFIG_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/config.json`
+export const FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/edge-functions`
 export const FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP = 'import_map.json'
-export const FRAMEWORKS_API_FUNCTIONS_ENDPOINT = '.netlify/v1/functions'
+export const FRAMEWORKS_API_FUNCTIONS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/functions`
 
 type DirectoryTreeFiles = Map<string, string[]>
 
