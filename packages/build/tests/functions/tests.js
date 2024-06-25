@@ -121,49 +121,52 @@ test('Functions: cleanup is only triggered when there are internal functions', a
   t.false(output.includes('Cleaning up leftover files from previous builds'))
 })
 
-test('Functions: loads functions generated with the Frameworks API', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
-    .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
-    .withCopyRoot()
+// Targeting Node 16.7.0+ because these fixtures rely on `fs.cp()`.
+if (semver.gte(nodeVersion, '16.7.0')) {
+  test('Functions: loads functions generated with the Frameworks API', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
+      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withCopyRoot()
 
-  const output = await fixture.runWithBuild()
-  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+    const output = await fixture.runWithBuild()
+    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
 
-  t.true(functionsDist.includes('manifest.json'))
-  t.true(functionsDist.includes('server.zip'))
-  t.true(functionsDist.includes('user.zip'))
+    t.true(functionsDist.includes('manifest.json'))
+    t.true(functionsDist.includes('server.zip'))
+    t.true(functionsDist.includes('user.zip'))
 
-  t.snapshot(normalizeOutput(output))
-})
+    t.snapshot(normalizeOutput(output))
+  })
 
-test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
-    .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
-    .withCopyRoot()
+  test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
+      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withCopyRoot()
 
-  const output = await fixture.runWithBuild()
-  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+    const output = await fixture.runWithBuild()
+    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
 
-  t.true(functionsDist.includes('manifest.json'))
-  t.true(functionsDist.includes('server.zip'))
-  t.true(functionsDist.includes('user.zip'))
-  t.true(functionsDist.includes('server-internal.zip'))
+    t.true(functionsDist.includes('manifest.json'))
+    t.true(functionsDist.includes('server.zip'))
+    t.true(functionsDist.includes('user.zip'))
+    t.true(functionsDist.includes('server-internal.zip'))
 
-  const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
-  const { functions } = JSON.parse(manifest)
+    const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
+    const { functions } = JSON.parse(manifest)
 
-  t.is(functions.length, 5)
+    t.is(functions.length, 5)
 
-  // The Frameworks API takes precedence over the legacy internal directory.
-  const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
-  t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
+    // The Frameworks API takes precedence over the legacy internal directory.
+    const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
+    t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
 
-  // User code takes precedence over the Frameworks API.
-  const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
-  t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
+    // User code takes precedence over the Frameworks API.
+    const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
+    t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
 
-  t.snapshot(normalizeOutput(output))
-})
+    t.snapshot(normalizeOutput(output))
+  })
+}
 
 // pnpm is not available in Node 14.
 if (semver.gte(nodeVersion, '16.9.0')) {
