@@ -54,6 +54,7 @@ interface ZipNodeParameters {
   rewrites?: Map<string, string>
   runtimeAPIVersion: number
   srcFiles: string[]
+  generator?: string
 }
 
 const addBootstrapFile = function (srcFiles: string[], aliases: Map<string, string>) {
@@ -188,6 +189,7 @@ const createZipArchive = async function ({
   rewrites,
   runtimeAPIVersion,
   srcFiles,
+  generator,
 }: ZipNodeParameters) {
   const destPath = join(destFolder, `${basename(filename, extension)}.zip`)
   const { archive, output } = startZip(destPath)
@@ -233,7 +235,7 @@ const createZipArchive = async function ({
 
     addEntryFileToZip(archive, entryFile)
   }
-  const telemetryFile = getTelemetryFile()
+  const telemetryFile = getTelemetryFile(generator)
 
   if (featureFlags.zisi_add_instrumentation_loader === true) {
     addEntryFileToZip(archive, telemetryFile)
@@ -268,7 +270,10 @@ const createZipArchive = async function ({
 export const zipNodeJs = function ({
   archiveFormat,
   ...options
-}: ZipNodeParameters & { archiveFormat: ArchiveFormat }): Promise<{ path: string; entryFilename: string }> {
+}: ZipNodeParameters & { archiveFormat: ArchiveFormat }): Promise<{
+  path: string
+  entryFilename: string
+}> {
   if (archiveFormat === ARCHIVE_FORMAT.ZIP) {
     return createZipArchive(options)
   }
