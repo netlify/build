@@ -1,4 +1,4 @@
-import { readdir, rm, stat, writeFile } from 'fs/promises'
+import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
 import { resolve } from 'path'
 import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
@@ -148,6 +148,19 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
   t.true(functionsDist.includes('server.zip'))
   t.true(functionsDist.includes('user.zip'))
   t.true(functionsDist.includes('server-internal.zip'))
+
+  const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
+  const { functions } = JSON.parse(manifest)
+
+  t.is(functions.length, 5)
+
+  // The Frameworks API takes precedence over the legacy internal directory.
+  const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
+  t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
+
+  // User code takes precedence over the Frameworks API.
+  const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
+  t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
 
   t.snapshot(normalizeOutput(output))
 })
