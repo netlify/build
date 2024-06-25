@@ -57,7 +57,7 @@ const coreStep = async function ({
 
   if (featureFlags.netlify_build_frameworks_api) {
     if (await pathExists(frameworksAPISrcPath)) {
-      generatedFunctionPaths.unshift(frameworksAPISrcPath)
+      generatedFunctionPaths.push(frameworksAPISrcPath)
     }
 
     const frameworkImportMap = resolve(

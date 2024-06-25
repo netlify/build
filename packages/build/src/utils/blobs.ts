@@ -107,14 +107,13 @@ const METADATA_SUFFIX = '.json'
  * path to its metadata file.
  */
 export const getKeysToUpload = async (blobsDir: string) => {
-  const blobsToUpload: { key: string; contentPath: string; metadataPath: string }[] = []
   const files = await new fdir()
     .withRelativePaths() // we want the relative path from the blobsDir
     .filter((fpath) => !path.basename(fpath).startsWith(METADATA_PREFIX))
     .crawl(blobsDir)
     .withPromise()
 
-  files.forEach((filePath) => {
+  return files.map((filePath) => {
     const key = filePath.split(path.sep).join('/')
     const contentPath = path.resolve(blobsDir, filePath)
     const basename = path.basename(filePath)
@@ -124,14 +123,12 @@ export const getKeysToUpload = async (blobsDir: string) => {
       `${METADATA_PREFIX}${basename}${METADATA_SUFFIX}`,
     )
 
-    blobsToUpload.push({
+    return {
       key,
       contentPath,
       metadataPath,
-    })
+    }
   })
-
-  return blobsToUpload
 }
 
 /** Read a file and its metadata file from the blobs directory */
