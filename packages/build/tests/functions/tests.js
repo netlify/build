@@ -136,7 +136,7 @@ test('Functions: loads functions generated with the Frameworks API', async (t) =
   t.snapshot(normalizeOutput(output))
 })
 
-test('Functions: legacy `.netlify/functions-internal` directory is ignored if there are functions generated with the Frameworks API', async (t) => {
+test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
   const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
     .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
     .withCopyRoot()
