@@ -251,24 +251,43 @@ test.serial(
 
     const { routes } = await assertManifest(t, 'functions_user_internal_framework')
 
-    t.is(routes.length, 3)
-    t.deepEqual(routes[0], {
-      function: 'function-2',
-      pattern: '^/framework(?:/(.*))/?$',
-      excluded_patterns: ['^/framework/skip_(.*)/?$'],
-      path: '/framework/*',
-    })
-    t.deepEqual(routes[1], {
-      function: 'function-3',
-      pattern: '^/internal(?:/(.*))/?$',
-      excluded_patterns: ['^/internal/skip_(.*)/?$'],
-      path: '/internal/*',
-    })
-    t.deepEqual(routes[2], {
-      function: 'function-1',
-      pattern: '^/user/?$',
-      excluded_patterns: [],
-      path: '/user',
-    })
+    t.deepEqual(routes, [
+      {
+        function: 'frameworks-internal-conflict',
+        pattern: '^/frameworks-internal-conflict/frameworks/?$',
+        excluded_patterns: [],
+        path: '/frameworks-internal-conflict/frameworks',
+      },
+      {
+        function: 'function-3',
+        pattern: '^/internal(?:/(.*))/?$',
+        excluded_patterns: ['^/internal/skip_(.*)/?$'],
+        path: '/internal/*',
+      },
+      {
+        function: 'frameworks-user-conflict',
+        pattern: '^/frameworks-user-conflict/frameworks/?$',
+        excluded_patterns: [],
+        path: '/frameworks-user-conflict/frameworks',
+      },
+      {
+        function: 'function-2',
+        pattern: '^/framework(?:/(.*))/?$',
+        excluded_patterns: ['^/framework/skip_(.*)/?$'],
+        path: '/framework/*',
+      },
+      {
+        function: 'frameworks-user-conflict',
+        pattern: '^/frameworks-user-conflict/user/?$',
+        excluded_patterns: [],
+        path: '/frameworks-user-conflict/user',
+      },
+      {
+        function: 'function-1',
+        pattern: '^/user/?$',
+        excluded_patterns: [],
+        path: '/user',
+      },
+    ])
   },
 )
