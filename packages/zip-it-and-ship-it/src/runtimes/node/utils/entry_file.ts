@@ -181,14 +181,16 @@ export const getTelemetryFile = (generator?: string): EntryFile => {
   if (generator) {
     // the generator can be something like: `@netlify/plugin-nextjs@14.13.2`
     // following the convention of name@version but it must not have a version.
-    // split the generator by the @ sign to seperate name and version.
+    // split the generator by the @ sign to separate name and version.
     // pop the last part (the version) and join the rest with a @ again.
-    const parts = generator.split('@')
-    if (parts.length > 1) {
-      serviceVersion = parts.pop()
-      serviceName = kebabCase(parts.join('@'))
+    const versionSepPos = generator.lastIndexOf('@')
+    if (versionSepPos > 1) {
+      const name = generator.substring(0, versionSepPos)
+      const version = generator.substring(versionSepPos + 1)
+      serviceVersion = version
+      serviceName = kebabCase(name)
     } else {
-      serviceName = kebabCase(parts[0])
+      serviceName = kebabCase(generator)
     }
   }
 

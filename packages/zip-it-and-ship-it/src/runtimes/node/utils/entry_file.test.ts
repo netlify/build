@@ -32,3 +32,10 @@ test('getTelemetryFile should handle generator with version', () => {
   expect(telemetryFile.contents).toContain('var SERVICE_NAME = "netlify-plugin-nextjs";')
   expect(telemetryFile.contents).toContain('var SERVICE_VERSION = "14.13.2";')
 })
+
+test('getTelemetryFile should handle generator without version', () => {
+  const telemetryFile = getTelemetryFile('@netlify/plugin-nextjs')
+  expect(telemetryFile.filename).toBe('___netlify-telemetry.mjs')
+  expect(telemetryFile.contents).toContain('var SERVICE_NAME = "netlify-plugin-nextjs";')
+  expect(telemetryFile.contents).toContain('var SERVICE_VERSION = undefined;')
+})
