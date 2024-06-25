@@ -134,7 +134,7 @@ test('Does not throw an error if the deploy configuration file is missing', asyn
   t.true(success)
 })
 
-test.only('Removes any leftover files from a previous build', async (t) => {
+test('Removes any leftover files from a previous build', async (t) => {
   const systemLogFile = await tmp.file()
   const fixture = new Fixture('./fixtures/leftover_config').withFlags({
     debug: false,
