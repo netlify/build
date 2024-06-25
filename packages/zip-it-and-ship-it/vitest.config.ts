@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     setupFiles: ['./tests/helpers/vitest_setup.ts'],
-    include: ['tests/**/*.test.ts'],
+    include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     testTimeout: 90_000,
     deps: {
       // Disable vitest handling of imports to these paths, especially the tmpdir is important as we extract functions to there

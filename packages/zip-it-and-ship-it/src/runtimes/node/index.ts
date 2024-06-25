@@ -108,6 +108,7 @@ const zipFunction: ZipFunction = async function ({
 
   createPluginsModulesPathAliases(srcFiles, pluginsModulesPath, aliases, finalBasePath)
 
+  const generator = mergedConfig?.generator || getInternalValue(isInternal)
   const zipPath = await zipNodeJs({
     aliases,
     archiveFormat,
@@ -124,6 +125,7 @@ const zipFunction: ZipFunction = async function ({
     rewrites,
     runtimeAPIVersion,
     srcFiles,
+    generator,
   })
 
   await cleanupFunction?.()
@@ -153,7 +155,7 @@ const zipFunction: ZipFunction = async function ({
     config: mergedConfig,
     displayName: mergedConfig?.name,
     entryFilename: zipPath.entryFilename,
-    generator: mergedConfig?.generator || getInternalValue(isInternal),
+    generator,
     timeout: mergedConfig?.timeout,
     inputs,
     includedFiles,

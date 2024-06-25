@@ -26,6 +26,20 @@ export interface EntryFile {
   filename: string
 }
 
+/**
+ * A minimal implementation of kebab-case.
+ * It is used to transform the generator name into a service name for the telemetry file.
+ * As DataDog has a special handling for the service name, we need to make sure it is kebab-case.
+ */
+export const kebabCase = (input: string): string =>
+  input
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[@#//$\s_\\.-]+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .split(' ')
+    .join('-')
+
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
@@ -158,10 +172,33 @@ const getEntryFileName = ({
   return `${basename(filename, extname(filename))}${extension}`
 }
 
-export const getTelemetryFile = (): EntryFile => {
+export const getTelemetryFile = (generator?: string): EntryFile => {
   // TODO: switch with import.meta.resolve once we drop support for Node 16.x
   const filePath = require.resolve('@netlify/serverless-functions-api/instrumentation.js')
-  const contents = readFileSync(filePath, 'utf8')
+  let serviceName: string | undefined
+  let serviceVersion: string | undefined
+
+  if (generator) {
+    // the generator can be something like: `@netlify/plugin-nextjs@14.13.2`
+    // following the convention of name@version but it must not have a version.
+    // split the generator by the @ sign to separate name and version.
+    // pop the last part (the version) and join the rest with a @ again.
+    const versionSepPos = generator.lastIndexOf('@')
+    if (versionSepPos > 1) {
+      const name = generator.substring(0, versionSepPos)
+      const version = generator.substring(versionSepPos + 1)
+      serviceVersion = version
+      serviceName = kebabCase(name)
+    } else {
+      serviceName = kebabCase(generator)
+    }
+  }
+
+  const contents = `
+var SERVICE_NAME = ${JSON.stringify(serviceName)};
+var SERVICE_VERSION = ${JSON.stringify(serviceVersion)};
+${readFileSync(filePath, 'utf8')}
+`
 
   return {
     contents,
