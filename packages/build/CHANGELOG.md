@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.50.0](https://github.com/netlify/build/compare/build-v29.49.1...build-v29.50.0) (2024-06-25)
+
+
+### Features
+
+* Frameworks API cleanup ([#5737](https://github.com/netlify/build/issues/5737)) ([a1f4d9a](https://github.com/netlify/build/commit/a1f4d9a817cf1fa53443da39705b2c0aaee14ea3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.69 to ^5.2.70
+    * @netlify/zip-it-and-ship-it bumped from 9.37.1 to 9.37.2
+
 ## [29.49.1](https://github.com/netlify/build/compare/build-v29.49.0...build-v29.49.1) (2024-06-24)
 
 
