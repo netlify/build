@@ -1,10 +1,10 @@
-import { resolveConfig, mergeConfigs, updateConfig, restoreConfig } from '@netlify/config'
+import { resolveConfig, restoreConfig, updateConfig } from '@netlify/config'
 import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
 import { changeErrorType } from '../error/info.js'
-import { logBuildDir, logConfigPath, logConfig, logContext } from '../log/messages/config.js'
+import { logBuildDir, logConfig, logConfigPath, logContext } from '../log/messages/config.js'
 import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
 import { measureDuration } from '../time/main.js'
 import { getPackageJson } from '../utils/package.js'
