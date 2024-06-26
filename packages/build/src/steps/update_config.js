@@ -13,6 +13,7 @@ import { logConfigMutations, systemLogConfigMutations } from '../log/messages/mu
 export const updateNetlifyConfig = async function ({
   configOpts,
   netlifyConfig,
+  cachedConfig,
   headersPath,
   redirectsPath,
   configMutations,
@@ -42,18 +43,18 @@ export const updateNetlifyConfig = async function ({
     systemLogConfigMutations(systemLog, newConfigMutations)
   }
 
-  const configMutationsA = [...configMutations, ...newConfigMutations]
+  const mergedConfigMutations = [...configMutations, ...newConfigMutations]
   const {
     config: netlifyConfigA,
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
-  } = await resolveUpdatedConfig(configOpts, configMutationsA)
+  } = await resolveUpdatedConfig(configOpts, mergedConfigMutations, cachedConfig)
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
 
   errorParams.netlifyConfig = netlifyConfigA
   return {
     netlifyConfig: netlifyConfigA,
-    configMutations: configMutationsA,
+    configMutations: mergedConfigMutations,
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
   }

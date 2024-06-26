@@ -26,6 +26,7 @@ export const firePluginStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  cachedConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -76,6 +77,7 @@ export const firePluginStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      cachedConfig,
       headersPath,
       packagePath,
       redirectsPath,
