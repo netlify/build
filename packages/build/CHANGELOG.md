@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.50.1](https://github.com/netlify/build/compare/build-v29.50.0...build-v29.50.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* preserve cached config while mutating config ([#5735](https://github.com/netlify/build/issues/5735)) ([260a8fb](https://github.com/netlify/build/commit/260a8fb37ff0df7ef01f120d3790696956015a59))
+
 ## [29.50.0](https://github.com/netlify/build/compare/build-v29.49.1...build-v29.50.0) (2024-06-25)
 
 
