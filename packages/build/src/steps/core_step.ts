@@ -27,6 +27,7 @@ export const fireCoreStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  cachedConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -65,6 +66,7 @@ export const fireCoreStep = async function ({
       branch,
       childEnv: childEnvA,
       netlifyConfig,
+      cachedConfig,
       nodePath,
       configMutations,
       headersPath,
@@ -86,6 +88,7 @@ export const fireCoreStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      cachedConfig,
       headersPath,
       redirectsPath,
       configMutations,

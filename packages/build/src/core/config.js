@@ -138,10 +138,14 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-export const resolveUpdatedConfig = async function (configOpts, configMutations, netlifyConfig) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations, cachedConfig) {
   try {
-    const resolved = await resolveConfig({ ...configOpts, configMutations, debug: false })
-    return mergeConfigs([resolved, { config: netlifyConfig }], { concatenateArrays: true })
+    return await resolveConfig({
+      ...configOpts,
+      configMutations,
+      cachedConfig,
+      debug: false,
+    })
   } catch (error) {
     changeErrorType(error, 'resolveConfig', 'pluginValidation')
     throw error

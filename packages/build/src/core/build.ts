@@ -180,6 +180,7 @@ const tExecBuild = async function ({
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
+    cachedConfig,
     configOpts,
     siteInfo,
     configPath,
@@ -240,6 +241,7 @@ export const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'buil
 export const runAndReportBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  cachedConfig,
   configOpts,
   siteInfo,
   configPath,
@@ -295,6 +297,7 @@ export const runAndReportBuild = async function ({
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
+      cachedConfig,
       configOpts,
       siteInfo,
       configPath,
@@ -400,6 +403,7 @@ export const runAndReportBuild = async function ({
 const initAndRunBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  cachedConfig,
   configOpts,
   siteInfo,
   configPath,
@@ -508,6 +512,7 @@ const initAndRunBuild = async function ({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
       netlifyConfig,
+      cachedConfig,
       configOpts,
       packageJson,
       configPath,
@@ -583,6 +588,7 @@ const runBuild = async function ({
   childProcesses,
   pluginsOptions,
   netlifyConfig,
+  cachedConfig,
   configOpts,
   packageJson,
   configPath,
@@ -671,6 +677,7 @@ const runBuild = async function ({
     deployId,
     errorParams,
     netlifyConfig,
+    cachedConfig,
     configOpts,
     logs,
     debug,
