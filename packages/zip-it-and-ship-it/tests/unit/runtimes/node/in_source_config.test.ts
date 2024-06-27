@@ -378,6 +378,35 @@ describe('V2 API', () => {
         runtimeAPIVersion: 2,
       })
     })
+
+    test('Config export with string literal properties', () => {
+      const source = `
+      const handler = async () => ({ statusCode: 200, body: "Hello" })
+      const config = { "path": "/products/:id", excludedPath: "/products/jacket" }
+      export { config };
+      export default handler
+      `
+      const isc = parseSource(source, options)
+      expect(isc).toEqual({
+        config: { path: ['/products/:id'], excludedPath: ['/products/jacket'] },
+        excludedRoutes: [
+          {
+            literal: '/products/jacket',
+            pattern: '/products/jacket',
+          },
+        ],
+        inputModuleFormat: 'esm',
+        routes: [
+          {
+            expression: '^\\/products(?:\\/([^\\/]+?))\\/?$',
+            methods: [],
+            pattern: '/products/:id',
+            prefer_static: undefined,
+          },
+        ],
+        runtimeAPIVersion: 2,
+      })
+    })
   })
 
   describe('`scheduled` property', () => {
