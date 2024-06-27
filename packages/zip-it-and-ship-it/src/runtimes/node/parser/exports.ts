@@ -201,14 +201,21 @@ const parseConfigESMExport = (node: Statement) => {
  */
 const parseObject = (node: ObjectExpression) =>
   node.properties.reduce((acc, property): Record<string, unknown> => {
-    if (property.type !== 'ObjectProperty' || property.key.type !== 'Identifier') {
-      return acc
+    if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {
+      return {
+        ...acc,
+        [property.key.name]: parsePrimitive(property.value),
+      }
     }
 
-    return {
-      ...acc,
-      [property.key.name]: parsePrimitive(property.value),
+    if (property.type === 'ObjectProperty' && property.key.type === 'StringLiteral') {
+      return {
+        ...acc,
+        [property.key.value]: parsePrimitive(property.value),
+      }
     }
+
+    return acc
   }, {} as Record<string, unknown>)
 
 /**
