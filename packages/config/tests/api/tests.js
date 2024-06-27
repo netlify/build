@@ -27,7 +27,7 @@ const SITE_INTEGRATIONS_RESPONSE = {
 }
 
 const TEAM_INSTALLATIONS_META_RESPONSE = {
-  path: '/team/account1/integrations/installations/meta',
+  path: '/team/account1/integrations/installations/meta?exclude_site_id=test',
   response: [
     {
       slug: 'test',
