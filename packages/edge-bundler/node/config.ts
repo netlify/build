@@ -39,16 +39,29 @@ export const isValidOnError = (value: unknown): value is OnError => {
   return value === 'fail' || value === 'bypass' || value.startsWith('/')
 }
 
-export interface FunctionConfig {
+interface BaseFunctionConfig {
   cache?: Cache
-  path?: Path | Path[]
-  excludedPath?: Path | Path[]
   onError?: OnError
   name?: string
   generator?: string
   method?: HTTPMethod | HTTPMethod[]
   rateLimit?: RateLimit
 }
+
+interface FunctionConfigWithPath extends BaseFunctionConfig {
+  path?: Path | Path[]
+  excludedPath?: Path | Path[]
+}
+
+interface FunctionConfigWithPattern extends BaseFunctionConfig {
+  pattern: string | string[]
+  excludedPattern?: string | string[]
+}
+
+export type FunctionConfig = FunctionConfigWithPath | FunctionConfigWithPattern
+
+export type FunctionConfigWithAllPossibleFields = BaseFunctionConfig &
+  Partial<FunctionConfigWithPath & FunctionConfigWithPattern>
 
 const getConfigExtractor = () => {
   const packagePath = getPackagePath()
