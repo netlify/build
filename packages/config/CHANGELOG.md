@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.16.0](https://github.com/netlify/build/compare/config-v20.15.4...config-v20.16.0) (2024-06-27)
+
+
+### Features
+
+* exclude integration site id from meta request ([#5744](https://github.com/netlify/build/issues/5744)) ([1129823](https://github.com/netlify/build/commit/11298237c60182a723a532b8e17a561e9e62d0ca))
+
 ## [20.15.4](https://github.com/netlify/build/compare/config-v20.15.3...config-v20.15.4) (2024-06-24)
 
 
