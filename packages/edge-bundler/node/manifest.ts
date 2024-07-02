@@ -3,7 +3,7 @@ import { join } from 'path'
 
 import type { Bundle } from './bundle.js'
 import { wrapBundleError } from './bundle_error.js'
-import { Cache, FunctionConfig, Path } from './config.js'
+import { Cache, FunctionConfig, FunctionConfigWithAllPossibleFields, Path } from './config.js'
 import { Declaration, normalizePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags } from './feature_flags.js'
@@ -97,7 +97,7 @@ const sanitizeEdgeFunctionConfig = (config: Record<string, EdgeFunctionConfig>):
   return newConfig
 }
 
-const addExcludedPatterns = (
+const addManifestExcludedPatternsFromConfigExcludedPath = (
   name: string,
   manifestFunctionConfig: Record<string, EdgeFunctionConfig>,
   excludedPath?: Path | Path[],
@@ -107,6 +107,19 @@ const addExcludedPatterns = (
     const excludedPatterns = paths.map(pathToRegularExpression).filter(nonNullable).map(serializePattern)
 
     manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
+  }
+}
+
+const addManifestExcludedPatternsFromConfigExcludedPattern = (
+  name: string,
+  manifestFunctionConfig: Record<string, EdgeFunctionConfig>,
+  excludedPattern?: string | string[],
+) => {
+  if (excludedPattern) {
+    const excludedPatterns = Array.isArray(excludedPattern) ? excludedPattern : [excludedPattern]
+    const normalizedExcludedPatterns = excludedPatterns.filter(nonNullable).map(normalizePattern).map(serializePattern)
+
+    manifestFunctionConfig[name].excluded_patterns.push(...normalizedExcludedPatterns)
   }
 }
 
@@ -144,13 +157,20 @@ const generateManifest = ({
   const routedFunctions = new Set<string>()
   const declarationsWithoutFunction = new Set<string>()
 
-  for (const [name, { excludedPath, onError, rateLimit }] of Object.entries(userFunctionConfig)) {
+  for (const [name, singleUserFunctionConfig] of Object.entries(userFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
 
-    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
+    const { excludedPath, pattern, excludedPattern, onError, rateLimit } =
+      singleUserFunctionConfig as FunctionConfigWithAllPossibleFields
+
+    if (pattern && excludedPattern) {
+      addManifestExcludedPatternsFromConfigExcludedPattern(name, manifestFunctionConfig, excludedPattern)
+    } else {
+      addManifestExcludedPatternsFromConfigExcludedPath(name, manifestFunctionConfig, excludedPath)
+    }
 
     manifestFunctionConfig[name] = {
       ...manifestFunctionConfig[name],
@@ -159,14 +179,21 @@ const generateManifest = ({
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [name, { excludedPath, path, onError, rateLimit, ...rest }] of Object.entries(internalFunctionConfig)) {
+  for (const [name, singleInternalFunctionConfig] of Object.entries(internalFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
 
-    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { onError, rateLimit, path, excludedPath, pattern, excludedPattern, ...rest } =
+      singleInternalFunctionConfig as FunctionConfigWithAllPossibleFields
+
+    if (pattern && excludedPattern) {
+      addManifestExcludedPatternsFromConfigExcludedPattern(name, manifestFunctionConfig, excludedPattern)
+    } else {
+      addManifestExcludedPatternsFromConfigExcludedPath(name, manifestFunctionConfig, excludedPath)
+    }
 
     manifestFunctionConfig[name] = {
       ...manifestFunctionConfig[name],
