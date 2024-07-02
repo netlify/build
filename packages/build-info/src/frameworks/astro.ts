@@ -27,6 +27,10 @@ export class Astro extends BaseFramework implements Framework {
     dark: '/logos/astro/dark.svg',
   }
 
+  env = {
+    NODE_VERSION: '18',
+  }
+
   async detect(): Promise<DetectedFramework | undefined> {
     await super.detect()
 
@@ -34,6 +38,7 @@ export class Astro extends BaseFramework implements Framework {
       // Less than 3.x.x. uses port 3000
       if (this.version && lt(this.version, '3.0.0')) {
         this.dev.port = 3000
+        this.env.NODE_VERSION = '16'
       }
 
       return this as DetectedFramework

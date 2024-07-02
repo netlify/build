@@ -56,7 +56,9 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
-      "env": {},
+      "env": {
+        "NODE_VERSION": "16",
+      },
       "framework": {
         "id": "astro",
         "name": "Astro",
@@ -126,7 +128,9 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
         ],
         "port": 3000,
       },
-      "env": {},
+      "env": {
+        "NODE_VERSION": "16",
+      },
       "id": "astro",
       "logo": {
         "dark": "https://framework-info.netlify.app/logos/astro/dark.svg",
@@ -187,7 +191,9 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
-      "env": {},
+      "env": {
+        "NODE_VERSION": "16",
+      },
       "framework": {
         "id": "astro",
         "name": "Astro",
@@ -261,7 +267,9 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
-      "env": {},
+      "env": {
+        "NODE_VERSION": "16",
+      },
       "framework": {
         "id": "astro",
         "name": "Astro",
