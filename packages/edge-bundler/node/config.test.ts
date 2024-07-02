@@ -240,7 +240,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   })
   const generatedFiles = await fs.readdir(distPath)
 
-  expect(result.functions.length).toBe(7)
+  expect(result.functions.length).toBe(11)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -251,7 +251,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
-  expect(routes.length).toBe(6)
+  expect(routes.length).toBe(12)
   expect(routes[0]).toEqual({
     function: 'framework-func2',
     pattern: '^/framework-func2/?$',
@@ -272,23 +272,53 @@ test('Loads function paths from the in-source `config` function', async () => {
     path: '/framework-func1',
   })
   expect(routes[3]).toEqual({
+    function: 'framework-func3',
+    pattern: '^/framework-func3(/.*)?$',
+    excluded_patterns: ['^/framework-func3/excluded$'],
+  })
+  expect(routes[4]).toEqual({
+    function: 'framework-func4',
+    pattern: '^/framework-func4(/.*)?$',
+    excluded_patterns: ['^/framework-func4/excluded$', '^/framework-func4-alt/excluded$'],
+  })
+  expect(routes[5]).toEqual({
+    function: 'framework-func4',
+    pattern: '^/framework-func4-alt(/.*)?$',
+    excluded_patterns: ['^/framework-func4/excluded$', '^/framework-func4-alt/excluded$'],
+  })
+  expect(routes[6]).toEqual({
     function: 'user-func1',
     pattern: '^/user-func1/?$',
     excluded_patterns: [],
     path: '/user-func1',
   })
-  expect(routes[4]).toEqual({
+  expect(routes[7]).toEqual({
     function: 'user-func3',
     pattern: '^/user-func3/?$',
     excluded_patterns: [],
     path: '/user-func3',
   })
-  expect(routes[5]).toEqual({
+  expect(routes[8]).toEqual({
     function: 'user-func5',
     pattern: '^/user-func5(?:/(.*))/?$',
     excluded_patterns: ['^/user-func5/excluded/?$'],
     path: '/user-func5/*',
     methods: ['GET'],
+  })
+  expect(routes[9]).toEqual({
+    function: 'user-func6',
+    pattern: '^/user-func6(/.*)?$',
+    excluded_patterns: ['^/user-func6/excluded$'],
+  })
+  expect(routes[10]).toEqual({
+    function: 'user-func7',
+    pattern: '^/user-func7(/.*)?$',
+    excluded_patterns: ['^/user-func7/excluded$', '^/user-func7-alt/excluded$'],
+  })
+  expect(routes[11]).toEqual({
+    function: 'user-func7',
+    pattern: '^/user-func7-alt(/.*)?$',
+    excluded_patterns: ['^/user-func7/excluded$', '^/user-func7-alt/excluded$'],
   })
 
   expect(postCacheRoutes.length).toBe(1)
@@ -300,9 +330,21 @@ test('Loads function paths from the in-source `config` function', async () => {
     methods: ['POST', 'PUT'],
   })
 
-  expect(Object.keys(functionConfig)).toHaveLength(1)
+  expect(Object.keys(functionConfig)).toHaveLength(5)
   expect(functionConfig['user-func5']).toEqual({
     excluded_patterns: ['^/user-func5/excluded/?$'],
+  })
+  expect(functionConfig['user-func6']).toEqual({
+    excluded_patterns: ['^/user-func6/excluded$'],
+  })
+  expect(functionConfig['user-func7']).toEqual({
+    excluded_patterns: ['^/user-func7/excluded$', '^/user-func7-alt/excluded$'],
+  })
+  expect(functionConfig['framework-func3']).toEqual({
+    excluded_patterns: ['^/framework-func3/excluded$'],
+  })
+  expect(functionConfig['framework-func4']).toEqual({
+    excluded_patterns: ['^/framework-func4/excluded$', '^/framework-func4-alt/excluded$'],
   })
 
   await cleanup()
