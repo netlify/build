@@ -4,7 +4,14 @@ export class Vite extends BaseFramework implements Framework {
   readonly id = 'vite'
   name = 'Vite'
   npmDependencies = ['vite']
-  excludedNpmDependencies = ['@shopify/hydrogen', '@builder.io/qwik', 'solid-start', 'solid-js', '@sveltejs/kit']
+  excludedNpmDependencies = [
+    '@shopify/hydrogen',
+    '@builder.io/qwik',
+    'solid-start',
+    'solid-js',
+    '@sveltejs/kit',
+    '@analogjs/platform',
+  ]
   category = Category.BuildTool
 
   dev = {

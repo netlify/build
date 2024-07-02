@@ -7,6 +7,7 @@ export class Angular extends BaseFramework implements Framework {
   name = 'Angular'
   configFiles = ['angular.json']
   npmDependencies = ['@angular/cli']
+  excludedNpmDependencies = ['@analogjs/platform']
   category = Category.FrontendFramework
 
   dev = {
