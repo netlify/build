@@ -1,3 +1,4 @@
+import { Analog } from './analog.js'
 import { Angular } from './angular.js'
 import { Assemble } from './assemble.js'
 import { Astro } from './astro.js'
@@ -46,7 +47,7 @@ import { WMR } from './wmr.js'
 import { Zola } from './zola.js'
 
 export const frameworks = [
-  // Static site generators
+  // Static site generators / meta frameworks
   Astro,
   Docusaurus,
   Eleventy,
@@ -78,6 +79,7 @@ export const frameworks = [
   Cecil,
   Zola,
   Observable,
+  Analog,
 
   // Front-end frameworks
   Angular,
