@@ -103,8 +103,8 @@ const createDeclarationsFromFunctionConfigs = (
     const functionConfig = functionConfigs[name]
     const { cache, method } = functionConfigs[name]
 
-    // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name)) {
+      // If we have a pattern specified, create a declaration for each pattern.
       if ('pattern' in functionConfig && functionConfig.pattern) {
         const { pattern, excludedPattern } = functionConfig
         const patterns = Array.isArray(pattern) ? pattern : [pattern]
@@ -121,7 +121,9 @@ const createDeclarationsFromFunctionConfigs = (
           }
           declarations.push(declaration)
         })
-      } else if ('path' in functionConfig && functionConfig.path) {
+      }
+      // If we don't have a pattern but we have a path specified, create a declaration for each path.
+      else if ('path' in functionConfig && functionConfig.path) {
         const { path, excludedPath } = functionConfig
         const paths = Array.isArray(path) ? path : [path]
 
