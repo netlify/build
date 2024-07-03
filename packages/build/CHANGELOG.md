@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.50.4](https://github.com/netlify/build/compare/build-v29.50.3...build-v29.50.4) (2024-07-03)
+
+
+### Bug Fixes
+
+* revert config mutation passing ([#5752](https://github.com/netlify/build/issues/5752)) ([80b0967](https://github.com/netlify/build/commit/80b0967dccdc394d6dc090793005316809d394ff))
+
 ## [29.50.3](https://github.com/netlify/build/compare/build-v29.50.2...build-v29.50.3) (2024-07-02)
 
 

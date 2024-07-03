@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.14.0](https://github.com/netlify/build/compare/build-info-v7.13.2...build-info-v7.14.0) (2024-07-03)
+
+
+### Features
+
+* add Analog framework to framework detection ([#5751](https://github.com/netlify/build/issues/5751)) ([fbfdb99](https://github.com/netlify/build/commit/fbfdb999bf03ce25c529a15b476d70ef5a6e9ea9))
+
 ## [7.13.2](https://github.com/netlify/build/compare/build-info-v7.13.1...build-info-v7.13.2) (2024-03-26)
 
 
