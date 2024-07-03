@@ -1,4 +1,4 @@
-import { FunctionConfig, HTTPMethod, Path } from './config.js'
+import { FunctionConfig, FunctionConfigWithAllPossibleFields, HTTPMethod, Path } from './config.js'
 import { FeatureFlags } from './feature_flags.js'
 
 interface BaseDeclaration {
@@ -63,7 +63,15 @@ const getDeclarationsFromInput = (
     if (!config) {
       // If no config is found, add the declaration as is.
       declarations.push(declaration)
-    } else if (config.path?.length) {
+    } else if ('pattern' in config && config.pattern?.length) {
+      // If we have a pattern specified as either a string or non-empty array,
+      // create a declaration for each pattern.
+      const patterns = Array.isArray(config.pattern) ? config.pattern : [config.pattern]
+
+      patterns.forEach((pattern) => {
+        declarations.push({ ...declaration, cache: config.cache, pattern })
+      })
+    } else if ('path' in config && config.path?.length) {
       // If we have a path specified as either a string or non-empty array,
       // create a declaration for each path.
       const paths = Array.isArray(config.path) ? config.path : [config.path]
@@ -74,7 +82,7 @@ const getDeclarationsFromInput = (
     } else {
       // With an in-source config without a path, add the config to the declaration.
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { path, excludedPath, ...rest } = config
+      const { path, excludedPath, pattern, excludedPattern, ...rest } = config as FunctionConfigWithAllPossibleFields
 
       declarations.push({ ...declaration, ...rest })
     }
@@ -92,25 +100,47 @@ const createDeclarationsFromFunctionConfigs = (
   const declarations: Declaration[] = []
 
   for (const name in functionConfigs) {
-    const { cache, excludedPath, path, method } = functionConfigs[name]
+    const functionConfig = functionConfigs[name]
+    const { cache, method } = functionConfigs[name]
 
-    // If we have a path specified, create a declaration for each path.
-    if (!functionsVisited.has(name) && path) {
-      const paths = Array.isArray(path) ? path : [path]
+    if (!functionsVisited.has(name)) {
+      // If we have a pattern specified, create a declaration for each pattern.
+      if ('pattern' in functionConfig && functionConfig.pattern) {
+        const { pattern, excludedPattern } = functionConfig
+        const patterns = Array.isArray(pattern) ? pattern : [pattern]
+        patterns.forEach((singlePattern) => {
+          const declaration: Declaration = { function: name, pattern: singlePattern }
+          if (cache) {
+            declaration.cache = cache
+          }
+          if (method) {
+            declaration.method = method
+          }
+          if (excludedPattern) {
+            declaration.excludedPattern = excludedPattern
+          }
+          declarations.push(declaration)
+        })
+      }
+      // If we don't have a pattern but we have a path specified, create a declaration for each path.
+      else if ('path' in functionConfig && functionConfig.path) {
+        const { path, excludedPath } = functionConfig
+        const paths = Array.isArray(path) ? path : [path]
 
-      paths.forEach((singlePath) => {
-        const declaration: Declaration = { function: name, path: singlePath }
-        if (cache) {
-          declaration.cache = cache
-        }
-        if (method) {
-          declaration.method = method
-        }
-        if (excludedPath) {
-          declaration.excludedPath = excludedPath
-        }
-        declarations.push(declaration)
-      })
+        paths.forEach((singlePath) => {
+          const declaration: Declaration = { function: name, path: singlePath }
+          if (cache) {
+            declaration.cache = cache
+          }
+          if (method) {
+            declaration.method = method
+          }
+          if (excludedPath) {
+            declaration.excludedPath = excludedPath
+          }
+          declarations.push(declaration)
+        })
+      }
     }
   }
 
