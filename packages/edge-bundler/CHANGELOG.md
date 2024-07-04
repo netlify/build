@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.0](https://github.com/netlify/build/compare/edge-bundler-v12.1.1...edge-bundler-v12.2.0) (2024-07-04)
+
+
+### Features
+
+* support 'pattern' in inline edge function config ([#5749](https://github.com/netlify/build/issues/5749)) ([c7a86d6](https://github.com/netlify/build/commit/c7a86d611b82e424bec5bad76d6d647a04dfe4ac))
+
 ## [12.1.1](https://github.com/netlify/build/compare/edge-bundler-v12.1.0...edge-bundler-v12.1.1) (2024-06-24)
 
 
