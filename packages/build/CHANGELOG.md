@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.50.5](https://github.com/netlify/build/compare/build-v29.50.4...build-v29.50.5) (2024-07-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^7.4.0 ([#5755](https://github.com/netlify/build/issues/5755)) ([6502384](https://github.com/netlify/build/commit/65023846d51372f42095265550d737355983fbb7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 12.1.1 to 12.2.0
+    * @netlify/functions-utils bumped from ^5.2.72 to ^5.2.73
+    * @netlify/zip-it-and-ship-it bumped from 9.37.4 to 9.37.5
+
 ## [29.50.4](https://github.com/netlify/build/compare/build-v29.50.3...build-v29.50.4) (2024-07-03)
 
 
