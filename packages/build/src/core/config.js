@@ -139,16 +139,15 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const resolveUpdatedConfig = async function (configOpts, configMutations, cachedConfig) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations, defaultConfig) {
   try {
-    return await resolveConfig({
+    const resolved = await resolveConfig({
       ...configOpts,
       configMutations,
-      // TODO: remove cached Config here again as this causes tests to fail in the CLI
-      // Currently investigating the root cause.
-      // cachedConfig,
+      defaultConfig,
       debug: false,
     })
+    return resolved
   } catch (error) {
     changeErrorType(error, 'resolveConfig', 'pluginValidation')
     throw error

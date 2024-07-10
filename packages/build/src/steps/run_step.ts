@@ -53,7 +53,7 @@ export const runStep = async function ({
   failedPlugins,
   configOpts,
   netlifyConfig,
-  cachedConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -144,7 +144,7 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
-      cachedConfig,
+      defaultConfig,
       event,
       childProcess,
       packageName,
@@ -306,7 +306,7 @@ const getFireStep = function (packageName: string, coreStepId?: string, event?: 
 }
 
 const tFireStep = function ({
-  cachedConfig,
+  defaultConfig,
   event,
   childProcess,
   packageName,
@@ -374,7 +374,7 @@ const tFireStep = function ({
       errorParams,
       configOpts,
       netlifyConfig,
-      cachedConfig,
+      defaultConfig,
       configMutations,
       headersPath,
       redirectsPath,
@@ -402,7 +402,7 @@ const tFireStep = function ({
     errorParams,
     configOpts,
     netlifyConfig,
-    cachedConfig,
+    defaultConfig,
     configMutations,
     headersPath,
     redirectsPath,
