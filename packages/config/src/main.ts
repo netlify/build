@@ -42,7 +42,9 @@ export const resolveConfig = async function (opts) {
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
-  if (parsedCachedConfig !== undefined) {
+  // if we receive a defaultConfig (something the CLI can set for the runBuild with defaults)
+  // we need to invalidate the cached config
+  if (parsedCachedConfig !== undefined && opts.defaultConfig !== undefined) {
     return parsedCachedConfig
   }
 
