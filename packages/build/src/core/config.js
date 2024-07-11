@@ -64,6 +64,7 @@ export const getConfigOpts = function ({
 const tLoadConfig = async function ({
   configOpts,
   cachedConfig,
+  defaultConfig,
   cachedConfigPath,
   envOpt,
   debug,
@@ -86,8 +87,7 @@ const tLoadConfig = async function ({
     siteInfo,
     env,
     integrations,
-  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath, featureFlags)
-
+  } = await resolveInitialConfig(configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags)
   if (!quiet) {
     logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
   }
@@ -120,8 +120,8 @@ export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
-const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath, featureFlags) {
-  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath, featureFlags })
+const resolveInitialConfig = async function (configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags) {
+  return await resolveConfig({ ...configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags })
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
@@ -138,17 +138,15 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const resolveUpdatedConfig = async function (configOpts, configMutations, cachedConfig) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations, defaultConfig) {
   try {
-    return await resolveConfig({
+    const resolved = await resolveConfig({
       ...configOpts,
       configMutations,
-      // TODO: remove cached Config here again as this causes tests to fail in the CLI
-      // Currently investigating the root cause.
-      // cachedConfig,
+      defaultConfig,
       debug: false,
     })
+    return resolved
   } catch (error) {
     changeErrorType(error, 'resolveConfig', 'pluginValidation')
     throw error

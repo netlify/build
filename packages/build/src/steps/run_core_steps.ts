@@ -108,7 +108,7 @@ const executeBuildStep = async function ({
 
   try {
     const { netlifyConfig: netlifyConfigA, configMutations } = await runBuildStep({
-      cachedConfig,
+      defaultConfig,
       netlifyConfig,
       buildDir,
       nodePath,
@@ -149,7 +149,7 @@ const executeBuildStep = async function ({
 }
 
 const runBuildStep = async function ({
-  cachedConfig,
+  defaultConfig,
   netlifyConfig,
   buildDir,
   nodePath,
@@ -172,7 +172,7 @@ const runBuildStep = async function ({
     nodePath,
     constants,
     netlifyConfig,
-    cachedConfig,
+    defaultConfig,
     logs,
     debug,
     timers: [],
