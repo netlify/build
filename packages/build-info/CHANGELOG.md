@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.14.1](https://github.com/netlify/build/compare/build-info-v7.14.0...build-info-v7.14.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* relative path pattern in workspace globs ([#5763](https://github.com/netlify/build/issues/5763)) ([0b6b015](https://github.com/netlify/build/commit/0b6b015503ac38c95345105ac85e80735ba0ccc0))
+
 ## [7.14.0](https://github.com/netlify/build/compare/build-info-v7.13.2...build-info-v7.14.0) (2024-07-03)
 
 

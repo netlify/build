@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.17.0](https://github.com/netlify/build/compare/config-v20.16.0...config-v20.17.0) (2024-07-11)
+
+
+### Features
+
+* pass default config for resolveUpdatedConfig instead of cached config ([#5761](https://github.com/netlify/build/issues/5761)) ([011ce3a](https://github.com/netlify/build/commit/011ce3ad392f8cc7ff08fd0a0c37bd5fb58e6a5f))
+
 ## [20.16.0](https://github.com/netlify/build/compare/config-v20.15.4...config-v20.16.0) (2024-06-27)
 
 
