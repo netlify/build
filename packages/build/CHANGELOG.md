@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.51.0](https://github.com/netlify/build/compare/build-v29.50.6...build-v29.51.0) (2024-07-11)
+
+
+### Features
+
+* pass default config for resolveUpdatedConfig instead of cached config ([#5761](https://github.com/netlify/build/issues/5761)) ([011ce3a](https://github.com/netlify/build/commit/011ce3ad392f8cc7ff08fd0a0c37bd5fb58e6a5f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.16.0 to ^20.17.0
+
 ## [29.50.6](https://github.com/netlify/build/compare/build-v29.50.5...build-v29.50.6) (2024-07-11)
 
 
