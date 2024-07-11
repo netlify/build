@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.2](https://github.com/netlify/build/compare/edge-bundler-v12.2.1...edge-bundler-v12.2.2) (2024-07-11)
+
+
+### Bug Fixes
+
+* disable config discovery when executing "Deno code" in node_modules directory ([#5767](https://github.com/netlify/build/issues/5767)) ([418d926](https://github.com/netlify/build/commit/418d92673f908e63383389bf80bd20a9079c93d1))
+
 ## [12.2.1](https://github.com/netlify/build/compare/edge-bundler-v12.2.0...edge-bundler-v12.2.1) (2024-07-11)
 
 

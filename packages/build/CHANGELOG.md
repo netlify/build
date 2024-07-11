@@ -105,6 +105,17 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.51.1](https://github.com/netlify/build/compare/build-v29.51.0...build-v29.51.1) (2024-07-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 12.2.1 to 12.2.2
+    * @netlify/functions-utils bumped from ^5.2.73 to ^5.2.74
+    * @netlify/zip-it-and-ship-it bumped from 9.37.5 to 9.37.6
+
 ## [29.51.0](https://github.com/netlify/build/compare/build-v29.50.6...build-v29.51.0) (2024-07-11)
 
 
