@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.1](https://github.com/netlify/build/compare/edge-bundler-v12.2.0...edge-bundler-v12.2.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* pin version of Deno CLI ([#5762](https://github.com/netlify/build/issues/5762)) ([379a44d](https://github.com/netlify/build/commit/379a44d70aaca1ebd887e8ce5e705fa794a4564f))
+
 ## [12.2.0](https://github.com/netlify/build/compare/edge-bundler-v12.1.1...edge-bundler-v12.2.0) (2024-07-04)
 
 
