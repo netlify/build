@@ -102,3 +102,21 @@ test('should map the project paths correctly', async ({ fs }) => {
     { path: join('apps/deep/deeper/f'), name: undefined },
   ])
 })
+
+test('should match deep packages with a globstar expression and a leading ./', async ({ fs }) => {
+  const cwd = mockFileSystem(
+    {
+      'package.json': '{}',
+      'apps/other/hello.txt': '',
+      'apps/deep/a/package.json': '{}',
+      'apps/deep/b/package.json': JSON.stringify({ name: 'b' }),
+      'apps/deep/c/package.json': JSON.stringify({ name: 'c' }),
+      'apps/deep/d/no-package': '{}',
+    },
+    'test',
+  )
+  expect(await getWorkspacePackages(new Project(fs, cwd), ['./apps/deep/**', '!./apps/deep/a'])).toMatchObject([
+    { path: join('apps/deep/b'), name: 'b' },
+    { path: join('apps/deep/c'), name: 'c' },
+  ])
+})
