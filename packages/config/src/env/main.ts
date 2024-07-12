@@ -24,11 +24,13 @@ export const getEnv = async function ({
   deployId,
   buildId,
   context,
+  cachedEnv,
 }) {
   if (mode === 'buildbot') {
     return {}
   }
 
+  const internalEnv = getInternalEnv(cachedEnv)
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
   const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({
     api,
@@ -46,6 +48,7 @@ export const getEnv = async function ({
     { key: 'addons', values: addonsEnv },
     { key: 'account', values: accountEnv },
     { key: 'general', values: generalEnv },
+    { key: 'internal', values: internalEnv },
   ]
 
   // A hash mapping names of environment variables to objects containing the following properties:
@@ -117,6 +120,22 @@ const getGeneralEnv = async function ({
     GATSBY_TELEMETRY_DISABLED: '1',
     NEXT_TELEMETRY_DISABLED: '1',
   })
+}
+
+/**
+ * Retrieve internal environment variables (needed for the CLI).
+ * Based on the cached environment, it returns the internal environment variables.
+ * Internal environment variables are those that are set by the CLI and are not retrieved by Envelope or the API.
+ */
+const getInternalEnv = function (
+  cachedEnv: Record<string, { sources: string[]; value: string }>,
+): Record<string, string> {
+  return Object.entries(cachedEnv).reduce((prev, [key, { sources, value }]) => {
+    if (sources.includes('internal')) {
+      prev[key] = value
+    }
+    return prev
+  }, {} as Record<string, string>)
 }
 
 const getDeployUrls = function ({
