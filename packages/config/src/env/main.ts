@@ -125,7 +125,7 @@ const getGeneralEnv = async function ({
 /**
  * Retrieve internal environment variables (needed for the CLI).
  * Based on the cached environment, it returns the internal environment variables.
- * Internal environment variables are those that are set by the CLI and are not retrieved by the envelope or the API.
+ * Internal environment variables are those that are set by the CLI and are not retrieved by Envelope or the API.
  */
 const getInternalEnv = function (
   cachedEnv: Record<string, { sources: string[]; value: string }>,

@@ -118,7 +118,7 @@ export const resolveConfig = async function (opts) {
     deployId,
     buildId,
     context,
-    cachedEnv: parsedCachedConfig.env,
+    cachedEnv: parsedCachedConfig?.env || {},
   })
 
   // @todo Remove in the next major version.
