@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.17.1](https://github.com/netlify/build/compare/config-v20.17.0...config-v20.17.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* leverage the internal config inside the getEnv as well ([#5769](https://github.com/netlify/build/issues/5769)) ([5e6ec8a](https://github.com/netlify/build/commit/5e6ec8afb91b494d77822bee88b2a45be07ec531))
+
 ## [20.17.0](https://github.com/netlify/build/compare/config-v20.16.0...config-v20.17.0) (2024-07-11)
 
 
