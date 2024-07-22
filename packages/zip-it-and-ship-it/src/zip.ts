@@ -64,6 +64,15 @@ export const zipFunctions = async function (
     internalSrcFolder,
   }: ZipFunctionsOptions = {},
 ) {
+  console.log(`
+
+---------------------------------------------------------]
+
+Modified zipFunctions function in zip-it-and-ship-it/src/zip.ts
+
+
+
+  `)
   validateArchiveFormat(archiveFormat)
 
   const logger = getLogger(systemLog, debug)
@@ -146,15 +155,6 @@ export const zipFunction = async function (
     internalSrcFolder,
   }: ZipFunctionOptions = {},
 ) {
-  console.log(`
-
----------------------------------------------------------]
-
-Modified zipFunction function in zip-it-and-ship-it/src/zip.ts
-
-
-
-  `)
   validateArchiveFormat(archiveFormat)
 
   const logger = getLogger(systemLog, debug)
