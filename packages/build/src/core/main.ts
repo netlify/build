@@ -30,6 +30,16 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   netlifyConfig?: any
   configMutations?: any
 }> {
+  console.log(`
+
+--------------------------------------------------------------------
+
+THIS IS A MOCKED VERSION FROM THE BRANCH "feat/test-mocked-version"
+@netlify/build 0.0.0-development
+
+--------------------------------------------------------------------
+
+  `)
   const {
     errorMonitor,
     framework,
