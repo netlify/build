@@ -1,6 +1,6 @@
 {
   "name": "@netlify/zip-it-and-ship-it",
-  "version": "9.37.7",
+  "version": "9.37.8",
   "description": "Zip it and ship it",
   "main": "./dist/main.js",
   "type": "module",
