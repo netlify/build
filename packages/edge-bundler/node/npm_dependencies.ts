@@ -239,11 +239,6 @@ export const vendorNPMSpecifiers = async ({
     rootPath,
   })
 
-  // If we found no specifiers, there's nothing left to do here.
-  if (Object.keys(npmSpecifiers).length === 0) {
-    return
-  }
-
   // To bundle an entire module and all its dependencies, create a entrypoint file
   // where we re-export everything from that specifier. We do this for every
   // specifier, and each of these files will become entry points to esbuild.
@@ -257,42 +252,49 @@ export const vendorNPMSpecifiers = async ({
       return { filePath, specifier, types }
     }),
   )
-  const entryPoints = ops.map(({ filePath }) => filePath)
-  // Bundle each of the entrypoints we created. We'll end up with a compiled
-  // version of each, plus any chunks of shared code
-  // between them (such that a common module isn't bundled twice).
-  const { outputFiles } = await build({
-    allowOverwrite: true,
-    banner,
-    bundle: true,
-    entryPoints,
-    format: 'esm',
-    mainFields: ['module', 'browser', 'main'],
-    logLevel: 'error',
-    nodePaths,
-    outdir: temporaryDirectory.path,
-    platform: 'node',
-    splitting: true,
-    target: 'es2020',
-    write: false,
-    define:
-      environment === 'production'
-        ? {
-            'process.env.NODE_ENV': '"production"',
-          }
-        : undefined,
-  })
 
-  await Promise.all(
-    outputFiles.map(async (file) => {
-      const types = ops.find((op) => path.basename(file.path) === path.basename(op.filePath))?.types
-      let content = file.text
-      if (types) {
-        content = `/// <reference types="${path.relative(path.dirname(file.path), types)}" />\n${content}`
-      }
-      await fs.writeFile(file.path, content)
-    }),
-  )
+  const outputFiles: string[] = []
+
+  if (ops.length !== 0) {
+    const entryPoints = ops.map(({ filePath }) => filePath)
+    // Bundle each of the entrypoints we created. We'll end up with a compiled
+    // version of each, plus any chunks of shared code
+    // between them (such that a common module isn't bundled twice).
+    const { outputFiles: outputFilesFromEsBuild } = await build({
+      allowOverwrite: true,
+      banner,
+      bundle: true,
+      entryPoints,
+      format: 'esm',
+      mainFields: ['module', 'browser', 'main'],
+      logLevel: 'error',
+      nodePaths,
+      outdir: temporaryDirectory.path,
+      platform: 'node',
+      splitting: true,
+      target: 'es2020',
+      write: false,
+      define:
+        environment === 'production'
+          ? {
+              'process.env.NODE_ENV': '"production"',
+            }
+          : undefined,
+    })
+
+    outputFiles.push(...outputFilesFromEsBuild.map((file) => file.path))
+
+    await Promise.all(
+      outputFilesFromEsBuild.map(async (file) => {
+        const types = ops.find((op) => path.basename(file.path) === path.basename(op.filePath))?.types
+        let content = file.text
+        if (types) {
+          content = `/// <reference types="${path.relative(path.dirname(file.path), types)}" />\n${content}`
+        }
+        await fs.writeFile(file.path, content)
+      }),
+    )
+  }
 
   // Add all Node.js built-ins to the import map, so any unprefixed specifiers
   // (e.g. `process`) resolve to the prefixed versions (e.g. `node:prefix`),
@@ -340,6 +342,6 @@ export const vendorNPMSpecifiers = async ({
     directory: temporaryDirectory.path,
     importMap: newImportMap,
     npmSpecifiersWithExtraneousFiles,
-    outputFiles: outputFiles.map((file) => file.path),
+    outputFiles,
   }
 }
