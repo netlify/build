@@ -41,6 +41,8 @@ const normalizeMessage = function (message, [regExp, replacement]) {
 const NORMALIZE_REGEXPS = [
   // Base64 URL
   [/(data:[^;]+;base64),[\w+/-=]+/g, 'dataURI'],
+  // Node builtins mapping - normalize it to single one so it's not dependent on Node.js version it did run on
+  [/(\\"[^"]+\\":\\"node:[^"]+\\",)+/g, '\\"builtins\\":\\"node:builtins\\",'],
   // File paths
   [/(["'`, ]|^)([^"'`, \n]*[/\\][^"'`, \n]*)(?=["'`, ]|$)/gm, '$1/file/path'],
   // Semantic versions
