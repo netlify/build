@@ -7,7 +7,7 @@
   "main": "./lib/main.js",
   "types": "./lib/main.d.ts",
   "files": [
-    "lib/**/*.{js,ts}",
+    "lib/**/*.{js,ts}"
   ],
   "author": "Netlify Inc.",
   "scripts": {
