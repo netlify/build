@@ -5,9 +5,9 @@
   "type": "module",
   "exports": "./lib/main.js",
   "main": "./lib/main.js",
-  "types": "./lib.main.d.ts",
+  "types": "./lib/main.d.ts",
   "files": [
-    "lib/**/*.js"
+    "lib/**/*.{js,d.ts}"
   ],
   "author": "Netlify Inc.",
   "scripts": {
