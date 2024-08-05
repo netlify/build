@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.18.0](https://github.com/netlify/build/compare/config-v20.17.1...config-v20.18.0) (2024-08-05)
+
+
+### Features
+
+* use v2 endpoint that has siteid for extensions ([#5792](https://github.com/netlify/build/issues/5792)) ([73c44fe](https://github.com/netlify/build/commit/73c44fe743afe87ef282af2b11924d8e36e547e6))
+
 ## [20.17.1](https://github.com/netlify/build/compare/config-v20.17.0...config-v20.17.1) (2024-07-12)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.3](https://github.com/netlify/build/compare/edge-bundler-v12.2.2...edge-bundler-v12.2.3) (2024-08-05)
+
+
+### Bug Fixes
+
+* handle non node: prefixed Node.js builtins when no npm specifiers were found ([#5785](https://github.com/netlify/build/issues/5785)) ([afdb4ac](https://github.com/netlify/build/commit/afdb4ac1c910c44cfbc1589e98d2dd6510e21bc2))
+
 ## [12.2.2](https://github.com/netlify/build/compare/edge-bundler-v12.2.1...edge-bundler-v12.2.2) (2024-07-11)
 
 

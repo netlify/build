@@ -1,11 +1,11 @@
 {
   "packages/build-info": "7.14.1",
-  "packages/build": "29.51.4",
-  "packages/edge-bundler": "12.2.2",
-  "packages/cache-utils": "5.1.5",
-  "packages/config": "20.17.1",
+  "packages/build": "29.51.5",
+  "packages/edge-bundler": "12.2.3",
+  "packages/cache-utils": "5.1.6",
+  "packages/config": "20.18.0",
   "packages/framework-info": "9.8.13",
-  "packages/functions-utils": "5.2.76",
+  "packages/functions-utils": "5.2.77",
   "packages/git-utils": "5.1.1",
   "packages/headers-parser": "7.1.4",
   "packages/js-client": "13.1.20",
@@ -14,5 +14,5 @@
   "packages/run-utils": "5.1.1",
   "packages/opentelemetry-sdk-setup": "1.1.3",
   "packages/opentelemetry-utils": "1.2.1",
-  "packages/zip-it-and-ship-it": "9.37.8"
+  "packages/zip-it-and-ship-it": "9.37.9"
 }
