@@ -105,6 +105,24 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.51.5](https://github.com/netlify/build/compare/build-v29.51.4...build-v29.51.5) (2024-08-05)
+
+
+### Bug Fixes
+
+* handle non node: prefixed Node.js builtins when no npm specifiers were found ([#5785](https://github.com/netlify/build/issues/5785)) ([afdb4ac](https://github.com/netlify/build/commit/afdb4ac1c910c44cfbc1589e98d2dd6510e21bc2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.5 to ^5.1.6
+    * @netlify/config bumped from ^20.17.1 to ^20.18.0
+    * @netlify/edge-bundler bumped from 12.2.2 to 12.2.3
+    * @netlify/functions-utils bumped from ^5.2.76 to ^5.2.77
+    * @netlify/zip-it-and-ship-it bumped from 9.37.8 to 9.37.9
+
 ## [29.51.4](https://github.com/netlify/build/compare/build-v29.51.3...build-v29.51.4) (2024-07-22)
 
 
