@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.53.0](https://github.com/netlify/build/compare/build-v29.52.0...build-v29.53.0) (2024-08-08)
+
+
+### Features
+
+* add accountId flags const ([#5797](https://github.com/netlify/build/issues/5797)) ([8a21d27](https://github.com/netlify/build/commit/8a21d27abed978fa2fa81e0f6c9d4fdd117cc6e7))
+
 ## [29.52.0](https://github.com/netlify/build/compare/build-v29.51.5...build-v29.52.0) (2024-08-08)
 
 
