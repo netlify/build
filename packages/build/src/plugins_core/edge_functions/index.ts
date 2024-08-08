@@ -114,7 +114,7 @@ const coreStep = async function ({
       importMapPaths,
       userLogger: (...args) => log(logs, reduceLogLines(args)),
       systemLogger: systemLog,
-      internalSrcFolder: generatedFunctionPaths,
+      internalSrcFolder: undefined,
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
