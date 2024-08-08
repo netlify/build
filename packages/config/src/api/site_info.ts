@@ -38,7 +38,6 @@ export const getSiteInfo = async function ({
   featureFlags = {},
   siteFeatureFlagPrefix,
 }: GetSiteInfoOpts) {
-  console.log('HERE!!!', accountId, siteId)
   const { env: testEnv = false } = testOpts
 
   const useV2Endpoint = !!accountId && featureFlags.cli_integration_installations_meta

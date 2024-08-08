@@ -16,7 +16,6 @@ import { parseFlags } from './flags.js'
 const runCli = async function () {
   try {
     const { stable, output = DEFAULT_OUTPUT, ...flags } = parseFlags()
-    console.log('run cli')
     const result = await resolveConfig(flags)
     await handleCliSuccess(result, stable, output)
   } catch (error) {
