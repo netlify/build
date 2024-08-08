@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.52.0](https://github.com/netlify/build/compare/build-v29.51.5...build-v29.52.0) (2024-08-08)
+
+
+### Features
+
+* pass accountId to runBuild and resolve config ([#5794](https://github.com/netlify/build/issues/5794)) ([1eb6288](https://github.com/netlify/build/commit/1eb62888eff714453417b60547aaea72870786ea))
+
 ## [29.51.5](https://github.com/netlify/build/compare/build-v29.51.4...build-v29.51.5) (2024-08-05)
 
 
