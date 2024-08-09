@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
       - name: Install Netlify E2E
         run: npm i -g @netlify/e2e@1.0.0-rc.0
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
       - name: Create Remlink Config
         run: node ./tools/create-remlink.config.js
       - name: Trigger Netlify E2E image build
