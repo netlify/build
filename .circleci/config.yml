@@ -139,7 +139,7 @@ jobs:
           name: Trigger Netlify E2E image build and extract values
           command: |
             cat ./remlink.config.json
-            output=$(netlify-e2e build-image ./remlink.config.json)
+            output=$(npx netlify-e2e build-image ./remlink.config.json)
             pipelineId=$(echo $output | jq -r '.pipelineId')
             testImageTag=$(echo $output | jq -r '.tag')
             workingDir="node_modules/@netlify/e2e"
