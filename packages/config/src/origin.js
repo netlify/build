@@ -26,7 +26,7 @@ const addBuildPublishOrigin = function ({ config, config: { build = {} }, origin
 }
 
 const addConfigPluginOrigin = function ({ config, config: { plugins }, origin }) {
-  return Array.isArray(plugins) ? { ...config, plugins: plugins.map((plugin) => ({ ...plugin, origin })) } : config
+  return Array.isArray(plugins) ? { ...config, plugins: plugins.map((plugin) => ({ origin, ...plugin })) } : config
 }
 
 const addHeadersOrigin = function ({ config, config: { headers }, origin }) {
