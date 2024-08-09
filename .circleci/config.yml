@@ -151,6 +151,7 @@ jobs:
             echo "The extracted pipelineId is: $pipelineId"
             echo "The extracted Tag is: $testImageTag"
       - run: |
+          npm run build
           ls -lah .
           ls -lah node_modules
           ls -lah node_modules/@netlify
