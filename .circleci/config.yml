@@ -129,7 +129,7 @@ jobs:
       - image: cimg/node:22.5.1
     steps:
       - checkout
-      - run: npm install @netlify/e2e@1.0.0-rc.4
+      - run: npm install @netlify/e2e@1.0.0-rc.5
       - run:
           name: Create Remlink Config
           command: node ./tools/create-remlink.config.js
@@ -142,52 +142,19 @@ jobs:
             output=$(npx netlify-e2e build-image ./remlink.config.json)
             pipelineId=$(echo $output | jq -r '.pipelineId')
             testImageTag=$(echo $output | jq -r '.tag')
-            echo "export pipelineId=$pipelineId" >> $BASH_ENV
-            echo "export testImageTag=$testImageTag" >> $BASH_ENV
+            echo "export BUILD_IMAGE_PIPELINE_ID=$pipelineId" >> $BASH_ENV
+            echo "export NETLIFY_E2E_BUILD_IMAGE=$testImageTag" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Echo extracted values
           command: |
-            echo "The extracted pipelineId is: $pipelineId"
-            echo "The extracted Tag is: $testImageTag"
-      - run: |
-          npm run build
-          ls -lah .
-          ls -lah node_modules
-          ls -lah node_modules/@netlify
-          ls -lah node_modules/netlify
+            echo "The extracted pipelineId is: $BUILD_IMAGE_PIPELINE_ID"
+            echo "The extracted Tag is: $NETLIFY_E2E_BUILD_IMAGE"
+      - run: npm run build
       - run:
           name: Install Browser Binaries
           command: npx playwright install --with-deps chromium
       - run:
-          name: Run playwright
-          command: |
-            ls -lah
-            npx playwright test
+          name: Run E2E Tests
+          command: npx playwright test
           working_directory: node_modules/@netlify/e2e/dist
-      # - name: Authenticate with private NPM package
-      #   run: |
-      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > /home/runner/work/_temp/.npmrc
-      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > .npmrc
-      # - name: Install Netlify E2E
-      #   run: npm install -g @netlify/e2e@1.0.0-rc.0
-      # - name: Create Remlink Config
-      #   run: node ./tools/create-remlink.config.js
-      # - name: Trigger Netlify E2E image build
-      #   id: extract-deploy-id
-      #   run: |
-      #     output=$(netlify-e2e build-image ./remlink.config.json)
-      #     echo "pipelineId=$(echo "output" | jq -r '.pipelineId')" >> $GITHUB_ENV
-      #     echo "testImageTag=$(echo "output" | jq -r '.tag')" >> $GITHUB_ENV
-
-      # - name: Echo extracted values
-      #   run: |
-      #     echo "The extracted pipelineId is: ${{ env.pipelineId }}"
-      #     echo "The extracted Tag is: ${{ env.testImageTag }}"
-
-      # - name: Save npm logs on failure
-      #   if: failure() # This step only runs if the previous steps failed
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: npm-logs
-      #     path: /home/runner/.npm/_logs
