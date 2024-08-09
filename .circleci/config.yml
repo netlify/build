@@ -129,7 +129,7 @@ jobs:
       - image: cimg/node:22.5.1
     steps:
       - checkout
-      - run: npm install -g @netlify/e2e@1.0.0-rc.2
+      - run: npm install @netlify/e2e@1.0.0-rc.2
       - run:
           name: Create Remlink Config
           command: node ./tools/create-remlink.config.js
@@ -142,7 +142,7 @@ jobs:
             output=$(netlify-e2e build-image ./remlink.config.json)
             pipelineId=$(echo $output | jq -r '.pipelineId')
             testImageTag=$(echo $output | jq -r '.tag')
-            workingDir="$(npm root -g)/@netlify/e2e"
+            workingDir="node_modules/@netlify/e2e"
             echo "export pipelineId=$pipelineId" >> $BASH_ENV
             echo "export testImageTag=$testImageTag" >> $BASH_ENV
             echo "export workingDir=$workingDir" >> $BASH_ENV

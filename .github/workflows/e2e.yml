@@ -33,4 +33,4 @@ jobs:
       - run: |
           cd ${{ env.workingDir}}
           ls -lah
-          npx playwright exec
+          pnpm run e2e
