@@ -14,16 +14,21 @@ jobs:
         run: npm install -g @netlify/e2e@1.0.0-rc.2
       - name: Create Remlink Config
         run: node ./tools/create-remlink.config.js
+        env:
+          BRANCH: ${{ env.GITHUB_REF_NAME }}
       - name: Trigger Netlify E2E image build
         id: extract-deploy-id
         run: |
-          netlify-e2e -h
+          cat ./remlink.config.json
           output=$(netlify-e2e build-image ./remlink.config.json)
-          echo "$output"
           echo "pipelineId=$(echo $output | jq -r '.pipelineId')" >> $GITHUB_ENV
           echo "testImageTag=$(echo $output | jq -r '.tag')" >> $GITHUB_ENV
-
+          echo "workingDir=\"$(npm root -g)/@netlify/e2e\"" >> $GITHUB_ENV
       - name: Echo extracted values
         run: |
           echo "The extracted pipelineId is: ${{ env.pipelineId }}"
           echo "The extracted Tag is: ${{ env.testImageTag }}"
+          echo "${{ env.workingDir }}"
+          ls -lah "${{ env.workingDir }}"
+      - run: ls -lah
+        working-directory: ${{ env.workingDir}}

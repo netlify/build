@@ -4,7 +4,7 @@ const config = {
   links: [
     {
       repo: 'netlify/build',
-      branch: 'feat/test-mocked-versions',
+      branch: process.env.BRANCH || 'main',
       packages: {
         '@netlify/config': 'packages/config',
         '@netlify/build': 'packages/build',
