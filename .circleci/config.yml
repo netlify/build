@@ -157,6 +157,7 @@ jobs:
           name: Run playwright
           command: |
             ls -lah
+            mv playwright.config.ts playwright.config.js
             npx playwright test
           working_directory: node_modules/@netlify/e2e
       # - name: Authenticate with private NPM package
