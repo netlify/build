@@ -142,23 +142,23 @@ jobs:
             output=$(npx netlify-e2e build-image ./remlink.config.json)
             pipelineId=$(echo $output | jq -r '.pipelineId')
             testImageTag=$(echo $output | jq -r '.tag')
-            workingDir="node_modules/@netlify/e2e"
             echo "export pipelineId=$pipelineId" >> $BASH_ENV
             echo "export testImageTag=$testImageTag" >> $BASH_ENV
-            echo "export workingDir=$workingDir" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Echo extracted values
           command: |
             echo "The extracted pipelineId is: $pipelineId"
             echo "The extracted Tag is: $testImageTag"
-            echo "The working directory is: $workingDir"
-            ls -lah "$workingDir"
+      - run:
+          name: Install Browser Binaries
+          command: npx playwright install --with-deps chromium
       - run:
           name: Run playwright
           command: |
             ls -lah
-          working_directory: $workingDir
+            npx playwright test
+          working_directory: node_modules/@netlify/e2e
       # - name: Authenticate with private NPM package
       #   run: |
       #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > /home/runner/work/_temp/.npmrc
