@@ -31,7 +31,7 @@ workflows:
     jobs:
       - formatting
       - e2e-tests:
-          context: [shared-secrets]
+          context: [shared-secrets, netlify-e2e]
 
 executors:
   node:
