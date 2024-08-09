@@ -129,7 +129,7 @@ jobs:
       - image: cimg/node:22.5.1
     steps:
       - checkout
-      - run: npm install @netlify/e2e@1.0.0-rc.2
+      - run: npm install @netlify/e2e@1.0.0-rc.4
       - run:
           name: Create Remlink Config
           command: node ./tools/create-remlink.config.js
@@ -157,9 +157,8 @@ jobs:
           name: Run playwright
           command: |
             ls -lah
-            mv playwright.config.ts playwright.config.js
             npx playwright test
-          working_directory: node_modules/@netlify/e2e
+          working_directory: node_modules/@netlify/e2e/dist
       # - name: Authenticate with private NPM package
       #   run: |
       #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > /home/runner/work/_temp/.npmrc
