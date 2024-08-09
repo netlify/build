@@ -129,7 +129,7 @@ jobs:
       - image: cimg/node:22.5.1
     steps:
       - checkout
-      - run: npm install @netlify/e2e@1.0.0-rc.5
+      - run: npm install @netlify/e2e@1.0.0-rc.6
       - run:
           name: Create Remlink Config
           command: node ./tools/create-remlink.config.js
