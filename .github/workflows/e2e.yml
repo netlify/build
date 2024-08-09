@@ -10,8 +10,14 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
+        with:
+          node-version: '*'
+          check-latest: true
+          registry-url: 'https://registry.npmjs.org'
       - name: Authenticate with private NPM package
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > ~/.npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > .npmrc
       - name: Install Netlify E2E
         run: npm install @netlify/e2e@1.0.0-rc.0
       - name: Create Remlink Config
