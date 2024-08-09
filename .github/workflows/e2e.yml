@@ -20,8 +20,8 @@ jobs:
           netlify-e2e -h
           output=$(netlify-e2e build-image ./remlink.config.json)
           echo "$output"
-          echo "pipelineId=$(echo "output" | jq -r '.pipelineId')" >> $GITHUB_ENV
-          echo "testImageTag=$(echo "output" | jq -r '.tag')" >> $GITHUB_ENV
+          echo "pipelineId=$(echo $output | jq -r '.pipelineId')" >> $GITHUB_ENV
+          echo "testImageTag=$(echo $output | jq -r '.tag')" >> $GITHUB_ENV
 
       - name: Echo extracted values
         run: |
