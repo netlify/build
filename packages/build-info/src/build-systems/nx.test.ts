@@ -192,7 +192,7 @@ describe('nx-integrated project.json based', () => {
           baseDirectory: '',
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: join('dist/packages/website'),
+          dist: join('dist/packages/website/.next'),
           framework: { id: 'next', name: 'Next.js' },
           frameworkPort: 4200,
           name: `Nx + Next.js ${join('packages/website')}`,
@@ -227,7 +227,7 @@ describe('nx-integrated project.json based', () => {
         baseDirectory: '',
         buildCommand: 'nx run website:build',
         devCommand: 'nx run website:serve',
-        dist: join('dist/packages/website'),
+        dist: join('dist/packages/website/.next'),
       }),
     ])
   })
