@@ -150,6 +150,11 @@ jobs:
           command: |
             echo "The extracted pipelineId is: $pipelineId"
             echo "The extracted Tag is: $testImageTag"
+      - run: |
+          ls -lah .
+          ls -lah node_modules
+          ls -lah node_modules/@netlify
+          ls -lah node_modules/netlify
       - run:
           name: Install Browser Binaries
           command: npx playwright install --with-deps chromium
