@@ -16,7 +16,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Authenticate with private NPM package
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > /home/runner/work/_temp/.npmrc
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_READ_ONLY_TOKEN }}" > .npmrc
       - name: Install Netlify E2E
         run: npm install -g @netlify/e2e@1.0.0-rc.0
@@ -33,3 +33,10 @@ jobs:
         run: |
           echo "The extracted pipelineId is: ${{ env.pipelineId }}"
           echo "The extracted Tag is: ${{ env.testImageTag }}"
+
+      - name: Save npm logs on failure
+        if: failure() # This step only runs if the previous steps failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-logs
+          path: /home/runner/.npm/_logs
