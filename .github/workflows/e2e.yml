@@ -30,5 +30,7 @@ jobs:
           echo "The extracted Tag is: ${{ env.testImageTag }}"
           echo "${{ env.workingDir }}"
           ls -lah "${{ env.workingDir }}"
-      - run: ls -lah
-        working-directory: ${{ env.workingDir}}
+      - run: |
+          cd ${{ env.workingDir}}
+          ls -lah
+          npx playwright exec
