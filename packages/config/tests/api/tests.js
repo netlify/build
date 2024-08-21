@@ -121,6 +121,15 @@ test('--site-id', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('--account-id in offline and buildbot mode', async (t) => {
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
+    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+  const config = JSON.parse(output)
+
+  t.is(config.siteInfo.account_id, 'test-account')
+})
+
 test('NETLIFY_SITE_ID environment variable', async (t) => {
   const output = await new Fixture('./fixtures/empty')
     .withEnv({ NETLIFY_SITE_ID: 'test' })
@@ -333,7 +342,7 @@ test('Integrations are not returned if offline', async (t) => {
   t.assert(config.integrations.length === 0)
 })
 
-test('Integrations are returned if feature flag is false and mode is buildbot', async (t) => {
+test('Integrations and account id are returned if feature flag is false and mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
@@ -346,10 +355,14 @@ test('Integrations are returned if feature flag is false and mode is buildbot', 
   const config = JSON.parse(output)
 
   t.assert(config.integrations)
-  t.assert(config.integrations.length === 1)
-  t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool')
-  t.assert(config.integrations[0].has_build === true)
+  t.is(config.integrations.length, 1)
+  t.is(config.integrations[0].slug, 'test')
+  t.is(config.integrations[0].version, 'so-cool')
+  t.is(config.integrations[0].has_build, true)
+
+  // account id is also available
+  t.assert(config.siteInfo)
+  t.is(config.siteInfo.account_id, 'account1')
 })
 
 test('Integrations are returned if feature flag is false and mode is dev', async (t) => {
@@ -370,7 +383,7 @@ test('Integrations are returned if feature flag is false and mode is dev', async
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations are returned if flag is true for site and mode is buildbot', async (t) => {
+test('Integrations and account id are returned if flag is true for site and mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
@@ -386,10 +399,14 @@ test('Integrations are returned if flag is true for site and mode is buildbot', 
   const config = JSON.parse(output)
 
   t.assert(config.integrations)
-  t.assert(config.integrations.length === 1)
-  t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool')
-  t.assert(config.integrations[0].has_build === true)
+  t.is(config.integrations.length, 1)
+  t.is(config.integrations[0].slug, 'test')
+  t.is(config.integrations[0].version, 'so-cool')
+  t.is(config.integrations[0].has_build, true)
+
+  // account id is also available
+  t.assert(config.siteInfo)
+  t.is(config.siteInfo.account_id, 'account1')
 })
 
 test('Integrations are returned if flag is true for site and mode is dev', async (t) => {

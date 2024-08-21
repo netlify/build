@@ -44,7 +44,10 @@ export const getSiteInfo = async function ({
 
   if (useV2Endpoint) {
     if (api === undefined || mode === 'buildbot' || testEnv) {
-      const siteInfo = siteId === undefined ? {} : { id: siteId }
+      const siteInfo: { id?: string; account_id?: string } = {}
+
+      if (siteId !== undefined) siteInfo.id = siteId
+      if (accountId !== undefined) siteInfo.account_id = accountId
 
       const integrations =
         mode === 'buildbot' && !offline
@@ -73,7 +76,10 @@ export const getSiteInfo = async function ({
   }
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
-    const siteInfo = siteId === undefined ? {} : { id: siteId }
+    const siteInfo: { id?: string; account_id?: string } = {}
+
+    if (siteId !== undefined) siteInfo.id = siteId
+    if (accountId !== undefined) siteInfo.account_id = accountId
 
     const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
 
