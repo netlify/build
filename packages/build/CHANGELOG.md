@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.53.1](https://github.com/netlify/build/compare/build-v29.53.0...build-v29.53.1) (2024-08-21)
+
+
+### Bug Fixes
+
+* don't overwrite plugin origin if it exists ([#5793](https://github.com/netlify/build/issues/5793)) ([d5ef407](https://github.com/netlify/build/commit/d5ef4079308264d6175731fd9d3ff1c2ae1e1200))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.18.0 to ^20.19.0
+    * @netlify/functions-utils bumped from ^5.2.77 to ^5.2.78
+    * @netlify/zip-it-and-ship-it bumped from 9.37.9 to 9.37.10
+
 ## [29.53.0](https://github.com/netlify/build/compare/build-v29.52.0...build-v29.53.0) (2024-08-08)
 
 

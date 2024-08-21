@@ -76,6 +76,25 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.19.0](https://github.com/netlify/build/compare/config-v20.18.0...config-v20.19.0) (2024-08-21)
+
+
+### Features
+
+* **config:** return account id from config in offline mode ([#5810](https://github.com/netlify/build/issues/5810)) ([e82859d](https://github.com/netlify/build/commit/e82859d247253e2ee54891ade4bbc3d89ef56c1a))
+
+
+### Bug Fixes
+
+* don't overwrite plugin origin if it exists ([#5793](https://github.com/netlify/build/issues/5793)) ([d5ef407](https://github.com/netlify/build/commit/d5ef4079308264d6175731fd9d3ff1c2ae1e1200))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.20 to ^13.1.21
+
 ## [20.18.0](https://github.com/netlify/build/compare/config-v20.17.1...config-v20.18.0) (2024-08-05)
 
 
