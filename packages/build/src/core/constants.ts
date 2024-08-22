@@ -64,6 +64,10 @@ export interface NetlifyPluginConstants {
    */
   SITE_ID: string
   /**
+   * the Netlify account ID
+   */
+  ACCOUNT_ID: string
+  /**
    * the Netlify API access token
    */
   NETLIFY_API_TOKEN?: string
@@ -90,7 +94,7 @@ export const getConstants = async function ({
   edgeFunctionsDistDir,
   cacheDir,
   netlifyConfig,
-  siteInfo: { id: siteId },
+  siteInfo: { id: siteId, account_id: accountId },
   apiHost,
   token,
   mode,
@@ -118,6 +122,8 @@ export const getConstants = async function ({
     NETLIFY_BUILD_VERSION: ROOT_PACKAGE_JSON.version,
     // The Netlify Site ID
     SITE_ID: siteId,
+    // The Netlify Account ID
+    ACCOUNT_ID: accountId,
     // The Netlify API access token
     NETLIFY_API_TOKEN: token,
     // The Netlify API host
