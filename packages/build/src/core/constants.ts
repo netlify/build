@@ -66,7 +66,7 @@ export interface NetlifyPluginConstants {
   /**
    * the Netlify account ID
    */
-  ACCOUNT_ID: string
+  ACCOUNT_ID?: string
   /**
    * the Netlify API access token
    */
