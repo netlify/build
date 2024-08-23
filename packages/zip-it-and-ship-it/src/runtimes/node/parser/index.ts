@@ -2,7 +2,15 @@ import { promises as fs } from 'fs'
 import { join, relative, resolve } from 'path'
 
 import { parse } from '@babel/parser'
-import type { BinaryExpression, CallExpression, Expression, PrivateName, TemplateLiteral, TSType } from '@babel/types'
+import type {
+  BinaryExpression,
+  CallExpression,
+  Expression,
+  PrivateName,
+  TemplateLiteral,
+  TSType,
+  Program,
+} from '@babel/types'
 
 import { nonNullable } from '../../../utils/non_nullable.js'
 
@@ -120,7 +128,7 @@ const parseSource = (source: string) => {
 
 // Parses a JS/TS source and returns the resulting AST. If there is a parsing
 // error, it will get swallowed and `null` will be returned.
-export const safelyParseSource = (source: string) => {
+export const safelyParseSource = (source: string): Program | null => {
   try {
     return parseSource(source)
   } catch {
