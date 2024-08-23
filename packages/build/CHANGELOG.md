@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.54.0](https://github.com/netlify/build/compare/build-v29.53.1...build-v29.54.0) (2024-08-23)
+
+
+### Features
+
+* **build:** add account id constant to plugins ([#5811](https://github.com/netlify/build/issues/5811)) ([91d6e49](https://github.com/netlify/build/commit/91d6e495c3ce85919d6acba39a86df9a0656c8ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.78 to ^5.2.79
+    * @netlify/zip-it-and-ship-it bumped from 9.37.10 to 9.38.0
+
 ## [29.53.1](https://github.com/netlify/build/compare/build-v29.53.0...build-v29.53.1) (2024-08-21)
 
 
