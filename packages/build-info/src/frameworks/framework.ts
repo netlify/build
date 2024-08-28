@@ -45,8 +45,17 @@ export interface Framework {
   id: string
   name: string
   category: Category
+  /**
+   * If this is set, at least ONE of these must exist, anywhere in the project
+   */
   configFiles: string[]
+  /**
+   * If this is set, at least ONE of these must be present in the `package.json` `dependencies|devDependencies`
+   */
   npmDependencies: string[]
+  /**
+   * if this is set, NONE of these must be present in the `package.json` `dependencies|devDependencies`
+   */
   excludedNpmDependencies?: string[]
   version?: SemVer
   /** Information on how it was detected and how accurate the detection is */
@@ -255,9 +264,9 @@ export abstract class BaseFramework implements Framework {
   }
 
   /** detect if the framework config file is located somewhere up the tree */
-  private async detectConfigFile(): Promise<Detection | undefined> {
-    if (this.configFiles?.length) {
-      const config = await this.project.fs.findUp(this.configFiles, {
+  protected async detectConfigFile(configFiles: string[]): Promise<Detection | undefined> {
+    if (configFiles.length) {
+      const config = await this.project.fs.findUp(configFiles, {
         cwd: this.path || this.project.baseDirectory,
         stopAt: this.project.root,
       })
@@ -275,7 +284,7 @@ export abstract class BaseFramework implements Framework {
 
   /**
    * Checks if the project is using a specific framework:
-   * - if `npmDependencies` is set, one of them must be present in then `package.json` `dependencies|devDependencies`
+   * - if `npmDependencies` is set, one of them must be present in the `package.json` `dependencies|devDependencies`
    * - if `excludedNpmDependencies` is set, none of them must be present in the `package.json` `dependencies|devDependencies`
    * - if `configFiles` is set, one of the files must exist
    */
@@ -286,7 +295,7 @@ export abstract class BaseFramework implements Framework {
     }
 
     const npm = await this.detectNpmDependency()
-    const config = await this.detectConfigFile()
+    const config = await this.detectConfigFile(this.configFiles ?? [])
     this.detected = mergeDetections([npm, config])
 
     if (this.detected) {

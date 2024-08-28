@@ -5,6 +5,9 @@ export class Vite extends BaseFramework implements Framework {
   name = 'Vite'
   npmDependencies = ['vite']
   excludedNpmDependencies = [
+    '@remix-run/react',
+    '@remix-run/dev',
+    '@remix-run/server-runtime',
     '@shopify/hydrogen',
     '@builder.io/qwik',
     'solid-start',
