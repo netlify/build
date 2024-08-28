@@ -1,4 +1,3 @@
-import { supportedRuntimes } from '@netlify/framework-info'
 import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
@@ -23,6 +22,11 @@ import { warnOnLingeringProcesses } from './lingering.js'
 import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
 import type { BuildFlags } from './types.js'
+
+const supportedRuntimes = {
+  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
+  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
+}
 
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
