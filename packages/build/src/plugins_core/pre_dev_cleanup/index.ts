@@ -1,7 +1,7 @@
 import { rm, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import { listFrameworks } from '@netlify/framework-info'
+import { listFrameworks } from '@netlify/build-info'
 
 import { log } from '../../log/logger.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
