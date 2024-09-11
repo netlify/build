@@ -23,6 +23,7 @@ import { cachedLstat, mkdirAndWriteFile } from '../../../utils/fs.js'
 
 import {
   BOOTSTRAP_FILE_NAME,
+  BOOTSTRAP_VERSION_FILE_NAME,
   conflictsWithEntryFile,
   EntryFile,
   getEntryFile,
@@ -31,6 +32,7 @@ import {
 } from './entry_file.js'
 import { ModuleFormat } from './module_format.js'
 import { normalizeFilePath } from './normalize_path.js'
+import { getPackageJsonIfAvailable } from './package_json.js'
 
 // Taken from https://www.npmjs.com/package/cpy.
 const COPY_FILE_CONCURRENCY = os.cpus().length === 0 ? 2 : os.cpus().length * 2
@@ -65,6 +67,8 @@ const addBootstrapFile = function (srcFiles: string[], aliases: Map<string, stri
 
   srcFiles.push(v2APIPath)
   aliases.set(v2APIPath, BOOTSTRAP_FILE_NAME)
+
+  return v2APIPath
 }
 
 const createDirectory = async function ({
@@ -242,7 +246,15 @@ const createZipArchive = async function ({
   }
 
   if (runtimeAPIVersion === 2) {
-    addBootstrapFile(srcFiles, aliases)
+    const bootstrapPath = addBootstrapFile(srcFiles, aliases)
+
+    if (featureFlags.zisi_add_version_file === true) {
+      const { version: bootstrapVersion } = await getPackageJsonIfAvailable(bootstrapPath)
+
+      if (bootstrapVersion) {
+        addZipContent(archive, bootstrapVersion, BOOTSTRAP_VERSION_FILE_NAME)
+      }
+    }
   }
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]

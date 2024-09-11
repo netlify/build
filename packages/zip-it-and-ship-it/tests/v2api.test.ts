@@ -3,6 +3,7 @@ import { join, resolve } from 'path'
 import { platform, version as nodeVersion } from 'process'
 import { promisify } from 'util'
 
+import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
 import glob from 'glob'
 import { pathExists } from 'path-exists'
@@ -706,5 +707,24 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     ).not.toBe(files[0].runtimeVersion)
     expect(files[0].config.nodeVersion).toBe('20')
     expect(files[0].runtimeVersion).toBe('nodejs20.x')
+  })
+
+  test('Adds a file with the bootstrap version to the ZIP archive', async () => {
+    const fixtureName = 'v2-api'
+    const { files } = await zipFixture(fixtureName, {
+      fixtureDir: FIXTURES_ESM_DIR,
+      opts: {
+        featureFlags: {
+          zisi_add_version_file: true,
+        },
+      },
+    })
+    const [unzippedFunction] = await unzipFiles(files)
+    const bootstrapPath = getBootstrapPath()
+    const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
+    const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
+    const versionFileContents = await readFile(join(unzippedFunction.unzipPath, '___netlify-bootstrap-version'), 'utf8')
+
+    expect(versionFileContents).toBe(bootstrapVersion)
   })
 })
