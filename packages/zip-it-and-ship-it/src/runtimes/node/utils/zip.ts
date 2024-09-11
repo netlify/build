@@ -7,6 +7,7 @@ import { basename, dirname, extname, join } from 'path'
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
 import { copyFile } from 'cp-file'
 import pMap from 'p-map'
+import { tmpName } from 'tmp-promise'
 
 import {
   addZipContent,
@@ -31,6 +32,7 @@ import {
 } from './entry_file.js'
 import { ModuleFormat } from './module_format.js'
 import { normalizeFilePath } from './normalize_path.js'
+import { getClosestPackageJson } from './package_json.js'
 
 // Taken from https://www.npmjs.com/package/cpy.
 const COPY_FILE_CONCURRENCY = os.cpus().length === 0 ? 2 : os.cpus().length * 2
@@ -57,11 +59,19 @@ interface ZipNodeParameters {
   generator?: string
 }
 
-const addBootstrapFile = function (srcFiles: string[], aliases: Map<string, string>) {
+const addBootstrapFile = async function (srcFiles: string[], aliases: Map<string, string>) {
   // This is the path to the file that contains all the code for the v2
   // functions API. We add it to the list of source files and create an
   // alias so that it's written as `BOOTSTRAP_FILE_NAME` in the ZIP/Directory.
   const v2APIPath = getV2APIPath()
+
+  const bootstrapPkg = await getClosestPackageJson(getV2APIPath())
+  const version = bootstrapPkg?.contents?.version
+  if (version) {
+    const tmpFilePath = await tmpName()
+    await writeFile(tmpFilePath, version)
+    srcFiles.push(tmpFilePath, '.bootstrap_version')
+  }
 
   srcFiles.push(v2APIPath)
   aliases.set(v2APIPath, BOOTSTRAP_FILE_NAME)
@@ -122,7 +132,7 @@ const createDirectory = async function ({
   ])
 
   if (runtimeAPIVersion === 2) {
-    addBootstrapFile(srcFiles, aliases)
+    await addBootstrapFile(srcFiles, aliases)
   }
 
   const symlinks = new Map<string, string>()
@@ -242,7 +252,7 @@ const createZipArchive = async function ({
   }
 
   if (runtimeAPIVersion === 2) {
-    addBootstrapFile(srcFiles, aliases)
+    await addBootstrapFile(srcFiles, aliases)
   }
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
