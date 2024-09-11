@@ -1,0 +1,4 @@
+{
+  "layers": [{ "name": "https://edge-function-layer-template.netlify.app/mod.ts", "flag": "edge-functions-layer-test" }],
+  "version": 1
+}

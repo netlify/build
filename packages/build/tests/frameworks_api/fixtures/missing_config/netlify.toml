@@ -1,0 +1,10 @@
+[build]
+command = "echo Hello"
+
+[[plugins]]
+package = "./plugin.js"
+
+[[redirects]]
+from = "/from"
+status = 200
+to = "/to"

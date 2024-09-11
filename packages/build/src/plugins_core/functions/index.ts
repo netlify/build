@@ -6,6 +6,7 @@ import { pathExists } from 'path-exists'
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
 
 import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
@@ -66,6 +67,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  frameworkFunctionsSrc,
   internalFunctionsSrc,
   isRunningLocally,
   logs,
@@ -90,7 +92,7 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
+    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     validateCustomRoutes(results)
@@ -116,6 +118,7 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  packagePath,
   logs,
   netlifyConfig,
   featureFlags,
@@ -127,13 +130,17 @@ const coreStep = async function ({
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrcExists = await pathExists(frameworkFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
-  const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
+  const [userFunctions = [], internalFunctions = [], frameworkFunctions = []] = await getUserAndInternalFunctions({
     featureFlags,
     functionsSrc,
     functionsSrcExists,
     internalFunctionsSrc,
     internalFunctionsSrcExists,
+    frameworkFunctionsSrc,
+    frameworkFunctionsSrcExists,
   })
 
   if (functionsSrc && !functionsSrcExists) {
@@ -151,9 +158,10 @@ const coreStep = async function ({
     userFunctionsSrcExists: functionsSrcExists,
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
+    frameworkFunctions,
   })
 
-  if (userFunctions.length === 0 && internalFunctions.length === 0) {
+  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
     return {}
   }
 
@@ -164,6 +172,7 @@ const coreStep = async function ({
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,
+    frameworkFunctionsSrc,
     internalFunctionsSrc,
     isRunningLocally,
     logs,
@@ -186,7 +195,12 @@ const coreStep = async function ({
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command
 // or plugins.
-const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+const hasFunctionsDirectories = async function ({
+  buildDir,
+  constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
+  featureFlags,
+  packagePath,
+}) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
@@ -195,7 +209,17 @@ const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNA
 
   const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
 
-  return await pathExists(internalFunctionsSrc)
+  if (await pathExists(internalFunctionsSrc)) {
+    return true
+  }
+
+  if (featureFlags.netlify_build_frameworks_api) {
+    const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+
+    return await pathExists(frameworkFunctionsSrc)
+  }
+
+  return false
 }
 
 export const bundleFunctions = {

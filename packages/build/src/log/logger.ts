@@ -3,11 +3,20 @@ import { createWriteStream } from 'fs'
 import figures from 'figures'
 import indentString from 'indent-string'
 
+import type { SystemLogger } from '../plugins_core/types.js'
+
 import { getHeader } from './header.js'
+import { OutputFlusher } from './output_flusher.js'
 import { serializeArray, serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
-export type BufferedLogs = { stdout: string[]; stderr: string[] }
+export type Logs = BufferedLogs | StreamedLogs
+export type BufferedLogs = { stdout: string[]; stderr: string[]; outputFlusher?: OutputFlusher }
+export type StreamedLogs = { outputFlusher?: OutputFlusher }
+
+export const logsAreBuffered = (logs: Logs | undefined): logs is BufferedLogs => {
+  return logs !== undefined && 'stdout' in logs
+}
 
 const INDENT_SIZE = 2
 
@@ -35,7 +44,7 @@ export const getBufferLogs = (config: { buffer?: boolean }): BufferedLogs | unde
 // This should be used instead of `console.log()` as it allows us to instrument
 // how any build logs is being printed.
 export const log = function (
-  logs: BufferedLogs | undefined,
+  logs: Logs | undefined,
   string: string,
   config: { indent?: boolean; color?: (string: string) => string } = {},
 ) {
@@ -44,10 +53,14 @@ export const log = function (
   const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  if (logs !== undefined) {
-    // `logs` is a stateful variable
+  if (logs && logs.outputFlusher) {
+    logs.outputFlusher.flush()
+  }
 
+  if (logsAreBuffered(logs)) {
+    // `logs` is a stateful variable
     logs.stdout.push(stringC)
+
     return
   }
 
@@ -153,7 +166,7 @@ export const getSystemLogger = function (
   debug: boolean,
   /** A system log file descriptor, if non is provided it will be a noop logger */
   systemLogFile?: number,
-): (...args: any[]) => void {
+): SystemLogger {
   // If the `debug` flag is used, we return a function that pipes system logs
   // to the regular logger, as the intention is for them to end up in stdout.
   if (debug) {
@@ -177,4 +190,17 @@ export const getSystemLogger = function (
   })
 
   return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
+}
+
+export const addOutputFlusher = (logs: Logs, outputFlusher: OutputFlusher): Logs => {
+  if (logsAreBuffered(logs)) {
+    return {
+      ...logs,
+      outputFlusher,
+    }
+  }
+
+  return {
+    outputFlusher,
+  }
 }

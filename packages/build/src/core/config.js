@@ -1,10 +1,10 @@
-import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
+import { resolveConfig, restoreConfig, updateConfig } from '@netlify/config'
 import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
 import { changeErrorType } from '../error/info.js'
-import { logBuildDir, logConfigPath, logConfig, logContext } from '../log/messages/config.js'
+import { logBuildDir, logConfig, logConfigPath, logContext } from '../log/messages/config.js'
 import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
 import { measureDuration } from '../time/main.js'
 import { getPackageJson } from '../utils/package.js'
@@ -27,6 +27,7 @@ export const getConfigOpts = function ({
   apiHost,
   token,
   siteId,
+  accountId,
   context,
   branch,
   baseRelDir,
@@ -50,6 +51,7 @@ export const getConfigOpts = function ({
     host: apiHost,
     token,
     siteId,
+    accountId,
     deployId,
     buildId,
     mode,
@@ -64,6 +66,7 @@ export const getConfigOpts = function ({
 const tLoadConfig = async function ({
   configOpts,
   cachedConfig,
+  defaultConfig,
   cachedConfigPath,
   envOpt,
   debug,
@@ -86,8 +89,7 @@ const tLoadConfig = async function ({
     siteInfo,
     env,
     integrations,
-  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath, featureFlags)
-
+  } = await resolveInitialConfig(configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags)
   if (!quiet) {
     logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
   }
@@ -120,8 +122,8 @@ export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
-const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath, featureFlags) {
-  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath, featureFlags })
+const resolveInitialConfig = async function (configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags) {
+  return await resolveConfig({ ...configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags })
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
@@ -138,9 +140,15 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-export const resolveUpdatedConfig = async function (configOpts, configMutations) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations, defaultConfig) {
   try {
-    return await resolveConfig({ ...configOpts, configMutations, debug: false })
+    const resolved = await resolveConfig({
+      ...configOpts,
+      configMutations,
+      defaultConfig,
+      debug: false,
+    })
+    return resolved
   } catch (error) {
     changeErrorType(error, 'resolveConfig', 'pluginValidation')
     throw error

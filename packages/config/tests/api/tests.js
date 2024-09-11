@@ -26,6 +26,17 @@ const SITE_INTEGRATIONS_RESPONSE = {
   ],
 }
 
+const TEAM_INSTALLATIONS_META_RESPONSE = {
+  path: '/team/account1/integrations/installations/meta/test',
+  response: [
+    {
+      slug: 'test',
+      version: 'so-cool',
+      has_build: true,
+    },
+  ],
+}
+
 const SITE_INTEGRATIONS_EMPTY_RESPONSE = {
   path: '/site/test/integrations/safe',
   response: [],
@@ -108,6 +119,15 @@ test('--site-id', async (t) => {
     .withFlags({ siteId: 'test' })
     .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
+})
+
+test('--account-id in offline and buildbot mode', async (t) => {
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
+    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+  const config = JSON.parse(output)
+
+  t.is(config.siteInfo.account_id, 'test-account')
 })
 
 test('NETLIFY_SITE_ID environment variable', async (t) => {
@@ -207,7 +227,6 @@ test('Integrations are returned if feature flag is true', async (t) => {
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
@@ -225,7 +244,6 @@ test('Integration specified in config is also returned if integration is availab
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_RESPONSE])
 
@@ -244,7 +262,6 @@ test('Integration specified in config is not returned if integration is not avai
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
@@ -260,7 +277,6 @@ test('In integration dev mode, integration specified in config is returned even 
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -280,7 +296,6 @@ test('In integration dev mode, integration specified in config is returned even 
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -299,7 +314,6 @@ test('In integration dev mode, integration specified in config is returned and b
     .withFlags({
       token: 'test',
       siteId: 'test',
-      featureFlags: { buildbot_fetch_integrations: true, cli_fetch_integrations: true },
       context: 'dev',
     })
     .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -313,14 +327,52 @@ test('In integration dev mode, integration specified in config is returned and b
   t.assert(config.integrations[0].version === undefined)
 })
 
-test('Integrations are returned if feature flag is true, mode buildbot', async (t) => {
+test('Integrations are not returned if offline', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      offline: true,
+      siteId: 'test',
+      mode: 'buildbot',
+    })
+    .runConfigServer([SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 0)
+})
+
+test('Integrations and account id are returned if feature flag is false and mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'buildbot',
-      featureFlags: { buildbot_fetch_integrations: true },
+      accountId: 'account1',
+      token: 'test',
     })
-    .runConfigServer([SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.is(config.integrations.length, 1)
+  t.is(config.integrations[0].slug, 'test')
+  t.is(config.integrations[0].version, 'so-cool')
+  t.is(config.integrations[0].has_build, true)
+
+  // account id is also available
+  t.assert(config.siteInfo)
+  t.is(config.siteInfo.account_id, 'account1')
+})
+
+test('Integrations are returned if feature flag is false and mode is dev', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'dev',
+      token: 'test',
+    })
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -331,20 +383,52 @@ test('Integrations are returned if feature flag is true, mode buildbot', async (
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations are not returned if offline', async (t) => {
+test('Integrations and account id are returned if flag is true for site and mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
-      offline: true,
       siteId: 'test',
       mode: 'buildbot',
-      featureFlags: { buildbot_fetch_integrations: true },
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        cli_integration_installations_meta: true,
+      },
     })
-    .runConfigServer([SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
   t.assert(config.integrations)
-  t.assert(config.integrations.length === 0)
+  t.is(config.integrations.length, 1)
+  t.is(config.integrations[0].slug, 'test')
+  t.is(config.integrations[0].version, 'so-cool')
+  t.is(config.integrations[0].has_build, true)
+
+  // account id is also available
+  t.assert(config.siteInfo)
+  t.is(config.siteInfo.account_id, 'account1')
+})
+
+test('Integrations are returned if flag is true for site and mode is dev', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'dev',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        cli_integration_installations_meta: true,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+
+  const config = JSON.parse(output)
+
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool')
+  t.assert(config.integrations[0].has_build === true)
 })
 
 test('baseRelDir is true if build.base is overridden', async (t) => {

@@ -6,7 +6,6 @@ import type { BuildFlags, BuildResult } from '../core/types.js'
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { getSystemLogger } from '../log/logger.js'
-import { CoreStep } from '../plugins_core/types.js'
 import { reportStatuses } from '../status/report.js'
 
 import { getSteps } from './get.js'
@@ -42,7 +41,7 @@ export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildFla
   }
 }
 
-const getBuildSteps = function (buildSteps: CoreStep[]) {
+const getBuildSteps = function (buildSteps: string[]) {
   const allSteps = getSteps([]).steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
@@ -109,6 +108,7 @@ const executeBuildStep = async function ({
 
   try {
     const { netlifyConfig: netlifyConfigA, configMutations } = await runBuildStep({
+      defaultConfig,
       netlifyConfig,
       buildDir,
       nodePath,
@@ -149,6 +149,7 @@ const executeBuildStep = async function ({
 }
 
 const runBuildStep = async function ({
+  defaultConfig,
   netlifyConfig,
   buildDir,
   nodePath,
@@ -171,6 +172,7 @@ const runBuildStep = async function ({
     nodePath,
     constants,
     netlifyConfig,
+    defaultConfig,
     logs,
     debug,
     timers: [],

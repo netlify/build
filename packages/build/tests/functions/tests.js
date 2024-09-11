@@ -1,10 +1,12 @@
-import { readdir, rm, stat, writeFile } from 'fs/promises'
-import { sep } from 'path'
+import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
+import { resolve } from 'path'
+import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import semver from 'semver'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -80,16 +82,31 @@ test('Functions: custom path on event-triggered function', async (t) => {
 })
 
 test('Functions: internal functions are cleared on the dev timeline', async (t) => {
-  const fixture = await new Fixture('./fixtures/internal_functions')
+  const fixture = await new Fixture('./fixtures/functions_leftover')
     .withFlags({ debug: false, timeline: 'dev' })
     .withCopyRoot()
-  const output = await fixture.runDev(() => {})
 
-  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/`), { code: 'ENOENT' })
-  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/`), { code: 'ENOENT' })
+  // Before starting Netlify Build, the leftover files should exist and the
+  // generated files should not.
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`)
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`), {
+    code: 'ENOENT',
+  })
 
-  t.true(output.includes('Cleaning up leftover files from previous builds'))
-  t.true(output.includes(`Cleaned up .netlify${sep}functions-internal, .netlify${sep}edge-functions`))
+  await fixture.runDev(() => {})
+
+  // After running Netlify Build, the leftover files should have been removed
+  // but the generated files should have been preserved.
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/functions-internal/leftover.mjs`), {
+    code: 'ENOENT',
+  })
+  await t.throwsAsync(() => stat(`${fixture.repositoryRoot}/.netlify/edge-functions/leftover.mjs`), { code: 'ENOENT' })
+  await stat(`${fixture.repositoryRoot}/.netlify/functions-internal/from-plugin.mjs`)
+  await stat(`${fixture.repositoryRoot}/.netlify/edge-functions/from-plugin.mjs`)
 })
 
 test('Functions: cleanup is only triggered when there are internal functions', async (t) => {
@@ -103,3 +120,87 @@ test('Functions: cleanup is only triggered when there are internal functions', a
   const output = await fixture.runDev(() => {})
   t.false(output.includes('Cleaning up leftover files from previous builds'))
 })
+
+// Targeting Node 16.7.0+ because these fixtures rely on `fs.cp()`.
+if (semver.gte(nodeVersion, '16.7.0')) {
+  test('Functions: loads functions generated with the Frameworks API', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
+      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withCopyRoot()
+
+    const output = await fixture.runWithBuild()
+    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+
+    t.true(functionsDist.includes('manifest.json'))
+    t.true(functionsDist.includes('server.zip'))
+    t.true(functionsDist.includes('user.zip'))
+
+    t.snapshot(normalizeOutput(output))
+  })
+
+  test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
+      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withCopyRoot()
+
+    const output = await fixture.runWithBuild()
+    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+
+    t.true(functionsDist.includes('manifest.json'))
+    t.true(functionsDist.includes('server.zip'))
+    t.true(functionsDist.includes('user.zip'))
+    t.true(functionsDist.includes('server-internal.zip'))
+
+    const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
+    const { functions } = JSON.parse(manifest)
+
+    t.is(functions.length, 5)
+
+    // The Frameworks API takes precedence over the legacy internal directory.
+    const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
+    t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
+
+    // User code takes precedence over the Frameworks API.
+    const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
+    t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
+
+    t.snapshot(normalizeOutput(output))
+  })
+}
+
+// pnpm is not available in Node 14.
+if (semver.gte(nodeVersion, '16.9.0')) {
+  test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
+    const app1 = await fixture
+      .withFlags({
+        cwd: fixture.repositoryRoot,
+        featureFlags: { netlify_build_frameworks_api: true },
+        packagePath: 'apps/app-1',
+      })
+      .runWithBuildAndIntrospect()
+
+    t.true(app1.success)
+
+    const app2 = await fixture
+      .withFlags({
+        cwd: fixture.repositoryRoot,
+        featureFlags: { netlify_build_frameworks_api: true },
+        packagePath: 'apps/app-2',
+      })
+      .runWithBuildAndIntrospect()
+
+    t.true(app2.success)
+
+    const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
+    t.is(app1FunctionsDist.length, 2)
+    t.true(app1FunctionsDist.includes('manifest.json'))
+    t.true(app1FunctionsDist.includes('server.zip'))
+
+    const app2FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-2/.netlify/functions'))
+    t.is(app2FunctionsDist.length, 3)
+    t.true(app2FunctionsDist.includes('manifest.json'))
+    t.true(app2FunctionsDist.includes('server.zip'))
+    t.true(app2FunctionsDist.includes('worker.zip'))
+  })
+}

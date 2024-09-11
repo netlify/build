@@ -2,9 +2,12 @@ import * as fs from 'fs/promises'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
+import getPort from 'get-port'
 import tmp, { tmpName } from 'tmp-promise'
+
+import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -196,18 +199,12 @@ test('Trusted plugins are passed featureflags and system log', async (t) => {
     t.true(systemLog.includes(expectedSystemLogs))
   }
 
-  t.true(
-    output.includes(
-      JSON.stringify({
-        buildbot_zisi_trace_nft: false,
-        buildbot_zisi_esbuild_parser: false,
-        buildbot_zisi_system_log: false,
-        edge_functions_cache_cli: false,
-        edge_functions_system_logger: false,
-        test_flag: true,
-      }),
-    ),
-  )
+  const expectedFlags = {
+    ...DEFAULT_FEATURE_FLAGS,
+    test_flag: true,
+  }
+
+  t.true(output.includes(JSON.stringify(expectedFlags)))
 
   const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
     .withFlags({
@@ -343,4 +340,64 @@ test('Does not transpile already transpiled local plugins', async (t) => {
 test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
   const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('Plugin events that do not emit to stderr/stdout are hidden from the logs', async (t) => {
+  const output = await new Fixture('./fixtures/mixed_events')
+    .withFlags({ debug: false, featureFlags: { netlify_build_reduced_output: true } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Plugin errors that occur during the loading phase are piped to system logs', async (t) => {
+  const systemLogFile = await tmp.file()
+  const output = await new Fixture('./fixtures/syntax_error')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_reduced_output: true, netlify_build_plugin_system_log: true },
+      systemLogFile: systemLogFile.fd,
+    })
+    .runWithBuild()
+
+  if (platform !== 'win32') {
+    const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+
+    t.is(systemLog.trim(), `Plugin failed to initialize during the "load" phase: An error message thrown by Node.js`)
+  }
+
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Plugins have a pre-populated Blobs context', async (t) => {
+  const serverPort = await getPort()
+  const deployId = 'deploy123'
+  const siteId = 'site321'
+  const token = 'some-token'
+  const { scheme, host, stopServer } = await startServer(
+    [
+      {
+        response: { url: `http://localhost:${serverPort}/some-signed-url` },
+        path: `/api/v1/blobs/${siteId}/deploy:${deployId}/my-key`,
+      },
+      {
+        response: 'Hello there',
+        path: `/some-signed-url`,
+      },
+    ],
+    serverPort,
+  )
+
+  const { netlifyConfig } = await new Fixture('./fixtures/blobs_read')
+    .withFlags({
+      apiHost: host,
+      deployId,
+      testOpts: { scheme },
+      siteId,
+      token,
+    })
+    .runWithBuildAndIntrospect()
+
+  await stopServer()
+
+  t.is(netlifyConfig.build.command, `echo ""Hello there""`)
 })

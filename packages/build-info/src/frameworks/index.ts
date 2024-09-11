@@ -1,3 +1,4 @@
+import { Analog } from './analog.js'
 import { Angular } from './angular.js'
 import { Assemble } from './assemble.js'
 import { Astro } from './astro.js'
@@ -22,6 +23,7 @@ import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
 import { Next } from './next.js'
 import { Nuxt } from './nuxt.js'
+import { Observable } from './observable.js'
 import { Parcel } from './parcel.js'
 import { Phenomic } from './phenomic.js'
 import { Quasar } from './quasar.js'
@@ -45,7 +47,7 @@ import { WMR } from './wmr.js'
 import { Zola } from './zola.js'
 
 export const frameworks = [
-  // Static site generators
+  // Static site generators / meta frameworks
   Astro,
   Docusaurus,
   Eleventy,
@@ -76,6 +78,8 @@ export const frameworks = [
   Wintersmith,
   Cecil,
   Zola,
+  Observable,
+  Analog,
 
   // Front-end frameworks
   Angular,

@@ -7,12 +7,13 @@ export class Angular extends BaseFramework implements Framework {
   name = 'Angular'
   configFiles = ['angular.json']
   npmDependencies = ['@angular/cli']
+  excludedNpmDependencies = ['@analogjs/platform']
   category = Category.FrontendFramework
 
   dev = {
     port: 4200,
     command: 'ng serve',
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

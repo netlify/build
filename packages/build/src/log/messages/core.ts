@@ -7,6 +7,7 @@ import { roundTimerToMillisecs } from '../../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
 import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, BufferedLogs } from '../logger.js'
+import { OutputFlusher } from '../output_flusher.js'
 import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
@@ -29,13 +30,17 @@ export const logBuildError = function ({ error, netlifyConfig, logs, debug }) {
 
 export const logBuildSuccess = function (logs) {
   logHeader(logs, 'Netlify Build Complete')
-  logMessage(logs, '')
 }
 
-export const logTimer = function (logs, durationNs, timerName, systemLog) {
+export const logTimer = function (logs, durationNs, timerName, systemLog, outputFlusher?: OutputFlusher) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
-  log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
+
+  if (!outputFlusher || outputFlusher.flushed) {
+    log(logs, '')
+    log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
+  }
+
   systemLog(`Build step duration: ${timerName} completed in ${durationMs}ms`)
 }
 

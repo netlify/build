@@ -10,7 +10,7 @@ export class Expo extends BaseFramework implements Framework {
   dev = {
     command: 'expo start --web',
     port: 19006,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

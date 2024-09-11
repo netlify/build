@@ -21,9 +21,8 @@ export type CoreStepFunctionArgs = {
   quiet?: boolean
   debug?: boolean
   logs?: BufferedLogs
-  systemLog?: (message: unknown) => void
+  systemLog: SystemLogger
   edgeFunctionsBootstrapURL?: string
-  // systemLog(...args: any[]): void
   featureFlags?: Record<string, any>
 
   netlifyConfig: NetlifyConfig
@@ -35,7 +34,7 @@ export type CoreStepFunctionArgs = {
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
 export type CoreStepCondition = (args: CoreStepFunctionArgs) => Promise<boolean> | boolean
 
-type Event = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onPreDev' | 'onDev' | 'onPostDev'
+export type Event = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onPreDev' | 'onDev' | 'onPostDev'
 
 export type CoreStep = {
   event: Event
@@ -43,5 +42,8 @@ export type CoreStep = {
   coreStepId: string
   coreStepName: string
   coreStepDescription: () => string
-  condition: CoreStepCondition
+  condition?: CoreStepCondition
+  quiet?: boolean
 }
+
+export type SystemLogger = (...args: any[]) => void

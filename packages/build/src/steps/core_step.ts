@@ -1,5 +1,6 @@
 import { setEnvChanges } from '../env/changes.js'
 import { addErrorInfo, isBuildError } from '../error/info.js'
+import { addOutputFlusher } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
@@ -26,6 +27,7 @@ export const fireCoreStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -37,7 +39,10 @@ export const fireCoreStep = async function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
+  outputFlusher,
 }) {
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
+
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
@@ -55,12 +60,13 @@ export const fireCoreStep = async function ({
       packagePath,
       buildbotServerSocket,
       events,
-      logs,
+      logs: logsA,
       quiet,
       context,
       branch,
       childEnv: childEnvA,
       netlifyConfig,
+      defaultConfig,
       nodePath,
       configMutations,
       headersPath,
@@ -82,13 +88,15 @@ export const fireCoreStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      defaultConfig,
       headersPath,
       redirectsPath,
       configMutations,
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
+      systemLog,
       debug,
     })
     return {

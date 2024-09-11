@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 import _pEvery from 'p-every'
-import { PackageJson } from 'read-pkg-up'
+import { PackageJson } from 'read-package-up'
 import semver from 'semver'
 
 import { importJsonFile } from '../utils/json.js'
@@ -76,7 +76,7 @@ const siteDependencyTest = async function ({
 
   // if this is a valid version we can apply the rule directly
   if (semver.clean(siteDependency) !== null) {
-    return semver.satisfies(siteDependency, allowedVersion)
+    return semver.satisfies(siteDependency, allowedVersion, { includePrerelease: true })
   }
 
   try {

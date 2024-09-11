@@ -11,6 +11,7 @@ import { runStep } from './run_step.js'
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 export const runSteps = async function ({
+  defaultConfig,
   steps,
   buildbotServerSocket,
   events,
@@ -83,6 +84,7 @@ export const runSteps = async function ({
         loadedFrom,
         origin,
         condition,
+        quiet: coreStepQuiet,
       },
     ) => {
       const {
@@ -105,6 +107,7 @@ export const runSteps = async function ({
         coreStepId,
         coreStepName,
         coreStepDescription,
+        coreStepQuiet,
         pluginPackageJson,
         loadedFrom,
         origin,
@@ -132,6 +135,7 @@ export const runSteps = async function ({
         error,
         failedPlugins,
         configOpts,
+        defaultConfig,
         netlifyConfig: netlifyConfigA,
         configMutations,
         headersPath: headersPathA,

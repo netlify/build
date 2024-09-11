@@ -1,5 +1,4 @@
 import { logTimer } from '../log/messages/core.js'
-import { logStepSuccess } from '../log/messages/steps.js'
 
 import { handleStepError } from './error.js'
 
@@ -22,6 +21,7 @@ export const getStepReturn = function ({
   headersPath,
   redirectsPath,
   logs,
+  outputFlusher,
   debug,
   timers,
   durationNs,
@@ -48,9 +48,7 @@ export const getStepReturn = function ({
   }
 
   if (!quiet) {
-    logStepSuccess(logs)
-
-    logTimer(logs, durationNs, timerName, systemLog)
+    logTimer(logs, durationNs, timerName, systemLog, outputFlusher)
   }
 
   return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers, metrics }

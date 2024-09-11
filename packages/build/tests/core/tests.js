@@ -79,10 +79,7 @@ test('Event handlers are called', async (t) => {
 
 test('Event handlers with description are called', async (t) => {
   let flag = false
-  const {
-    success,
-    logs: { stdout },
-  } = await new Fixture('./fixtures/empty')
+  const { success } = await new Fixture('./fixtures/empty')
     .withFlags({
       eventHandlers: {
         onPostBuild: {
@@ -99,7 +96,6 @@ test('Event handlers with description are called', async (t) => {
 
   t.true(success)
   t.true(flag)
-  t.true(stdout.join('\n').includes('Test onPostBuild'))
 })
 
 test('Event handlers do not displace plugin methods', async (t) => {

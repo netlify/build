@@ -9,7 +9,7 @@ export class WMR extends BaseFramework implements Framework {
   dev = {
     command: 'wmr',
     port: 8080,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

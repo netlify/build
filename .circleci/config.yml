@@ -34,7 +34,7 @@ workflows:
 executors:
   node:
     docker:
-      - image: cimg/node:18.10.0
+      - image: cimg/node:18.20.3
   windows:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -42,7 +42,7 @@ executors:
     shell: powershell.exe -ExecutionPolicy Bypass
   linux:
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2004:2024.04.4
     resource_class: large
   macos:
     resource_class: macos.x86.medium.gen2 # new generation resources
@@ -61,6 +61,7 @@ commands:
           keys:
             - npm-{{ arch }}-v1-{{ checksum "package-lock.json" }}
             - npm-{{ arch }}-v1
+      - run: curl -fsSL https://deno.land/install.sh | sh -s -- v1.42.3
       - run: << parameters.command >>
       - save_cache:
           key: npm-{{ arch }}-v1-{{ checksum "package-lock.json" }}

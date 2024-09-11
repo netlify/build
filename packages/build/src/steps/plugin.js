@@ -1,5 +1,9 @@
+import { context, propagation } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../error/info.js'
+import { addOutputFlusher } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
+import { getStandardStreams } from '../log/output_flusher.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
 import { callChild } from '../plugins/ipc.js'
 import { getSuccessStatus } from '../status/success.js'
@@ -22,6 +26,7 @@ export const firePluginStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -29,11 +34,19 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  outputFlusher,
+  systemLog,
   featureFlags,
   debug,
   verbose,
 }) {
-  const listeners = pipePluginOutput(childProcess, logs)
+  const standardStreams = getStandardStreams(outputFlusher)
+  const listeners = pipePluginOutput(childProcess, logs, standardStreams)
+
+  const otelCarrier = {}
+  propagation.inject(context.active(), otelCarrier)
+
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -51,8 +64,9 @@ export const firePluginStep = async function ({
         featureFlags: isTrustedPlugin(pluginPackageJson?.name) ? featureFlags : undefined,
         netlifyConfig,
         constants,
+        otelCarrier,
       },
-      logs,
+      logs: logsA,
       verbose,
     })
     const {
@@ -63,6 +77,7 @@ export const firePluginStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      defaultConfig,
       headersPath,
       packagePath,
       redirectsPath,
@@ -70,8 +85,10 @@ export const firePluginStep = async function ({
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
+      systemLog,
       debug,
+      source: packageName,
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
@@ -91,7 +108,7 @@ export const firePluginStep = async function ({
     })
     return { newError }
   } finally {
-    await unpipePluginOutput(childProcess, logs, listeners)
+    await unpipePluginOutput(childProcess, logs, listeners, standardStreams)
     logStepCompleted(logs, verbose)
   }
 }

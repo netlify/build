@@ -11,17 +11,13 @@ test('Build removes blobs directory before starting', async (t) => {
 
   await t.notThrowsAsync(access(blobsDir))
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture
+  const { success } = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
     })
     .runBuildProgrammatic()
 
   t.true(success)
-  t.true(stdout.join('\n').includes('Cleaning up leftover files from previous builds'))
 
   await t.throwsAsync(access(blobsDir))
 })
@@ -51,10 +47,7 @@ test('monorepo > Build removes blobs directory before starting', async (t) => {
   const blobsDir = join(fixture.repositoryRoot, 'apps/app-1/.netlify/blobs/deploy')
   await t.notThrowsAsync(access(blobsDir))
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture
+  const { success } = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-1',
@@ -62,7 +55,6 @@ test('monorepo > Build removes blobs directory before starting', async (t) => {
     .runBuildProgrammatic()
 
   t.true(success)
-  t.true(stdout.join('\n').includes('Cleaning up leftover files from previous builds'))
 
   await t.throwsAsync(access(blobsDir))
 })

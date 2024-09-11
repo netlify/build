@@ -206,7 +206,7 @@ test.each(testMatrixBaggageFile)('Tracing baggage loading - $description', async
   let filePath = input.baggageFilePath
   if (typeof input.baggageFilePath === 'string' && input.baggageFilePath.length > 0) {
     filePath = `${baggagePath}/${input.baggageFilePath}`
-    await writeFile(filePath, input.baggageFileContent)
+    await writeFile(filePath, input?.baggageFileContent || '')
   }
 
   const attributes = await loadBaggageFromFile(filePath)

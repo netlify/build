@@ -16,6 +16,7 @@ export type PluginsOptions = {
   loadedFrom: PluginsLoadedFrom
   origin: 'config' | string
   inputs: Record<string, any>
+  pluginPackageJson?: Record<string, any>
 }
 
 /**
@@ -90,9 +91,9 @@ const addPluginNodeVersion = async function ({
     logWarning(
       logs,
       `  We're upgrading our system node version on that day, which means the plugin cannot be executed with your defined Node.js version ${userNodeVersion}.
-        
+
   Please make sure your plugin supports being run on Node.js 20.
-  
+
   Read more about our minimum required version in our ${link(
     'forums announcement',
     'https://answers.netlify.com/t/build-plugin-update-system-node-js-version-upgrade-to-20/108633',
@@ -131,7 +132,7 @@ const addPluginNodeVersion = async function ({
   logWarning(
     logs,
     `  The plugin cannot be executed with your defined Node.js version ${userNodeVersion}
-  
+
   Read more about our minimum required version in our ${link(
     'forums announcement',
     'https://answers.netlify.com/t/build-plugins-dropping-support-for-node-js-12/79421',
