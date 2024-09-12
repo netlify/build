@@ -44,18 +44,14 @@ export class Hydrogen extends BaseFramework implements Framework {
     if (this.detected) {
       const viteDetection = await this.detectConfigFile(VITE_CONFIG_FILES)
       if (viteDetection) {
-        // This site will otherwise get detected as both Remix (Vite) and Hydrogen (Vite). There is no other mechanism
-        // we can use to prioritize Hydrogen. TODO(serhalp) Add more fine-grained levels to `Accuracy`, such as
-        // `Framework`, `MetaFramework`, and `MetaMetaFramework`?
-        this.detected = { ...viteDetection, accuracy: Accuracy.Forced }
+        this.detected = viteDetection
         this.dev = VITE_DEV
         this.build = VITE_BUILD
         return this as DetectedFramework
       }
       const classicCompilerDetection = await this.detectConfigFile(CLASSIC_COMPILER_CONFIG_FILES)
       if (classicCompilerDetection) {
-        // See comment above.
-        this.detected = { ...classicCompilerDetection, accuracy: Accuracy.Forced }
+        this.detected = classicCompilerDetection
         this.dev = CLASSIC_COMPILER_DEV
         this.build = CLASSIC_COMPILER_BUILD
         return this as DetectedFramework

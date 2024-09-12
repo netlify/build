@@ -42,6 +42,7 @@ export class Remix extends BaseFramework implements Framework {
     '@remix-run/netlify',
     '@remix-run/netlify-edge',
   ]
+  excludedNpmDependencies = ['@shopify/hydrogen']
   category = Category.SSG
 
   logo = {
