@@ -22,6 +22,8 @@ const VITE_DEV = {
   port: 5173,
 }
 const VITE_BUILD = {
+  // This should be `shopify hydrogen build` but we use this as a workaround for
+  // https://github.com/Shopify/hydrogen/issues/2496 and https://github.com/Shopify/hydrogen/issues/2497.
   command: 'remix vite:build',
   directory: 'dist/client',
 }
