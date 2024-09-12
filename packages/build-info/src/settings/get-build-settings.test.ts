@@ -71,7 +71,7 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
       baseDirectory: '', // nx needs to be run from the root
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
-      dist: join('dist/packages/website'),
+      dist: join('dist/packages/website/.next'),
       frameworkPort: 4200,
     }),
   ])
@@ -379,7 +379,7 @@ describe.each([
           packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: platformJoin('dist/packages/website'),
+          dist: platformJoin('dist/packages/website/.next'),
         }),
       ])
     })
@@ -395,7 +395,7 @@ describe.each([
           packagePath: platformJoin('packages/website'),
           buildCommand: 'nx run website:build',
           devCommand: 'nx run website:serve',
-          dist: platformJoin('dist/packages/website'),
+          dist: platformJoin('dist/packages/website/.next'),
         }),
       ])
     })
