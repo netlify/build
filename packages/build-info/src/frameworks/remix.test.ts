@@ -7,8 +7,7 @@ import { Project } from '../project.js'
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
-
-test.each([
+;[
   [
     'with origin SSR',
     {
@@ -36,7 +35,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with edge SSR',
     {
@@ -65,9 +64,9 @@ test.each([
         },
       }),
     },
-  ],
-])('detects a Remix Vite site %s', (_, files) => {
-  test(async ({ fs }) => {
+  ] as const,
+].forEach(([description, files]) =>
+  test(`detects a Remix Vite site ${description}`, async ({ fs }) => {
     const cwd = mockFileSystem(files)
     const detected = await new Project(fs, cwd).detectFrameworks()
 
@@ -79,10 +78,9 @@ test.each([
     expect(detected?.[0]?.build?.directory).toBe('build/client')
     expect(detected?.[0]?.dev?.command).toBe('remix vite:dev')
     expect(detected?.[0]?.dev?.port).toBe(5173)
-  })
-})
-
-test.each([
+  }),
+)
+;[
   [
     'with origin SSR',
     {
@@ -109,7 +107,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with edge SSR',
     {
@@ -137,7 +135,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with origin SSR via our legacy packages',
     {
@@ -163,7 +161,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with edge SSR via our legacy packages',
     {
@@ -189,7 +187,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with origin SSR and the legacy remix package',
     {
@@ -212,7 +210,7 @@ test.each([
         },
       }),
     },
-  ],
+  ] as const,
   [
     'with edge SSR and the legacy remix package',
     {
@@ -235,9 +233,9 @@ test.each([
         },
       }),
     },
-  ],
-])('detects a Remix Classic Compiler site %s', (_, files) => {
-  test(async ({ fs }) => {
+  ] as const,
+].forEach(([description, files]) =>
+  test(`detects a Remix Classic Compiler site ${description}`, async ({ fs }) => {
     const cwd = mockFileSystem(files)
     const detected = await new Project(fs, cwd).detectFrameworks()
 
@@ -249,8 +247,8 @@ test.each([
     expect(detected?.[0]?.build?.directory).toBe('public')
     expect(detected?.[0]?.dev?.command).toBe('remix watch')
     expect(detected?.[0]?.dev?.port).toBeUndefined()
-  })
-})
+  }),
+)
 
 test('does not detect an invalid Remix site with no config file', async ({ fs }) => {
   const cwd = mockFileSystem({
