@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  e2e: netlify/e2e@1
+
 workflows:
   release:
     jobs:
@@ -30,6 +33,18 @@ workflows:
   'Test & Check 🕵️‍♀️':
     jobs:
       - formatting
+      - e2e/test:
+          context: [shared-secrets, clone-repo, netlify-e2e]
+          config_yml: |
+            links:
+              - repo: netlify/build
+                branch: << pipeline.git.branch >>
+                packages:
+                  '@netlify/config': packages/config
+                  '@netlify/build': packages/build
+                  '@netlify/build-info': packages/build-info
+                installCommands:
+                  - npm run build
 
 executors:
   node:
