@@ -64,6 +64,14 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.14.2](https://github.com/netlify/build/compare/build-info-v7.14.1...build-info-v7.14.2) (2024-09-13)
+
+
+### Bug Fixes
+
+* **build-info:** fix detection of Remix and Hydrogen sites ([#5820](https://github.com/netlify/build/issues/5820)) ([d7c8400](https://github.com/netlify/build/commit/d7c8400d5cea8b9774b05a7d90b98a313e6ce421))
+* fix the publish directory for next.js ([#5502](https://github.com/netlify/build/issues/5502)) ([b0740ba](https://github.com/netlify/build/commit/b0740ba1bacf58d9b909efab8a37641c0f992a37))
+
 ## [7.14.1](https://github.com/netlify/build/compare/build-info-v7.14.0...build-info-v7.14.1) (2024-07-11)
 
 
