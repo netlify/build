@@ -1,4 +1,4 @@
-import { Accuracy, BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 const CLASSIC_COMPILER_CONFIG_FILES = ['remix.config.js']
 const CLASSIC_COMPILER_DEV = {
