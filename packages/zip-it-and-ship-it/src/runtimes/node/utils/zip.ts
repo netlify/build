@@ -129,7 +129,7 @@ const createDirectory = async function ({
     addBootstrapFile(srcFiles, aliases)
   }
 
-  const symlinks = new Map<string, string>()
+  const symlinks = new Map<string, Set<string>>()
 
   // Copying source files.
   await pMap(
@@ -156,7 +156,8 @@ const createDirectory = async function ({
       if (stat.isSymbolicLink()) {
         const targetPath = await readLink(srcFile)
 
-        symlinks.set(targetPath, absoluteDestPath)
+        // Two symlinks may point at the same target path, so keep a list of symlinks to create.
+        symlinks.set(targetPath, (symlinks.get(targetPath) ?? new Set()).add(absoluteDestPath))
 
         return
       }
@@ -168,9 +169,11 @@ const createDirectory = async function ({
 
   await pMap(
     [...symlinks.entries()],
-    async ([target, path]) => {
-      await mkdir(dirname(path), { recursive: true })
-      await symlink(target, path)
+    async ([target, paths]) => {
+      for (const path of paths) {
+        await mkdir(dirname(path), { recursive: true })
+        await symlink(target, path)
+      }
     },
     {
       concurrency: COPY_FILE_CONCURRENCY,
