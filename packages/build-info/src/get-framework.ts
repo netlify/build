@@ -14,6 +14,9 @@ export async function getFramework(frameworkId: FrameworkName, project: Project)
     if (detected) {
       return detected
     }
+
+    // this indicate that framework's custom "detect" method doesn't honor the forced framework
+    throw new Error(`Forced framework "${frameworkId}" was not detected.`)
   }
 
   const frameworkIds = frameworkList
