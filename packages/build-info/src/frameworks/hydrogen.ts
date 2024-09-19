@@ -44,12 +44,12 @@ export class Hydrogen extends BaseFramework implements Framework {
   async detect(): Promise<DetectedFramework | undefined> {
     await super.detect()
 
-    if (this.detected?.configName) {
-      if (VITE_CONFIG_FILES.includes(this.detected.configName)) {
+    if (this.detected) {
+      if (this.detected.configName && VITE_CONFIG_FILES.includes(this.detected.configName)) {
         this.dev = VITE_DEV
         this.build = VITE_BUILD
         return this as DetectedFramework
-      } else if (CLASSIC_COMPILER_CONFIG_FILES.includes(this.detected.configName)) {
+      } else {
         this.dev = CLASSIC_COMPILER_DEV
         this.build = CLASSIC_COMPILER_BUILD
         return this as DetectedFramework

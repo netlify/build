@@ -234,6 +234,28 @@ beforeEach((ctx) => {
       }),
     },
   ] as const,
+  [
+    'with no config file',
+    {
+      'package.json': JSON.stringify({
+        scripts: {
+          build: 'remix build',
+          dev: 'remix dev',
+          start: 'netlify serve',
+          typecheck: 'tsc',
+        },
+        dependencies: {
+          '@remix-run/netlify-edge': '1.7.4',
+          remix: '1.7.4',
+          react: '18.2.0',
+          'react-dom': '18.2.0',
+        },
+        devDependencies: {
+          '@netlify/functions': '^1.0.0',
+        },
+      }),
+    },
+  ] as const,
 ].forEach(([description, files]) =>
   test(`detects a Remix Classic Compiler site ${description}`, async ({ fs }) => {
     const cwd = mockFileSystem(files)
@@ -249,35 +271,3 @@ beforeEach((ctx) => {
     expect(detected?.[0]?.dev?.port).toBeUndefined()
   }),
 )
-
-test('does not detect an invalid Remix site with no config file', async ({ fs }) => {
-  const cwd = mockFileSystem({
-    'package.json': JSON.stringify({
-      scripts: {
-        build: 'remix vite:build',
-        dev: 'remix vite:dev',
-        start: 'remix-serve ./build/server/index.js',
-      },
-      dependencies: {
-        '@netlify/remix-runtime': '^2.3.0',
-        '@remix-run/node': '^2.9.2',
-        '@remix-run/react': '^2.9.2',
-        '@remix-run/serve': '^2.9.2',
-        react: '^18.2.0',
-        'react-dom': '^18.2.0',
-      },
-      devDependencies: {
-        '@netlify/remix-edge-adapter': '^3.3.0',
-        '@remix-run/dev': '^2.9.2',
-        '@types/react': '^18.2.20',
-        '@types/react-dom': '^18.2.7',
-        vite: '^5.0.0',
-        'vite-tsconfig-paths': '^4.2.1',
-      },
-    }),
-  })
-  const detected = await new Project(fs, cwd).detectFrameworks()
-
-  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
-  expect(detectedFrameworks).not.toContain('remix')
-})
