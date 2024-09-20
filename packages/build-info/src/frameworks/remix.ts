@@ -43,6 +43,7 @@ export class Remix extends BaseFramework implements Framework {
     '@remix-run/netlify-edge',
   ]
   excludedNpmDependencies = ['@shopify/hydrogen']
+  configFiles = [...VITE_CONFIG_FILES, ...CLASSIC_COMPILER_CONFIG_FILES]
   category = Category.SSG
 
   logo = {
@@ -55,22 +56,15 @@ export class Remix extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      const viteDetection = await this.detectConfigFile(VITE_CONFIG_FILES)
-      if (viteDetection) {
-        this.detected = viteDetection
+      if (this.detected.configName && VITE_CONFIG_FILES.includes(this.detected.configName)) {
         this.dev = VITE_DEV
         this.build = VITE_BUILD
         return this as DetectedFramework
-      }
-      const classicCompilerDetection = await this.detectConfigFile(CLASSIC_COMPILER_CONFIG_FILES)
-      if (classicCompilerDetection) {
-        this.detected = classicCompilerDetection
+      } else {
         this.dev = CLASSIC_COMPILER_DEV
         this.build = CLASSIC_COMPILER_BUILD
         return this as DetectedFramework
       }
-      // If neither config file exists, it can't be a valid Remix site for Netlify anyway.
-      return
     }
   }
 }

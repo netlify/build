@@ -205,6 +205,26 @@ describe('detection merging', () => {
       ]),
     ).toMatchObject({ accuracy: Accuracy.NPM, package: { name: 'a' } })
   })
+
+  test('keeps information about config and dependency from the most accurate detection that has it', () => {
+    expect(
+      mergeDetections([
+        undefined,
+        { accuracy: Accuracy.Config, config: '/absolute/path/config.js', configName: 'config.js' },
+        { accuracy: Accuracy.NPMHoisted, package: { name: 'b' } },
+        { accuracy: Accuracy.Forced },
+        { accuracy: Accuracy.NPM, package: { name: 'a' } },
+      ]),
+    ).toMatchObject({
+      // set by highest accuracy detection
+      accuracy: Accuracy.Forced,
+      // provided by the NPM detection - preferred over package provided by NPMHoisted
+      package: { name: 'a' },
+      // provided by the Config detection
+      config: '/absolute/path/config.js',
+      configName: 'config.js',
+    })
+  })
 })
 
 describe('framework sorting based on accuracy and type', () => {

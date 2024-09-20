@@ -1,7 +1,8 @@
-import { test, expect, beforeEach } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest'
 
 import { mockFileSystem } from '../tests/mock-file-system.js'
 
+import { frameworks } from './frameworks/index.js'
 import { getFramework } from './get-framework.js'
 import { NodeFS } from './node/file-system.js'
 import { Project } from './project.js'
@@ -51,4 +52,18 @@ test('should throw if a unknown framework was requested', async ({ fs }) => {
     expect(frameworksArray).toEqual([...frameworksArray].sort())
   }
   expect.assertions(1)
+})
+
+describe('Framework detection honors forced framework', () => {
+  for (const Framework of frameworks) {
+    test(Framework.name, async ({ fs }) => {
+      const cwd = mockFileSystem({})
+      const project = new Project(fs, cwd)
+      const framework = new Framework(project)
+
+      const detectedFramework = await getFramework(framework.id, project)
+
+      expect(detectedFramework.id).toBe(framework.id)
+    })
+  }
 })

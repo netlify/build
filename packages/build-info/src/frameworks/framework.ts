@@ -33,8 +33,10 @@ export type Detection = {
   /** The NPM package that was able to detect it (high accuracy) */
   package?: { name: string; version?: SemVer }
   packageJSON?: PackageJson
-  /** The config file that is associated with the framework */
+  /** The absolute path to config file that is associated with the framework */
   config?: string
+  /** The name of config file that is associated with the framework */
+  configName?: string
 }
 
 export type FrameworkInfo = ReturnType<Framework['toJSON']>
@@ -140,11 +142,26 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
   return sort
 }
 
-/** Merges a list of detection results based on accuracy to get the one with the highest accuracy */
+/** Merges a list of detection results based on accuracy to get the one with the highest accuracy that still contains information provided by all other detections */
 export function mergeDetections(detections: Array<Detection | undefined>): Detection | undefined {
-  return detections
-    .filter(Boolean)
-    .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))?.[0]
+  const definedDetections = detections
+    .filter(function isDetection(d): d is Detection {
+      return Boolean(d)
+    })
+    .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))
+
+  if (definedDetections.length === 0) {
+    return
+  }
+
+  return definedDetections.slice(1).reduce((merged, detection) => {
+    merged.config = merged.config ?? detection.config
+    merged.configName = merged.configName ?? detection.configName
+    merged.package = merged.package ?? detection.package
+    merged.packageJSON = merged.packageJSON ?? detection.packageJSON
+
+    return merged
+  }, definedDetections[0])
 }
 
 export abstract class BaseFramework implements Framework {
@@ -277,6 +294,7 @@ export abstract class BaseFramework implements Framework {
           // otherwise the npm dependency should have already triggered the detection
           accuracy: this.npmDependencies.length === 0 ? Accuracy.ConfigOnly : Accuracy.Config,
           config,
+          configName: this.project.fs.basename(config),
         }
       }
     }
@@ -289,14 +307,14 @@ export abstract class BaseFramework implements Framework {
    * - if `configFiles` is set, one of the files must exist
    */
   async detect(): Promise<DetectedFramework | undefined> {
-    // we can force frameworks as well
-    if (this.detected?.accuracy === Accuracy.Forced) {
-      return this as DetectedFramework
-    }
-
     const npm = await this.detectNpmDependency()
     const config = await this.detectConfigFile(this.configFiles ?? [])
-    this.detected = mergeDetections([npm, config])
+    this.detected = mergeDetections([
+      // we can force frameworks as well
+      this.detected?.accuracy === Accuracy.Forced ? this.detected : undefined,
+      npm,
+      config,
+    ])
 
     if (this.detected) {
       return this as DetectedFramework
