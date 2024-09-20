@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.14.3](https://github.com/netlify/build/compare/build-info-v7.14.2...build-info-v7.14.3) (2024-09-20)
+
+
+### Bug Fixes
+
+* honor forced framework for Remix and Hydrogen ([#5837](https://github.com/netlify/build/issues/5837)) ([938adbd](https://github.com/netlify/build/commit/938adbd0815cf0cf4c4c89b3d6766046d378748a))
+
 ## [7.14.2](https://github.com/netlify/build/compare/build-info-v7.14.1...build-info-v7.14.2) (2024-09-13)
 
 
