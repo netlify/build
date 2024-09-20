@@ -22,6 +22,11 @@ export class RedwoodJS extends BaseFramework implements Framework {
     directory: 'web/dist',
   }
 
+  env = {
+    AWS_LAMBDA_JS_RUNTIME: 'nodejs20.x',
+    NODE_VERSION: '20',
+  }
+
   logo = {
     default: '/logos/redwoodjs/default.svg',
     light: '/logos/redwoodjs/default.svg',

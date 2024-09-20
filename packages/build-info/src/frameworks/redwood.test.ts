@@ -99,4 +99,6 @@ test('should detect redwood', async ({ fs }) => {
   expect(detected?.[0].build.command).toBe('rw deploy netlify')
   expect(detected?.[0].build.directory).toBe('web/dist')
   expect(detected?.[0].dev?.command).toBe('yarn rw dev')
+  expect(detected?.[0].env.NODE_VERSION).toBe('20')
+  expect(detected?.[0].env.AWS_LAMBDA_JS_RUNTIME).toBe('nodejs20.x')
 })
