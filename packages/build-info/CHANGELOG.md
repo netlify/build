@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.14.4](https://github.com/netlify/build/compare/build-info-v7.14.3...build-info-v7.14.4) (2024-09-23)
+
+
+### Bug Fixes
+
+* set default nodejs version for redwoodjs ([#5842](https://github.com/netlify/build/issues/5842)) ([a3dfb7e](https://github.com/netlify/build/commit/a3dfb7e9664a9968e7575e43ab653a089a4ede0b))
+
 ## [7.14.3](https://github.com/netlify/build/compare/build-info-v7.14.2...build-info-v7.14.3) (2024-09-20)
 
 
