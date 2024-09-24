@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.2.85](https://github.com/netlify/build/compare/functions-utils-v5.2.84...functions-utils-v5.2.85) (2024-09-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.39.3 to 9.39.4
+
 ## [5.2.84](https://github.com/netlify/build/compare/functions-utils-v5.2.83...functions-utils-v5.2.84) (2024-09-23)
 
 
