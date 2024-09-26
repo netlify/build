@@ -194,7 +194,7 @@ describe(`getExpectedVersion`, () => {
         ],
         overridePinnedVersion: '>=4.0.0',
       },
-      { version: '4.41.2', conditions: [] },
+      { version: '4.41.2', conditions: [], overridePinnedVersion: '>=4.0.0' },
       {
         version: '3.9.2',
         conditions: [{ type: 'siteDependencies', condition: { next: '<10.0.9' } }],
@@ -245,8 +245,7 @@ describe(`getExpectedVersion`, () => {
       pinnedVersion: '5',
       systemLog: noopSystemLog,
     })
-    // despite next-runtime@5 not satisfying the constraints, it's picked because it's pinned
-    expect(version4).toBe('5')
+    expect(version4).toBe('4.41.2')
   })
 
   test('matches the first entry that satisfies the constraints, even if it also matches another entry further down with more specific constraints', async () => {
