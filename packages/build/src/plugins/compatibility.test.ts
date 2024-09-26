@@ -223,6 +223,30 @@ describe(`getExpectedVersion`, () => {
       systemLog: noopSystemLog,
     })
     expect(version2).toBe('4.41.2')
+
+    const { version: version3 } = await getExpectedVersion({
+      versions,
+      nodeVersion: '20.0.0',
+      packageJson: { dependencies: { next: '14.0.0' } },
+      packageName: '@netlify/cool-plugin',
+      buildDir: '/some/path',
+      pinnedVersion: '5',
+      systemLog: noopSystemLog,
+    })
+    expect(version3).toBe('5.0.0-beta.1')
+
+    // out of range
+    const { version: version4 } = await getExpectedVersion({
+      versions,
+      nodeVersion: '20.0.0',
+      packageJson: { dependencies: { next: '13.0.0' } },
+      packageName: '@netlify/cool-plugin',
+      buildDir: '/some/path',
+      pinnedVersion: '5',
+      systemLog: noopSystemLog,
+    })
+    // despite next-runtime@5 not satisfying the constraints, it's picked because it's pinned
+    expect(version4).toBe('5')
   })
 
   test('matches the first entry that satisfies the constraints, even if it also matches another entry further down with more specific constraints', async () => {
