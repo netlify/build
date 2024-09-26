@@ -4,18 +4,18 @@ export class Solid extends BaseFramework implements Framework {
   readonly id = 'solid-js'
   name = 'SolidJS'
   npmDependencies = ['solid-js']
-  excludedNpmDependencies = ['solid-start']
+  excludedNpmDependencies = ['@solidjs/start']
   category = Category.SSG
 
   dev = {
-    command: 'npm run dev',
+    command: 'vite',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
-    command: 'npm run build',
-    directory: 'netlify',
+    command: 'vite build',
+    directory: 'dist',
   }
 
   logo = {

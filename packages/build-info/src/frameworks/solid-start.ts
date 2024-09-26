@@ -3,18 +3,18 @@ import { BaseFramework, Category, Framework } from './framework.js'
 export class SolidStart extends BaseFramework implements Framework {
   readonly id = 'solid-start'
   name = 'Solid Start'
-  npmDependencies = ['solid-start']
+  npmDependencies = ['@solidjs/start']
   category = Category.SSG
 
   dev = {
-    command: 'solid-start dev',
+    command: 'vinxi dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
-    command: 'solid-start build',
-    directory: 'netlify',
+    command: 'vinxi build',
+    directory: 'dist',
   }
 
   logo = {
