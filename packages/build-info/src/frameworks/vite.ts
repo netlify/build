@@ -12,6 +12,8 @@ export class Vite extends BaseFramework implements Framework {
     '@builder.io/qwik',
     'solid-start',
     'solid-js',
+    '@tanstack/react-router',
+    '@tanstack/start',
     '@sveltejs/kit',
     '@analogjs/platform',
   ]
