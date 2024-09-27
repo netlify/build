@@ -17,10 +17,4 @@ export class TanStackRouter extends BaseFramework implements Framework {
     command: 'vite build',
     directory: 'dist',
   }
-
-  logo = {
-    default: '/logos/tanstack-router/default.svg',
-    light: '/logos/tanstack-router/default.svg',
-    dark: '/logos/tanstack-router/dark.svg',
-  }
 }

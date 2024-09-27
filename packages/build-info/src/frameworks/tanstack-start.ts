@@ -16,10 +16,4 @@ export class TanStackStart extends BaseFramework implements Framework {
     command: 'vinxi build',
     directory: 'dist',
   }
-
-  logo = {
-    default: '/logos/tanstack-start/default.svg',
-    light: '/logos/tanstack-start/default.svg',
-    dark: '/logos/tanstack-start/default.svg',
-  }
 }
