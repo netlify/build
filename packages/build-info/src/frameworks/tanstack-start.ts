@@ -18,8 +18,8 @@ export class TanStackStart extends BaseFramework implements Framework {
   }
 
   logo = {
-    default: '/logos/tanstack-start/default.svg',
-    light: '/logos/tanstack-start/default.svg',
-    dark: '/logos/tanstack-start/default.svg',
+    default: '/logos/tanstack-start/default.png',
+    light: '/logos/tanstack-start/default.png',
+    dark: '/logos/tanstack-start/default.png',
   }
 }

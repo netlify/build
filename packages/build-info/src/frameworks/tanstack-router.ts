@@ -19,8 +19,8 @@ export class TanStackRouter extends BaseFramework implements Framework {
   }
 
   logo = {
-    default: '/logos/tanstack-router/default.svg',
-    light: '/logos/tanstack-router/default.svg',
-    dark: '/logos/tanstack-router/dark.svg',
+    default: '/logos/tanstack-router/default.png',
+    light: '/logos/tanstack-router/default.png',
+    dark: '/logos/tanstack-router/default.png',
   }
 }
