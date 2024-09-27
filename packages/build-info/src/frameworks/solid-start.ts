@@ -20,6 +20,6 @@ export class SolidStart extends BaseFramework implements Framework {
   logo = {
     default: '/logos/solid-start/default.svg',
     light: '/logos/solid-start/default.svg',
-    dark: '/logos/solid-start/default.svg',
+    dark: '/logos/solid-start/dark.svg',
   }
 }
