@@ -305,6 +305,7 @@ export class Project {
       const rootFrameworkMutex = new Mutex()
       if (this.workspace) {
         if (rootFrameworks.length > 0 && !isNx) {
+          this.workspace.packages.push({ path: '', name: 'root' })
           this.frameworks.set('', rootFrameworks)
         }
         // if we have a workspace parallelize in all workspaces
