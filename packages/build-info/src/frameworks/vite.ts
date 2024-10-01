@@ -10,8 +10,13 @@ export class Vite extends BaseFramework implements Framework {
     '@remix-run/server-runtime',
     '@shopify/hydrogen',
     '@builder.io/qwik',
+    // Used this name up to 0.3.11
     'solid-start',
+    // Renamed starting at 0.4.0
+    '@solidjs/start',
     'solid-js',
+    '@tanstack/react-router',
+    '@tanstack/start',
     '@sveltejs/kit',
     '@analogjs/platform',
   ]
