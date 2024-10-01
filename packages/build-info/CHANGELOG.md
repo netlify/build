@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.15.0](https://github.com/netlify/build/compare/build-info-v7.14.4...build-info-v7.15.0) (2024-10-01)
+
+
+### Features
+
+* framework detection for tanstack router and tanstack start ([#5857](https://github.com/netlify/build/issues/5857)) ([1aa78f4](https://github.com/netlify/build/commit/1aa78f45de2a97001083bb3a29eceb2afc5064f7))
+
 ## [7.14.4](https://github.com/netlify/build/compare/build-info-v7.14.3...build-info-v7.14.4) (2024-09-23)
 
 
