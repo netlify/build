@@ -8,7 +8,7 @@ export class TanStackRouter extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'vite',
+    command: 'vite dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
   }
