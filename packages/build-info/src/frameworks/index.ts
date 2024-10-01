@@ -34,8 +34,8 @@ import { RedwoodJS } from './redwoodjs.js'
 import { Remix } from './remix.js'
 import { Roots } from './roots.js'
 import { Sapper } from './sapper.js'
+import { SolidJs } from './solid-js.js'
 import { SolidStart } from './solid-start.js'
-import { Solid } from './solid.js'
 import { Stencil } from './stencil.js'
 import { SvelteKit } from './svelte-kit.js'
 import { Svelte } from './svelte.js'
@@ -68,7 +68,7 @@ export const frameworks = [
   ReactStatic,
   RedwoodJS,
   Remix,
-  Solid,
+  SolidJs,
   SolidStart,
   Stencil,
   TanStackRouter,
