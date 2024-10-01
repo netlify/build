@@ -15,6 +15,8 @@ export class Vite extends BaseFramework implements Framework {
     // Renamed starting at 0.4.0
     '@solidjs/start',
     'solid-js',
+    '@tanstack/react-router',
+    '@tanstack/start',
     '@sveltejs/kit',
     '@analogjs/platform',
   ]
