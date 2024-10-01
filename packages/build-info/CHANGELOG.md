@@ -64,6 +64,14 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.15.1](https://github.com/netlify/build/compare/build-info-v7.15.0...build-info-v7.15.1) (2024-10-01)
+
+
+### Bug Fixes
+
+* add some support for dotnet runtime detection ([#5858](https://github.com/netlify/build/issues/5858)) ([75eb6a2](https://github.com/netlify/build/commit/75eb6a2a5f902320dd70a808ec30256fcd8df29a))
+* framework detection for solidjs and solidstart ([#5856](https://github.com/netlify/build/issues/5856)) ([2002b42](https://github.com/netlify/build/commit/2002b42751bc0bd120086ab32c685f9bf6703237))
+
 ## [7.15.0](https://github.com/netlify/build/compare/build-info-v7.14.4...build-info-v7.15.0) (2024-10-01)
 
 
