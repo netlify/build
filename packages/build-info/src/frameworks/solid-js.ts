@@ -1,14 +1,14 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
-export class Solid extends BaseFramework implements Framework {
+export class SolidJs extends BaseFramework implements Framework {
   readonly id = 'solid-js'
   name = 'SolidJS'
   npmDependencies = ['solid-js']
-  excludedNpmDependencies = ['@solidjs/start']
+  excludedNpmDependencies = ['solid-start', '@solidjs/start']
   category = Category.SSG
 
   dev = {
-    command: 'vite',
+    command: 'vite dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
   }
