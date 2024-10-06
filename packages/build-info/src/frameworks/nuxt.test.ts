@@ -25,7 +25,7 @@ describe('Nuxt V2', () => {
     expect(detected?.[0].id).toBe('nuxt')
     expect(detected?.[0].name).toBe('Nuxt')
     expect(detected?.[0].build.command).toBe('nuxt generate')
-    expect(detected?.[0].dev?.command).toBe('nuxt')
+    expect(detected?.[0].dev?.command).toBe('nuxt dev')
     expect(detected?.[0].dev?.port).toBe(3000)
     expect(detected?.[0].env).toEqual({})
   })

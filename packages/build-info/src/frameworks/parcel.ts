@@ -7,7 +7,7 @@ export class Parcel extends BaseFramework implements Framework {
   category = Category.BuildTool
 
   dev = {
-    command: 'parcel',
+    command: 'parcel serve',
     port: 1234,
     pollingStrategies: [{ name: 'TCP' }],
   }

@@ -11,7 +11,7 @@ export class Next extends BaseFramework implements Framework {
   configFiles = ['next.config.js', 'next.config.mjs']
 
   dev = {
-    command: 'next',
+    command: 'next dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
   }

@@ -16,7 +16,7 @@ test('should detect qwik with npm', async ({ fs }) => {
   expect(detected?.[0].id).toBe('qwik')
   expect(detected?.[0].build.command).toBe('npm run build')
   expect(detected?.[0].build.directory).toBe('dist')
-  expect(detected?.[0].dev?.command).toBe('vite')
+  expect(detected?.[0].dev?.command).toBe('vite dev')
 })
 
 test('should detect qwik with yarn', async ({ fs }) => {
@@ -39,5 +39,5 @@ test('should detect qwik', async ({ fs }) => {
   expect(detected?.[0].name).toBe('Qwik')
   expect(detected?.[0].build.command).toBe('pnpm run build')
   expect(detected?.[0].build.directory).toBe('dist')
-  expect(detected?.[0].dev?.command).toBe('vite')
+  expect(detected?.[0].dev?.command).toBe('vite dev')
 })

@@ -647,7 +647,7 @@ describe('dev commands', () => {
     const cwd = mockFileSystem({
       'package.json': JSON.stringify({
         dependencies: { 'parcel-bundler': '^1.12.4' },
-        scripts: { build: 'parcel build index.html', dev: 'parcel index.html' },
+        scripts: { build: 'parcel serve index.html', dev: 'parcel serve index.html' },
       }),
     })
     const project = new Project(fs, cwd)
@@ -659,7 +659,7 @@ describe('dev commands', () => {
   test('Should prioritize dev over serve', async ({ fs }) => {
     const cwd = mockFileSystem({
       'package.json': JSON.stringify({
-        scripts: { dev: 'vite', build: 'vite build', serve: 'vite preview' },
+        scripts: { dev: 'vite dev --foo', build: 'vite dev --bar', serve: 'vite dev --baz' },
         devDependencies: { vite: '^2.1.5' },
       }),
     })

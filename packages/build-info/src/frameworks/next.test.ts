@@ -57,8 +57,8 @@ describe('simple Next.js project', async () => {
         version: '0.1.0',
         private: true,
         scripts: {
-          dev: 'next dev',
           build: 'next build',
+          dev: 'next dev',
           start: 'next start',
         },
         dependencies: {

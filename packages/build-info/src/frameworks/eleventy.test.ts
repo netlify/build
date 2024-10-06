@@ -20,7 +20,7 @@ test.each([
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('eleventy')
   expect(detected?.[0].name).toBe('Eleventy')
-  expect(detected?.[0].build.command).toBe('eleventy')
+  expect(detected?.[0].build.command).toBe('eleventy --config=.eleventy.js')
   expect(detected?.[0].build.directory).toBe('_site')
   expect(detected?.[0].dev?.command).toBe('eleventy --serve')
   expect(detected?.[0].dev?.port).toBe(8080)

@@ -7,7 +7,8 @@ export class WMR extends BaseFramework implements Framework {
   category = Category.BuildTool
 
   dev = {
-    command: 'wmr',
+    // XXX verify if true
+    command: 'wmr dev',
     port: 8080,
     pollingStrategies: [{ name: 'TCP' }],
   }

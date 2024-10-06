@@ -23,7 +23,7 @@ export class Vite extends BaseFramework implements Framework {
   category = Category.BuildTool
 
   dev = {
-    command: 'vite',
+    command: 'vite dev',
     port: 5173,
     pollingStrategies: [{ name: 'TCP' }],
   }

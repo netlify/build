@@ -7,7 +7,8 @@ export class Metalsmith extends BaseFramework implements Framework {
   category = Category.SSG
 
   build = {
-    command: 'metalsmith',
+    // XXX verify if true
+    command: 'metalsmith dev',
     directory: 'build',
   }
 

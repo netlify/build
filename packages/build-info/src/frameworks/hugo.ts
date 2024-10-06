@@ -13,7 +13,8 @@ export class Hugo extends BaseFramework implements Framework {
   }
 
   build = {
-    command: 'hugo',
+    // XXX verify if true
+    command: 'hugo build',
     directory: 'public',
   }
 

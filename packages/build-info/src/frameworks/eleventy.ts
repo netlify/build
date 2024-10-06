@@ -14,7 +14,10 @@ export class Eleventy extends BaseFramework implements Framework {
   }
 
   build = {
-    command: 'eleventy',
+    // This is a workaround for the issue described in `./index.test.ts` because eleventy only has
+    // a shorthand build command. Note that it does mean that the `package.json#scripts` detection heuristic will not
+    // work in this case, but it seems better to avoid bugs than to support bonus magic.
+    command: 'eleventy --config=.eleventy.js',
     directory: '_site',
   }
 

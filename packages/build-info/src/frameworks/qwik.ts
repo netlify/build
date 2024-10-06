@@ -7,7 +7,7 @@ export class Qwik extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'vite',
+    command: 'vite dev',
     port: 5173,
     pollingStrategies: [{ name: 'TCP' }],
   }

@@ -7,7 +7,8 @@ export class Nuxt extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'nuxt',
+    // XXX verify if true
+    command: 'nuxt dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
     clearPublishDirectory: true,
