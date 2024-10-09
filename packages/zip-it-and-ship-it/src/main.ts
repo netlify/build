@@ -11,14 +11,7 @@ import { RuntimeCache } from './utils/cache.js'
 import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
 
 export { Config, FunctionConfig } from './config.js'
-export {
-  zipFunction,
-  zipFunctions,
-  ZipFunctionOptions,
-  ZipFunctionsOptions,
-  ZippedFunction,
-  ZippedFunctions,
-} from './zip.js'
+export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export type { TrafficRules } from './rate_limit.js'
