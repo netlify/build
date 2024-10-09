@@ -66,6 +66,7 @@ export type ZipFunction = (
   args: {
     archiveFormat: ArchiveFormat
     basePath?: string
+    branch?: string
     cache: RuntimeCache
     config: FunctionConfig
     destFolder: string

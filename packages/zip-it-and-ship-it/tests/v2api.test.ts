@@ -709,22 +709,48 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     expect(files[0].runtimeVersion).toBe('nodejs20.x')
   })
 
-  test('Adds a file with the bootstrap version to the ZIP archive', async () => {
-    const fixtureName = 'v2-api'
-    const { files } = await zipFixture(fixtureName, {
-      fixtureDir: FIXTURES_ESM_DIR,
-      opts: {
-        featureFlags: {
-          zisi_add_version_file: true,
+  describe('Adds a file with metadata', () => {
+    test('Without a branch', async () => {
+      const fixtureName = 'v2-api'
+      const { files } = await zipFixture(fixtureName, {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: {
+          featureFlags: {
+            zisi_add_metadata_file: true,
+          },
         },
-      },
-    })
-    const [unzippedFunction] = await unzipFiles(files)
-    const bootstrapPath = getBootstrapPath()
-    const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
-    const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
-    const versionFileContents = await readFile(join(unzippedFunction.unzipPath, '___netlify-bootstrap-version'), 'utf8')
+      })
+      const [unzippedFunction] = await unzipFiles(files)
+      const bootstrapPath = getBootstrapPath()
+      const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
+      const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
+      const versionFileContents = await readFile(join(unzippedFunction.unzipPath, '___netlify-metadata.json'), 'utf8')
 
-    expect(versionFileContents).toBe(bootstrapVersion)
+      expect(JSON.parse(versionFileContents)).toEqual({ bootstrap_version: bootstrapVersion, version: 1 })
+    })
+
+    test('With a branch', async () => {
+      const fixtureName = 'v2-api'
+      const { files } = await zipFixture(fixtureName, {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: {
+          branch: 'main',
+          featureFlags: {
+            zisi_add_metadata_file: true,
+          },
+        },
+      })
+      const [unzippedFunction] = await unzipFiles(files)
+      const bootstrapPath = getBootstrapPath()
+      const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
+      const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
+      const versionFileContents = await readFile(join(unzippedFunction.unzipPath, '___netlify-metadata.json'), 'utf8')
+
+      expect(JSON.parse(versionFileContents)).toEqual({
+        bootstrap_version: bootstrapVersion,
+        branch: 'main',
+        version: 1,
+      })
+    })
   })
 })

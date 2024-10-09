@@ -21,6 +21,7 @@ import { nonNullable } from './utils/non_nullable.js'
 export interface ZipFunctionOptions {
   archiveFormat?: ArchiveFormat
   basePath?: string
+  branch?: string
   config?: Config
   featureFlags?: FeatureFlags
   repositoryRoot?: string
@@ -53,6 +54,7 @@ export const zipFunctions = async function (
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
     basePath,
+    branch,
     config = {},
     configFileDirectories,
     featureFlags: inputFeatureFlags,
@@ -94,6 +96,7 @@ export const zipFunctions = async function (
       const zipResult = await func.runtime.zipFunction({
         archiveFormat,
         basePath,
+        branch,
         cache,
         config: func.config,
         destFolder,

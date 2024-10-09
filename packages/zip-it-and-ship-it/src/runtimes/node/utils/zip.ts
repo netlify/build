@@ -23,13 +23,14 @@ import { cachedLstat, mkdirAndWriteFile } from '../../../utils/fs.js'
 
 import {
   BOOTSTRAP_FILE_NAME,
-  BOOTSTRAP_VERSION_FILE_NAME,
+  METADATA_FILE_NAME,
   conflictsWithEntryFile,
   EntryFile,
   getEntryFile,
   getTelemetryFile,
   isNamedLikeEntryFile,
 } from './entry_file.js'
+import { getMetadataFile } from './metadata_file.js'
 import { ModuleFormat } from './module_format.js'
 import { normalizeFilePath } from './normalize_path.js'
 import { getPackageJsonIfAvailable } from './package_json.js'
@@ -44,6 +45,7 @@ const DEFAULT_USER_SUBDIRECTORY = 'src'
 interface ZipNodeParameters {
   aliases?: Map<string, string>
   basePath: string
+  branch?: string
   cache: RuntimeCache
   destFolder: string
   extension: string
@@ -186,6 +188,7 @@ const createDirectory = async function ({
 const createZipArchive = async function ({
   aliases = new Map(),
   basePath,
+  branch,
   cache,
   destFolder,
   extension,
@@ -251,12 +254,11 @@ const createZipArchive = async function ({
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
-    if (featureFlags.zisi_add_version_file === true) {
+    if (featureFlags.zisi_add_metadata_file === true) {
       const { version: bootstrapVersion } = await getPackageJsonIfAvailable(bootstrapPath)
+      const payload = JSON.stringify(getMetadataFile(bootstrapVersion, branch))
 
-      if (bootstrapVersion) {
-        addZipContent(archive, bootstrapVersion, BOOTSTRAP_VERSION_FILE_NAME)
-      }
+      addZipContent(archive, payload, METADATA_FILE_NAME)
     }
   }
 
