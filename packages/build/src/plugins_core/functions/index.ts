@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerName, RUNTIME, zipFunctions, ZippedFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
@@ -13,7 +13,7 @@ import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
 // Get a list of all unique bundlers in this run
-const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
+const getBundlers = (results: ZippedFunctions = []) =>
   // using a Set to filter duplicates
   new Set(
     results
@@ -38,7 +38,7 @@ const eventTriggeredFunctions = new Set([
   'identity-login',
 ])
 
-const validateCustomRoutes = function (functions: Awaited<ReturnType<typeof zipFunctions>>) {
+const validateCustomRoutes = function (functions: ZippedFunctions) {
   for (const { routes, name, schedule } of functions) {
     if (!routes || routes.length === 0) continue
 

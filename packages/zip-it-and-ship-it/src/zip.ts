@@ -135,6 +135,8 @@ export const zipFunctions = async function (
   return formattedResults
 }
 
+export type ZippedFunctions = Awaited<ReturnType<typeof zipFunctions>>
+
 export const zipFunction = async function (
   relativeSrcPath: string,
   destFolder: string,
@@ -204,3 +206,5 @@ export const zipFunction = async function (
 
   return formatZipResult({ ...zipResult, mainFile, name, runtime })
 }
+
+export type ZippedFunction = Awaited<ReturnType<typeof zipFunction>>
