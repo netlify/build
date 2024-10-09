@@ -15,6 +15,13 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
   logArray(logs, functionNames)
 }
 
+/**
+ * Logs the result of bundling functions
+ *
+ * @param {object} options
+ * @param {any} options.logs
+ * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
+ */
 export const logBundleResults = ({ logs, results = [] }) => {
   const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
   const resultsWithWarnings = results.filter(
