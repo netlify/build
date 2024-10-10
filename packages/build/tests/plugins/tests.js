@@ -401,3 +401,8 @@ test('Plugins have a pre-populated Blobs context', async (t) => {
 
   t.is(netlifyConfig.build.command, `echo ""Hello there""`)
 })
+
+test('Plugins can respond anything to parent process', async (t) => {
+  const build = await new Fixture('./fixtures/process_send_object').runBuildBinary()
+  t.true(build.exitCode === 0)
+})
