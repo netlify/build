@@ -77,7 +77,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@netlify/testing": "*",
     "@types/archiver": "5.3.4",
     "@types/glob": "8.1.0",
     "@types/is-ci": "3.0.4",
