@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerName, RUNTIME, zipFunctions, FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
@@ -13,7 +13,7 @@ import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
 // Get a list of all unique bundlers in this run
-const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
+const getBundlers = (results: FunctionResult[] = []) =>
   // using a Set to filter duplicates
   new Set(
     results
@@ -38,7 +38,7 @@ const eventTriggeredFunctions = new Set([
   'identity-login',
 ])
 
-const validateCustomRoutes = function (functions: Awaited<ReturnType<typeof zipFunctions>>) {
+const validateCustomRoutes = function (functions: FunctionResult[]) {
   for (const { routes, name, schedule } of functions) {
     if (!routes || routes.length === 0) continue
 
@@ -61,6 +61,7 @@ const validateCustomRoutes = function (functions: Awaited<ReturnType<typeof zipF
 }
 
 const zipFunctionsAndLogResults = async ({
+  branch,
   buildDir,
   childEnv,
   featureFlags,
@@ -76,6 +77,7 @@ const zipFunctionsAndLogResults = async ({
   systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
@@ -118,6 +120,7 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  branch,
   packagePath,
   logs,
   netlifyConfig,
@@ -166,6 +169,7 @@ const coreStep = async function ({
   }
 
   const { bundlers } = await zipFunctionsAndLogResults({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
@@ -237,7 +241,7 @@ export const bundleFunctions = {
 // `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
 // function and export them so tests can use it.
 export const zipItAndShipIt = {
-  async zipFunctions(...args: Parameters<typeof zipFunctions>) {
+  async zipFunctions(...args: Parameters<typeof zipFunctions>): Promise<FunctionResult[]> {
     return await zipFunctions(...args)
   },
 }

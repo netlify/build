@@ -13,7 +13,7 @@ import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
 import { addArchiveSize } from './utils/archive_size.js'
 import { RuntimeCache } from './utils/cache.js'
-import { formatZipResult } from './utils/format_result.js'
+import { formatZipResult, FunctionResult } from './utils/format_result.js'
 import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
 import { getLogger, LogFunction } from './utils/logger.js'
 import { nonNullable } from './utils/non_nullable.js'
@@ -21,6 +21,7 @@ import { nonNullable } from './utils/non_nullable.js'
 export interface ZipFunctionOptions {
   archiveFormat?: ArchiveFormat
   basePath?: string
+  branch?: string
   config?: Config
   featureFlags?: FeatureFlags
   repositoryRoot?: string
@@ -53,6 +54,7 @@ export const zipFunctions = async function (
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
     basePath,
+    branch,
     config = {},
     configFileDirectories,
     featureFlags: inputFeatureFlags,
@@ -63,7 +65,7 @@ export const zipFunctions = async function (
     debug,
     internalSrcFolder,
   }: ZipFunctionsOptions = {},
-) {
+): Promise<FunctionResult[]> {
   validateArchiveFormat(archiveFormat)
 
   const logger = getLogger(systemLog, debug)
@@ -94,6 +96,7 @@ export const zipFunctions = async function (
       const zipResult = await func.runtime.zipFunction({
         archiveFormat,
         basePath,
+        branch,
         cache,
         config: func.config,
         destFolder,
@@ -145,7 +148,7 @@ export const zipFunction = async function (
     debug,
     internalSrcFolder,
   }: ZipFunctionOptions = {},
-) {
+): Promise<FunctionResult | undefined> {
   validateArchiveFormat(archiveFormat)
 
   const logger = getLogger(systemLog, debug)

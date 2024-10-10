@@ -9,6 +9,7 @@ import type { FeatureFlags } from '../../core/feature_flags.js'
 import { getZisiFeatureFlags } from './feature_flags.js'
 
 type GetZisiParametersType = {
+  branch?: string
   buildDir: string
   childEnv: Record<string, string>
   featureFlags: FeatureFlags
@@ -40,6 +41,7 @@ const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion:
 }
 
 export const getZisiParameters = ({
+  branch,
   buildDir,
   childEnv,
   featureFlags,
@@ -65,6 +67,7 @@ export const getZisiParameters = ({
 
   return {
     basePath: buildDir,
+    branch,
     config,
     manifest,
     featureFlags: zisiFeatureFlags,

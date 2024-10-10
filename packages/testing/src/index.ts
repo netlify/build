@@ -1,5 +1,6 @@
 export * from './dir.js'
 export * from './fixture.js'
+export * from './fs.js'
 export * from './normalize.js'
 export * from './server.js'
 export * from './tcp_server.js'
