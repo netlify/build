@@ -1,9 +1,9 @@
 import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
 import semver from 'semver'
@@ -204,3 +204,39 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     t.true(app2FunctionsDist.includes('worker.zip'))
   })
 }
+
+test('Functions: creates metadata file', async (t) => {
+  const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
+  const build = await fixture
+    .withFlags({
+      branch: 'my-branch',
+      cwd: fixture.repositoryRoot,
+      featureFlags: { zisi_add_metadata_file: true },
+    })
+    .runWithBuildAndIntrospect()
+
+  t.true(build.success)
+
+  const functionsDistPath = resolve(fixture.repositoryRoot, '.netlify/functions')
+  const functionsDistFiles = await readdir(functionsDistPath)
+
+  t.true(functionsDistFiles.includes('manifest.json'))
+  t.true(functionsDistFiles.includes('test.zip'))
+
+  const unzipPath = join(functionsDistPath, `.netlify-test-${Date.now()}`)
+
+  await unzipFile(join(functionsDistPath, 'test.zip'), unzipPath)
+
+  const functionFiles = await readdir(unzipPath)
+
+  t.true(functionFiles.includes('___netlify-bootstrap.mjs'))
+  t.true(functionFiles.includes('___netlify-entry-point.mjs'))
+  t.true(functionFiles.includes('___netlify-metadata.json'))
+  t.true(functionFiles.includes('test.mjs'))
+
+  const metadata = JSON.parse(await readFile(join(unzipPath, '___netlify-metadata.json'), 'utf8'))
+
+  t.is(semver.valid(metadata.bootstrap_version), metadata.bootstrap_version)
+  t.is(metadata.branch, 'my-branch')
+  t.is(metadata.version, 1)
+})

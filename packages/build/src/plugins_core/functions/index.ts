@@ -61,6 +61,7 @@ const validateCustomRoutes = function (functions: FunctionResult[]) {
 }
 
 const zipFunctionsAndLogResults = async ({
+  branch,
   buildDir,
   childEnv,
   featureFlags,
@@ -76,6 +77,7 @@ const zipFunctionsAndLogResults = async ({
   systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
@@ -118,6 +120,7 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  branch,
   packagePath,
   logs,
   netlifyConfig,
@@ -166,6 +169,7 @@ const coreStep = async function ({
   }
 
   const { bundlers } = await zipFunctionsAndLogResults({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
