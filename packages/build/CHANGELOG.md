@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.55.0](https://github.com/netlify/build/compare/build-v29.54.9...build-v29.55.0) (2024-10-10)
+
+
+### Features
+
+* write metadata file ([#5875](https://github.com/netlify/build/issues/5875)) ([7dfac4c](https://github.com/netlify/build/commit/7dfac4cc38058e135c4952d53ef6b63c8034f962))
+
+
+### Bug Fixes
+
+* reading data from spawned process ([#5877](https://github.com/netlify/build/issues/5877)) ([5860e72](https://github.com/netlify/build/commit/5860e7272263dd092c97add354dfa2021518eb5c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.2.88 to ^5.2.89
+    * @netlify/zip-it-and-ship-it bumped from 9.39.7 to 9.40.0
+
 ## [29.54.9](https://github.com/netlify/build/compare/build-v29.54.8...build-v29.54.9) (2024-10-01)
 
 
