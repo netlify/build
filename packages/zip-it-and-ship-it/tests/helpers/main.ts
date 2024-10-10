@@ -1,9 +1,9 @@
-import { rm } from 'fs/promises'
+import { mkdir, rm } from 'fs/promises'
 import { dirname, resolve, join, basename, relative } from 'path'
-import { env } from 'process'
+import { env, platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { unzipFile } from '@netlify/testing'
+import { execa } from 'execa'
 import isCI from 'is-ci'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterAll, expect } from 'vitest'
@@ -136,6 +136,16 @@ export const unzipFiles = async function (files: FunctionResult[]): Promise<Test
   )
 
   return files as TestFunctionResult[]
+}
+
+const unzipFile = async function (path: string, dest: string): Promise<void> {
+  await mkdir(dest, { recursive: true })
+
+  if (platform === 'win32') {
+    await execa('tar', ['-xf', path, '-C', dest])
+  } else {
+    await execa('unzip', ['-o', path, '-d', dest])
+  }
 }
 
 const replaceUnzipPath = function ({ path }: { path: string }): string {
