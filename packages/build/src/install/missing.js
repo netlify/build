@@ -35,6 +35,7 @@ export const installIntegrationPlugins = async function ({
   context,
   testOpts,
   pluginsEnv,
+  buildDir,
 }) {
   const integrationsToBuild = integrations.filter(
     (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
@@ -47,7 +48,7 @@ export const installIntegrationPlugins = async function ({
     )
   }
   const packages = (
-    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts, pluginsEnv })))
+    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts, buildDir, pluginsEnv })))
   ).filter(Boolean)
   logInstallIntegrations(
     logs,
@@ -65,7 +66,7 @@ export const installIntegrationPlugins = async function ({
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {}, pluginsEnv }) {
+const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {}, buildDir, pluginsEnv }) {
   if (typeof version !== 'undefined') {
     return `${version}/packages/buildhooks.tgz`
   }
@@ -73,7 +74,8 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
   if (typeof dev !== 'undefined' && context === 'dev') {
     const { path } = dev
 
-    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(buildDir, path)
+
     try {
       const res = await execa('npm', ['run', 'build'], { cwd: integrationDir, env: pluginsEnv })
 
