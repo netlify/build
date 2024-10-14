@@ -34,6 +34,7 @@ export const installIntegrationPlugins = async function ({
   logs,
   context,
   testOpts,
+  pluginsEnv,
 }) {
   const integrationsToBuild = integrations.filter(
     (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
@@ -46,7 +47,7 @@ export const installIntegrationPlugins = async function ({
     )
   }
   const packages = (
-    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts })))
+    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts, pluginsEnv })))
   ).filter(Boolean)
   logInstallIntegrations(
     logs,
@@ -64,7 +65,7 @@ export const installIntegrationPlugins = async function ({
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {} }) {
+const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {}, pluginsEnv }) {
   if (typeof version !== 'undefined') {
     return `${version}/packages/buildhooks.tgz`
   }
@@ -74,7 +75,7 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
 
     const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
     try {
-      const res = await execa('npm', ['run', 'build'], { cwd: integrationDir })
+      const res = await execa('npm', ['run', 'build'], { cwd: integrationDir, env: pluginsEnv })
 
       // This is horrible and hacky, but `npm run build` will
       // return status code 0 even if it fails
