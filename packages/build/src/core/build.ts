@@ -449,6 +449,11 @@ const initAndRunBuild = async function ({
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
+  const pluginsEnv = {
+    ...childEnv,
+    ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }),
+  }
+
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
     netlifyConfig,
@@ -469,12 +474,8 @@ const initAndRunBuild = async function ({
     integrations,
     context,
     systemLog,
+    pluginsEnv,
   })
-
-  const pluginsEnv = {
-    ...childEnv,
-    ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }),
-  }
 
   if (pluginsOptionsA?.length) {
     const buildPlugins = {}

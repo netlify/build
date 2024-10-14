@@ -33,6 +33,7 @@ export const resolvePluginsPath = async function ({
   integrations,
   context,
   systemLog,
+  pluginsEnv,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
@@ -77,6 +78,7 @@ export const resolvePluginsPath = async function ({
     buildDir,
     context,
     testOpts,
+    pluginsEnv,
   })
 
   return [...pluginsOptionsE, ...integrationPluginOptions]
@@ -164,9 +166,9 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   return Promise.all(pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })))
 }
 
-const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context, testOpts }) {
+const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context, testOpts, pluginsEnv }) {
   const toInstall = integrations.filter((integration) => integration.has_build)
-  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts })
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts, pluginsEnv })
 
   if (toInstall.length === 0) {
     return []
