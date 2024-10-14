@@ -48,7 +48,11 @@ export const installIntegrationPlugins = async function ({
     )
   }
   const packages = (
-    await Promise.all(integrations.map((integration) => getIntegrationPackage({ integration, context, testOpts, buildDir, pluginsEnv })))
+    await Promise.all(
+      integrations.map((integration) =>
+        getIntegrationPackage({ integration, context, testOpts, buildDir, pluginsEnv }),
+      ),
+    )
   ).filter(Boolean)
   logInstallIntegrations(
     logs,
@@ -66,7 +70,13 @@ export const installIntegrationPlugins = async function ({
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const getIntegrationPackage = async function ({ integration: { version, dev }, context, testOpts = {}, buildDir, pluginsEnv }) {
+const getIntegrationPackage = async function ({
+  integration: { version, dev },
+  context,
+  testOpts = {},
+  buildDir,
+  pluginsEnv,
+}) {
   if (typeof version !== 'undefined') {
     return `${version}/packages/buildhooks.tgz`
   }
@@ -88,7 +98,7 @@ const getIntegrationPackage = async function ({ integration: { version, dev }, c
       throw new Error(`Failed to build integration`)
     }
 
-    return undefined
+    return resolve(integrationDir, '.ntli/site/static/packages/buildhooks.tgz')
   }
 
   return undefined
