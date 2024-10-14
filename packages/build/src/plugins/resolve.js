@@ -168,7 +168,7 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
 
 const handleIntegrations = async function ({ integrations, autoPluginsDir, mode, logs, buildDir, context, testOpts, pluginsEnv }) {
   const toInstall = integrations.filter((integration) => integration.has_build)
-  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts, pluginsEnv })
+  await installIntegrationPlugins({ integrations: toInstall, autoPluginsDir, mode, logs, context, testOpts, buildDir, pluginsEnv })
 
   if (toInstall.length === 0) {
     return []
@@ -190,7 +190,7 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
 const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
   if (typeof integration.dev !== 'undefined' && context === 'dev') {
     const { path } = integration.dev
-    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(path)
+    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(buildDir, path)
     const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
 
     return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
