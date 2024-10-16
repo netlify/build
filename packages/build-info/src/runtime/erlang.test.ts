@@ -14,6 +14,7 @@ test('detects erlang when rebar.config is present', async ({ fs }) => {
   })
 
   const detected = await new Project(fs, cwd).detectRuntime()
+  expect(detected.length).toBe(1)
   expect(detected[0].name).toBe('Erlang')
 })
 
@@ -23,5 +24,6 @@ test('detects erlang when rebar.lock is present', async ({ fs }) => {
   })
 
   const detected = await new Project(fs, cwd).detectRuntime()
+  expect(detected.length).toBe(1)
   expect(detected[0].name).toBe('Erlang')
 })
