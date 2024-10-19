@@ -98,7 +98,7 @@ const getIntegrationPackage = async function ({
       throw new Error(`Failed to build integration. Error:\n\n${e.stack}`)
     }
 
-    return resolve(integrationDir, '.ntli/site/static/packages/buildhooks.tgz')
+    return undefined
   }
 
   return undefined
