@@ -9,20 +9,20 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 
 interface ManifestFunction {
   buildData?: Record<string, unknown>
+  bundler?: string
+  displayName?: string
+  excludedRoutes?: Route[]
+  generator?: string
   invocationMode?: InvocationMode
   mainFile: string
   name: string
   path: string
+  priority?: number
   routes?: ExtendedRoute[]
-  excludedRoutes?: Route[]
   runtime: string
   runtimeVersion?: string
   schedule?: string
-  displayName?: string
-  bundler?: string
-  generator?: string
   timeout?: number
-  priority?: number
   trafficRules?: TrafficRules
 }
 
@@ -51,6 +51,7 @@ export const createManifest = async ({ functions, path }: { functions: FunctionR
 }
 
 const formatFunctionForManifest = ({
+  bootstrapVersion,
   bundler,
   displayName,
   excludedRoutes,
@@ -74,7 +75,7 @@ const formatFunctionForManifest = ({
     generator,
     timeout,
     invocationMode,
-    buildData: { runtimeAPIVersion },
+    buildData: { bootstrapVersion, runtimeAPIVersion },
     mainFile,
     name,
     priority,
