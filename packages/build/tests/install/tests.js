@@ -153,7 +153,7 @@ test('Install local plugin dependencies: missing plugin in netlify.toml', async 
   t.snapshot(normalizeOutput(output))
 })
 
-test.only('In integration dev mode, install local plugins and install the integration when forcing build', async (t) => {
+test('In integration dev mode, install local plugins and install the integration when forcing build', async (t) => {
   const output = await new Fixture('./fixtures/local_missing_integration').withFlags({ context: 'dev' }).runWithBuild()
 
   t.snapshot(normalizeOutput(output))
