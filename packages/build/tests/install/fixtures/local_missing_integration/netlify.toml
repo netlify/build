@@ -1,5 +1,5 @@
 [[integrations]]
-name = "abc-integration"
+name = "test"
 
 [integrations.dev]
 path = "./integration"

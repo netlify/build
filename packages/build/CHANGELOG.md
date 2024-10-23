@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.55.4](https://github.com/netlify/build/compare/build-v29.55.3...build-v29.55.4) (2024-10-21)
+
+
+### Bug Fixes
+
+* various fixes to extension dev/test flow ([#5885](https://github.com/netlify/build/issues/5885)) ([07e567c](https://github.com/netlify/build/commit/07e567c61d25dbade69c3f913a300c055d8f465a))
+
 ## [29.55.3](https://github.com/netlify/build/compare/build-v29.55.2...build-v29.55.3) (2024-10-21)
 
 
