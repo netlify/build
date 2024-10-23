@@ -17,10 +17,10 @@ export const getEnvelope = async function ({
   try {
     const environmentVariables = await (api as any).getEnvVars({ accountId, siteId, context_name: context })
 
-    const sortedEnvVarsFromDevContext = environmentVariables
+    const sortedEnvVarsFromContext = environmentVariables
       .sort((left, right) => (left.key.toLowerCase() < right.key.toLowerCase() ? -1 : 1))
       .reduce((acc, cur) => {
-        const envVar = cur.values.find((val) => ['dev', 'all'].includes(val.context))
+        const envVar = cur.values.find((val) => ['all', context].includes(val.context))
         if (envVar && envVar.value) {
           return {
             ...acc,
@@ -29,7 +29,7 @@ export const getEnvelope = async function ({
         }
         return acc
       }, {})
-    return sortedEnvVarsFromDevContext
+    return sortedEnvVarsFromContext
   } catch {
     return {}
   }
