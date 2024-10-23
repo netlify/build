@@ -38,7 +38,7 @@ describe('Next.js Plugin', () => {
     const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
-    expect(frameworks?.[0].plugins).toEqual(['@netlify/plugin-nextjs'])
+    expect(frameworks?.[0].plugins).toEqual(['@opennextjs/netlify'])
   })
 
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
@@ -90,7 +90,7 @@ describe('simple Next.js project', async () => {
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).setEnvironment({ NODE_VERSION: '18.x' }).detectFrameworks()
     expect(detected?.[0].id).toBe('next')
-    expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-nextjs'])
+    expect(detected?.[0].plugins).toMatchObject(['@opennextjs/netlify'])
   })
 })
 
@@ -134,7 +134,7 @@ describe('Nx monorepo', () => {
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website/.next'),
       frameworkPort: 4200,
-      plugins_recommended: ['@netlify/plugin-nextjs'],
+      plugins_recommended: ['@opennextjs/netlify'],
     })
   })
 })
@@ -152,7 +152,7 @@ describe('Nx turborepo', () => {
       devCommand: 'turbo run dev --filter web',
       dist: join('apps/web/.next'),
       frameworkPort: 3000,
-      plugins_recommended: ['@netlify/plugin-nextjs'],
+      plugins_recommended: ['@opennextjs/netlify'],
     })
   })
 })
