@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.15.2](https://github.com/netlify/build/compare/build-info-v7.15.1...build-info-v7.15.2) (2024-10-25)
+
+
+### Bug Fixes
+
+* detect next if typescript config file is used ([#5893](https://github.com/netlify/build/issues/5893)) ([d07e0d5](https://github.com/netlify/build/commit/d07e0d52bf1e3d8410625e216e08914b4f0ae8cc))
+
 ## [7.15.1](https://github.com/netlify/build/compare/build-info-v7.15.0...build-info-v7.15.1) (2024-10-01)
 
 
