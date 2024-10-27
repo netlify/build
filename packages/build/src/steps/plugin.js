@@ -108,7 +108,9 @@ export const firePluginStep = async function ({
     })
     return { newError }
   } finally {
-    await unpipePluginOutput(childProcess, logs, listeners, standardStreams)
+    if (!isTrustedPlugin(pluginPackageJson?.name)) {
+      await unpipePluginOutput(childProcess, logs, listeners, standardStreams)
+    }
     logStepCompleted(logs, verbose)
   }
 }
