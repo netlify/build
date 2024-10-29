@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.56.0](https://github.com/netlify/build/compare/build-v29.55.5...build-v29.56.0) (2024-10-29)
+
+
+### Features
+
+* keep logging pipe for trusted plugins ([#5899](https://github.com/netlify/build/issues/5899)) ([a631d8c](https://github.com/netlify/build/commit/a631d8c71316b083017cfd702f138e723043c6da))
+
 ## [29.55.5](https://github.com/netlify/build/compare/build-v29.55.4...build-v29.55.5) (2024-10-25)
 
 
