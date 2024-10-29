@@ -17,6 +17,7 @@ import { getImports } from '../parser/imports.js'
 import { safelyParseSource, safelyReadSource } from '../parser/index.js'
 import type { ModuleFormat } from '../utils/module_format.js'
 
+import { REGIONS } from './properties/region.js'
 import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
@@ -26,6 +27,7 @@ export interface StaticAnalysisResult {
   excludedRoutes?: Route[]
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
+  region?: string
   routes?: ExtendedRoute[]
   runtimeAPIVersion?: number
 }
@@ -37,6 +39,11 @@ interface FindISCDeclarationsOptions {
 const httpMethod = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD'])
 const httpMethods = z.preprocess((input) => (typeof input === 'string' ? input.toUpperCase() : input), httpMethod)
 const path = z.string().startsWith('/', { message: "Must start with a '/'" })
+const region = z.enum(REGIONS, {
+  errorMap: () => ({
+    message: `Must be one of the supported regions (${REGIONS.join(', ')})`,
+  }),
+})
 
 export type HttpMethod = z.infer<typeof httpMethod>
 export type HttpMethods = z.infer<typeof httpMethods>
@@ -70,6 +77,7 @@ export const inSourceConfig = functionConfig
       .optional(),
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
+    region: region.optional(),
   })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
@@ -149,6 +157,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
         methods: data.method ?? [],
         prefer_static: data.preferStatic || undefined,
       }))
+
+      if (data.region) {
+        result.region = data.region
+      }
     } else {
       // TODO: Handle multiple errors.
       const [issue] = error.issues
