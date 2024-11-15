@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.56.1](https://github.com/netlify/build/compare/build-v29.56.0...build-v29.56.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency hot-shots to v10.2.1 ([#5906](https://github.com/netlify/build/issues/5906)) ([ced3f33](https://github.com/netlify/build/commit/ced3f33658b54855ac5f7cbb5ec12ee234ef1370))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.19.0 to ^20.19.1
+
 ## [29.56.0](https://github.com/netlify/build/compare/build-v29.55.5...build-v29.56.0) (2024-10-29)
 
 

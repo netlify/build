@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.19.1](https://github.com/netlify/build/compare/config-v20.19.0...config-v20.19.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* environment variable build context filtering fix  ([#5887](https://github.com/netlify/build/issues/5887)) ([c0ab547](https://github.com/netlify/build/commit/c0ab5479bd533315d39983e50a9c8a1bee5966ff))
+
 ## [20.19.0](https://github.com/netlify/build/compare/config-v20.18.0...config-v20.19.0) (2024-08-21)
 
 
