@@ -1,23 +1,23 @@
 import semver from 'semver'
 
-import { isRuntime } from '../../utils/runtime.js'
+import { isNextJsAdapter } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
 import { BufferedLogs, logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
-export const logRuntime = (logs, pluginOptions) => {
-  const runtimes = pluginOptions.filter(isRuntime)
+export const logRuntime = (logs: BufferedLogs | undefined, pluginOptions) => {
+  const runtimes = pluginOptions.filter(isNextJsAdapter)
 
   // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length !== 0) {
     const [nextRuntime] = runtimes
 
-    logSubHeader(logs, `Using Next.js Runtime - v${nextRuntime.pluginPackageJson.version}`)
+    logSubHeader(logs, `Using Next.js adapter - v${nextRuntime.pluginPackageJson.version}`)
   }
 }
 
-export const logLoadingIntegration = (logs, pluginOptions) => {
+export const logLoadingIntegration = (logs: BufferedLogs | undefined, pluginOptions) => {
   const loadingPlugins = pluginOptions
     .filter((plugin) => plugin.isIntegration)
     .map((pluginOptions) => pluginOptions.integration?.slug ?? 'no-slug')
@@ -30,11 +30,11 @@ export const logLoadingIntegration = (logs, pluginOptions) => {
   logArray(logs, loadingPlugins)
 }
 
-export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
+export const logLoadingPlugins = function (logs: BufferedLogs | undefined, pluginsOptions, debug: boolean) {
   const loadingPlugins = pluginsOptions
     .filter(isNotCorePlugin)
-    // We don't want to show runtimes as plugins
-    .filter((plugin) => !isRuntime(plugin))
+    // We log these separately
+    .filter((plugin) => !isNextJsAdapter(plugin))
     .filter((p) => !p.isIntegration)
     .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
 
@@ -62,7 +62,7 @@ const getPluginDescription = function (
     expectedVersion,
     compatibleVersion,
   },
-  debug,
+  debug: boolean,
 ) {
   const versionedPackage = getVersionedPackage(version)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
@@ -97,7 +97,7 @@ const getVersionField = function ([versionFieldName, version]) {
 
 // Print a warning message when old versions plugins are used.
 // This can only happen when they are installed to `package.json`.
-export const logOutdatedPlugins = function (logs: BufferedLogs, pluginsOptions) {
+export const logOutdatedPlugins = function (logs: BufferedLogs | undefined, pluginsOptions) {
   const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
 
   if (outdatedPlugins.length === 0) {
@@ -149,7 +149,7 @@ const getUpgradeInstruction = function (loadedFrom, origin) {
 // Print a warning message when plugins are using a version that is too recent
 // and does not meet some `compatibility` expectations.
 // This can only happen when they are installed to `package.json`.
-export const logIncompatiblePlugins = function (logs, pluginsOptions) {
+export const logIncompatiblePlugins = function (logs: BufferedLogs | undefined, pluginsOptions) {
   const incompatiblePlugins = pluginsOptions.filter(hasIncompatibleVersion).map(getIncompatiblePlugin)
 
   if (incompatiblePlugins.length === 0) {
