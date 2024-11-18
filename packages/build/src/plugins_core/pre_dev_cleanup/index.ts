@@ -3,7 +3,6 @@ import { resolve } from 'node:path'
 
 import { listFrameworks } from '@netlify/framework-info'
 
-import { log } from '../../log/logger.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
 
 const dirExists = async (path: string): Promise<boolean> => {
@@ -37,7 +36,7 @@ const coreStep: CoreStepFunction = async (input) => {
   for (const dir of dirs) {
     await rm(resolve(input.buildDir, dir), { recursive: true, force: true })
   }
-  log(input.logs, `Cleaned up ${dirs.join(', ')}.`)
+  input.systemLog(input.logs, `Cleaned up ${dirs.join(', ')}.`)
   return {}
 }
 
