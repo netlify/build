@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.56.2](https://github.com/netlify/build/compare/build-v29.56.1...build-v29.56.2) (2024-11-18)
+
+
+### Bug Fixes
+
+* turn log line into system log ([#5910](https://github.com/netlify/build/issues/5910)) ([ef92c48](https://github.com/netlify/build/commit/ef92c480c5411ba20ee869d8502f58f1e8418268))
+
 ## [29.56.1](https://github.com/netlify/build/compare/build-v29.56.0...build-v29.56.1) (2024-11-15)
 
 
