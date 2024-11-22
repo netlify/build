@@ -49,6 +49,7 @@ const tStartPlugins = async function ({
   systemLogFile,
   featureFlags,
 }) {
+  console.log(`## inside tStartPlugins, log plugin options ##`, JSON.stringify(pluginsOptions, null, 2))
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
     logLoadingPlugins(logs, pluginsOptions, debug)

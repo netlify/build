@@ -82,6 +82,11 @@ const loadPlugin = async function (
   const loadEvent = 'load'
   const cleanup = captureStandardError(childProcess, systemLog, loadEvent, featureFlags)
 
+  console.log(
+    `## inside loadPlugin, log packageName ##`,
+    JSON.stringify({ packageName, pluginPackageJson, pluginPath, netlifyConfig }, null, 2),
+  )
+
   try {
     const { events } = await callChild({
       childProcess,

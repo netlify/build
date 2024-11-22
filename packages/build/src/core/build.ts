@@ -630,6 +630,7 @@ const runBuild = async function ({
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
+  console.log(`## inside runBuild, log plugin options ##`, JSON.stringify(pluginsOptions, null, 2))
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
     childProcesses,
