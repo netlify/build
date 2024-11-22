@@ -211,7 +211,6 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
-    [`${pluginAttributePrefix}.pluginName`]: pluginName ?? 'missing',
     [`${pluginAttributePrefix}.isNetlifyMaintained`]: isNetlifyMaintained,
   }
 }
