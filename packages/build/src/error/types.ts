@@ -206,7 +206,7 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
   if (typeof pluginInfo === 'undefined') return {}
 
   const pluginName = pluginInfo?.packageName ? normalizeTagName(pluginInfo?.packageName) : null
-  const isNetlifyMaintained = pluginName && isNetlifyMaintainedPlugin(pluginName) ? '1' : '0'
+  const isNetlifyMaintained = !!(pluginName && isNetlifyMaintainedPlugin(pluginName))
 
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,

@@ -122,13 +122,11 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
       const { severity } = await handleBuildError(error, errorParams as any)
       const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
       const { success, severityCode, status } = getSeverity(severity)
-
       span.setAttributes({
         'build.execution.success': success,
         'build.execution.code': severityCode,
         'build.execution.status': status,
       })
-
       await telemetryReport({
         buildId,
         deployId,
@@ -141,7 +139,6 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         testOpts,
         errorParams,
       })
-
       await reportError(error, statsdOpts, framework)
 
       return { success, severityCode, logs }

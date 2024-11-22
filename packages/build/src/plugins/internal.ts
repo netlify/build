@@ -28,8 +28,6 @@ const NETLIFY_MAINTAINED_EXTENSIONS = new Set([
   'sfcc_content_buildhooks',
   'commercetools_content_buildhooks',
   'optimizely_edge_delivery_buildhooks',
-  // TODO REMOVE THIS
-  'a9jefvgl_fail_build_extension_buildhooks',
 ])
 
 export const isNetlifyMaintainedPlugin = (pluginPackage: string): boolean =>
