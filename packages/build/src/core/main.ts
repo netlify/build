@@ -2,13 +2,10 @@ import { setMultiSpanAttributes, getGlobalContext } from '@netlify/opentelemetry
 import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
-import { getErrorInfo } from '../error/info.js'
 import { reportError } from '../error/report.js'
 import { getSystemLogger } from '../log/logger.js'
 import type { BufferedLogs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
-import { isNetlifyMaintainedPlugin } from '../plugins/internal.js'
-import { normalizeTagName } from '../report/statsd.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
 import { RootExecutionAttributes } from '../tracing/main.js'
@@ -125,16 +122,11 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
       const { severity } = await handleBuildError(error, errorParams as any)
       const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
       const { success, severityCode, status } = getSeverity(severity)
-      const [errorInfo] = getErrorInfo(error)
-      const pluginName = errorInfo.plugin ? normalizeTagName(errorInfo.plugin.packageName) : null
-
-      const isNetlifyMaintained = pluginName && isNetlifyMaintainedPlugin(pluginName) ? '1' : '0'
 
       span.setAttributes({
         'build.execution.success': success,
         'build.execution.code': severityCode,
         'build.execution.status': status,
-        'build.execution.isNetlifyMaintained': isNetlifyMaintained,
       })
 
       await telemetryReport({

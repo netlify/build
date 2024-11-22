@@ -1,5 +1,8 @@
 import { Attributes } from '@opentelemetry/api'
 
+import { isNetlifyMaintainedPlugin } from '../plugins/internal.js'
+import { normalizeTagName } from '../report/statsd.js'
+
 // We override errorProps and title through getTitle and getErrorProps
 export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {
   title: string
@@ -201,9 +204,15 @@ const errorLocationToTracingAttributes = function (location: ErrorLocation): Att
 const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attributes {
   const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
   if (typeof pluginInfo === 'undefined') return {}
+
+  const pluginName = pluginInfo?.packageName ? normalizeTagName(pluginInfo?.packageName) : null
+  const isNetlifyMaintained = pluginName && isNetlifyMaintainedPlugin(pluginName) ? '1' : '0'
+
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
+    [`${pluginAttributePrefix}.pluginName`]: pluginName ?? 'missing',
+    [`${pluginAttributePrefix}.isNetlifyMaintained`]: isNetlifyMaintained,
   }
 }
 
