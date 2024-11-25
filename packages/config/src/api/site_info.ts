@@ -153,7 +153,7 @@ const getIntegrations = async function ({
   testOpts,
   offline,
   useV2Endpoint,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
+}: GetIntegrationsOpts): Promise<IntegrationResponse[] | undefined> {
   if (!siteId || offline) {
     return []
   }
@@ -173,9 +173,6 @@ const getIntegrations = async function ({
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    // Integrations should not block the build if they fail to load
-    // TODO: We should consider blocking the build as integrations are a critical part of the build process
-    // https://linear.app/netlify/issue/CT-1214/implement-strategy-in-builds-to-deal-with-integrations-that-we-fail-to
-    return []
+    throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
