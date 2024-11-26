@@ -167,12 +167,24 @@ const getIntegrations = async function ({
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
 
+  let response
   try {
-    const response = await fetch(url)
-
-    const integrations = await response.json()
-    return Array.isArray(integrations) ? integrations : []
+    response = await fetch(url)
+    if (response.status !== 200) {
+      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
+    }
   } catch (error) {
     throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
+
+  let integrations
+  try {
+    if (Number(response.headers.get(`content-length`)) === 0) return []
+    const responseBody = await response.json()
+    integrations = Array.isArray(responseBody) ? responseBody : []
+  } catch (error) {
+    throwUserError(`Failed to parse extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  }
+
+  return integrations
 }
