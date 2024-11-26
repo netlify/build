@@ -177,14 +177,11 @@ const getIntegrations = async function ({
     throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 
-  let integrations
   try {
     if (Number(response.headers.get(`content-length`)) === 0) return []
     const responseBody = await response.json()
-    integrations = Array.isArray(responseBody) ? responseBody : []
+    return Array.isArray(responseBody) ? responseBody : []
   } catch (error) {
     throwUserError(`Failed to parse extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
-
-  return integrations
 }
