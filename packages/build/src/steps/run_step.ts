@@ -87,6 +87,10 @@ export const runStep = async function ({
     attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
   }
 
+  if (pluginPackageJson?.author) {
+    attributes['build.execution.step.plugin_author'] = pluginPackageJson.author
+  }
+
   const spanCtx = setMultiSpanAttributes(attributes)
   // If there's no `coreStepId` then this is a plugin execution
   const spanName = `run-step-${coreStepId || `plugin-${event}`}`
