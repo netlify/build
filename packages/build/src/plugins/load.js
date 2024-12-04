@@ -108,6 +108,7 @@ const loadPlugin = async function (
       origin,
       pluginPackageJson,
       childProcess,
+      extension: rest.integration,
     }))
     return pluginSteps
   } catch (error) {

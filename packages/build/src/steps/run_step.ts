@@ -69,7 +69,9 @@ export const runStep = async function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  extension,
 }) {
+  console.log(`### INSIDE RUN STEP ###`, JSON.stringify(extension ? extension : {}, null, 2))
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,

@@ -652,6 +652,7 @@ const runBuild = async function ({
     return { netlifyConfig }
   }
 
+  console.log(`### GET STEPS ###`, JSON.stringify(steps, null, 2))
   const {
     stepsCount,
     netlifyConfig: netlifyConfigA,
