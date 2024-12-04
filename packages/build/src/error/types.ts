@@ -1,8 +1,5 @@
 import { Attributes } from '@opentelemetry/api'
 
-import { isNetlifyMaintainedPlugin } from '../plugins/internal.js'
-import { normalizeTagName } from '../report/statsd.js'
-
 // We override errorProps and title through getTitle and getErrorProps
 export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {
   title: string
