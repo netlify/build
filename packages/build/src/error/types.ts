@@ -84,6 +84,8 @@ type PluginInfo = {
   pluginPackageJson: {
     version?: string
   }
+  extensionSlug?: string
+  extensionAuthor?: string
 }
 
 export type BuildCommandLocation = {
@@ -207,10 +209,12 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
 
   const pluginName = pluginInfo?.packageName ? normalizeTagName(pluginInfo?.packageName) : null
   const isNetlifyMaintained = !!(pluginName && isNetlifyMaintainedPlugin(pluginName))
-
+  console.log(`pluginDataToTracingAttributes`, JSON.stringify(pluginInfo, null, 2))
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
+    [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo?.extensionAuthor,
+    [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo?.extensionSlug,
     [`${pluginAttributePrefix}.isNetlifyMaintained`]: isNetlifyMaintained,
   }
 }
