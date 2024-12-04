@@ -82,8 +82,12 @@ type PluginInfo = {
     version?: string
   }
   extensionMetadata?: {
-    author?: string
     slug: string
+    name: string
+    version: string
+    has_build: boolean
+    has_connector: boolean
+    author?: string
   }
 }
 
