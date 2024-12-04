@@ -69,9 +69,8 @@ export const runStep = async function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
-  extension,
+  extensionMetadata,
 }) {
-  console.log(`### INSIDE RUN STEP ###`, JSON.stringify(extension ? extension : {}, null, 2))
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,
@@ -87,11 +86,6 @@ export const runStep = async function ({
   if (pluginPackageJson?.name && pluginPackageJson?.version) {
     attributes['build.execution.step.plugin_name'] = pluginPackageJson.name
     attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
-  }
-
-  if (extension) {
-    attributes['build.execution.step.extension_author'] = extension.author
-    attributes['build.execution.step.extension_slug'] = extension.slug
   }
 
   const spanCtx = setMultiSpanAttributes(attributes)
@@ -151,7 +145,7 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
-      extension,
+      extensionMetadata,
       defaultConfig,
       event,
       childProcess,
@@ -357,7 +351,7 @@ const tFireStep = function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
-  extension,
+  extensionMetadata,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -423,6 +417,6 @@ const tFireStep = function ({
     featureFlags,
     debug,
     verbose,
-    extension,
+    extensionMetadata,
   })
 }

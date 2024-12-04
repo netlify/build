@@ -630,7 +630,6 @@ const runBuild = async function ({
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
-  console.log(`## inside runBuild, log plugin options ##`, JSON.stringify(pluginsOptions, null, 2))
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
     childProcesses,
@@ -652,7 +651,6 @@ const runBuild = async function ({
     return { netlifyConfig }
   }
 
-  console.log(`### GET STEPS ###`, JSON.stringify(steps, null, 2))
   const {
     stepsCount,
     netlifyConfig: netlifyConfigA,

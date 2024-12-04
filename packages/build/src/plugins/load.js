@@ -83,15 +83,13 @@ const loadPlugin = async function (
     inputs,
     loadedFrom,
     origin,
-    ...rest
+    integration,
   },
   { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig, featureFlags, systemLog },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
   const cleanup = captureStandardError(childProcess, systemLog, loadEvent, featureFlags)
-
-  console.log(`## inside loadPlugin, log packageName ##`, JSON.stringify({ packageName, rest }, null, 2))
 
   try {
     const { events } = await callChild({
@@ -108,7 +106,7 @@ const loadPlugin = async function (
       origin,
       pluginPackageJson,
       childProcess,
-      extension: rest.integration,
+      extensionMetadata: integration,
     }))
     return pluginSteps
   } catch (error) {
@@ -121,8 +119,7 @@ const loadPlugin = async function (
       plugin: {
         packageName,
         pluginPackageJson,
-        extensionAuthor: rest.integration?.author,
-        extensionSlug: rest.integration?.slug,
+        extensionMetadata: integration,
       },
       location: { event: loadEvent, packageName, loadedFrom, origin },
     })

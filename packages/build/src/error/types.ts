@@ -209,15 +209,12 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
   const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
   if (typeof pluginInfo === 'undefined') return {}
 
-  const pluginName = pluginInfo?.packageName ? normalizeTagName(pluginInfo?.packageName) : null
-  const isNetlifyMaintained = !!(pluginName && isNetlifyMaintainedPlugin(pluginName))
   console.log(`pluginDataToTracingAttributes`, JSON.stringify(pluginInfo, null, 2))
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
     [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo?.extensionMetadata?.author,
     [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo?.extensionMetadata?.slug,
-    [`${pluginAttributePrefix}.isNetlifyMaintained`]: isNetlifyMaintained,
   }
 }
 
