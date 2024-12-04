@@ -75,17 +75,23 @@ const loadAllPlugins = measureDuration(tLoadAllPlugins, 'load_plugins')
 // Retrieve plugin steps for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
-  { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin, ...rest },
+  {
+    packageName,
+    pluginPackageJson,
+    pluginPackageJson: { version } = {},
+    pluginPath,
+    inputs,
+    loadedFrom,
+    origin,
+    ...rest
+  },
   { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig, featureFlags, systemLog },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
   const cleanup = captureStandardError(childProcess, systemLog, loadEvent, featureFlags)
 
-  console.log(
-    `## inside loadPlugin, log packageName ##`,
-    JSON.stringify({ packageName, rest }, null, 2),
-  )
+  console.log(`## inside loadPlugin, log packageName ##`, JSON.stringify({ packageName, rest }, null, 2))
 
   try {
     const { events } = await callChild({
@@ -111,7 +117,12 @@ const loadPlugin = async function (
     }
 
     addErrorInfo(error, {
-      plugin: { packageName, pluginPackageJson },
+      plugin: {
+        packageName,
+        pluginPackageJson,
+        extensionAuthor: rest.integration?.author,
+        extensionSlug: rest.integration?.slug,
+      },
       location: { event: loadEvent, packageName, loadedFrom, origin },
     })
     addPluginLoadErrorStatus({ error, packageName, version, debug })
