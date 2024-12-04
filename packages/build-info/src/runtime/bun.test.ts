@@ -17,6 +17,15 @@ test('detects node when bunfig.toml is present', async ({ fs }) => {
   expect(detected[0].name).toBe('Bun')
 })
 
+test('detects node when bun.lock is present', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'bun.lock': '',
+  })
+
+  const detected = await new Project(fs, cwd).detectRuntime()
+  expect(detected[0].name).toBe('Bun')
+})
+
 test('detects node when bun.lockb is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     'bun.lockb': '',
