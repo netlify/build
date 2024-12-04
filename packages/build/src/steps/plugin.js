@@ -39,6 +39,7 @@ export const firePluginStep = async function ({
   featureFlags,
   debug,
   verbose,
+  extension,
 }) {
   const standardStreams = getStandardStreams(outputFlusher)
   const listeners = pipePluginOutput(childProcess, logs, standardStreams)
@@ -48,6 +49,7 @@ export const firePluginStep = async function ({
 
   const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
+  console.log(`### firePluginStep EXTENSION ###`, JSON.stringify(extension ? extension : {}, null, 2))
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
@@ -103,7 +105,7 @@ export const firePluginStep = async function ({
     const errorType = getPluginErrorType(newError, loadedFrom, packageName)
     addErrorInfo(newError, {
       ...errorType,
-      plugin: { pluginPackageJson, packageName },
+      plugin: { pluginPackageJson, packageName, extensionMetadata: extension },
       location: { event, packageName, loadedFrom, origin },
     })
     return { newError }

@@ -89,8 +89,9 @@ export const runStep = async function ({
     attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
   }
 
-  if (pluginPackageJson?.author) {
-    attributes['build.execution.step.plugin_author'] = pluginPackageJson.author
+  if (extension) {
+    attributes['build.execution.step.extension_author'] = extension.author
+    attributes['build.execution.step.extension_slug'] = extension.slug
   }
 
   const spanCtx = setMultiSpanAttributes(attributes)
@@ -150,6 +151,7 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
+      extension,
       defaultConfig,
       event,
       childProcess,
@@ -355,6 +357,7 @@ const tFireStep = function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
+  extension,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -420,5 +423,6 @@ const tFireStep = function ({
     featureFlags,
     debug,
     verbose,
+    extension,
   })
 }
