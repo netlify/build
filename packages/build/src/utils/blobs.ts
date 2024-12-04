@@ -136,7 +136,7 @@ export const getFileWithMetadata = async (
   key: string,
   contentPath: string,
   metadataPath?: string,
-): Promise<{ data: Buffer; metadata: Record<string, string> }> => {
+): Promise<{ data: ArrayBuffer; metadata: Record<string, string> }> => {
   const [data, metadata] = await Promise.all([
     readFile(contentPath),
     metadataPath ? readMetadata(metadataPath) : {},
