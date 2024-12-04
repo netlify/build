@@ -77,7 +77,7 @@ const coreStep: CoreStepFunction = async function ({
           log(logs, `- Uploading blob ${key}`, { indent: true })
         }
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        await blobStore.set(key, data, { metadata })
+        await blobStore.set(key, new Blob([data]), { metadata })
       },
       { concurrency: 10 },
     )
