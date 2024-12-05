@@ -210,7 +210,6 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
   const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
   if (typeof pluginInfo === 'undefined') return {}
 
-  console.log(`pluginDataToTracingAttributes`, JSON.stringify(pluginInfo, null, 2))
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
