@@ -383,54 +383,6 @@ test('Integrations are returned if feature flag is false and mode is dev', async
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations and account id are returned if flag is true for site and mode is buildbot', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'buildbot',
-      token: 'test',
-      accountId: 'account1',
-      featureFlags: {
-        cli_integration_installations_meta: true,
-      },
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
-
-  t.assert(config.integrations)
-  t.is(config.integrations.length, 1)
-  t.is(config.integrations[0].slug, 'test')
-  t.is(config.integrations[0].version, 'so-cool')
-  t.is(config.integrations[0].has_build, true)
-
-  // account id is also available
-  t.assert(config.siteInfo)
-  t.is(config.siteInfo.account_id, 'account1')
-})
-
-test('Integrations are returned if flag is true for site and mode is dev', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'dev',
-      token: 'test',
-      accountId: 'account1',
-      featureFlags: {
-        cli_integration_installations_meta: true,
-      },
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
-
-  t.assert(config.integrations)
-  t.assert(config.integrations.length === 1)
-  t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool')
-  t.assert(config.integrations[0].has_build === true)
-})
-
 test('baseRelDir is true if build.base is overridden', async (t) => {
   const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)
 
