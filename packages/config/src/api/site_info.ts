@@ -46,9 +46,7 @@ export const getSiteInfo = async function ({
     if (accountId !== undefined) siteInfo.account_id = accountId
 
     const integrations =
-      mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId })
-        : []
+      mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline, accountId }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
