@@ -152,23 +152,23 @@ jobs:
           # But other consumers do not, like `npm install`.
           # So we test both.
           - os: ubuntu-latest
-            node-version: '*'
+            node-version: '23.2.0'
             install-command: npm install --no-package-lock
             machine: '0'
           - os: ubuntu-latest
-            node-version: '*'
+            node-version: '23.2.0'
             install-command: npm install --no-package-lock
             machine: '1'
           - os: ubuntu-latest
-            node-version: '*'
+            node-version: '23.2.0'
             install-command: npm install --no-package-lock
             machine: '2'
           - os: ubuntu-latest
-            node-version: '*'
+            node-version: '23.2.0'
             install-command: npm install --no-package-lock
             machine: '3'
           - os: ubuntu-latest
-            node-version: '*'
+            node-version: '23.2.0'
             install-command: npm install --no-package-lock
             machine: '4'
       fail-fast: false
