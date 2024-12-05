@@ -75,7 +75,16 @@ const loadAllPlugins = measureDuration(tLoadAllPlugins, 'load_plugins')
 // Retrieve plugin steps for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
-  { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
+  {
+    packageName,
+    pluginPackageJson,
+    pluginPackageJson: { version } = {},
+    pluginPath,
+    inputs,
+    loadedFrom,
+    origin,
+    integration,
+  },
   { childProcesses, index, packageJson, logs, debug, verbose, netlifyConfig, featureFlags, systemLog },
 ) {
   const { childProcess } = childProcesses[index]
@@ -97,6 +106,7 @@ const loadPlugin = async function (
       origin,
       pluginPackageJson,
       childProcess,
+      extensionMetadata: integration,
     }))
     return pluginSteps
   } catch (error) {
@@ -106,7 +116,11 @@ const loadPlugin = async function (
     }
 
     addErrorInfo(error, {
-      plugin: { packageName, pluginPackageJson },
+      plugin: {
+        packageName,
+        pluginPackageJson,
+        extensionMetadata: integration,
+      },
       location: { event: loadEvent, packageName, loadedFrom, origin },
     })
     addPluginLoadErrorStatus({ error, packageName, version, debug })
