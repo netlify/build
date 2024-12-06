@@ -125,7 +125,10 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
-  const url = `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
+  // if accountId isn't present, use safe v1 endpoint
+  const url = accountId
+    ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
+    : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
     const response = await fetch(url)
