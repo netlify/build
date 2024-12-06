@@ -371,7 +371,7 @@ test('Integrations are not returned if offline', async (t) => {
   t.assert(config.integrations.length === 0)
 })
 
-test('Integrations and account id are returned if feature flag is false and mode is buildbot', async (t) => {
+test('Integrations and account id are returned if mode is buildbot', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
