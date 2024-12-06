@@ -35,45 +35,9 @@ export const getSiteInfo = async function ({
   context,
   offline = false,
   testOpts = {},
-  featureFlags = {},
   siteFeatureFlagPrefix,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-
-  const useV2Endpoint = !!accountId && featureFlags.cli_integration_installations_meta
-
-  if (useV2Endpoint) {
-    if (api === undefined || mode === 'buildbot' || testEnv) {
-      const siteInfo: { id?: string; account_id?: string } = {}
-
-      if (siteId !== undefined) siteInfo.id = siteId
-      if (accountId !== undefined) siteInfo.account_id = accountId
-
-      const integrations =
-        mode === 'buildbot' && !offline
-          ? await getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId })
-          : []
-
-      return { siteInfo, accounts: [], addons: [], integrations }
-    }
-
-    const promises = [
-      getSite(api, siteId, siteFeatureFlagPrefix),
-      getAccounts(api),
-      getAddons(api, siteId),
-      getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId }),
-    ]
-
-    const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
-
-    if (siteInfo.use_envelope) {
-      const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
-
-      siteInfo.build_settings.env = envelope
-    }
-
-    return { siteInfo, accounts, addons, integrations }
-  }
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo: { id?: string; account_id?: string } = {}
@@ -81,7 +45,8 @@ export const getSiteInfo = async function ({
     if (siteId !== undefined) siteInfo.id = siteId
     if (accountId !== undefined) siteInfo.account_id = accountId
 
-    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
+    const integrations =
+      mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline, accountId }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -90,7 +55,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline }),
+    getIntegrations({ siteId, testOpts, offline, accountId }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -144,7 +109,6 @@ type GetIntegrationsOpts = {
   accountId?: string
   testOpts: TestOptions
   offline: boolean
-  useV2Endpoint?: boolean
 }
 
 const getIntegrations = async function ({
@@ -152,7 +116,6 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
-  useV2Endpoint,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
@@ -162,8 +125,8 @@ const getIntegrations = async function ({
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
-  // use future state feature flag
-  const url = useV2Endpoint
+  // if accountId isn't present, use safe v1 endpoint
+  const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
 
