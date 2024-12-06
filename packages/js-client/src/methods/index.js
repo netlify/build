@@ -27,6 +27,7 @@ const getMethod = function ({ method, basePath, defaultHeaders, agent, globalPar
 const callMethod = async function ({ method, basePath, defaultHeaders, agent, globalParams, params, opts }) {
   const requestParams = { ...globalParams, ...params }
   const url = getUrl(method, basePath, requestParams)
+  console.log('hi sarah', url)
   const response = await makeRequestOrRetry({ url, method, defaultHeaders, agent, requestParams, opts })
 
   const parsedResponse = await parseResponse(response)

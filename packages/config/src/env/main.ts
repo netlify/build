@@ -1,9 +1,7 @@
-import type { NetlifyAPI } from 'netlify'
 import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
-import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
@@ -13,7 +11,6 @@ import { getGitEnv } from './git.js'
 // TODO: add `netlify.toml` `build.environment`, after normalization
 // TODO: add `CONTEXT` and others
 export const getEnv = async function ({
-  api,
   mode,
   config,
   siteInfo,
@@ -33,12 +30,10 @@ export const getEnv = async function ({
   const internalEnv = getInternalEnv(cachedEnv)
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
   const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({
-    api,
     config,
     siteInfo,
     accounts,
     addons,
-    context,
   })
 
   // Sources of environment variables, in descending order of precedence.
@@ -160,8 +155,8 @@ const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
 const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
-const getUserEnv = async function ({ api, config, siteInfo, accounts, addons, context }) {
-  const accountEnv = await getAccountEnv({ api, siteInfo, accounts, context })
+const getUserEnv = async function ({ config, siteInfo, accounts, addons }) {
+  const accountEnv = await getAccountEnv({ siteInfo, accounts })
   const addonsEnv = getAddonsEnv(addons)
   const uiEnv = getUiEnv({ siteInfo })
   const configFileEnv = getConfigFileEnv({ config })
@@ -169,17 +164,7 @@ const getUserEnv = async function ({ api, config, siteInfo, accounts, addons, co
 }
 
 // Account-wide environment variables
-const getAccountEnv = async function ({
-  api,
-  siteInfo,
-  accounts,
-  context,
-}: {
-  api: NetlifyAPI
-  siteInfo: any
-  accounts: any
-  context?: string
-}) {
+const getAccountEnv = async function ({ siteInfo, accounts }: { siteInfo: any; accounts: any }) {
   if (siteInfo.use_envelope) {
     // The API call to envelope was made in getSiteInfo and added to this object
     // Used to do an API call here but it was redundant :)
