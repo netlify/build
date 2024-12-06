@@ -12,12 +12,7 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-
-// When updating DENO_VERSION_RANGE, ensure that the deno version installed in the
-// build-image/buildbot does satisfy this range!
-// We're pinning the range because of an issue with v1.45.0 of the Deno CLI:
-// https://linear.app/netlify/issue/FRP-775/deno-cli-v1450-causing-issues
-const DENO_VERSION_RANGE = '1.37.0 - 1.44.4'
+const DENO_VERSION_RANGE = '1.37.0 - 1.46.3'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
