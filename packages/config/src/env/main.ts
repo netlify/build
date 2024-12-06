@@ -181,7 +181,9 @@ const getAccountEnv = async function ({
   context?: string
 }) {
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId: siteInfo.site_id, context })
+    // The API call to envelope was made in getSiteInfo and added to this object
+    // Used to do an API call here but it was redundant :)
+    const envelope = siteInfo.build_settings.env
     return envelope
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
