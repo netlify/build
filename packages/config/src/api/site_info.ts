@@ -171,6 +171,7 @@ const getIntegrations = async function ({
     const response = await fetch(url)
 
     const integrations = await response.json()
+    console.log(`test`)
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
     // Integrations should not block the build if they fail to load
