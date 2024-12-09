@@ -246,7 +246,7 @@ export class Fixture {
     flags: Partial<Flags> = {},
   ): Promise<{
     output: string
-    exitCode: number
+    exitCode: number | undefined
   }> {
     const { env: environment, ...remainingFlags } = flags
     try {
