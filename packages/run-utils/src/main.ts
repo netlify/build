@@ -3,7 +3,7 @@ import process from 'process'
 import { execa, type Subprocess, execaCommand, type Options } from 'execa'
 
 /** Allow running local binaries by default */
-const DEFAULT_OPTIONS: Partial<Options> = { preferLocal: true }
+const DEFAULT_OPTIONS: Partial<Options> = { preferLocal: true, verbose: 'full' }
 
 /** Run a command, with arguments being an array */
 export const run = (file: string, args?: string[] | object, options?: Options) => {

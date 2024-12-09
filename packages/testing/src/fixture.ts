@@ -150,7 +150,7 @@ export class Fixture {
     await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
 
     if (copyRoot.branch !== undefined) {
-      await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
+      await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir, verbose: 'full' })
     }
 
     this.repositoryRoot = this.copyRootDir

@@ -656,6 +656,7 @@ describe('zip-it-and-ship-it', () => {
 
       await execa('npm', ['install', '--no-package-lock', '--no-audit', '--prefer-offline', '--progress=false'], {
         cwd: basePath,
+        verbose: 'full',
       })
     }, 30_000)
 
@@ -1194,7 +1195,7 @@ describe('zip-it-and-ship-it', () => {
     const fixturePath = join(FIXTURES_DIR, 'esbuild-log-limit')
 
     try {
-      await execa('node', [BINARY_PATH, fixturePath, tmpDir, `--config.*.nodeBundler=esbuild`])
+      await execa('node', [BINARY_PATH, fixturePath, tmpDir, `--config.*.nodeBundler=esbuild`], { verbose: 'full' })
 
       expect.fail('Bundling should have thrown')
     } catch (error) {

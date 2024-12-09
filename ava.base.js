@@ -7,7 +7,7 @@ import * as execa from 'execa'
 
 const { execaCommand } = execa
 if (process.argv.includes('-w')) {
-  execaCommand('tsc -w', { cleanup: true })
+  execaCommand('tsc -w', { cleanup: true, verbose: 'full' })
 }
 
 // `tests-metadata.json` is created by running `npx lerna run test:measure --scope @netlify/build`

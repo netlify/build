@@ -17,7 +17,7 @@ export const getGitEnv = async function (buildDir, branch) {
 
 const git = async function (args, cwd) {
   try {
-    const { stdout } = await execa('git', args, { cwd })
+    const { stdout } = await execa('git', args, { cwd, verbose: 'full' })
     return stdout
   } catch {
     // continue regardless error

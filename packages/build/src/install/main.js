@@ -21,7 +21,7 @@ export const addExactDependencies = function ({ packageRoot, isLocal, packages }
 const runCommand = async function ({ packageRoot, packages = [], isLocal, type }) {
   try {
     const [command, ...args] = await getCommand({ packageRoot, type, isLocal })
-    await execa(command, [...args, ...packages], { cwd: packageRoot, all: true })
+    await execa(command, [...args, ...packages], { cwd: packageRoot, all: true, verbose: 'full' })
   } catch (error) {
     const message = getErrorMessage(error.all)
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${message}`)

@@ -28,7 +28,7 @@ export const getUserNodeVersion = async function (nodePath) {
   }
 
   // Fallback to actually running `node --version` with the given nodePath
-  const { stdout } = await execa(nodePath, ['--version'], { reject: false })
+  const { stdout } = await execa(nodePath, ['--version'], { reject: false, verbose: 'full' })
   const version = semver.clean(stdout)
 
   if (version === null) {

@@ -38,6 +38,7 @@ const coreStep = async function ({
       env: childEnv,
       extendEnv: false,
       stdio,
+      verbose: 'full',
     })
 
     try {
