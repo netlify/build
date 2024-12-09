@@ -256,6 +256,7 @@ export class Fixture {
         reject: false,
         env: environment || {},
         cwd,
+        verbose: 'full',
       })
       return { output: output || '', exitCode }
     } finally {
