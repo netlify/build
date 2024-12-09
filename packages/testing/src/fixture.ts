@@ -150,7 +150,7 @@ export class Fixture {
     await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
 
     if (copyRoot.branch !== undefined) {
-      await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
+      await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir, verbose: 'full' })
     }
 
     this.repositoryRoot = this.copyRootDir
@@ -246,7 +246,7 @@ export class Fixture {
     flags: Partial<Flags> = {},
   ): Promise<{
     output: string
-    exitCode: number
+    exitCode: number | undefined
   }> {
     const { env: environment, ...remainingFlags } = flags
     try {
@@ -256,6 +256,7 @@ export class Fixture {
         reject: false,
         env: environment || {},
         cwd,
+        verbose: 'full',
       })
       return { output: output || '', exitCode }
     } finally {

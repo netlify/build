@@ -55,7 +55,6 @@ jobs:
         deno-version: ['v1.37.0', 'v1.44.4']
         include:
           - os: ubuntu-latest
-            node-version: '14.16.0'
             deno-version: 'v1.44.4'
       fail-fast: false
     steps:
@@ -85,9 +84,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -126,28 +122,6 @@ jobs:
         install-command: ['npm ci']
         machine: ['0', '1', '2', '3', '4']
         include:
-          # We test on the oldest supported Node.js version, but only with a
-          # single combination (Ubuntu)
-          - os: ubuntu-latest
-            node-version: '14.16.0'
-            install-command: npm ci
-            machine: '0'
-          - os: ubuntu-latest
-            node-version: '14.16.0'
-            install-command: npm ci
-            machine: '1'
-          - os: ubuntu-latest
-            node-version: '14.16.0'
-            install-command: npm ci
-            machine: '2'
-          - os: ubuntu-latest
-            node-version: '14.16.0'
-            install-command: npm ci
-            machine: '3'
-          - os: ubuntu-latest
-            node-version: '14.16.0'
-            install-command: npm ci
-            machine: '4'
           # The buildbot pins Netlify Build's dependencies, like `npm ci`.
           # But other consumers do not, like `npm install`.
           # So we test both.
@@ -200,9 +174,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v5
         with:

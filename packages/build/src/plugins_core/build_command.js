@@ -34,10 +34,11 @@ const coreStep = async function ({
       shell: SHELL,
       cwd: buildDir,
       preferLocal: true,
-      execPath: nodePath,
+      nodePath,
       env: childEnv,
       extendEnv: false,
       stdio,
+      verbose: 'full',
     })
 
     try {

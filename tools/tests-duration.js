@@ -14,7 +14,7 @@ const measureDurations = async () => {
   const durations = new Map()
   for (const testFile of testFiles) {
     const startTime = performance.now()
-    const { stdout } = await execa('ava', [testFile], { preferLocal: true, reject: false })
+    const { stdout } = await execa('ava', [testFile], { preferLocal: true, reject: false, verbose: 'full' })
     console.log(stdout)
     const endTime = performance.now()
 

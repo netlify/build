@@ -15,7 +15,7 @@ const runBinary = (...args: string[]) => {
     return execaNode(binary, args)
   }
   const binary = fileURLToPath(new URL('../src/node/bin.ts', import.meta.url))
-  return execa('node', ['--loader=ts-node/esm', '--no-warnings', binary, ...args])
+  return execa('node', ['--loader=ts-node/esm', '--no-warnings', binary, ...args], { verbose: 'full' })
 }
 
 test('CLI --help flag', async () => {

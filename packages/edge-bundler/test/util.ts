@@ -40,7 +40,7 @@ const inspectFunction = (path: string) => `
 
     responses[functionName] = await res.text();
   }
-  
+
   console.log(JSON.stringify(responses));
 `
 

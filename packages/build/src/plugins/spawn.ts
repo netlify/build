@@ -3,7 +3,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import { trace } from '@opentelemetry/api'
-import { ExecaChildProcess, execaNode } from 'execa'
+import { type Subprocess, execaNode } from 'execa'
 import { gte } from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
@@ -26,7 +26,7 @@ import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 import { captureStandardError } from './system_log.js'
 
-export type ChildProcess = ExecaChildProcess<string>
+export type ChildProcess = Subprocess
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 const pSetTimeout = promisify(setTimeout)
@@ -133,7 +133,6 @@ const startPlugin = async function ({
     localDir: pluginDir,
     nodePath,
     nodeOptions,
-    execPath: nodePath,
     env: {
       ...childEnv,
       OTEL_SERVICE_NAME: pluginPackageJson?.name,
@@ -175,7 +174,7 @@ export const stopPlugins = async function ({
 }: {
   logs: BufferedLogs
   verbose: boolean
-  childProcesses: { childProcess: ExecaChildProcess }[]
+  childProcesses: { childProcess: Subprocess }[]
   pluginOptions: PluginsOptions[]
   netlifyConfig: NetlifyConfig
 }) {
@@ -193,7 +192,7 @@ const stopPlugin = async function ({
   netlifyConfig,
   verbose,
 }: {
-  childProcess: ExecaChildProcess
+  childProcess: Subprocess
   pluginOptions: PluginsOptions
   netlifyConfig: NetlifyConfig
   verbose: boolean

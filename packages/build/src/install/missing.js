@@ -87,7 +87,7 @@ const getIntegrationPackage = async function ({
     const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(buildDir, path)
 
     try {
-      const res = await execa('npm', ['run', 'build'], { cwd: integrationDir, env: pluginsEnv })
+      const res = await execa('npm', ['run', 'build'], { cwd: integrationDir, env: pluginsEnv, verbose: 'full' })
 
       // This is horrible and hacky, but `npm run build` will
       // return status code 0 even if it fails
