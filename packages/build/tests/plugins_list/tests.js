@@ -7,7 +7,10 @@ import test from 'ava'
 import cpy from 'cpy'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
-
+process.addListener('unhandledRejection', (reason, promise) => {
+  const stack = new Error().stack
+  console.log('hey', { reason, promise, stack })
+})
 const runWithApiMock = async function (
   t,
   fixtureName,
