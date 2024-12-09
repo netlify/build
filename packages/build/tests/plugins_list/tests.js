@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
@@ -7,6 +8,9 @@ import test from 'ava'
 import cpy from 'cpy'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+
+console.log('platform', platform)
+
 process.addListener('unhandledRejection', (reason, promise) => {
   const stack = new Error().stack
   console.log('hey', { reason, promise, stack })
