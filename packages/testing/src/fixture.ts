@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 
 import test from 'ava'
 import cpy from 'cpy'
-import { execa, execaCommand } from 'execa'
+import { execa, execaCommandSync } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
 import isPlainObj from 'is-plain-obj'
@@ -150,7 +150,7 @@ export class Fixture {
     await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
 
     if (copyRoot.branch !== undefined) {
-      await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
+      await execaCommandSync(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
     }
 
     this.repositoryRoot = this.copyRootDir
