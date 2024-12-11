@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Needed for git tag updates below
+          fetch-tags: true
       - uses: actions/setup-node@v4
         with:
           node-version: '*'
