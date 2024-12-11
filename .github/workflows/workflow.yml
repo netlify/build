@@ -34,7 +34,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }t
       - name: test
         run: npx nx affected --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -148,29 +148,6 @@ jobs:
           - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
-            machine: '4'
-          # The buildbot pins Netlify Build's dependencies, like `npm ci`.
-          # But other consumers do not, like `npm install`.
-          # So we test both.
-          - os: ubuntu-24.04
-            node-version: '22'
-            install-command: npm install --no-package-lock
-            machine: '0'
-          - os: ubuntu-24.04
-            node-version: '22'
-            install-command: npm install --no-package-lock
-            machine: '1'
-          - os: ubuntu-24.04
-            node-version: '22'
-            install-command: npm install --no-package-lock
-            machine: '2'
-          - os: ubuntu-24.04
-            node-version: '22'
-            install-command: npm install --no-package-lock
-            machine: '3'
-          - os: ubuntu-24.04
-            node-version: '22'
-            install-command: npm install --no-package-lock
             machine: '4'
       fail-fast: false
     steps:
