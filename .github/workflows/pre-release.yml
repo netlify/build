@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: '*'
+          node-version: '22'
           check-latest: true
           registry-url: 'https://registry.npmjs.org'
       - name: Extract tag, version and package
