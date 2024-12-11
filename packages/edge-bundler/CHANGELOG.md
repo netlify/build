@@ -1,5 +1,18 @@
 # Changelog
 
+## [12.3.0](https://github.com/netlify/build/compare/edge-bundler-v12.2.3...edge-bundler-v12.3.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* catch and ignore .kill exceptions and don't force timeout kill in windows ([#5932](https://github.com/netlify/build/issues/5932)) ([7ea3e7b](https://github.com/netlify/build/commit/7ea3e7b70a42b4b911d8fbd966fe0d223ee0b5e6))
+* update DENO_VERSION_RANGE ([#5929](https://github.com/netlify/build/issues/5929)) ([5bb784a](https://github.com/netlify/build/commit/5bb784a814b472462ea972cdd9b81048f36c2c29))
+
 ## [12.2.3](https://github.com/netlify/build/compare/edge-bundler-v12.2.2...edge-bundler-v12.2.3) (2024-08-05)
 
 
