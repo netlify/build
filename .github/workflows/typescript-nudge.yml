@@ -10,7 +10,7 @@ on:
 name: TypeScript conversion nudge
 jobs:
   Nudge-to-convert-to-TypeScript-if-JavaScript-found:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
