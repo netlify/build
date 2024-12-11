@@ -52,12 +52,12 @@ jobs:
         os: [ubuntu-24.04, macos-14, windows-2022]
         node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        deno-version: ['v1.37.0', 'v1.44.4']
+        deno-version: ['v1.39.0', 'v1.46.3']
         include:
           - os: ubuntu-24.04
             # Earliest supported version
             node-version: '14.16.0'
-            deno-version: 'v1.44.4'
+            deno-version: 'v1.46.3'
       fail-fast: false
     steps:
       # Increasing the maximum number of open files. See:
@@ -193,7 +193,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.44.4
+          deno-version: v1.46.3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
