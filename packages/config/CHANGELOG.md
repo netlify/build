@@ -76,6 +76,22 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.20.0](https://github.com/netlify/build/compare/config-v20.19.1...config-v20.20.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.21 to ^13.2.0
+    * netlify-headers-parser bumped from ^7.1.4 to ^7.2.0
+    * netlify-redirect-parser bumped from ^14.3.0 to ^14.4.0
+
 ## [20.19.1](https://github.com/netlify/build/compare/config-v20.19.0...config-v20.19.1) (2024-11-15)
 
 
