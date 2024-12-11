@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.3.0](https://github.com/netlify/build/compare/functions-utils-v5.2.93...functions-utils-v5.3.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 9.41.1 to 9.42.0
+
 ## [5.2.93](https://github.com/netlify/build/compare/functions-utils-v5.2.92...functions-utils-v5.2.93) (2024-10-25)
 
 
