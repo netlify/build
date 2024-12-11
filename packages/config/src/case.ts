@@ -1,10 +1,18 @@
 // Some properties can be optionally capitalized. We normalize them to lowercase
-export const normalizeConfigCase = function ({ Build, build = Build, ...config }) {
+export const normalizeConfigCase = function ({
+  Build,
+  build = Build,
+  ...config
+}: {
+  Build: Record<string, unknown>
+  build: Record<string, unknown>
+  [key: string]: unknown
+}): Record<string, unknown> {
   const buildA = normalizeBuildCase(build)
   return { ...config, build: buildA }
 }
 
-const normalizeBuildCase = function ({
+const normalizeBuildCase = ({
   Base,
   base = Base,
   Command,
@@ -22,7 +30,7 @@ const normalizeBuildCase = function ({
   Publish,
   publish = Publish,
   ...build
-} = {}) {
+}: Record<string, unknown> = {}): Record<string, unknown> => {
   return {
     ...build,
     base,
