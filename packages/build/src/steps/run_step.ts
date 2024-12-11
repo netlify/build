@@ -69,6 +69,7 @@ export const runStep = async function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  extensionMetadata,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -144,6 +145,7 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
+      extensionMetadata,
       defaultConfig,
       event,
       childProcess,
@@ -349,6 +351,7 @@ const tFireStep = function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
+  extensionMetadata,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -414,5 +417,6 @@ const tFireStep = function ({
     featureFlags,
     debug,
     verbose,
+    extensionMetadata,
   })
 }
