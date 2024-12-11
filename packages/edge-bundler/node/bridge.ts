@@ -12,6 +12,10 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
+
+// When updating DENO_VERSION_RANGE, ensure that the deno version
+// on the netlify/buildbot build image satisfies this range!
+// https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
 const DENO_VERSION_RANGE = '1.39.0 - 1.46.3'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
