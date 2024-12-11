@@ -49,6 +49,18 @@ const tStartPlugins = async function ({
   systemLog,
   systemLogFile,
   featureFlags,
+}: {
+  // TODO(serhalp) Add return type to `resolvePluginsPath` in `plugins/resolve.js`
+  // and `loadPluginFiles` in `plugins/options.ts`.
+  pluginsOptions: any[]
+  buildDir: string
+  childEnv: Record<string, string>
+  logs: BufferedLogs | undefined
+  debug: boolean
+  quiet: boolean
+  systemLog: SystemLogger
+  systemLogFile: number
+  featureFlags: FeatureFlags
 }) {
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
