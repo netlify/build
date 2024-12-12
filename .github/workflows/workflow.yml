@@ -34,7 +34,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }t
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: test
         run: npx nx affected --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
