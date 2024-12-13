@@ -95,8 +95,8 @@ Most Netlify CLI commands rely on configuration properties. The base command loa
 [using `@netlify/config` programmatically](https://github.com/netlify/cli/blob/f87d9e6e1749bedaabaace3dae98ca1ed6d84fd6/src/commands/base-command.js#L474).
 
 An `inlineConfig` flag was added to `@netlify/config` so Netlify CLI can override specific configuration properties
-based on its own CLI flags, but this is not used yet (see <https://github.com/netlify/cli/issues/1265>,
-<https://github.com/netlify/cli/issues/960>, <https://github.com/netlify/cli/issues/961>).
+based on its own CLI flags, but this is not used yet (see https://github.com/netlify/cli/issues/1265,
+https://github.com/netlify/cli/issues/960, https://github.com/netlify/cli/issues/961).
 
 We try to
 [emulate the same environment variables](https://github.com/netlify/build/blob/558fe8869f47ecc84d05bd4d26d32df00f47a3b9/packages/config/src/env/main.js#L13)
