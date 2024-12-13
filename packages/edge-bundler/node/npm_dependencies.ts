@@ -13,8 +13,7 @@ import tmp from 'tmp-promise'
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { pathsBetween } from './utils/fs.js'
-
-const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'])
+import { transpile, TYPESCRIPT_EXTENSIONS } from './utils/typescript.js'
 
 const slugifyPackageName = (specifier: string) => {
   if (!specifier.startsWith('@')) return specifier
@@ -118,15 +117,7 @@ const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, r
       // If this is a TypeScript file, we need to compile in before we can
       // parse it.
       if (TYPESCRIPT_EXTENSIONS.has(path.extname(filePath))) {
-        const compiled = await build({
-          bundle: false,
-          entryPoints: [filePath],
-          logLevel: 'silent',
-          platform: 'node',
-          write: false,
-        })
-
-        return compiled.outputFiles[0].text
+        return transpile(filePath)
       }
 
       return fs.readFile(filePath, 'utf8')

@@ -5,7 +5,6 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { resolve as importMapResolve } from '@import-maps/resolve'
 import { nodeFileTrace, resolve as nftResolve } from '@vercel/nft'
 import commonPathPrefix from 'common-path-prefix'
-import { build } from 'esbuild'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -15,11 +14,11 @@ import { EdgeFunction } from '../edge_function.js'
 import { FeatureFlags } from '../feature_flags.js'
 import { ImportMap } from '../import_map.js'
 import { getStringHash, readFileAndHash } from '../utils/sha256.js'
+import { transpile, TYPESCRIPT_EXTENSIONS } from '../utils/typescript.js'
 import { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 
 const TARBALL_EXTENSION = '.tar'
 const TARBALL_SRC_DIRECTORY = 'src'
-const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'])
 
 interface Manifest {
   functions: Record<string, string>
@@ -134,22 +133,7 @@ export const bundle = async ({
     processCwd: basePath,
     readFile: async (filePath: string) => {
       if (TYPESCRIPT_EXTENSIONS.has(path.extname(filePath)) || tsPaths.has(filePath)) {
-        const transpiled = (
-          await build({
-            bundle: false,
-            entryPoints: [filePath],
-            loader: {
-              // esbuild uses the extension of each entrypoint to determine the
-              // right loader to use. This doesn't work with the internal files
-              // from the Deno cache, so we must tell it to use the TypeScript
-              // loader for any files without an extension.
-              '': 'ts',
-            },
-            logLevel: 'silent',
-            platform: 'node',
-            write: false,
-          })
-        ).outputFiles[0].text
+        const transpiled = await transpile(filePath)
 
         hashes.set(filePath, getStringHash(transpiled))
 
