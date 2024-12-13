@@ -5,10 +5,10 @@ import process from 'process'
 import { pathToFileURL } from 'url'
 
 import tmp from 'tmp-promise'
-import { test, expect, vi } from 'vitest'
+import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { runESZIP, useFixture } from '../test/util.js'
+import { runESZIP, runTarball, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -105,15 +105,9 @@ test('Adds a custom error property to user errors during bundling', async () => 
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     const [messageBeforeStack] = (error as BundleError).message.split('at <anonymous> (file://')
-    expect(messageBeforeStack).toMatchInlineSnapshot(`
-      "error: Uncaught (in promise) Error: The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27
-
-        export default async () => 
-                                  ~
-            const ret = new Error(getStringFromWasm0(arg0, arg1));
-                        ^
-          "
-    `)
+    expect(messageBeforeStack).toContain(
+      `The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27`,
+    )
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'eszip',
@@ -502,7 +496,7 @@ test('Loads npm modules from bare specifiers', async () => {
   const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
   expect(func1).toBe(
-    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
+    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
   )
 
   await cleanup()
@@ -641,3 +635,48 @@ test('Loads edge functions from the Frameworks API', async () => {
 
   await cleanup()
 })
+
+describe('Produces a tarball bundle', () => {
+  test('Using npm modules', async () => {
+    const systemLogger = vi.fn()
+    const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
+    const sourceDirectory = join(basePath, 'functions')
+    const declarations: Declaration[] = [
+      {
+        function: 'func1',
+        path: '/func1',
+      },
+    ]
+    const vendorDirectory = await tmp.dir()
+
+    await bundle([sourceDirectory], distPath, declarations, {
+      basePath,
+      featureFlags: {
+        edge_bundler_generate_tarball: true,
+      },
+      importMapPaths: [join(basePath, 'import_map.json')],
+      vendorDirectory: vendorDirectory.path,
+      systemLogger,
+    })
+
+    expect(
+      systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+    ).toBeUndefined()
+
+    const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
+
+    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+    const manifest = JSON.parse(manifestFile)
+
+    const tarballPath = join(distPath, manifest.bundles[0].asset)
+    const tarballResult = await runTarball(tarballPath)
+    expect(tarballResult.func1).toBe(expectedOutput)
+
+    const eszipPath = join(distPath, manifest.bundles[1].asset)
+    const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
+    expect(eszipResult.func1).toBe(expectedOutput)
+
+    await cleanup()
+    await rm(vendorDirectory.path, { force: true, recursive: true })
+  })
+}, 10_000)

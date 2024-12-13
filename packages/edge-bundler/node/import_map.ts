@@ -200,6 +200,29 @@ export class ImportMap {
     }
   }
 
+  getContentsWithRelativePaths() {
+    let imports: Imports = {}
+    let scopes: Record<string, Imports> = {}
+
+    this.sources.forEach((file) => {
+      imports = { ...imports, ...file.imports }
+      scopes = { ...scopes, ...file.scopes }
+    })
+
+    // Internal imports must come last, because we need to guarantee that
+    // `netlify:edge` isn't user-defined.
+    Object.entries(INTERNAL_IMPORTS).forEach((internalImport) => {
+      const [specifier, url] = internalImport
+
+      imports[specifier] = url
+    })
+
+    return {
+      imports,
+      scopes,
+    }
+  }
+
   // The same as `getContents`, but the URLs are represented as URL objects
   // instead of strings. This is compatible with the `ParsedImportMap` type
   // from the `@import-maps/resolve` library.
