@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>netlify/renovate-config:esm"],
+  "ignorePresets": [":prHourlyLimit2"],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "semanticCommits": "enabled",
+  "dependencyDashboard": true,
+  "automerge": true,
+  "packageRules": [
+    {
+      "description": "Pin @vercel/nft to v0.27.7 due to breaking changes in transitive dependencies",
+      "matchPackageNames": ["@vercel/nft"],
+      "allowedVersions": "0.27.7"
+    }
+  ]
+}
