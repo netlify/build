@@ -115,17 +115,16 @@ export const bundle = async (
     vendorDirectory,
   })
 
-  const functionBundles: Bundle[] = []
+  const bundles: Bundle[] = []
 
   if (featureFlags.edge_bundler_generate_tarball) {
-    functionBundles.push(
+    bundles.push(
       await bundleTarball({
         basePath,
         buildID,
         debug,
         deno,
         distDirectory,
-        externals,
         functions,
         featureFlags,
         importMap: importMap.clone(),
@@ -138,7 +137,7 @@ export const bundle = async (
     importMap.add(vendor.importMap)
   }
 
-  functionBundles.push(
+  bundles.push(
     await bundleESZIP({
       basePath,
       buildID,
@@ -156,7 +155,7 @@ export const bundle = async (
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  await createFinalBundles(functionBundles, distDirectory, buildID)
+  await createFinalBundles(bundles, distDirectory, buildID)
 
   // Retrieving a configuration object for each function.
   // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
@@ -187,7 +186,7 @@ export const bundle = async (
   })
 
   const manifest = await writeManifest({
-    bundles: functionBundles,
+    bundles,
     declarations,
     distDirectory,
     featureFlags,
