@@ -1,5 +1,5 @@
 {
-  "name": "netlify-redirect-parser",
+  "name": "@netlify/redirect-parser",
   "version": "14.4.0",
   "description": "Parses netlify redirects into a js object representation",
   "type": "module",

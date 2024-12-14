@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@import-maps/resolve": "^1.0.1",
-    "@vercel/nft": "^0.27.0",
+    "@vercel/nft": "0.27.7",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
     "better-ajv-errors": "^1.2.0",
