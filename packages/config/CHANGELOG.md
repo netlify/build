@@ -76,6 +76,27 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.21.0](https://github.com/netlify/build/compare/config-v20.20.0...config-v20.21.0) (2024-12-14)
+
+
+### Features
+
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+* rename unscoped NPM packages ([#5943](https://github.com/netlify/build/issues/5943)) ([131a644](https://github.com/netlify/build/commit/131a644bfde5205f730f3369b778d8914c7c0382))
+
+
+### Bug Fixes
+
+* fail build when extension failed to be retrieved ([#5915](https://github.com/netlify/build/issues/5915)) ([20c7359](https://github.com/netlify/build/commit/20c73593deda6fc4a570fc7b71178687a693e03d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^7.2.0 to ^7.3.0
+    * @netlify/redirect-parser bumped from ^14.4.0 to ^14.5.0
+
 ## [20.20.0](https://github.com/netlify/build/compare/config-v20.19.1...config-v20.20.0) (2024-12-11)
 
 

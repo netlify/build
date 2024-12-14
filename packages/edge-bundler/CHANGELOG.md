@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.3.1](https://github.com/netlify/build/compare/edge-bundler-v12.3.0...edge-bundler-v12.3.1) (2024-12-14)
+
+
+### Bug Fixes
+
+* **deps:** pin @vercel/nft due to breaking change in patch ([#5944](https://github.com/netlify/build/issues/5944)) ([e8e29f0](https://github.com/netlify/build/commit/e8e29f027b09631b7c66dee35c874f8533003d46))
+
 ## [12.3.0](https://github.com/netlify/build/compare/edge-bundler-v12.2.3...edge-bundler-v12.3.0) (2024-12-11)
 
 
