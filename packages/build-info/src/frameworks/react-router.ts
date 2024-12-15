@@ -5,8 +5,11 @@ import { BaseFramework, Category, DetectedFramework, Framework } from './framewo
 export class ReactRouter extends BaseFramework implements Framework {
   readonly id = 'react-router'
   name = 'React Router'
+  // React Router 7+ can be used either as a library or as a framework. We want to ignore lib mode (and possibly let
+  // other frameworks/bundlers/runners be detected). There isn't a perfect way to identify a site's mode, but at the
+  // time of writing both `@react-router/dev` and `react-router.config` should only be present in framework mode.
+  npmDependencies = ['@react-router/dev']
   configFiles = ['react-router.config.ts', 'react-router.config.js']
-  npmDependencies = ['react-router']
   category = Category.SSG
 
   dev = {
