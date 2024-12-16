@@ -1,6 +1,6 @@
-import { rm } from 'fs/promises'
+import { readFile, rm } from 'fs/promises'
 import { normalize } from 'path'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { fileURLToPath } from 'url'
 
 import cpy from 'cpy'
 import { pathExists } from 'path-exists'
@@ -77,21 +77,22 @@ test('Should copy a source file even if dist directory already exists', async ()
 test('Should overwrite dist file if it already exists', async () => {
   const dist = await getDist()
   const fixtureDir = `${FIXTURES_DIR}/file`
+  const testModule = `${dist}/test.mjs`
 
   await cpy(`${fixtureDir}/test.mjs`, fixtureDir, { rename: 'test.mjs.backup' })
 
   try {
     await add(`${fixtureDir}/test.mjs`, dist)
 
-    const { func1 } = await import(`${pathToFileURL(`${dist}/test.mjs`).href}?one`)
+    const file1 = await readFile(testModule, 'utf8')
 
     await cpy(`${fixtureDir}/test_2.mjs`, fixtureDir, { rename: 'test.mjs' })
     await add(`${fixtureDir}/test.mjs`, dist)
 
-    const { func2 } = await import(`${pathToFileURL(`${dist}/test.mjs`).href}?two`)
+    const file2 = await readFile(testModule, 'utf8')
 
-    expect(func1()).toBe('one')
-    expect(func2()).toBe('two')
+    expect(file1).toContain('one')
+    expect(file2).toContain('two')
   } finally {
     await cpy(`${fixtureDir}/test.mjs.backup`, fixtureDir, { rename: 'test.mjs' })
     await rm(`${fixtureDir}/test.mjs.backup`, { force: true })

@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { parseAllHeaders } from 'netlify-headers-parser'
+import { parseAllHeaders } from '@netlify/headers-parser'
 
 import { warnHeadersParsing, warnHeadersCaseSensitivity } from './log/messages.js'
 

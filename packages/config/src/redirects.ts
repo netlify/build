@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { parseAllRedirects } from 'netlify-redirect-parser'
+import { parseAllRedirects } from '@netlify/redirect-parser'
 
 import { warnRedirectsParsing } from './log/messages.js'
 

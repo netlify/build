@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.58.0](https://github.com/netlify/build/compare/build-v29.57.0...build-v29.58.0) (2024-12-14)
+
+
+### Features
+
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.20.0 to ^20.21.0
+    * @netlify/edge-bundler bumped from 12.3.0 to 12.3.1
+    * @netlify/functions-utils bumped from ^5.3.0 to ^5.3.1
+    * @netlify/zip-it-and-ship-it bumped from 9.42.0 to 9.42.1
+
 ## [29.57.0](https://github.com/netlify/build/compare/build-v29.56.1...build-v29.57.0) (2024-12-11)
 
 

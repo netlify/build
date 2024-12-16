@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
+
+
+### Features
+
+* **@netlify/build-info:** add React Router 7 detection ([#5930](https://github.com/netlify/build/issues/5930)) ([2289a78](https://github.com/netlify/build/commit/2289a7884fc0a2fc34b86b60464441d8cb70d4bd))
+
 ## [7.16.0](https://github.com/netlify/build/compare/build-info-v7.15.2...build-info-v7.16.0) (2024-12-11)
 
 
