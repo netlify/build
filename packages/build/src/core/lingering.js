@@ -66,6 +66,7 @@ const IGNORED_COMMANDS = [
 
   // Internal buildbot commands
   '[build]',
+  'sleep 5',
   /buildbot.*\[node]/,
   // buildbot's main Bash script
   '/opt/build-bin/build',

@@ -81,6 +81,14 @@ type PluginInfo = {
   pluginPackageJson: {
     version?: string
   }
+  extensionMetadata?: {
+    slug: string
+    name: string
+    version: string
+    has_build: boolean
+    has_connector: boolean
+    author?: string
+  }
 }
 
 export type BuildCommandLocation = {
@@ -201,9 +209,12 @@ const errorLocationToTracingAttributes = function (location: ErrorLocation): Att
 const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attributes {
   const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
   if (typeof pluginInfo === 'undefined') return {}
+
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
+    [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo?.extensionMetadata?.author,
+    [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo?.extensionMetadata?.slug,
   }
 }
 

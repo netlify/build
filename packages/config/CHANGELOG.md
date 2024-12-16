@@ -76,6 +76,50 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.21.0](https://github.com/netlify/build/compare/config-v20.20.0...config-v20.21.0) (2024-12-14)
+
+
+### Features
+
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+* rename unscoped NPM packages ([#5943](https://github.com/netlify/build/issues/5943)) ([131a644](https://github.com/netlify/build/commit/131a644bfde5205f730f3369b778d8914c7c0382))
+
+
+### Bug Fixes
+
+* fail build when extension failed to be retrieved ([#5915](https://github.com/netlify/build/issues/5915)) ([20c7359](https://github.com/netlify/build/commit/20c73593deda6fc4a570fc7b71178687a693e03d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^7.2.0 to ^7.3.0
+    * @netlify/redirect-parser bumped from ^14.4.0 to ^14.5.0
+
+## [20.20.0](https://github.com/netlify/build/compare/config-v20.19.1...config-v20.20.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.21 to ^13.2.0
+    * netlify-headers-parser bumped from ^7.1.4 to ^7.2.0
+    * netlify-redirect-parser bumped from ^14.3.0 to ^14.4.0
+
+## [20.19.1](https://github.com/netlify/build/compare/config-v20.19.0...config-v20.19.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* environment variable build context filtering fix  ([#5887](https://github.com/netlify/build/issues/5887)) ([c0ab547](https://github.com/netlify/build/commit/c0ab5479bd533315d39983e50a9c8a1bee5966ff))
+
 ## [20.19.0](https://github.com/netlify/build/compare/config-v20.18.0...config-v20.19.0) (2024-08-21)
 
 
