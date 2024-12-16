@@ -28,6 +28,7 @@ import { Parcel } from './parcel.js'
 import { Phenomic } from './phenomic.js'
 import { Quasar } from './quasar.js'
 import { Qwik } from './qwik.js'
+import { ReactRouter } from './react-router.js'
 import { ReactStatic } from './react-static.js'
 import { CreateReactApp } from './react.js'
 import { RedwoodJS } from './redwoodjs.js'
@@ -65,6 +66,7 @@ export const frameworks = [
   Nuxt,
   Phenomic,
   Qwik,
+  ReactRouter,
   ReactStatic,
   RedwoodJS,
   Remix,
