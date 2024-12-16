@@ -145,6 +145,10 @@ const testMatrixAttributeTracing = [
           pluginPackageJson: {
             version: '1.2.1',
           },
+          extensionMetadata: {
+            slug: 'test-extension-slug',
+            author: 'test-extension-author',
+          },
         },
       },
       severity: 'error',
@@ -159,6 +163,8 @@ const testMatrixAttributeTracing = [
       'build.error.location.plugin.package_name': 'test-package',
       'build.error.location.plugin.loaded_from': 'test-loaded-from',
       'build.error.location.plugin.origin': 'test-origin',
+      'build.error.plugin.extensionAuthor': 'test-extension-author',
+      'build.error.plugin.extensionSlug': 'test-extension-slug',
       'build.error.plugin.name': 'test-package',
       'build.error.plugin.version': '1.2.1',
     },

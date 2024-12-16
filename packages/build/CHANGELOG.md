@@ -105,6 +105,56 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.58.0](https://github.com/netlify/build/compare/build-v29.57.0...build-v29.58.0) (2024-12-14)
+
+
+### Features
+
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.20.0 to ^20.21.0
+    * @netlify/edge-bundler bumped from 12.3.0 to 12.3.1
+    * @netlify/functions-utils bumped from ^5.3.0 to ^5.3.1
+    * @netlify/zip-it-and-ship-it bumped from 9.42.0 to 9.42.1
+
+## [29.57.0](https://github.com/netlify/build/compare/build-v29.56.1...build-v29.57.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* catch and ignore .kill exceptions and don't force timeout kill in windows ([#5932](https://github.com/netlify/build/issues/5932)) ([7ea3e7b](https://github.com/netlify/build/commit/7ea3e7b70a42b4b911d8fbd966fe0d223ee0b5e6))
+* ensure we pass an ArrayBuffer to blobStore.set and not a NodeJS Buffer ([#5927](https://github.com/netlify/build/issues/5927)) ([ebfc770](https://github.com/netlify/build/commit/ebfc770ba1a9ded15895fbc1d46caf2bf9ced34d))
+* turn log line into system log ([#5910](https://github.com/netlify/build/issues/5910)) ([ef92c48](https://github.com/netlify/build/commit/ef92c480c5411ba20ee869d8502f58f1e8418268))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.6 to ^5.2.0
+    * @netlify/config bumped from ^20.19.1 to ^20.20.0
+    * @netlify/edge-bundler bumped from 12.2.3 to 12.3.0
+    * @netlify/framework-info bumped from ^9.8.13 to ^9.9.0
+    * @netlify/functions-utils bumped from ^5.2.93 to ^5.3.0
+    * @netlify/git-utils bumped from ^5.1.1 to ^5.2.0
+    * @netlify/opentelemetry-utils bumped from ^1.2.1 to ^1.3.0
+    * @netlify/run-utils bumped from ^5.1.1 to ^5.2.0
+    * @netlify/zip-it-and-ship-it bumped from 9.41.1 to 9.42.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.1.2 to ^3.2.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.2.0
+
 ## [29.56.1](https://github.com/netlify/build/compare/build-v29.56.0...build-v29.56.1) (2024-11-15)
 
 

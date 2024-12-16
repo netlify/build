@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/netlify/build/compare/nock-udp-v3.1.2...nock-udp-v3.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
 ## [3.1.2](https://github.com/netlify/build/compare/nock-udp-v3.1.1...nock-udp-v3.1.2) (2023-02-09)
 
 

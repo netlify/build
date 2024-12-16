@@ -1,10 +1,11 @@
 import { createRequire } from 'module'
+import { platform } from 'os'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import { trace } from '@opentelemetry/api'
 import { ExecaChildProcess, execaNode } from 'execa'
-import { gte } from 'semver'
+import { gte, satisfies } from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
@@ -217,5 +218,17 @@ const stopPlugin = async function ({
     })
     childProcess.disconnect()
   }
-  childProcess.kill()
+
+  // On Windows with Node 21+, there's a bug where attempting to kill a child process
+  // results in an EPERM error. Ignore the error in that case.
+  // See: https://github.com/nodejs/node/issues/51766
+  // We also disable execa's `forceKillAfterTimeout` in this case
+  // which can cause unhandled rejection.
+  try {
+    childProcess.kill('SIGTERM', {
+      forceKillAfterTimeout: platform() === 'win32' && satisfies(process.version, '>=21') ? false : undefined,
+    })
+  } catch {
+    // no-op
+  }
 }

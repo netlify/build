@@ -64,6 +64,25 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
+
+
+### Features
+
+* **@netlify/build-info:** add React Router 7 detection ([#5930](https://github.com/netlify/build/issues/5930)) ([2289a78](https://github.com/netlify/build/commit/2289a7884fc0a2fc34b86b60464441d8cb70d4bd))
+
+## [7.16.0](https://github.com/netlify/build/compare/build-info-v7.15.2...build-info-v7.16.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* detect `bun.lock` files in addition to `bun.lockb` files ([#5918](https://github.com/netlify/build/issues/5918)) ([689a8dd](https://github.com/netlify/build/commit/689a8dd5b26d6370b7e53005dca39b2b8efb9768))
+
 ## [7.15.2](https://github.com/netlify/build/compare/build-info-v7.15.1...build-info-v7.15.2) (2024-10-25)
 
 

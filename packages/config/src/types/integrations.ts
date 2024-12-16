@@ -5,4 +5,5 @@ export type Integration = {
   dev?: {
     path: string
   }
+  author?: string
 }

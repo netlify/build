@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.2.1...opentelemetry-utils-v1.3.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
 ## [1.2.1](https://github.com/netlify/build/compare/opentelemetry-utils-v1.2.0...opentelemetry-utils-v1.2.1) (2024-05-14)
 
 

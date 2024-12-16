@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.3...opentelemetry-sdk-setup-v1.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.2.1 to ~1.3.0
+
 ## [1.1.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.2...opentelemetry-sdk-setup-v1.1.3) (2024-05-27)
 
 

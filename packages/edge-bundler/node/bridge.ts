@@ -13,11 +13,10 @@ import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
 
-// When updating DENO_VERSION_RANGE, ensure that the deno version installed in the
-// build-image/buildbot does satisfy this range!
-// We're pinning the range because of an issue with v1.45.0 of the Deno CLI:
-// https://linear.app/netlify/issue/FRP-775/deno-cli-v1450-causing-issues
-const DENO_VERSION_RANGE = '1.37.0 - 1.44.4'
+// When updating DENO_VERSION_RANGE, ensure that the deno version
+// on the netlify/buildbot build image satisfies this range!
+// https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
+const DENO_VERSION_RANGE = '1.39.0 - 1.46.3'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
