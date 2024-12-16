@@ -38,7 +38,7 @@ if (nodeVersion !== 'v8.3.0') {
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async () => {
     const frameworks = await getFrameworks('next-plugin')
     expect(frameworks[0].id).toBe('next')
-    expect(frameworks[0].plugins).toEqual(['@netlify/plugin-nextjs'])
+    expect(frameworks[0].plugins).toEqual(['@opennextjs/netlify'])
   })
 }
 
