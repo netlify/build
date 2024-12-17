@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 import { stderr, stdout } from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'

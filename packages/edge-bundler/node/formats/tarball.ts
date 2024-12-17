@@ -1,6 +1,6 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { promises as fs } from 'fs'
+import path from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
 
 import { resolve as importMapResolve } from '@import-maps/resolve'
 import { nodeFileTrace, resolve as nftResolve } from '@vercel/nft'
