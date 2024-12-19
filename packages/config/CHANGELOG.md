@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.21.1](https://github.com/netlify/build/compare/config-v20.21.0...config-v20.21.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Revert 5915 yj/fail builds if extension fail to load ([#5955](https://github.com/netlify/build/issues/5955)) ([d3965d5](https://github.com/netlify/build/commit/d3965d50a47faa397196a594f91e48345dde46ad))
+
 ## [20.21.0](https://github.com/netlify/build/compare/config-v20.20.0...config-v20.21.0) (2024-12-14)
 
 
