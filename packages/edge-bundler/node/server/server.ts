@@ -125,7 +125,7 @@ const prepareServer = ({
       // the `stage2Path` file as well as all of their dependencies.
       // Consumers such as the CLI can use this information to watch all the
       // relevant files and issue an isolate restart when one of them changes.
-      const { stdout } = await deno.run(['info', '--json', stage2Path])
+      const { stdout } = await deno.run(['info', '--no-lock', '--json', stage2Path])
 
       graph = JSON.parse(stdout)
     } catch {
@@ -320,7 +320,7 @@ export const serve = async ({
   // Downloading latest types if needed.
   await ensureLatestTypes(deno, logger)
 
-  const flags = ['--allow-all', '--no-config']
+  const flags = ['--allow-all', '--no-config', '--no-lock']
 
   if (certificatePath) {
     flags.push(`--cert=${certificatePath}`)
