@@ -3,6 +3,7 @@ import { join, resolve } from 'path'
 import { stderr, stdout } from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 
+import cpy from 'cpy'
 import { execa } from 'execa'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -30,7 +31,8 @@ const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOpti
   if (copyDirectory) {
     const tmpFixtureDir = await tmp.dir({ unsafeCleanup: true })
 
-    await fs.cp(fixtureDir, tmpFixtureDir.path, { recursive: true })
+    // TODO: Replace with `fs.cp` once we drop support for Node 14.
+    await cpy(`${fixtureDir}/**`, tmpFixtureDir.path)
 
     return {
       basePath: tmpFixtureDir.path,
