@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@types/glob-to-regexp": "^0.4.1",
-    "@types/node": "^14.18.32",
+    "@types/node": "^16.18.122",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^9.0.0",
     "@vitest/coverage-v8": "^0.34.0",
@@ -52,7 +52,6 @@
     "cpy": "^9.0.1",
     "cross-env": "^7.0.3",
     "nock": "^13.2.4",
-    "tar": "^6.1.11",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
   },
@@ -80,6 +79,7 @@
     "p-wait-for": "^4.1.0",
     "path-key": "^4.0.0",
     "semver": "^7.3.8",
+    "tar": "^7.4.3",
     "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2",
     "uuid": "^9.0.0"

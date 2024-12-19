@@ -42,7 +42,7 @@ const loadWithRetry = (specifier: string, delay = 1000, maxTry = 3) => {
       maxTry,
     });
   } catch (error) {
-    if (isTooManyTries(error)) {
+    if (error instanceof Error && isTooManyTries(error)) {
       console.error(`Loading ${specifier} failed after ${maxTry} tries.`);
     }
     throw error;
