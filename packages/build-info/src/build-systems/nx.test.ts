@@ -197,7 +197,7 @@ describe('nx-integrated project.json based', () => {
           frameworkPort: 4200,
           name: `Nx + Next.js ${join('packages/website')}`,
           packagePath: join('packages/website'),
-          plugins_recommended: ['@netlify/plugin-nextjs'],
+          plugins_recommended: ['@opennextjs/netlify'],
         }),
       ]),
     )

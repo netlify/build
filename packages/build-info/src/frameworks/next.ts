@@ -33,7 +33,7 @@ export class Next extends BaseFramework implements Framework {
     if (this.detected) {
       const nodeVersion = await this.project.getCurrentNodeVersion()
       if (nodeVersion && gte(nodeVersion, '10.13.0')) {
-        this.plugins.push('@netlify/plugin-nextjs')
+        this.plugins.push('@opennextjs/netlify')
       }
       return this as DetectedFramework
     }
