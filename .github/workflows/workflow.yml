@@ -8,7 +8,7 @@ on:
   merge_group:
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       # Sets an output parameter if this is a release PR
@@ -27,7 +27,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: npm ci
@@ -49,12 +49,13 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: ['*']
+        os: [ubuntu-24.04, macos-14, windows-2022]
+        node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
         deno-version: ['v2.1.4']
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
+            # Earliest supported version
             node-version: '14.16.0'
             deno-version: 'v2.1.4'
       fail-fast: false
@@ -63,7 +64,7 @@ jobs:
       # https://github.com/actions/virtual-environments/issues/268
       - name: Increase open file limit
         run: sudo ulimit -Sn 65536
-        if: "${{ matrix.os == 'macOS-latest' }}"
+        if: "${{ matrix.os == 'macos-14' }}"
       - run: git config --global core.symlinks true
       # Sets an output parameter if this is a release PR
       - name: Check for release
@@ -121,30 +122,30 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: ['*']
+        os: [ubuntu-24.04, macos-14, windows-2022]
+        node-version: ['22']
         install-command: ['npm ci']
         machine: ['0', '1', '2', '3', '4']
         include:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
             machine: '0'
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
             machine: '1'
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
             machine: '2'
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
             machine: '3'
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             node-version: '14.16.0'
             install-command: npm ci
             machine: '4'
