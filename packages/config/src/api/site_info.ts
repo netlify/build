@@ -116,7 +116,7 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[] | undefined> {
+}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
@@ -130,21 +130,15 @@ const getIntegrations = async function ({
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
 
-  let response
   try {
-    response = await fetch(url)
-    if (response.status !== 200) {
-      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-    }
-  } catch (error) {
-    throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
+    const response = await fetch(url)
 
-  try {
-    if (Number(response.headers.get(`content-length`)) === 0) return []
-    const responseBody = await response.json()
-    return Array.isArray(responseBody) ? responseBody : []
+    const integrations = await response.json()
+    return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    throwUserError(`Failed to parse extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    // Integrations should not block the build if they fail to load
+    // TODO: We should consider blocking the build as integrations are a critical part of the build process
+    // https://linear.app/netlify/issue/CT-1214/implement-strategy-in-builds-to-deal-with-integrations-that-we-fail-to
+    return []
   }
 }
