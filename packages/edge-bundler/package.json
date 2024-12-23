@@ -48,7 +48,7 @@
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^0.34.0",
     "archiver": "^5.3.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.4.0",
     "cpy": "^9.0.1",
     "cross-env": "^7.0.3",
     "nock": "^13.2.4",
