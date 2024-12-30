@@ -100,7 +100,7 @@
     "minimatch": "^9.0.4",
     "node-fetch": "^3.3.2",
     "os-name": "^5.0.0",
-    "p-event": "^5.0.0",
+    "p-event": "^6.0.0",
     "p-every": "^2.0.0",
     "p-filter": "^3.0.0",
     "p-locate": "^6.0.0",
