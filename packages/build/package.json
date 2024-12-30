@@ -99,7 +99,7 @@
     "memoize-one": "^6.0.0",
     "minimatch": "^9.0.4",
     "node-fetch": "^3.3.2",
-    "os-name": "^5.0.0",
+    "os-name": "^6.0.0",
     "p-event": "^6.0.0",
     "p-every": "^2.0.0",
     "p-filter": "^4.0.0",
