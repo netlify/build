@@ -82,6 +82,6 @@
     "semver": "^7.3.8",
     "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   }
 }

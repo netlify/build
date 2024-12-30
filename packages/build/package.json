@@ -123,7 +123,7 @@
     "terminal-link": "^3.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "uuid": "^9.0.0",
+    "uuid": "^11.0.0",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
