@@ -198,7 +198,7 @@ jobs:
         env:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
-          CI_NODE_TOTAL: 4
+          CI_NODE_TOTAL: 5
         with:
           timeout_minutes: 30
           max_attempts: 3

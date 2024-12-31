@@ -5,7 +5,7 @@ import { resolve } from 'path'
 import { execa } from 'execa'
 import { globby } from 'globby'
 
-const CI_MACHINES = 4
+const CI_MACHINES = 5
 
 const measureDurations = async () => {
   const { default: config } = await import(resolve('ava.config.js'))
