@@ -368,7 +368,7 @@ test('Plugin errors that occur during the loading phase are piped to system logs
   t.snapshot(normalizeOutput(output))
 })
 
-test('Plugins have a pre-populated Blobs context', async (t) => {
+test.serial('Plugins have a pre-populated Blobs context', async (t) => {
   const serverPort = await getPort()
   const deployId = 'deploy123'
   const siteId = 'site321'
