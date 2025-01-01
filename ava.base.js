@@ -34,8 +34,8 @@ const config = {
   environmentVariables: {
     FORCE_COLOR: '1',
   },
-  // we only sort in CI to split efficiently across machines
-  ...(isCI && { sortTestFiles }),
+  // // we only sort in CI to split efficiently across machines
+  // ...(isCI && { sortTestFiles }),
 }
 
 export default config
