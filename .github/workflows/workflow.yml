@@ -187,13 +187,19 @@ jobs:
       - name: Build workspaces
         run: npm run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Tests
-        run: npx lerna run test:ci --scope @netlify/build
+      - name: Types
+        run: npx lerna run test:ci:types --scope @netlify/build
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Tests - ava
+        run: npx lerna run test:ci:ava --scope @netlify/build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         env:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
           CI_NODE_TOTAL: 5
+      - name: Tests - vitest
+        run: npx lerna run test:ci:vitest --scope @netlify/build
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
