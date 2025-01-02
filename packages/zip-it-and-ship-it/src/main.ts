@@ -158,7 +158,7 @@ const getListedFunction = function ({
     mainFile,
     name,
     runtime: runtime.name,
-    runtimeAPIVersion: staticAnalysisResult ? staticAnalysisResult?.runtimeAPIVersion ?? 1 : undefined,
+    runtimeAPIVersion: staticAnalysisResult ? (staticAnalysisResult?.runtimeAPIVersion ?? 1) : undefined,
     schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,
     inputModuleFormat: staticAnalysisResult?.inputModuleFormat,
   }
