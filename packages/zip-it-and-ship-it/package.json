@@ -51,7 +51,7 @@
     "cp-file": "^10.0.0",
     "es-module-lexer": "^1.0.0",
     "esbuild": "0.19.11",
-    "execa": "^6.0.0",
+    "execa": "^7.0.0",
     "fast-glob": "^3.3.2",
     "filter-obj": "^5.0.0",
     "find-up": "^6.0.0",
