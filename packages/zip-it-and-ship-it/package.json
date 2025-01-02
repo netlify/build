@@ -56,7 +56,7 @@
     "filter-obj": "^5.0.0",
     "find-up": "^6.0.0",
     "glob": "^8.0.3",
-    "is-builtin-module": "^3.1.0",
+    "is-builtin-module": "^4.0.0",
     "is-path-inside": "^4.0.0",
     "junk": "^4.0.0",
     "locate-path": "^7.0.0",
