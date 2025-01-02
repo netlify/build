@@ -138,7 +138,7 @@
     "cpy": "^9.0.0",
     "fast-safe-stringify": "^2.0.7",
     "get-bin-path": "^11.0.0",
-    "get-node": "^12.0.0",
+    "get-node": "^15.0.0",
     "get-port": "^6.0.0",
     "get-stream": "^6.0.0",
     "has-ansi": "^5.0.0",
