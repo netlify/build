@@ -103,7 +103,11 @@ export class Project {
     return await this.fs.fileExists(this.fs.resolve(this.fs.cwd, 'redwood.toml'))
   }
 
-  constructor(public fs: FileSystem, baseDirectory?: string, root?: string) {
+  constructor(
+    public fs: FileSystem,
+    baseDirectory?: string,
+    root?: string,
+  ) {
     this.baseDirectory = fs.resolve(root || '', baseDirectory !== undefined ? baseDirectory : fs.cwd)
     this.root = root ? fs.resolve(fs.cwd, root) : undefined
 

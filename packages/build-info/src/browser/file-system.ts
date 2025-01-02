@@ -2,7 +2,10 @@ import { DirType, Environment, FileSystem } from '../file-system.js'
 
 /** A sample implementation of a GitHub provider */
 export class GithubProvider {
-  constructor(public repo: string, public branch?: string) {}
+  constructor(
+    public repo: string,
+    public branch?: string,
+  ) {}
 
   async dir(filePath = ''): Promise<{ path: string; type: 'file' | 'dir' }[]> {
     let path = `/repos/${this.repo}/contents${filePath}`
