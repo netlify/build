@@ -109,13 +109,8 @@ jobs:
         run: npx nx affected --target=build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v3
+        run: npx nx affected --target=test:ci --exclude=@netlify/build --parallel=3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          retry_on: error
-          command: npx nx affected --target=test:ci --exclude=@netlify/build --parallel=3
 
   test-build:
     runs-on: ${{ matrix.os }}
@@ -193,17 +188,12 @@ jobs:
         run: npm run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v3
+        run: npx lerna run test:ci --scope @netlify/build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         env:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
           CI_NODE_TOTAL: 5
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          retry_on: error
-          command: npx lerna run test:ci --scope @netlify/build
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
