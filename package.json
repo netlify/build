@@ -16,7 +16,6 @@
     "format:ci": "prettier --check ."
   },
   "workspaces": [
-    "tools",
     "packages/*"
   ],
   "keywords": [

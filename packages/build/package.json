@@ -31,8 +31,7 @@
     "test:ci": "run-p test:ci:*",
     "test:ci:types": "tsd",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
-    "test:ci:vitest": "vitest run",
-    "test:measure": "../../tools/tests-duration.js"
+    "test:ci:vitest": "vitest run"
   },
   "keywords": [
     "nodejs",
