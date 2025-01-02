@@ -59,6 +59,7 @@ test('Functions: install dependencies with Yarn locally', async (t) => {
     [`${FIXTURES_DIR}/functions_yarn/.netlify/functions/`, `${FIXTURES_DIR}/functions_yarn/functions/node_modules/`],
     {},
     true,
+    true,
   )
 })
 
@@ -71,6 +72,7 @@ test('Functions: install dependencies with Yarn in CI', async (t) => {
       mode: 'buildbot',
       deployId: 'functions_yarn_ci',
     },
+    true,
     true,
   )
 })
@@ -112,14 +114,18 @@ test('Install local plugin dependencies: with npm', async (t) => {
 })
 
 test('Install local plugin dependencies: with yarn locally', async (t) => {
-  await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
+  await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], {}, true, true)
 })
 
 test('Install local plugin dependencies: with yarn in CI', async (t) => {
-  await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
-    useBinary: true,
-    flags: { mode: 'buildbot' },
-  })
+  await runInstallFixture(
+    t,
+    'yarn_ci',
+    [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`],
+    { mode: 'buildbot' },
+    true,
+    true,
+  )
 })
 
 test('Install local plugin dependencies: propagate errors', async (t) => {
