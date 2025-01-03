@@ -23,6 +23,7 @@ export const functionConfig = z.object({
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
   timeout: z.number().optional().catch(undefined),
+  cpioGo: z.boolean().optional().catch(undefined),
   zipGo: z.boolean().optional().catch(undefined),
 
   // Temporary configuration property, only meant to be used by the deploy
