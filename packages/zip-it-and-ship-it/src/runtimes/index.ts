@@ -104,21 +104,27 @@ export const getFunctionsFromPaths = async (
   // through `findFunctionsInRuntime`. For each iteration, we collect all the
   // functions found plus the list of paths that still need to be evaluated,
   // using them as the input for the next iteration until the last runtime.
-  const { functions } = await RUNTIMES.reduce(async (aggregate, runtime) => {
-    const { functions: aggregateFunctions, remainingPaths: aggregatePaths } = await aggregate
-    const { functions: runtimeFunctions, remainingPaths: runtimePaths } = await findFunctionsInRuntime({
-      cache,
-      dedupe,
-      featureFlags,
-      paths: aggregatePaths,
-      runtime,
-    })
+  const { functions } = await RUNTIMES.reduce(
+    async (aggregate, runtime) => {
+      const { functions: aggregateFunctions, remainingPaths: aggregatePaths } = await aggregate
+      const { functions: runtimeFunctions, remainingPaths: runtimePaths } = await findFunctionsInRuntime({
+        cache,
+        dedupe,
+        featureFlags,
+        paths: aggregatePaths,
+        runtime,
+      })
 
-    return {
-      functions: [...aggregateFunctions, ...runtimeFunctions],
-      remainingPaths: runtimePaths,
-    }
-  }, Promise.resolve({ functions: [], remainingPaths: paths } as { functions: FunctionTupleWithoutConfig[]; remainingPaths: string[] }))
+      return {
+        functions: [...aggregateFunctions, ...runtimeFunctions],
+        remainingPaths: runtimePaths,
+      }
+    },
+    Promise.resolve({ functions: [], remainingPaths: paths } as {
+      functions: FunctionTupleWithoutConfig[]
+      remainingPaths: string[]
+    }),
+  )
   const functionConfigs = await Promise.all(
     functions.map(([, func]) => getConfigForFunction({ config, configFileDirectories, func })),
   )
