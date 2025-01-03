@@ -51,7 +51,6 @@ describe('Nuxt V3', () => {
       NODE_VERSION: '18',
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const settings = await getSettings(detected![0], project, cwd)
     expect(settings.clearPublishDirectory).toBeTruthy()
   })

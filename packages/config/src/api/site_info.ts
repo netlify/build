@@ -160,7 +160,7 @@ const getIntegrations = async function ({
     const response = await fetch(url)
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
-  } catch (error) {
+  } catch {
     return []
   }
 }
