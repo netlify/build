@@ -13,25 +13,24 @@ import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
 import { addArchiveSize } from './utils/archive_size.js'
 import { RuntimeCache } from './utils/cache.js'
-import { formatZipResult, FunctionResult } from './utils/format_result.js'
+import { formatCpioResult, FunctionResult } from './utils/format_result.js'
 import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
 import { getLogger, LogFunction } from './utils/logger.js'
 import { nonNullable } from './utils/non_nullable.js'
 
-export interface ZipFunctionOptions {
+export interface CpioFunctionOptions {
   archiveFormat?: ArchiveFormat
   basePath?: string
   branch?: string
   config?: Config
   featureFlags?: FeatureFlags
   repositoryRoot?: string
-  zipGo?: boolean
   systemLog?: LogFunction
   debug?: boolean
   internalSrcFolder?: string
 }
 
-export type ZipFunctionsOptions = ZipFunctionOptions & {
+export type CpioFunctionsOptions = CpioFunctionOptions & {
   configFileDirectories?: string[]
   manifest?: string
   parallelLimit?: number
@@ -41,18 +40,17 @@ export type ZipFunctionsOptions = ZipFunctionOptions & {
 const DEFAULT_PARALLEL_LIMIT = 5
 
 const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
-  if (!(archiveFormat === ARCHIVE_FORMAT.ZIP || archiveFormat === ARCHIVE_FORMAT.NONE)) {
+  if (archiveFormat !== ARCHIVE_FORMAT.CPIO && archiveFormat !== ARCHIVE_FORMAT.NONE) {
     throw new Error(`Invalid archive format: ${archiveFormat}`)
   }
 }
 
-// Zip `srcFolder/*` (Node.js or Go files) to `destFolder/*.zip` so it can be
-// used by AWS Lambda
-export const zipFunctions = async function (
+// Create a CPIO archive of `srcFolder/*` (Node.js or Go files) and write it to `destFolder/*.cpio`
+export const cpioFunctions = async function (
   relativeSrcFolders: string | string[],
   destFolder: string,
   {
-    archiveFormat = ARCHIVE_FORMAT.ZIP,
+    archiveFormat = ARCHIVE_FORMAT.CPIO,
     basePath,
     branch,
     config = {},
@@ -64,7 +62,7 @@ export const zipFunctions = async function (
     systemLog,
     debug,
     internalSrcFolder,
-  }: ZipFunctionsOptions = {},
+  }: CpioFunctionsOptions = {},
 ): Promise<FunctionResult[]> {
   validateArchiveFormat(archiveFormat)
 
@@ -93,7 +91,7 @@ export const zipFunctions = async function (
         ...(func.config.nodeModuleFormat === MODULE_FORMAT.ESM ? { zisi_pure_esm_mjs: true } : {}),
       }
 
-      const zipResult = await func.runtime.zipFunction({
+      const cpioResult = await func.runtime.cpioFunction({
         archiveFormat,
         basePath,
         branch,
@@ -114,7 +112,7 @@ export const zipFunctions = async function (
         stat: func.stat,
       })
 
-      return { ...zipResult, mainFile: func.mainFile, name: func.name, runtime: func.runtime }
+      return { ...cpioResult, mainFile: func.mainFile, name: func.name, runtime: func.runtime }
     },
     {
       concurrency: parallelLimit,
@@ -124,7 +122,7 @@ export const zipFunctions = async function (
     results.filter(nonNullable).map(async (result) => {
       const resultWithSize = await addArchiveSize(result)
 
-      return formatZipResult(resultWithSize)
+      return formatCpioResult(resultWithSize)
     }),
   )
 
@@ -135,11 +133,11 @@ export const zipFunctions = async function (
   return formattedResults
 }
 
-export const zipFunction = async function (
+export const cpioFunction = async function (
   relativeSrcPath: string,
   destFolder: string,
   {
-    archiveFormat = ARCHIVE_FORMAT.ZIP,
+    archiveFormat = ARCHIVE_FORMAT.CPIO,
     basePath,
     config: inputConfig = {},
     featureFlags: inputFeatureFlags,
@@ -147,7 +145,7 @@ export const zipFunction = async function (
     systemLog,
     debug,
     internalSrcFolder,
-  }: ZipFunctionOptions = {},
+  }: CpioFunctionOptions = {},
 ): Promise<FunctionResult | undefined> {
   validateArchiveFormat(archiveFormat)
 
@@ -183,7 +181,7 @@ export const zipFunction = async function (
     // extend the feature flags with `zisi_pure_esm_mjs` enabled.
     ...(config.nodeModuleFormat === MODULE_FORMAT.ESM ? { zisi_pure_esm_mjs: true } : {}),
   }
-  const zipResult = await runtime.zipFunction({
+  const cpioResult = await runtime.cpioFunction({
     archiveFormat,
     basePath,
     cache,
@@ -203,5 +201,5 @@ export const zipFunction = async function (
     stat: stats,
   })
 
-  return formatZipResult({ ...zipResult, mainFile, name, runtime })
+  return formatCpioResult({ ...cpioResult, mainFile, name, runtime })
 }

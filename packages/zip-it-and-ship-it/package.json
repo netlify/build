@@ -47,6 +47,7 @@
     "@netlify/serverless-functions-api": "^1.31.1",
     "@vercel/nft": "0.27.7",
     "archiver": "^7.0.0",
+    "bl": "^6.0.18",
     "common-path-prefix": "^3.0.0",
     "cp-file": "^10.0.0",
     "es-module-lexer": "^1.0.0",

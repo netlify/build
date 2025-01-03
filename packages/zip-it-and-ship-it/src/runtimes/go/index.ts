@@ -3,6 +3,7 @@ import { basename, dirname, extname, join } from 'path'
 
 import { copyFile } from 'cp-file'
 
+import { cpioBinary } from '../../cpio_binary.js'
 import { SourceFile } from '../../function.js'
 import type { RuntimeCache } from '../../utils/cache.js'
 import { cachedLstat, cachedReaddir } from '../../utils/fs.js'
@@ -10,7 +11,14 @@ import getInternalValue from '../../utils/get_internal_value.js'
 import { nonNullable } from '../../utils/non_nullable.js'
 import { zipBinary } from '../../zip_binary.js'
 import { detectBinaryRuntime } from '../detect_runtime.js'
-import { FindFunctionInPathFunction, FindFunctionsInPathsFunction, Runtime, RUNTIME, ZipFunction } from '../runtime.js'
+import {
+  CpioFunction,
+  FindFunctionInPathFunction,
+  FindFunctionsInPathsFunction,
+  Runtime,
+  RUNTIME,
+  ZipFunction,
+} from '../runtime.js'
 
 import { build } from './builder.js'
 
@@ -172,6 +180,74 @@ const zipFunction: ZipFunction = async function ({
   }
 }
 
-const runtime: Runtime = { findFunctionsInPaths, findFunctionInPath, name: RUNTIME.GO, zipFunction }
+const cpioFunction: CpioFunction = async function ({
+  config,
+  destFolder,
+  filename,
+  mainFile,
+  srcDir,
+  srcPath,
+  stat,
+  isInternal,
+}) {
+  const destPath = join(destFolder, filename)
+  const isSource = extname(mainFile) === '.go'
+
+  let binary: GoBinary = {
+    path: srcPath,
+    stat,
+  }
+
+  // If we're building a Go function from source, we call the build method and
+  // update `binary` to point to the newly-created binary.
+  if (isSource) {
+    const { stat: binaryStat } = await build({ destPath, mainFile, srcDir })
+
+    binary = {
+      path: destPath,
+      stat: binaryStat,
+    }
+  }
+
+  const result = {
+    config,
+    displayName: config?.name,
+    generator: config?.generator || getInternalValue(isInternal),
+  }
+
+  // If `cpioGo` is enabled, we create a cpio archive with the Go binary and the
+  // toolchain file.
+  if (config.cpioGo) {
+    const cpioPath = `${destPath}.cpio`
+    const cpioOptions = {
+      destPath: cpioPath,
+      filename: 'bootstrap',
+      runtime,
+    }
+
+    await cpioBinary({ ...cpioOptions, srcPath: binary.path, stat: binary.stat })
+
+    return {
+      ...result,
+      path: cpioPath,
+      entryFilename: cpioOptions.filename,
+    }
+  }
+
+  // We don't need to zip the binary, so we can just copy it to the right path.
+  // We do this only if we're not building from source, as otherwise the build
+  // step already handled that.
+  if (!isSource) {
+    await copyFile(binary.path, destPath)
+  }
+
+  return {
+    ...result,
+    path: destPath,
+    entryFilename: '',
+  }
+}
+
+const runtime: Runtime = { findFunctionsInPaths, findFunctionInPath, name: RUNTIME.GO, zipFunction, cpioFunction }
 
 export default runtime

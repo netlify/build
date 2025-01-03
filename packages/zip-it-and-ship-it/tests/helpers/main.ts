@@ -9,6 +9,7 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { afterAll, expect } from 'vitest'
 
 import type { Config } from '../../src/config.js'
+import { extractCPIO } from '../../src/cpio-stream.js'
 import { ListedFunction, zipFunctions } from '../../src/main.js'
 import { listImports } from '../../src/runtimes/node/bundlers/zisi/list_imports.js'
 import type { FunctionResult } from '../../src/utils/format_result.js'
@@ -122,6 +123,32 @@ const requireExtractedFiles = async function (files: FunctionResult[]): Promise<
   const jsFiles = await Promise.all(files.map(replaceUnzipPath).map((file) => importFunctionFile(file)))
 
   expect(jsFiles.every(Boolean)).toBe(true)
+}
+
+export const extractCpioFiles = async function (files: FunctionResult[]): Promise<TestFunctionResult[]> {
+  await Promise.all(
+    Object.keys(files).map(async (key) => {
+      const { path, name } = files[key]
+      const dest = join(dirname(path), name)
+      await extractCpioFile(path, dest)
+
+      files[key].unzipPath = dest
+    }),
+  )
+
+  return files as TestFunctionResult[]
+}
+
+const extractCpioFile = async function (path: string, dest: string): Promise<void> {
+  await mkdir(dest, { recursive: true })
+
+  // if (platform === 'win32') {
+  await extractCPIO(path, dest)
+  // } else {
+  //   await execa('cpio', ['-idF', path], {
+  //     cwd: dest,
+  //   })
+  // }
 }
 
 export const unzipFiles = async function (files: FunctionResult[]): Promise<TestFunctionResult[]> {
