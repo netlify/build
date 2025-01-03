@@ -64,6 +64,7 @@ test('addErrorToActiveSpan - no attributes are added', async () => {
 
     const firstEvent = span.events[0]
     expect(firstEvent.name).equal('exception')
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(firstEvent.attributes?.['exception.stacktrace']).to.exist
     expect(firstEvent.attributes?.['exception.type']).equal('Error')
   })
@@ -90,6 +91,7 @@ test('addErrorToActiveSpan - attributes are added', async () => {
 
     const firstEvent = span.events[0]
     expect(firstEvent.name).equal('exception')
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(firstEvent.attributes?.['exception.stacktrace']).to.exist
     expect(firstEvent.attributes?.['exception.type']).equal('Error')
   })

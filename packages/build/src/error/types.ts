@@ -26,6 +26,7 @@ export type BasicErrorInfo = {
 /**
  * Error severity groups the errors emitted by build and used to translate to exit code via SEVERITY_MAP
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 enum ErrorSeverity {
   /**
    * build success
@@ -52,6 +53,7 @@ enum ErrorSeverity {
 /**
  * How the stack trace should appear in the build error logs
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 enum StackType {
   /**
    * not printed
@@ -281,6 +283,7 @@ export interface ErrorType {
   stackType: keyof typeof StackType
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ErrorTypeMap = {
   /**
    * Plugin called `utils.build.cancelBuild()`

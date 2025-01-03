@@ -126,6 +126,7 @@ test('Tracing - trace id and resource definition', async () => {
   const tracer = trace.getTracer('test')
   const span = tracer.startSpan('test', {}, ctx) as Span
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   expect(span.spanContext().traceId).not.empty
   expect(span.parentSpanId).toBeUndefined()
 })
