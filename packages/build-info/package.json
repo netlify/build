@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "7.17.0",
+  "version": "8.0.0-pre-20250103.0.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
