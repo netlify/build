@@ -10,6 +10,7 @@ describe('metrics', () => {
     test('returns an error when passed a string', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report('error happened', { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].message).toBe('error happened')
@@ -18,6 +19,7 @@ describe('metrics', () => {
     test('returns an error when passed an error', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report(new Error('error happened'), { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].message).toBe('error happened')
@@ -26,6 +28,7 @@ describe('metrics', () => {
     test('returns an object when passed an object in an expected format (1)', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report({ name: 'Error', message: 'error happened' }, { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).not.toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].name).toBe('Error')
@@ -35,6 +38,7 @@ describe('metrics', () => {
     test('returns an object when passed an object in an expected format (2)', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report({ errorClass: 'Error', errorMessage: 'error happened' }, { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).not.toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].errorClass).toBe('Error')
@@ -44,6 +48,7 @@ describe('metrics', () => {
     test('returns an error when passed an object in an unexpected format but includes a message', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report({ message: 'error happened', documentation_url: 'bar' }, { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].message).toBe('error happened')
@@ -52,6 +57,7 @@ describe('metrics', () => {
     test('returns an error when passed an object in an unexpected format', async () => {
       const errorSpy = vi.spyOn(console, 'error')
       report({ foo: 'bar' }, { client: mockClient })
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(errorSpy).toHaveBeenCalledOnce
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
       expect(errorSpy.mock.calls[0][0].message).toBe('Unexpected error format: {"foo":"bar"}')

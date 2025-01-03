@@ -9,7 +9,7 @@ const dirExists = async (path: string): Promise<boolean> => {
   try {
     await stat(path)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }

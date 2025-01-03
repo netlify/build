@@ -128,7 +128,7 @@ test('get dev command from npm scripts if defined inside a workspace setup', asy
   fs.cwd = cwd
   const project = new Project(fs, cwd)
   const settings = await project.getBuildSettings()
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
   expect(sorted).toEqual([
     expect.objectContaining({
@@ -180,7 +180,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
       expect(sorted).toEqual([
         expect.objectContaining({
@@ -225,7 +225,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
       expect(sorted).toEqual([
@@ -271,7 +271,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
       expect(sorted).toEqual([
@@ -317,7 +317,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
       expect(sorted).toEqual([
@@ -363,7 +363,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
       expect(sorted).toEqual([
@@ -409,7 +409,7 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
       expect(sorted).toEqual([
