@@ -342,7 +342,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs18.x')
+    expect(files[0].runtimeVersion).toBe('nodejs22.x')
   })
 
   test('Returns Node.js 18 if invalid version is set', async () => {
@@ -357,7 +357,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs18.x')
+    expect(files[0].runtimeVersion).toBe('nodejs22.x')
   })
 
   test('Returns no Node.js version if version is newer than 18 but not a valid runtime', async () => {
