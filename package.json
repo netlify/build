@@ -56,7 +56,7 @@
     "eslint-plugin-import": "^2.26.0",
     "husky": "^8.0.0",
     "lerna": "^5.5.2",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^15.0.0",
     "nx": "^14.7.13",
     "prettier": "^3.0.0"
   },
