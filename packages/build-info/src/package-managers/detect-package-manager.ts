@@ -17,8 +17,8 @@ export type PkgManagerFields = {
   installCommand: string
   /** The package managers run command prefix */
   runCommand: string
-  /** The lock file a package manager is using */
-  lockFile: string
+  /** The lock files a package manager is using */
+  lockFiles: string[]
   /** Environment variable that can be used to force the usage of a package manager even though there is no lock file or a different lock file */
   forceEnvironment?: string
   /** Flags that should be used for running the installation command */
@@ -34,27 +34,27 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     name: PkgManager.YARN,
     installCommand: 'yarn install',
     runCommand: 'yarn run',
-    lockFile: 'yarn.lock',
+    lockFiles: ['yarn.lock'],
     forceEnvironment: 'NETLIFY_USE_YARN',
   },
   [PkgManager.PNPM]: {
     name: PkgManager.PNPM,
     installCommand: 'pnpm install',
     runCommand: 'pnpm run',
-    lockFile: 'pnpm-lock.yaml',
+    lockFiles: ['pnpm-lock.yaml'],
     forceEnvironment: 'NETLIFY_USE_PNPM',
   },
   [PkgManager.NPM]: {
     name: PkgManager.NPM,
     installCommand: 'npm install',
     runCommand: 'npm run',
-    lockFile: 'package-lock.json',
+    lockFiles: ['package-lock.json'],
   },
   [PkgManager.BUN]: {
     name: PkgManager.BUN,
     installCommand: 'bun install',
     runCommand: 'bun run',
-    lockFile: 'bun.lockb',
+    lockFiles: ['bun.lockb', 'bun.lock'],
   },
 }
 
@@ -63,7 +63,7 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
  * this is to reduce the complexity in loops
  */
 const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
-  (cur, pkgManager) => ({ ...cur, [pkgManager.lockFile]: pkgManager }),
+  (cur, pkgManager) => pkgManager.lockFiles.reduce((cur, lockFile) => ({ ...cur, [lockFile]: pkgManager }), cur),
   {} as Record<string, PkgManagerFields>,
 )
 

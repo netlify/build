@@ -55,7 +55,9 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
         \\"name\\": \\"pnpm\\",
         \\"installCommand\\": \\"pnpm install\\",
         \\"runCommand\\": \\"pnpm run\\",
-        \\"lockFile\\": \\"pnpm-lock.yaml\\",
+        \\"lockFiles\\": [
+          \\"pnpm-lock.yaml\\"
+        ],
         \\"forceEnvironment\\": \\"NETLIFY_USE_PNPM\\"
       }
     }"
