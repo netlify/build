@@ -3,8 +3,8 @@ import { createWriteStream, Stats, readlinkSync } from 'fs'
 import { Writable } from 'stream'
 
 import archiver, { Archiver } from 'archiver'
+import cpio from 'cpio-stream'
 
-import { CPIOPacker } from './cpio-stream.js'
 import { ObjectValues } from './types/utils.js'
 
 export { Archiver as ZipArchive } from 'archiver'
@@ -18,9 +18,9 @@ export const ARCHIVE_FORMAT = {
 export type ArchiveFormat = ObjectValues<typeof ARCHIVE_FORMAT>
 
 // Start cpio archive for files
-export const startCpio = function (destPath: string): { archive: CPIOPacker; output: Writable } {
+export const startCpio = function (destPath: string): { archive: any; output: Writable } {
   const output = createWriteStream(destPath)
-  const archive = new CPIOPacker()
+  const archive = cpio.pack()
 
   archive.pipe(output)
 
@@ -29,7 +29,7 @@ export const startCpio = function (destPath: string): { archive: CPIOPacker; out
 
 // Add new file to cpio
 export const addCpioFile = function (
-  archive: CPIOPacker,
+  archive: any,
   file: string,
   name: string,
   stat?: Stats,
@@ -61,7 +61,7 @@ export const addCpioFile = function (
 }
 
 // End cpioing files
-export const endCpio = async function (archive: CPIOPacker, output: Writable): Promise<void> {
+export const endCpio = async function (archive: any, output: Writable): Promise<void> {
   const result = new Promise<void>((resolve, reject) => {
     output.on('error', (error) => reject(error))
     output.on('finish', () => resolve())

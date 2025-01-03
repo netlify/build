@@ -1,15 +1,17 @@
 import { mkdir, rm } from 'fs/promises'
+import { mkdirSync, createWriteStream, createReadStream } from 'node:fs'
+import { finished } from 'node:stream'
 import { dirname, resolve, join, basename, relative } from 'path'
 import { env, platform } from 'process'
 import { fileURLToPath } from 'url'
 
+import cpio from 'cpio-stream'
 import { execa } from 'execa'
 import isCI from 'is-ci'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterAll, expect } from 'vitest'
 
 import type { Config } from '../../src/config.js'
-import { extractCPIO } from '../../src/cpio-stream.js'
 import { ListedFunction, zipFunctions } from '../../src/main.js'
 import { listImports } from '../../src/runtimes/node/bundlers/zisi/list_imports.js'
 import type { FunctionResult } from '../../src/utils/format_result.js'
@@ -139,16 +141,39 @@ export const extractCpioFiles = async function (files: FunctionResult[]): Promis
   return files as TestFunctionResult[]
 }
 
+async function extractCPIO(archivePath: string, dest: string) {
+  return new Promise<void>((resolve, reject) => {
+    const extractor = cpio.extract()
+    extractor.on('entry', function (header, stream, callback) {
+      const destination = join(dest, header.name)
+      mkdirSync(dirname(destination), { recursive: true })
+      const file = createWriteStream(destination)
+      stream.pipe(file)
+      finished(stream, callback)
+    })
+
+    extractor.on('finish', function () {
+      resolve()
+    })
+    extractor.on('error', function (err) {
+      reject(err)
+    })
+
+    const pack = createReadStream(archivePath)
+    pack.pipe(extractor)
+  })
+}
+
 const extractCpioFile = async function (path: string, dest: string): Promise<void> {
   await mkdir(dest, { recursive: true })
 
-  // if (platform === 'win32') {
-  await extractCPIO(path, dest)
-  // } else {
-  //   await execa('cpio', ['-idF', path], {
-  //     cwd: dest,
-  //   })
-  // }
+  if (platform === 'win32') {
+    await extractCPIO(path, dest)
+  } else {
+    await execa('cpio', ['-idF', path], {
+      cwd: dest,
+    })
+  }
 }
 
 export const unzipFiles = async function (files: FunctionResult[]): Promise<TestFunctionResult[]> {

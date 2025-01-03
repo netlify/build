@@ -9,7 +9,6 @@ import { copyFile } from 'cp-file'
 import pMap from 'p-map'
 
 import { addCpioFile, ARCHIVE_FORMAT, ArchiveFormat, endCpio, startCpio } from '../../../archive.js'
-import { CPIOPacker } from '../../../cpio-stream.js'
 import type { FeatureFlags } from '../../../feature_flags.js'
 import type { RuntimeCache } from '../../../utils/cache.js'
 import { cachedLstat, mkdirAndWriteFile } from '../../../utils/fs.js'
@@ -297,7 +296,7 @@ export const cpioNodeJs = function ({
   return createDirectory(options)
 }
 
-const addEntryFileToCpio = function (archive: CPIOPacker, { contents, filename }: EntryFile) {
+const addEntryFileToCpio = function (archive: any, { contents, filename }: EntryFile) {
   const contentBuffer = Buffer.from(contents)
 
   addCpioFile(archive, filename, filename, undefined, contentBuffer)
@@ -319,7 +318,7 @@ const cpioJsFile = async function ({
   userNamespace,
 }: {
   aliases?: Map<string, string>
-  archive: CPIOPacker
+  archive: any
   commonPrefix: string
   rewrites?: Map<string, string>
   stat: Stats
