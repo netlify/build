@@ -60,12 +60,12 @@ jobs:
             deno-version: 'v1.46.3'
       fail-fast: false
     steps:
-      # Increasing the maximum number of open files. See:
-      # https://github.com/actions/virtual-environments/issues/268
-      - name: Increase open file limit
-        run: sudo ulimit -Sn 65536
-        if: "${{ matrix.os == 'macos-14' }}"
-      - run: git config --global core.symlinks true
+      # # Increasing the maximum number of open files. See:
+      # # https://github.com/actions/virtual-environments/issues/268
+      # - name: Increase open file limit
+      #   run: sudo ulimit -Sn 65536
+      #   if: "${{ matrix.os == 'macos-14' }}"
+      # - run: git config --global core.symlinks true
       # Sets an output parameter if this is a release PR
       - name: Check for release
         id: release-check
