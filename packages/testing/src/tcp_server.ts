@@ -23,6 +23,7 @@ const getConnectionOpts = async function ({ useUnixSocket }) {
 
   const host = 'localhost'
   const port = await getPort()
+  console.log(port)
   return { connectionOpts: { host, port }, address: `${host}:${port}` }
 }
 
