@@ -9,6 +9,7 @@ if (process.argv.includes('-w')) {
 
 const config = {
   files: ['packages/**/tests/*.{cjs,mjs,js}', 'packages/**/tests/**/tests.{cjs,mjs,js}'],
+  cache: false,
   verbose: true,
   timeout: '300s',
   ignoredByWatcher: ['packages/*/tests/*/fixtures/**'],
