@@ -11,7 +11,6 @@ const config = {
   files: ['packages/**/tests/*.{cjs,mjs,js}', 'packages/**/tests/**/tests.{cjs,mjs,js}'],
   verbose: true,
   timeout: '300s',
-  workerThreads: false,
   ignoredByWatcher: ['packages/*/tests/*/fixtures/**'],
   environmentVariables: {
     FORCE_COLOR: '1',
