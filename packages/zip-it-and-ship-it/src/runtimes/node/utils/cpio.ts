@@ -279,7 +279,7 @@ CpioNodeParameters) {
   return { path: destPath, entryFilename, bootstrapVersion }
 }
 
-interface ZipNodeJsResult {
+interface CpioNodeJsResult {
   bootstrapVersion?: string
   entryFilename: string
   path: string
@@ -288,7 +288,7 @@ interface ZipNodeJsResult {
 export const cpioNodeJs = function ({
   archiveFormat,
   ...options
-}: CpioNodeParameters & { archiveFormat: ArchiveFormat }): Promise<ZipNodeJsResult> {
+}: CpioNodeParameters & { archiveFormat: ArchiveFormat }): Promise<CpioNodeJsResult> {
   if (archiveFormat === ARCHIVE_FORMAT.CPIO) {
     return createCpioArchive(options)
   }
