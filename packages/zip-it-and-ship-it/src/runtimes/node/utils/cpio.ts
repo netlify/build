@@ -238,11 +238,11 @@ CpioNodeParameters) {
 
     addEntryFileToCpio(archive, entryFile)
   }
-  // const telemetryFile = getTelemetryFile(generator)
+ const telemetryFile = getTelemetryFile(generator)
 
-  // if (featureFlags.zisi_add_instrumentation_loader === true) {
-  //   addEntryFileToCpio(archive, telemetryFile)
-  // }
+ if (featureFlags.zisi_add_instrumentation_loader === true) {
+   addEntryFileToCpio(archive, telemetryFile)
+ }
 
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
