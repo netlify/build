@@ -30,7 +30,7 @@
     "test:dev": "ava -w",
     "test:ci": "run-p test:ci:*",
     "test:ci:types": "tsd",
-    "test:ci:ava": "c8 -r lcovonly -r text -r json ava --serial",
+    "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
     "test:ci:vitest": "vitest run"
   },
   "keywords": [
