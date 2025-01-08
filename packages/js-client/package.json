@@ -46,7 +46,7 @@
     "micro-api-client": "^3.3.0",
     "node-fetch": "^3.0.0",
     "omit.js": "^2.0.2",
-    "p-wait-for": "^4.0.0",
+    "p-wait-for": "^5.0.0",
     "qs": "^6.9.6"
   },
   "devDependencies": {
