@@ -130,12 +130,15 @@ const getGeneralEnv = async function ({
 const getInternalEnv = function (
   cachedEnv: Record<string, { sources: string[]; value: string }>,
 ): Record<string, string> {
-  return Object.entries(cachedEnv).reduce((prev, [key, { sources, value }]) => {
-    if (sources.includes('internal')) {
-      prev[key] = value
-    }
-    return prev
-  }, {} as Record<string, string>)
+  return Object.entries(cachedEnv).reduce(
+    (prev, [key, { sources, value }]) => {
+      if (sources.includes('internal')) {
+        prev[key] = value
+      }
+      return prev
+    },
+    {} as Record<string, string>,
+  )
 }
 
 const getDeployUrls = function ({

@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.3.2](https://github.com/netlify/build/compare/edge-bundler-v12.3.1...edge-bundler-v12.3.2) (2025-01-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-wait-for to v5 ([#5970](https://github.com/netlify/build/issues/5970)) ([58635be](https://github.com/netlify/build/commit/58635bee5bcf2074d770f9836faa419e22eb2569))
+
 ## [12.3.1](https://github.com/netlify/build/compare/edge-bundler-v12.3.0...edge-bundler-v12.3.1) (2024-12-14)
 
 
