@@ -64,6 +64,17 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* packageManager.lockFile field containing single name of lock file is removed from output and packageManager.lockFiles field with array of possible lock files is introduced
+
+### Bug Fixes
+
+* use bun as package manager when bun.lock is found ([44bb81c](https://github.com/netlify/build/commit/44bb81c51f24ba8e39e2bf6f6b4cf9ac837afd3c))
+
 ## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
 
 
