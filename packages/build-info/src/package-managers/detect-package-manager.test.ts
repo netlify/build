@@ -110,6 +110,16 @@ test('should use bun if there is a bun.lockb in the root', async ({ fs }) => {
   expect(pkgManager?.name).toBe('bun')
 })
 
+test('should use bun if there is a bun.lock in the root', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'bun.lock': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('bun')
+})
+
 test('should use the `packageManager` property to detect yarn', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ packageManager: 'yarn@3.2.1' }),
