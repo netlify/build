@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.58.2](https://github.com/netlify/build/compare/build-v29.58.1...build-v29.58.2) (2025-01-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-event to v6 ([#5966](https://github.com/netlify/build/issues/5966)) ([3774b9b](https://github.com/netlify/build/commit/3774b9b1328c94b539a503765575ac5ad5ffb058))
+* **deps:** update dependency p-filter to v4 ([#5967](https://github.com/netlify/build/issues/5967)) ([b5d9d86](https://github.com/netlify/build/commit/b5d9d86a86bf4f7bb8cb534b73cc156ed4ca52e0))
+* **deps:** update dependency p-map to v7 ([#5968](https://github.com/netlify/build/issues/5968)) ([bb1d58b](https://github.com/netlify/build/commit/bb1d58b3ee2e11888cf7b0151e1cacef7fc522cb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.21.1 to ^20.21.2
+    * @netlify/edge-bundler bumped from 12.3.1 to 12.3.2
+    * @netlify/framework-info bumped from ^9.9.0 to ^9.9.1
+    * @netlify/functions-utils bumped from ^5.3.1 to ^5.3.2
+    * @netlify/zip-it-and-ship-it bumped from 9.42.1 to 9.42.2
+
 ## [29.58.1](https://github.com/netlify/build/compare/build-v29.58.0...build-v29.58.1) (2024-12-19)
 
 
