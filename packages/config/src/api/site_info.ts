@@ -116,7 +116,7 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[] | undefined> {
+}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
@@ -132,7 +132,7 @@ const getIntegrations = async function ({
 
   try {
     const response = await fetch(url)
-    if (response.status !== 200) {
+    if (!response.ok) {
       throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
     }
     const bodyText = await response.text()
@@ -143,6 +143,6 @@ const getIntegrations = async function ({
     const integrations = await JSON.parse(bodyText)
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
