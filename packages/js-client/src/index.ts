@@ -33,7 +33,7 @@ type APIOptions = {
 export interface NetlifyAPI extends DynamicMethods {}
 
 export class NetlifyAPI {
-  #accessToken: string | null = null
+  #accessToken: string | undefined | null = null
 
   defaultHeaders: Record<string, string> = {
     accept: 'application/json',
@@ -70,11 +70,11 @@ export class NetlifyAPI {
   }
 
   /** Retrieves the access token */
-  get accessToken(): string | null {
+  get accessToken(): string | undefined | null {
     return this.#accessToken
   }
 
-  set accessToken(token: string | null) {
+  set accessToken(token: string | undefined | null) {
     if (!token) {
       delete this.defaultHeaders.Authorization
       this.#accessToken = null
