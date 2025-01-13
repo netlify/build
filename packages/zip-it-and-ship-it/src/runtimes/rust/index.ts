@@ -1,6 +1,7 @@
 import type { Stats } from 'fs'
 import { join, extname, dirname, basename } from 'path'
 
+import { cpioBinary } from '../../cpio_binary.js'
 import { FeatureFlags } from '../../feature_flags.js'
 import { SourceFile } from '../../function.js'
 import type { RuntimeCache } from '../../utils/cache.js'
@@ -9,7 +10,14 @@ import getInternalValue from '../../utils/get_internal_value.js'
 import { nonNullable } from '../../utils/non_nullable.js'
 import { zipBinary } from '../../zip_binary.js'
 import { detectBinaryRuntime } from '../detect_runtime.js'
-import { FindFunctionsInPathsFunction, FindFunctionInPathFunction, Runtime, ZipFunction, RUNTIME } from '../runtime.js'
+import {
+  FindFunctionsInPathsFunction,
+  FindFunctionInPathFunction,
+  Runtime,
+  ZipFunction,
+  RUNTIME,
+  CpioFunction,
+} from '../runtime.js'
 
 import { build } from './builder.js'
 import { MANIFEST_NAME } from './constants.js'
@@ -162,6 +170,49 @@ const zipFunction: ZipFunction = async function ({
   }
 }
 
-const runtime: Runtime = { findFunctionsInPaths, findFunctionInPath, name: RUNTIME.RUST, zipFunction }
+// The name of the binary inside the cpio file must always be `bootstrap`
+// because they include the Lambda runtime, and that's the name that AWS
+// expects for those kind of functions.
+const cpioFunction: CpioFunction = async function ({
+  cache,
+  config,
+  destFolder,
+  filename,
+  mainFile,
+  runtime,
+  srcDir,
+  srcPath,
+  stat,
+  isInternal,
+}) {
+  const destPath = join(destFolder, `${filename}.cpio`)
+  const isSource = extname(mainFile) === '.rs'
+  const zipOptions = {
+    destPath,
+    filename: 'bootstrap',
+    runtime,
+  }
+
+  // If we're building from source, we first need to build the source and zip
+  // the resulting binary. Otherwise, we're dealing with a binary so we zip it
+  // directly.
+  if (isSource) {
+    const { path: binaryPath, stat: binaryStat } = await build({ cache, config, name: filename, srcDir })
+
+    await cpioBinary({ ...zipOptions, srcPath: binaryPath, stat: binaryStat })
+  } else {
+    await cpioBinary({ ...zipOptions, srcPath, stat })
+  }
+
+  return {
+    config,
+    path: destPath,
+    entryFilename: '',
+    displayName: config?.name,
+    generator: config?.generator || getInternalValue(isInternal),
+  }
+}
+
+const runtime: Runtime = { findFunctionsInPaths, findFunctionInPath, name: RUNTIME.RUST, zipFunction, cpioFunction }
 
 export default runtime

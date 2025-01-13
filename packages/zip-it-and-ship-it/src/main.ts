@@ -9,8 +9,10 @@ import { ModuleFormat } from './runtimes/node/utils/module_format.js'
 import { GetSrcFilesFunction, RuntimeName, RUNTIME } from './runtimes/runtime.js'
 import { RuntimeCache } from './utils/cache.js'
 import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
+export { cpioFunction, cpioFunctions } from './cpio.js'
 
 export { Config, FunctionConfig } from './config.js'
+
 export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'

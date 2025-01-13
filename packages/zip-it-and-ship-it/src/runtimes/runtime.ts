@@ -78,10 +78,48 @@ export type ZipFunction = (
   } & FunctionSource,
 ) => Promise<ZipFunctionResult>
 
+export interface CpioFunctionResult {
+  bundler?: NodeBundlerName
+  bundlerErrors?: object[]
+  bundlerWarnings?: object[]
+  config: FunctionConfig
+  displayName?: string
+  generator?: string
+  timeout?: number
+  inputs?: string[]
+  includedFiles?: string[]
+  invocationMode?: InvocationMode
+  outputModuleFormat?: ModuleFormat
+  nativeNodeModules?: object
+  path: string
+  priority?: number
+  trafficRules?: TrafficRules
+  runtimeVersion?: string
+  staticAnalysisResult?: StaticAnalysisResult
+  entryFilename: string
+}
+
+export type CpioFunction = (
+  args: {
+    archiveFormat: ArchiveFormat
+    basePath?: string
+    branch?: string
+    cache: RuntimeCache
+    config: FunctionConfig
+    destFolder: string
+    featureFlags: FeatureFlags
+    generator?: string
+    isInternal: boolean
+    logger: Logger
+    repositoryRoot?: string
+  } & FunctionSource,
+) => Promise<ZipFunctionResult>
+
 export interface Runtime {
   findFunctionsInPaths: FindFunctionsInPathsFunction
   findFunctionInPath: FindFunctionInPathFunction
   getSrcFiles?: GetSrcFilesFunction
   name: RuntimeName
   zipFunction: ZipFunction
+  cpioFunction: CpioFunction
 }

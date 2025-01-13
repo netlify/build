@@ -6,7 +6,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { ARCHIVE_FORMAT } from './archive.js'
-import { zipFunctions } from './main.js'
+import { cpioFunctions, zipFunctions } from './main.js'
 
 const packJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
 
@@ -22,10 +22,15 @@ const runCli = async function () {
 
   try {
     global.ZISI_CLI = true
-    // @ts-expect-error TODO: `options` is not getting the right types.
-    const zipped = await zipFunctions(srcFolder, destFolder, options)
-
-    console.log(JSON.stringify(zipped, null, 2))
+    let archive
+    if (options['archive-format'] === 'cpio') {
+      // @ts-expect-error TODO: `options` is not getting the right types.
+      archive = await cpioFunctions(srcFolder, destFolder, options)
+    } else {
+      // @ts-expect-error TODO: `options` is not getting the right types.
+      archive = await zipFunctions(srcFolder, destFolder, options)
+    }
+    console.log(JSON.stringify(archive, null, 2))
   } catch (error) {
     console.error(error.toString())
     exit(1)
