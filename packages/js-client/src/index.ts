@@ -3,6 +3,7 @@ import pWaitFor from 'p-wait-for'
 import { getMethods } from './methods/index.js'
 import { openApiSpec } from './open_api.js'
 import { getOperations } from './operations.js'
+import type { DynamicMethods } from './types.js'
 
 // 1 second
 const DEFAULT_TICKET_POLL = 1e3
@@ -28,8 +29,11 @@ type APIOptions = {
   globalParams?: Record<string, unknown>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface -- NetlifyAPI is a class and the interface just inherits mapped types
+export interface NetlifyAPI extends DynamicMethods {}
+
 export class NetlifyAPI {
-  #accessToken: string | null = null
+  #accessToken: string | undefined | null = null
 
   defaultHeaders: Record<string, string> = {
     accept: 'application/json',
@@ -66,11 +70,11 @@ export class NetlifyAPI {
   }
 
   /** Retrieves the access token */
-  get accessToken(): string | null {
+  get accessToken(): string | undefined | null {
     return this.#accessToken
   }
 
-  set accessToken(token: string | null) {
+  set accessToken(token: string | undefined | null) {
     if (!token) {
       delete this.defaultHeaders.Authorization
       this.#accessToken = null
@@ -107,18 +111,6 @@ export class NetlifyAPI {
     // See https://open-api.netlify.com/#/default/exchangeTicket for shape
     this.accessToken = accessTokenResponse.access_token
     return accessTokenResponse.access_token
-  }
-
-  // Those methods are getting implemented by the Object.assign(this, { ...methods }) in the constructor
-  // This is a way where we can still maintain proper types while not implementing them.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  showTicket(_config: { ticketId: string }): Promise<{ authorized: boolean }> {
-    throw new Error('Will be overridden in constructor!')
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exchangeTicket(_config: { ticketId: string }): Promise<{ access_token: string }> {
-    throw new Error('Will be overridden in constructor!')
   }
 }
 
