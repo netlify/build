@@ -40,6 +40,15 @@ export const getSiteInfo = async function ({
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
   const errorOnExtensionFetchFail = featureFlags.error_builds_on_extension_fetch_fail
+  console.log(`Fetching site info for site ${siteId}`, {
+    siteId,
+    accountId,
+    mode,
+    offline,
+    testEnv,
+    errorOnExtensionFetchFail,
+  })
+  console.log(`Feature flags: ${JSON.stringify(featureFlags, null, 2)}`)
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo: { id?: string; account_id?: string } = {}
