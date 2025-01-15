@@ -37,6 +37,12 @@ const TEAM_INSTALLATIONS_META_RESPONSE = {
   ],
 }
 
+const TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR = {
+  path: '/team/account1/integrations/installations/meta/test',
+  response: { error: 'Internal Server Error' },
+  status: 500,
+}
+
 const SITE_INTEGRATIONS_EMPTY_RESPONSE = {
   path: '/site/test/integrations/safe',
   response: [],
@@ -411,6 +417,46 @@ test('Integrations are returned if accountId is present and mode is dev', async 
   t.assert(config.integrations[0].slug === 'test')
   t.assert(config.integrations[0].version === 'so-cool-v2')
   t.assert(config.integrations[0].has_build === true)
+})
+
+test('Integrations are not returned if failed to fetch integrations and if flag is true', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'buildbot',
+      accountId: 'account1',
+      token: 'test',
+      featureFlags: {
+        error_builds_on_extension_fetch_fail: true,
+      },
+    })
+    .runConfigServer([
+      SITE_INFO_DATA,
+      TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR,
+      FETCH_INTEGRATIONS_EMPTY_RESPONSE,
+    ])
+
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Empty array of integrations are returned if failed to fetch integrations and if flag is false', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'buildbot',
+      accountId: 'account1',
+      token: 'test',
+      featureFlags: {
+        error_builds_on_extension_fetch_fail: false,
+      },
+    })
+    .runConfigServer([
+      SITE_INFO_DATA,
+      TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR,
+      FETCH_INTEGRATIONS_EMPTY_RESPONSE,
+    ])
+
+  t.snapshot(normalizeOutput(output))
 })
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
