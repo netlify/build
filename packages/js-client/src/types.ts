@@ -55,100 +55,20 @@ type HasRequestBody<K extends keyof operations> = 'requestBody' extends keyof op
     : false
   : false
 
-/**
- * Extracts the request body type from the operation.
- */
 type RequestBody<K extends keyof operations> = 'requestBody' extends keyof operations[K]
   ? operations[K]['requestBody'] extends { content: any }
     ? 'application/json' extends keyof operations[K]['requestBody']['content']
       ? operations[K]['requestBody']['content']['application/json']
       : 'application/octet-stream' extends keyof operations[K]['requestBody']['content']
-        ? ReadStream | (() => ReadStream)
+        ? any // TODO: handle types for binary data (Blob, File, Buffer, etc.)
         : never
     : never
   : never
 
-type IsRequestBodyJson<K extends keyof operations> = 'requestBody' extends keyof operations[K]
-  ? operations[K]['requestBody'] extends { content: any }
-    ? 'application/json' extends keyof operations[K]['requestBody']['content']
-      ? true
-      : false
-    : false
-  : false
-
-type IsRequestBodyOctetStream<K extends keyof operations> = 'requestBody' extends keyof operations[K]
-  ? operations[K]['requestBody'] extends { content: any }
-    ? 'application/octet-stream' extends keyof operations[K]['requestBody']['content']
-      ? true
-      : false
-    : false
-  : false
-
-type RequestBodyParam<K extends keyof operations> =
-  HasRequestBody<K> extends true
-    ? IsRequestBodyOptional<K> extends true
-      ? DetailedRequestBodyOptional<K>
-      : DetailedRequestBody<K>
-    : never
-
-type DetailedRequestBody<K extends keyof operations> =
-  IsRequestBodyJson<K> extends true
-    ? {
-        /**
-         * The request body for `application/json`.
-         * Automatically serialized to JSON based on the operation.
-         * Can be a JSON object or a function returning one.
-         */
-        body: RequestBody<K> | (() => RequestBody<K>)
-      }
-    : IsRequestBodyOctetStream<K> extends true
-      ? {
-          /**
-           * The request body for `application/octet-stream`.
-           * Can be a Node.js readable stream or a function returning one
-           * @example
-           * fs.createReadStream('./file')
-           * @example
-           * () => fs.createReadStream('./file')
-           */
-          body: ReadStream | (() => ReadStream)
-        }
-      : never
-
-type DetailedRequestBodyOptional<K extends keyof operations> =
-  IsRequestBodyJson<K> extends true
-    ? {
-        /**
-         * The request body for `application/json`.
-         * Automatically serialized to JSON based on the operation.
-         * Can be a JSON object or a function returning one.
-         */
-        body?: RequestBody<K> | (() => RequestBody<K>)
-      }
-    : IsRequestBodyOctetStream<K> extends true
-      ? {
-          /**
-           * The request body for `application/octet-stream`.
-           * Can be a Node.js readable stream or a function returning one
-           * @example
-           * fs.createReadStream('./file')
-           * @example
-           * () => fs.createReadStream('./file')
-           */
-          body?: ReadStream | (() => ReadStream)
-        }
-      : never
-
-/**
- * Determines whether all properties in the request body are optional.
- */
 type IsRequestBodyOptional<K extends keyof operations> =
   HasRequestBody<K> extends true ? (AreAllOptional<RequestBody<K>> extends true ? true : false) : true
 
-/**
- * Determines whether any parameters or request body are required.
- */
-type IsParamsOrRequestBodyRequired<K extends keyof operations> = 'parameters' extends keyof operations[K]
+type IsAnythingRequired<K extends keyof operations> = 'parameters' extends keyof operations[K]
   ? IsPathAndQueryOptional<K> extends true
     ? IsRequestBodyOptional<K> extends true
       ? false
@@ -172,18 +92,22 @@ type ExtractPathAndQueryParameters<K extends keyof operations> = 'parameters' ex
       : undefined
   : undefined
 
-/**
- * Combines path, query, and request body parameters into a single type.
- */
 type CombinedParamsAndRequestBody<K extends keyof operations> =
   HasRequestBody<K> extends true
-    ? ExtractPathAndQueryParameters<K> & RequestBodyParam<K>
+    ? ExtractPathAndQueryParameters<K> & {
+        body: RequestBody<K>
+      }
     : ExtractPathAndQueryParameters<K>
 
-type OperationParams<K extends keyof operations> =
-  IsParamsOrRequestBodyRequired<K> extends false
+type OperationParams<K extends keyof operations> = 'parameters' extends keyof operations[K]
+  ? IsAnythingRequired<K> extends false
     ? CombinedParamsAndRequestBody<K> | void
     : CombinedParamsAndRequestBody<K>
+  : HasRequestBody<K> extends true
+    ? IsRequestBodyOptional<K> extends true
+      ? { body: RequestBody<K> } | void
+      : { body: RequestBody<K> }
+    : void
 
 type SuccessHttpStatusCodes = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
 /**
