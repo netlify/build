@@ -87,11 +87,11 @@ type IsRequestBodyOctetStream<K extends keyof operations> = 'requestBody' extend
 type RequestBodyParam<K extends keyof operations> =
   HasRequestBody<K> extends true
     ? IsRequestBodyOptional<K> extends true
-      ? RequestBodyDecoratorOptional<K>
-      : RequestBodyDecorator<K>
+      ? DetailedRequestBodyOptional<K>
+      : DetailedRequestBody<K>
     : never
 
-type RequestBodyDecorator<K extends keyof operations> =
+type DetailedRequestBody<K extends keyof operations> =
   IsRequestBodyJson<K> extends true
     ? {
         /**
@@ -115,7 +115,7 @@ type RequestBodyDecorator<K extends keyof operations> =
         }
       : never
 
-type RequestBodyDecoratorOptional<K extends keyof operations> =
+type DetailedRequestBodyOptional<K extends keyof operations> =
   IsRequestBodyJson<K> extends true
     ? {
         /**
