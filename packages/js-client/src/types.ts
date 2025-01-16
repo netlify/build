@@ -181,7 +181,7 @@ type CombinedParamsAndRequestBody<K extends keyof operations> =
     ? ExtractPathAndQueryParameters<K> & RequestBodyParam<K>
     : ExtractPathAndQueryParameters<K>
 
-export type OperationParams<K extends keyof operations> =
+type OperationParams<K extends keyof operations> =
   IsParamsOrRequestBodyRequired<K> extends false
     ? CombinedParamsAndRequestBody<K> | void | undefined
     : CombinedParamsAndRequestBody<K>
