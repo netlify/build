@@ -43,6 +43,37 @@ type SnakeToCamel<T> = {
  */
 type Params<T> = SnakeToCamel<T> | T
 
+type HasRequestBody<K extends keyof operations> = 'requestBody' extends keyof operations[K]
+  ? operations[K]['requestBody'] extends { content: any }
+    ? 'application/json' extends keyof operations[K]['requestBody']['content']
+      ? true
+      : 'application/octet-stream' extends keyof operations[K]['requestBody']['content']
+        ? true
+        : false
+    : false
+  : false
+
+type RequestBody<K extends keyof operations> = 'requestBody' extends keyof operations[K]
+  ? operations[K]['requestBody'] extends { content: any }
+    ? 'application/json' extends keyof operations[K]['requestBody']['content']
+      ? operations[K]['requestBody']['content']['application/json']
+      : 'application/octet-stream' extends keyof operations[K]['requestBody']['content']
+        ? any // TODO: handle types for binary data (Blob, File, Buffer, etc.)
+        : never
+    : never
+  : never
+
+type IsRequestBodyOptional<K extends keyof operations> =
+  HasRequestBody<K> extends true ? (AreAllOptional<RequestBody<K>> extends true ? true : false) : true
+
+type IsAnythingRequired<K extends keyof operations> = 'parameters' extends keyof operations[K]
+  ? IsPathAndQueryOptional<K> extends true
+    ? IsRequestBodyOptional<K> extends true
+      ? false
+      : true
+    : true
+  : false
+
 /**
  * Extracts and combines `path` and `query` parameters into a single type.
  */
@@ -59,11 +90,22 @@ type ExtractPathAndQueryParameters<K extends keyof operations> = 'parameters' ex
       : undefined
   : undefined
 
-type OperationParams<K extends keyof operations> = 'parameters' extends keyof operations[K]
-  ? IsPathAndQueryOptional<K> extends true
-    ? ExtractPathAndQueryParameters<K> | void
+type CombinedParamsAndRequestBody<K extends keyof operations> =
+  HasRequestBody<K> extends true
+    ? ExtractPathAndQueryParameters<K> & {
+        body: RequestBody<K>
+      }
     : ExtractPathAndQueryParameters<K>
-  : void
+
+type OperationParams<K extends keyof operations> = 'parameters' extends keyof operations[K]
+  ? IsAnythingRequired<K> extends false
+    ? CombinedParamsAndRequestBody<K> | void
+    : CombinedParamsAndRequestBody<K>
+  : HasRequestBody<K> extends true
+    ? IsRequestBodyOptional<K> extends true
+      ? { body: RequestBody<K> } | void
+      : { body: RequestBody<K> }
+    : void
 
 type SuccessHttpStatusCodes = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
 /**
