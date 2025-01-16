@@ -29,6 +29,17 @@ type APIOptions = {
   globalParams?: Record<string, unknown>
 }
 
+/**
+ * The Netlify API client.
+ * @see {@link https://open-api.netlify.com | Open API Reference}
+ * @see {@link https://docs.netlify.com/api/get-started | Online Documentation}
+ *
+ * @example
+ * ```ts
+ * const client = new NetlifyAPI('YOUR_ACCESS_TOKEN')
+ * const sites = await client.listSites()
+ * ```
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface -- NetlifyAPI is a class and the interface just inherits mapped types
 export interface NetlifyAPI extends DynamicMethods {}
 
