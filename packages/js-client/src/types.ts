@@ -1,6 +1,7 @@
 import type { ReadStream } from 'node:fs'
 
 import type { operations } from '@netlify/open-api'
+import type { RequestInit } from 'node-fetch'
 
 /**
  * Determines whether all keys in T are optional.
@@ -182,7 +183,7 @@ type CombinedParamsAndRequestBody<K extends keyof operations> =
 
 type OperationParams<K extends keyof operations> =
   IsParamsOrRequestBodyRequired<K> extends false
-    ? CombinedParamsAndRequestBody<K> | void
+    ? CombinedParamsAndRequestBody<K> | void | undefined
     : CombinedParamsAndRequestBody<K>
 
 type SuccessHttpStatusCodes = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
@@ -202,5 +203,31 @@ type OperationResponse<K extends keyof operations> = 'responses' extends keyof o
   : never
 
 export type DynamicMethods = {
-  [K in keyof operations]: (params: OperationParams<K>) => Promise<OperationResponse<K>>
+  [K in keyof operations]: (
+    params: OperationParams<K>,
+    /**
+     * Any properties you want passed to `node-fetch`.
+     *
+     * The `headers` property is merged with some `defaultHeaders`:
+     * ```ts
+     * {
+     *  'User-agent': 'netlify-js-client',
+     *  'accept': 'application/json',
+     * }
+     * ```
+     *
+     * @example
+     * ```ts
+     * const site = await client.getSite(
+     *  { site_id: 'YOUR_SITE_ID' },
+     *  {
+     *    headers: {
+     *      'X-Example-Header': 'Example Value',
+     *    },
+     *  },
+     * )
+     * ```
+     */
+    opts?: RequestInit | void | undefined,
+  ) => Promise<OperationResponse<K>>
 }
