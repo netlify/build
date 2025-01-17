@@ -40,9 +40,11 @@ type APIOptions = {
  * const sites = await client.listSites()
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface -- NetlifyAPI is a class and the interface just inherits mapped types
+// NetlifyAPI is a class and the interface just inherits mapped types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unsafe-declaration-merging
 export interface NetlifyAPI extends DynamicMethods {}
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class NetlifyAPI {
   #accessToken: string | undefined | null = null
 

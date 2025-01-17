@@ -113,7 +113,7 @@ export const getSpawnInfo = (): {
   }
 } => {
   // we know that this package.json has a name as it's ours
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const packageName = ROOT_PACKAGE_JSON.name!
   return {
     plugin: { packageName, pluginPackageJson: ROOT_PACKAGE_JSON },

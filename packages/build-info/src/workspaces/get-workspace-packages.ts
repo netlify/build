@@ -70,7 +70,7 @@ export async function findPackages(
       : project.fs.resolve(dir)
   try {
     content = await project.fs.readDir(startDir, true)
-  } catch (err) {
+  } catch {
     // noop
   }
 
