@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.58.7](https://github.com/netlify/build/compare/build-v29.58.6...build-v29.58.7) (2025-01-20)
+
+
+### Bug Fixes
+
+* add move to options type for cache util exposed to build plugins ([#6019](https://github.com/netlify/build/issues/6019)) ([c2843db](https://github.com/netlify/build/commit/c2843dbdf6e5d13ec1075142807567c3f9b857c5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.3 to ^5.3.4
+    * @netlify/zip-it-and-ship-it bumped from 9.42.3 to 9.42.4
+
 ## [29.58.6](https://github.com/netlify/build/compare/build-v29.58.5...build-v29.58.6) (2025-01-17)
 
 
