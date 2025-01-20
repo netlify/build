@@ -67,7 +67,7 @@
     "node-fetch": "^3.3.1",
     "typescript": "^5.0.0",
     "unionfs": "^4.4.0",
-    "vite": "^4.0.4",
+    "vite": "^6.0.0",
     "vitest": "^0.34.0"
   },
   "engines": {
