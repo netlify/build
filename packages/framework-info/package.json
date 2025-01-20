@@ -71,7 +71,7 @@
     "semver": "^7.3.8"
   },
   "devDependencies": {
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^9.0.0",
     "cpy": "^9.0.0",
     "cpy-cli": "^4.0.0",
     "fast-glob": "^3.2.12",
