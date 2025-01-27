@@ -105,6 +105,15 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.58.8](https://github.com/netlify/build/compare/build-v29.58.7...build-v29.58.8) (2025-01-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.21.6 to ^20.21.7
+
 ## [29.58.7](https://github.com/netlify/build/compare/build-v29.58.6...build-v29.58.7) (2025-01-20)
 
 
