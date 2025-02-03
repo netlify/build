@@ -36,10 +36,8 @@ export const getSiteInfo = async function ({
   offline = false,
   testOpts = {},
   siteFeatureFlagPrefix,
-  featureFlags = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-  const errorOnExtensionFetchFail = featureFlags.error_builds_on_extension_fetch_fail
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo: { id?: string; account_id?: string } = {}
@@ -48,9 +46,7 @@ export const getSiteInfo = async function ({
     if (accountId !== undefined) siteInfo.account_id = accountId
 
     const integrations =
-      mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, errorOnExtensionFetchFail })
-        : []
+      mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline, accountId }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -59,7 +55,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, errorOnExtensionFetchFail }),
+    getIntegrations({ siteId, testOpts, offline, accountId }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -113,7 +109,6 @@ type GetIntegrationsOpts = {
   accountId?: string
   testOpts: TestOptions
   offline: boolean
-  errorOnExtensionFetchFail?: boolean
 }
 
 const getIntegrations = async function ({
@@ -121,7 +116,6 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
-  errorOnExtensionFetchFail,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
@@ -136,31 +130,19 @@ const getIntegrations = async function ({
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
 
-  if (errorOnExtensionFetchFail) {
-    try {
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-      }
-      const bodyText = await response.text()
-      if (bodyText === '') {
-        return []
-      }
-
-      const integrations = await JSON.parse(bodyText)
-      return Array.isArray(integrations) ? integrations : []
-    } catch (error) {
-      return throwUserError(
-        `Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`,
-      )
-    }
-  }
-
   try {
     const response = await fetch(url)
-    const integrations = await response.json()
+    if (!response.ok) {
+      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
+    }
+    const bodyText = await response.text()
+    if (bodyText === '') {
+      return []
+    }
+
+    const integrations = await JSON.parse(bodyText)
     return Array.isArray(integrations) ? integrations : []
-  } catch {
-    return []
+  } catch (error) {
+    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
