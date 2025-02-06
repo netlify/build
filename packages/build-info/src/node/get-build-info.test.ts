@@ -68,6 +68,7 @@ test.skipIf(platform() === 'win32')('should retrieve the build info for providin
   const info = await getBuildInfo({ rootDir: fixture.cwd })
 
   info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+  info.settings = info.settings.sort((a, b) => (a.dist < b.dist ? -1 : 1))
   expect(info).toMatchSnapshot()
 })
 
