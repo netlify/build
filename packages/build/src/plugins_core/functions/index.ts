@@ -202,7 +202,6 @@ const coreStep = async function ({
 const hasFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
-  featureFlags,
   packagePath,
 }) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
@@ -217,13 +216,9 @@ const hasFunctionsDirectories = async function ({
     return true
   }
 
-  if (featureFlags.netlify_build_frameworks_api) {
-    const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
 
-    return await pathExists(frameworkFunctionsSrc)
-  }
-
-  return false
+  return await pathExists(frameworkFunctionsSrc)
 }
 
 export const bundleFunctions = {
