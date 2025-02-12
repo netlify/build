@@ -221,7 +221,6 @@ if (semver.gte(nodeVersion, '16.7.0')) {
     const output = await new Fixture('./fixtures/functions_user_framework')
       .withFlags({
         debug: false,
-        featureFlags: { netlify_build_frameworks_api: true },
         mode: 'buildbot',
       })
       .runWithBuild()
@@ -245,7 +244,6 @@ if (semver.gte(nodeVersion, '16.7.0')) {
       const output = await new Fixture('./fixtures/functions_user_internal_framework')
         .withFlags({
           debug: false,
-          featureFlags: { netlify_build_frameworks_api: true },
           mode: 'buildbot',
         })
         .runWithBuild()
