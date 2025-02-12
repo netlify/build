@@ -1,7 +1,6 @@
 import semver from 'semver'
 
 import { isRuntime } from '../../utils/runtime.js'
-import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
 import { BufferedLogs, logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
@@ -149,7 +148,7 @@ const getUpgradeInstruction = function (loadedFrom, origin) {
 // Print a warning message when plugins are using a version that is too recent
 // and does not meet some `compatibility` expectations.
 // This can only happen when they are installed to `package.json`.
-export const logIncompatiblePlugins = function (logs, pluginsOptions) {
+export const logIncompatiblePlugins = function (logs: BufferedLogs, pluginsOptions) {
   const incompatiblePlugins = pluginsOptions.filter(hasIncompatibleVersion).map(getIncompatiblePlugin)
 
   if (incompatiblePlugins.length === 0) {
@@ -161,16 +160,7 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
 }
 
 const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {
-  return (
-    compatWarning !== '' &&
-    version !== undefined &&
-    compatibleVersion !== undefined &&
-    // Using only the major version prevents printing this warning message when
-    // a site is using the right `compatibility` version, but is using the most
-    // recent version due to the time gap between `npm publish` and the
-    // `plugins.json` update
-    isPreviousMajor(compatibleVersion, version)
-  )
+  return compatWarning !== '' && version !== undefined && compatibleVersion !== undefined
 }
 
 const getIncompatiblePlugin = function ({
