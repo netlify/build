@@ -124,13 +124,7 @@ export const runStep = async function ({
             // no-op
           }
 
-    let outputFlusher: OutputFlusher | undefined
-
-    if (featureFlags.netlify_build_reduced_output) {
-      outputFlusher = new OutputFlusher(logPluginStart)
-    } else {
-      logPluginStart()
-    }
+    const outputFlusher = new OutputFlusher(logPluginStart)
 
     const fireStep = getFireStep(packageName, coreStepId, event)
     const {
