@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 import decompress from 'decompress'
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
