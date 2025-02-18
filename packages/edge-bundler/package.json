@@ -60,7 +60,7 @@
     "node": "^14.16.0 || >=16.0.0"
   },
   "dependencies": {
-    "@import-maps/resolve": "^1.0.1",
+    "@import-maps/resolve": "^2.0.0",
     "@vercel/nft": "0.27.7",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
