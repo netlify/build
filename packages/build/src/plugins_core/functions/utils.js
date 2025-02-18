@@ -31,11 +31,8 @@ export const getUserAndInternalFunctions = ({
   const paths = [
     functionsSrcExists ? functionsSrc : undefined,
     internalFunctionsSrcExists ? internalFunctionsSrc : undefined,
+    frameworkFunctionsSrcExists ? frameworkFunctionsSrc : undefined,
   ]
-
-  if (featureFlags.netlify_build_frameworks_api && frameworkFunctionsSrcExists) {
-    paths.push(frameworkFunctionsSrc)
-  }
 
   return Promise.all(paths.map((path) => path && getRelativeFunctionMainFiles({ featureFlags, functionsSrc: path })))
 }

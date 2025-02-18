@@ -71,7 +71,7 @@
     "semver": "^7.3.8"
   },
   "devDependencies": {
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^9.0.0",
     "cpy": "^9.0.0",
     "cpy-cli": "^4.0.0",
     "fast-glob": "^3.2.12",
@@ -80,7 +80,7 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "tmp-promise": "^3.0.2",
     "typescript": "^5.0.0",
-    "vite": "^4.0.4",
+    "vite": "^6.0.0",
     "vitest": "^0.34.0"
   },
   "engines": {

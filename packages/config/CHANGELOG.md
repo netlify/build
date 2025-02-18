@@ -76,6 +76,49 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [20.21.7](https://github.com/netlify/build/compare/config-v20.21.6...config-v20.21.7) (2025-01-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.2 to ^13.3.3
+
+## [20.21.6](https://github.com/netlify/build/compare/config-v20.21.5...config-v20.21.6) (2025-01-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.1 to ^13.3.2
+
+## [20.21.5](https://github.com/netlify/build/compare/config-v20.21.4...config-v20.21.5) (2025-01-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.0 to ^13.3.1
+
+## [20.21.4](https://github.com/netlify/build/compare/config-v20.21.3...config-v20.21.4) (2025-01-15)
+
+
+### Bug Fixes
+
+* **config:** fail builds if failed to fetch extensions ([#6008](https://github.com/netlify/build/issues/6008)) ([95c4716](https://github.com/netlify/build/commit/95c471627fa363e547477ecb6afafc73326d43cb))
+
+## [20.21.3](https://github.com/netlify/build/compare/config-v20.21.2...config-v20.21.3) (2025-01-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.2.1 to ^13.3.0
+
 ## [20.21.2](https://github.com/netlify/build/compare/config-v20.21.1...config-v20.21.2) (2025-01-08)
 
 

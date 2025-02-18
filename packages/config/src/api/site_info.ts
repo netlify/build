@@ -132,12 +132,17 @@ const getIntegrations = async function ({
 
   try {
     const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
+    }
+    const bodyText = await response.text()
+    if (bodyText === '') {
+      return []
+    }
 
-    const integrations = await response.json()
+    const integrations = await JSON.parse(bodyText)
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
-    // TODO: We should consider blocking the build as integrations are a critical part of the build process
-    // https://linear.app/netlify/issue/CT-1214/implement-strategy-in-builds-to-deal-with-integrations-that-we-fail-to
-    return []
+    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }

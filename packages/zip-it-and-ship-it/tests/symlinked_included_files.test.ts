@@ -46,9 +46,6 @@ test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` 
         includedFiles: ['**'],
       },
     },
-    featureFlags: {
-      zisi_fix_symlinks: true,
-    },
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
@@ -100,9 +97,6 @@ test('preserves multiple symlinks that link to the same target', async () => {
       '*': {
         includedFiles: ['**'],
       },
-    },
-    featureFlags: {
-      zisi_fix_symlinks: true,
     },
     repositoryRoot: basePath,
     systemLog: console.log,

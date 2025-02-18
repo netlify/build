@@ -66,8 +66,9 @@ test('should not crash on invalid projects', async (ctx) => {
 test.skipIf(platform() === 'win32')('should retrieve the build info for providing a rootDir', async (ctx) => {
   const fixture = await createFixture('pnpm-workspace', ctx)
   const info = await getBuildInfo({ rootDir: fixture.cwd })
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+  info.settings = info.settings.sort((a, b) => (a.dist < b.dist ? -1 : 1))
   expect(info).toMatchSnapshot()
 })
 
@@ -76,7 +77,7 @@ test.skipIf(platform() === 'win32')(
   async (ctx) => {
     const fixture = await createFixture('pnpm-workspace', ctx)
     const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: fixture.cwd })
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
     expect(info).toMatchSnapshot()
   },
@@ -87,7 +88,7 @@ test.skipIf(platform() === 'win32')(
   async (ctx) => {
     const fixture = await createFixture('pnpm-workspace', ctx)
     const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: join(fixture.cwd, 'packages/blog') })
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
     expect(info).toMatchSnapshot()
   },
