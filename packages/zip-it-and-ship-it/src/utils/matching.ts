@@ -1,10 +1,6 @@
-import { promisify } from 'util'
-
-import globFunction from 'glob'
 import { minimatch as minimatchFunction, MinimatchOptions } from 'minimatch'
 import normalizePath from 'normalize-path'
-
-const pGlob = promisify(globFunction)
+import { glob as tinyGlobby, type GlobOptions } from 'tinyglobby'
 
 /**
  * Both glob and minimatch only support unix style slashes in patterns
@@ -12,8 +8,8 @@ const pGlob = promisify(globFunction)
  * We use `normalize-path` here instead of `unixify` because we do not want to remove drive letters
  */
 
-export const glob = function (pattern: string, options: globFunction.IOptions): Promise<string[]> {
-  let normalizedIgnore
+export const glob = function (pattern: string, options: GlobOptions): Promise<string[]> {
+  let normalizedIgnore: undefined | string | string[]
 
   if (options.ignore) {
     normalizedIgnore =
@@ -22,7 +18,7 @@ export const glob = function (pattern: string, options: globFunction.IOptions): 
         : options.ignore.map((expression) => normalizePath(expression))
   }
 
-  return pGlob(normalizePath(pattern), { ...options, ignore: normalizedIgnore })
+  return tinyGlobby(normalizePath(pattern), { ...options, ignore: normalizedIgnore })
 }
 
 export const minimatch = function (target: string, pattern: string, options?: MinimatchOptions): boolean {
