@@ -2,7 +2,7 @@
   "name": "zip-it-and-ship-it-fixtures",
   "dependencies": {
     "d3": "^7.0.0",
-    "jimp": "^0.22.0",
+    "jimp": "^1.0.0",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
