@@ -73,7 +73,7 @@
   "devDependencies": {
     "babel-loader": "^9.0.0",
     "cpy": "^9.0.0",
-    "cpy-cli": "^4.0.0",
+    "cpy-cli": "^5.0.0",
     "fast-glob": "^3.2.12",
     "npm-run-all2": "^5.0.0",
     "path-browserify": "^1.0.1",
