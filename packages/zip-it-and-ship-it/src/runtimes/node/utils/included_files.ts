@@ -56,12 +56,13 @@ export const getPathsOfIncludedFiles = async (
     onlyFiles: false,
     // get directories as well to get symlinked directories,
     // to filter the regular non symlinked directories out mark them with a slash at the end to filter them out.
+    // TODO(serhalp) If we can find a better way to do this, we can use tinyglobby here and remove fast-glob entirely.
     markDirectories: true,
     followSymbolicLinks: false,
   })
 
+  // now filter the non symlinked directories out that got marked with a trailing slash
   const paths = pathGroups.filter((path) => !path.endsWith('/')).map(normalize)
 
-  // now filter the non symlinked directories out that got marked with a trailing slash
   return { excludePatterns, paths }
 }
