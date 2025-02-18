@@ -96,7 +96,7 @@
     "log-process-errors": "^8.0.0",
     "map-obj": "^5.0.0",
     "memoize-one": "^6.0.0",
-    "minimatch": "^9.0.4",
+    "minimatch": "^10.0.0",
     "node-fetch": "^3.3.2",
     "os-name": "^5.0.0",
     "p-event": "^6.0.0",
