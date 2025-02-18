@@ -5,7 +5,7 @@ export const getPublishedFiles = async function (modulePath: string): Promise<st
   const ignore = getIgnoredFiles(modulePath)
   const publishedFiles = await glob(`${modulePath}/**`, {
     ignore,
-    nodir: true,
+    onlyFiles: true,
     absolute: true,
     dot: true,
   })
