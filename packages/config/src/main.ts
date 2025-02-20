@@ -80,6 +80,7 @@ export const resolveConfig = async function (opts) {
     offline,
     featureFlags,
     testOpts,
+    token,
   })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
