@@ -28,8 +28,10 @@ export const getSteps = function (steps, eventHandlers?: any[]) {
 export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
   const devCommandStep = {
     event: 'onDev',
-    coreStep: async () => {
-      await command()
+    coreStep: async (args) => {
+      const { constants, event } = args
+      const utils = getUtils({ event, constants, runState: {} })
+      await command({ utils, ...args })
 
       return {}
     },
