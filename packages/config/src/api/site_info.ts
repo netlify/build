@@ -42,7 +42,6 @@ export const getSiteInfo = async function ({
   featureFlags = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-  const sendBuildBotTokenToJigsaw = featureFlags.send_build_bot_token_to_jigsaw
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo: { id?: string; account_id?: string } = {}
@@ -52,7 +51,7 @@ export const getSiteInfo = async function ({
 
     const integrations =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, sendBuildBotTokenToJigsaw })
+        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags })
         : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
@@ -62,7 +61,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, sendBuildBotTokenToJigsaw }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -117,7 +116,7 @@ type GetIntegrationsOpts = {
   testOpts: TestOptions
   offline: boolean
   token?: string
-  sendBuildBotTokenToJigsaw?: boolean
+  featureFlags?: Record<string, boolean>
 }
 
 const getIntegrations = async function ({
@@ -126,12 +125,12 @@ const getIntegrations = async function ({
   testOpts,
   offline,
   token,
-  sendBuildBotTokenToJigsaw,
+  featureFlags,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
-
+  const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
   const { host } = testOpts
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
