@@ -66,6 +66,7 @@ export const firePluginStep = async function ({
         netlifyConfig,
         constants,
         otelCarrier,
+        extensionMetadata,
       },
       logs: logsA,
       verbose,

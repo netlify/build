@@ -1,5 +1,6 @@
 import { NetlifyAPI } from 'netlify'
 import fetch from 'node-fetch'
+import type { RequestInit } from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
@@ -17,6 +18,7 @@ type GetSiteInfoOpts = {
   featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
   siteFeatureFlagPrefix: string
+  token: string
 }
 /**
  * Retrieve Netlify Site information, if available.
@@ -36,6 +38,8 @@ export const getSiteInfo = async function ({
   offline = false,
   testOpts = {},
   siteFeatureFlagPrefix,
+  token,
+  featureFlags = {},
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
@@ -46,7 +50,9 @@ export const getSiteInfo = async function ({
     if (accountId !== undefined) siteInfo.account_id = accountId
 
     const integrations =
-      mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline, accountId }) : []
+      mode === 'buildbot' && !offline
+        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags })
+        : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -55,7 +61,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -109,6 +115,8 @@ type GetIntegrationsOpts = {
   accountId?: string
   testOpts: TestOptions
   offline: boolean
+  token?: string
+  featureFlags?: Record<string, boolean>
 }
 
 const getIntegrations = async function ({
@@ -116,11 +124,13 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
+  token,
+  featureFlags,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
-
+  const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
   const { host } = testOpts
 
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
@@ -131,7 +141,15 @@ const getIntegrations = async function ({
     : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
-    const response = await fetch(url)
+    const requestOptions = {} as RequestInit
+
+    if (sendBuildBotTokenToJigsaw && token) {
+      requestOptions.headers = {
+        'netlify-sdk-build-bot-token': token,
+      }
+    }
+
+    const response = await fetch(url, requestOptions)
     if (!response.ok) {
       throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
     }
