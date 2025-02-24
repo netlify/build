@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.59.0](https://github.com/netlify/build/compare/build-v29.58.10...build-v29.59.0) (2025-02-24)
+
+
+### Features
+
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.21.7 to ^20.22.0
+
 ## [29.58.10](https://github.com/netlify/build/compare/build-v29.58.9...build-v29.58.10) (2025-02-20)
 
 
