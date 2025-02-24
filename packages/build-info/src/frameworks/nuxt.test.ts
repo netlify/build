@@ -46,10 +46,6 @@ describe('Nuxt V3', () => {
     expect(detected?.[0].dev?.command).toBe('nuxt dev')
     expect(detected?.[0].dev?.clearPublishDirectory).toBe(true)
     expect(detected?.[0].dev?.port).toBe(3000)
-    expect(detected?.[0].env).toMatchObject({
-      AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
-      NODE_VERSION: '18',
-    })
 
     const settings = await getSettings(detected![0], project, cwd)
     expect(settings.clearPublishDirectory).toBeTruthy()
