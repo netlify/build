@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [8.1.0](https://github.com/netlify/build/compare/build-info-v8.0.0...build-info-v8.1.0) (2025-02-24)
+
+
+### Features
+
+* change default node version to v22 ([#5958](https://github.com/netlify/build/issues/5958)) ([59cda04](https://github.com/netlify/build/commit/59cda04d87af434bafa71c0509f958365b4fab34))
+
 ## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
 
 
