@@ -219,7 +219,7 @@ export class Fixture {
   async runDev(devCommand: unknown): Promise<string> {
     const entryPoint = startDev.bind(null, devCommand)
     const { logs } = await entryPoint(this.getBuildFlags())
-    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+    return [logs?.stdout.join('\n'), logs?.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 
   /** use the CLI entry point instead of the Node.js main function */
