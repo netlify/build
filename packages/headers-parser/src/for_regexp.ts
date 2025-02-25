@@ -1,16 +1,16 @@
 import escapeStringRegExp from 'escape-string-regexp'
 
 // Retrieve `forRegExp` which is a `RegExp` used to match the `for` path
-export const getForRegExp = function (forPath) {
+export const getForRegExp = function (forPath: string): RegExp {
   const pattern = forPath.split('/').map(trimString).filter(Boolean).map(getPartRegExp).join('/')
   return new RegExp(`^/${pattern}/?$`, 'iu')
 }
 
-const trimString = function (part) {
+const trimString = function (part: string): string {
   return part.trimEnd()
 }
 
-const getPartRegExp = function (part) {
+const getPartRegExp = function (part: string): string {
   // Placeholder like `/segment/:placeholder/test`
   // Matches everything up to a /
   if (part.startsWith(':')) {

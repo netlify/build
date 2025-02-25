@@ -3,6 +3,8 @@ import { mergeHeaders } from './merge.js'
 import { parseConfigHeaders } from './netlify_config_parser.js'
 import { normalizeHeaders } from './normalize.js'
 import { splitResults, concatResults } from './results.js'
+import type { Header, MinimalHeader } from './types.js'
+export type { Header, MinimalHeader }
 
 // Parse all headers from `netlify.toml` and `_headers` file, then normalize
 // and validate those.
@@ -11,6 +13,11 @@ export const parseAllHeaders = async function ({
   netlifyConfigPath,
   configHeaders = [],
   minimal = false,
+}: {
+  headersFiles?: undefined | string[]
+  netlifyConfigPath?: undefined | string
+  configHeaders: undefined | MinimalHeader[]
+  minimal: undefined | boolean
 }) {
   const [
     { headers: fileHeaders, errors: fileParseErrors },
@@ -37,12 +44,12 @@ export const parseAllHeaders = async function ({
   return { headers, errors }
 }
 
-const getFileHeaders = async function (headersFiles) {
+const getFileHeaders = async function (headersFiles: string[]) {
   const resultsArrays = await Promise.all(headersFiles.map(parseFileHeaders))
   return concatResults(resultsArrays)
 }
 
-const getConfigHeaders = async function (netlifyConfigPath) {
+const getConfigHeaders = async function (netlifyConfigPath?: undefined | string) {
   if (netlifyConfigPath === undefined) {
     return splitResults([])
   }
