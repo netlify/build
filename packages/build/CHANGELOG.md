@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [29.59.2](https://github.com/netlify/build/compare/build-v29.59.1...build-v29.59.2) (2025-02-27)
+
+
+### Bug Fixes
+
+* multiple plugin versions in a monorepo setup ([#6105](https://github.com/netlify/build/issues/6105)) ([23c7ce7](https://github.com/netlify/build/commit/23c7ce71268d963ffdafb7fa1440d13a9cc99886))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.7 to ^5.3.8
+    * @netlify/zip-it-and-ship-it bumped from 9.43.0 to 9.43.1
+
 ## [29.59.1](https://github.com/netlify/build/compare/build-v29.59.0...build-v29.59.1) (2025-02-24)
 
 
