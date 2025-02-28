@@ -1,6 +1,6 @@
 export * from './file-system.js'
 export * from './logger.js'
-export { DetectedFramework, FrameworkInfo } from './frameworks/framework.js'
+export type { Category, DetectedFramework, FrameworkInfo, PollingStrategy } from './frameworks/framework.js'
 export * from './get-framework.js'
 export * from './project.js'
 export * from './settings/get-build-settings.js'
