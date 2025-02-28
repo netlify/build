@@ -50,7 +50,7 @@ const getFileHeaders = async function (headersFiles: string[]) {
   return concatResults(resultsArrays)
 }
 
-const getConfigHeaders = async function (netlifyConfigPath?: undefined | string) {
+const getConfigHeaders = async function (netlifyConfigPath?: string) {
   if (netlifyConfigPath === undefined) {
     return splitResults([])
   }

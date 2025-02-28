@@ -98,7 +98,7 @@ function parseHeaderObject(
 }
 
 // Normalize and validate the `for` field
-const normalizePath = function (rawPath?: undefined | string): string {
+const normalizePath = function (rawPath?: string): string {
   if (rawPath === undefined) {
     throw new TypeError('Missing "for" field')
   }

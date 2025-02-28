@@ -8,20 +8,18 @@ export const parseHeaders = async function ({
   headersFiles,
   netlifyConfigPath,
   configHeaders,
-  ...input
+  minimal,
 }: {
-  headersFiles?: undefined | string[]
-  netlifyConfigPath?: undefined | string
-  configHeaders?: undefined | MinimalHeader[]
-  minimal?: undefined | boolean
+  headersFiles: undefined | string[]
+  netlifyConfigPath: undefined | string
+  configHeaders: undefined | MinimalHeader[]
+  minimal: boolean
 }) {
   return await parseAllHeaders({
     ...(headersFiles && { headersFiles: headersFiles.map(addFileFixtureDir) }),
     ...(netlifyConfigPath && { netlifyConfigPath: addConfigFixtureDir(netlifyConfigPath) }),
     configHeaders,
-    // Default `minimal` to `true` but still allows passing `undefined` to
-    // test the default value of that option
-    minimal: 'minimal' in input ? input.minimal : true,
+    minimal,
   })
 }
 
