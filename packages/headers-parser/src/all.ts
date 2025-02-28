@@ -4,6 +4,7 @@ import { parseConfigHeaders } from './netlify_config_parser.js'
 import { normalizeHeaders } from './normalize.js'
 import { splitResults, concatResults } from './results.js'
 import type { Header, MinimalHeader } from './types.js'
+
 export type { Header, MinimalHeader }
 
 // Parse all headers from `netlify.toml` and `_headers` file, then normalize
