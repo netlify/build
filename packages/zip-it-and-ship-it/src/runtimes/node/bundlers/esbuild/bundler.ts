@@ -40,7 +40,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
     .map((pattern) => pattern.slice(1))
     // esbuild expects relative paths
     .map((pattern) => `./${pattern}`)
-    // esbuild treats * the same as glob treats **, so this replacement is safe
+    // esbuild treats * the same as tinyglobby treats **, so this replacement is safe
     .map((pattern) => pattern.replace(/\*\*/g, '*').replace(/\*(\\\*)+/g, '*'))
 
   const result: string[] = []
@@ -60,11 +60,11 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 
     if (hasMultipleGlobs) {
       const resolved = await glob(pattern, {
-        noglobstar: true,
         cwd: baseDir,
       })
-
-      result.push(...resolved)
+      // esbuild expects relative paths, but tinyglobby uses `posix.normalize()` which strips leading `./`
+      const esbuildPatterns = resolved.map((pattern) => `./${pattern}`)
+      result.push(...esbuildPatterns)
     } else {
       result.push(pattern)
     }

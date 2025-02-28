@@ -18,7 +18,7 @@ export const getSideFiles = async function (functionPath: string, stat: Stats): 
     absolute: true,
     cwd: functionPath,
     ignore: `**/node_modules/**`,
-    nodir: true,
+    onlyFiles: true,
   })
 
   return paths.filter((path) => !isJunk(basename(path)))
