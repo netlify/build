@@ -85,7 +85,7 @@ test('secrets scanning, should not fail if the secrets values are not detected i
   t.true(output.includes(`No secrets detected in build output or repo code!`))
 })
 
-test.only('secrets scanning should not scan .cache/ directory', async (t) => {
+test('secrets scanning should not scan .cache/ directory', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_omit_cache_path')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
     .runWithBuild()
