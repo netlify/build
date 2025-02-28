@@ -1,0 +1,95 @@
+{
+  "errors": [
+    {
+      "instancePath": "/context/deploy-preview",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/additionalProperties",
+    },
+    {
+      "instancePath": "/context/deploy-preview/environment/ACCESS_TOKEN",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/Environment/additionalProperties/type",
+    },
+    {
+      "instancePath": "/context/dev",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "this",
+      },
+      "schemaPath": "#/additionalProperties",
+    },
+    {
+      "instancePath": "/context/feature",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "non",
+      },
+      "schemaPath": "#/additionalProperties",
+    },
+    {
+      "instancePath": "/context/production",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "any",
+      },
+      "schemaPath": "#/additionalProperties",
+    },
+    {
+      "instancePath": "/context/production/base",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/BasePath/type",
+    },
+    {
+      "instancePath": "/context/production/command",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/BuildCommand/type",
+    },
+    {
+      "instancePath": "/context/production/edge_functions",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/EdgeFunctionPath/type",
+    },
+    {
+      "instancePath": "/context/production/plugins",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/definitions/Plugins/type",
+    },
+    {
+      "instancePath": "/context/production/publish",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/PublishPath/type",
+    },
+  ],
+  "valid": false,
+}

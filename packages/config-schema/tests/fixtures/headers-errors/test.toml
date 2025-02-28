@@ -1,0 +1,9 @@
+[[headers]]
+for = 1
+other = "string"
+[headers.values]
+X-Frame-Options = 1
+
+[[headers]]
+[headers.values]
+X-Frame-Options = "foo"
