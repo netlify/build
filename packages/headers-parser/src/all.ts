@@ -13,12 +13,12 @@ export const parseAllHeaders = async function ({
   headersFiles = [],
   netlifyConfigPath,
   configHeaders = [],
-  minimal = false,
+  minimal,
 }: {
-  headersFiles?: undefined | string[]
+  headersFiles: undefined | string[]
   netlifyConfigPath?: undefined | string
   configHeaders: undefined | MinimalHeader[]
-  minimal: undefined | boolean
+  minimal: boolean
 }) {
   const [
     { headers: fileHeaders, errors: fileParseErrors },
