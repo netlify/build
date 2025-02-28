@@ -288,7 +288,7 @@ const getFullConfig = async function ({
       base: baseA,
     } = await resolveFiles({ packagePath, config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
-    const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
+    const configC = await addHeaders({ config: configB, headersPath, logs })
     const redirectsPath = getRedirectsPath(configC)
     const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
