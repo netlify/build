@@ -105,6 +105,28 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.0.0](https://github.com/netlify/build/compare/build-v29.59.2...build-v30.0.0) (2025-02-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.22.0 to ^21.0.0
+    * @netlify/functions-utils bumped from ^5.3.8 to ^5.3.9
+    * @netlify/zip-it-and-ship-it bumped from 9.43.1 to 10.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.2.0 to ^4.0.0
+
 ## [29.59.2](https://github.com/netlify/build/compare/build-v29.59.1...build-v29.59.2) (2025-02-27)
 
 
