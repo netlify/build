@@ -31,6 +31,8 @@ export function normalizeHeaders(
 ): MinimalNormalizedHeaders | NormalizedHeaders {
   if (!Array.isArray(headers)) {
     const error = new TypeError(`Headers must be an array not: ${headers}`)
+    // This looks odd but it is correct: it takes an array of `T | Error` and returns `{values: T[]: errors: Error[]}`,
+    // thus when given a literal array of type `Error[]` it can't infer `T`, so we explicitly pass in `never` as `T`.
     return splitResults<never>([error])
   }
 
