@@ -35,6 +35,12 @@ test.each([
     ],
   ],
 ])(`Merges _headers with netlify.toml headers | %s`, async (_, input, output) => {
-  const { headers } = await parseHeaders(input)
+  const { headers } = await parseHeaders({
+    headersFiles: undefined,
+    configHeaders: undefined,
+    netlifyConfigPath: undefined,
+    minimal: true,
+    ...input,
+  })
   expect(headers).toStrictEqual(output)
 })
