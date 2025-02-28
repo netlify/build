@@ -5,7 +5,7 @@ import { pathExists } from 'path-exists'
 import { splitResults } from './results.js'
 import type { MinimalHeader } from './types.js'
 
-type RawHeader = { path: string } | { name: string; value: string }
+type RawHeaderFileLine = { path: string } | { name: string; value: string }
 
 export interface ParseHeadersResult {
   headers: MinimalHeader[]
@@ -22,7 +22,7 @@ export const parseFileHeaders = async function (headersFile: string): Promise<Pa
   return { headers: reducedHeaders, errors }
 }
 
-const parseHeaders = async function (headersFile: string): Promise<Array<Error | RawHeader>> {
+const parseHeaders = async function (headersFile: string): Promise<Array<Error | RawHeaderFileLine>> {
   if (!(await pathExists(headersFile))) {
     return []
   }
@@ -36,7 +36,7 @@ const parseHeaders = async function (headersFile: string): Promise<Array<Error |
     .map(normalizeLine)
     .filter(hasHeader)
     .map(parseLine)
-    .filter((line): line is RawHeader => line != null)
+    .filter((line): line is RawHeaderFileLine => line != null)
 }
 
 const readHeadersFile = async function (headersFile: string) {
@@ -66,7 +66,7 @@ ${error instanceof Error ? error.message : error?.toString()}`)
 }
 
 // Parse a single header line
-const parseHeaderLine = function (line: string): undefined | RawHeader {
+const parseHeaderLine = function (line: string): undefined | RawHeaderFileLine {
   if (isPathLine(line)) {
     return { path: line }
   }
@@ -96,7 +96,10 @@ const isPathLine = function (line: string) {
 
 const HEADER_SEPARATOR = ':'
 
-const reduceLine = function ({ headers, errors }: ParseHeadersResult, parsedHeader: RawHeader): ParseHeadersResult {
+const reduceLine = function (
+  { headers, errors }: ParseHeadersResult,
+  parsedHeader: RawHeaderFileLine,
+): ParseHeadersResult {
   if ('path' in parsedHeader) {
     const { path } = parsedHeader
     return { headers: [...headers, { for: path, values: {} }], errors }
