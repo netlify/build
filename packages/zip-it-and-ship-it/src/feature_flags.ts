@@ -31,7 +31,7 @@ export const defaultFlags = {
   zisi_add_instrumentation_loader: true,
 
   // Adds a `___netlify-metadata.json` file to the function bundle.
-  zisi_add_metadata_file: false,
+  zisi_add_metadata_file: true,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>
