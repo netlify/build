@@ -255,7 +255,6 @@ const createZipArchive = async function ({
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
-    console.log({ featureFlags })
     if (featureFlags.zisi_add_metadata_file === true) {
       const { version } = await getPackageJsonIfAvailable(bootstrapPath)
       const payload = JSON.stringify(getMetadataFile(version, branch))
