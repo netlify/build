@@ -255,14 +255,12 @@ const createZipArchive = async function ({
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
-    if (featureFlags.zisi_add_metadata_file === true) {
-      const { version } = await getPackageJsonIfAvailable(bootstrapPath)
-      const payload = JSON.stringify(getMetadataFile(version, branch))
+    const { version } = await getPackageJsonIfAvailable(bootstrapPath)
+    const payload = JSON.stringify(getMetadataFile(version, branch))
 
-      bootstrapVersion = version
+    bootstrapVersion = version
 
-      addZipContent(archive, payload, METADATA_FILE_NAME)
-    }
+    addZipContent(archive, payload, METADATA_FILE_NAME)
   }
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
