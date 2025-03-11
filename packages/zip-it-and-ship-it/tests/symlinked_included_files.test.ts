@@ -60,6 +60,7 @@ test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` 
     '___netlify-bootstrap.mjs': false,
     '___netlify-entry-point.mjs': false,
     '___netlify-telemetry.mjs': false,
+    '___netlify-metadata.json': false,
     'function.mjs': false,
     [join('node_modules/.pnpm/crazy-dep/package.json')]: false,
     [join('node_modules/crazy-dep')]: true,

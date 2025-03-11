@@ -209,7 +209,6 @@ test('Functions: creates metadata file', async (t) => {
     .withFlags({
       branch: 'my-branch',
       cwd: fixture.repositoryRoot,
-      featureFlags: { zisi_add_metadata_file: true },
     })
     .runWithBuildAndIntrospect()
 

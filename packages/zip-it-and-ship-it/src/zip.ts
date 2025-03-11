@@ -128,9 +128,7 @@ export const zipFunctions = async function (
     }),
   )
 
-  if (manifest !== undefined) {
-    await createManifest({ functions: formattedResults, path: resolve(manifest) })
-  }
+  await createManifest({ functions: formattedResults, path: resolve(manifest) })
 
   return formattedResults
 }
