@@ -124,6 +124,7 @@ const executeBuildStep = async function ({
       edgeFunctionsBootstrapURL,
       deployId,
       quiet,
+      userNodeVersion,
     })
 
     return {
@@ -165,6 +166,7 @@ const runBuildStep = async function ({
   edgeFunctionsBootstrapURL,
   deployId,
   quiet,
+  userNodeVersion,
 }) {
   const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
     steps: getBuildSteps(buildSteps),
@@ -184,6 +186,7 @@ const runBuildStep = async function ({
     edgeFunctionsBootstrapURL,
     deployId,
     quiet,
+    userNodeVersion,
   } as any)
 
   return { netlifyConfig: netlifyConfigA, configMutations }
