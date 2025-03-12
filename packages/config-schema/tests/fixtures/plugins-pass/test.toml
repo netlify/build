@@ -1,0 +1,17 @@
+[[plugins]]
+package = "my-npm-package"
+
+[[plugins]]
+package = "@scope/my-npm-package"
+
+[[plugins]]
+package = "./my-local-package"
+
+inputs = { any = "thing" }
+
+[[plugins]]
+package = "/my-local-package"
+
+[plugins.inputs]
+breeds = ["pomeranian", "chihuahua", "bulldog"]
+any = "thing"

@@ -1,0 +1,15 @@
+[dev]
+command = "yarn start"
+port = 8888
+targetPort = 3000
+functionsPort = 3000
+staticServerPort = 5858
+publish = "dist"
+jwtRolePath = "app_metadata.authorization.roles"
+jwtSecret = "MY_JWT_SECRET_VALUE"
+autoLaunch = true
+framework = "#custom"
+envFiles = [".env", ".env.local"]
+[dev.https]
+certFile = "cert.pem"
+keyFile = "key.pem"

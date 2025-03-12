@@ -1,0 +1,3 @@
+[plugins]
+package = "my-npm-package"
+
