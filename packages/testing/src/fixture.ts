@@ -203,7 +203,7 @@ export class Fixture {
     return output
   }
 
-  async runWithBuildAndIntrospect() {
+  async runWithBuildAndIntrospect(): Promise<Awaited<ReturnType<typeof build>> & { output: string }> {
     const buildResult = await build(this.getBuildFlags())
     const output = [buildResult.logs?.stdout.join('\n'), buildResult.logs?.stderr.join('\n')]
       .filter(Boolean)
