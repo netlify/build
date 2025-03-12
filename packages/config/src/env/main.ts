@@ -184,7 +184,7 @@ const getAccountEnv = async function ({
   context?: string
 }) {
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId: siteInfo.site_id, context })
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, context })
     return envelope
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
