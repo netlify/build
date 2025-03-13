@@ -714,6 +714,11 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       const fixtureName = 'v2-api'
       const { files } = await zipFixture(fixtureName, {
         fixtureDir: FIXTURES_ESM_DIR,
+        opts: {
+          featureFlags: {
+            zisi_add_metadata_file: true,
+          },
+        },
       })
       const [unzippedFunction] = await unzipFiles(files)
       const bootstrapPath = getBootstrapPath()
@@ -730,6 +735,9 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
         fixtureDir: FIXTURES_ESM_DIR,
         opts: {
           branch: 'main',
+          featureFlags: {
+            zisi_add_metadata_file: true,
+          },
         },
       })
       const [unzippedFunction] = await unzipFiles(files)
@@ -757,6 +765,9 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
     const { files } = await zipFixture('v2-api', {
       fixtureDir: FIXTURES_ESM_DIR,
       opts: {
+        featureFlags: {
+          zisi_add_metadata_file: true,
+        },
         manifest: manifestPath,
       },
     })
