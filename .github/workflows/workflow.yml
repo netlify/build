@@ -34,7 +34,7 @@ jobs:
         run: npx playwright install --with-deps
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: test
-        run: npx nx run --target=e2e
+        run: npx nx run-many --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/upload-artifact@v4
         if: always()
