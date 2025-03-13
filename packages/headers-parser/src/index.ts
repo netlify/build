@@ -1,1 +1,1 @@
-export { parseAllHeaders, type Header, type MinimalHeader } from './all.js'
+export { parseAllHeaders } from './all.js'

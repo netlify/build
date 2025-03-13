@@ -1,10 +1,7 @@
-export interface MinimalHeader {
+export type Header = {
   for: string
+  forRegExp?: RegExp
   values: {
     [key: string]: string
   }
-}
-
-export interface Header extends MinimalHeader {
-  forRegExp: RegExp
 }

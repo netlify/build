@@ -4,73 +4,39 @@ import type { Mapper } from 'map-obj'
 
 import { getForRegExp } from './for_regexp.js'
 import { splitResults } from './results.js'
-import type { Header, MinimalHeader } from './types.js'
-
-export interface MinimalNormalizedHeaders {
-  headers: MinimalHeader[]
-  errors: Error[]
-}
-
-export interface NormalizedHeaders {
-  headers: Header[]
-  errors: Error[]
-}
+import type { Header } from './types.js'
 
 // Validate and normalize an array of `headers` objects.
 // This step is performed after `headers` have been parsed from either
 // `netlify.toml` or `_headers`.
-export function normalizeHeaders(headers: MinimalHeader[], minimal: true): MinimalNormalizedHeaders
-export function normalizeHeaders(headers: MinimalHeader[], minimal: false): NormalizedHeaders
-export function normalizeHeaders(
-  headers: MinimalHeader[],
-  minimal: boolean,
-): MinimalNormalizedHeaders | NormalizedHeaders
-export function normalizeHeaders(
-  headers: MinimalHeader[],
-  minimal: boolean,
-): MinimalNormalizedHeaders | NormalizedHeaders {
+export const normalizeHeaders = function (headers: any, minimal: boolean) {
   if (!Array.isArray(headers)) {
     const error = new TypeError(`Headers must be an array not: ${headers}`)
-    // This looks odd but it is correct: it takes an array of `T | Error` and returns `{values: T[]: errors: Error[]}`,
-    // thus when given a literal array of type `Error[]` it can't infer `T`, so we explicitly pass in `never` as `T`.
-    return splitResults<never>([error])
+    return splitResults([error])
   }
 
-  // TODO(serhalp) Workaround for poor TS type narrowing. Remove once on typescript@5.8.
   const results = headers
-    .map((header, index) => (minimal ? parseHeader(header, index, true) : parseHeader(header, index, false)))
-    .filter((header) => header != null)
+    .map((header, index) => parseHeader(header, index, minimal))
+    .filter<Header | Error>(Boolean as never)
   return splitResults(results)
 }
 
-function parseHeader(header: MinimalHeader, index: number, minimal: true): undefined | Error | MinimalHeader
-function parseHeader(header: MinimalHeader, index: number, minimal: false): undefined | Error | Header
-function parseHeader(
-  header: MinimalHeader,
-  index: number,
-  minimal: boolean,
-): undefined | Error | MinimalHeader | Header {
+const parseHeader = function (header: any, index: number, minimal: boolean) {
   if (!isPlainObj(header)) {
     return new TypeError(`Header must be an object not: ${header}`)
   }
 
   try {
-    // TODO(serhalp) Workaround for poor TS type narrowing. Remove once on typescript@5.8.
-    return minimal ? parseHeaderObject(header, true) : parseHeaderObject(header, false)
+    return parseHeaderObject(header, minimal)
   } catch (error) {
     return new Error(`Could not parse header number ${index + 1}:
   ${JSON.stringify(header)}
-${error instanceof Error ? error.message : error?.toString()}`)
+${error.message}`)
   }
 }
 
 // Parse a single `headers` object
-function parseHeaderObject(header: MinimalHeader, minimal: true): undefined | MinimalHeader
-function parseHeaderObject(header: MinimalHeader, minimal: false): undefined | Header
-function parseHeaderObject(
-  { for: rawPath, values: rawValues }: Header,
-  minimal: boolean,
-): undefined | MinimalHeader | Header {
+const parseHeaderObject = function ({ for: rawPath, values: rawValues }: any, minimal: boolean) {
   const forPath = normalizePath(rawPath)
 
   if (rawValues === undefined) {
@@ -83,22 +49,20 @@ function parseHeaderObject(
     return
   }
 
-  const header = {
+  const header: Header = {
     for: forPath,
     values,
   }
 
-  if (minimal) {
-    return header
+  if (!minimal) {
+    header.forRegExp = getForRegExp(forPath)
   }
-  return {
-    ...header,
-    forRegExp: getForRegExp(forPath),
-  }
+
+  return header
 }
 
 // Normalize and validate the `for` field
-const normalizePath = function (rawPath?: string): string {
+const normalizePath = function (rawPath: any) {
   if (rawPath === undefined) {
     throw new TypeError('Missing "for" field')
   }
@@ -111,7 +75,7 @@ const normalizePath = function (rawPath?: string): string {
 }
 
 // Normalize and validate the `values` field
-const normalizeValues = function (rawValues: Record<string, string | string[]>): Record<string, string> {
+const normalizeValues = function (rawValues: Record<string, any>) {
   if (!isPlainObj(rawValues)) {
     throw new TypeError(`"values" must be an object not: ${rawValues}`)
   }
@@ -120,7 +84,7 @@ const normalizeValues = function (rawValues: Record<string, string | string[]>):
 }
 
 // Normalize and validate each header `values`
-const normalizeValue: Mapper<Record<string, string | string[]>, string, string> = function (rawKey, rawValue) {
+const normalizeValue: Mapper<Record<string, any>, string, any> = function (rawKey: string, rawValue: any) {
   const key: string = rawKey.trim()
   if (key === '' || key === 'undefined') {
     throw new Error('Empty header name')
@@ -130,7 +94,7 @@ const normalizeValue: Mapper<Record<string, string | string[]>, string, string> 
   return [key, value]
 }
 
-const normalizeRawValue = function (key: string, rawValue: string | string[]): string {
+const normalizeRawValue = function (key: string, rawValue: any): string {
   if (typeof rawValue === 'string') {
     return normalizeMultipleValues(normalizeStringValue(rawValue))
   }
@@ -157,13 +121,13 @@ const normalizeRawValue = function (key: string, rawValue: string | string[]): s
 //   for = "/*"
 //     [headers.values]
 // 	   cache-control = "max-age=0, no-cache, no-store, must-revalidate"
-const normalizeMultipleValues = function (value: string): string {
+const normalizeMultipleValues = function (value: string) {
   return value.split(MULTIPLE_VALUES_REGEXP).join(', ')
 }
 
 const MULTIPLE_VALUES_REGEXP = /\s*,\s*/g
 
-const normalizeArrayItemValue = function (key: string, singleValue: string): string {
+const normalizeArrayItemValue = function (key: string, singleValue: any) {
   if (typeof singleValue !== 'string') {
     throw new TypeError(`Header "${key}" value must be a string not: ${singleValue}`)
   }
@@ -171,6 +135,6 @@ const normalizeArrayItemValue = function (key: string, singleValue: string): str
   return normalizeStringValue(singleValue)
 }
 
-const normalizeStringValue = function (stringValue: string): string {
+const normalizeStringValue = function (stringValue: string) {
   return stringValue.trim()
 }

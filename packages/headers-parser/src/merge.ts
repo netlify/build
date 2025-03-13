@@ -1,7 +1,7 @@
 import stringify from 'fast-safe-stringify'
 
 import { splitResults } from './results.js'
-import type { Header, MinimalHeader } from './types.js'
+import type { Header } from './types.js'
 
 // Merge headers from `_headers` with the ones from `netlify.toml`.
 // When:
@@ -21,8 +21,8 @@ export const mergeHeaders = function ({
   fileHeaders,
   configHeaders,
 }: {
-  fileHeaders: MinimalHeader[] | Header[]
-  configHeaders: MinimalHeader[] | Header[]
+  fileHeaders: (Error | Header)[]
+  configHeaders: (Error | Header)[]
 }) {
   const results = [...fileHeaders, ...configHeaders]
   const { headers, errors } = splitResults(results)
@@ -35,14 +35,15 @@ export const mergeHeaders = function ({
 // `netlifyConfig.headers` is modified by plugins.
 // The latest duplicate value is the one kept, hence why we need to iterate the
 // array backwards and reverse it at the end
-const removeDuplicates = function (headers: MinimalHeader[] | Header[]) {
+const removeDuplicates = function (headers: Header[]) {
   const uniqueHeaders = new Set()
-  const result: (MinimalHeader | Header)[] = []
-  for (const header of [...headers].reverse()) {
-    const key = generateHeaderKey(header)
+  const result: Header[] = []
+  for (let i = headers.length - 1; i >= 0; i--) {
+    const h = headers[i]
+    const key = generateHeaderKey(h)
     if (uniqueHeaders.has(key)) continue
     uniqueHeaders.add(key)
-    result.push(header)
+    result.push(h)
   }
   return result.reverse()
 }
@@ -50,7 +51,7 @@ const removeDuplicates = function (headers: MinimalHeader[] | Header[]) {
 // We generate a unique header key based on JSON stringify. However, because some
 // properties can be regexes, we need to replace those by their toString representation
 // given the default will be and empty object
-const generateHeaderKey = function (header: MinimalHeader | Header): string {
+const generateHeaderKey = function (header: Header) {
   return stringify.default.stableStringify(header, (_, value) => {
     if (value instanceof RegExp) return value.toString()
     return value
