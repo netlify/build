@@ -34,7 +34,7 @@ jobs:
         run: npx playwright install --with-deps
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: test
-        run: nx run --target=e2e
+        run: npx nx run --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/upload-artifact@v4
         if: always()
@@ -96,10 +96,10 @@ jobs:
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Build
-        run: nx run-many --target=build
+        run: npx nx run-many --target=build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        run: nx run-many --target=test:ci --exclude=@netlify/build --parallel=3
+        run: npx nx run-many --target=test:ci --exclude=@netlify/build --parallel=3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
 
   test-build:
