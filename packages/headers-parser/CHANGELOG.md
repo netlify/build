@@ -1,5 +1,16 @@
 # Changelog
 
+## [8.0.0](https://github.com/netlify/build/compare/headers-parser-v7.3.0...headers-parser-v8.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
 ## [7.3.0](https://github.com/netlify/build/compare/headers-parser-v7.2.0...headers-parser-v7.3.0) (2024-12-14)
 
 

@@ -94,7 +94,7 @@ const convertToString = (value) => {
 // environment.
 const getGeneralEnv = async function ({
   siteInfo,
-  siteInfo: { id, name },
+  siteInfo: { id, name, account_id: accountId },
   buildDir,
   branch,
   deployId,
@@ -108,6 +108,7 @@ const getGeneralEnv = async function ({
     SITE_NAME: name,
     DEPLOY_ID: deployId,
     BUILD_ID: buildId,
+    ACCOUNT_ID: accountId,
     ...deployUrls,
     CONTEXT: context,
     NETLIFY_LOCAL: 'true',
