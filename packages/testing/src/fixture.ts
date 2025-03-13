@@ -23,6 +23,8 @@ const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
 
+type RunBuildResult = Awaited<ReturnType<typeof build>> & { output: string }
+
 // TODO: this type should be moved to @netlify/build and @netlify/config as it's the main argument of the entry point
 type Flags = {
   [key: string]: unknown
@@ -203,7 +205,7 @@ export class Fixture {
     return output
   }
 
-  async runWithBuildAndIntrospect() {
+  async runWithBuildAndIntrospect(): Promise<RunBuildResult> {
     const buildResult = await build(this.getBuildFlags())
     const output = [buildResult.logs?.stdout.join('\n'), buildResult.logs?.stderr.join('\n')]
       .filter(Boolean)
