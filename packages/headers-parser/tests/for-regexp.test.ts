@@ -23,10 +23,8 @@ test.each([
   ['double_slash_multiple', '//a//b//', /^\/a\/b\/?$/iu],
 ])(`Add forRegExp when minimal is false | %s`, async (_, forPath, forRegExp) => {
   const { headers } = await parseHeaders({
-    headersFiles: undefined,
-    netlifyConfigPath: undefined,
     configHeaders: [{ for: forPath, values: { test: 'one' } }],
-    minimal: false,
+    minimal: undefined,
   })
   expect(headers).toStrictEqual([{ for: forPath.trim(), forRegExp, values: { test: 'one' } }])
 })

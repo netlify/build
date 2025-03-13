@@ -1,20 +1,12 @@
-import fs from 'fs/promises'
+import { promises as fs } from 'fs'
 
 import { pathExists } from 'path-exists'
 
 import { splitResults } from './results.js'
-import type { MinimalHeader } from './types.js'
-
-type RawHeaderFileLine = { path: string } | { name: string; value: string }
-
-export interface ParseHeadersResult {
-  headers: MinimalHeader[]
-  errors: Error[]
-}
 
 // Parse `_headers` file to an array of objects following the same syntax as
 // the `headers` property in `netlify.toml`
-export const parseFileHeaders = async function (headersFile: string): Promise<ParseHeadersResult> {
+export const parseFileHeaders = async function (headersFile: string) {
   const results = await parseHeaders(headersFile)
   const { headers, errors: parseErrors } = splitResults(results)
   const { headers: reducedHeaders, errors: reducedErrors } = headers.reduce(reduceLine, { headers: [], errors: [] })
@@ -22,7 +14,7 @@ export const parseFileHeaders = async function (headersFile: string): Promise<Pa
   return { headers: reducedHeaders, errors }
 }
 
-const parseHeaders = async function (headersFile: string): Promise<Array<Error | RawHeaderFileLine>> {
+const parseHeaders = async function (headersFile: string) {
   if (!(await pathExists(headersFile))) {
     return []
   }
@@ -31,12 +23,7 @@ const parseHeaders = async function (headersFile: string): Promise<Array<Error |
   if (typeof text !== 'string') {
     return [text]
   }
-  return text
-    .split('\n')
-    .map(normalizeLine)
-    .filter(hasHeader)
-    .map(parseLine)
-    .filter((line): line is RawHeaderFileLine => line != null)
+  return text.split('\n').map(normalizeLine).filter(hasHeader).map(parseLine).filter(Boolean)
 }
 
 const readHeadersFile = async function (headersFile: string) {
@@ -51,22 +38,22 @@ const normalizeLine = function (line: string, index: number) {
   return { line: line.trim(), index }
 }
 
-const hasHeader = function ({ line }: { line: string }) {
+const hasHeader = function ({ line }) {
   return line !== '' && !line.startsWith('#')
 }
 
-const parseLine = function ({ line, index }: { line: string; index: number }) {
+const parseLine = function ({ line, index }) {
   try {
     return parseHeaderLine(line)
   } catch (error) {
     return new Error(`Could not parse header line ${index + 1}:
   ${line}
-${error instanceof Error ? error.message : error?.toString()}`)
+${error.message}`)
   }
 }
 
 // Parse a single header line
-const parseHeaderLine = function (line: string): undefined | RawHeaderFileLine {
+const parseHeaderLine = function (line: string) {
   if (isPathLine(line)) {
     return { path: line }
   }
@@ -76,7 +63,7 @@ const parseHeaderLine = function (line: string): undefined | RawHeaderFileLine {
   }
 
   const [rawName, ...rawValue] = line.split(HEADER_SEPARATOR)
-  const name = rawName?.trim() ?? ''
+  const name = rawName.trim()
 
   if (name === '') {
     throw new Error(`Missing header name`)
@@ -96,23 +83,18 @@ const isPathLine = function (line: string) {
 
 const HEADER_SEPARATOR = ':'
 
-const reduceLine = function (
-  { headers, errors }: ParseHeadersResult,
-  parsedHeader: RawHeaderFileLine,
-): ParseHeadersResult {
-  if ('path' in parsedHeader) {
-    const { path } = parsedHeader
+const reduceLine = function ({ headers, errors }, { path, name, value }) {
+  if (path !== undefined) {
     return { headers: [...headers, { for: path, values: {} }], errors }
   }
 
-  const { name, value } = parsedHeader
-  const previousHeaders = headers.slice(0, -1)
-  const currentHeader = headers[headers.length - 1]
-  if (headers.length === 0 || currentHeader == null) {
+  if (headers.length === 0) {
     const error = new Error(`Path should come before header "${name}"`)
     return { headers, errors: [...errors, error] }
   }
 
+  const previousHeaders = headers.slice(0, -1)
+  const currentHeader = headers[headers.length - 1]
   const { values } = currentHeader
   const newValue = values[name] === undefined ? value : `${values[name]}, ${value}`
   const newHeaders = [...previousHeaders, { ...currentHeader, values: { ...values, [name]: newValue } }]

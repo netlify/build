@@ -1,32 +1,24 @@
 import { fileURLToPath } from 'url'
 
-import { type MinimalHeader, parseAllHeaders } from '../../src/index.js'
+import { parseAllHeaders } from '../../src/index.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('../fixtures', import.meta.url))
 
-export const parseHeaders = async function ({
-  headersFiles,
-  netlifyConfigPath,
-  configHeaders,
-  minimal,
-}: {
-  headersFiles: undefined | string[]
-  netlifyConfigPath: undefined | string
-  configHeaders: undefined | MinimalHeader[]
-  minimal: boolean
-}) {
+export const parseHeaders = async function ({ headersFiles, netlifyConfigPath, configHeaders, ...input }: any) {
   return await parseAllHeaders({
     ...(headersFiles && { headersFiles: headersFiles.map(addFileFixtureDir) }),
     ...(netlifyConfigPath && { netlifyConfigPath: addConfigFixtureDir(netlifyConfigPath) }),
     configHeaders,
-    minimal,
+    // Default `minimal` to `true` but still allows passing `undefined` to
+    // test the default value of that option
+    minimal: 'minimal' in input ? input.minimal : true,
   })
 }
 
-const addFileFixtureDir = function (name: string): string {
+const addFileFixtureDir = function (name) {
   return `${FIXTURES_DIR}/headers_file/${name}`
 }
 
-const addConfigFixtureDir = function (name: string): string {
+const addConfigFixtureDir = function (name) {
   return `${FIXTURES_DIR}/netlify_config/${name}.toml`
 }
