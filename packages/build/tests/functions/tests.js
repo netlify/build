@@ -203,7 +203,7 @@ if (semver.gte(nodeVersion, '16.9.0')) {
   })
 }
 
-test.only('Functions: creates metadata file', async (t) => {
+test('Functions: creates metadata file', async (t) => {
   const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
   const build = await fixture
     .withFlags({
