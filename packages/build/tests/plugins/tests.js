@@ -100,7 +100,7 @@ test('Non-existing plugins', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test.skip('Do not allow overriding core plugins', async (t) => {
+test('Do not allow overriding core plugins', async (t) => {
   const output = await new Fixture('./fixtures/core_override').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
