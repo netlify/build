@@ -7,6 +7,7 @@ import { throwUserError } from '../error.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { IntegrationResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
+import retry from "retry"
 
 type GetSiteInfoOpts = {
   siteId: string
@@ -149,15 +150,28 @@ const getIntegrations = async function ({
       }
     }
 
-    const response = await fetch(url, requestOptions)
-    if (!response.ok) {
-      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-    }
-    const bodyText = await response.text()
+    const MAX_RETRY = 3
+
+    const retryOperation = retry.operation({
+      retries: MAX_RETRY,
+      minTimeout: 1 * 500,
+      maxTimeout: 5 * 1000,
+    })
+
+    let bodyText
+
+    retryOperation.attempt(async () => {
+      const response = await fetch(url, requestOptions)
+      if (!response.ok) {
+        throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
+      }
+      
+      bodyText = await response.text()
+    })
+    
     if (bodyText === '') {
       return []
     }
-
     const integrations = await JSON.parse(bodyText)
     return Array.isArray(integrations) ? integrations : []
   } catch (error) {
