@@ -7,7 +7,7 @@ import { throwUserError } from '../error.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { IntegrationResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
-import retry from "retry"
+import retry from 'retry'
 
 type GetSiteInfoOpts = {
   siteId: string
@@ -165,10 +165,10 @@ const getIntegrations = async function ({
       if (!response.ok) {
         throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
       }
-      
+
       bodyText = await response.text()
     })
-    
+
     if (bodyText === '') {
       return []
     }
