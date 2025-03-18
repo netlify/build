@@ -81,6 +81,7 @@ export const resolveConfig = async function (opts) {
     featureFlags,
     testOpts,
     token,
+    netlifyApiHost: host,
   })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
@@ -131,6 +132,7 @@ export const resolveConfig = async function (opts) {
     context: context,
     testOpts,
     offline,
+    netlifyApiHost: host,
   })
 
   const result = {

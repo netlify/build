@@ -9,6 +9,7 @@ type MergeIntegrationsOpts = {
   context: string
   testOpts?: TestOptions
   offline: boolean
+  netlifyApiHost: string
 }
 
 export const mergeIntegrations = async function ({
@@ -17,8 +18,9 @@ export const mergeIntegrations = async function ({
   context,
   testOpts = {},
   offline,
+  netlifyApiHost,
 }: MergeIntegrationsOpts): Promise<Integration[]> {
-  const availableIntegrations = await getAvailableIntegrations({ testOpts, offline })
+  const availableIntegrations = await getAvailableIntegrations({ testOpts, offline, netlifyApiHost })
 
   // Include all API integrations, unless they have a `dev` property and we are in the `dev` context
   const resolvedApiIntegrations = apiIntegrations.filter(
