@@ -144,7 +144,8 @@
     "sinon": "^13.0.0",
     "tmp-promise": "^3.0.2",
     "tsd": "^0.31.0",
-    "vitest": "^0.34.0"
+    "vitest": "^0.34.0",
+    "yarn": "^1.22.22"
   },
   "peerDependencies": {
     "@netlify/opentelemetry-sdk-setup": "^1.1.0",
