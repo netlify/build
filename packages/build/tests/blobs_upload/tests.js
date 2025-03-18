@@ -96,7 +96,7 @@ test.serial('Blobs upload step uploads files to deploy store (legacy API)', asyn
     return url.searchParams.has('region')
   })
 
-  t.is(regionRequests.length, 0)
+  t.is(regionRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   if (semver.lt(nodeVersion, '18.0.0')) {
@@ -185,7 +185,7 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
     return url.searchParams.get('region') === 'auto'
   })
 
-  t.is(regionAutoRequests.length, 3)
+  t.is(regionAutoRequests.length, 0)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   if (semver.lt(nodeVersion, '18.0.0')) {

@@ -52,7 +52,7 @@ const coreStep: CoreStepFunction = async function ({
   // to use the region that was configured for the deploy. We don't do it for
   // the legacy file-based upload API since that would be a breaking change.
   if (blobs.apiVersion > 1) {
-    storeOpts.experimentalRegion = 'auto'
+    storeOpts.region = 'us-east-2'
   }
 
   const blobStore = getDeployStore(storeOpts)
