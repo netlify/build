@@ -70,7 +70,6 @@
     "get-package-name": "^2.2.0",
     "get-port": "^6.1.2",
     "is-path-inside": "^4.0.0",
-    "jsonc-parser": "^3.2.0",
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",
     "p-retry": "^5.1.1",
