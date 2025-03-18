@@ -35,8 +35,8 @@
   "dependencies": {
     "@honeycombio/opentelemetry-node": "~0.7.1",
     "@netlify/opentelemetry-utils": "~1.3.0",
-    "@opentelemetry/core": "~1.24.0",
-    "@opentelemetry/resources": "~1.24.0",
+    "@opentelemetry/core": "~2.0.0",
+    "@opentelemetry/resources": "~2.0.0",
     "@opentelemetry/semantic-conventions": "~1.24.0",
     "yargs-parser": "^21.1.1"
   },
