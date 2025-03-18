@@ -1,5 +1,29 @@
 # Changelog
 
+## [5.4.0](https://github.com/netlify/build/compare/functions-utils-v5.3.10...functions-utils-v5.4.0) (2025-03-18)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.30.0 ([#5539](https://github.com/netlify/build/issues/5539)) ([4a76de2](https://github.com/netlify/build/commit/4a76de263a20669277e86a9baa28484ffc57089f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.0 ([#5570](https://github.com/netlify/build/issues/5570)) ([b9f9a8a](https://github.com/netlify/build/commit/b9f9a8ab7976ac101f7a2194b1522477a693a650))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.1 ([#5576](https://github.com/netlify/build/issues/5576)) ([866fb7e](https://github.com/netlify/build/commit/866fb7eefb9ea42b130257ae535c73e85c2a2550))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.31.3 ([#5588](https://github.com/netlify/build/issues/5588)) ([ef9cd46](https://github.com/netlify/build/commit/ef9cd465ec2f091885a444dab8dafd5e5979992e))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.32.1 ([#5596](https://github.com/netlify/build/issues/5596)) ([67094d6](https://github.com/netlify/build/commit/67094d60c07c75f335b52a6b076e69e864299097))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v9.32.2 ([#5620](https://github.com/netlify/build/issues/5620)) ([2c45268](https://github.com/netlify/build/commit/2c452688fcb6e90779c65e2275d491124bf4b8a1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 10.0.1 to 11.0.0
+
 ## [5.3.10](https://github.com/netlify/build/compare/functions-utils-v5.3.9...functions-utils-v5.3.10) (2025-03-18)
 
 

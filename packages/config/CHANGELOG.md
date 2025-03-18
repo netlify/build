@@ -76,6 +76,44 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [22.0.0](https://github.com/netlify/build/compare/config-v21.0.1...config-v22.0.0) (2025-03-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Features
+
+* add new endpoint that uses flags and accountId ([#5700](https://github.com/netlify/build/issues/5700)) ([07def29](https://github.com/netlify/build/commit/07def2916208d1acf6eee1d24b56547b81222f3a))
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+* added dev.processing.html.injections to mutable props [CRE-1203] ([#5692](https://github.com/netlify/build/issues/5692)) ([2ee98a5](https://github.com/netlify/build/commit/2ee98a5daa6c71c800acdb908cfaca25ffc9c6fc))
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+* **config:** return account id from config in offline mode ([#5810](https://github.com/netlify/build/issues/5810)) ([e82859d](https://github.com/netlify/build/commit/e82859d247253e2ee54891ade4bbc3d89ef56c1a))
+* exclude integration site id from meta request ([#5744](https://github.com/netlify/build/issues/5744)) ([1129823](https://github.com/netlify/build/commit/11298237c60182a723a532b8e17a561e9e62d0ca))
+* pass default config for resolveUpdatedConfig instead of cached config ([#5761](https://github.com/netlify/build/issues/5761)) ([011ce3a](https://github.com/netlify/build/commit/011ce3ad392f8cc7ff08fd0a0c37bd5fb58e6a5f))
+* rename unscoped NPM packages ([#5943](https://github.com/netlify/build/issues/5943)) ([131a644](https://github.com/netlify/build/commit/131a644bfde5205f730f3369b778d8914c7c0382))
+* retrieve integration meta data from new endpoint ([#5647](https://github.com/netlify/build/issues/5647)) ([b8899e0](https://github.com/netlify/build/commit/b8899e06a31f5615ef41d8a4ab251bcc96717837))
+* use v2 endpoint that has siteid for extensions ([#5792](https://github.com/netlify/build/issues/5792)) ([73c44fe](https://github.com/netlify/build/commit/73c44fe743afe87ef282af2b11924d8e36e547e6))
+
+
+### Bug Fixes
+
+* [CRE-1203] adds `dev` to config mutable props ([#5695](https://github.com/netlify/build/issues/5695)) ([f560fc1](https://github.com/netlify/build/commit/f560fc18a5f6a2b3fca131706d45bb292923d0c4))
+* **config:** fail builds if failed to fetch extensions ([#6008](https://github.com/netlify/build/issues/6008)) ([95c4716](https://github.com/netlify/build/commit/95c471627fa363e547477ecb6afafc73326d43cb))
+* don't overwrite plugin origin if it exists ([#5793](https://github.com/netlify/build/issues/5793)) ([d5ef407](https://github.com/netlify/build/commit/d5ef4079308264d6175731fd9d3ff1c2ae1e1200))
+* environment variable build context filtering fix  ([#5887](https://github.com/netlify/build/issues/5887)) ([c0ab547](https://github.com/netlify/build/commit/c0ab5479bd533315d39983e50a9c8a1bee5966ff))
+* fail build when extension failed to be retrieved ([#5915](https://github.com/netlify/build/issues/5915)) ([20c7359](https://github.com/netlify/build/commit/20c73593deda6fc4a570fc7b71178687a693e03d))
+* leverage the internal config inside the getEnv as well ([#5769](https://github.com/netlify/build/issues/5769)) ([5e6ec8a](https://github.com/netlify/build/commit/5e6ec8afb91b494d77822bee88b2a45be07ec531))
+* re-add siteFeatureFlagPrefix ([#5709](https://github.com/netlify/build/issues/5709)) ([055e9a7](https://github.com/netlify/build/commit/055e9a745a5b0071b31a3952fc311454aca7fb72))
+* Revert 5915 yj/fail builds if extension fail to load ([#5955](https://github.com/netlify/build/issues/5955)) ([d3965d5](https://github.com/netlify/build/commit/d3965d50a47faa397196a594f91e48345dde46ad))
+* revert b8899e06a31f5615ef41d8a4ab251bcc96717837 ([#5689](https://github.com/netlify/build/issues/5689)) ([15bec28](https://github.com/netlify/build/commit/15bec2818f0c4dfe07265a2b16d7bec09ce9f01d))
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+* update config logger ([#5658](https://github.com/netlify/build/issues/5658)) ([bbbba76](https://github.com/netlify/build/commit/bbbba7604f01163a9f790694ddb247d5ea6242f3))
+* use staging url for extensions on staging ([#6140](https://github.com/netlify/build/issues/6140)) ([978b3c3](https://github.com/netlify/build/commit/978b3c394ec442efe23610ef8313c4820e8d40fa))
+* when fetching env from envelope, pass context ([#5426](https://github.com/netlify/build/issues/5426)) ([8301161](https://github.com/netlify/build/commit/8301161d88d343eb9abbca226cba397a20bc581e))
+
 ## [21.0.1](https://github.com/netlify/build/compare/config-v21.0.0...config-v21.0.1) (2025-03-18)
 
 
