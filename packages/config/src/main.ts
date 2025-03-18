@@ -9,7 +9,12 @@ import { getEnv } from './env/main.js'
 import { resolveConfigPaths } from './files.js'
 import { getHeadersPath, addHeaders } from './headers.js'
 import { getInlineConfig } from './inline_config.js'
-import { mergeIntegrations } from './integrations.js'
+import {
+  EXTENSION_API_BASE_URL,
+  EXTENSION_API_STAGING_BASE_URL,
+  mergeIntegrations,
+  NETLIFY_API_STAGING_BASE_URL,
+} from './integrations.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } from './merge_normalize.js'
@@ -51,7 +56,7 @@ export const resolveConfig = async function (opts) {
 
   // TODO(kh): remove this mapping and get the extensionApiHost from the opts
   const extensionApiBaseUrl =
-    host === 'api-staging.netlify.com' ? 'https://api-staging.netlifysdk.com' : 'https://api.netlifysdk.com'
+    host === NETLIFY_API_STAGING_BASE_URL ? EXTENSION_API_STAGING_BASE_URL : EXTENSION_API_BASE_URL
 
   const {
     config: configOpt,
@@ -184,13 +189,7 @@ const addLegacyFunctionsDirectory = (config) => {
     return config
   }
 
-  return {
-    ...config,
-    build: {
-      ...config.build,
-      functions: config.functionsDirectory,
-    },
-  }
+  return { ...config, build: { ...config.build, functions: config.functionsDirectory } }
 }
 
 /**
@@ -284,24 +283,10 @@ const getFullConfig = async function ({
   logs,
   featureFlags,
 }) {
-  const configPath = await getConfigPath({
-    configOpt,
-    cwd,
-    repositoryRoot,
-    packagePath,
-    configBase,
-  })
+  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, packagePath, configBase })
   try {
     const config = await parseConfig(configPath)
-    const configA = mergeAndNormalizeConfig({
-      config,
-      defaultConfig,
-      inlineConfig,
-      context,
-      branch,
-      logs,
-      packagePath,
-    })
+    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs, packagePath })
     const {
       config: configB,
       buildDir,
