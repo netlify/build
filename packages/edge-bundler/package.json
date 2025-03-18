@@ -42,15 +42,12 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@types/glob-to-regexp": "^0.4.1",
     "@types/node": "^14.18.32",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^0.34.0",
     "archiver": "^5.3.1",
     "chalk": "^5.4.0",
-    "cpy": "^9.0.1",
-    "cross-env": "^7.0.3",
     "nock": "^13.2.4",
     "tar": "^6.1.11",
     "typescript": "^5.0.0",
