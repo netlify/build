@@ -324,7 +324,7 @@ export type RequestHeaders = {
  */
 export type Headers = {
   for: For
-  values?: Values
+  values: Values
 }
 /**
  * Define the actual headers.

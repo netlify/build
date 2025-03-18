@@ -203,7 +203,7 @@ export class Fixture {
     return output
   }
 
-  async runWithBuildAndIntrospect() {
+  async runWithBuildAndIntrospect(): Promise<Awaited<ReturnType<typeof build>> & { output: string }> {
     const buildResult = await build(this.getBuildFlags())
     const output = [buildResult.logs?.stdout.join('\n'), buildResult.logs?.stderr.join('\n')]
       .filter(Boolean)
@@ -219,7 +219,7 @@ export class Fixture {
   async runDev(devCommand: unknown): Promise<string> {
     const entryPoint = startDev.bind(null, devCommand)
     const { logs } = await entryPoint(this.getBuildFlags())
-    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+    return [logs?.stdout.join('\n'), logs?.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 
   /** use the CLI entry point instead of the Node.js main function */

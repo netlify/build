@@ -12,17 +12,11 @@ export const getHeadersPath = function ({ build: { publish } }) {
 const HEADERS_FILENAME = '_headers'
 
 // Add `config.headers`
-export const addHeaders = async function ({
-  config: { headers: configHeaders, ...config },
-  headersPath,
-  logs,
-  featureFlags,
-}) {
+export const addHeaders = async function ({ config: { headers: configHeaders, ...config }, headersPath, logs }) {
   const { headers, errors } = await parseAllHeaders({
     headersFiles: [headersPath],
     configHeaders,
     minimal: true,
-    featureFlags,
   })
   warnHeadersParsing(logs, errors)
   warnHeadersCaseSensitivity(logs, headers)

@@ -419,36 +419,39 @@ test('Integrations are returned if accountId is present and mode is dev', async 
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations are not returned if failed to fetch integrations and if flag is true', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+test('Integrations are returned and called with a netlify-sdk-build-bot-token', async (t) => {
+  const { output, requests } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
-      mode: 'buildbot',
-      accountId: 'account1',
+      mode: 'dev',
       token: 'test',
+      accountId: 'account1',
       featureFlags: {
-        error_builds_on_extension_fetch_fail: true,
+        send_build_bot_token_to_jigsaw: true,
       },
     })
-    .runConfigServer([
-      SITE_INFO_DATA,
-      TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR,
-      FETCH_INTEGRATIONS_EMPTY_RESPONSE,
-    ])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
 
-  t.snapshot(normalizeOutput(output))
+  const config = JSON.parse(output)
+  const installationsHeaders = requests.find(
+    (request) => request.url === TEAM_INSTALLATIONS_META_RESPONSE.path,
+  )?.headers
+
+  t.assert(installationsHeaders.includes('netlify-sdk-build-bot-token'))
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].has_build === true)
 })
 
-test('Empty array of integrations are returned if failed to fetch integrations and if flag is false', async (t) => {
+test('Integrations are not returned if failed to fetch integrations', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'buildbot',
       accountId: 'account1',
       token: 'test',
-      featureFlags: {
-        error_builds_on_extension_fetch_fail: false,
-      },
     })
     .runConfigServer([
       SITE_INFO_DATA,

@@ -1,18 +1,18 @@
-import type { Header } from './types.js'
+import type { MinimalHeader } from './types.js'
 
 // If one header fails to parse, we still try to return the other ones
-export function splitResults<Type>(results: (Error | Type)[]) {
-  const headers = results.filter((result) => !isError(result)) as Type[]
+export function splitResults<T>(results: (Error | T)[]) {
+  const headers = results.filter((result): result is T => !isError(result))
   const errors = results.filter(isError)
   return { headers, errors }
 }
 
-const isError = function (result: any): result is Error {
+const isError = function (result: unknown): result is Error {
   return result instanceof Error
 }
 
 // Concatenate an array of `{ headers, errors }`
-export const concatResults = function (resultsArrays: { headers: Header[]; errors: Error[] }[]) {
+export const concatResults = function (resultsArrays: { headers: MinimalHeader[]; errors: Error[] }[]) {
   const headers = resultsArrays.flatMap(({ headers }) => headers)
   const errors = resultsArrays.flatMap(({ errors }) => errors)
   return { headers, errors }

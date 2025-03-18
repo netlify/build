@@ -76,6 +76,38 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [21.0.1](https://github.com/netlify/build/compare/config-v21.0.0...config-v21.0.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* use staging url for extensions on staging ([#6140](https://github.com/netlify/build/issues/6140)) ([978b3c3](https://github.com/netlify/build/commit/978b3c394ec442efe23610ef8313c4820e8d40fa))
+
+## [21.0.0](https://github.com/netlify/build/compare/config-v20.22.0...config-v21.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^7.3.0 to ^8.0.0
+
+## [20.22.0](https://github.com/netlify/build/compare/config-v20.21.7...config-v20.22.0) (2025-02-24)
+
+
+### Features
+
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+
 ## [20.21.7](https://github.com/netlify/build/compare/config-v20.21.6...config-v20.21.7) (2025-01-27)
 
 

@@ -49,6 +49,10 @@ export const resolveConfig = async function (opts) {
     return parsedCachedConfig
   }
 
+  // TODO(kh): remove this mapping and get the extensionApiHost from the opts
+  const extensionApiBaseUrl =
+    host === 'api-staging.netlify.com' ? 'https://api-staging.netlifysdk.com' : 'https://api.netlifysdk.com'
+
   const {
     config: configOpt,
     defaultConfig,
@@ -80,6 +84,8 @@ export const resolveConfig = async function (opts) {
     offline,
     featureFlags,
     testOpts,
+    token,
+    extensionApiBaseUrl,
   })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
@@ -130,6 +136,7 @@ export const resolveConfig = async function (opts) {
     context: context,
     testOpts,
     offline,
+    extensionApiBaseUrl,
   })
 
   const result = {
@@ -287,7 +294,7 @@ const getFullConfig = async function ({
       base: baseA,
     } = await resolveFiles({ packagePath, config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
-    const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
+    const configC = await addHeaders({ config: configB, headersPath, logs })
     const redirectsPath = getRedirectsPath(configC)
     const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }

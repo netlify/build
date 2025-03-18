@@ -64,6 +64,24 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [9.0.0](https://github.com/netlify/build/compare/build-info-v8.1.0...build-info-v9.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [8.1.0](https://github.com/netlify/build/compare/build-info-v8.0.0...build-info-v8.1.0) (2025-02-24)
+
+
+### Features
+
+* change default node version to v22 ([#5958](https://github.com/netlify/build/issues/5958)) ([59cda04](https://github.com/netlify/build/commit/59cda04d87af434bafa71c0509f958365b4fab34))
+
 ## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
 
 

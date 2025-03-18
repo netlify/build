@@ -105,6 +105,101 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.0.1](https://github.com/netlify/build/compare/build-v30.0.0...build-v30.0.1) (2025-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.0 to ^21.0.1
+    * @netlify/functions-utils bumped from ^5.3.9 to ^5.3.10
+    * @netlify/zip-it-and-ship-it bumped from 10.0.0 to 10.0.1
+
+## [30.0.0](https://github.com/netlify/build/compare/build-v29.59.2...build-v30.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Features
+
+* remove references to removed flag and always produce manfiest ([#6117](https://github.com/netlify/build/issues/6117)) ([0af493c](https://github.com/netlify/build/commit/0af493cd65c7d3a502620f18e3ac21747c8e5e1a))
+
+
+### Bug Fixes
+
+* fix httperr snapshot ([#6116](https://github.com/netlify/build/issues/6116)) ([d4ece98](https://github.com/netlify/build/commit/d4ece98c4427bbf8c9d293f231340e98ac24ccf5))
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.22.0 to ^21.0.0
+    * @netlify/functions-utils bumped from ^5.3.8 to ^5.3.9
+    * @netlify/zip-it-and-ship-it bumped from 9.43.1 to 10.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.2.0 to ^4.0.0
+
+## [29.59.2](https://github.com/netlify/build/compare/build-v29.59.1...build-v29.59.2) (2025-02-27)
+
+
+### Bug Fixes
+
+* multiple plugin versions in a monorepo setup ([#6105](https://github.com/netlify/build/issues/6105)) ([23c7ce7](https://github.com/netlify/build/commit/23c7ce71268d963ffdafb7fa1440d13a9cc99886))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.7 to ^5.3.8
+    * @netlify/zip-it-and-ship-it bumped from 9.43.0 to 9.43.1
+
+## [29.59.1](https://github.com/netlify/build/compare/build-v29.59.0...build-v29.59.1) (2025-02-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.6 to ^5.3.7
+    * @netlify/zip-it-and-ship-it bumped from 9.42.6 to 9.43.0
+
+## [29.59.0](https://github.com/netlify/build/compare/build-v29.58.10...build-v29.59.0) (2025-02-24)
+
+
+### Features
+
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.21.7 to ^20.22.0
+
+## [29.58.10](https://github.com/netlify/build/compare/build-v29.58.9...build-v29.58.10) (2025-02-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency clean-stack to v5 ([#6073](https://github.com/netlify/build/issues/6073)) ([51c8ebd](https://github.com/netlify/build/commit/51c8ebd46d96e0fa32537bea9f21d733829a9bf1))
+* pass config object to devCommand step handler ([#6095](https://github.com/netlify/build/issues/6095)) ([e234d01](https://github.com/netlify/build/commit/e234d01c8fb7a366af3876536ef0141907611638))
+* remove references to fully rolled out netlify_build_frameworks_api feature flag ([#6053](https://github.com/netlify/build/issues/6053)) ([700c36b](https://github.com/netlify/build/commit/700c36bc9f81bfeaed76444aceb823111c995cbe))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.5 to ^5.3.6
+    * @netlify/zip-it-and-ship-it bumped from 9.42.5 to 9.42.6
+
 ## [29.58.9](https://github.com/netlify/build/compare/build-v29.58.8...build-v29.58.9) (2025-02-04)
 
 

@@ -86,6 +86,15 @@ test('Resolution is relative to the build directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('Resolution respects monorepo node module resolution rules', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo')
+  const output = await fixture.withFlags({ packagePath: 'apps/unpinned' }).runWithBuild()
+  // fixture has 2 versions of the same build plugin used by different workspaces
+  // this ensures version used by apps/unpinned is used instead of version that
+  // is hoisted in shared monorepo node_modules
+  t.assert(output.indexOf('@8.5.3') > 0)
+})
+
 test('Non-existing plugins', async (t) => {
   const output = await new Fixture('./fixtures/non_existing').runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -343,9 +352,7 @@ test('Plugins which export a factory function receive the inputs and a metadata 
 })
 
 test('Plugin events that do not emit to stderr/stdout are hidden from the logs', async (t) => {
-  const output = await new Fixture('./fixtures/mixed_events')
-    .withFlags({ debug: false, featureFlags: { netlify_build_reduced_output: true } })
-    .runWithBuild()
+  const output = await new Fixture('./fixtures/mixed_events').withFlags({ debug: false }).runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -354,7 +361,7 @@ test('Plugin errors that occur during the loading phase are piped to system logs
   const output = await new Fixture('./fixtures/syntax_error')
     .withFlags({
       debug: false,
-      featureFlags: { netlify_build_reduced_output: true, netlify_build_plugin_system_log: true },
+      featureFlags: { netlify_build_plugin_system_log: true },
       systemLogFile: systemLogFile.fd,
     })
     .runWithBuild()

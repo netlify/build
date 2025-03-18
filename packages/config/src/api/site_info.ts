@@ -1,5 +1,6 @@
 import { NetlifyAPI } from 'netlify'
 import fetch from 'node-fetch'
+import type { RequestInit } from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
@@ -17,6 +18,8 @@ type GetSiteInfoOpts = {
   featureFlags?: Record<string, boolean>
   testOpts?: TestOptions
   siteFeatureFlagPrefix: string
+  token: string
+  extensionApiBaseUrl: string
 }
 /**
  * Retrieve Netlify Site information, if available.
@@ -36,10 +39,11 @@ export const getSiteInfo = async function ({
   offline = false,
   testOpts = {},
   siteFeatureFlagPrefix,
+  token,
   featureFlags = {},
+  extensionApiBaseUrl,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-  const errorOnExtensionFetchFail = featureFlags.error_builds_on_extension_fetch_fail
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
     const siteInfo: { id?: string; account_id?: string } = {}
@@ -49,7 +53,7 @@ export const getSiteInfo = async function ({
 
     const integrations =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, errorOnExtensionFetchFail })
+        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl })
         : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
@@ -59,7 +63,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, errorOnExtensionFetchFail }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -113,7 +117,9 @@ type GetIntegrationsOpts = {
   accountId?: string
   testOpts: TestOptions
   offline: boolean
-  errorOnExtensionFetchFail?: boolean
+  token?: string
+  featureFlags?: Record<string, boolean>
+  extensionApiBaseUrl: string
 }
 
 const getIntegrations = async function ({
@@ -121,46 +127,43 @@ const getIntegrations = async function ({
   accountId,
   testOpts,
   offline,
-  errorOnExtensionFetchFail,
+  token,
+  featureFlags,
+  extensionApiBaseUrl,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
-
+  const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
   const { host } = testOpts
-
-  const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
+  const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
 
   // if accountId isn't present, use safe v1 endpoint
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
 
-  if (errorOnExtensionFetchFail) {
-    try {
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-      }
-      const bodyText = await response.text()
-      if (bodyText === '') {
-        return []
-      }
-
-      const integrations = await JSON.parse(bodyText)
-      return Array.isArray(integrations) ? integrations : []
-    } catch (error) {
-      return throwUserError(
-        `Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`,
-      )
-    }
-  }
-
   try {
-    const response = await fetch(url)
-    const integrations = await response.json()
+    const requestOptions = {} as RequestInit
+
+    if (sendBuildBotTokenToJigsaw && token) {
+      requestOptions.headers = {
+        'netlify-sdk-build-bot-token': token,
+      }
+    }
+
+    const response = await fetch(url, requestOptions)
+    if (!response.ok) {
+      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
+    }
+    const bodyText = await response.text()
+    if (bodyText === '') {
+      return []
+    }
+
+    const integrations = await JSON.parse(bodyText)
     return Array.isArray(integrations) ? integrations : []
-  } catch {
-    return []
+  } catch (error) {
+    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }

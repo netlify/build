@@ -10,7 +10,7 @@ import { getUtils } from './utils.js'
 
 /** Run a specific plugin event handler */
 export const run = async function (
-  { event, error, constants, envChanges, featureFlags, netlifyConfig, otelCarrier },
+  { event, error, constants, envChanges, featureFlags, netlifyConfig, otelCarrier, extensionMetadata },
   { methods, inputs, packageJson, verbose },
 ) {
   setGlobalContext(propagation.extract(context.active(), otelCarrier))
@@ -31,6 +31,7 @@ export const run = async function (
       error,
       featureFlags,
       systemLog,
+      extensionMetadata,
     }
 
     const envBefore = setEnvChanges(envChanges)
