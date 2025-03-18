@@ -51,7 +51,7 @@ export const resolveConfig = async function (opts) {
 
   // TODO(kh): remove this mapping and get the extensionApiHost from the opts
   const extensionApiBaseUrl =
-    host === 'api.netlify.com' ? 'https://api.netlifysdk.com' : `https://api-staging.netlifysdk.com `
+    host === 'api-staging.netlify.com' ? 'https://api-staging.netlifysdk.com' : 'https://api.netlifysdk.com'
 
   const {
     config: configOpt,
