@@ -19,7 +19,7 @@ type GetSiteInfoOpts = {
   testOpts?: TestOptions
   siteFeatureFlagPrefix: string
   token: string
-  netlifyApiHost: string
+  extensionApiBaseUrl: string
 }
 /**
  * Retrieve Netlify Site information, if available.
@@ -41,7 +41,7 @@ export const getSiteInfo = async function ({
   siteFeatureFlagPrefix,
   token,
   featureFlags = {},
-  netlifyApiHost,
+  extensionApiBaseUrl,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
@@ -53,7 +53,7 @@ export const getSiteInfo = async function ({
 
     const integrations =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, netlifyApiHost })
+        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl })
         : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
@@ -63,7 +63,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, netlifyApiHost }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -119,7 +119,7 @@ type GetIntegrationsOpts = {
   offline: boolean
   token?: string
   featureFlags?: Record<string, boolean>
-  netlifyApiHost: string
+  extensionApiBaseUrl: string
 }
 
 const getIntegrations = async function ({
@@ -129,15 +129,13 @@ const getIntegrations = async function ({
   offline,
   token,
   featureFlags,
-  netlifyApiHost,
+  extensionApiBaseUrl,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
   const { host } = testOpts
-  const extensionApiBaseUrl =
-    netlifyApiHost === 'api.netlify.com' ? 'https://api.netlifysdk.com' : `https://api-staging.netlifysdk.com `
   const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
 
   // if accountId isn't present, use safe v1 endpoint

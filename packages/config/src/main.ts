@@ -49,6 +49,10 @@ export const resolveConfig = async function (opts) {
     return parsedCachedConfig
   }
 
+  // TODO(kh): remove this mapping and get the extensionApiHost from the opts
+  const extensionApiBaseUrl =
+    host === 'api.netlify.com' ? 'https://api.netlifysdk.com' : `https://api-staging.netlifysdk.com `
+
   const {
     config: configOpt,
     defaultConfig,
@@ -81,7 +85,7 @@ export const resolveConfig = async function (opts) {
     featureFlags,
     testOpts,
     token,
-    netlifyApiHost: host,
+    extensionApiBaseUrl,
   })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
@@ -132,7 +136,7 @@ export const resolveConfig = async function (opts) {
     context: context,
     testOpts,
     offline,
-    netlifyApiHost: host,
+    extensionApiBaseUrl,
   })
 
   const result = {
