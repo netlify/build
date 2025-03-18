@@ -66,7 +66,6 @@
     "locate-path": "^7.0.0",
     "p-filter": "^4.0.0",
     "p-locate": "^6.0.0",
-    "process": "^0.11.10",
     "read-package-up": "^11.0.0",
     "semver": "^7.3.8"
   },
