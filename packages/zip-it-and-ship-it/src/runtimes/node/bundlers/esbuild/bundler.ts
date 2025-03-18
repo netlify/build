@@ -62,6 +62,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
       const resolved = await glob(pattern, {
         noglobstar: true,
         cwd: baseDir,
+        dotRelative: true,
       })
 
       result.push(...resolved)
