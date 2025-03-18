@@ -2,26 +2,20 @@ import fetch from 'node-fetch'
 
 import { TestOptions } from '../types/options.js'
 
-type AvailableIntegration = {
-  slug: string
-  hostSiteUrl: string
-  hasBuild?: boolean
-}
+type AvailableIntegration = { slug: string; hostSiteUrl: string; hasBuild?: boolean }
 
-type GetAvailableIntegrationsOpts = {
-  testOpts: TestOptions
-  offline: boolean
-}
+type GetAvailableIntegrationsOpts = { testOpts: TestOptions; offline: boolean; extensionApiBaseUrl: string }
 
 export const getAvailableIntegrations = async function ({
   testOpts,
   offline,
+  extensionApiBaseUrl,
 }: GetAvailableIntegrationsOpts): Promise<AvailableIntegration[]> {
   if (offline) {
     return []
   }
   const { host } = testOpts
-  const baseUrl = new URL(host ? `http://${host}/` : `https://api.netlifysdk.com/`)
+  const baseUrl = new URL(host ? `http://${host}/` : extensionApiBaseUrl)
 
   try {
     const response = await fetch(`${baseUrl}integrations`)

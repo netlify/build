@@ -19,6 +19,7 @@ type GetSiteInfoOpts = {
   testOpts?: TestOptions
   siteFeatureFlagPrefix: string
   token: string
+  extensionApiBaseUrl: string
 }
 /**
  * Retrieve Netlify Site information, if available.
@@ -40,6 +41,7 @@ export const getSiteInfo = async function ({
   siteFeatureFlagPrefix,
   token,
   featureFlags = {},
+  extensionApiBaseUrl,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
 
@@ -51,7 +53,7 @@ export const getSiteInfo = async function ({
 
     const integrations =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags })
+        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl })
         : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
@@ -61,7 +63,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -117,6 +119,7 @@ type GetIntegrationsOpts = {
   offline: boolean
   token?: string
   featureFlags?: Record<string, boolean>
+  extensionApiBaseUrl: string
 }
 
 const getIntegrations = async function ({
@@ -126,14 +129,14 @@ const getIntegrations = async function ({
   offline,
   token,
   featureFlags,
+  extensionApiBaseUrl,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
   const { host } = testOpts
-
-  const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
+  const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
 
   // if accountId isn't present, use safe v1 endpoint
   const url = accountId

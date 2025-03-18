@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [21.0.1](https://github.com/netlify/build/compare/config-v21.0.0...config-v21.0.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* use staging url for extensions on staging ([#6140](https://github.com/netlify/build/issues/6140)) ([978b3c3](https://github.com/netlify/build/commit/978b3c394ec442efe23610ef8313c4820e8d40fa))
+
 ## [21.0.0](https://github.com/netlify/build/compare/config-v20.22.0...config-v21.0.0) (2025-03-12)
 
 

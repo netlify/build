@@ -105,6 +105,17 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.0.1](https://github.com/netlify/build/compare/build-v30.0.0...build-v30.0.1) (2025-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.0 to ^21.0.1
+    * @netlify/functions-utils bumped from ^5.3.9 to ^5.3.10
+    * @netlify/zip-it-and-ship-it bumped from 10.0.0 to 10.0.1
+
 ## [30.0.0](https://github.com/netlify/build/compare/build-v29.59.2...build-v30.0.0) (2025-03-12)
 
 
