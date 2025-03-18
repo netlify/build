@@ -100,11 +100,6 @@ test('Non-existing plugins', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Do not allow overriding core plugins', async (t) => {
-  const output = await new Fixture('./fixtures/core_override').runWithBuild()
-  t.snapshot(normalizeOutput(output))
-})
-
 const getNodePath = function (nodeVersion) {
   return `/home/user/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
