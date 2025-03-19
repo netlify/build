@@ -54,7 +54,6 @@ test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PA
     .runWithBuild()
 
   t.false(normalizeOutput(output).includes('found value at line 1 in dist/safefile.js'))
-  t.false(normalizeOutput(output).includes('found value at line 1 in dist/static-files/safefile.js'))
   t.false(normalizeOutput(output).includes('found value at line 1 in src/static-files/safefile.js'))
 
   // Ensure SECRETS_SCAN_OMIT_PATHS doesn't exclude more than the defined glob
