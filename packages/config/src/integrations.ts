@@ -1,27 +1,17 @@
-import { getAvailableIntegrations } from './api/integrations.js'
 import { IntegrationResponse } from './types/api.js'
 import { Integration } from './types/integrations.js'
-import { TestOptions } from './types/options.js'
 
 type MergeIntegrationsOpts = {
   configIntegrations?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
   apiIntegrations: IntegrationResponse[]
   context: string
-  testOpts?: TestOptions
-  offline: boolean
-  extensionApiBaseUrl: string
 }
 
 export const mergeIntegrations = async function ({
   configIntegrations = [],
   apiIntegrations,
   context,
-  testOpts = {},
-  offline,
-  extensionApiBaseUrl,
 }: MergeIntegrationsOpts): Promise<Integration[]> {
-  const availableIntegrations = await getAvailableIntegrations({ testOpts, offline, extensionApiBaseUrl })
-
   // Include all API integrations, unless they have a `dev` property and we are in the `dev` context
   const resolvedApiIntegrations = apiIntegrations.filter(
     (integration) =>
@@ -49,11 +39,12 @@ export const mergeIntegrations = async function ({
         return {
           slug: configIntegration.name,
           dev: configIntegration.dev,
+          // TODO(kh): has_build should become irrelevant soon as we are only returning extensions that have a build event handler.
           has_build: integrationInstance?.has_build ?? configIntegration.dev?.force_run_in_build ?? false,
         }
       }
 
-      const integration = availableIntegrations.find(
+      const integration = apiIntegrations.find(
         (availableIntegration) => availableIntegration.slug === configIntegration.name,
       )
       if (!integration) {
@@ -62,8 +53,9 @@ export const mergeIntegrations = async function ({
 
       return {
         slug: integration.slug,
-        version: integration.hostSiteUrl,
-        has_build: !!integration.hasBuild,
+        version: integration.version,
+        // TODO(kh): has_build should become irrelevant soon as we are only returning extensions that have a build event handler.
+        has_build: !!integration.has_build,
       }
     })
     .filter((i): i is IntegrationResponse => typeof i !== 'undefined')
