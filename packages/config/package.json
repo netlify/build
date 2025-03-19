@@ -59,6 +59,8 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
+    "@netlify/headers-parser": "^8.0.0",
+    "@netlify/redirect-parser": "^14.5.0",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
@@ -73,12 +75,11 @@
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
     "netlify": "^13.3.3",
-    "@netlify/headers-parser": "^8.0.0",
-    "@netlify/redirect-parser": "^14.5.0",
     "node-fetch": "^3.3.1",
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
     "path-type": "^5.0.0",
+    "retry": "^0.13.1",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^4.0.0",
     "yargs": "^17.6.0"
