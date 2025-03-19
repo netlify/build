@@ -1,6 +1,7 @@
 {
   "name": "@netlify/testing",
   "private": true,
+  "version": "0.0.0-local",
   "type": "module",
   "exports": "./lib/index.js",
   "main": "./lib/index.js",
