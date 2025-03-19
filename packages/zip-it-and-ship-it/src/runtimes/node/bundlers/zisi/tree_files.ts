@@ -10,7 +10,8 @@ export const getTreeFiles = async function (srcPath: string, stat: Stats): Promi
 
   return await glob(`${srcPath}/**`, {
     ignore: `${srcPath}/**/node_modules/**`,
-    nodir: true,
+    followSymbolicLinks: false,
+    onlyFiles: true,
     absolute: true,
   })
 }
