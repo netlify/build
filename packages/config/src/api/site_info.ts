@@ -135,11 +135,11 @@ const getIntegrations = async function ({
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
-  const { host, returnBaseUrl } = testOpts
+  const { host, setBaseUrl } = testOpts
 
   // We only use this for testing
-  if (host && returnBaseUrl) {
-    returnBaseUrl(extensionApiBaseUrl)
+  if (host && setBaseUrl) {
+    setBaseUrl(extensionApiBaseUrl)
   }
 
   const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
