@@ -39,14 +39,6 @@ type ListedFunctionFile = ListedFunction & {
   srcFile: string
 }
 
-interface ListFunctionsOptions {
-  basePath?: string
-  config?: Config
-  configFileDirectories?: string[]
-  featureFlags?: FeatureFlags
-  parseISC?: boolean
-}
-
 interface AugmentedFunctionSource extends FunctionSource {
   staticAnalysisResult?: StaticAnalysisResult
 }

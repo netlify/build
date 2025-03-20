@@ -1,6 +1,6 @@
 {
   "name": "@netlify/zip-it-and-ship-it",
-  "version": "10.0.2",
+  "version": "10.0.3",
   "description": "Zip it and ship it",
   "main": "./dist/main.js",
   "type": "module",
@@ -44,7 +44,7 @@
     "@babel/parser": "^7.22.5",
     "@babel/types": "7.26.10",
     "@netlify/binary-info": "^1.0.0",
-    "@netlify/serverless-functions-api": "^1.35.2",
+    "@netlify/serverless-functions-api": "^1.36.0",
     "@vercel/nft": "0.27.7",
     "archiver": "^7.0.0",
     "common-path-prefix": "^3.0.0",
