@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.0.2](https://github.com/netlify/build/compare/build-v30.0.1...build-v30.0.2) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.1 to ^21.0.2
+    * @netlify/edge-bundler bumped from 12.3.2 to 12.3.3
+    * @netlify/framework-info bumped from ^9.9.1 to ^9.9.2
+    * @netlify/functions-utils bumped from ^5.3.10 to ^5.3.11
+    * @netlify/opentelemetry-utils bumped from ^1.3.0 to ^1.3.1
+    * @netlify/zip-it-and-ship-it bumped from 10.0.1 to 10.0.2
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.2.1
+
 ## [30.0.1](https://github.com/netlify/build/compare/build-v30.0.0...build-v30.0.1) (2025-03-18)
 
 
