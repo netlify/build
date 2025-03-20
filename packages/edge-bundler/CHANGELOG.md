@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.3.3](https://github.com/netlify/build/compare/edge-bundler-v12.3.2...edge-bundler-v12.3.3) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
 ## [12.3.2](https://github.com/netlify/build/compare/edge-bundler-v12.3.1...edge-bundler-v12.3.2) (2025-01-08)
 
 
