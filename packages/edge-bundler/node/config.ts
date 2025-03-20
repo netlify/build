@@ -99,6 +99,7 @@ export const getFunctionConfig = async ({
     [
       'run',
       '--allow-env',
+      '--allow-import',
       '--allow-net',
       '--allow-read',
       `--allow-write=${collector.path}`,
