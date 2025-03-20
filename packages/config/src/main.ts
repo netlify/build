@@ -74,19 +74,33 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
-    api,
-    context,
-    siteId,
-    accountId,
-    mode,
-    siteFeatureFlagPrefix,
-    offline,
-    featureFlags,
-    testOpts,
-    token,
-    extensionApiBaseUrl,
-  })
+  let { siteInfo, accounts, addons, integrations } = parsedCachedConfig || {}
+
+  // If we have cached site info, we don't need to fetch it again
+  const useCachedSiteInfo = Boolean(
+    !featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
+  )
+
+  if (!useCachedSiteInfo) {
+    const updatedSiteInfo = await getSiteInfo({
+      api,
+      context,
+      siteId,
+      accountId,
+      mode,
+      siteFeatureFlagPrefix,
+      offline,
+      featureFlags,
+      testOpts,
+      token,
+      extensionApiBaseUrl,
+    })
+
+    siteInfo = updatedSiteInfo.siteInfo
+    accounts = updatedSiteInfo.accounts
+    addons = updatedSiteInfo.addons
+    integrations = updatedSiteInfo.integrations
+  }
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
