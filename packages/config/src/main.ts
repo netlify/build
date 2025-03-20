@@ -78,7 +78,7 @@ export const resolveConfig = async function (opts) {
 
   // If we have cached site info, we don't need to fetch it again
   const useCachedSiteInfo = Boolean(
-    !featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
+    featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
   )
 
   if (!useCachedSiteInfo) {
