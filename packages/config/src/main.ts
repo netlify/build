@@ -86,6 +86,11 @@ export const resolveConfig = async function (opts) {
     featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
   )
 
+  // I'm adding some debug logging to see if the logic is working as expected
+  if (featureFlags?.use_cached_site_info_logging) {
+    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, addons, integrations })
+  }
+
   if (!useCachedSiteInfo) {
     const updatedSiteInfo = await getSiteInfo({
       api,
