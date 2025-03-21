@@ -3,6 +3,10 @@ import { IntegrationResponse } from './types/api.js'
 import { Integration } from './types/integrations.js'
 import { TestOptions } from './types/options.js'
 
+export const NETLIFY_API_STAGING_BASE_URL = 'api-staging.netlify.com'
+export const EXTENSION_API_BASE_URL = 'https://api.netlifysdk.com'
+export const EXTENSION_API_STAGING_BASE_URL = 'https://api-staging.netlifysdk.com'
+
 type MergeIntegrationsOpts = {
   configIntegrations?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
   apiIntegrations: IntegrationResponse[]
@@ -60,11 +64,7 @@ export const mergeIntegrations = async function ({
         return undefined
       }
 
-      return {
-        slug: integration.slug,
-        version: integration.hostSiteUrl,
-        has_build: !!integration.hasBuild,
-      }
+      return { slug: integration.slug, version: integration.hostSiteUrl, has_build: !!integration.hasBuild }
     })
     .filter((i): i is IntegrationResponse => typeof i !== 'undefined')
 
