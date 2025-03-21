@@ -87,13 +87,13 @@ test.serial('Blobs upload step uploads files to deploy store (legacy API)', asyn
   t.true(success)
   t.is(t.context.blobRequests.set.length, 6)
 
-  const regionRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const defaultRegionRequests = t.context.blobRequests.set.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
-    return url.searchParams.has('region')
+    return url.searchParams.get('region') === 'us-east-2'
   })
 
-  t.is(regionRequests.length, 3)
+  t.is(defaultRegionRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   if (semver.lt(nodeVersion, '18.0.0')) {
@@ -172,7 +172,7 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
     return url.searchParams.get('region') === 'auto'
   })
 
-  t.is(regionAutoRequests.length, 0)
+  t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   if (semver.lt(nodeVersion, '18.0.0')) {
