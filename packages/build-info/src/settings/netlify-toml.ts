@@ -341,6 +341,7 @@ export type Functions = {
   included_files?: IncludedFiles
   node_bundler?: NodeBundler
   directory?: Directory
+  schedule?: string
   /**
    * Options that only apply for this filter by name, including using glob patterns. If a function matches several configuration blocks containing one of these properties, the values are concatenated.
    */

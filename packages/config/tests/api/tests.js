@@ -470,3 +470,50 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
     .runConfigServer([SITE_INFO_BASE_REL_DIR, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
+
+test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, addons and integrations on cachedConfig', async (t) => {
+  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture('./fixtures/cached_config')
+    .withFlags({
+      cachedConfig,
+      siteId: 'test',
+      mode: 'dev',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        use_cached_site_info: true,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, TEAM_INSTALLATIONS_META_RESPONSE])
+
+  t.assert(requests.length === 0)
+})
+
+test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, addons or integrations on cachedConfig', async (t) => {
+  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture('./fixtures/cached_config')
+    .withFlags({
+      cachedConfig,
+      siteId: 'test',
+      mode: 'dev',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        use_cached_site_info: true,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, TEAM_INSTALLATIONS_META_RESPONSE])
+
+  t.assert(requests.length === 0)
+})
+
+test('It fetches site info if cachedConfig is provided, use_cached_site_info is false', async (t) => {
+  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture('./fixtures/cached_config')
+    .withFlags({
+      cachedConfig,
+    })
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, TEAM_INSTALLATIONS_META_RESPONSE])
+
+  t.assert(requests.length === 0)
+})
