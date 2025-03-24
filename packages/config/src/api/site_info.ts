@@ -135,9 +135,14 @@ const getIntegrations = async function ({
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
-  const { host } = testOpts
-  const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
+  const { host, setBaseUrl } = testOpts
 
+  // We only use this for testing
+  if (host && setBaseUrl) {
+    setBaseUrl(extensionApiBaseUrl)
+  }
+
+  const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
   // if accountId isn't present, use safe v1 endpoint
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
