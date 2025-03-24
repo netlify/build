@@ -55,7 +55,7 @@
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-ava": "^14.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-vitest": "^0.5.4",
+    "@vitest/eslint-plugin": "^1.0.1",
     "husky": "^8.0.0",
     "lerna": "^5.5.2",
     "lint-staged": "^15.0.0",
