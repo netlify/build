@@ -66,8 +66,8 @@ const config = {
     'ava/no-only-test': 'error',
     // 'ava/no-skip-test': 'error', // Uncomment once we remove all skipped tests
     // 'vitest/no-commented-out-tests': 'error', // Uncomment once we remove all commented out tests
-    'vitest/no-disabled-tests': 'error',
-    'vitest/no-focused-tests': 'error',
+    '@vitest/no-disabled-tests': 'error',
+    '@vitest/no-focused-tests': 'error',
   },
   overrides: [
     {
