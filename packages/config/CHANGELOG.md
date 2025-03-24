@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [21.0.4](https://github.com/netlify/build/compare/config-v21.0.3...config-v21.0.4) (2025-03-24)
+
+
+### Bug Fixes
+
+* add logging for get site info usage ([#6156](https://github.com/netlify/build/issues/6156)) ([61dc49b](https://github.com/netlify/build/commit/61dc49beb816a45702ee480f939a7d1ed49aed9f))
+
 ## [21.0.3](https://github.com/netlify/build/compare/config-v21.0.2...config-v21.0.3) (2025-03-21)
 
 
