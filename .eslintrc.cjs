@@ -13,7 +13,7 @@ const config = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['import', '@typescript-eslint', 'ava', 'vitest'],
+  plugins: ['import', '@typescript-eslint', 'ava', '@vitest'],
 
   ignorePatterns: [
     // TODO: remove when they are migrated to typescript
