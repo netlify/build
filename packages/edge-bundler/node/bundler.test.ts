@@ -104,8 +104,13 @@ test('Adds a custom error property to user errors during bundling', async () => 
     await bundle([sourceDirectory], distPath, declarations, { basePath })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
-    const [messageBeforeStack] = (error as BundleError).message.split('at <anonymous> (file://')
-    expect(messageBeforeStack).toMatchSnapshot()
+    const messageBeforeStack = (error as BundleError).message
+    expect(
+      messageBeforeStack.replace(
+        /file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/,
+        'file://$2',
+      ),
+    ).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'eszip',
