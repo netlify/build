@@ -105,15 +105,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     const [messageBeforeStack] = (error as BundleError).message.split('at <anonymous> (file://')
-    expect(messageBeforeStack).toMatchInlineSnapshot(`
-      "error: Uncaught (in promise) Error: The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27
-
-        export default async () => 
-                                  ~
-            const ret = new Error(getStringFromWasm0(arg0, arg1));
-                        ^
-          "
-    `)
+    expect(messageBeforeStack).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'eszip',
