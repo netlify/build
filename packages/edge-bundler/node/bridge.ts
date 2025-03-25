@@ -99,7 +99,7 @@ class DenoBridge {
     return binaryPath
   }
 
-  private async getBinaryVersion(binaryPath: string) {
+  async getBinaryVersion(binaryPath: string) {
     try {
       const { stdout } = await execa(binaryPath, ['--version'])
       const version = stdout.match(/^deno ([\d.]+)/)
