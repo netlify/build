@@ -7,5 +7,5 @@ exports[`Adds a custom error property to user errors during bundling 1`] = `
                             ~
       const ret = new Error(getStringFromWasm0(arg0, arg1));
 [0m[31m                  ^[0m
-    at [0m[1m[3m<anonymous>[0m ([0m[36mfile:///Users/jakechampion/Code/netlify/build/packages/edge-bundler/deno/vendor/deno.land/x/eszip@v0.55.2/eszip_wasm.generated.js[0m:[0m[33m443[0m:[0m[33m19[0m)"
+    at [0m[1m[3m<anonymous>[0m ([0m[36mfile:///Users/runner/work/build/build/packages/edge-bundler/deno/vendor/deno.land/x/eszip@v0.55.2/eszip_wasm.generated.js[0m:[0m[33m443[0m:[0m[33m19[0m)"
 `;
