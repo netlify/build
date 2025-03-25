@@ -114,7 +114,7 @@ export const getFunctionConfig = async ({
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,
       JSON.stringify(ConfigExitCode),
-    ],
+    ].filter(Boolean),
     { rejectOnExitCode: false },
   )
 
