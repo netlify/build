@@ -14,7 +14,7 @@ interface Redirect {
   signed?: string
   query?: Record<string, string>
   headers?: Record<string, string>
-  conditions?: Record<'Language' | 'Role' | 'Country' | 'Cookie', readonly string[]>
+  conditions?: Record<'Language' | 'Role' | 'Country' | 'Cookie', string[]>
 }
 
 interface Header {
