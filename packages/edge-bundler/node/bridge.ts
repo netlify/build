@@ -202,11 +202,13 @@ class DenoBridge {
     await fs.mkdir(this.cacheDirectory, { recursive: true })
   }
 
-  async getBinaryPath() {
+  async getBinaryPath(options?: { silent?: boolean }) {
     const globalPath = await this.getGlobalBinary()
 
     if (globalPath !== undefined) {
-      this.logger.system('Using global installation of Deno CLI')
+      if (!options?.silent) {
+        this.logger.system('Using global installation of Deno CLI')
+      }
 
       return { global: true, path: globalPath }
     }
@@ -214,7 +216,9 @@ class DenoBridge {
     const cachedPath = await this.getCachedBinary()
 
     if (cachedPath !== undefined) {
-      this.logger.system('Using cached Deno CLI from', cachedPath)
+      if (!options?.silent) {
+        this.logger.system('Using cached Deno CLI from', cachedPath)
+      }
 
       return { global: false, path: cachedPath }
     }
