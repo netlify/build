@@ -1,0 +1,17 @@
+[dev]
+command = 1
+port = "string"
+targetPort = "8000"
+functionsPort = "8000"
+staticServerPort = "5858"
+publish = 1
+jwtRolePath = 1
+jwtSecret = 1
+autoLaunch = 1
+framework = 1
+other = 1
+envFiles = 1
+[dev.https]
+certFile = 1
+keyFile = 1
+nay = 1
