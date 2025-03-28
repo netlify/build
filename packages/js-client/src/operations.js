@@ -1,5 +1,4 @@
-import omit from 'omit.js'
-
+import omit from './omit.js'
 import { openApiSpec } from './open_api.js'
 
 // Retrieve all OpenAPI operations
