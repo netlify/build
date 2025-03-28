@@ -4,6 +4,11 @@ import type { RequestInit } from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
+import {
+  EXTENSION_API_BASE_URL,
+  EXTENSION_API_STAGING_BASE_URL,
+  NETLIFY_API_STAGING_BASE_URL,
+} from '../integrations.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { IntegrationResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
@@ -53,7 +58,16 @@ export const getSiteInfo = async function ({
 
     const integrations =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl })
+        ? await getIntegrations({
+            siteId,
+            testOpts,
+            offline,
+            accountId,
+            token,
+            featureFlags,
+            extensionApiBaseUrl,
+            mode,
+          })
         : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
@@ -63,7 +77,7 @@ export const getSiteInfo = async function ({
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
     getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl }),
+    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ]
 
   const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
@@ -120,6 +134,7 @@ type GetIntegrationsOpts = {
   token?: string
   featureFlags?: Record<string, boolean>
   extensionApiBaseUrl: string
+  mode: ModeOption
 }
 
 const getIntegrations = async function ({
@@ -130,19 +145,29 @@ const getIntegrations = async function ({
   token,
   featureFlags,
   extensionApiBaseUrl,
+  mode,
 }: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
   if (!siteId || offline) {
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
-  const { host, setBaseUrl } = testOpts
+  const { host: originalHost, setBaseUrl } = testOpts
+
+  // TODO(kh): I am adding this purely for local staging development.
+  // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
+  const host =
+    originalHost === 'localhost'
+      ? `http://${originalHost}`
+      : originalHost?.includes(NETLIFY_API_STAGING_BASE_URL)
+        ? EXTENSION_API_STAGING_BASE_URL
+        : EXTENSION_API_BASE_URL
+
+  const baseUrl = new URL(host ?? extensionApiBaseUrl)
 
   // We only use this for testing
   if (host && setBaseUrl) {
     setBaseUrl(extensionApiBaseUrl)
   }
-
-  const baseUrl = new URL(host ? `http://${host}` : extensionApiBaseUrl)
   // if accountId isn't present, use safe v1 endpoint
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
@@ -151,8 +176,14 @@ const getIntegrations = async function ({
   try {
     const requestOptions = {} as RequestInit
 
+    // This is used to identify where the request is coming from
+    requestOptions.headers = {
+      'netlify-config-mode': mode,
+    }
+
     if (sendBuildBotTokenToJigsaw && token) {
       requestOptions.headers = {
+        ...requestOptions.headers,
         'netlify-sdk-build-bot-token': token,
       }
     }

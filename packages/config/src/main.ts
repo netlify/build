@@ -55,8 +55,9 @@ export const resolveConfig = async function (opts) {
   }
 
   // TODO(kh): remove this mapping and get the extensionApiHost from the opts
-  const extensionApiBaseUrl =
-    host === NETLIFY_API_STAGING_BASE_URL ? EXTENSION_API_STAGING_BASE_URL : EXTENSION_API_BASE_URL
+  const extensionApiBaseUrl = host?.includes(NETLIFY_API_STAGING_BASE_URL)
+    ? EXTENSION_API_STAGING_BASE_URL
+    : EXTENSION_API_BASE_URL
 
   const {
     config: configOpt,
