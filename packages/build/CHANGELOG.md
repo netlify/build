@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.1.0](https://github.com/netlify/build/compare/build-v30.0.6...build-v30.1.0) (2025-03-28)
+
+
+### Features
+
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.4 to ^21.0.5
+    * @netlify/edge-bundler bumped from 12.3.3 to 12.4.0
+
 ## [30.0.6](https://github.com/netlify/build/compare/build-v30.0.5...build-v30.0.6) (2025-03-24)
 
 
