@@ -44,7 +44,7 @@ const addFallbackErrorMessage = function (error, textResponse) {
 }
 
 export const getFetchError = function (error, url, opts) {
-  const data = omit.default(opts, ['Authorization'])
+  const data = omit(opts, ['Authorization'])
   if (error.name !== 'FetchError') {
     error.name = 'FetchError'
   }
