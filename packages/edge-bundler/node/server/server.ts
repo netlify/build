@@ -1,6 +1,7 @@
 import type { WriteStream } from 'fs'
 import { readdir, unlink } from 'fs/promises'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
@@ -125,7 +126,7 @@ const prepareServer = ({
       // the `stage2Path` file as well as all of their dependencies.
       // Consumers such as the CLI can use this information to watch all the
       // relevant files and issue an isolate restart when one of them changes.
-      const { stdout } = await deno.run(['info', '--json', stage2Path])
+      const { stdout } = await deno.run(['info', '--json', pathToFileURL(stage2Path).href])
 
       graph = JSON.parse(stdout)
     } catch {
