@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.4.0](https://github.com/netlify/build/compare/edge-bundler-v12.3.3...edge-bundler-v12.4.0) (2025-03-28)
+
+
+### Features
+
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
 ## [12.3.3](https://github.com/netlify/build/compare/edge-bundler-v12.3.2...edge-bundler-v12.3.3) (2025-03-19)
 
 
