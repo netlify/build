@@ -425,7 +425,7 @@ test('Integrations are returned if accountId is present and mode is dev', async 
   t.assert(config.integrations[0].has_build === true)
 })
 
-test('Integrations are returned and called with a netlify-sdk-build-bot-token', async (t) => {
+test('Integrations are returned and called with a netlify-sdk-build-bot-token header', async (t) => {
   const { output, requests } = await new Fixture('./fixtures/base')
     .withFlags({
       siteId: 'test',
@@ -444,6 +444,32 @@ test('Integrations are returned and called with a netlify-sdk-build-bot-token', 
   )?.headers
 
   t.assert(installationsHeaders.includes('netlify-sdk-build-bot-token'))
+  t.assert(config.integrations)
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].has_build === true)
+})
+
+test('Integrations are returned and called with a netlify-config-mode header', async (t) => {
+  const { output, requests } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      mode: 'dev',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        send_build_bot_token_to_jigsaw: true,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+
+  const config = JSON.parse(output)
+  const installationsHeaders = requests.find(
+    (request) => request.url === TEAM_INSTALLATIONS_META_RESPONSE.path,
+  )?.headers
+
+  t.assert(installationsHeaders.includes('netlify-config-mode'))
   t.assert(config.integrations)
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'test')

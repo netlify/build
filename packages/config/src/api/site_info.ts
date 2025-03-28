@@ -7,6 +7,7 @@ import { throwUserError } from '../error.js'
 import {
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
+  NETLIFY_API_BASE_URL,
   NETLIFY_API_STAGING_BASE_URL,
 } from '../integrations.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
@@ -155,15 +156,22 @@ const getIntegrations = async function ({
 
   // TODO(kh): I am adding this purely for local staging development.
   // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
-  const host =
-    originalHost === 'localhost'
-      ? `http://${originalHost}`
-      : originalHost?.includes(NETLIFY_API_STAGING_BASE_URL)
-        ? EXTENSION_API_STAGING_BASE_URL
-        : EXTENSION_API_BASE_URL
+  let host = originalHost
+
+  // If there is a host, we use it to fetch the integrations
+  // we check if the host is staging or production and set the host accordingly,
+  // sadly necessary because of https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
+  if (originalHost) {
+    if (originalHost?.includes(NETLIFY_API_STAGING_BASE_URL)) {
+      host = EXTENSION_API_STAGING_BASE_URL
+    } else if (originalHost?.includes(NETLIFY_API_BASE_URL)) {
+      host = EXTENSION_API_BASE_URL
+    } else {
+      host = `http://${originalHost}`
+    }
+  }
 
   const baseUrl = new URL(host ?? extensionApiBaseUrl)
-
   // We only use this for testing
   if (host && setBaseUrl) {
     setBaseUrl(extensionApiBaseUrl)
