@@ -59,10 +59,9 @@ test('Starts a server and serves requests for edge functions', async () => {
   expect(functionsConfig).toEqual([{ path: '/my-function' }, {}, { path: '/global-netlify' }])
   expect(npmSpecifiersWithExtraneousFiles).toEqual(['dictionary'])
 
+  const modules = graph?.modules.filter(({ kind, mediaType }) => kind === 'esm' && mediaType === 'TypeScript')
   for (const key in functions) {
-    const graphEntry = graph?.modules.some(
-      ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functions[key].path,
-    )
+    const graphEntry = modules?.some(({ local }) => local === functions[key].path)
 
     expect(graphEntry).toBe(true)
   }
