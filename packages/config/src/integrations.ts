@@ -4,6 +4,7 @@ import { Integration } from './types/integrations.js'
 import { TestOptions } from './types/options.js'
 
 export const NETLIFY_API_STAGING_BASE_URL = 'api-staging.netlify.com'
+export const NETLIFY_API_BASE_URL = 'api.netlify.com'
 export const EXTENSION_API_BASE_URL = 'https://api.netlifysdk.com'
 export const EXTENSION_API_STAGING_BASE_URL = 'https://api-staging.netlifysdk.com'
 
