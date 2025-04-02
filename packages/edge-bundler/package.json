@@ -42,7 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@types/node": "^14.18.32",
+    "@types/node": "^22.14.0",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^0.34.0",
