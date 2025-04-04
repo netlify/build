@@ -1,0 +1,12 @@
+[[edge_functions]]
+path = 1
+function = 1
+cache = "notvalid"
+
+[[edge_functions]]
+other = 1
+cache = 1
+
+[[edge_functions]]
+path = "noslash"
+function = "foo"

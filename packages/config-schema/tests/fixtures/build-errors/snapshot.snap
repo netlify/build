@@ -1,0 +1,59 @@
+{
+  "errors": [
+    {
+      "instancePath": "/build",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "abcd",
+      },
+      "schemaPath": "#/additionalProperties",
+    },
+    {
+      "instancePath": "/build/base",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/BasePath/type",
+    },
+    {
+      "instancePath": "/build/command",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/BuildCommand/type",
+    },
+    {
+      "instancePath": "/build/edge_functions",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/EdgeFunctionPath/type",
+    },
+    {
+      "instancePath": "/build/environment/FOO",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/Environment/additionalProperties/type",
+    },
+    {
+      "instancePath": "/build/publish",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/PublishPath/type",
+    },
+  ],
+  "valid": false,
+}

@@ -1,0 +1,9 @@
+[build]
+base = 1
+publish = 1
+command = 1
+edge_functions = 1
+abcd = "string"
+
+[build.environment]
+FOO = 1
