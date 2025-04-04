@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [30.1.2](https://github.com/netlify/build/compare/build-v30.1.1...build-v30.1.2) (2025-04-04)
+
+
+### Bug Fixes
+
+* changing wording to extensions instead of integrations ([#6180](https://github.com/netlify/build/issues/6180)) ([95d03d9](https://github.com/netlify/build/commit/95d03d958d3a0ca6f7aaadda06d3ae38a7528794))
+
 ## [30.1.1](https://github.com/netlify/build/compare/build-v30.1.0...build-v30.1.1) (2025-04-01)
 
 
