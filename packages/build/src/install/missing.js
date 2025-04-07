@@ -41,7 +41,7 @@ export const installIntegrationPlugins = async function ({
     (integration) => typeof integration.dev !== 'undefined' && context === 'dev',
   )
   if (integrationsToBuild.length) {
-    logSubHeader(logs, 'Building integrations')
+    logSubHeader(logs, 'Building extensions')
     logArray(
       logs,
       integrationsToBuild.map(({ slug, dev: { path } }) => `${slug} from ${path}`),
