@@ -37,31 +37,23 @@ export const mergeIntegrations = async function ({
         ('dev' in configIntegration && context === 'dev'),
     )
     .map((configIntegration) => {
+      const apiIntegration = apiIntegrations.find((apiIntegration) => apiIntegration.slug === configIntegration.name)
+
       if (configIntegration.dev && context === 'dev') {
-        const integrationInstance = apiIntegrations.find(
-          (apiIntegration) => apiIntegration.slug === configIntegration.name,
-        )
         return {
           slug: configIntegration.name,
           dev: configIntegration.dev,
           // TODO(kh): has_build should become irrelevant soon as we are only returning extensions that have a build event handler.
-          has_build: integrationInstance?.has_build ?? configIntegration.dev?.force_run_in_build ?? false,
+          has_build: apiIntegration?.has_build ?? configIntegration.dev?.force_run_in_build ?? false,
+          ...apiIntegration,
         }
       }
 
-      const integration = apiIntegrations.find(
-        (availableIntegration) => availableIntegration.slug === configIntegration.name,
-      )
-      if (!integration) {
+      if (!apiIntegration) {
         return undefined
       }
 
-      return {
-        slug: integration.slug,
-        version: integration.version,
-        // TODO(kh): has_build should become irrelevant soon as we are only returning extensions that have a build event handler.
-        has_build: !!integration.has_build,
-      }
+      return apiIntegration
     })
     .filter((i): i is IntegrationResponse => typeof i !== 'undefined')
 
