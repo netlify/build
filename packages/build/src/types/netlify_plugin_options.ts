@@ -26,5 +26,5 @@ export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TI
   /**
    * When an extension's event handler executes, we pass extension-specific metadata to the exension
    */
-  extensionMetadata: { extension_token?: string }
+  extensionMetadata: { extension_token?: string; slug?: string; author?: string }
 }
