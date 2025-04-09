@@ -1,5 +1,16 @@
 # Changelog
 
+## [13.0.0](https://github.com/netlify/build/compare/edge-bundler-v12.4.0...edge-bundler-v13.0.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+
 ## [12.4.0](https://github.com/netlify/build/compare/edge-bundler-v12.3.3...edge-bundler-v12.4.0) (2025-03-28)
 
 
