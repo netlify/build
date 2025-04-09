@@ -7,7 +7,7 @@ import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
-// environment variables and addons.
+// environment variables.
 // The buildbot already has the right environment variables. This is mostly
 // meant so that local builds can mimic production builds
 // TODO: add `netlify.toml` `build.environment`, after normalization
@@ -18,7 +18,6 @@ export const getEnv = async function ({
   config,
   siteInfo,
   accounts,
-  addons,
   buildDir,
   branch,
   deployId,
@@ -32,12 +31,11 @@ export const getEnv = async function ({
 
   const internalEnv = getInternalEnv(cachedEnv)
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
-  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({
+  const [accountEnv, uiEnv, configFileEnv] = await getUserEnv({
     api,
     config,
     siteInfo,
     accounts,
-    addons,
     context,
   })
 
@@ -45,7 +43,6 @@ export const getEnv = async function ({
   const sources = [
     { key: 'configFile', values: configFileEnv },
     { key: 'ui', values: uiEnv },
-    { key: 'addons', values: addonsEnv },
     { key: 'account', values: accountEnv },
     { key: 'general', values: generalEnv },
     { key: 'internal', values: internalEnv },
@@ -164,12 +161,11 @@ const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
 const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
-const getUserEnv = async function ({ api, config, siteInfo, accounts, addons, context }) {
+const getUserEnv = async function ({ api, config, siteInfo, accounts, context }) {
   const accountEnv = await getAccountEnv({ api, siteInfo, accounts, context })
-  const addonsEnv = getAddonsEnv(addons)
   const uiEnv = getUiEnv({ siteInfo })
   const configFileEnv = getConfigFileEnv({ config })
-  return [accountEnv, addonsEnv, uiEnv, configFileEnv].map(cleanUserEnv)
+  return [accountEnv, uiEnv, configFileEnv].map(cleanUserEnv)
 }
 
 // Account-wide environment variables
@@ -189,15 +185,6 @@ const getAccountEnv = async function ({
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
   return siteEnv
-}
-
-// Environment variables from addons
-const getAddonsEnv = function (addons) {
-  return Object.assign({}, ...addons.map(getAddonEnv))
-}
-
-const getAddonEnv = function ({ env }) {
-  return env
 }
 
 // Site-specific environment variables set in the UI

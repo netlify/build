@@ -71,13 +71,12 @@ export const getSiteInfo = async function ({
           })
         : []
 
-    return { siteInfo, accounts: [], addons: [], integrations }
+    return { siteInfo, accounts: [], integrations }
   }
 
-  const [siteInfo, accounts, addons, integrations] = await Promise.all([
+  const [siteInfo, accounts, integrations] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ])
 
@@ -87,7 +86,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations }
+  return { siteInfo, accounts, integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
@@ -125,19 +124,6 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
     return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
   } catch (error) {
     return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
-}
-
-const getAddons = async function (api: NetlifyAPI, siteId: string) {
-  if (siteId === undefined) {
-    return []
-  }
-
-  try {
-    const addons = await (api as any).listServiceInstancesForSite({ siteId })
-    return Array.isArray(addons) ? addons : []
-  } catch (error) {
-    throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 

@@ -456,7 +456,7 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, addons and integrations on cachedConfig', async (t) => {
+test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, and integrations on cachedConfig', async (t) => {
   const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
   const { requests } = await new Fixture('./fixtures/cached_config')
     .withFlags({
@@ -474,7 +474,7 @@ test('It does not fetch site info if cachedConfig is provided, use_cached_site_i
   t.assert(requests.length === 0)
 })
 
-test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, addons or integrations on cachedConfig', async (t) => {
+test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, or integrations on cachedConfig', async (t) => {
   const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
   const { requests } = await new Fixture('./fixtures/cached_config')
     .withFlags({
