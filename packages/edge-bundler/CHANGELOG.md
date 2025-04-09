@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.0.1](https://github.com/netlify/build/compare/edge-bundler-v13.0.0...edge-bundler-v13.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
 ## [13.0.0](https://github.com/netlify/build/compare/edge-bundler-v12.4.0...edge-bundler-v13.0.0) (2025-04-08)
 
 

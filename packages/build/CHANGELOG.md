@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [31.0.1](https://github.com/netlify/build/compare/build-v31.0.0...build-v31.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 13.0.0 to 13.0.1
+    * @netlify/framework-info bumped from ^9.9.2 to ^9.9.3
+    * @netlify/functions-utils bumped from ^5.3.13 to ^5.3.14
+    * @netlify/zip-it-and-ship-it bumped from 10.0.4 to 10.0.5
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.2.2
+
 ## [31.0.0](https://github.com/netlify/build/compare/build-v30.1.1...build-v31.0.0) (2025-04-08)
 
 

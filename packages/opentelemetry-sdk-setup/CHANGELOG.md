@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.1...opentelemetry-sdk-setup-v1.2.2) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
 ## [1.2.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.0...opentelemetry-sdk-setup-v1.2.1) (2025-03-19)
 
 
