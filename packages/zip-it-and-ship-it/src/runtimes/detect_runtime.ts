@@ -22,7 +22,13 @@ The binary needs to be built for Linux/Amd64, but it was built for ${Platform[bi
 export const detectBinaryRuntime = async function ({ path }: { path: string }): Promise<RuntimeName | undefined> {
   try {
     const fileContents = await readFile(path)
-    const binaryInfo = detect(fileContents)
+    const binaryInfo = detect(
+      new Uint8Array(
+        fileContents.buffer,
+        fileContents.byteOffset,
+        fileContents.byteLength / Uint8Array.BYTES_PER_ELEMENT,
+      ),
+    )
 
     if (!isValidFunctionBinary(binaryInfo)) {
       return warnIncompatibleBinary(path, binaryInfo)

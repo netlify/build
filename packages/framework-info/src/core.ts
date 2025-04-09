@@ -1,5 +1,5 @@
 import pFilter from 'p-filter'
-import type { PackageJson } from 'read-package-up'
+import type { PackageJson } from 'read-pkg-up'
 
 import type { Context, PathExists } from './context.js'
 import { usesFramework } from './detect.js'

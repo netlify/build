@@ -1,7 +1,7 @@
 import { cwd, version as nodejsVersion } from 'process'
 
 import { locatePath } from 'locate-path'
-import { PackageJson, readPackageUp } from 'read-package-up'
+import { PackageJson, readPackageUp } from 'read-pkg-up'
 
 interface PackageJsonInfo {
   packageJson?: PackageJson
