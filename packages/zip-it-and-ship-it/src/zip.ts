@@ -169,7 +169,7 @@ export const zipFunction = async function (
     runtime,
     srcDir,
     stat: stats,
-  }: FunctionSource = functions.values().next().value
+  }: FunctionSource = functions.values().next().value!
 
   await fs.mkdir(destFolder, { recursive: true })
 
