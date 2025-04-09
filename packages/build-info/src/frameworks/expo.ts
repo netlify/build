@@ -14,8 +14,8 @@ export class Expo extends BaseFramework implements Framework {
   }
 
   build = {
-    command: 'expo build:web',
-    directory: 'web-build',
+    command: 'expo export -p web',
+    directory: 'dist',
   }
 
   logo = {
