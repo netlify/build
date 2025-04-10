@@ -1,5 +1,6 @@
 import pWaitFor from 'p-wait-for'
 
+import { APICache } from './cache.js'
 import { getMethods } from './methods/index.js'
 import { openApiSpec } from './open_api.js'
 import { getOperations } from './operations.js'
@@ -27,6 +28,7 @@ type APIOptions = {
    * Global params are only sent of the OpenAPI spec specifies the provided params.
    */
   globalParams?: Record<string, unknown>
+  cache?: APICache
 }
 
 /**
@@ -48,6 +50,7 @@ export interface NetlifyAPI extends DynamicMethods {}
 export class NetlifyAPI {
   #accessToken: string | undefined | null = null
 
+  cache?: APICache
   defaultHeaders: Record<string, string> = {
     accept: 'application/json',
   }
@@ -73,7 +76,10 @@ export class NetlifyAPI {
     this.accessToken = options.accessToken || accessTokenInput || null
     this.defaultHeaders['User-agent'] = options.userAgent || 'netlify/js-client'
 
+    this.cache = options.cache
+
     const methods = getMethods({
+      cache: this.cache,
       basePath: this.basePath,
       defaultHeaders: this.defaultHeaders,
       agent: this.agent,
@@ -128,3 +134,5 @@ export class NetlifyAPI {
 }
 
 export const methods = getOperations()
+
+export { APICache }

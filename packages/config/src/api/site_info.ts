@@ -60,6 +60,7 @@ export const getSiteInfo = async function ({
     const integrations =
       mode === 'buildbot' && !offline
         ? await getIntegrations({
+            api,
             siteId,
             testOpts,
             offline,
@@ -74,10 +75,9 @@ export const getSiteInfo = async function ({
     return { siteInfo, accounts: [], addons: [], integrations }
   }
 
-  const [siteInfo, accounts, addons, integrations] = await Promise.all([
+  const [siteInfo, accounts, integrations] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ])
 
@@ -87,7 +87,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations }
+  return { siteInfo, accounts, addons: [], integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
@@ -128,20 +128,8 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
   }
 }
 
-const getAddons = async function (api: NetlifyAPI, siteId: string) {
-  if (siteId === undefined) {
-    return []
-  }
-
-  try {
-    const addons = await (api as any).listServiceInstancesForSite({ siteId })
-    return Array.isArray(addons) ? addons : []
-  } catch (error) {
-    throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
-}
-
 type GetIntegrationsOpts = {
+  api?: NetlifyAPI
   siteId?: string
   accountId?: string
   testOpts: TestOptions
@@ -153,6 +141,7 @@ type GetIntegrationsOpts = {
 }
 
 const getIntegrations = async function ({
+  api,
   siteId,
   accountId,
   testOpts,
@@ -196,6 +185,16 @@ const getIntegrations = async function ({
     : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
+    // Even though integrations don't come through the Netlify API, we can
+    // still leverage the API cache if one is being used.
+    if (api?.cache) {
+      const response = await api.cache.get(url, 'get', {})
+
+      if (response !== null && Array.isArray(response.body)) {
+        return response.body
+      }
+    }
+
     const requestOptions = {} as RequestInit
 
     // This is used to identify where the request is coming from
