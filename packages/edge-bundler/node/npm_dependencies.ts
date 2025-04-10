@@ -145,7 +145,10 @@ async function parseImportsForFile(file: string, rootPath: string) {
  * Parses a set of functions and returns a list of specifiers that correspond
  * to npm modules.
  */
-const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, rootPath }: GetNPMSpecifiersOptions) => {
+const getNPMSpecifiers = async (
+  { basePath, functions, importMap, environment, rootPath }: GetNPMSpecifiersOptions,
+  alreadySeenPaths = new Set<string>(),
+) => {
   const baseURL = pathToFileURL(basePath)
   const npmSpecifiers: { specifier: string; types?: string }[] = []
   for (const func of functions) {
@@ -157,15 +160,29 @@ const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, r
       const specifier = i.moduleSpecifier.isConstant ? i.moduleSpecifier.value! : i.moduleSpecifier.code
       switch (i.moduleSpecifier.type) {
         case 'absolute': {
+          if (alreadySeenPaths.has(specifier)) {
+            break
+          }
+          alreadySeenPaths.add(specifier)
           npmSpecifiers.push(
-            ...(await getNPMSpecifiers({ basePath, functions: [specifier], importMap, environment, rootPath })),
+            ...(await getNPMSpecifiers(
+              { basePath, functions: [specifier], importMap, environment, rootPath },
+              alreadySeenPaths,
+            )),
           )
           break
         }
         case 'relative': {
           const filePath = path.join(path.dirname(func), specifier)
+          if (alreadySeenPaths.has(filePath)) {
+            break
+          }
+          alreadySeenPaths.add(filePath)
           npmSpecifiers.push(
-            ...(await getNPMSpecifiers({ basePath, functions: [filePath], importMap, environment, rootPath })),
+            ...(await getNPMSpecifiers(
+              { basePath, functions: [filePath], importMap, environment, rootPath },
+              alreadySeenPaths,
+            )),
           )
           break
         }
@@ -180,8 +197,15 @@ const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, r
           if (matched) {
             if (resolvedImport.protocol === 'file:') {
               const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
+              if (alreadySeenPaths.has(newSpecifier)) {
+                break
+              }
+              alreadySeenPaths.add(newSpecifier)
               npmSpecifiers.push(
-                ...(await getNPMSpecifiers({ basePath, functions: [newSpecifier], importMap, environment, rootPath })),
+                ...(await getNPMSpecifiers(
+                  { basePath, functions: [newSpecifier], importMap, environment, rootPath },
+                  alreadySeenPaths,
+                )),
               )
             }
           } else if (!resolvedImport?.protocol?.startsWith('http')) {
