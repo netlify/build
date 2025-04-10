@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [32.0.0](https://github.com/netlify/build/compare/build-v31.0.2...build-v32.0.0) (2025-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193))
+
+### Bug Fixes
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193)) ([c4f7caa](https://github.com/netlify/build/commit/c4f7caa2d21380f5d1f6cc8159aa0783dccd137a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.7 to ^22.0.0
+    * @netlify/functions-utils bumped from ^5.3.14 to ^5.3.15
+    * @netlify/zip-it-and-ship-it bumped from 10.0.5 to 10.0.6
+
 ## [31.0.2](https://github.com/netlify/build/compare/build-v31.0.1...build-v31.0.2) (2025-04-10)
 
 
