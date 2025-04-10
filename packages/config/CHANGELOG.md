@@ -76,6 +76,17 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [22.0.0](https://github.com/netlify/build/compare/config-v21.0.7...config-v22.0.0) (2025-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193))
+
+### Bug Fixes
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193)) ([c4f7caa](https://github.com/netlify/build/commit/c4f7caa2d21380f5d1f6cc8159aa0783dccd137a))
+
 ## [21.0.7](https://github.com/netlify/build/compare/config-v21.0.6...config-v21.0.7) (2025-04-08)
 
 
