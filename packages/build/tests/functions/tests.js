@@ -125,7 +125,7 @@ test('Functions: cleanup is only triggered when there are internal functions', a
 if (semver.gte(nodeVersion, '16.7.0')) {
   test('Functions: loads functions generated with the Frameworks API', async (t) => {
     const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
-      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withFlags({ debug: false })
       .withCopyRoot()
 
     const output = await fixture.runWithBuild()
@@ -140,7 +140,7 @@ if (semver.gte(nodeVersion, '16.7.0')) {
 
   test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
     const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
-      .withFlags({ debug: false, featureFlags: { netlify_build_frameworks_api: true } })
+      .withFlags({ debug: false })
       .withCopyRoot()
 
     const output = await fixture.runWithBuild()
@@ -175,7 +175,6 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     const app1 = await fixture
       .withFlags({
         cwd: fixture.repositoryRoot,
-        featureFlags: { netlify_build_frameworks_api: true },
         packagePath: 'apps/app-1',
       })
       .runWithBuildAndIntrospect()
@@ -185,7 +184,6 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     const app2 = await fixture
       .withFlags({
         cwd: fixture.repositoryRoot,
-        featureFlags: { netlify_build_frameworks_api: true },
         packagePath: 'apps/app-2',
       })
       .runWithBuildAndIntrospect()
@@ -211,7 +209,6 @@ test('Functions: creates metadata file', async (t) => {
     .withFlags({
       branch: 'my-branch',
       cwd: fixture.repositoryRoot,
-      featureFlags: { zisi_add_metadata_file: true },
     })
     .runWithBuildAndIntrospect()
 

@@ -36,7 +36,7 @@ const coreStep: CoreStepFunction = async (input) => {
   for (const dir of dirs) {
     await rm(resolve(input.buildDir, dir), { recursive: true, force: true })
   }
-  input.systemLog(`Cleaned up ${dirs.join(', ')}.`)
+  input.systemLog(input.logs, `Cleaned up ${dirs.join(', ')}.`)
   return {}
 }
 

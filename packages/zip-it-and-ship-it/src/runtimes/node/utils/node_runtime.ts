@@ -5,6 +5,7 @@ const validRuntimeMap = {
   16: 'nodejs16.x',
   18: 'nodejs18.x',
   20: 'nodejs20.x',
+  22: 'nodejs22.x',
 } as const
 
 const minimumV2Version = 18
@@ -24,7 +25,7 @@ export const getNodeRuntimeForV2 = (input: string | undefined): string | undefin
   const version = parseVersion(input)
 
   // If version was unable to be parsed or if the version is older than Node.js 18
-  // we return the current default Node.js version (which was Node.js 18 while writing this).
+  // we return the current default Node.js version (which was Node.js 22 while writing this).
   // Here we do not want BB/FO to decide on the version, because they value AWS_LAMBDA_JS_RUNTIME, which
   // might be set to an too old version
   if (!version || version < minimumV2Version) {

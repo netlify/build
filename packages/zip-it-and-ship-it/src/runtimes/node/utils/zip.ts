@@ -229,6 +229,7 @@ const createZipArchive = async function ({
   const userNamespace = hasEntryFileConflict ? DEFAULT_USER_SUBDIRECTORY : ''
 
   let entryFilename = `${basename(filename, extname(filename))}.js`
+  let bootstrapVersion: string | undefined
 
   if (needsEntryFile) {
     const entryFile = getEntryFile({
@@ -254,12 +255,12 @@ const createZipArchive = async function ({
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
-    if (featureFlags.zisi_add_metadata_file === true) {
-      const { version: bootstrapVersion } = await getPackageJsonIfAvailable(bootstrapPath)
-      const payload = JSON.stringify(getMetadataFile(bootstrapVersion, branch))
+    const { version } = await getPackageJsonIfAvailable(bootstrapPath)
+    const payload = JSON.stringify(getMetadataFile(version, branch))
 
-      addZipContent(archive, payload, METADATA_FILE_NAME)
-    }
+    bootstrapVersion = version
+
+    addZipContent(archive, payload, METADATA_FILE_NAME)
   }
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
@@ -281,16 +282,19 @@ const createZipArchive = async function ({
 
   await endZip(archive, output)
 
-  return { path: destPath, entryFilename }
+  return { path: destPath, entryFilename, bootstrapVersion }
+}
+
+interface ZipNodeJsResult {
+  bootstrapVersion?: string
+  entryFilename: string
+  path: string
 }
 
 export const zipNodeJs = function ({
   archiveFormat,
   ...options
-}: ZipNodeParameters & { archiveFormat: ArchiveFormat }): Promise<{
-  path: string
-  entryFilename: string
-}> {
+}: ZipNodeParameters & { archiveFormat: ArchiveFormat }): Promise<ZipNodeJsResult> {
   if (archiveFormat === ARCHIVE_FORMAT.ZIP) {
     return createZipArchive(options)
   }

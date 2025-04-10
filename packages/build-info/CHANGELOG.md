@@ -64,6 +64,82 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [9.0.3](https://github.com/netlify/build/compare/build-info-v9.0.2...build-info-v9.0.3) (2025-04-09)
+
+
+### Bug Fixes
+
+* **build-info:** update expo build config ([#6191](https://github.com/netlify/build/issues/6191)) ([6e57910](https://github.com/netlify/build/commit/6e57910d89c1d4140395fae9c06b6fd7f88cfff9))
+
+## [9.0.2](https://github.com/netlify/build/compare/build-info-v9.0.1...build-info-v9.0.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* **types:** add missing `schedule` to functions config type ([#6151](https://github.com/netlify/build/issues/6151)) ([4866964](https://github.com/netlify/build/commit/486696497e29b9e0270ea234b97e94fa0e73fb64))
+
+## [9.0.1](https://github.com/netlify/build/compare/build-info-v9.0.0...build-info-v9.0.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+## [9.0.0](https://github.com/netlify/build/compare/build-info-v8.1.0...build-info-v9.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [8.1.0](https://github.com/netlify/build/compare/build-info-v8.0.0...build-info-v8.1.0) (2025-02-24)
+
+
+### Features
+
+* change default node version to v22 ([#5958](https://github.com/netlify/build/issues/5958)) ([59cda04](https://github.com/netlify/build/commit/59cda04d87af434bafa71c0509f958365b4fab34))
+
+## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* packageManager.lockFile field containing single name of lock file is removed from output and packageManager.lockFiles field with array of possible lock files is introduced
+
+### Bug Fixes
+
+* use bun as package manager when bun.lock is found ([44bb81c](https://github.com/netlify/build/commit/44bb81c51f24ba8e39e2bf6f6b4cf9ac837afd3c))
+
+## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
+
+
+### Features
+
+* **@netlify/build-info:** add React Router 7 detection ([#5930](https://github.com/netlify/build/issues/5930)) ([2289a78](https://github.com/netlify/build/commit/2289a7884fc0a2fc34b86b60464441d8cb70d4bd))
+
+## [7.16.0](https://github.com/netlify/build/compare/build-info-v7.15.2...build-info-v7.16.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* detect `bun.lock` files in addition to `bun.lockb` files ([#5918](https://github.com/netlify/build/issues/5918)) ([689a8dd](https://github.com/netlify/build/commit/689a8dd5b26d6370b7e53005dca39b2b8efb9768))
+
+## [7.15.2](https://github.com/netlify/build/compare/build-info-v7.15.1...build-info-v7.15.2) (2024-10-25)
+
+
+### Bug Fixes
+
+* detect next if typescript config file is used ([#5893](https://github.com/netlify/build/issues/5893)) ([d07e0d5](https://github.com/netlify/build/commit/d07e0d52bf1e3d8410625e216e08914b4f0ae8cc))
+
 ## [7.15.1](https://github.com/netlify/build/compare/build-info-v7.15.0...build-info-v7.15.1) (2024-10-01)
 
 

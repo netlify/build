@@ -1,5 +1,64 @@
 # Changelog
 
+## [13.0.1](https://github.com/netlify/build/compare/edge-bundler-v13.0.0...edge-bundler-v13.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+## [13.0.0](https://github.com/netlify/build/compare/edge-bundler-v12.4.0...edge-bundler-v13.0.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+
+## [12.4.0](https://github.com/netlify/build/compare/edge-bundler-v12.3.3...edge-bundler-v12.4.0) (2025-03-28)
+
+
+### Features
+
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
+## [12.3.3](https://github.com/netlify/build/compare/edge-bundler-v12.3.2...edge-bundler-v12.3.3) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+## [12.3.2](https://github.com/netlify/build/compare/edge-bundler-v12.3.1...edge-bundler-v12.3.2) (2025-01-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-wait-for to v5 ([#5970](https://github.com/netlify/build/issues/5970)) ([58635be](https://github.com/netlify/build/commit/58635bee5bcf2074d770f9836faa419e22eb2569))
+
+## [12.3.1](https://github.com/netlify/build/compare/edge-bundler-v12.3.0...edge-bundler-v12.3.1) (2024-12-14)
+
+
+### Bug Fixes
+
+* **deps:** pin @vercel/nft due to breaking change in patch ([#5944](https://github.com/netlify/build/issues/5944)) ([e8e29f0](https://github.com/netlify/build/commit/e8e29f027b09631b7c66dee35c874f8533003d46))
+
+## [12.3.0](https://github.com/netlify/build/compare/edge-bundler-v12.2.3...edge-bundler-v12.3.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* catch and ignore .kill exceptions and don't force timeout kill in windows ([#5932](https://github.com/netlify/build/issues/5932)) ([7ea3e7b](https://github.com/netlify/build/commit/7ea3e7b70a42b4b911d8fbd966fe0d223ee0b5e6))
+* update DENO_VERSION_RANGE ([#5929](https://github.com/netlify/build/issues/5929)) ([5bb784a](https://github.com/netlify/build/commit/5bb784a814b472462ea972cdd9b81048f36c2c29))
+
 ## [12.2.3](https://github.com/netlify/build/compare/edge-bundler-v12.2.2...edge-bundler-v12.2.3) (2024-08-05)
 
 

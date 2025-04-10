@@ -126,7 +126,7 @@ test('Tracing - trace id and resource definition', async () => {
   const tracer = trace.getTracer('test')
   const span = tracer.startSpan('test', {}, ctx) as Span
 
-  expect(span.spanContext().traceId).not.empty
+  expect(span.spanContext().traceId).toBeDefined()
   expect(span.parentSpanId).toBeUndefined()
 })
 

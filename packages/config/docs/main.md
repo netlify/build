@@ -150,11 +150,10 @@ Redirects configuration is more complicated:
 - It can be specified either in `netlify.toml` or in a separate `_redirects` file located in the publish directory and
   with its own Netlify-specific file format
 
-Therefore, that logic is abstracted to
-[its own module `netlify-redirect-parser`](https://github.com/netlify/netlify-redirect-parser).
+Therefore, that logic is abstracted to [its own module `@netlify/redirect-parser`](../../redirect-parser).
 
 Headers are handled very similarly to redirects, for consistency. They use a separate `_headers` file
-[and `netlify-headers-parser` module](https://github.com/netlify/netlify-headers-parser).
+[and `@netlify/headers-parser` module](../../headers-parser).
 
 ## Context-specific configuration
 

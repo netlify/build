@@ -310,7 +310,7 @@ test('Sets environment variables when configured to use Envelope', async (t) => 
   t.deepEqual(env.URL.sources, ['general'])
   t.is(env.URL.value, 'test')
   t.is(env.SHARED_ENV_VAR.value, 'ENVELOPE_TEAM_ALL')
-  t.is(env.SITE_ENV_VAR.value, 'ENVELOPE_SITE_DEV')
+  t.is(env.SITE_ENV_VAR.value, 'ENVELOPE_SITE_PROD')
   t.is(env.MONGO_ENV_VAR, undefined)
 })
 

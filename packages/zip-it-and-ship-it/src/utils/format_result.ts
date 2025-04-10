@@ -5,6 +5,7 @@ import { removeUndefined } from './remove_undefined.js'
 import type { ExtendedRoute, Route } from './routes.js'
 
 export type FunctionResult = Omit<FunctionArchive, 'runtime'> & {
+  bootstrapVersion?: string
   routes?: ExtendedRoute[]
   excludedRoutes?: Route[]
   runtime: RuntimeName

@@ -66,11 +66,11 @@ export async function findPackages(
   const startDir = project.jsWorkspaceRoot
     ? project.fs.resolve(project.jsWorkspaceRoot, dir)
     : project.root
-    ? project.fs.resolve(project.root, dir)
-    : project.fs.resolve(dir)
+      ? project.fs.resolve(project.root, dir)
+      : project.fs.resolve(dir)
   try {
     content = await project.fs.readDir(startDir, true)
-  } catch (err) {
+  } catch {
     // noop
   }
 

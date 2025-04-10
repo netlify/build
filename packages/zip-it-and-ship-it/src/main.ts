@@ -39,14 +39,6 @@ type ListedFunctionFile = ListedFunction & {
   srcFile: string
 }
 
-interface ListFunctionsOptions {
-  basePath?: string
-  config?: Config
-  configFileDirectories?: string[]
-  featureFlags?: FeatureFlags
-  parseISC?: boolean
-}
-
 interface AugmentedFunctionSource extends FunctionSource {
   staticAnalysisResult?: StaticAnalysisResult
 }
@@ -158,7 +150,7 @@ const getListedFunction = function ({
     mainFile,
     name,
     runtime: runtime.name,
-    runtimeAPIVersion: staticAnalysisResult ? staticAnalysisResult?.runtimeAPIVersion ?? 1 : undefined,
+    runtimeAPIVersion: staticAnalysisResult ? (staticAnalysisResult?.runtimeAPIVersion ?? 1) : undefined,
     schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,
     inputModuleFormat: staticAnalysisResult?.inputModuleFormat,
   }

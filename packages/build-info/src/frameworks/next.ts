@@ -8,7 +8,7 @@ export class Next extends BaseFramework implements Framework {
   category = Category.SSG
   npmDependencies = ['next']
   excludedNpmDependencies = ['@nrwl/next']
-  configFiles = ['next.config.js', 'next.config.mjs']
+  configFiles = ['next.config.js', 'next.config.mjs', 'next.config.ts']
 
   dev = {
     command: 'next',

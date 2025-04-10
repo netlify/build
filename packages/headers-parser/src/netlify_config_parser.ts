@@ -4,6 +4,7 @@ import { parse as loadToml } from '@iarna/toml'
 import { pathExists } from 'path-exists'
 
 import { splitResults } from './results.js'
+import type { MinimalHeader } from './types.js'
 
 // Parse `headers` field in "netlify.toml" to an array of objects.
 // This field is already an array of objects, so it only validates and
@@ -27,7 +28,8 @@ const parseConfig = async function (configPath: string) {
     if (!Array.isArray(headers)) {
       throw new TypeError(`"headers" must be an array`)
     }
-    return headers
+    // TODO(serhalp) Validate shape instead of assuming and asserting type
+    return headers as MinimalHeader[]
   } catch (error) {
     return [new Error(`Could not parse configuration file: ${error}`)]
   }

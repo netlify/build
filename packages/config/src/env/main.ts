@@ -94,7 +94,7 @@ const convertToString = (value) => {
 // environment.
 const getGeneralEnv = async function ({
   siteInfo,
-  siteInfo: { id, name },
+  siteInfo: { id, name, account_id: accountId },
   buildDir,
   branch,
   deployId,
@@ -108,6 +108,7 @@ const getGeneralEnv = async function ({
     SITE_NAME: name,
     DEPLOY_ID: deployId,
     BUILD_ID: buildId,
+    ACCOUNT_ID: accountId,
     ...deployUrls,
     CONTEXT: context,
     NETLIFY_LOCAL: 'true',
@@ -130,12 +131,15 @@ const getGeneralEnv = async function ({
 const getInternalEnv = function (
   cachedEnv: Record<string, { sources: string[]; value: string }>,
 ): Record<string, string> {
-  return Object.entries(cachedEnv).reduce((prev, [key, { sources, value }]) => {
-    if (sources.includes('internal')) {
-      prev[key] = value
-    }
-    return prev
-  }, {} as Record<string, string>)
+  return Object.entries(cachedEnv).reduce(
+    (prev, [key, { sources, value }]) => {
+      if (sources.includes('internal')) {
+        prev[key] = value
+      }
+      return prev
+    },
+    {} as Record<string, string>,
+  )
 }
 
 const getDeployUrls = function ({
@@ -181,8 +185,7 @@ const getAccountEnv = async function ({
   context?: string
 }) {
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, context })
-    return envelope
+    return await getEnvelope({ api, accountId: siteInfo.account_slug, context })
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
   return siteEnv

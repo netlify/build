@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.2.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.1...opentelemetry-sdk-setup-v1.2.2) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+## [1.2.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.0...opentelemetry-sdk-setup-v1.2.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.3.0 to ~1.3.1
+
+## [1.2.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.3...opentelemetry-sdk-setup-v1.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.2.1 to ~1.3.0
+
 ## [1.1.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.1.2...opentelemetry-sdk-setup-v1.1.3) (2024-05-27)
 
 

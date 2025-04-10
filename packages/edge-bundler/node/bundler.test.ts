@@ -104,16 +104,13 @@ test('Adds a custom error property to user errors during bundling', async () => 
     await bundle([sourceDirectory], distPath, declarations, { basePath })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
-    const [messageBeforeStack] = (error as BundleError).message.split('at <anonymous> (file://')
-    expect(messageBeforeStack).toMatchInlineSnapshot(`
-      "error: Uncaught (in promise) Error: The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27
-
-        export default async () => 
-                                  ~
-            const ret = new Error(getStringFromWasm0(arg0, arg1));
-                        ^
-          "
-    `)
+    const messageBeforeStack = (error as BundleError).message
+    expect(
+      messageBeforeStack
+        .replace(/file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/, 'file://$2')
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
+    ).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'eszip',
@@ -504,6 +501,33 @@ test('Loads npm modules from bare specifiers', async () => {
   expect(func1).toBe(
     `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
   )
+
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+})
+
+test('Loads npm modules which use package.json.exports', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_exports')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const vendorDirectory = await tmp.dir()
+
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+    vendorDirectory: vendorDirectory.path,
+  })
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+  expect(func1).toBe('hello')
 
   await cleanup()
   await rm(vendorDirectory.path, { force: true, recursive: true })

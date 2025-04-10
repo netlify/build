@@ -20,7 +20,8 @@ export enum Accuracy {
 }
 
 export type PollingStrategy = {
-  name
+  // TODO(serhalp) Define an enum
+  name: string
 }
 
 /** Information on how it was detected and how accurate the detection is */

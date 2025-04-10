@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/netlify/build/compare/nock-udp-v3.2.0...nock-udp-v4.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [3.2.0](https://github.com/netlify/build/compare/nock-udp-v3.1.2...nock-udp-v3.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
 ## [3.1.2](https://github.com/netlify/build/compare/nock-udp-v3.1.1...nock-udp-v3.1.2) (2023-02-09)
 
 

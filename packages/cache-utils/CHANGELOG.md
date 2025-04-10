@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://github.com/netlify/build/compare/cache-utils-v5.1.6...cache-utils-v5.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
 ## [5.1.6](https://github.com/netlify/build/compare/cache-utils-v5.1.5...cache-utils-v5.1.6) (2024-08-05)
 
 

@@ -32,10 +32,10 @@ describe('esbuild', () => {
     await zipFixture('node-module-optional-catch-binding', {
       opts: {
         archiveFormat: ARCHIVE_FORMAT.NONE,
-        config: { '*': { nodeBundler: NODE_BUNDLER.ESBUILD, nodeVersion: '18.x' } },
+        config: { '*': { nodeBundler: NODE_BUNDLER.ESBUILD, nodeVersion: '22.x' } },
       },
     })
 
-    expect(build).toHaveBeenCalledWith(expect.objectContaining({ target: ['node18'] }))
+    expect(build).toHaveBeenCalledWith(expect.objectContaining({ target: ['node22'] }))
   })
 })

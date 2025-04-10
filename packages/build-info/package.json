@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "7.15.1",
+  "version": "9.0.3",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -45,8 +45,8 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
     "@bugsnag/js": "^7.20.0",
+    "@iarna/toml": "^2.2.5",
     "dot-prop": "^7.2.0",
     "find-up": "^6.3.0",
     "minimatch": "^9.0.0",
@@ -56,18 +56,16 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
-    "@bugsnag/source-maps": "^2.3.1",
     "@playwright/test": "^1.30.0",
     "@types/node": "^14.18.53",
     "@types/semver": "^7.3.13",
-    "@vitest/coverage-c8": "^0.33.0",
     "@vitest/ui": "^0.34.0",
-    "execa": "^6.0.0",
-    "memfs": "^3.4.7",
+    "execa": "^7.0.0",
+    "memfs": "^4.0.0",
     "node-fetch": "^3.3.1",
     "typescript": "^5.0.0",
     "unionfs": "^4.4.0",
-    "vite": "^4.0.4",
+    "vite": "^6.0.0",
     "vitest": "^0.34.0"
   },
   "engines": {

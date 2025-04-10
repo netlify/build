@@ -110,7 +110,7 @@ const zipFunction: ZipFunction = async function ({
   createPluginsModulesPathAliases(srcFiles, pluginsModulesPath, aliases, finalBasePath)
 
   const generator = mergedConfig?.generator || getInternalValue(isInternal)
-  const zipPath = await zipNodeJs({
+  const zipResult = await zipNodeJs({
     aliases,
     archiveFormat,
     basePath: finalBasePath,
@@ -152,11 +152,12 @@ const zipFunction: ZipFunction = async function ({
   const trafficRules = mergedConfig?.rateLimit ? getTrafficRulesConfig(mergedConfig.rateLimit) : undefined
 
   return {
+    bootstrapVersion: zipResult.bootstrapVersion,
     bundler: bundlerName,
     bundlerWarnings,
     config: mergedConfig,
     displayName: mergedConfig?.name,
-    entryFilename: zipPath.entryFilename,
+    entryFilename: zipResult.entryFilename,
     generator,
     timeout: mergedConfig?.timeout,
     inputs,
@@ -165,7 +166,7 @@ const zipFunction: ZipFunction = async function ({
     invocationMode,
     outputModuleFormat,
     nativeNodeModules,
-    path: zipPath.path,
+    path: zipResult.path,
     priority,
     trafficRules,
     runtimeVersion:

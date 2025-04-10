@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import { PackageJson } from 'read-package-up'
+import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
 import { addErrorInfo } from '../error/info.js'
@@ -32,6 +32,7 @@ const tGetPluginsOptions = async function ({
   integrations,
   context,
   systemLog,
+  pluginsEnv,
 }) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
@@ -51,6 +52,7 @@ const tGetPluginsOptions = async function ({
     integrations,
     context,
     systemLog,
+    pluginsEnv,
   })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map((pluginOptions) => loadPluginFiles({ pluginOptions, debug })),
@@ -111,7 +113,7 @@ export const getSpawnInfo = (): {
   }
 } => {
   // we know that this package.json has a name as it's ours
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const packageName = ROOT_PACKAGE_JSON.name!
   return {
     plugin: { packageName, pluginPackageJson: ROOT_PACKAGE_JSON },

@@ -1,6 +1,8 @@
 import { dirname } from 'path'
 
 import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+// @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
+// this dependency.
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 

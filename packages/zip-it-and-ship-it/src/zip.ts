@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 
 import isPathInside from 'is-path-inside'
 import pMap from 'p-map'
@@ -128,9 +128,7 @@ export const zipFunctions = async function (
     }),
   )
 
-  if (manifest !== undefined) {
-    await createManifest({ functions: formattedResults, path: resolve(manifest) })
-  }
+  await createManifest({ functions: formattedResults, path: resolve(manifest || join(destFolder, 'manifest.json')) })
 
   return formattedResults
 }
@@ -171,7 +169,7 @@ export const zipFunction = async function (
     runtime,
     srcDir,
     stat: stats,
-  }: FunctionSource = functions.values().next().value
+  }: FunctionSource = functions.values().next().value!
 
   await fs.mkdir(destFolder, { recursive: true })
 

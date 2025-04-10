@@ -51,8 +51,8 @@ const coreStep: CoreStepFunction = async function ({
   // If using the deploy config API or the Frameworks API, configure the store
   // to use the region that was configured for the deploy. We don't do it for
   // the legacy file-based upload API since that would be a breaking change.
-  if (blobs.apiVersion > 1) {
-    storeOpts.experimentalRegion = 'auto'
+  if (blobs.apiVersion === 1) {
+    storeOpts.region = 'us-east-2'
   }
 
   const blobStore = getDeployStore(storeOpts)
@@ -77,7 +77,8 @@ const coreStep: CoreStepFunction = async function ({
           log(logs, `- Uploading blob ${key}`, { indent: true })
         }
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        await blobStore.set(key, data, { metadata })
+        const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.length)
+        await blobStore.set(key, arrayBuffer, { metadata })
       },
       { concurrency: 10 },
     )

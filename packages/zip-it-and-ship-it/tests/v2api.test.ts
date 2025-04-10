@@ -342,7 +342,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs18.x')
+    expect(files[0].runtimeVersion).toBe('nodejs22.x')
   })
 
   test('Returns Node.js 18 if invalid version is set', async () => {
@@ -357,7 +357,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs18.x')
+    expect(files[0].runtimeVersion).toBe('nodejs22.x')
   })
 
   test('Returns no Node.js version if version is newer than 18 but not a valid runtime', async () => {
@@ -714,11 +714,6 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
       const fixtureName = 'v2-api'
       const { files } = await zipFixture(fixtureName, {
         fixtureDir: FIXTURES_ESM_DIR,
-        opts: {
-          featureFlags: {
-            zisi_add_metadata_file: true,
-          },
-        },
       })
       const [unzippedFunction] = await unzipFiles(files)
       const bootstrapPath = getBootstrapPath()
@@ -735,9 +730,6 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
         fixtureDir: FIXTURES_ESM_DIR,
         opts: {
           branch: 'main',
-          featureFlags: {
-            zisi_add_metadata_file: true,
-          },
         },
       })
       const [unzippedFunction] = await unzipFiles(files)
@@ -752,5 +744,33 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
         version: 1,
       })
     })
+  })
+
+  test('Adds a `buildData` object to each function entry in the manifest file', async () => {
+    const bootstrapPath = getBootstrapPath()
+    const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
+    const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
+
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const manifestPath = join(tmpDir, 'manifest.json')
+
+    const { files } = await zipFixture('v2-api', {
+      fixtureDir: FIXTURES_ESM_DIR,
+      opts: {
+        manifest: manifestPath,
+      },
+    })
+
+    expect(files.length).toBe(1)
+    expect(files[0].name).toBe('function')
+    expect(files[0].bootstrapVersion).toBe(bootstrapVersion)
+    expect(files[0].runtimeAPIVersion).toBe(2)
+
+    const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
+    const manifest = JSON.parse(manifestString)
+
+    expect(manifest.functions.length).toBe(1)
+    expect(manifest.functions[0].name).toBe('function')
+    expect(manifest.functions[0].buildData).toEqual({ bootstrapVersion, runtimeAPIVersion: 2 })
   })
 })

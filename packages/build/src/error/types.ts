@@ -26,46 +26,44 @@ export type BasicErrorInfo = {
 /**
  * Error severity groups the errors emitted by build and used to translate to exit code via SEVERITY_MAP
  */
-enum ErrorSeverity {
+type ErrorSeverity =
   /**
    * build success
    */
-  success = 'success',
+  | 'success'
   /**
    * not an error, e.g. build cancellation
    */
-  none = 'none',
+  | 'none'
   /**
    * user error
    */
-  info = 'info',
+  | 'info'
   /**
    * community plugin error
    */
-  warning = 'warning',
+  | 'warning'
   /**
    * system error, including core plugin error
    */
-  error = 'Error',
-}
+  | 'error'
 
 /**
  * How the stack trace should appear in the build error logs
  */
-enum StackType {
+type StackType =
   /**
    * not printed
    */
-  none = 'none',
+  | 'none'
   /*
    * printed as is
    */
-  stack = 'stack',
+  | 'stack'
   /**
    * printed as is, but taken from `error.message`. Used when `error.stack` is not being correct due to the error being passed between different processes.
    */
-  message = 'message',
-}
+  | 'message'
 
 type GroupFunction = ({ location }: { location: ErrorLocation }) => string
 export type TitleFunction = ({ location }: { location: ErrorLocation }) => string
@@ -80,6 +78,14 @@ type PluginInfo = {
   packageName: string
   pluginPackageJson: {
     version?: string
+  }
+  extensionMetadata?: {
+    slug: string
+    name: string
+    version: string
+    has_build: boolean
+    has_connector: boolean
+    author?: string
   }
 }
 
@@ -201,9 +207,12 @@ const errorLocationToTracingAttributes = function (location: ErrorLocation): Att
 const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attributes {
   const pluginAttributePrefix = `${buildErrorAttributePrefix}.plugin`
   if (typeof pluginInfo === 'undefined') return {}
+
   return {
     [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
     [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
+    [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo?.extensionMetadata?.author,
+    [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo?.extensionMetadata?.slug,
   }
 }
 
@@ -263,42 +272,41 @@ export interface ErrorType {
   /**
    *  error severity (also used by Bugsnag)
    */
-  severity: keyof typeof ErrorSeverity
+  severity: ErrorSeverity
   /**
    *  how the stack trace should appear in build error logs
    */
-  stackType: keyof typeof StackType
+  stackType: StackType
 }
 
-const ErrorTypeMap = {
+type ErrorTypeMap =
   /**
    * Plugin called `utils.build.cancelBuild()`
    */
-  cancelBuild: 'cancelBuild',
-  resolveConfig: 'resolveConfig',
-  dependencies: 'dependencies',
-  pluginInput: 'pluginInput',
-  pluginUnsupportedVersion: 'pluginUnsupportedVersion',
-  buildCommand: 'buildCommand',
-  functionsBundling: 'functionsBundling',
-  secretScanningFoundSecrets: 'secretScanningFoundSecrets',
-  failPlugin: 'failPlugin',
-  failBuild: 'failBuild',
-  pluginValidation: 'pluginValidation',
-  pluginInternal: 'pluginInternal',
-  ipc: 'ipc',
-  corePlugin: 'corePlugin',
-  trustedPlugin: 'trustedPlugin',
-  coreStep: 'coreStep',
-  api: 'api',
-  deploy: 'deploy',
-  deployInternal: 'deployInternal',
-  exception: 'exception',
-  telemetry: 'telemetry',
-} as const
+  | 'cancelBuild'
+  | 'resolveConfig'
+  | 'dependencies'
+  | 'pluginInput'
+  | 'pluginUnsupportedVersion'
+  | 'buildCommand'
+  | 'functionsBundling'
+  | 'secretScanningFoundSecrets'
+  | 'failPlugin'
+  | 'failBuild'
+  | 'pluginValidation'
+  | 'pluginInternal'
+  | 'ipc'
+  | 'corePlugin'
+  | 'trustedPlugin'
+  | 'coreStep'
+  | 'api'
+  | 'deploy'
+  | 'deployInternal'
+  | 'exception'
+  | 'telemetry'
 
 /* Error classes for build executions */
-export type ErrorTypes = keyof typeof ErrorTypeMap
+export type ErrorTypes = ErrorTypeMap
 
 /**
  * List of error types, and their related properties

@@ -31,7 +31,6 @@ export const getSrcFiles: GetSrcFilesFunction = async function ({
   const { includedFiles = [], includedFilesBasePath, nodeVersion } = config
   const { excludePatterns, paths: includedFilePaths } = await getPathsOfIncludedFiles(
     includedFiles,
-    featureFlags,
     includedFilesBasePath,
   )
   const [treeFiles, depFiles] = await Promise.all([

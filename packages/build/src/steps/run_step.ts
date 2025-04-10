@@ -69,6 +69,7 @@ export const runStep = async function ({
   userNodeVersion,
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
+  extensionMetadata,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -123,13 +124,7 @@ export const runStep = async function ({
             // no-op
           }
 
-    let outputFlusher: OutputFlusher | undefined
-
-    if (featureFlags.netlify_build_reduced_output) {
-      outputFlusher = new OutputFlusher(logPluginStart)
-    } else {
-      logPluginStart()
-    }
+    const outputFlusher = new OutputFlusher(logPluginStart)
 
     const fireStep = getFireStep(packageName, coreStepId, event)
     const {
@@ -144,6 +139,7 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
+      extensionMetadata,
       defaultConfig,
       event,
       childProcess,
@@ -349,6 +345,7 @@ const tFireStep = function ({
   explicitSecretKeys,
   edgeFunctionsBootstrapURL,
   deployId,
+  extensionMetadata,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -414,5 +411,6 @@ const tFireStep = function ({
     featureFlags,
     debug,
     verbose,
+    extensionMetadata,
   })
 }
