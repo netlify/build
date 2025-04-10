@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.0.2](https://github.com/netlify/build/compare/edge-bundler-v13.0.1...edge-bundler-v13.0.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* **edge-bundler:** only parse a file once for it's npm specifiers ([#6196](https://github.com/netlify/build/issues/6196)) ([bbe9313](https://github.com/netlify/build/commit/bbe93132d12b11afd98dfca25b8339004d99a2b2))
+
 ## [13.0.1](https://github.com/netlify/build/compare/edge-bundler-v13.0.0...edge-bundler-v13.0.1) (2025-04-09)
 
 
