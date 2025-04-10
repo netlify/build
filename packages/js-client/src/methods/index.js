@@ -10,24 +10,26 @@ import { getUrl } from './url.js'
 
 // For each OpenAPI operation, add a corresponding method.
 // The `operationId` is the method name.
-export const getMethods = function ({ basePath, defaultHeaders, agent, globalParams }) {
+export const getMethods = function ({ basePath, cache, defaultHeaders, agent, globalParams }) {
   const operations = getOperations()
-  const methods = operations.map((method) => getMethod({ method, basePath, defaultHeaders, agent, globalParams }))
+  const methods = operations.map((method) =>
+    getMethod({ method, basePath, defaultHeaders, agent, globalParams, cache }),
+  )
   return Object.assign({}, ...methods)
 }
 
-const getMethod = function ({ method, basePath, defaultHeaders, agent, globalParams }) {
+const getMethod = function ({ method, basePath, defaultHeaders, agent, globalParams, cache }) {
   return {
     [method.operationId](params, opts) {
-      return callMethod({ method, basePath, defaultHeaders, agent, globalParams, params, opts })
+      return callMethod({ method, basePath, defaultHeaders, agent, globalParams, params, opts, cache })
     },
   }
 }
 
-const callMethod = async function ({ method, basePath, defaultHeaders, agent, globalParams, params, opts }) {
+const callMethod = async function ({ method, basePath, defaultHeaders, agent, globalParams, params, opts, cache }) {
   const requestParams = { ...globalParams, ...params }
   const url = getUrl(method, basePath, requestParams)
-  const response = await makeRequestOrRetry({ url, method, defaultHeaders, agent, requestParams, opts })
+  const response = await makeRequestOrRetry({ url, method, defaultHeaders, agent, requestParams, opts, cache })
 
   const parsedResponse = await parseResponse(response)
   return parsedResponse
@@ -70,11 +72,11 @@ const addAgent = function (agent, opts) {
   return opts
 }
 
-const makeRequestOrRetry = async function ({ url, method, defaultHeaders, agent, requestParams, opts }) {
+const makeRequestOrRetry = async function ({ url, method, defaultHeaders, agent, requestParams, opts, cache }) {
   // Using a loop is simpler here
   for (let index = 0; index <= MAX_RETRY; index++) {
     const optsA = getOpts({ method, defaultHeaders, agent, requestParams, opts })
-    const { response, error } = await makeRequest(url, optsA)
+    const { response, error } = await makeRequest(url, optsA, cache)
 
     if (shouldRetry({ response, error, method }) && index !== MAX_RETRY) {
       await waitForRetry(response)
@@ -89,8 +91,13 @@ const makeRequestOrRetry = async function ({ url, method, defaultHeaders, agent,
   }
 }
 
-const makeRequest = async function (url, opts) {
+const makeRequest = async function (url, opts, cache) {
   try {
+    if (cache) {
+      const response = await cache.get(url, opts.method, opts.headers)
+      return { response }
+    }
+
     const response = await fetch(url, opts)
     return { response }
   } catch (error) {

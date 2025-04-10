@@ -39,7 +39,6 @@ export const getSiteInfo = async function ({
   siteFeatureFlagPrefix,
 }: GetSiteInfoOpts) {
   const { env: testEnv = false } = testOpts
-
   const useV2Endpoint = !!accountId && featureFlags.cli_integration_installations_meta
 
   if (useV2Endpoint) {
@@ -51,7 +50,7 @@ export const getSiteInfo = async function ({
 
       const integrations =
         mode === 'buildbot' && !offline
-          ? await getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId })
+          ? await getIntegrations({ api, siteId, testOpts, offline, useV2Endpoint, accountId })
           : []
 
       return { siteInfo, accounts: [], addons: [], integrations }
@@ -60,11 +59,10 @@ export const getSiteInfo = async function ({
     const promises = [
       getSite(api, siteId, siteFeatureFlagPrefix),
       getAccounts(api),
-      getAddons(api, siteId),
-      getIntegrations({ siteId, testOpts, offline, useV2Endpoint, accountId }),
+      getIntegrations({ api, siteId, testOpts, offline, useV2Endpoint, accountId }),
     ]
 
-    const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+    const [siteInfo, accounts, integrations] = await Promise.all(promises)
 
     if (siteInfo.use_envelope) {
       const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
@@ -72,7 +70,7 @@ export const getSiteInfo = async function ({
       siteInfo.build_settings.env = envelope
     }
 
-    return { siteInfo, accounts, addons, integrations }
+    return { siteInfo, accounts, addons: [], integrations }
   }
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
@@ -81,7 +79,8 @@ export const getSiteInfo = async function ({
     if (siteId !== undefined) siteInfo.id = siteId
     if (accountId !== undefined) siteInfo.account_id = accountId
 
-    const integrations = mode === 'buildbot' && !offline ? await getIntegrations({ siteId, testOpts, offline }) : []
+    const integrations =
+      mode === 'buildbot' && !offline ? await getIntegrations({ api, siteId, testOpts, offline }) : []
 
     return { siteInfo, accounts: [], addons: [], integrations }
   }
@@ -89,11 +88,10 @@ export const getSiteInfo = async function ({
   const promises = [
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getAddons(api, siteId),
-    getIntegrations({ siteId, testOpts, offline }),
+    getIntegrations({ api, siteId, testOpts, offline }),
   ]
 
-  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+  const [siteInfo, accounts, integrations] = await Promise.all(promises)
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
@@ -101,7 +99,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations }
+  return { siteInfo, accounts, addons: [], integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
@@ -126,20 +124,8 @@ const getAccounts = async function (api: NetlifyAPI) {
   }
 }
 
-const getAddons = async function (api: NetlifyAPI, siteId: string) {
-  if (siteId === undefined) {
-    return []
-  }
-
-  try {
-    const addons = await (api as any).listServiceInstancesForSite({ siteId })
-    return Array.isArray(addons) ? addons : []
-  } catch (error) {
-    throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
-}
-
 type GetIntegrationsOpts = {
+  api?: NetlifyAPI
   siteId?: string
   accountId?: string
   testOpts: TestOptions
@@ -148,6 +134,7 @@ type GetIntegrationsOpts = {
 }
 
 const getIntegrations = async function ({
+  api,
   siteId,
   accountId,
   testOpts,
@@ -168,11 +155,21 @@ const getIntegrations = async function ({
     : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
+    // Even though integrations don't come through the Netlify API, we can
+    // still leverage the API cache if one is being used.
+    if (api?.cache) {
+      const response = await api.cache.get(url, 'get', {})
+
+      if (response !== null && Array.isArray(response.body)) {
+        return response.body
+      }
+    }
+
     const response = await fetch(url)
 
     const integrations = await response.json()
     return Array.isArray(integrations) ? integrations : []
-  } catch (error) {
+  } catch {
     // Integrations should not block the build if they fail to load
     // TODO: We should consider blocking the build as integrations are a critical part of the build process
     // https://linear.app/netlify/issue/CT-1214/implement-strategy-in-builds-to-deal-with-integrations-that-we-fail-to

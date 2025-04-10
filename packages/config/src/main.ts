@@ -26,6 +26,7 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
  */
 export const resolveConfig = async function (opts) {
   const {
+    apiCache,
     cachedConfig,
     cachedConfigPath,
     host,
@@ -39,7 +40,7 @@ export const resolveConfig = async function (opts) {
     ...optsA
   } = addDefaultOpts(opts) as $TSFixMe
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
+  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts, cache: apiCache })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
   // If there is a cached config, use it. The exception is when a default config,

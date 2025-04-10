@@ -1,8 +1,16 @@
 import { JSONHTTPError, TextHTTPError } from 'micro-api-client'
 import omit from 'omit.js'
 
+import { BufferedResponse } from '../buffered_response.js'
+
+import { getResponseType, ResponseType } from './response_type.js'
+
 // Read and parse the HTTP response
-export const parseResponse = async function (response) {
+export const parseResponse = async function (response: BufferedResponse | Response) {
+  if (!(response instanceof Response)) {
+    return response.body
+  }
+
   const responseType = getResponseType(response)
   const textResponse = await response.text()
 
@@ -16,17 +24,7 @@ export const parseResponse = async function (response) {
   return parsedResponse
 }
 
-const getResponseType = function ({ headers }) {
-  const contentType = headers.get('Content-Type')
-
-  if (contentType != null && contentType.includes('json')) {
-    return 'json'
-  }
-
-  return 'text'
-}
-
-const parseJsonResponse = function (response, textResponse, responseType) {
+const parseJsonResponse = function (response: Response, textResponse: string, responseType: ResponseType) {
   if (responseType === 'text') {
     return textResponse
   }
