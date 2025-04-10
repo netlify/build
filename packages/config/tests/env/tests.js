@@ -4,7 +4,6 @@ import test from 'ava'
 // List of API endpoints to mock
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const LIST_ACCOUNTS_PATH = '/api/v1/accounts'
-const LIST_ADDONS_PATH = '/api/v1/sites/test/service-instances'
 const TEAM_ENVELOPE_PATH = '/api/v1/accounts/team/env?context_name=production'
 const SITE_ENVELOPE_PATH = '/api/v1/accounts/team/env?context_name=production&site_id=test'
 
@@ -58,18 +57,6 @@ const LIST_ACCOUNTS_RESPONSE_WRONG_SHAPE = [
     response: {},
   },
 ]
-const LIST_ADDONS_RESPONSE_SUCCESS = {
-  path: LIST_ADDONS_PATH,
-  response: [{ env: { TEST: 'test' } }],
-}
-const LIST_ADDONS_RESPONSE_ERROR = {
-  path: LIST_ADDONS_PATH,
-  status: 500,
-}
-const LIST_ADDONS_RESPONSE_WRONG_SHAPE = {
-  path: LIST_ADDONS_PATH,
-  response: {},
-}
 const SITE_INFO_WITH_ENVELOPE = {
   path: SITE_INFO_PATH,
   response: {
@@ -518,57 +505,6 @@ test('Does not set accounts environment variables without a token', async (t) =>
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS_NO_TOKEN)
     .runConfigServerAsObject(LIST_ACCOUNTS_RESPONSE_SUCCESS)
-  t.is(TEST, undefined)
-})
-
-test('Sets addons environment variables', async (t) => {
-  const {
-    env: { TEST },
-  } = await new Fixture('./fixtures/empty').withFlags(AUTH_FLAGS).runConfigServerAsObject(LIST_ADDONS_RESPONSE_SUCCESS)
-  t.deepEqual(TEST.sources, ['addons'])
-  t.is(TEST.value, 'test')
-})
-
-test('Does not set addons environment variables on API error', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
-    .withFlags(AUTH_FLAGS)
-    .runConfigServer(LIST_ADDONS_RESPONSE_ERROR)
-  t.true(isDefinedString(output))
-})
-
-test('Does not set addons environment variables on API wrong response shape', async (t) => {
-  const {
-    env: { TEST },
-  } = await new Fixture('./fixtures/empty')
-    .withFlags(AUTH_FLAGS)
-    .runConfigServerAsObject(LIST_ADDONS_RESPONSE_WRONG_SHAPE)
-  t.is(TEST, undefined)
-})
-
-test('Does not set addons environment variables if offline', async (t) => {
-  const {
-    env: { TEST },
-  } = await new Fixture('./fixtures/empty')
-    .withFlags(AUTH_FLAGS_OFFLINE)
-    .runConfigServerAsObject(LIST_ADDONS_RESPONSE_SUCCESS)
-  t.is(TEST, undefined)
-})
-
-test('Does not set addons environment variables without a siteId', async (t) => {
-  const {
-    env: { TEST },
-  } = await new Fixture('./fixtures/empty')
-    .withFlags(AUTH_FLAGS_NO_SITE_ID)
-    .runConfigServerAsObject(LIST_ADDONS_RESPONSE_SUCCESS)
-  t.is(TEST, undefined)
-})
-
-test('Does not set addons environment variables without a token', async (t) => {
-  const {
-    env: { TEST },
-  } = await new Fixture('./fixtures/empty')
-    .withFlags(AUTH_FLAGS_NO_TOKEN)
-    .runConfigServerAsObject(LIST_ADDONS_RESPONSE_SUCCESS)
   t.is(TEST, undefined)
 })
 

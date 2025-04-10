@@ -26,7 +26,6 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
 
 export type Config = {
   accounts: MinimalAccount[] | undefined
-  addons: any
   api: any
   branch: any
   buildDir: any
@@ -99,16 +98,14 @@ export const resolveConfig = async function (opts): Promise<Config> {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  let { siteInfo, accounts, addons, integrations } = parsedCachedConfig || {}
+  let { siteInfo, accounts, integrations } = parsedCachedConfig || {}
 
   // If we have cached site info, we don't need to fetch it again
-  const useCachedSiteInfo = Boolean(
-    featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
-  )
+  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && integrations)
 
   // I'm adding some debug logging to see if the logic is working as expected
   if (featureFlags?.use_cached_site_info_logging) {
-    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, addons, integrations })
+    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, integrations })
   }
 
   if (!useCachedSiteInfo) {
@@ -128,7 +125,6 @@ export const resolveConfig = async function (opts): Promise<Config> {
 
     siteInfo = updatedSiteInfo.siteInfo
     accounts = updatedSiteInfo.accounts
-    addons = updatedSiteInfo.addons
     integrations = updatedSiteInfo.integrations
   }
 
@@ -162,7 +158,6 @@ export const resolveConfig = async function (opts): Promise<Config> {
     config,
     siteInfo,
     accounts,
-    addons,
     buildDir,
     branch,
     deployId,
@@ -184,7 +179,6 @@ export const resolveConfig = async function (opts): Promise<Config> {
     siteInfo,
     integrations: mergedIntegrations,
     accounts,
-    addons,
     env,
     configPath,
     redirectsPath,
