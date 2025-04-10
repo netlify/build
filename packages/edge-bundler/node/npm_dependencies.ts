@@ -160,6 +160,10 @@ const getNPMSpecifiers = async (
       const specifier = i.moduleSpecifier.isConstant ? i.moduleSpecifier.value! : i.moduleSpecifier.code
       switch (i.moduleSpecifier.type) {
         case 'absolute': {
+          if (alreadySeenPaths.has(specifier)) {
+            break
+          }
+          alreadySeenPaths.add(specifier)
           npmSpecifiers.push(
             ...(await getNPMSpecifiers(
               { basePath, functions: [specifier], importMap, environment, rootPath },
@@ -193,6 +197,10 @@ const getNPMSpecifiers = async (
           if (matched) {
             if (resolvedImport.protocol === 'file:') {
               const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
+              if (alreadySeenPaths.has(newSpecifier)) {
+                break
+              }
+              alreadySeenPaths.add(newSpecifier)
               npmSpecifiers.push(
                 ...(await getNPMSpecifiers(
                   { basePath, functions: [newSpecifier], importMap, environment, rootPath },
