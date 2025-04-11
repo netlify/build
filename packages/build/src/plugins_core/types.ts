@@ -29,6 +29,7 @@ export type CoreStepFunctionArgs = {
   explicitSecretKeys: $TSFixme
 
   buildbotServerSocket: $TSFixme
+  api?: unknown
 }
 
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
