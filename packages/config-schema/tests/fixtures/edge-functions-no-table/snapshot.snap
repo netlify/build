@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "instancePath": "/edge_functions",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/properties/edge_functions/type",
+    },
+  ],
+  "valid": false,
+}
