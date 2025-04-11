@@ -1,5 +1,5 @@
 import { getApiClient } from './api/client.js'
-import { getSiteInfo } from './api/site_info.js'
+import { getSiteInfo, type MinimalAccount } from './api/site_info.js'
 import { getInitialBase, getBase, addBase } from './base.js'
 import { getBuildDir } from './build_dir.js'
 import { getCachedConfig } from './cached_config.js'
@@ -24,12 +24,30 @@ import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
 
+export type Config = {
+  accounts: MinimalAccount[] | undefined
+  api: any
+  branch: any
+  buildDir: any
+  config: any
+  configPath: any
+  context: any
+  env: any
+  headersPath: any
+  integrations: any
+  logs: any
+  redirectsPath: any
+  repositoryRoot: any
+  siteInfo: any
+  token: any
+}
+
 /**
  * Load the configuration file.
  * Takes an optional configuration file path as input and return the resolved
  * `config` together with related properties such as the `configPath`.
  */
-export const resolveConfig = async function (opts) {
+export const resolveConfig = async function (opts): Promise<Config> {
   const {
     cachedConfig,
     cachedConfigPath,
@@ -80,16 +98,14 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  let { siteInfo, accounts, addons, integrations } = parsedCachedConfig || {}
+  let { siteInfo, accounts, integrations } = parsedCachedConfig || {}
 
   // If we have cached site info, we don't need to fetch it again
-  const useCachedSiteInfo = Boolean(
-    featureFlags?.use_cached_site_info && siteInfo && accounts && addons && integrations,
-  )
+  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && integrations)
 
   // I'm adding some debug logging to see if the logic is working as expected
   if (featureFlags?.use_cached_site_info_logging) {
-    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, addons, integrations })
+    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, integrations })
   }
 
   if (!useCachedSiteInfo) {
@@ -109,7 +125,6 @@ export const resolveConfig = async function (opts) {
 
     siteInfo = updatedSiteInfo.siteInfo
     accounts = updatedSiteInfo.accounts
-    addons = updatedSiteInfo.addons
     integrations = updatedSiteInfo.integrations
   }
 
@@ -143,7 +158,6 @@ export const resolveConfig = async function (opts) {
     config,
     siteInfo,
     accounts,
-    addons,
     buildDir,
     branch,
     deployId,
@@ -159,16 +173,12 @@ export const resolveConfig = async function (opts) {
     apiIntegrations: integrations,
     configIntegrations: configA.integrations,
     context: context,
-    testOpts,
-    offline,
-    extensionApiBaseUrl,
   })
 
   const result = {
     siteInfo,
     integrations: mergedIntegrations,
     accounts,
-    addons,
     env,
     configPath,
     redirectsPath,

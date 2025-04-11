@@ -71,17 +71,14 @@ export const getSiteInfo = async function ({
           })
         : []
 
-    return { siteInfo, accounts: [], addons: [], integrations }
+    return { siteInfo, accounts: [], integrations }
   }
 
-  const promises = [
+  const [siteInfo, accounts, integrations] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getAddons(api, siteId),
     getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
-  ]
-
-  const [siteInfo, accounts, addons, integrations] = await Promise.all(promises)
+  ])
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
@@ -89,7 +86,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, addons, integrations }
+  return { siteInfo, accounts, integrations }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
@@ -105,25 +102,28 @@ const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlag
   }
 }
 
-const getAccounts = async function (api: NetlifyAPI) {
-  try {
-    const accounts = await (api as any).listAccountsForUser()
-    return Array.isArray(accounts) ? accounts : []
-  } catch (error) {
-    throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
+export type MinimalAccount = {
+  id: string
+  name: string
+  slug: string
+  default: boolean
+  team_logo_url: string | null
+  on_pro_trial: boolean
+  organization_id: string | null
+  type_name: string
+  type_slug: string
+  members_count: number
 }
 
-const getAddons = async function (api: NetlifyAPI, siteId: string) {
-  if (siteId === undefined) {
-    return []
-  }
-
+const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
   try {
-    const addons = await (api as any).listServiceInstancesForSite({ siteId })
-    return Array.isArray(addons) ? addons : []
+    const accounts = (await api.listAccountsForUser(
+      // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
+      { minimal: 'true' },
+    )) as MinimalAccount[] | null
+    return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
   } catch (error) {
-    throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 

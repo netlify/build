@@ -1,5 +1,30 @@
 # Changelog
 
+## [13.0.2](https://github.com/netlify/build/compare/edge-bundler-v13.0.1...edge-bundler-v13.0.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* **edge-bundler:** only parse a file once for it's npm specifiers ([#6196](https://github.com/netlify/build/issues/6196)) ([bbe9313](https://github.com/netlify/build/commit/bbe93132d12b11afd98dfca25b8339004d99a2b2))
+
+## [13.0.1](https://github.com/netlify/build/compare/edge-bundler-v13.0.0...edge-bundler-v13.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+## [13.0.0](https://github.com/netlify/build/compare/edge-bundler-v12.4.0...edge-bundler-v13.0.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+
 ## [12.4.0](https://github.com/netlify/build/compare/edge-bundler-v12.3.3...edge-bundler-v12.4.0) (2025-03-28)
 
 

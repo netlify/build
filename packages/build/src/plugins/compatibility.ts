@@ -1,6 +1,6 @@
 import _pEvery from 'p-every'
 import pLocate from 'p-locate'
-import { PackageJson } from 'read-package-up'
+import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'

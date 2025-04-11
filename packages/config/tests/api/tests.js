@@ -91,19 +91,7 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
     build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
   },
 }
-const FETCH_INTEGRATIONS_RESPONSE = {
-  path: '/integrations',
-  response: [
-    {
-      slug: 'test',
-      hostSiteUrl: 'https://some-site.netlify.app',
-    },
-    {
-      slug: 'abc-integration',
-      hostSiteUrl: 'https://some-site-2.netlify.app',
-    },
-  ],
-}
+
 const FETCH_INTEGRATIONS_EMPTY_RESPONSE = {
   path: '/integrations',
   response: [],
@@ -141,7 +129,7 @@ test('--site-id', async (t) => {
 test('--account-id in offline and buildbot mode', async (t) => {
   const output = await new Fixture('./fixtures/empty')
     .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
-    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runWithConfig([])
   const config = JSON.parse(output)
 
   t.is(config.siteInfo.account_id, 'test-account')
@@ -254,41 +242,6 @@ test('Integrations are returned from getSiteInfo from v1 safe API when there is 
   t.assert(config.integrations[0].slug === 'test')
   t.assert(config.integrations[0].version === 'so-cool-v1')
   t.assert(config.integrations[0].has_build === true)
-})
-
-test('Integration specified in config is also returned if integration is available in API', async (t) => {
-  const { output } = await new Fixture('./fixtures/integration')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_RESPONSE])
-
-  const config = JSON.parse(output)
-
-  t.assert(config.integrations)
-  t.assert(config.integrations.length === 2)
-  t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[1].slug === 'abc-integration')
-  t.assert(config.integrations[1].has_build === false)
-  t.assert(config.integrations[1].version === 'https://some-site-2.netlify.app')
-})
-
-test('Integration specified in config is not returned if integration is not available in API', async (t) => {
-  const { output } = await new Fixture('./fixtures/integration')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
-
-  t.assert(config.integrations)
-  t.assert(config.integrations.length === 1)
-  t.assert(config.integrations[0].slug === 'test')
 })
 
 test('In integration dev mode, integration specified in config is returned even if integration is not available in API', async (t) => {
@@ -503,7 +456,7 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, addons and integrations on cachedConfig', async (t) => {
+test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, and integrations on cachedConfig', async (t) => {
   const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
   const { requests } = await new Fixture('./fixtures/cached_config')
     .withFlags({
@@ -521,7 +474,7 @@ test('It does not fetch site info if cachedConfig is provided, use_cached_site_i
   t.assert(requests.length === 0)
 })
 
-test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, addons or integrations on cachedConfig', async (t) => {
+test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, or integrations on cachedConfig', async (t) => {
   const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
   const { requests } = await new Fixture('./fixtures/cached_config')
     .withFlags({

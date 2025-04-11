@@ -97,8 +97,6 @@ const prepareServer = ({
     const importMap = new ImportMap()
     await importMap.addFiles(options.importMapPaths ?? [], logger)
 
-    const npmSpecifiersWithExtraneousFiles: string[] = []
-
     // we keep track of the files that are relevant to the user's code, so we can clean up leftovers from past executions later
     const relevantFiles = [stage2Path]
 
@@ -115,7 +113,6 @@ const prepareServer = ({
     if (vendor) {
       features.npmModules = true
       importMap.add(vendor.importMap)
-      npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
       relevantFiles.push(...vendor.outputFiles)
     }
 
@@ -165,7 +162,6 @@ const prepareServer = ({
       features,
       functionsConfig,
       graph,
-      npmSpecifiersWithExtraneousFiles,
       success,
     }
   }

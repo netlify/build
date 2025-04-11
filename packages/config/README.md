@@ -47,7 +47,6 @@ const exampleFunction = async function () {
   //   },
   //   ...
   // ],
-  // "addons": [],
   // "env": {
   //   "NODE_VERSION": { "sources": ["configFile"], "value": "16" },
   //   ...
@@ -117,7 +116,7 @@ Path to the `netlify.toml`. It is either an absolute path or a path relative to 
 If not specified, it is searched in the following directories (by highest priority order):
 
 - `base` directory
-- [`repositoryRoot`](#repositoryRoot)
+- [`repositoryRoot`](#repositoryroot)
 - current directory
 - any parent directory
 
@@ -205,7 +204,7 @@ _Default value_: environment variable `NETLIFY_SITE_ID`
 
 Netlify Site ID.
 
-This is used to retrieve [`siteInfo`](#siteinfo), [`accounts`](#accounts) and [`addons`](#addons).
+This is used to retrieve [`siteInfo`](#siteinfo) and [`accounts`](#accounts).
 
 #### env
 
@@ -227,8 +226,8 @@ What is calling `@netlify/config`. Can be:
 
 This is used for the following cases:
 
-- if `mode` is `buildbot`, [`siteInfo`](#siteinfo), [`accounts`](#accounts) and [`addons`](#addons) are not retrieved
-  because they are also passed using another internal option.
+- if `mode` is `buildbot`, [`siteInfo`](#siteinfo) and [`accounts`](#accounts) are not retrieved because they are also
+  passed using another internal option.
 
 #### defaultConfig
 
@@ -287,13 +286,13 @@ _Type_: `string`
 Absolute path to the build directory.
 
 The build directory is the current directory in which most build operations, including the build command, execute. It is
-usually either the [`repositoryRoot`](#repositoryRoot) or (if specified) the `base` directory.
+usually either the [`repositoryRoot`](#repositoryroot) or (if specified) the `base` directory.
 
 #### repositoryRoot
 
 _Type_: `string`
 
-The computed value of [`repositoryRoot`](#repositoryRoot).
+The computed value of [`repositoryRoot`](#repositoryroot).
 
 #### context
 
@@ -326,15 +325,6 @@ environment variables.
 
 This might be empty depending on the options passed.
 
-#### addons
-
-_Type_: `object[]`
-
-Netlify addons retrieved using the `listServiceInstancesForSite` Netlify API endpoint. This is used to retrieve
-addon-specific environment variables.
-
-This might be empty depending on the options passed.
-
 #### token
 
 _Type_: `string`
@@ -346,8 +336,8 @@ variables.
 
 _Type_: `NetlifyClient?`
 
-Netlify [JavaScript client instance](https://github.com/netlify/js-client) used to retrieve [`siteInfo`](#siteinfo),
-[`accounts`](#accounts) and [`addons`](#addons).
+Netlify [JavaScript client instance](https://github.com/netlify/js-client) used to retrieve [`siteInfo`](#siteinfo) and
+[`accounts`](#accounts).
 
 #### logs
 
@@ -365,14 +355,13 @@ Site's environment variables. Each environment variable value is an object with 
 - `sources` `string[]` among:
   - `general`: general environment variables set for all sites
   - `account`: environment variables set in the Netlify UI for a specific account
-  - `addons`: addon-specific environment variables
   - `ui`: environment variables set in the Netlify UI for a specific site
   - `configFile`: environment variables set in `netlify.toml`
 
 # Usage (CLI)
 
 ```bash
-$ netlify-config
+netlify-config
 ```
 
 Like [`resolveConfig()`](resolveconfig), but in the CLI. The return value is printed on `stdout`.
