@@ -287,7 +287,10 @@ test('--branch', async (t) => {
 })
 
 test('--baseRelDir', async (t) => {
-  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithConfig()
+  const output = await new Fixture('./fixtures/basereldir')
+    .withFlags({ baseRelDir: false })
+    .withEnv({ COMMIT_REF: 'abcdefabcdefabcdefabcdef', CACHED_COMMIT_REF: undefined })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
