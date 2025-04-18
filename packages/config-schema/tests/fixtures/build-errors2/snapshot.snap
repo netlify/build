@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "instancePath": "/build/environment",
+      "keyword": "type",
+      "message": "must be object",
+      "params": {
+        "type": "object",
+      },
+      "schemaPath": "#/definitions/Environment/type",
+    },
+  ],
+  "valid": false,
+}
