@@ -23,6 +23,11 @@ interface MatchResult {
   file: string
 }
 
+export type SecretScanResult = {
+  scannedFilesCount: number
+  secretsScanMatches: MatchResult[]
+}
+
 /**
  * Determine if the user disabled scanning via env var
  * @param env current envars
