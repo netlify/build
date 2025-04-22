@@ -120,26 +120,13 @@ test('secrets scanning should report failure to API when secrets are found', asy
   t.truthy(request.body.secrets_scan.secretsScanMatches)
 })
 
-test('secrets scan does not send report to API if deploy ID is string 0', async (t) => {
+test('secrets scan does not send report to API for local builds', async (t) => {
   const { requests } = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
     .withFlags({
       debug: false,
       explicitSecretKeys:
         'ENV_VAR_MULTILINE_A,ENV_VAR_1,ENV_VAR_2,ENV_VAR_3,ENV_VAR_4,ENV_VAR_5,ENV_VAR_6,ENV_VAR_MULTILINE_B',
       deployId: '0',
-      token: 'test',
-    })
-    .runBuildServer({ path: '/api/v1/deploys/0/validations_report' })
-
-  t.true(requests.length === 0)
-})
-
-test('secrets scan does not send report to API if deploy ID is undefined', async (t) => {
-  const { requests } = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
-    .withFlags({
-      debug: false,
-      explicitSecretKeys:
-        'ENV_VAR_MULTILINE_A,ENV_VAR_1,ENV_VAR_2,ENV_VAR_3,ENV_VAR_4,ENV_VAR_5,ENV_VAR_6,ENV_VAR_MULTILINE_B',
       token: 'test',
     })
     .runBuildServer({ path: '/api/v1/deploys/0/validations_report' })
