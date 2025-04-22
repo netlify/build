@@ -17,7 +17,7 @@ export type CoreStepFunctionArgs = {
    * `undefined` if none is set.
    */
   packagePath?: string
-  deployId?: string
+  deployId: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
   quiet?: boolean

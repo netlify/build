@@ -100,7 +100,7 @@ const coreStep: CoreStepFunction = async function ({
     },
   )
 
-  if (deployId && deployId !== '0') {
+  if (deployId !== '0') {
     const secretScanResult: SecretScanResult = {
       scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
       secretsScanMatches: scanResults?.matches ?? [],
