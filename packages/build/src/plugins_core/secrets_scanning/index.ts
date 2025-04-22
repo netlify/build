@@ -105,7 +105,7 @@ const coreStep: CoreStepFunction = async function ({
       scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
       secretsScanMatches: scanResults?.matches ?? [],
     }
-    reportValidations({ api, secretScanResult, deployId })
+    reportValidations({ api, secretScanResult, deployId, systemLog })
   }
 
   if (!scanResults || scanResults.matches.length === 0) {

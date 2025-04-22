@@ -1,3 +1,5 @@
+import { NetlifyAPI } from 'packages/js-client/lib/index.js'
+
 import { NetlifyPluginConstants } from '../core/constants.js'
 import { BufferedLogs } from '../log/logger.js'
 import { NetlifyConfig } from '../types/config/netlify_config.js'
@@ -29,7 +31,7 @@ export type CoreStepFunctionArgs = {
   explicitSecretKeys: $TSFixme
 
   buildbotServerSocket: $TSFixme
-  api?: unknown
+  api: NetlifyAPI
 }
 
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
