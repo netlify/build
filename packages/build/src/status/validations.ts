@@ -1,4 +1,4 @@
-import { NetlifyAPI } from 'packages/js-client/lib/index.js'
+import { DynamicMethods } from 'packages/js-client/lib/types.js'
 
 import { SecretScanResult } from '../plugins_core/secrets_scanning/utils.js'
 import { SystemLogger } from '../plugins_core/types.js'
@@ -10,13 +10,13 @@ export const reportValidations = async function ({
   deployId,
   systemLog,
 }: {
-  api: NetlifyAPI
+  api: DynamicMethods
   secretScanResult: SecretScanResult
   deployId: string
   systemLog: SystemLogger
 }) {
   try {
-    // @ts-expect-error Property 'updateDeployValidations' does not exist on type 'NetlifyAPI'
+    // @ts-expect-error Property 'updateDeployValidations' does not exist on type 'DynamicMethods'. This is a private/internal-only method and isn't generated in the type definitions.
     await api.updateDeployValidations({ deploy_id: deployId, body: { secrets_scan: secretScanResult } })
   } catch {
     systemLog('Unable to report secrets scanning results to API')

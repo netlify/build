@@ -1,4 +1,4 @@
-import { NetlifyAPI } from 'packages/js-client/lib/index.js'
+import { type DynamicMethods } from 'packages/js-client/lib/types.js'
 
 import { NetlifyPluginConstants } from '../core/constants.js'
 import { BufferedLogs } from '../log/logger.js'
@@ -31,7 +31,7 @@ export type CoreStepFunctionArgs = {
   explicitSecretKeys: $TSFixme
 
   buildbotServerSocket: $TSFixme
-  api: NetlifyAPI
+  api: DynamicMethods
 }
 
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>
