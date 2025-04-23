@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [32.1.0](https://github.com/netlify/build/compare/build-v32.0.1...build-v32.1.0) (2025-04-23)
+
+
+### Features
+
+* send deploy validations report on secret scan ([#6205](https://github.com/netlify/build/issues/6205)) ([5505efb](https://github.com/netlify/build/commit/5505efb8f655dd3f11a7f173e9bdab7a717ff1d9))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^8.2.0 ([#6203](https://github.com/netlify/build/issues/6203)) ([7ca6d21](https://github.com/netlify/build/commit/7ca6d21e20e041f7e1849707005740c23136ef48))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^22.0.0 to ^22.0.1
+
 ## [32.0.1](https://github.com/netlify/build/compare/build-v32.0.0...build-v32.0.1) (2025-04-22)
 
 
