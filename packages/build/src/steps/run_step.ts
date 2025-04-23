@@ -184,6 +184,7 @@ export const runStep = async function ({
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
     })
 
     const newValues = await getStepReturn({
@@ -346,6 +347,7 @@ const tFireStep = function ({
   edgeFunctionsBootstrapURL,
   deployId,
   extensionMetadata,
+  api,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -383,6 +385,7 @@ const tFireStep = function ({
       explicitSecretKeys,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
     })
   }
 

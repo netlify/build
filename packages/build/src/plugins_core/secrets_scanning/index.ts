@@ -7,10 +7,12 @@ import {
   logSecretsScanSkipMessage,
   logSecretsScanSuccessMessage,
 } from '../../log/messages/core_steps.js'
+import { reportValidations } from '../../status/validations.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
 import {
   ScanResults,
+  SecretScanResult,
   getFilePathsToScan,
   getSecretKeysToScanFor,
   groupScanResultsByKey,
@@ -20,7 +22,15 @@ import {
 
 const tracer = trace.getTracer('secrets-scanning')
 
-const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
+const coreStep: CoreStepFunction = async function ({
+  buildDir,
+  logs,
+  netlifyConfig,
+  explicitSecretKeys,
+  systemLog,
+  deployId,
+  api,
+}) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
@@ -89,6 +99,14 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
       span.end()
     },
   )
+
+  if (deployId !== '0') {
+    const secretScanResult: SecretScanResult = {
+      scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
+      secretsScanMatches: scanResults?.matches ?? [],
+    }
+    reportValidations({ api, secretScanResult, deployId, systemLog })
+  }
 
   if (!scanResults || scanResults.matches.length === 0) {
     logSecretsScanSuccessMessage(
