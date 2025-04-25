@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [9.0.4](https://github.com/netlify/build/compare/build-info-v9.0.3...build-info-v9.0.4) (2025-04-25)
+
+
+### Bug Fixes
+
+* detect new TanStack Start package names ([#6212](https://github.com/netlify/build/issues/6212)) ([937a981](https://github.com/netlify/build/commit/937a98193bd9070850c220d8aa75f2dd3fe08f9f))
+
 ## [9.0.3](https://github.com/netlify/build/compare/build-info-v9.0.2...build-info-v9.0.3) (2025-04-09)
 
 
