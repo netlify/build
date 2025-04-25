@@ -4,7 +4,7 @@ export class SolidJs extends BaseFramework implements Framework {
   readonly id = 'solid-js'
   name = 'SolidJS'
   npmDependencies = ['solid-js']
-  excludedNpmDependencies = ['solid-start', '@solidjs/start']
+  excludedNpmDependencies = ['solid-start', '@solidjs/start', '@tanstack/solid-start']
   category = Category.SSG
 
   dev = {
