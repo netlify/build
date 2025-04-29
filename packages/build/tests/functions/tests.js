@@ -1,6 +1,5 @@
 import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
-import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
@@ -121,87 +120,81 @@ test('Functions: cleanup is only triggered when there are internal functions', a
   t.false(output.includes('Cleaning up leftover files from previous builds'))
 })
 
-// Targeting Node 16.7.0+ because these fixtures rely on `fs.cp()`.
-if (semver.gte(nodeVersion, '16.7.0')) {
-  test('Functions: loads functions generated with the Frameworks API', async (t) => {
-    const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
-      .withFlags({ debug: false })
-      .withCopyRoot()
+test('Functions: loads functions generated with the Frameworks API', async (t) => {
+  const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
+    .withFlags({ debug: false })
+    .withCopyRoot()
 
-    const output = await fixture.runWithBuild()
-    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+  const output = await fixture.runWithBuild()
+  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
 
-    t.true(functionsDist.includes('manifest.json'))
-    t.true(functionsDist.includes('server.zip'))
-    t.true(functionsDist.includes('user.zip'))
+  t.true(functionsDist.includes('manifest.json'))
+  t.true(functionsDist.includes('server.zip'))
+  t.true(functionsDist.includes('user.zip'))
 
-    t.snapshot(normalizeOutput(output))
-  })
+  t.snapshot(normalizeOutput(output))
+})
 
-  test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
-    const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
-      .withFlags({ debug: false })
-      .withCopyRoot()
+test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
+  const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
+    .withFlags({ debug: false })
+    .withCopyRoot()
 
-    const output = await fixture.runWithBuild()
-    const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+  const output = await fixture.runWithBuild()
+  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
 
-    t.true(functionsDist.includes('manifest.json'))
-    t.true(functionsDist.includes('server.zip'))
-    t.true(functionsDist.includes('user.zip'))
-    t.true(functionsDist.includes('server-internal.zip'))
+  t.true(functionsDist.includes('manifest.json'))
+  t.true(functionsDist.includes('server.zip'))
+  t.true(functionsDist.includes('user.zip'))
+  t.true(functionsDist.includes('server-internal.zip'))
 
-    const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
-    const { functions } = JSON.parse(manifest)
+  const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
+  const { functions } = JSON.parse(manifest)
 
-    t.is(functions.length, 5)
+  t.is(functions.length, 5)
 
-    // The Frameworks API takes precedence over the legacy internal directory.
-    const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
-    t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
+  // The Frameworks API takes precedence over the legacy internal directory.
+  const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
+  t.is(frameworksInternalConflict.routes[0].pattern, '/frameworks-internal-conflict/frameworks')
 
-    // User code takes precedence over the Frameworks API.
-    const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
-    t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
+  // User code takes precedence over the Frameworks API.
+  const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
+  t.is(frameworksUserConflict.routes[0].pattern, '/frameworks-user-conflict/user')
 
-    t.snapshot(normalizeOutput(output))
-  })
-}
+  t.snapshot(normalizeOutput(output))
+})
 
-// pnpm is not available in Node 14.
-if (semver.gte(nodeVersion, '16.9.0')) {
-  test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
-    const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
-    const app1 = await fixture
-      .withFlags({
-        cwd: fixture.repositoryRoot,
-        packagePath: 'apps/app-1',
-      })
-      .runWithBuildAndIntrospect()
+test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
+  const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
+  const app1 = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-1',
+    })
+    .runWithBuildAndIntrospect()
 
-    t.true(app1.success)
+  t.true(app1.success)
 
-    const app2 = await fixture
-      .withFlags({
-        cwd: fixture.repositoryRoot,
-        packagePath: 'apps/app-2',
-      })
-      .runWithBuildAndIntrospect()
+  const app2 = await fixture
+    .withFlags({
+      cwd: fixture.repositoryRoot,
+      packagePath: 'apps/app-2',
+    })
+    .runWithBuildAndIntrospect()
 
-    t.true(app2.success)
+  t.true(app2.success)
 
-    const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
-    t.is(app1FunctionsDist.length, 2)
-    t.true(app1FunctionsDist.includes('manifest.json'))
-    t.true(app1FunctionsDist.includes('server.zip'))
+  const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
+  t.is(app1FunctionsDist.length, 2)
+  t.true(app1FunctionsDist.includes('manifest.json'))
+  t.true(app1FunctionsDist.includes('server.zip'))
 
-    const app2FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-2/.netlify/functions'))
-    t.is(app2FunctionsDist.length, 3)
-    t.true(app2FunctionsDist.includes('manifest.json'))
-    t.true(app2FunctionsDist.includes('server.zip'))
-    t.true(app2FunctionsDist.includes('worker.zip'))
-  })
-}
+  const app2FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-2/.netlify/functions'))
+  t.is(app2FunctionsDist.length, 3)
+  t.true(app2FunctionsDist.includes('manifest.json'))
+  t.true(app2FunctionsDist.includes('server.zip'))
+  t.true(app2FunctionsDist.includes('worker.zip'))
+})
 
 test('Functions: creates metadata file', async (t) => {
   const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
