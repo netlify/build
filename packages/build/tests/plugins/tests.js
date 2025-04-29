@@ -110,25 +110,6 @@ test('Validate --node-path unsupported version does not fail when no plugins are
   t.snapshot(normalizeOutput(output))
 })
 
-test('Validate --node-path version is supported by the plugin', async (t) => {
-  const systemLog = await tmp.file()
-
-  const nodePath = getNodePath('16.14.0')
-  const output = await new Fixture('./fixtures/engines')
-    .withFlags({
-      nodePath,
-      featureFlags: { build_warn_upcoming_system_version_change: true },
-      systemLogFile: systemLog.fd,
-      debug: false,
-    })
-    .runWithBuild()
-  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
-  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
-  await systemLog.cleanup()
-
-  t.true(systemLogContents.includes('plugin "./plugin.js" node support range includes v22'))
-})
-
 test('Validate --node-path exists', async (t) => {
   const output = await new Fixture('./fixtures/node_version_simple')
     .withFlags({ nodePath: '/doesNotExist' })
