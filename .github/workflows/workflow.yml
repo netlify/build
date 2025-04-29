@@ -76,9 +76,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '18.14.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -167,9 +164,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '18.14.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
