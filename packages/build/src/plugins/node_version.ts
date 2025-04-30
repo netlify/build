@@ -21,7 +21,7 @@ export type PluginsOptions = {
  * This node version is minimum required to run the plugins code.
  * If the users preferred Node.js version is below that we have to fall back to the system node version
  */
-const MINIMUM_REQUIRED_NODE_VERSION = '>=18.14.0'
+const MINIMUM_REQUIRED_NODE_VERSION = '>=18.17.0'
 
 /**
  * Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
