@@ -27,6 +27,8 @@ const coreStep: CoreStepFunction = async function ({
   logs,
   netlifyConfig,
   explicitSecretKeys,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  enhancedSecretScan,
   systemLog,
   deployId,
   api,
@@ -50,6 +52,8 @@ const coreStep: CoreStepFunction = async function ({
   if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
     log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
   }
+
+  // TODO: here detect if there are any other potential secrets we should pass to the keys to search for
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 

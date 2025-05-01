@@ -85,6 +85,7 @@ const tExecBuild = async function ({
   quiet,
   framework,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -223,6 +224,7 @@ const tExecBuild = async function ({
     quiet,
     integrations,
     explicitSecretKeys,
+    enhancedSecretScan,
     edgeFunctionsBootstrapURL,
     eventHandlers,
   })
@@ -284,6 +286,7 @@ export const runAndReportBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -340,6 +343,7 @@ export const runAndReportBuild = async function ({
       quiet,
       integrations,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       eventHandlers,
     })
@@ -446,6 +450,7 @@ const initAndRunBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -551,6 +556,7 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       eventHandlers,
     })
@@ -627,6 +633,7 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -694,6 +701,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
+    enhancedSecretScan,
     edgeFunctionsBootstrapURL,
   })
 

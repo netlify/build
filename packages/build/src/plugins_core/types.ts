@@ -29,6 +29,7 @@ export type CoreStepFunctionArgs = {
 
   netlifyConfig: NetlifyConfig
   explicitSecretKeys: $TSFixme
+  enhancedSecretScan: boolean
 
   buildbotServerSocket: $TSFixme
   api: DynamicMethods
