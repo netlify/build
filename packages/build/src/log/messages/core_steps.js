@@ -129,22 +129,40 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
 }
 
 export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
+  const { secretMatches, enhancedSecretMatches } = groupedResults
+
   logErrorSubHeader(
     logs,
     `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
   )
 
-  Object.keys(groupedResults).forEach((key) => {
-    logError(logs, `Secret env var "${key}"'s value detected:`)
+  if (Object.keys(secretMatches).length > 0) {
+    Object.keys(secretMatches).forEach((key) => {
+      logError(logs, `Secret env var "${key}"'s value detected:`)
 
-    groupedResults[key]
-      .sort((a, b) => {
-        return a.file > b.file ? 0 : 1
-      })
-      .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
-      })
-  })
+      secretMatches[key]
+        .sort((a, b) => {
+          return a.file > b.file ? 0 : 1
+        })
+        .forEach(({ lineNumber, file }) => {
+          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+        })
+    })
+  }
+
+  if (Object.keys(enhancedSecretMatches).length > 0) {
+    Object.keys(enhancedSecretMatches).forEach((key) => {
+      logError(logs, `Env var "${key}"'s value detected as a likely secret value:`)
+
+      enhancedSecretMatches[key]
+        .sort((a, b) => {
+          return a.file > b.file ? 0 : 1
+        })
+        .forEach(({ lineNumber, file }) => {
+          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+        })
+    })
+  }
 
   logError(
     logs,
