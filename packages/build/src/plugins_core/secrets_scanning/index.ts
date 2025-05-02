@@ -65,7 +65,6 @@ const coreStep: CoreStepFunction = async function ({
     logSecretsScanSkipMessage(logs, msg)
     return stepResults
   }
-  // TODO: separate arrays for the secret matches vs enhanced secret matches
 
   // buildDir is the repository root or the base folder
   // The scanning will look at builddir so that it can review both repo pulled files
@@ -135,7 +134,7 @@ const coreStep: CoreStepFunction = async function ({
   logSecretsScanFailBuildMessage({
     logs,
     scanResults,
-    groupedResults: groupScanResultsByKeyAndScanType(scanResults, explicitSecretKeysToScanFor),
+    groupedResults: groupScanResultsByKeyAndScanType(scanResults, otherKeysToScanFor),
   })
 
   const error = new Error(`Secrets scanning found secrets in build.`)
