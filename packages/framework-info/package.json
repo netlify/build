@@ -73,7 +73,7 @@
     "cpy": "^9.0.0",
     "cpy-cli": "^4.0.0",
     "fast-glob": "^3.2.12",
-    "npm-run-all2": "^5.0.0",
+    "npm-run-all2": "^8.0.0",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "tmp-promise": "^3.0.2",
     "typescript": "^5.0.0",
