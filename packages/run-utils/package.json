@@ -53,7 +53,7 @@
     "execa": "^7.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.18.53",
+    "@types/node": "^20.12.11",
     "semver": "^7.3.8",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
