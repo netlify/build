@@ -45,7 +45,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@bugsnag/js": "^7.20.0",
+    "@bugsnag/js": "^8.0.0",
     "@iarna/toml": "^2.2.5",
     "dot-prop": "^7.2.0",
     "find-up": "^6.3.0",
