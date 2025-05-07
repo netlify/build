@@ -48,7 +48,7 @@
     "@vitest/coverage-v8": "^0.34.0",
     "archiver": "^5.3.1",
     "chalk": "^5.4.0",
-    "nock": "^13.2.4",
+    "nock": "^14.0.0",
     "tar": "^6.1.11",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
