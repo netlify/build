@@ -1,4 +1,4 @@
-import type { NetlifyAPI } from 'netlify'
+import type { NetlifyAPI } from '@netlify/api'
 
 export const getEnvelope = async function ({
   api,

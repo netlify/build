@@ -1,5 +1,5 @@
 {
-  "name": "netlify",
+  "name": "@netlify/api",
   "description": "Netlify Node.js API client",
   "version": "13.3.5",
   "type": "module",
