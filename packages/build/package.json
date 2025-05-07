@@ -79,7 +79,7 @@
     "@netlify/run-utils": "^5.2.0",
     "@netlify/zip-it-and-ship-it": "10.0.7",
     "@sindresorhus/slugify": "^2.0.0",
-    "ansi-escapes": "^6.0.0",
+    "ansi-escapes": "^7.0.0",
     "chalk": "^5.0.0",
     "clean-stack": "^5.0.0",
     "execa": "^7.0.0",
