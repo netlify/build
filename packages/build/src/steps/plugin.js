@@ -1,5 +1,9 @@
+import { context, propagation } from '@opentelemetry/api'
+
 import { addErrorInfo } from '../error/info.js'
+import { addOutputFlusher } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
+import { getStandardStreams } from '../log/output_flusher.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
 import { callChild } from '../plugins/ipc.js'
 import { getSuccessStatus } from '../status/success.js'
@@ -7,11 +11,14 @@ import { getSuccessStatus } from '../status/success.js'
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
+export const isTrustedPlugin = (packageName) => packageName?.startsWith('@netlify/')
+
 // Fire a plugin step
 export const firePluginStep = async function ({
   event,
   childProcess,
   packageName,
+  packagePath,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -19,6 +26,7 @@ export const firePluginStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -26,13 +34,20 @@ export const firePluginStep = async function ({
   steps,
   error,
   logs,
+  outputFlusher,
+  systemLog,
   featureFlags,
   debug,
   verbose,
+  extensionMetadata,
 }) {
-  const listeners = pipePluginOutput(childProcess, logs)
+  const standardStreams = getStandardStreams(outputFlusher)
+  const listeners = pipePluginOutput(childProcess, logs, standardStreams)
 
-  const isTrustedPlugin = pluginPackageJson?.name?.startsWith('@netlify/')
+  const otelCarrier = {}
+  propagation.inject(context.active(), otelCarrier)
+
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -47,11 +62,13 @@ export const firePluginStep = async function ({
         event,
         error,
         envChanges,
-        featureFlags: isTrustedPlugin ? featureFlags : undefined,
+        featureFlags: isTrustedPlugin(pluginPackageJson?.name) ? featureFlags : undefined,
         netlifyConfig,
         constants,
+        otelCarrier,
+        extensionMetadata,
       },
-      logs,
+      logs: logsA,
       verbose,
     })
     const {
@@ -62,14 +79,18 @@ export const firePluginStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      defaultConfig,
       headersPath,
+      packagePath,
       redirectsPath,
       configMutations,
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
+      systemLog,
       debug,
+      source: packageName,
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
@@ -81,15 +102,17 @@ export const firePluginStep = async function ({
       newStatus,
     }
   } catch (newError) {
-    const errorType = getPluginErrorType(newError, loadedFrom)
+    const errorType = getPluginErrorType(newError, loadedFrom, packageName)
     addErrorInfo(newError, {
       ...errorType,
-      plugin: { pluginPackageJson, packageName },
+      plugin: { pluginPackageJson, packageName, extensionMetadata },
       location: { event, packageName, loadedFrom, origin },
     })
     return { newError }
   } finally {
-    await unpipePluginOutput(childProcess, logs, listeners)
+    if (!isTrustedPlugin(pluginPackageJson?.name) || listeners) {
+      await unpipePluginOutput(childProcess, logs, listeners, standardStreams)
+    }
     logStepCompleted(logs, verbose)
   }
 }

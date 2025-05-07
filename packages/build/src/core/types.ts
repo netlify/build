@@ -1,4 +1,4 @@
-import { NetlifyConfig } from '../../types/index.js'
+import { NetlifyConfig, NetlifyPlugin } from '../index.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
@@ -8,6 +8,8 @@ export type BuildCLIFlags = {
   siteId: string
   /** Netlify API token for authentication */
   token: string
+  /** Netlify Deploy ID */
+  deployId: string
   /**
    * Run in dry mode, i.e. printing steps without executing them
    * @default false
@@ -19,8 +21,6 @@ export type BuildCLIFlags = {
   /** The invoking service of netlify build */
   mode: Mode
   telemetry: boolean
-  /** Distributed tracing properties for this build*/
-  tracing: TracingOptions
   /**
    * Buffer output instead of printing it
    * @default false
@@ -36,11 +36,24 @@ export type BuildCLIFlags = {
    */
   quiet?: boolean
 
+  packagePath?: string
+
   statsd?: { host?: string; port?: number }
 }
 
 export type BuildFlags = BuildCLIFlags & {
   env?: Record<string, unknown>
+  eventHandlers?: EventHandlers
+}
+
+type EventHandlers = {
+  [K in keyof NetlifyPlugin]:
+    | NetlifyPlugin[K]
+    | {
+        handler: NetlifyPlugin[K]
+        description: string
+        quiet?: boolean
+      }
 }
 
 export type BuildResult = {
@@ -71,17 +84,4 @@ export type ErrorParam = {
   testOpts?: TestOptions
   childEnv?: any
   netlifyConfig?: NetlifyConfig
-}
-
-export type TracingOptions = {
-  enabled: boolean
-  httpProtocol: string
-  host: string
-  port: number
-  /** API Key used for a dedicated trace provider */
-  apiKey: string
-  /** Properties of the root span and trace id used to stitch context */
-  traceId: string
-  traceFlags: number
-  parentSpanId: string
 }

@@ -1,5 +1,50 @@
 # Changelog
 
+## [8.0.0](https://github.com/netlify/build/compare/headers-parser-v7.3.0...headers-parser-v8.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [7.3.0](https://github.com/netlify/build/compare/headers-parser-v7.2.0...headers-parser-v7.3.0) (2024-12-14)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+* rename unscoped NPM packages ([#5943](https://github.com/netlify/build/issues/5943)) ([131a644](https://github.com/netlify/build/commit/131a644bfde5205f730f3369b778d8914c7c0382))
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+## [7.2.0](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.4...netlify-headers-parser-v7.2.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+## [7.1.4](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.3...netlify-headers-parser-v7.1.4) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+## [7.1.3](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.2...netlify-headers-parser-v7.1.3) (2024-01-08)
+
+
+### Bug Fixes
+
+* **tracing:** cleanup otel setup ([#5446](https://github.com/netlify/build/issues/5446)) ([2d10996](https://github.com/netlify/build/commit/2d10996ee91e7640be0e4b53105ae30cb42752fe))
+
 ## [7.1.2](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.1...netlify-headers-parser-v7.1.2) (2023-03-13)
 
 

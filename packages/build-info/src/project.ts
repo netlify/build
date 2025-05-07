@@ -8,7 +8,9 @@ import { EventEmitter } from './events.js'
 import { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
-import { report } from './metrics.js'
+import { getFramework } from './get-framework.js'
+import { Logger } from './logger.js'
+import { Severity, report } from './metrics.js'
 import {
   AVAILABLE_PACKAGE_MANAGERS,
   PkgManagerFields,
@@ -58,6 +60,11 @@ export class Project {
   #environment: Record<string, string | undefined> = {}
   /** A bugsnag session */
   bugsnag: Client
+  /** A logging instance  */
+  logger: Logger
+
+  /** A function that is used to report errors */
+  reportFn: typeof report = report
 
   events = new EventEmitter<Events>()
 
@@ -65,7 +72,7 @@ export class Project {
   private _nodeVersion: SemVer | null = null
 
   setNodeVersion(version: string): this {
-    this._nodeVersion = parse(version)
+    this._nodeVersion = parse(coerce(version), { loose: true })
     return this
   }
 
@@ -92,7 +99,15 @@ export class Project {
     return null
   }
 
-  constructor(public fs: FileSystem, baseDirectory?: string, root?: string) {
+  async isRedwoodProject(): Promise<boolean> {
+    return await this.fs.fileExists(this.fs.resolve(this.fs.cwd, 'redwood.toml'))
+  }
+
+  constructor(
+    public fs: FileSystem,
+    baseDirectory?: string,
+    root?: string,
+  ) {
     this.baseDirectory = fs.resolve(root || '', baseDirectory !== undefined ? baseDirectory : fs.cwd)
     this.root = root ? fs.resolve(fs.cwd, root) : undefined
 
@@ -102,6 +117,7 @@ export class Project {
         : fs.relative(this.root || fs.cwd, this.baseDirectory)
 
     this.fs.cwd = this.baseDirectory
+    this.logger = fs.logger
   }
 
   /** Set's the environment for the project */
@@ -110,7 +126,13 @@ export class Project {
     return this
   }
 
-  /** Set's a bugsnag client for the current session */
+  /** Sets the function that is used to report errors. Overrides the default bugsnag reporting for the project */
+  setReportFn(fn: typeof report): this {
+    this.reportFn = fn
+    return this
+  }
+
+  /** Sets a bugsnag client for the current session */
   setBugsnag(client?: Client): this {
     if (client) {
       this.bugsnag = client
@@ -124,15 +146,21 @@ export class Project {
   }
 
   /** Reports an error with additional metadata */
-  report(error: NotifiableError) {
+  report(
+    error: NotifiableError,
+    config: { metadata?: Record<string, any>; severity?: Severity; context?: string } = {},
+  ) {
     this.fs.logger.error(error)
-    report(error, {
+    this.reportFn(error, {
       metadata: {
         build: {
           baseDirectory: this.baseDirectory,
           root: this.root,
         },
+        ...(config.metadata || {}),
       },
+      context: config.context,
+      severity: config.severity,
       client: this.bugsnag,
     })
   }
@@ -174,6 +202,10 @@ export class Project {
 
   /** Resolves a path correctly with a package path, independent of run from the workspace root or from a package */
   resolveFromPackage(packagePath: string, ...parts: string[]) {
+    if (this.jsWorkspaceRoot) {
+      return this.fs.join(this.jsWorkspaceRoot, packagePath, ...parts)
+    }
+
     return this.baseDirectory.endsWith(packagePath) && !this.workspace?.isRoot
       ? this.fs.join(this.baseDirectory, ...parts)
       : this.fs.resolve(packagePath, ...parts)
@@ -181,6 +213,7 @@ export class Project {
 
   /** Detects the used package Manager */
   async detectPackageManager() {
+    this.logger.debug('[project.ts]: detectPackageManager')
     // if the packageManager is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.packageManager !== undefined) {
@@ -197,6 +230,7 @@ export class Project {
 
   /** Detects the javascript workspace settings */
   async detectWorkspaces() {
+    this.logger.debug('[project.ts]: detectWorkspaces')
     // if the workspace is undefined, the detection was not run.
     // if it is an object or null it has already run
     if (this.workspace !== undefined) {
@@ -217,6 +251,7 @@ export class Project {
 
   /** Detects all used build systems */
   async detectBuildSystem() {
+    this.logger.debug('[project.ts]: detectBuildSystem')
     // if the workspace is undefined, the detection was not run.
     if (this.buildSystems !== undefined) {
       return this.buildSystems
@@ -237,7 +272,9 @@ export class Project {
     }
   }
 
+  /** Detects all used runtimes */
   async detectRuntime() {
+    this.logger.debug('[project.ts]: detectRuntime')
     try {
       this.runtimes = (await Promise.all(runtimes.map((Runtime) => new Runtime(this).detect()))).filter(
         Boolean,
@@ -250,8 +287,9 @@ export class Project {
     }
   }
 
-  /** Detects all used build systems */
+  /** Detects all used frameworks */
   async detectFrameworks() {
+    this.logger.debug('[project.ts]: detectFrameworks')
     // if the workspace is undefined, the detection was not run.
     if (this.frameworks !== undefined) {
       return [...this.frameworks.values()].flat()
@@ -265,8 +303,15 @@ export class Project {
       if (this.workspace) {
         // if we have a workspace parallelize in all workspaces
         await Promise.all(
-          this.workspace.packages.map(async ({ path: pkg }) => {
-            if (this.workspace) {
+          this.workspace.packages.map(async ({ path: pkg, forcedFramework }) => {
+            if (forcedFramework) {
+              try {
+                const framework = await getFramework(forcedFramework, this)
+                this.frameworks.set(pkg, [framework])
+              } catch {
+                // noop framework not found
+              }
+            } else if (this.workspace) {
               const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
               this.frameworks.set(pkg, result)
             }
@@ -285,6 +330,7 @@ export class Project {
   }
 
   async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
+    this.logger.debug(`[project.ts]: detectFrameworksInPath - ${path}`)
     try {
       const detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
         Boolean,
@@ -301,7 +347,8 @@ export class Project {
     }
   }
 
-  async getBuildSettings(): Promise<Settings[]> {
+  async getBuildSettings(packagePath?: string): Promise<Settings[]> {
+    this.logger.debug('[project.ts]: getBuildSettings')
     // if the settings is undefined, the detection was not run.
     // if it is an array it has already run
     if (this.settings !== undefined) {
@@ -313,7 +360,7 @@ export class Project {
       // This needs to be run first
       await this.detectFrameworks()
 
-      this.settings = await getBuildSettings(this)
+      this.settings = await getBuildSettings(this, packagePath)
       await this.events.emit('detectSettings', this.settings)
     } catch (error) {
       this.report(error)

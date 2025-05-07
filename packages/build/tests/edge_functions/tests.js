@@ -1,11 +1,12 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { platform } from 'process'
+import { platform, version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import semver from 'semver'
 import tmp from 'tmp-promise'
 
 import { importJsonFile } from '../../lib/utils/json.js'
@@ -98,7 +99,7 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
 
   const { routes, function_config } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', excluded_patterns: [] }])
+  t.deepEqual(routes, [{ function: 'function-1', pattern: '^(?:/(.*))/?$', excluded_patterns: [], path: '/*' }])
   t.deepEqual(function_config, { 'function-1': { generator: 'internalFunc' } })
 })
 
@@ -187,7 +188,9 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
 
   const { routes } = await importJsonFile(manifestPath)
 
-  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [] }])
+  t.deepEqual(routes, [
+    { function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [], path: '/test-test' },
+  ])
 })
 
 test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
@@ -211,3 +214,82 @@ test.serial('cleans up the edge functions dist directory before bundling', async
 
   t.false(await pathExists(oldBundlePath))
 })
+
+// Targeting Node 16.7.0+ because these fixtures rely on `fs.cp()`.
+if (semver.gte(nodeVersion, '16.7.0')) {
+  test.serial('builds edge functions generated with the Frameworks API', async (t) => {
+    const output = await new Fixture('./fixtures/functions_user_framework')
+      .withFlags({
+        debug: false,
+        mode: 'buildbot',
+      })
+      .runWithBuild()
+
+    t.snapshot(normalizeOutput(output))
+
+    const { routes } = await assertManifest(t, 'functions_user_framework')
+
+    t.is(routes.length, 1)
+    t.deepEqual(routes[0], {
+      function: 'function-2',
+      pattern: '^/framework(?:/(.*))/?$',
+      excluded_patterns: ['^/framework/skip_(.*)/?$'],
+      path: '/framework/*',
+    })
+  })
+
+  test.serial(
+    'builds both edge functions generated with the Frameworks API and the ones in the internal directory',
+    async (t) => {
+      const output = await new Fixture('./fixtures/functions_user_internal_framework')
+        .withFlags({
+          debug: false,
+          mode: 'buildbot',
+        })
+        .runWithBuild()
+
+      t.snapshot(normalizeOutput(output))
+
+      const { routes } = await assertManifest(t, 'functions_user_internal_framework')
+
+      t.deepEqual(routes, [
+        {
+          function: 'frameworks-internal-conflict',
+          pattern: '^/frameworks-internal-conflict/frameworks/?$',
+          excluded_patterns: [],
+          path: '/frameworks-internal-conflict/frameworks',
+        },
+        {
+          function: 'function-3',
+          pattern: '^/internal(?:/(.*))/?$',
+          excluded_patterns: ['^/internal/skip_(.*)/?$'],
+          path: '/internal/*',
+        },
+        {
+          function: 'frameworks-user-conflict',
+          pattern: '^/frameworks-user-conflict/frameworks/?$',
+          excluded_patterns: [],
+          path: '/frameworks-user-conflict/frameworks',
+        },
+        {
+          function: 'function-2',
+          pattern: '^/framework(?:/(.*))/?$',
+          excluded_patterns: ['^/framework/skip_(.*)/?$'],
+          path: '/framework/*',
+        },
+        {
+          function: 'frameworks-user-conflict',
+          pattern: '^/frameworks-user-conflict/user/?$',
+          excluded_patterns: [],
+          path: '/frameworks-user-conflict/user',
+        },
+        {
+          function: 'function-1',
+          pattern: '^/user/?$',
+          excluded_patterns: [],
+          path: '/user',
+        },
+      ])
+    },
+  )
+}

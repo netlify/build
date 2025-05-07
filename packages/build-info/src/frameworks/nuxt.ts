@@ -9,7 +9,8 @@ export class Nuxt extends BaseFramework implements Framework {
   dev = {
     command: 'nuxt',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
+    clearPublishDirectory: true,
   }
 
   build = {
@@ -30,14 +31,9 @@ export class Nuxt extends BaseFramework implements Framework {
       if (this.isV3(this.detected)) {
         this.name = 'Nuxt 3'
 
-        const cmd = this.project.packageManager?.runCommand || 'npm run'
-        this.build.command = `${cmd} build`
-        this.dev.command = `${cmd} dev`
-
-        this.env = {
-          AWS_LAMBDA_JS_RUNTIME: 'nodejs14.x',
-          NODE_VERSION: '14',
-        }
+        this.build.command = `nuxt build`
+        this.build.directory = `dist`
+        this.dev.command = `nuxt dev`
       }
       return this as DetectedFramework
     }

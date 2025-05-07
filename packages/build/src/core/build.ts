@@ -1,4 +1,5 @@
 import { supportedRuntimes } from '@netlify/framework-info'
+import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
@@ -13,7 +14,7 @@ import { reportStatuses } from '../status/report.js'
 import { getDevSteps, getSteps } from '../steps/get.js'
 import { runSteps } from '../steps/run_steps.js'
 import { initTimers, measureDuration } from '../time/main.js'
-import { startTracing } from '../tracing/main.js'
+import { getBlobsEnvironmentContext } from '../utils/blobs.js'
 
 import { getConfigOpts, loadConfig } from './config.js'
 import { getConstants } from './constants.js'
@@ -35,11 +36,10 @@ export const startBuild = function (flags: Partial<BuildFlags>) {
     logBuildStart(logs)
   }
 
-  const { bugsnagKey, tracingOpts, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: { tracingOpts, debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
-  const rootTracingContext = startTracing(tracingOpts, getSystemLogger(logs, debug, systemLogFile))
+  const { bugsnagKey, debug, systemLogFile, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: { debug, systemLogFile, ...flagsA }, logs, bugsnagKey })
 
-  return { ...flagsA, rootTracingContext, debug, systemLogFile, errorMonitor, logs, timers }
+  return { ...flagsA, debug, systemLogFile, errorMonitor, logs, timers }
 }
 
 const tExecBuild = async function ({
@@ -49,10 +49,12 @@ const tExecBuild = async function ({
   cachedConfigPath,
   outputConfigPath,
   cwd,
+  packagePath,
   repositoryRoot,
   apiHost,
   token,
   siteId,
+  accountId,
   context,
   branch,
   baseRelDir,
@@ -83,15 +85,19 @@ const tExecBuild = async function ({
   quiet,
   framework,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   const configOpts = getConfigOpts({
     config,
     defaultConfig,
     cwd,
     repositoryRoot,
+    packagePath,
     apiHost,
     token,
     siteId,
+    accountId,
     context,
     branch,
     baseRelDir,
@@ -103,6 +109,7 @@ const tExecBuild = async function ({
     testOpts,
     featureFlags,
   })
+
   const {
     netlifyConfig,
     configPath,
@@ -119,9 +126,11 @@ const tExecBuild = async function ({
     api,
     siteInfo,
     timers: timersA,
+    integrations,
   } = await loadConfig({
     configOpts,
     cachedConfig,
+    defaultConfig,
     cachedConfigPath,
     envOpt,
     debug,
@@ -129,6 +138,7 @@ const tExecBuild = async function ({
     nodePath,
     timers,
     quiet,
+    featureFlags,
   })
 
   if (featureFlags.build_automatic_runtime && framework) {
@@ -150,6 +160,7 @@ const tExecBuild = async function ({
     functionsDistDir,
     edgeFunctionsDistDir,
     cacheDir,
+    packagePath,
     netlifyConfig,
     siteInfo,
     apiHost,
@@ -172,6 +183,7 @@ const tExecBuild = async function ({
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
+    defaultConfig,
     configOpts,
     siteInfo,
     configPath,
@@ -180,6 +192,7 @@ const tExecBuild = async function ({
     redirectsPath,
     buildDir,
     repositoryRoot: repositoryRootA,
+    packagePath,
     nodePath,
     packageJson,
     userNodeVersion,
@@ -189,12 +202,14 @@ const tExecBuild = async function ({
     dry,
     mode,
     api,
+    token,
     errorMonitor,
     deployId,
     errorParams,
     logs,
     debug,
     systemLog,
+    systemLogFile,
     verbose,
     timers: timersA,
     sendStatus,
@@ -206,7 +221,10 @@ const tExecBuild = async function ({
     timeline,
     devCommand,
     quiet,
+    integrations,
     explicitSecretKeys,
+    edgeFunctionsBootstrapURL,
+    eventHandlers,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -226,12 +244,14 @@ export const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'buil
 export const runAndReportBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  defaultConfig,
   configOpts,
   siteInfo,
   configPath,
   outputConfigPath,
   headersPath,
   redirectsPath,
+  packagePath,
   buildDir,
   repositoryRoot,
   nodePath,
@@ -245,12 +265,14 @@ export const runAndReportBuild = async function ({
   dry,
   mode,
   api,
+  token,
   errorMonitor,
   deployId,
   errorParams,
   logs,
   debug,
   systemLog,
+  systemLogFile,
   verbose,
   timers,
   sendStatus,
@@ -260,7 +282,10 @@ export const runAndReportBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   try {
     const {
@@ -275,6 +300,7 @@ export const runAndReportBuild = async function ({
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
+      defaultConfig,
       configOpts,
       siteInfo,
       configPath,
@@ -282,6 +308,7 @@ export const runAndReportBuild = async function ({
       headersPath,
       redirectsPath,
       buildDir,
+      packagePath,
       repositoryRoot,
       nodePath,
       packageJson,
@@ -292,12 +319,14 @@ export const runAndReportBuild = async function ({
       dry,
       mode,
       api,
+      token,
       errorMonitor,
       deployId,
       errorParams,
       logs,
       debug,
       systemLog,
+      systemLogFile,
       verbose,
       timers,
       sendStatus,
@@ -309,7 +338,10 @@ export const runAndReportBuild = async function ({
       timeline,
       devCommand,
       quiet,
+      integrations,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
+      eventHandlers,
     })
     await Promise.all([
       reportStatuses({
@@ -374,6 +406,7 @@ export const runAndReportBuild = async function ({
 const initAndRunBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  defaultConfig,
   configOpts,
   siteInfo,
   configPath,
@@ -381,6 +414,7 @@ const initAndRunBuild = async function ({
   headersPath,
   redirectsPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   packageJson,
@@ -391,12 +425,14 @@ const initAndRunBuild = async function ({
   dry,
   mode,
   api,
+  token,
   errorMonitor,
   deployId,
   errorParams,
   logs,
   debug,
   systemLog,
+  systemLogFile,
   verbose,
   sendStatus,
   saveConfig,
@@ -408,14 +444,23 @@ const initAndRunBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  integrations,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
+  const pluginsEnv = {
+    ...childEnv,
+    ...getBlobsEnvironmentContext({ api, deployId: deployId, siteId: siteInfo?.id, token }),
+  }
+
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
     netlifyConfig,
     siteInfo,
     buildDir,
     nodePath,
+    packagePath,
     packageJson,
     userNodeVersion,
     mode,
@@ -426,19 +471,36 @@ const initAndRunBuild = async function ({
     timers,
     testOpts,
     featureFlags,
+    integrations,
+    context,
+    systemLog,
+    pluginsEnv,
   })
+
+  if (pluginsOptionsA?.length) {
+    const buildPlugins = {}
+    for (const plugin of pluginsOptionsA) {
+      if (plugin?.pluginPackageJson?.name) {
+        buildPlugins[`build.plugins['${plugin.pluginPackageJson.name}']`] = plugin?.pluginPackageJson?.version ?? 'N/A'
+      }
+    }
+
+    addAttributesToActiveSpan(buildPlugins)
+  }
 
   errorParams.pluginsOptions = pluginsOptionsA
 
   const { childProcesses, timers: timersB } = await startPlugins({
     pluginsOptions: pluginsOptionsA,
     buildDir,
-    childEnv,
+    childEnv: pluginsEnv,
     logs,
     debug,
     timers: timersA,
     featureFlags,
     quiet,
+    systemLog,
+    systemLogFile,
   })
 
   try {
@@ -454,6 +516,7 @@ const initAndRunBuild = async function ({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
       netlifyConfig,
+      defaultConfig,
       configOpts,
       packageJson,
       configPath,
@@ -462,6 +525,7 @@ const initAndRunBuild = async function ({
       headersPath,
       redirectsPath,
       buildDir,
+      packagePath,
       repositoryRoot,
       nodePath,
       childEnv,
@@ -487,6 +551,8 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
+      eventHandlers,
     })
 
     await Promise.all([
@@ -509,7 +575,13 @@ const initAndRunBuild = async function ({
     // the build is finished. The exception is when running in the dev timeline
     // since those are long-running events by nature.
     if (timeline !== 'dev') {
-      stopPlugins(childProcesses)
+      await stopPlugins({
+        childProcesses,
+        pluginOptions: pluginsOptionsA,
+        netlifyConfig,
+        logs,
+        verbose,
+      })
     }
   }
 }
@@ -520,6 +592,7 @@ const runBuild = async function ({
   childProcesses,
   pluginsOptions,
   netlifyConfig,
+  defaultConfig,
   configOpts,
   packageJson,
   configPath,
@@ -529,6 +602,7 @@ const runBuild = async function ({
   redirectsPath,
   buildDir,
   repositoryRoot,
+  packagePath,
   nodePath,
   childEnv,
   context,
@@ -553,6 +627,8 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  eventHandlers,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -562,12 +638,16 @@ const runBuild = async function ({
     logs,
     debug,
     verbose,
+    netlifyConfig,
+    featureFlags,
+    systemLog,
   })
 
-  const { steps, events } = timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps) : getSteps(pluginsSteps)
+  const { steps, events } =
+    timeline === 'dev' ? getDevSteps(devCommand, pluginsSteps, eventHandlers) : getSteps(pluginsSteps, eventHandlers)
 
   if (dry) {
-    await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })
+    await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs, featureFlags })
     return { netlifyConfig }
   }
 
@@ -589,6 +669,7 @@ const runBuild = async function ({
     redirectsPath,
     buildDir,
     repositoryRoot,
+    packagePath,
     nodePath,
     childEnv,
     context,
@@ -600,6 +681,7 @@ const runBuild = async function ({
     deployId,
     errorParams,
     netlifyConfig,
+    defaultConfig,
     configOpts,
     logs,
     debug,
@@ -612,6 +694,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
+    edgeFunctionsBootstrapURL,
   })
 
   return {

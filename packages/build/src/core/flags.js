@@ -44,6 +44,10 @@ Default: current directory`,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
   },
+  packagePath: {
+    string: true,
+    describe: `When using a monorepo, specifies the relative path from the repository root to the package being built`,
+  },
   apiHost: {
     string: true,
     describe: `Netlify API endpoint.
@@ -57,6 +61,10 @@ The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
   siteId: {
     string: true,
     describe: `Netlify Site ID.`,
+  },
+  accountId: {
+    string: true,
+    describe: `Netlify Account ID.`,
   },
   deployId: {
     string: true,
@@ -189,50 +197,6 @@ Default: false`,
   'statsd.port': {
     type: 'number',
     describe: 'Statsd port',
-    hidden: true,
-  },
-  tracing: {
-    describe: 'Tracing related options',
-    hidden: true,
-  },
-  'tracing.enabled': {
-    boolean: true,
-    describe: 'Enable distributed tracing for build',
-    hidden: true,
-  },
-  'tracing.apiKey': {
-    string: true,
-    describe: 'API Key for the tracing backend provider',
-    hidden: true,
-  },
-  'tracing.httpProtocol': {
-    string: true,
-    describe: 'Traces backend protocol. HTTP or HTTPS.',
-    hidden: true,
-  },
-  'tracing.host': {
-    string: true,
-    describe: 'Traces backend host',
-    hidden: true,
-  },
-  'tracing.port': {
-    number: true,
-    describe: 'Traces backend port',
-    hidden: true,
-  },
-  'tracing.traceId': {
-    string: true,
-    describe: 'Trace ID used to stitch the emited traces to',
-    hidden: true,
-  },
-  'tracing.parentSpanId': {
-    string: true,
-    describe: 'Parent Span ID used to stitch the root parent span to',
-    hidden: true,
-  },
-  'tracing.traceFlags': {
-    number: true,
-    describe: 'Trace flags containing the trace settings for the given trace ID',
     hidden: true,
   },
   offline: {

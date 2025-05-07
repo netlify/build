@@ -13,17 +13,24 @@ const config = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['import', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint', 'ava', '@vitest'],
 
   ignorePatterns: [
     // TODO: remove when they are migrated to typescript
     'packages/build/test-d/**',
     'packages/build/types/**',
     // don't lint fixtures
-    'packages/*/tests/**/fixtures/**',
+    'packages/*/tests/**/fixtures*/**',
+    'packages/*/benchmarks/**/fixtures*/**',
     'packages/framework-info/test/fixtures/**',
     'packages/framework-info/dist/**',
     'packages/*/lib/**',
+    'packages/*/dist/**',
+
+    'packages/edge-bundler/deno/**/*',
+    'packages/edge-bundler/node/vendor/**',
+    'packages/edge-bundler/test/deno/**/*',
+    'packages/edge-bundler/test/fixtures/**/*',
   ],
   rules: {
     // -----------------------------------------------------------
@@ -53,12 +60,26 @@ const config = {
         },
       },
     ],
+
+    // -----------------------------------------------------------
+    // Test rules
+    'ava/no-only-test': 'error',
+    // 'ava/no-skip-test': 'error', // Uncomment once we remove all skipped tests
+    // 'vitest/no-commented-out-tests': 'error', // Uncomment once we remove all commented out tests
+    '@vitest/no-disabled-tests': 'error',
+    '@vitest/no-focused-tests': 'error',
   },
   overrides: [
     {
       files: ['packages/*/tests/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
+      },
+    },
+    {
+      files: ['packages/zip-it-and-ship-it/tests/**'],
+      rules: {
+        '@typescript-eslint/no-non-null-assertion': 'off',
       },
     },
   ],

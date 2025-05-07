@@ -1,6 +1,6 @@
 {
-  "name": "netlify-headers-parser",
-  "version": "7.1.2",
+  "name": "@netlify/headers-parser",
+  "version": "8.0.0",
   "description": "Parses Netlify headers into a JavaScript object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:bench": "vitest bench",
     "test:dev": "vitest",
-    "test:ci": "vitest run --reporter=default && vitest bench --run"
+    "test:ci": "vitest run --reporter=default && vitest bench --run --passWithNoTests"
   },
   "keywords": [
     "netlify"
@@ -26,17 +26,17 @@
   "author": "Netlify",
   "license": "MIT",
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "escape-string-regexp": "^5.0.0",
     "fast-safe-stringify": "^2.0.7",
     "is-plain-obj": "^4.0.0",
     "map-obj": "^5.0.0",
-    "path-exists": "^5.0.0",
-    "toml": "^3.0.0"
+    "path-exists": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.14.2",
+    "@types/node": "^14.18.53",
     "typescript": "^5.0.0",
-    "vitest": "^0.30.1"
+    "vitest": "^0.34.0"
   },
   "repository": {
     "type": "git",

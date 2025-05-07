@@ -1,0 +1,20 @@
+[[redirects]]
+  from = "/old-path"
+  to = "/new-path"
+  status = 301
+  force = false
+  query = {path = ":path"}
+  conditions = {Language = ["en"], Country = ["US"], Role = ["admin"]}
+  [redirects.rate_limit]
+    window_limit = 40
+    aggregate_by = ["ip"]
+
+[[redirects]]
+  from = "/other/*"
+  to = "/maybe_rewritten"
+    [redirects.rate_limit]
+    action = "rewrite"
+    to = "/rewritten"
+    window_limit = 40
+    window_size = 20
+    aggregate_by = ["ip", "domain"]

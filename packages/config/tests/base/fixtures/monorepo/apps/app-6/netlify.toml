@@ -1,0 +1,3 @@
+[functions]
+node_bundler = "esbuild"
+directory = "apps/app-6/custom-dir"

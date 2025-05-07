@@ -6,6 +6,7 @@ const BUILD_COMMAND_DESCRIPTIONS = {
   ui: 'Build command from Netlify app',
   config: 'build.command from netlify.toml',
   inline: 'build.command from a plugin',
+  heuristics: 'build.command automatically detected',
 }
 
 /** Retrieve human-friendly plugin origin */

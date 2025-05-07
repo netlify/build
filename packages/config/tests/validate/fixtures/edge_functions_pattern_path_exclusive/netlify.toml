@@ -1,0 +1,4 @@
+[[edge_functions]]
+path = '/products/*'
+pattern = 'test'
+function = 'test'

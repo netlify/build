@@ -41,7 +41,7 @@ export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildFla
   }
 }
 
-const getBuildSteps = function (buildSteps) {
+const getBuildSteps = function (buildSteps: string[]) {
   const allSteps = getSteps([]).steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
@@ -49,6 +49,7 @@ const getBuildSteps = function (buildSteps) {
 
 const executeBuildStep = async function ({
   config,
+  packagePath,
   defaultConfig,
   cachedConfig,
   debug,
@@ -63,6 +64,10 @@ const executeBuildStep = async function ({
   buildSteps,
   repositoryRoot,
   systemLog,
+  edgeFunctionsBootstrapURL,
+  deployId,
+  token,
+  quiet,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -70,6 +75,7 @@ const executeBuildStep = async function ({
     featureFlags,
     mode,
     repositoryRoot,
+    packagePath,
   } as any)
   const {
     netlifyConfig,
@@ -83,22 +89,26 @@ const executeBuildStep = async function ({
     cachedConfig,
     debug,
     logs,
+    quiet,
     nodePath,
     timers: [],
   })
   const constants = await getConstants({
     buildDir,
     functionsDistDir,
+    packagePath,
     edgeFunctionsDistDir,
     netlifyConfig,
     siteInfo,
     mode,
+    token,
   } as any)
 
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
 
   try {
     const { netlifyConfig: netlifyConfigA, configMutations } = await runBuildStep({
+      defaultConfig,
       netlifyConfig,
       buildDir,
       nodePath,
@@ -106,10 +116,14 @@ const executeBuildStep = async function ({
       debug,
       constants,
       featureFlags,
+      packagePath,
       childEnv,
       buildSteps,
       repositoryRoot: repositoryRootA,
       systemLog,
+      edgeFunctionsBootstrapURL,
+      deployId,
+      quiet,
     })
 
     return {
@@ -135,6 +149,7 @@ const executeBuildStep = async function ({
 }
 
 const runBuildStep = async function ({
+  defaultConfig,
   netlifyConfig,
   buildDir,
   nodePath,
@@ -142,10 +157,14 @@ const runBuildStep = async function ({
   logs,
   debug,
   featureFlags,
+  packagePath,
   childEnv,
   buildSteps,
   repositoryRoot,
   systemLog,
+  edgeFunctionsBootstrapURL,
+  deployId,
+  quiet,
 }) {
   const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
     steps: getBuildSteps(buildSteps),
@@ -153,13 +172,18 @@ const runBuildStep = async function ({
     nodePath,
     constants,
     netlifyConfig,
+    defaultConfig,
     logs,
     debug,
     timers: [],
+    packagePath,
     featureFlags,
     childEnv,
     repositoryRoot,
     systemLog,
+    edgeFunctionsBootstrapURL,
+    deployId,
+    quiet,
   } as any)
 
   return { netlifyConfig: netlifyConfigA, configMutations }

@@ -133,7 +133,7 @@ describe('Nx monorepo', () => {
       buildCommand: 'nx run website:build',
       devCommand: 'nx run website:serve',
       dist: join('dist/packages/website/.next'),
-      frameworkPort: 3000,
+      frameworkPort: 4200,
       plugins_recommended: ['@netlify/plugin-nextjs'],
     })
   })

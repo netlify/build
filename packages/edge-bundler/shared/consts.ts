@@ -1,0 +1,5 @@
+export const importMapSpecifier = 'netlify:import-map'
+export const nodePrefix = 'node:'
+export const npmPrefix = 'npm:'
+export const virtualRoot = 'file:///root/'
+export const virtualVendorRoot = 'file:///vendor/'

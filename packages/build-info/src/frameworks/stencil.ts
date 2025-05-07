@@ -10,7 +10,7 @@ export class Stencil extends BaseFramework implements Framework {
   dev = {
     command: 'stencil build --dev --watch --serve',
     port: 3333,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

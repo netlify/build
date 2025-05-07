@@ -1,28 +1,48 @@
+import { getGlobalContext, setGlobalContext } from '@netlify/opentelemetry-utils'
+import { context, propagation } from '@opentelemetry/api'
+
 import { getNewEnvChanges, setEnvChanges } from '../../env/changes.js'
-import { logPluginMethodStart, logPluginMethodEnd } from '../../log/messages/ipc.js'
+import { logPluginMethodEnd, logPluginMethodStart } from '../../log/messages/ipc.js'
 
 import { cloneNetlifyConfig, getConfigMutations } from './diff.js'
+import { getSystemLog } from './systemLog.js'
 import { getUtils } from './utils.js'
 
-// Run a specific plugin event handler
+/** Run a specific plugin event handler */
 export const run = async function (
-  { event, error, constants, envChanges, featureFlags, netlifyConfig },
+  { event, error, constants, envChanges, featureFlags, netlifyConfig, otelCarrier, extensionMetadata },
   { methods, inputs, packageJson, verbose },
 ) {
-  const method = methods[event]
-  const runState = {}
-  const utils = getUtils({ event, constants, runState })
-  const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
-  const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigCopy, packageJson, error, featureFlags }
+  setGlobalContext(propagation.extract(context.active(), otelCarrier))
 
-  const envBefore = setEnvChanges(envChanges)
+  // set the global context for the plugin run
+  return context.with(getGlobalContext(), async () => {
+    const method = methods[event]
+    const runState = {}
+    const systemLog = getSystemLog()
+    const utils = getUtils({ event, constants, runState })
+    const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
+    const runOptions = {
+      utils,
+      constants,
+      inputs,
+      netlifyConfig: netlifyConfigCopy,
+      packageJson,
+      error,
+      featureFlags,
+      systemLog,
+      extensionMetadata,
+    }
 
-  logPluginMethodStart(verbose)
-  await method(runOptions)
-  logPluginMethodEnd(verbose)
+    const envBefore = setEnvChanges(envChanges)
 
-  const newEnvChanges = getNewEnvChanges(envBefore, netlifyConfig, netlifyConfigCopy)
+    logPluginMethodStart(verbose)
+    await method(runOptions)
+    logPluginMethodEnd(verbose)
 
-  const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
-  return { ...runState, newEnvChanges, configMutations }
+    const newEnvChanges = getNewEnvChanges(envBefore, netlifyConfig, netlifyConfigCopy)
+
+    const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
+    return { ...runState, newEnvChanges, configMutations }
+  })
 }

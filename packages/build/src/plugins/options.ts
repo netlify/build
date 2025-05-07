@@ -18,6 +18,7 @@ const tGetPluginsOptions = async function ({
   netlifyConfig: { plugins },
   siteInfo,
   buildDir,
+  packagePath,
   nodePath,
   packageJson,
   userNodeVersion,
@@ -28,12 +29,17 @@ const tGetPluginsOptions = async function ({
   sendStatus,
   testOpts,
   featureFlags,
+  integrations,
+  context,
+  systemLog,
+  pluginsEnv,
 }) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
     siteInfo,
     buildDir,
     nodePath,
+    packagePath,
     packageJson,
     userNodeVersion,
     mode,
@@ -43,6 +49,10 @@ const tGetPluginsOptions = async function ({
     sendStatus,
     testOpts,
     featureFlags,
+    integrations,
+    context,
+    systemLog,
+    pluginsEnv,
   })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map((pluginOptions) => loadPluginFiles({ pluginOptions, debug })),
@@ -103,7 +113,7 @@ export const getSpawnInfo = (): {
   }
 } => {
   // we know that this package.json has a name as it's ours
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const packageName = ROOT_PACKAGE_JSON.name!
   return {
     plugin: { packageName, pluginPackageJson: ROOT_PACKAGE_JSON },

@@ -9,12 +9,13 @@ import type { FeatureFlags } from '../../core/feature_flags.js'
 import { getZisiFeatureFlags } from './feature_flags.js'
 
 type GetZisiParametersType = {
+  branch?: string
   buildDir: string
   childEnv: Record<string, string>
   featureFlags: FeatureFlags
   functionsConfig: Record<string, any>
   functionsDist: string
-  internalFunctionsSrc: string
+  internalFunctionsSrc: string | undefined
   isRunningLocally: boolean
   repositoryRoot: string
   userNodeVersion: string
@@ -40,6 +41,7 @@ const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion:
 }
 
 export const getZisiParameters = ({
+  branch,
   buildDir,
   childEnv,
   featureFlags,
@@ -58,17 +60,21 @@ export const getZisiParameters = ({
     normalizeFunctionConfig({ buildDir, functionConfig: object, isRunningLocally, nodeVersion }),
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
-  // Only internal functions are allowed to have a json config file
-  const configFileDirectories = [resolve(internalFunctionsSrc)]
+
+  // Only the legacy internal functions directory is allowed to have a JSON
+  // config file.
+  const configFileDirectories = internalFunctionsSrc ? [resolve(internalFunctionsSrc)] : undefined
+
   return {
     basePath: buildDir,
+    branch,
     config,
     manifest,
     featureFlags: zisiFeatureFlags,
     repositoryRoot,
     configFileDirectories,
     internalSrcFolder: internalFunctionsSrc,
-    systemLog: featureFlags.buildbot_zisi_system_log ? systemLog : undefined,
+    systemLog,
   }
 }
 

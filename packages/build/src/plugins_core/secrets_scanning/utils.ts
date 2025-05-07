@@ -1,11 +1,13 @@
-import { createReadStream } from 'node:fs'
+import { createReadStream, promises as fs, existsSync } from 'node:fs'
 import path from 'node:path'
 import { createInterface } from 'node:readline'
 
 import { fdir } from 'fdir'
+import { minimatch } from 'minimatch'
 
-interface ScanResults {
+export interface ScanResults {
   matches: MatchResult[]
+  scannedFilesCount: number
 }
 
 interface ScanArgs {
@@ -19,6 +21,11 @@ interface MatchResult {
   lineNumber: number
   key: string
   file: string
+}
+
+export type SecretScanResult = {
+  scannedFilesCount: number
+  secretsScanMatches: MatchResult[]
 }
 
 /**
@@ -86,7 +93,32 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
  * @returns string[] of relative paths from base of files that should be searched
  */
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
-  let files = await new fdir().withRelativePaths().crawl(base).withPromise()
+  const omitPathsAlways = ['.git/', '.cache/']
+
+  // node modules is dense and is only useful to scan if the repo itself commits these
+  // files. As a simple check to understand if the repo would commit these files, we expect
+  // that they would not ignore them from their git settings. So if gitignore includes
+  // node_modules anywhere we will omit looking in those folders - this will allow repos
+  // that do commit node_modules to still scan them.
+  let ignoreNodeModules = false
+
+  const gitignorePath = path.resolve(base, '.gitignore')
+  const gitignoreContents = existsSync(gitignorePath) ? await fs.readFile(gitignorePath, 'utf-8') : ''
+
+  if (gitignoreContents?.includes('node_modules')) {
+    ignoreNodeModules = true
+  }
+
+  let files = await new fdir()
+    .withRelativePaths()
+    .filter((path) => {
+      if (ignoreNodeModules && path.includes('node_modules')) {
+        return false
+      }
+      return true
+    })
+    .crawl(base)
+    .withPromise()
 
   // normalize the path separators to all use the forward slash
   // this is needed for windows machines and snapshot tests consistency.
@@ -99,6 +131,8 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
       .filter(Boolean)
   }
 
+  omitPaths = omitPaths.concat(omitPathsAlways)
+
   if (omitPaths.length > 0) {
     files = files.filter((relativePath) => !omitPathMatches(relativePath, omitPaths))
   }
@@ -107,7 +141,12 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
 }
 
 // omit paths are relative path substrings.
-const omitPathMatches = (relativePath, omitPaths) => omitPaths.some((oPath) => relativePath.startsWith(oPath))
+const omitPathMatches = (relativePath, omitPaths) => {
+  return omitPaths.some((oPath) => {
+    // check if the substring matches or glob pattern
+    return relativePath.startsWith(oPath) || minimatch(relativePath, oPath, { dot: true })
+  })
+}
 
 /**
  * Given the env vars, the current keys, paths, etc. Look across the provided files to find the values
@@ -121,6 +160,7 @@ const omitPathMatches = (relativePath, omitPaths) => omitPaths.some((oPath) => r
 export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
+    scannedFilesCount: 0,
   }
 
   const keyValues: Record<string, string[]> = keys.reduce((kvs, key) => {
@@ -143,11 +183,24 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
     return kvs
   }, {})
 
-  const settledPromises = await Promise.allSettled(
-    filePaths.map((file) => {
-      return searchStream(base, file, keyValues)
-    }),
-  )
+  scanResults.scannedFilesCount = filePaths.length
+
+  let settledPromises: PromiseSettledResult<MatchResult[]>[] = []
+
+  // process the scanning in batches to not run into memory issues by
+  // processing all files at the same time.
+  while (filePaths.length > 0) {
+    const chunkSize = 200
+    const batch = filePaths.splice(0, chunkSize)
+
+    settledPromises = settledPromises.concat(
+      await Promise.allSettled(
+        batch.map((file) => {
+          return searchStream(base, file, keyValues)
+        }),
+      ),
+    )
+  }
 
   settledPromises.forEach((result) => {
     if (result.status === 'fulfilled' && result.value?.length > 0) {
@@ -159,11 +212,11 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
 }
 
 const searchStream = (basePath: string, file: string, keyValues: Record<string, string[]>): Promise<MatchResult[]> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
 
     const inStream = createReadStream(filePath)
-    const rl = createInterface(inStream)
+    const rl = createInterface({ input: inStream, terminal: false })
     const matches: MatchResult[] = []
 
     const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
@@ -184,8 +237,6 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
     keyVals.forEach((valVariant) => {
       maxMultiLineCount = Math.max(maxMultiLineCount, valVariant.split('\n').length)
     })
-
-    // search if not multi line or current accumulated lines length is less than num of lines
 
     const lines: string[] = []
 
@@ -208,7 +259,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
 
         keyVals.forEach((valVariant) => {
           // matching of single/whole values
-          if (line.search(new RegExp(valVariant)) >= 0) {
+          if (line.includes(valVariant)) {
             matches.push({
               file,
               lineNumber,
@@ -264,6 +315,15 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
             }
           }
         })
+      }
+    })
+
+    rl.on('error', function (error) {
+      if (error?.code === 'EISDIR') {
+        // file path is a directory - do nothing
+        resolve(matches)
+      } else {
+        reject(error)
       }
     })
 

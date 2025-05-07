@@ -1,11 +1,13 @@
+import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { trace } from '@opentelemetry/api'
 
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
+import { OutputFlusher } from '../log/output_flusher.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
 import { normalizeTagName } from '../report/statsd.js'
 import { measureDuration } from '../time/main.js'
-import { setMultiSpanAttributes, StepExecutionAttributes } from '../tracing/main.js'
+import { StepExecutionAttributes } from '../tracing/main.js'
 
 import { fireCoreStep } from './core_step.js'
 import { firePluginStep } from './plugin.js'
@@ -22,6 +24,7 @@ export const runStep = async function ({
   coreStepId,
   coreStepName,
   coreStepDescription,
+  coreStepQuiet,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -29,6 +32,7 @@ export const runStep = async function ({
   configPath,
   outputConfigPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   index,
@@ -49,6 +53,7 @@ export const runStep = async function ({
   failedPlugins,
   configOpts,
   netlifyConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -63,19 +68,29 @@ export const runStep = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  extensionMetadata,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
     'build.execution.step.name': coreStepName,
     'build.execution.step.package_name': packageName,
+    'build.execution.step.package_path': packagePath,
+    'build.execution.step.build_dir': buildDir,
     'build.execution.step.id': coreStepId,
     'build.execution.step.loaded_from': loadedFrom,
     'build.execution.step.origin': origin,
     'build.execution.step.event': event,
   }
+
+  if (pluginPackageJson?.name && pluginPackageJson?.version) {
+    attributes['build.execution.step.plugin_name'] = pluginPackageJson.name
+    attributes['build.execution.step.plugin_version'] = pluginPackageJson.version
+  }
+
   const spanCtx = setMultiSpanAttributes(attributes)
   // If there's no `coreStepId` then this is a plugin execution
-  const spanName = `run-step-${coreStepId || 'plugin'}`
+  const spanName = `run-step-${coreStepId || `plugin-${event}`}`
 
   return tracer.startActiveSpan(spanName, {}, spanCtx, async (span) => {
     const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
@@ -87,11 +102,14 @@ export const runStep = async function ({
       failedPlugins,
       netlifyConfig,
       condition,
+      packagePath,
       constants: constantsA,
       buildbotServerSocket,
       buildDir,
       saveConfig,
       explicitSecretKeys,
+      deployId,
+      featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
     if (!shouldRun) {
@@ -99,9 +117,14 @@ export const runStep = async function ({
       return {}
     }
 
-    if (!quiet) {
-      logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
-    }
+    const logPluginStart =
+      !quiet && !coreStepQuiet
+        ? () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+        : () => {
+            // no-op
+          }
+
+    const outputFlusher = new OutputFlusher(logPluginStart)
 
     const fireStep = getFireStep(packageName, coreStepId, event)
     const {
@@ -116,15 +139,19 @@ export const runStep = async function ({
       durationNs,
       metrics,
     } = await fireStep({
+      extensionMetadata,
+      defaultConfig,
       event,
       childProcess,
       packageName,
       pluginPackageJson,
       loadedFrom,
+      outputFlusher,
       origin,
       coreStep,
       coreStepId,
       coreStepName,
+      packagePath,
       configPath,
       outputConfigPath,
       buildDir,
@@ -141,6 +168,7 @@ export const runStep = async function ({
       error,
       logs,
       debug,
+      quiet,
       systemLog,
       verbose,
       saveConfig,
@@ -154,6 +182,9 @@ export const runStep = async function ({
       featureFlags,
       userNodeVersion,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
+      deployId,
+      api,
     })
 
     const newValues = await getStepReturn({
@@ -174,12 +205,13 @@ export const runStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       logs,
+      outputFlusher,
       debug,
       timers: timersA,
       durationNs,
       testOpts,
       systemLog,
-      quiet,
+      quiet: quiet || coreStepQuiet,
       metrics,
     })
 
@@ -223,6 +255,7 @@ const shouldRunStep = async function ({
   event,
   packageName,
   error,
+  packagePath,
   failedPlugins,
   netlifyConfig,
   condition,
@@ -231,11 +264,23 @@ const shouldRunStep = async function ({
   buildDir,
   saveConfig,
   explicitSecretKeys,
+  deployId,
+  featureFlags = {},
 }) {
   if (
     failedPlugins.includes(packageName) ||
     (condition !== undefined &&
-      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig, explicitSecretKeys })))
+      !(await condition({
+        packagePath,
+        buildDir,
+        constants,
+        buildbotServerSocket,
+        netlifyConfig,
+        saveConfig,
+        explicitSecretKeys,
+        deployId,
+        featureFlags,
+      })))
   ) {
     return false
   }
@@ -258,11 +303,13 @@ const getFireStep = function (packageName: string, coreStepId?: string, event?: 
 }
 
 const tFireStep = function ({
+  defaultConfig,
   event,
   childProcess,
   packageName,
   pluginPackageJson,
   loadedFrom,
+  outputFlusher,
   origin,
   coreStep,
   coreStepId,
@@ -271,6 +318,7 @@ const tFireStep = function ({
   outputConfigPath,
   buildDir,
   repositoryRoot,
+  packagePath,
   nodePath,
   childEnv,
   context,
@@ -283,6 +331,7 @@ const tFireStep = function ({
   error,
   logs,
   debug,
+  quiet,
   systemLog,
   verbose,
   saveConfig,
@@ -295,6 +344,10 @@ const tFireStep = function ({
   featureFlags,
   userNodeVersion,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  deployId,
+  extensionMetadata,
+  api,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -305,10 +358,13 @@ const tFireStep = function ({
       outputConfigPath,
       buildDir,
       repositoryRoot,
+      packagePath,
       constants,
       buildbotServerSocket,
       events,
       logs,
+      outputFlusher,
+      quiet,
       nodePath,
       childEnv,
       context,
@@ -317,6 +373,7 @@ const tFireStep = function ({
       errorParams,
       configOpts,
       netlifyConfig,
+      defaultConfig,
       configMutations,
       headersPath,
       redirectsPath,
@@ -326,6 +383,9 @@ const tFireStep = function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
+      deployId,
+      api,
     })
   }
 
@@ -333,13 +393,16 @@ const tFireStep = function ({
     event,
     childProcess,
     packageName,
+    packagePath,
     pluginPackageJson,
     loadedFrom,
+    outputFlusher,
     origin,
     envChanges,
     errorParams,
     configOpts,
     netlifyConfig,
+    defaultConfig,
     configMutations,
     headersPath,
     redirectsPath,
@@ -347,8 +410,10 @@ const tFireStep = function ({
     steps,
     error,
     logs,
+    systemLog,
     featureFlags,
     debug,
     verbose,
+    extensionMetadata,
   })
 }

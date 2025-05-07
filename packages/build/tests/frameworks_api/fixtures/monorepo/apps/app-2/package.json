@@ -1,0 +1,6 @@
+{
+  "name": "app-2",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

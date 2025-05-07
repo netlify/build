@@ -1,11 +1,13 @@
 import { existsSync } from 'fs'
 import { copyFile, rm } from 'fs/promises'
+import { join } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
 import { updateConfig } from '../../lib/index.js'
+import { resolveConfig } from '../../lib/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -139,4 +141,29 @@ test('updateConfig() does not delete _headers if headersPath not provided', asyn
   })
   t.is(typeof headersPath, 'string')
   t.true(existsSync(headersPath))
+})
+
+test('Programmatic resolveConfig with configMutations', async (t) => {
+  const { config } = await resolveConfig({
+    mode: 'cli',
+    context: 'production',
+    configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
+  })
+  t.is(config.functionsDirectory, join(process.cwd(), 'new_functions'))
+  t.is(config.build.functions, join(process.cwd(), 'new_functions'))
+})
+
+test('Programmatic resolveConfig with configMutations and defaultConfig', async (t) => {
+  const { config } = await resolveConfig({
+    mode: 'cli',
+    context: 'production',
+    defaultConfig: {
+      functionsDirectory: 'functions',
+      build: { functions: 'functions' },
+    },
+    configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
+  })
+
+  t.is(config.functionsDirectory, join(process.cwd(), 'new_functions'))
+  t.is(config.build.functions, join(process.cwd(), 'new_functions'))
 })

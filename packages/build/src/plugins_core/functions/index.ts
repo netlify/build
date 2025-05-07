@@ -1,17 +1,19 @@
 import { resolve } from 'path'
 
-import { NodeBundlerName, RUNTIME, zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerName, RUNTIME, zipFunctions, FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
+import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
 
 import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
 // Get a list of all unique bundlers in this run
-const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
+const getBundlers = (results: FunctionResult[] = []) =>
   // using a Set to filter duplicates
   new Set(
     results
@@ -19,13 +21,54 @@ const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
       .filter(Boolean) as NodeBundlerName[],
   )
 
+// see https://docs.netlify.com/functions/trigger-on-events/#available-triggers
+const eventTriggeredFunctions = new Set([
+  'deploy-building',
+  'deploy-succeeded',
+  'deploy-failed',
+  'deploy-deleted',
+  'deploy-locked',
+  'deploy-unlocked',
+  'submission-created',
+  'split-test-activated',
+  'split-test-deactivated',
+  'split-test-modified',
+  'identity-validate',
+  'identity-signup',
+  'identity-login',
+])
+
+const validateCustomRoutes = function (functions: FunctionResult[]) {
+  for (const { routes, name, schedule } of functions) {
+    if (!routes || routes.length === 0) continue
+
+    if (schedule) {
+      const error = new Error(
+        `Scheduled functions must not specify a custom path. Please remove the "path" configuration. Learn more about scheduled functions at https://ntl.fyi/custom-path-scheduled-functions.`,
+      )
+      addErrorInfo(error, { type: 'resolveConfig' })
+      throw error
+    }
+
+    if (eventTriggeredFunctions.has(name.toLowerCase().replace('-background', ''))) {
+      const error = new Error(
+        `Event-triggered functions must not specify a custom path. Please remove the "path" configuration or pick a different name for the function. Learn more about event-triggered functions at https://ntl.fyi/custom-path-event-triggered-functions.`,
+      )
+      addErrorInfo(error, { type: 'resolveConfig' })
+      throw error
+    }
+  }
+}
+
 const zipFunctionsAndLogResults = async ({
+  branch,
   buildDir,
   childEnv,
   featureFlags,
   functionsConfig,
   functionsDist,
   functionsSrc,
+  frameworkFunctionsSrc,
   internalFunctionsSrc,
   isRunningLocally,
   logs,
@@ -34,6 +77,7 @@ const zipFunctionsAndLogResults = async ({
   systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
@@ -50,8 +94,10 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
+    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
+
+    validateCustomRoutes(results)
 
     const bundlers = Array.from(getBundlers(results))
 
@@ -74,6 +120,8 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  branch,
+  packagePath,
   logs,
   netlifyConfig,
   featureFlags,
@@ -85,13 +133,17 @@ const coreStep = async function ({
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrcExists = await pathExists(frameworkFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
-  const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
+  const [userFunctions = [], internalFunctions = [], frameworkFunctions = []] = await getUserAndInternalFunctions({
     featureFlags,
     functionsSrc,
     functionsSrcExists,
     internalFunctionsSrc,
     internalFunctionsSrcExists,
+    frameworkFunctionsSrc,
+    frameworkFunctionsSrcExists,
   })
 
   if (functionsSrc && !functionsSrcExists) {
@@ -109,19 +161,22 @@ const coreStep = async function ({
     userFunctionsSrcExists: functionsSrcExists,
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
+    frameworkFunctions,
   })
 
-  if (userFunctions.length === 0 && internalFunctions.length === 0) {
+  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
     return {}
   }
 
   const { bundlers } = await zipFunctionsAndLogResults({
+    branch,
     buildDir,
     childEnv,
     featureFlags,
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,
+    frameworkFunctionsSrc,
     internalFunctionsSrc,
     isRunningLocally,
     logs,
@@ -144,7 +199,11 @@ const coreStep = async function ({
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command
 // or plugins.
-const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+const hasFunctionsDirectories = async function ({
+  buildDir,
+  constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
+  packagePath,
+}) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
@@ -153,7 +212,13 @@ const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNA
 
   const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
 
-  return await pathExists(internalFunctionsSrc)
+  if (await pathExists(internalFunctionsSrc)) {
+    return true
+  }
+
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+
+  return await pathExists(frameworkFunctionsSrc)
 }
 
 export const bundleFunctions = {
@@ -171,7 +236,7 @@ export const bundleFunctions = {
 // `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
 // function and export them so tests can use it.
 export const zipItAndShipIt = {
-  async zipFunctions(...args: Parameters<typeof zipFunctions>) {
+  async zipFunctions(...args: Parameters<typeof zipFunctions>): Promise<FunctionResult[]> {
     return await zipFunctions(...args)
   },
 }

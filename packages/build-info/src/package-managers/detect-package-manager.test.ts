@@ -39,20 +39,22 @@ test('should repsect the NETLIFY_USE_PNPM if no lock file is there', async ({ fs
   expect(pkgManager?.name).toBe('pnpm')
 })
 
-test('should favor the NETLIFY_USE_PNPM over a yarn.lock file', async ({ fs }) => {
+test('should favor the NETLIFY_USE_PNPM over another lockfile', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': '{}',
     'yarn.lock': '',
+    'bun.lockb': '',
   })
   const project = new Project(fs, cwd).setEnvironment({ NETLIFY_USE_PNPM: 'true' })
   const pkgManager = await detectPackageManager(project)
   expect(pkgManager?.name).toBe('pnpm')
 })
 
-test('should favor the NETLIFY_USE_YARN over a package-lock.json file', async ({ fs }) => {
+test('should favor the NETLIFY_USE_YARN over another lockfile', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': '{}',
     'package-lock.json': '',
+    'bun.lockb': '',
   })
   const project = new Project(fs, cwd).setEnvironment({ NETLIFY_USE_YARN: 'true' })
   const pkgManager = await detectPackageManager(project)
@@ -98,6 +100,26 @@ test('should use pnpm if there is a pnpm-lock.yaml in the root', async ({ fs }) 
   expect(pkgManager?.name).toBe('pnpm')
 })
 
+test('should use bun if there is a bun.lockb in the root', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('bun')
+})
+
+test('should use bun if there is a bun.lock in the root', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'bun.lock': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('bun')
+})
+
 test('should use the `packageManager` property to detect yarn', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ packageManager: 'yarn@3.2.1' }),
@@ -105,6 +127,49 @@ test('should use the `packageManager` property to detect yarn', async ({ fs }) =
   const project = new Project(fs, cwd)
   const pkgManager = await detectPackageManager(project)
   expect(pkgManager?.name).toBe('yarn')
+})
+
+test('should prefer the `packageManager` property over a lockfile', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ packageManager: 'yarn@3.2.1' }),
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('yarn')
+})
+
+test('should prefer yarn over bun when both lockfiles exist', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'yarn.lock': '',
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('yarn')
+})
+
+test('should prefer pnpm over bun when both lockfiles exist', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'pnpm-lock.yaml': '',
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('pnpm')
+})
+
+test('should prefer npm over bun when both lockfiles exist', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'package-lock.json': '',
+    'bun.lockb': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('npm')
 })
 
 describe('workspaces package manager detection', () => {

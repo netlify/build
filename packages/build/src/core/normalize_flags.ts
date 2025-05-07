@@ -4,8 +4,9 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import type { BuildFlags, Mode, TestOptions, TracingOptions } from './types.js'
+import type { BuildFlags, Mode, TestOptions } from './types.js'
 
+export const DEFAULT_API_HOST = 'api.netlify.com'
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
@@ -43,7 +44,6 @@ export type ResolvedFlags = {
   statsdOpts: { host?: number; port: number }
   bugsnagKey?: string
   systemLogFile?: number
-  tracingOpts: TracingOptions
 }
 
 /** Normalize CLI flags  */
@@ -62,7 +62,6 @@ export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): Resol
     ...rawFlags,
     ...telemetryFlag,
     statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
-    tracingOpts: { ...defaultFlags.tracing, ...rawFlags.tracing },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags) as any
@@ -93,7 +92,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
     sendStatus: false,
     saveConfig: false,
-    apiHost: 'api.netlify.com',
+    apiHost: DEFAULT_API_HOST,
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
@@ -101,9 +100,13 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
     tracing: {
       enabled: false,
+      preloadingEnabled: false,
       apiKey: '-',
+      // defaults to always sample
+      sampleRate: 1,
       httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,
       port: DEFAULT_OTEL_TRACING_PORT,
+      baggageFilePath: '',
     },
     timeline: 'build',
     quiet: false,

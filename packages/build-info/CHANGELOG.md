@@ -64,6 +64,366 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [9.0.4](https://github.com/netlify/build/compare/build-info-v9.0.3...build-info-v9.0.4) (2025-04-25)
+
+
+### Bug Fixes
+
+* detect new TanStack Start package names ([#6212](https://github.com/netlify/build/issues/6212)) ([937a981](https://github.com/netlify/build/commit/937a98193bd9070850c220d8aa75f2dd3fe08f9f))
+
+## [9.0.3](https://github.com/netlify/build/compare/build-info-v9.0.2...build-info-v9.0.3) (2025-04-09)
+
+
+### Bug Fixes
+
+* **build-info:** update expo build config ([#6191](https://github.com/netlify/build/issues/6191)) ([6e57910](https://github.com/netlify/build/commit/6e57910d89c1d4140395fae9c06b6fd7f88cfff9))
+
+## [9.0.2](https://github.com/netlify/build/compare/build-info-v9.0.1...build-info-v9.0.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* **types:** add missing `schedule` to functions config type ([#6151](https://github.com/netlify/build/issues/6151)) ([4866964](https://github.com/netlify/build/commit/486696497e29b9e0270ea234b97e94fa0e73fb64))
+
+## [9.0.1](https://github.com/netlify/build/compare/build-info-v9.0.0...build-info-v9.0.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+## [9.0.0](https://github.com/netlify/build/compare/build-info-v8.1.0...build-info-v9.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [8.1.0](https://github.com/netlify/build/compare/build-info-v8.0.0...build-info-v8.1.0) (2025-02-24)
+
+
+### Features
+
+* change default node version to v22 ([#5958](https://github.com/netlify/build/issues/5958)) ([59cda04](https://github.com/netlify/build/commit/59cda04d87af434bafa71c0509f958365b4fab34))
+
+## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* packageManager.lockFile field containing single name of lock file is removed from output and packageManager.lockFiles field with array of possible lock files is introduced
+
+### Bug Fixes
+
+* use bun as package manager when bun.lock is found ([44bb81c](https://github.com/netlify/build/commit/44bb81c51f24ba8e39e2bf6f6b4cf9ac837afd3c))
+
+## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
+
+
+### Features
+
+* **@netlify/build-info:** add React Router 7 detection ([#5930](https://github.com/netlify/build/issues/5930)) ([2289a78](https://github.com/netlify/build/commit/2289a7884fc0a2fc34b86b60464441d8cb70d4bd))
+
+## [7.16.0](https://github.com/netlify/build/compare/build-info-v7.15.2...build-info-v7.16.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Bug Fixes
+
+* detect `bun.lock` files in addition to `bun.lockb` files ([#5918](https://github.com/netlify/build/issues/5918)) ([689a8dd](https://github.com/netlify/build/commit/689a8dd5b26d6370b7e53005dca39b2b8efb9768))
+
+## [7.15.2](https://github.com/netlify/build/compare/build-info-v7.15.1...build-info-v7.15.2) (2024-10-25)
+
+
+### Bug Fixes
+
+* detect next if typescript config file is used ([#5893](https://github.com/netlify/build/issues/5893)) ([d07e0d5](https://github.com/netlify/build/commit/d07e0d52bf1e3d8410625e216e08914b4f0ae8cc))
+
+## [7.15.1](https://github.com/netlify/build/compare/build-info-v7.15.0...build-info-v7.15.1) (2024-10-01)
+
+
+### Bug Fixes
+
+* add some support for dotnet runtime detection ([#5858](https://github.com/netlify/build/issues/5858)) ([75eb6a2](https://github.com/netlify/build/commit/75eb6a2a5f902320dd70a808ec30256fcd8df29a))
+* framework detection for solidjs and solidstart ([#5856](https://github.com/netlify/build/issues/5856)) ([2002b42](https://github.com/netlify/build/commit/2002b42751bc0bd120086ab32c685f9bf6703237))
+
+## [7.15.0](https://github.com/netlify/build/compare/build-info-v7.14.4...build-info-v7.15.0) (2024-10-01)
+
+
+### Features
+
+* framework detection for tanstack router and tanstack start ([#5857](https://github.com/netlify/build/issues/5857)) ([1aa78f4](https://github.com/netlify/build/commit/1aa78f45de2a97001083bb3a29eceb2afc5064f7))
+
+## [7.14.4](https://github.com/netlify/build/compare/build-info-v7.14.3...build-info-v7.14.4) (2024-09-23)
+
+
+### Bug Fixes
+
+* set default nodejs version for redwoodjs ([#5842](https://github.com/netlify/build/issues/5842)) ([a3dfb7e](https://github.com/netlify/build/commit/a3dfb7e9664a9968e7575e43ab653a089a4ede0b))
+
+## [7.14.3](https://github.com/netlify/build/compare/build-info-v7.14.2...build-info-v7.14.3) (2024-09-20)
+
+
+### Bug Fixes
+
+* honor forced framework for Remix and Hydrogen ([#5837](https://github.com/netlify/build/issues/5837)) ([938adbd](https://github.com/netlify/build/commit/938adbd0815cf0cf4c4c89b3d6766046d378748a))
+
+## [7.14.2](https://github.com/netlify/build/compare/build-info-v7.14.1...build-info-v7.14.2) (2024-09-13)
+
+
+### Bug Fixes
+
+* **build-info:** fix detection of Remix and Hydrogen sites ([#5820](https://github.com/netlify/build/issues/5820)) ([d7c8400](https://github.com/netlify/build/commit/d7c8400d5cea8b9774b05a7d90b98a313e6ce421))
+* fix the publish directory for next.js ([#5502](https://github.com/netlify/build/issues/5502)) ([b0740ba](https://github.com/netlify/build/commit/b0740ba1bacf58d9b909efab8a37641c0f992a37))
+
+## [7.14.1](https://github.com/netlify/build/compare/build-info-v7.14.0...build-info-v7.14.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* relative path pattern in workspace globs ([#5763](https://github.com/netlify/build/issues/5763)) ([0b6b015](https://github.com/netlify/build/commit/0b6b015503ac38c95345105ac85e80735ba0ccc0))
+
+## [7.14.0](https://github.com/netlify/build/compare/build-info-v7.13.2...build-info-v7.14.0) (2024-07-03)
+
+
+### Features
+
+* add Analog framework to framework detection ([#5751](https://github.com/netlify/build/issues/5751)) ([fbfdb99](https://github.com/netlify/build/commit/fbfdb999bf03ce25c529a15b476d70ef5a6e9ea9))
+
+## [7.13.2](https://github.com/netlify/build/compare/build-info-v7.13.1...build-info-v7.13.2) (2024-03-26)
+
+
+### Bug Fixes
+
+* don't poll HTTP on startup to prevent dependency cycle between framework dev server and Netlify Dev ([#5558](https://github.com/netlify/build/issues/5558)) ([0291702](https://github.com/netlify/build/commit/0291702cac745ef0f32d9e651340841582b25de9))
+
+## [7.13.1](https://github.com/netlify/build/compare/build-info-v7.13.0...build-info-v7.13.1) (2024-03-18)
+
+
+### Bug Fixes
+
+* **metrics:** add validation/formatting before sending errors to BugSnag ([#5455](https://github.com/netlify/build/issues/5455)) ([e48532f](https://github.com/netlify/build/commit/e48532fc616eaf4e49e49316e424f13179163294))
+
+## [7.13.0](https://github.com/netlify/build/compare/build-info-v7.12.1...build-info-v7.13.0) (2024-02-16)
+
+
+### Features
+
+* add detection for observable framework ([#5526](https://github.com/netlify/build/issues/5526)) ([e1b7b5e](https://github.com/netlify/build/commit/e1b7b5e4a712fe6f4fccc830bf1542f7a30879a0))
+
+## [7.12.1](https://github.com/netlify/build/compare/build-info-v7.12.0...build-info-v7.12.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+## [7.12.0](https://github.com/netlify/build/compare/build-info-v7.11.5...build-info-v7.12.0) (2024-01-30)
+
+
+### Features
+
+* add latest nx executors to detection ([#5494](https://github.com/netlify/build/issues/5494)) ([ab39be0](https://github.com/netlify/build/commit/ab39be0c5f3788ddd5c981a502d8783cf5ad9263))
+
+## [7.11.5](https://github.com/netlify/build/compare/build-info-v7.11.4...build-info-v7.11.5) (2024-01-15)
+
+
+### Bug Fixes
+
+* update autodetect Nuxt default dir to `dist` ([#5457](https://github.com/netlify/build/issues/5457)) ([43f910d](https://github.com/netlify/build/commit/43f910dad53767d1068d8b9c92753c4342683dfb))
+
+## [7.11.4](https://github.com/netlify/build/compare/build-info-v7.11.3...build-info-v7.11.4) (2023-12-20)
+
+
+### Bug Fixes
+
+* recommend ng17 dist dir based on builder ([#5445](https://github.com/netlify/build/issues/5445)) ([494ffcc](https://github.com/netlify/build/commit/494ffcc04b8038a437c1c5dd4c54ec56d4af79c7))
+
+## [7.11.3](https://github.com/netlify/build/compare/build-info-v7.11.2...build-info-v7.11.3) (2023-12-06)
+
+
+### Bug Fixes
+
+* add clearPublishDirectory to getSettings ([#5433](https://github.com/netlify/build/issues/5433)) ([9770391](https://github.com/netlify/build/commit/9770391b5b73edfde3ea8405404b008df1b7aa1f))
+
+## [7.11.2](https://github.com/netlify/build/compare/build-info-v7.11.1...build-info-v7.11.2) (2023-12-05)
+
+
+### Bug Fixes
+
+* **nuxt:** clear dist directory before local dev ([#5430](https://github.com/netlify/build/issues/5430)) ([c59b9a1](https://github.com/netlify/build/commit/c59b9a147dc254474022df13b790d0f2171ad060))
+
+## [7.11.1](https://github.com/netlify/build/compare/build-info-v7.11.0...build-info-v7.11.1) (2023-11-09)
+
+
+### Bug Fixes
+
+* for angular v17, detect publish directory from `angular.json` ([#5373](https://github.com/netlify/build/issues/5373)) ([5cf6370](https://github.com/netlify/build/commit/5cf63704122a5aff52b20c4e54e4a8a507f62799))
+
+## [7.11.0](https://github.com/netlify/build/compare/build-info-v7.10.2...build-info-v7.11.0) (2023-11-08)
+
+
+### Features
+
+* autoinstall Angular v17 ([#5367](https://github.com/netlify/build/issues/5367)) ([6a75332](https://github.com/netlify/build/commit/6a753323fe0d777b370e058c6c41ca9f8842b538))
+
+## [7.10.2](https://github.com/netlify/build/compare/build-info-v7.10.1...build-info-v7.10.2) (2023-10-24)
+
+
+### Bug Fixes
+
+* typo in PHP detection ([#5348](https://github.com/netlify/build/issues/5348)) ([784c1ff](https://github.com/netlify/build/commit/784c1ff6841b3d6fb401add931de9de9fb7da013))
+
+## [7.10.1](https://github.com/netlify/build/compare/build-info-v7.10.0...build-info-v7.10.1) (2023-10-10)
+
+
+### Bug Fixes
+
+* **build-info:** prefer `npm` over `bun` when both lockfiles are present ([#5320](https://github.com/netlify/build/issues/5320)) ([67d11d0](https://github.com/netlify/build/commit/67d11d00320c51e552b9cd8fc31071a55d9c3918))
+
+## [7.10.0](https://github.com/netlify/build/compare/build-info-v7.9.0...build-info-v7.10.0) (2023-10-09)
+
+
+### Features
+
+* detect bun as package manager ([#5306](https://github.com/netlify/build/issues/5306)) ([5d91c31](https://github.com/netlify/build/commit/5d91c319ea6813f4606e6b156ce29d3d90495f50))
+
+## [7.9.0](https://github.com/netlify/build/compare/build-info-v7.8.0...build-info-v7.9.0) (2023-10-02)
+
+
+### Features
+
+* detect bun as runtime ([#5300](https://github.com/netlify/build/issues/5300)) ([6f87850](https://github.com/netlify/build/commit/6f8785097de00e763fd81f17689c088ed39cdf8b))
+
+## [7.8.0](https://github.com/netlify/build/compare/build-info-v7.7.4...build-info-v7.8.0) (2023-09-01)
+
+
+### Features
+
+* udpate astro ports for 3.x.x ([#5267](https://github.com/netlify/build/issues/5267)) ([6ca9952](https://github.com/netlify/build/commit/6ca995257a05ef0021ddf8e2881c5cee54d99d19))
+
+
+### Bug Fixes
+
+* Don't detect Redwood App as multiple workspaces ([#5271](https://github.com/netlify/build/issues/5271)) ([9eaa059](https://github.com/netlify/build/commit/9eaa059f8bcc8f30151cf2ca29f2400c935ce073))
+
+## [7.7.4](https://github.com/netlify/build/compare/build-info-v7.7.3...build-info-v7.7.4) (2023-08-25)
+
+
+### Bug Fixes
+
+* handle nx-run targets that don't have an executor ([#5201](https://github.com/netlify/build/issues/5201)) ([5a1acfa](https://github.com/netlify/build/commit/5a1acfa101eec583a03d2d6e020a782db8c4f2c2))
+
+## [7.7.3](https://github.com/netlify/build/compare/build-info-v7.7.2...build-info-v7.7.3) (2023-07-26)
+
+
+### Bug Fixes
+
+* detect nx packages inside apps and packages folder by default ([#5207](https://github.com/netlify/build/issues/5207)) ([388c66a](https://github.com/netlify/build/commit/388c66acef3dd0ec156a9a4351904606d0093ee9))
+
+## [7.7.2](https://github.com/netlify/build/compare/build-info-v7.7.1...build-info-v7.7.2) (2023-07-26)
+
+
+### Bug Fixes
+
+* change nuxt detection dist for v3 ([#4990](https://github.com/netlify/build/issues/4990)) ([e8b6be2](https://github.com/netlify/build/commit/e8b6be2f4fbf1595bdcbac3a5b42ecba7184d90f))
+
+## [7.7.1](https://github.com/netlify/build/compare/build-info-v7.7.0...build-info-v7.7.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* fixes an issue where an empty packagePath was ignored ([#5199](https://github.com/netlify/build/issues/5199)) ([0409189](https://github.com/netlify/build/commit/04091890f475a9da4d4a842223420ac5d836a3a1))
+
+## [7.7.0](https://github.com/netlify/build/compare/build-info-v7.6.1...build-info-v7.7.0) (2023-07-20)
+
+
+### Features
+
+* make getBuildSettings accept an optional package parameter ([#5197](https://github.com/netlify/build/issues/5197)) ([1e5965c](https://github.com/netlify/build/commit/1e5965c615c2bb94d542e2337308e911412c5dbd))
+
+
+### Bug Fixes
+
+* update comment to mention framework ([#5089](https://github.com/netlify/build/issues/5089)) ([4992256](https://github.com/netlify/build/commit/4992256267abc0600319f16ee75805c6a7668072))
+
+## [7.6.1](https://github.com/netlify/build/compare/build-info-v7.6.0...build-info-v7.6.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* add correct 11ty logos for light and dark ([#5190](https://github.com/netlify/build/issues/5190)) ([c54f5c0](https://github.com/netlify/build/commit/c54f5c0556c317727f3529dd3effad2f0cc21329)), closes [#5187](https://github.com/netlify/build/issues/5187)
+
+## [7.6.0](https://github.com/netlify/build/compare/build-info-v7.5.0...build-info-v7.6.0) (2023-07-19)
+
+
+### Features
+
+* make error reporting configureable ([#5191](https://github.com/netlify/build/issues/5191)) ([5986af2](https://github.com/netlify/build/commit/5986af2f482e6d28ff342f56960f270d27af8c08))
+
+
+### Bug Fixes
+
+* fix nx-integrated detection via forced framework ([#5189](https://github.com/netlify/build/issues/5189)) ([ae6c09b](https://github.com/netlify/build/commit/ae6c09b1b889b48c71293d84d0e2422f003f5836))
+
+## [7.5.0](https://github.com/netlify/build/compare/build-info-v7.4.3...build-info-v7.5.0) (2023-07-19)
+
+
+### Features
+
+* update pnpm build command for workspaces to build dependents ([#5183](https://github.com/netlify/build/issues/5183)) ([aa9e363](https://github.com/netlify/build/commit/aa9e363e6a2d52c356e3f503cd2ee0a119aa03d8))
+
+## [7.4.3](https://github.com/netlify/build/compare/build-info-v7.4.2...build-info-v7.4.3) (2023-07-19)
+
+
+### Bug Fixes
+
+* detection of workspace file and correct dev port ([#5181](https://github.com/netlify/build/issues/5181)) ([7331c27](https://github.com/netlify/build/commit/7331c278861c633b8b99e315134a4d4b4e5846ae))
+
+## [7.4.2](https://github.com/netlify/build/compare/build-info-v7.4.1...build-info-v7.4.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* cleanup feature flag for new framework detection as already rolled out to 100% ([#5169](https://github.com/netlify/build/issues/5169)) ([2858d70](https://github.com/netlify/build/commit/2858d70341a2632e41bb683d0ca200008ee6d0ba))
+
+## [7.4.1](https://github.com/netlify/build/compare/build-info-v7.4.0...build-info-v7.4.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* downgrade dot-prop to support Node.js 14 ([#5147](https://github.com/netlify/build/issues/5147)) ([ff26375](https://github.com/netlify/build/commit/ff26375933e369c99add77c6f2f1a7e207a5c50a))
+* fix return type of get framework to return the class ([#5145](https://github.com/netlify/build/issues/5145)) ([8a1083e](https://github.com/netlify/build/commit/8a1083e08db98f345b1d7816c44458f9a702c3ce))
+
+## [7.4.0](https://github.com/netlify/build/compare/build-info-v7.3.5...build-info-v7.4.0) (2023-07-07)
+
+
+### Features
+
+* improve nx-integrated dist directory ([#5133](https://github.com/netlify/build/issues/5133)) ([3e99d21](https://github.com/netlify/build/commit/3e99d21e1369b7a2216746c241f6395ef226bdcc))
+
+## [7.3.5](https://github.com/netlify/build/compare/build-info-v7.3.4...build-info-v7.3.5) (2023-07-06)
+
+
+### Bug Fixes
+
+* export PollingStrategies and getSettings as part of the public api ([#5140](https://github.com/netlify/build/issues/5140)) ([0500193](https://github.com/netlify/build/commit/0500193686b715bf58cfb5204cdb1a754092c1bf))
+
+## [7.3.4](https://github.com/netlify/build/compare/build-info-v7.3.3...build-info-v7.3.4) (2023-07-06)
+
+
+### Bug Fixes
+
+* fixes an issue where package paths where not correctly resolved ([#5134](https://github.com/netlify/build/issues/5134)) ([48d9db2](https://github.com/netlify/build/commit/48d9db260a6f57f4a7dbd96504b369e2b3b2c9d2))
+
 ## [7.3.3](https://github.com/netlify/build/compare/build-info-v7.3.2...build-info-v7.3.3) (2023-07-05)
 
 

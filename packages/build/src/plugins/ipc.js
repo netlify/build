@@ -39,8 +39,8 @@ export const getEventFromChild = async function (childProcess, callId) {
     throw getChildExitError('Could not receive event from child process because it already exited.')
   }
 
-  const messagePromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === callId })
-  const errorPromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === 'error' })
+  const messagePromise = pEvent(childProcess, 'message', { filter: (data) => data?.[0] === callId })
+  const errorPromise = pEvent(childProcess, 'message', { filter: (data) => data?.[0] === 'error' })
   const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
   try {
     return await Promise.race([getMessage(messagePromise), getError(errorPromise), getExit(exitPromise)])

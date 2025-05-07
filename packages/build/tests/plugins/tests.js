@@ -1,7 +1,13 @@
+import * as fs from 'fs/promises'
+import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
+import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
+import getPort from 'get-port'
+import tmp, { tmpName } from 'tmp-promise'
+
+import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -80,13 +86,17 @@ test('Resolution is relative to the build directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Non-existing plugins', async (t) => {
-  const output = await new Fixture('./fixtures/non_existing').runWithBuild()
-  t.snapshot(normalizeOutput(output))
+test('Resolution respects monorepo node module resolution rules', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo')
+  const output = await fixture.withFlags({ packagePath: 'apps/unpinned' }).runWithBuild()
+  // fixture has 2 versions of the same build plugin used by different workspaces
+  // this ensures version used by apps/unpinned is used instead of version that
+  // is hoisted in shared monorepo node_modules
+  t.assert(output.indexOf('@8.5.3') > 0)
 })
 
-test.skip('Do not allow overriding core plugins', async (t) => {
-  const output = await new Fixture('./fixtures/core_override').runWithBuild()
+test('Non-existing plugins', async (t) => {
+  const output = await new Fixture('./fixtures/non_existing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -101,9 +111,22 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
+  const systemLog = await tmp.file()
+
   const nodePath = getNodePath('16.14.0')
-  const output = await new Fixture('./fixtures/engines').withFlags({ nodePath }).runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  const output = await new Fixture('./fixtures/engines')
+    .withFlags({
+      nodePath,
+      featureFlags: { build_warn_upcoming_system_version_change: true },
+      systemLogFile: systemLog.fd,
+      debug: false,
+    })
+    .runWithBuild()
+  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
+  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+  await systemLog.cleanup()
+
+  t.true(systemLogContents.includes('plugin "./plugin.js" node support range includes v22'))
 })
 
 test('Validate --node-path exists', async (t) => {
@@ -119,6 +142,20 @@ test('Provided --node-path version is unused in buildbot for local plugin execut
     .withFlags({ nodePath, mode: 'buildbot' })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('UI plugins dont use provided --node-path', async (t) => {
+  const nodePath = getNodePath('12.19.0')
+  const output = await new Fixture('./fixtures/ui_auto_install')
+    .withFlags({
+      nodePath,
+      mode: 'buildbot',
+      defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] },
+      testOpts: { skipPluginList: true },
+    })
+    .runWithBuild()
+  const systemNodeVersion = process.version
+  t.true(output.includes(`node.js version used to execute this plugin: ${systemNodeVersion}`))
 })
 
 test('Plugins can execute local binaries', async (t) => {
@@ -142,29 +179,37 @@ test('Plugins can have inputs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Plugins are passed featureflags', async (t) => {
+test('Trusted plugins are passed featureflags and system log', async (t) => {
+  const systemLogFile = await tmpName()
   const output = await new Fixture('./fixtures/feature_flags')
     .withFlags({
       featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
     })
     .runWithBuild()
 
-  t.true(
-    output.includes(
-      JSON.stringify({
-        buildbot_zisi_trace_nft: false,
-        buildbot_zisi_esbuild_parser: false,
-        buildbot_zisi_system_log: false,
-        edge_functions_cache_cli: false,
-        edge_functions_system_logger: false,
-        test_flag: true,
-      }),
-    ),
-  )
+  // windows doesn't support the `/dev/fd/` API we're relying on for system logging.
+  if (platform !== 'win32') {
+    const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
+
+    const expectedSystemLogs = 'some system-facing logs'
+    t.false(output.includes(expectedSystemLogs))
+    t.true(systemLog.includes(expectedSystemLogs))
+  }
+
+  const expectedFlags = {
+    ...DEFAULT_FEATURE_FLAGS,
+    test_flag: true,
+  }
+
+  t.true(output.includes(JSON.stringify(expectedFlags)))
 
   const outputUntrusted = await new Fixture('./fixtures/feature_flags_untrusted')
     .withFlags({
       featureFlags: { test_flag: true },
+      debug: false,
+      systemLogFile: await fs.open(systemLogFile, 'a'),
     })
     .runWithBuild()
 
@@ -294,4 +339,67 @@ test('Does not transpile already transpiled local plugins', async (t) => {
 test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
   const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('Plugin events that do not emit to stderr/stdout are hidden from the logs', async (t) => {
+  const output = await new Fixture('./fixtures/mixed_events').withFlags({ debug: false }).runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Plugin errors that occur during the loading phase are piped to system logs', async (t) => {
+  const systemLogFile = await tmp.file()
+  const output = await new Fixture('./fixtures/syntax_error')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_plugin_system_log: true },
+      systemLogFile: systemLogFile.fd,
+    })
+    .runWithBuild()
+
+  if (platform !== 'win32') {
+    const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+
+    t.is(systemLog.trim(), `Plugin failed to initialize during the "load" phase: An error message thrown by Node.js`)
+  }
+
+  t.snapshot(normalizeOutput(output))
+})
+
+test.serial('Plugins have a pre-populated Blobs context', async (t) => {
+  const serverPort = await getPort()
+  const deployId = 'deploy123'
+  const siteId = 'site321'
+  const token = 'some-token'
+  const { scheme, host, stopServer } = await startServer(
+    [
+      {
+        response: { url: `http://localhost:${serverPort}/some-signed-url` },
+        path: `/api/v1/blobs/${siteId}/deploy:${deployId}/my-key`,
+      },
+      {
+        response: 'Hello there',
+        path: `/some-signed-url`,
+      },
+    ],
+    serverPort,
+  )
+
+  const { netlifyConfig } = await new Fixture('./fixtures/blobs_read')
+    .withFlags({
+      apiHost: host,
+      deployId,
+      testOpts: { scheme },
+      siteId,
+      token,
+    })
+    .runWithBuildAndIntrospect()
+
+  await stopServer()
+
+  t.is(netlifyConfig.build.command, `echo ""Hello there""`)
+})
+
+test('Plugins can respond anything to parent process', async (t) => {
+  const build = await new Fixture('./fixtures/process_send_object').runBuildBinary()
+  t.true(build.exitCode === 0)
 })

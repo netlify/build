@@ -1,6 +1,7 @@
 import type { PackageJson } from 'read-pkg'
 import { parse } from 'yaml'
 
+import { FrameworkName } from '../frameworks/index.js'
 import { PkgManager } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
 
@@ -9,6 +10,8 @@ import { getWorkspacePackages } from './get-workspace-packages.js'
 export type WorkspacePackage = {
   path: string
   name?: string
+  /** For some workspaces like Nx Integrated the build system is aware of the framework */
+  forcedFramework?: FrameworkName
 }
 
 export class WorkspaceInfo {
@@ -72,6 +75,10 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
 
   // if it's null it indicates it was already run without any result so we can omit this here as well
   if (project.packageManager === null) {
+    return null
+  }
+
+  if (await project.isRedwoodProject()) {
     return null
   }
 

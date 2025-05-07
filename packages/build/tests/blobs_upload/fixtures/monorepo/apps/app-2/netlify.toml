@@ -1,0 +1,3 @@
+[build]
+command = "pnpm --filter app-2 build"
+publish = "apps/app-2/dist"

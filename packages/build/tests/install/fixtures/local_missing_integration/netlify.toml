@@ -1,0 +1,6 @@
+[[integrations]]
+name = "test"
+
+[integrations.dev]
+path = "./integration"
+force_run_in_build = true

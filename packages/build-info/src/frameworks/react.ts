@@ -10,7 +10,7 @@ export class CreateReactApp extends BaseFramework implements Framework {
   dev = {
     command: 'react-scripts start',
     port: 3000,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {

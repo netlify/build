@@ -43,14 +43,15 @@ test('Deploy plugin connection error', async (t) => {
   const { address, stopServer } = await startDeployServer()
   await stopServer()
   const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
-  t.true(output.includes('Could not connect to buildbot: Error: connect'))
+  t.true(output.includes('Internal error during "Deploy site"'))
 })
 
 test('Deploy plugin response syntax error', async (t) => {
   const { address, stopServer } = await startDeployServer({ response: 'test' })
   try {
     const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    // This shape of this error can change with different Node.js versions.
+    t.true(output.includes('Internal error during "Deploy site"'))
   } finally {
     await stopServer()
   }
@@ -111,6 +112,48 @@ test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
   }
 
   t.true(requests.every(waitsForPostProcessing))
+})
+
+test('Deploy plugin returns an internal deploy error if the server responds with a 500', async (t) => {
+  const { address, stopServer } = await startDeployServer({
+    response: { succeeded: false, values: { error: 'test', error_type: 'user', code: '500' } },
+  })
+  try {
+    const {
+      success,
+      severityCode,
+      logs: { stdout },
+    } = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runBuildProgrammatic()
+    t.false(success)
+    // system-error code
+    t.is(severityCode, 4)
+    const output = stdout.join('\n')
+    t.true(output.includes('Internal error deploying'))
+    t.true(output.includes('Deploy did not succeed with HTTP Error 500'))
+  } finally {
+    await stopServer()
+  }
+})
+
+test('Deploy plugin returns a  deploy error if the server responds with a 4xx', async (t) => {
+  const { address, stopServer } = await startDeployServer({
+    response: { succeeded: false, values: { error: 'test', error_type: 'user', code: '401' } },
+  })
+  try {
+    const {
+      success,
+      severityCode,
+      logs: { stdout },
+    } = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runBuildProgrammatic()
+    t.false(success)
+    // user-error code
+    t.is(severityCode, 2)
+    const output = stdout.join('\n')
+    t.true(output.includes('Error deploying'))
+    t.true(output.includes('Deploy did not succeed with HTTP Error 401'))
+  } finally {
+    await stopServer()
+  }
 })
 
 const startDeployServer = function (opts = {}) {

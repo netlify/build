@@ -46,12 +46,85 @@ test('--help', async (t) => {
 
 test('--version', async (t) => {
   const { output } = await new Fixture().withFlags({ version: true }).runBuildBinary(FIXTURES_DIR)
+  t.not(output, '0.0.0')
   t.regex(output, /^\d+\.\d+\.\d+/)
 })
 
 test('Exit code is 0 on success', async (t) => {
   const { exitCode } = await new Fixture('./fixtures/empty').runBuildBinary()
   t.is(exitCode, 0)
+})
+
+test('Event handlers are called', async (t) => {
+  let flag = false
+  let handlerArgs = undefined
+  const { success } = await new Fixture('./fixtures/empty')
+    .withFlags({
+      eventHandlers: {
+        onPostBuild: (args) => {
+          flag = true
+          handlerArgs = args
+
+          return {}
+        },
+      },
+    })
+    .runBuildProgrammatic()
+
+  t.true(success)
+  t.true(flag)
+  t.true(handlerArgs?.constants !== undefined)
+  t.true(handlerArgs?.utils !== undefined)
+})
+
+test('Event handlers with description are called', async (t) => {
+  let flag = false
+  const { success } = await new Fixture('./fixtures/empty')
+    .withFlags({
+      eventHandlers: {
+        onPostBuild: {
+          handler: () => {
+            flag = true
+
+            return {}
+          },
+          description: 'Test onPostBuild',
+        },
+      },
+    })
+    .runBuildProgrammatic()
+
+  t.true(success)
+  t.true(flag)
+})
+
+test('Event handlers do not displace plugin methods', async (t) => {
+  let flag = false
+  const { success, configMutations } = await new Fixture('./fixtures/plugin_mutations')
+    .withFlags({
+      eventHandlers: {
+        onPreBuild: {
+          handler: () => {
+            flag = true
+
+            return {}
+          },
+          description: 'Test onPreBuild',
+        },
+      },
+    })
+    .runBuildProgrammatic()
+
+  t.deepEqual(configMutations, [
+    {
+      keys: ['redirects'],
+      keysString: 'redirects',
+      value: [{ from: 'api/*', to: '.netlify/functions/:splat', status: 200 }],
+      event: 'onPreBuild',
+    },
+  ])
+  t.true(flag)
+  t.true(success)
 })
 
 test('Exit code is 1 on build cancellation', async (t) => {
@@ -450,7 +523,7 @@ test('Shows notice about bundling errors and warnings coming from esbuild', asyn
   t.snapshot(normalizeOutput(output))
 })
 
-test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
+test('Shows notice about bundling errors and falls back to ZISI', async (t) => {
   const output = await new Fixture('./fixtures/esbuild_errors_2').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })

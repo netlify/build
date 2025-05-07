@@ -11,6 +11,7 @@ import { runStep } from './run_step.js'
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 export const runSteps = async function ({
+  defaultConfig,
   steps,
   buildbotServerSocket,
   events,
@@ -19,6 +20,7 @@ export const runSteps = async function ({
   headersPath,
   redirectsPath,
   buildDir,
+  packagePath,
   repositoryRoot,
   nodePath,
   childEnv,
@@ -43,6 +45,7 @@ export const runSteps = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
 }) {
   const {
     index: stepsCount,
@@ -73,6 +76,7 @@ export const runSteps = async function ({
         event,
         childProcess,
         packageName,
+        extensionMetadata,
         coreStep,
         coreStepId,
         coreStepName,
@@ -81,6 +85,7 @@ export const runSteps = async function ({
         loadedFrom,
         origin,
         condition,
+        quiet: coreStepQuiet,
       },
     ) => {
       const {
@@ -99,10 +104,12 @@ export const runSteps = async function ({
         event,
         childProcess,
         packageName,
+        extensionMetadata,
         coreStep,
         coreStepId,
         coreStepName,
         coreStepDescription,
+        coreStepQuiet,
         pluginPackageJson,
         loadedFrom,
         origin,
@@ -110,6 +117,7 @@ export const runSteps = async function ({
         configPath,
         outputConfigPath,
         buildDir,
+        packagePath,
         repositoryRoot,
         nodePath,
         index,
@@ -129,6 +137,7 @@ export const runSteps = async function ({
         error,
         failedPlugins,
         configOpts,
+        defaultConfig,
         netlifyConfig: netlifyConfigA,
         configMutations,
         headersPath: headersPathA,
@@ -144,6 +153,7 @@ export const runSteps = async function ({
         quiet,
         userNodeVersion,
         explicitSecretKeys,
+        edgeFunctionsBootstrapURL,
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })

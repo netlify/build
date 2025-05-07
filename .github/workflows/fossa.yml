@@ -12,10 +12,10 @@ defaults:
 
 jobs:
   fossa:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download fossa cli
         run: |-
           mkdir -p $HOME/.local/bin

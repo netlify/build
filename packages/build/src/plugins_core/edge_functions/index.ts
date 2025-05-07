@@ -5,7 +5,12 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { Metric } from '../../core/report_metrics.js'
+import { log, reduceLogLines } from '../../log/logger.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import {
+  FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+  FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
+} from '../../utils/frameworks_api.js'
 
 import { tagBundlingError } from './lib/error.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
@@ -16,6 +21,7 @@ const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
 const coreStep = async function ({
   buildDir,
+  packagePath,
   constants: {
     EDGE_FUNCTIONS_DIST: distDirectory,
     EDGE_FUNCTIONS_SRC: srcDirectory,
@@ -27,20 +33,50 @@ const coreStep = async function ({
   featureFlags,
   logs,
   netlifyConfig,
+  edgeFunctionsBootstrapURL,
+}: {
+  buildDir: string
+  packagePath: string
+  constants: Record<string, string>
+  debug: boolean
+  systemLog(...args: any[]): void
+  featureFlags: Record<string, any>
+  logs: any
+  netlifyConfig: any
+  edgeFunctionsBootstrapURL?: string
 }) {
-  const { edge_functions: declarations = [] } = netlifyConfig
-  const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
+  const { edge_functions: declarations = [], functions } = netlifyConfig
+  const { deno_import_map: userDefinedImportMap } = functions['*']
+  const importMapPaths: string[] = [userDefinedImportMap]
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
-  logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
+  const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+  const generatedFunctionPaths = [internalSrcPath]
 
-  // If we're running in buildbot and the feature flag is enabled, we set the
-  // Deno cache dir to a directory that is persisted between builds.
-  const cacheDirectory =
-    !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
+  if (await pathExists(frameworksAPISrcPath)) {
+    generatedFunctionPaths.push(frameworksAPISrcPath)
+  }
+
+  const frameworkImportMap = resolve(
+    buildDir,
+    packagePath || '',
+    FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+    FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
+  )
+
+  if (await pathExists(frameworkImportMap)) {
+    importMapPaths.push(frameworkImportMap)
+  }
+
+  const sourcePaths = [...generatedFunctionPaths, srcPath].filter(Boolean) as string[]
+
+  logFunctions({ frameworksAPISrcPath, internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
+
+  // If we're running in buildbot, we set the Deno cache dir to a directory
+  // that is persisted between builds.
+  const cacheDirectory = !isRunningLocally ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
   // Cleaning up the dist directory, in case it has any artifacts from previous
   // builds.
@@ -48,6 +84,17 @@ const coreStep = async function ({
     await fs.rm(distPath, { recursive: true })
   } catch {
     // no-op
+  }
+
+  let vendorDirectory: string | undefined
+
+  // If we're building locally, set a vendor directory in `internalSrcPath`.
+  // This makes Edge Bundler keep the vendor files around after the build,
+  // which lets the IDE have a valid reference to them.
+  if (isRunningLocally && featureFlags.edge_functions_npm_modules) {
+    vendorDirectory = join(internalSrcPath, '.vendor')
+
+    await fs.mkdir(vendorDirectory, { recursive: true })
   }
 
   // Ensuring the dist directory actually exists before letting Edge Bundler
@@ -62,9 +109,12 @@ const coreStep = async function ({
       debug,
       distImportMapPath,
       featureFlags,
-      importMapPaths: [userDefinedImportMap],
-      systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
-      internalSrcFolder: internalSrcPath,
+      importMapPaths,
+      userLogger: (...args) => log(logs, reduceLogLines(args)),
+      systemLogger: systemLog,
+      internalSrcFolder: generatedFunctionPaths,
+      bootstrapURL: edgeFunctionsBootstrapURL,
+      vendorDirectory,
     })
     const metrics = getMetrics(manifest)
 
@@ -106,6 +156,7 @@ const getMetrics = (manifest): Metric[] => {
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
+  packagePath,
 }): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
@@ -115,26 +166,35 @@ const hasEdgeFunctionsDirectories = async function ({
 
   const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
 
-  return await pathExists(internalFunctionsSrc)
+  if (await pathExists(internalFunctionsSrc)) {
+    return true
+  }
+
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+
+  return await pathExists(frameworkFunctionsSrc)
 }
 
 const logFunctions = async ({
+  frameworksAPISrcPath,
   internalSrcDirectory,
   internalSrcPath,
   logs,
   srcDirectory: userFunctionsSrc,
   srcPath,
 }: {
+  frameworksAPISrcPath?: string
   internalSrcDirectory: string
   internalSrcPath: string
   logs: any
   srcDirectory?: string
   srcPath?: string
 }): Promise<void> => {
-  const [userFunctionsSrcExists, userFunctions, internalFunctions] = await Promise.all([
+  const [userFunctionsSrcExists, userFunctions, internalFunctions, frameworkFunctions] = await Promise.all([
     srcPath ? pathExists(srcPath) : Promise.resolve(false),
     srcPath ? find([srcPath]) : Promise.resolve([]),
     find([internalSrcPath]),
+    frameworksAPISrcPath ? find([frameworksAPISrcPath]) : Promise.resolve([]),
   ])
 
   logFunctionsToBundle({
@@ -144,6 +204,7 @@ const logFunctions = async ({
     userFunctionsSrcExists,
     internalFunctions: internalFunctions.map(({ name }) => name),
     internalFunctionsSrc: internalSrcDirectory,
+    frameworkFunctions: frameworkFunctions.map(({ name }) => name),
     type: 'Edge Functions',
   })
 }

@@ -1,0 +1,4 @@
+!test/fixtures/**/node_modules
+!test/**/.netlify
+**/.netlify/edge-functions-serve
+/dist

@@ -2,7 +2,10 @@ import { DirType, Environment, FileSystem } from '../file-system.js'
 
 /** A sample implementation of a GitHub provider */
 export class GithubProvider {
-  constructor(public repo: string, public branch?: string) {}
+  constructor(
+    public repo: string,
+    public branch?: string,
+  ) {}
 
   async dir(filePath = ''): Promise<{ path: string; type: 'file' | 'dir' }[]> {
     let path = `/repos/${this.repo}/contents${filePath}`
@@ -26,7 +29,7 @@ export class GithubProvider {
     if (response.headers?.get('Content-Type')?.match(/json/)) {
       const json = await response.json()
       if (!response.ok) {
-        Promise.reject(json)
+        throw new Error(JSON.stringify(json))
       }
       return json
     }
@@ -55,7 +58,7 @@ export class WebFS extends FileSystem {
 
   async fileExists(path: string): Promise<boolean> {
     try {
-      this.readFile(path)
+      await this.readFile(path)
       return true
     } catch {
       return false

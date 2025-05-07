@@ -26,12 +26,12 @@ const setTimeoutPromise = promisify(setTimeout)
 // response: json payload response (defaults to {})
 // status: http status code (defaults to 200)
 // wait: number used to induce a certain time delay in milliseconds in the response (defaults to undefined)
-export const startServer = async (handler: ServerHandler) => {
+export const startServer = async (handler: ServerHandler, port = 0) => {
   const handlers = Array.isArray(handler) ? handler : [handler]
   const requests: Request[] = []
 
   const server = createServer((req, res) => requestHandler(req, res, requests, handlers))
-  await promisify(server.listen.bind(server))(0)
+  await promisify(server.listen.bind(server))(port)
 
   const host = getHost(server)
 

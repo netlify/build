@@ -12,6 +12,7 @@ export enum Category {
 }
 
 export enum Accuracy {
+  Forced = 5, // Forced framework, this means that we don't detect the framework instead it get's set either through the user inside the toml or through the build system like nx-integrated
   NPM = 4, // Matched the npm dependency (highest accuracy on detecting it)
   ConfigOnly = 3, // Only a config file was specified and matched
   Config = 2, // Has npm dependencies specified as well but there it did not match (least resort)
@@ -19,7 +20,8 @@ export enum Accuracy {
 }
 
 export type PollingStrategy = {
-  name
+  // TODO(serhalp) Define an enum
+  name: string
 }
 
 /** Information on how it was detected and how accurate the detection is */
@@ -32,8 +34,10 @@ export type Detection = {
   /** The NPM package that was able to detect it (high accuracy) */
   package?: { name: string; version?: SemVer }
   packageJSON?: PackageJson
-  /** The config file that is associated with the framework */
+  /** The absolute path to config file that is associated with the framework */
   config?: string
+  /** The name of config file that is associated with the framework */
+  configName?: string
 }
 
 export type FrameworkInfo = ReturnType<Framework['toJSON']>
@@ -44,8 +48,17 @@ export interface Framework {
   id: string
   name: string
   category: Category
+  /**
+   * If this is set, at least ONE of these must exist, anywhere in the project
+   */
   configFiles: string[]
+  /**
+   * If this is set, at least ONE of these must be present in the `package.json` `dependencies|devDependencies`
+   */
   npmDependencies: string[]
+  /**
+   * if this is set, NONE of these must be present in the `package.json` `dependencies|devDependencies`
+   */
   excludedNpmDependencies?: string[]
   version?: SemVer
   /** Information on how it was detected and how accurate the detection is */
@@ -55,6 +68,7 @@ export interface Framework {
     command: string
     port?: number
     pollingStrategies?: PollingStrategy[]
+    clearPublishDirectory?: boolean
   }
   build: {
     command: string
@@ -129,11 +143,26 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
   return sort
 }
 
-/** Merges a list of detection results based on accuracy to get the one with the highest accuracy */
+/** Merges a list of detection results based on accuracy to get the one with the highest accuracy that still contains information provided by all other detections */
 export function mergeDetections(detections: Array<Detection | undefined>): Detection | undefined {
-  return detections
-    .filter(Boolean)
-    .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))?.[0]
+  const definedDetections = detections
+    .filter(function isDetection(d): d is Detection {
+      return Boolean(d)
+    })
+    .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))
+
+  if (definedDetections.length === 0) {
+    return
+  }
+
+  return definedDetections.slice(1).reduce((merged, detection) => {
+    merged.config = merged.config ?? detection.config
+    merged.configName = merged.configName ?? detection.configName
+    merged.package = merged.package ?? detection.package
+    merged.packageJSON = merged.packageJSON ?? detection.packageJSON
+
+    return merged
+  }, definedDetections[0])
 }
 
 export abstract class BaseFramework implements Framework {
@@ -253,9 +282,9 @@ export abstract class BaseFramework implements Framework {
   }
 
   /** detect if the framework config file is located somewhere up the tree */
-  private async detectConfigFile(): Promise<Detection | undefined> {
-    if (this.configFiles?.length) {
-      const config = await this.project.fs.findUp(this.configFiles, {
+  protected async detectConfigFile(configFiles: string[]): Promise<Detection | undefined> {
+    if (configFiles.length) {
+      const config = await this.project.fs.findUp(configFiles, {
         cwd: this.path || this.project.baseDirectory,
         stopAt: this.project.root,
       })
@@ -266,6 +295,7 @@ export abstract class BaseFramework implements Framework {
           // otherwise the npm dependency should have already triggered the detection
           accuracy: this.npmDependencies.length === 0 ? Accuracy.ConfigOnly : Accuracy.Config,
           config,
+          configName: this.project.fs.basename(config),
         }
       }
     }
@@ -273,17 +303,22 @@ export abstract class BaseFramework implements Framework {
 
   /**
    * Checks if the project is using a specific framework:
-   * - if `npmDependencies` is set, one of them must be present in then `package.json` `dependencies|devDependencies`
+   * - if `npmDependencies` is set, one of them must be present in the `package.json` `dependencies|devDependencies`
    * - if `excludedNpmDependencies` is set, none of them must be present in the `package.json` `dependencies|devDependencies`
    * - if `configFiles` is set, one of the files must exist
    */
   async detect(): Promise<DetectedFramework | undefined> {
     const npm = await this.detectNpmDependency()
-    const config = await this.detectConfigFile()
-    this.detected = mergeDetections([npm, config])
+    const config = await this.detectConfigFile(this.configFiles ?? [])
+    this.detected = mergeDetections([
+      // we can force frameworks as well
+      this.detected?.accuracy === Accuracy.Forced ? this.detected : undefined,
+      npm,
+      config,
+    ])
 
     if (this.detected) {
-      return this as unknown as DetectedFramework
+      return this as DetectedFramework
     }
     // nothing detected
   }

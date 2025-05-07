@@ -25,6 +25,10 @@ packages/*/lib/
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
+!**/fixtures/with_preexisting_blobs/**/.netlify
 !**/fixtures/**/functions_*/.netlify
 !**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
+!**/fixtures/**/monorepo/**/.netlify
+**/plugins/deno-cli
+
 lib

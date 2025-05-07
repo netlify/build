@@ -1,7 +1,7 @@
-import { OnPreBuild, NetlifyPluginUtils, ListedFunction, ListedFunctionFile } from '@netlify/build'
+import type { OnPreBuild, NetlifyPluginUtils, ListedFunction, ListedFunctionFile } from '@netlify/build'
 import { expectType } from 'tsd'
 
-const testUtilsFunctionsList: OnPreBuild = function ({
+export const testUtilsFunctionsList: OnPreBuild = function ({
   utils: {
     functions: { list },
   },
@@ -11,7 +11,7 @@ const testUtilsFunctionsList: OnPreBuild = function ({
   expectType<Promise<ListedFunction[]>>(list())
 }
 
-const testUtilsListAll: OnPreBuild = function ({
+export const testUtilsListAll: OnPreBuild = function ({
   utils: {
     functions: { listAll },
   },
@@ -21,7 +21,7 @@ const testUtilsListAll: OnPreBuild = function ({
   expectType<Promise<ListedFunctionFile[]>>(listAll())
 }
 
-const testUtilsFunctionsAdd: OnPreBuild = function ({
+export const testUtilsFunctionsAdd: OnPreBuild = function ({
   utils: {
     functions: { add },
   },

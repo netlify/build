@@ -24,6 +24,8 @@ const NORMALIZE_REGEXPS = [
   [new RegExp(figures.pointer, 'g'), '>'],
   [new RegExp(figures.arrowDown, 'g'), '↓'],
   [/⚠/gu, '‼'],
+  [/(\/\/"[^"]+\/\/":\/\/"node:[^"]+\/\/",)+/g, '//"builtins//"://"node:builtins//",'],
+  [/(\/"[^"]+\/":\/"node:[^"]+\/",)+/g, '/"builtins/":/"node:builtins/",'],
   // A bug in nyc (https://github.com/istanbuljs/istanbuljs/issues/141) is
   // creating those error messages on Windows. This happens randomly and
   // seldomly. This might be fixed by nyc@15

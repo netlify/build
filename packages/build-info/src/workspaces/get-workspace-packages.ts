@@ -66,11 +66,11 @@ export async function findPackages(
   const startDir = project.jsWorkspaceRoot
     ? project.fs.resolve(project.jsWorkspaceRoot, dir)
     : project.root
-    ? project.fs.resolve(project.root, dir)
-    : project.fs.resolve(dir)
+      ? project.fs.resolve(project.root, dir)
+      : project.fs.resolve(dir)
   try {
     content = await project.fs.readDir(startDir, true)
-  } catch (err) {
+  } catch {
     // noop
   }
 
@@ -100,7 +100,8 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
   const results = (
     await Promise.all(
       patterns.map((pattern) => {
-        const matcher = new Minimatch(pattern)
+        const cleanedPattern = pattern.replace(/^!?(\.\/)/, (match, p1) => match.replace(p1, ''))
+        const matcher = new Minimatch(cleanedPattern)
         if (matcher.negate) {
           return
         }
@@ -118,7 +119,8 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
 
   for (const result of results) {
     for (const pattern of patterns) {
-      const matcher = new Minimatch(pattern)
+      const cleanedPattern = pattern.replace(/^!?(\.\/)/, (match, p1) => match.replace(p1, ''))
+      const matcher = new Minimatch(cleanedPattern)
       if (minimatch(result.path, matcher.pattern)) {
         filtered.set(project.fs.join(result.path), result)
         if (matcher.negate) {

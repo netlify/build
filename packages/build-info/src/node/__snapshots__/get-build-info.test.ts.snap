@@ -34,7 +34,9 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
-    "lockFile": "pnpm-lock.yaml",
+    "lockFiles": [
+      "pnpm-lock.yaml",
+    ],
     "name": "pnpm",
     "runCommand": "pnpm run",
     "version": SemVer {
@@ -53,7 +55,7 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -68,12 +70,11 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/website run build",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},
@@ -106,7 +107,43 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "version": undefined,
     },
   ],
-  "frameworks": [],
+  "frameworks": [
+    {
+      "build": {
+        "commands": [
+          "astro build",
+        ],
+        "directory": "dist",
+      },
+      "category": "static_site_generator",
+      "dev": {
+        "commands": [
+          "pnpm run dev",
+          "pnpm run start",
+        ],
+        "pollingStrategies": [
+          {
+            "name": "TCP",
+          },
+        ],
+        "port": 3000,
+      },
+      "env": {},
+      "id": "astro",
+      "logo": {
+        "dark": "https://framework-info.netlify.app/logos/astro/dark.svg",
+        "default": "https://framework-info.netlify.app/logos/astro/light.svg",
+        "light": "https://framework-info.netlify.app/logos/astro/light.svg",
+      },
+      "name": "Astro",
+      "package": {
+        "name": "astro",
+        "version": "1.5.1",
+      },
+      "plugins": [],
+      "staticAssetsDirectory": "public",
+    },
+  ],
   "jsWorkspaces": WorkspaceInfo {
     "isRoot": false,
     "packages": [
@@ -130,7 +167,9 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
-    "lockFile": "pnpm-lock.yaml",
+    "lockFiles": [
+      "pnpm-lock.yaml",
+    ],
     "name": "pnpm",
     "runCommand": "pnpm run",
     "version": SemVer {
@@ -149,7 +188,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -164,7 +203,6 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
   ],
@@ -205,7 +243,9 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
-    "lockFile": "pnpm-lock.yaml",
+    "lockFiles": [
+      "pnpm-lock.yaml",
+    ],
     "name": "pnpm",
     "runCommand": "pnpm run",
     "version": SemVer {
@@ -224,7 +264,7 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "settings": [
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/blog run build",
+      "buildCommand": "pnpm --filter @evilcorp/blog... run build",
       "devCommand": "pnpm --filter @evilcorp/blog run dev",
       "dist": "packages/blog/dist",
       "env": {},
@@ -239,12 +279,11 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
       "plugins_recommended": [],
       "pollingStrategies": [
         "TCP",
-        "HTTP",
       ],
     },
     {
       "baseDirectory": "",
-      "buildCommand": "pnpm --filter @evilcorp/website run build",
+      "buildCommand": "pnpm --filter @evilcorp/website... run build",
       "devCommand": "pnpm --filter @evilcorp/website run dev",
       "dist": "packages/website/.next",
       "env": {},

@@ -1,5 +1,6 @@
 import { setEnvChanges } from '../env/changes.js'
 import { addErrorInfo, isBuildError } from '../error/info.js'
+import { addOutputFlusher } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
@@ -12,10 +13,12 @@ export const fireCoreStep = async function ({
   outputConfigPath,
   buildDir,
   repositoryRoot,
+  packagePath,
   constants,
   buildbotServerSocket,
   events,
   logs,
+  quiet,
   nodePath,
   childEnv,
   context,
@@ -24,6 +27,7 @@ export const fireCoreStep = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
+  defaultConfig,
   configMutations,
   headersPath,
   redirectsPath,
@@ -33,7 +37,13 @@ export const fireCoreStep = async function ({
   saveConfig,
   userNodeVersion,
   explicitSecretKeys,
+  edgeFunctionsBootstrapURL,
+  deployId,
+  outputFlusher,
+  api,
 }) {
+  const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
+
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
@@ -43,18 +53,22 @@ export const fireCoreStep = async function ({
       tags,
       metrics,
     } = await coreStep({
+      api,
       configPath,
       outputConfigPath,
       buildDir,
       repositoryRoot,
       constants,
+      packagePath,
       buildbotServerSocket,
       events,
-      logs,
+      logs: logsA,
+      quiet,
       context,
       branch,
       childEnv: childEnvA,
       netlifyConfig,
+      defaultConfig,
       nodePath,
       configMutations,
       headersPath,
@@ -65,6 +79,8 @@ export const fireCoreStep = async function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      edgeFunctionsBootstrapURL,
+      deployId,
     })
     const {
       netlifyConfig: netlifyConfigA,
@@ -74,13 +90,15 @@ export const fireCoreStep = async function ({
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      defaultConfig,
       headersPath,
       redirectsPath,
       configMutations,
       newConfigMutations,
       configSideFiles,
       errorParams,
-      logs,
+      logs: logsA,
+      systemLog,
       debug,
     })
     return {

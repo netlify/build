@@ -286,6 +286,21 @@ test('edge_functions.any.path: invalid path', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('edge_functions.any.excludedPath: invalid path', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_excluded_path_invalid').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.test: pattern and path are exclusive', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_pattern_path_exclusive').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.test: excludedPattern and excludedPath are exclusive', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_excluded_pattern_path_exclusive').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('edge_functions.any.function: not a string', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_not_a_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
@@ -298,5 +313,10 @@ test('edge_functions.any.mode: allowed values', async (t) => {
 
 test('edge_functions.any.mode: disallowed values', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_mode_disallowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.method: disallowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_method_disallowed').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })

@@ -8,9 +8,9 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
-test('detects php when compose.json is present', async ({ fs }) => {
+test('detects php when composer.json is present', async ({ fs }) => {
   const cwd = mockFileSystem({
-    'compose.json': '',
+    'composer.json': '',
   })
 
   const detected = await new Project(fs, cwd).detectRuntime()

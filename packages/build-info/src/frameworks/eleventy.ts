@@ -10,7 +10,7 @@ export class Eleventy extends BaseFramework implements Framework {
   dev = {
     command: 'eleventy --serve',
     port: 8080,
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
+    pollingStrategies: [{ name: 'TCP' }],
   }
 
   build = {
@@ -20,7 +20,7 @@ export class Eleventy extends BaseFramework implements Framework {
 
   logo = {
     default: '/logos/eleventy/default.svg',
-    light: '/logos/eleventy/default.svg',
-    dark: '/logos/eleventy/default.svg',
+    light: '/logos/eleventy/light.svg',
+    dark: '/logos/eleventy/dark.svg',
   }
 }

@@ -134,3 +134,17 @@ test('Shows error information in the `startDev` entrypoint even when `quiet: tru
 
   t.is(devCommand.callCount, 0)
 })
+
+test('Passes plugin options into dev command', async (t) => {
+  const devCommand = sinon.stub().resolves()
+
+  await new Fixture('./fixtures/dev_and_build')
+    .withFlags({ debug: false, quiet: true, timeline: 'dev' })
+    .runDev(devCommand)
+
+  t.is(devCommand.callCount, 1)
+  t.truthy(devCommand.lastCall.args[0])
+  t.truthy(devCommand.lastCall.args[0].netlifyConfig)
+  t.truthy(devCommand.lastCall.args[0].childEnv.TEST_ASSIGN)
+  console.log(devCommand.lastCall.args[0].childEnv)
+})

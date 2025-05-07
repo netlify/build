@@ -76,6 +76,543 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [22.0.1](https://github.com/netlify/build/compare/config-v22.0.0...config-v22.0.1) (2025-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.4 to ^13.3.5
+
+## [22.0.0](https://github.com/netlify/build/compare/config-v21.0.7...config-v22.0.0) (2025-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193))
+
+### Bug Fixes
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193)) ([c4f7caa](https://github.com/netlify/build/commit/c4f7caa2d21380f5d1f6cc8159aa0783dccd137a))
+
+## [21.0.7](https://github.com/netlify/build/compare/config-v21.0.6...config-v21.0.7) (2025-04-08)
+
+
+### Bug Fixes
+
+* remove getAvailableIntegrations and start using the other call we already do ([#6144](https://github.com/netlify/build/issues/6144)) ([50b7492](https://github.com/netlify/build/commit/50b749204d942aba16ff52024a7db4320f2a4ee3))
+
+
+### Performance Improvements
+
+* **config:** use minimal accounts query when resolving configuration ([#6184](https://github.com/netlify/build/issues/6184)) ([3887115](https://github.com/netlify/build/commit/3887115f3988fa1a943175c1d08b6af5257acbad))
+
+## [21.0.6](https://github.com/netlify/build/compare/config-v21.0.5...config-v21.0.6) (2025-04-01)
+
+
+### Bug Fixes
+
+* ensure extension api is always called with the right host ([#6168](https://github.com/netlify/build/issues/6168)) ([6b34ebf](https://github.com/netlify/build/commit/6b34ebf300dc45606cf787e7127b5b376b69e574))
+
+## [21.0.5](https://github.com/netlify/build/compare/config-v21.0.4...config-v21.0.5) (2025-03-28)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.3 to ^13.3.4
+
+## [21.0.4](https://github.com/netlify/build/compare/config-v21.0.3...config-v21.0.4) (2025-03-24)
+
+
+### Bug Fixes
+
+* add logging for get site info usage ([#6156](https://github.com/netlify/build/issues/6156)) ([61dc49b](https://github.com/netlify/build/commit/61dc49beb816a45702ee480f939a7d1ed49aed9f))
+
+## [21.0.3](https://github.com/netlify/build/compare/config-v21.0.2...config-v21.0.3) (2025-03-21)
+
+
+### Bug Fixes
+
+* account envs not showing up in site build ([#6122](https://github.com/netlify/build/issues/6122)) ([f91761a](https://github.com/netlify/build/commit/f91761a7cbb87ba1069dc42faaca95f55a9235e7))
+* reduce the usage of getSiteInfo if we already have a cachedConfig ([#6154](https://github.com/netlify/build/issues/6154)) ([0ce31e2](https://github.com/netlify/build/commit/0ce31e230d48ea38007ce31f58cb34f01bb21274))
+
+## [21.0.2](https://github.com/netlify/build/compare/config-v21.0.1...config-v21.0.2) (2025-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/redirect-parser bumped from ^14.5.0 to ^14.5.1
+
+## [21.0.1](https://github.com/netlify/build/compare/config-v21.0.0...config-v21.0.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* use staging url for extensions on staging ([#6140](https://github.com/netlify/build/issues/6140)) ([978b3c3](https://github.com/netlify/build/commit/978b3c394ec442efe23610ef8313c4820e8d40fa))
+
+## [21.0.0](https://github.com/netlify/build/compare/config-v20.22.0...config-v21.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^7.3.0 to ^8.0.0
+
+## [20.22.0](https://github.com/netlify/build/compare/config-v20.21.7...config-v20.22.0) (2025-02-24)
+
+
+### Features
+
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+
+## [20.21.7](https://github.com/netlify/build/compare/config-v20.21.6...config-v20.21.7) (2025-01-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.2 to ^13.3.3
+
+## [20.21.6](https://github.com/netlify/build/compare/config-v20.21.5...config-v20.21.6) (2025-01-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.1 to ^13.3.2
+
+## [20.21.5](https://github.com/netlify/build/compare/config-v20.21.4...config-v20.21.5) (2025-01-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.3.0 to ^13.3.1
+
+## [20.21.4](https://github.com/netlify/build/compare/config-v20.21.3...config-v20.21.4) (2025-01-15)
+
+
+### Bug Fixes
+
+* **config:** fail builds if failed to fetch extensions ([#6008](https://github.com/netlify/build/issues/6008)) ([95c4716](https://github.com/netlify/build/commit/95c471627fa363e547477ecb6afafc73326d43cb))
+
+## [20.21.3](https://github.com/netlify/build/compare/config-v20.21.2...config-v20.21.3) (2025-01-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.2.1 to ^13.3.0
+
+## [20.21.2](https://github.com/netlify/build/compare/config-v20.21.1...config-v20.21.2) (2025-01-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.2.0 to ^13.2.1
+
+## [20.21.1](https://github.com/netlify/build/compare/config-v20.21.0...config-v20.21.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Revert 5915 yj/fail builds if extension fail to load ([#5955](https://github.com/netlify/build/issues/5955)) ([d3965d5](https://github.com/netlify/build/commit/d3965d50a47faa397196a594f91e48345dde46ad))
+
+## [20.21.0](https://github.com/netlify/build/compare/config-v20.20.0...config-v20.21.0) (2024-12-14)
+
+
+### Features
+
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+* rename unscoped NPM packages ([#5943](https://github.com/netlify/build/issues/5943)) ([131a644](https://github.com/netlify/build/commit/131a644bfde5205f730f3369b778d8914c7c0382))
+
+
+### Bug Fixes
+
+* fail build when extension failed to be retrieved ([#5915](https://github.com/netlify/build/issues/5915)) ([20c7359](https://github.com/netlify/build/commit/20c73593deda6fc4a570fc7b71178687a693e03d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^7.2.0 to ^7.3.0
+    * @netlify/redirect-parser bumped from ^14.4.0 to ^14.5.0
+
+## [20.20.0](https://github.com/netlify/build/compare/config-v20.19.1...config-v20.20.0) (2024-12-11)
+
+
+### Features
+
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.21 to ^13.2.0
+    * netlify-headers-parser bumped from ^7.1.4 to ^7.2.0
+    * netlify-redirect-parser bumped from ^14.3.0 to ^14.4.0
+
+## [20.19.1](https://github.com/netlify/build/compare/config-v20.19.0...config-v20.19.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* environment variable build context filtering fix  ([#5887](https://github.com/netlify/build/issues/5887)) ([c0ab547](https://github.com/netlify/build/commit/c0ab5479bd533315d39983e50a9c8a1bee5966ff))
+
+## [20.19.0](https://github.com/netlify/build/compare/config-v20.18.0...config-v20.19.0) (2024-08-21)
+
+
+### Features
+
+* **config:** return account id from config in offline mode ([#5810](https://github.com/netlify/build/issues/5810)) ([e82859d](https://github.com/netlify/build/commit/e82859d247253e2ee54891ade4bbc3d89ef56c1a))
+
+
+### Bug Fixes
+
+* don't overwrite plugin origin if it exists ([#5793](https://github.com/netlify/build/issues/5793)) ([d5ef407](https://github.com/netlify/build/commit/d5ef4079308264d6175731fd9d3ff1c2ae1e1200))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.20 to ^13.1.21
+
+## [20.18.0](https://github.com/netlify/build/compare/config-v20.17.1...config-v20.18.0) (2024-08-05)
+
+
+### Features
+
+* use v2 endpoint that has siteid for extensions ([#5792](https://github.com/netlify/build/issues/5792)) ([73c44fe](https://github.com/netlify/build/commit/73c44fe743afe87ef282af2b11924d8e36e547e6))
+
+## [20.17.1](https://github.com/netlify/build/compare/config-v20.17.0...config-v20.17.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* leverage the internal config inside the getEnv as well ([#5769](https://github.com/netlify/build/issues/5769)) ([5e6ec8a](https://github.com/netlify/build/commit/5e6ec8afb91b494d77822bee88b2a45be07ec531))
+
+## [20.17.0](https://github.com/netlify/build/compare/config-v20.16.0...config-v20.17.0) (2024-07-11)
+
+
+### Features
+
+* pass default config for resolveUpdatedConfig instead of cached config ([#5761](https://github.com/netlify/build/issues/5761)) ([011ce3a](https://github.com/netlify/build/commit/011ce3ad392f8cc7ff08fd0a0c37bd5fb58e6a5f))
+
+## [20.16.0](https://github.com/netlify/build/compare/config-v20.15.4...config-v20.16.0) (2024-06-27)
+
+
+### Features
+
+* exclude integration site id from meta request ([#5744](https://github.com/netlify/build/issues/5744)) ([1129823](https://github.com/netlify/build/commit/11298237c60182a723a532b8e17a561e9e62d0ca))
+
+## [20.15.4](https://github.com/netlify/build/compare/config-v20.15.3...config-v20.15.4) (2024-06-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.19 to ^13.1.20
+
+## [20.15.3](https://github.com/netlify/build/compare/config-v20.15.2...config-v20.15.3) (2024-06-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.18 to ^13.1.19
+
+## [20.15.2](https://github.com/netlify/build/compare/config-v20.15.1...config-v20.15.2) (2024-06-12)
+
+
+### Bug Fixes
+
+* re-add siteFeatureFlagPrefix ([#5709](https://github.com/netlify/build/issues/5709)) ([055e9a7](https://github.com/netlify/build/commit/055e9a745a5b0071b31a3952fc311454aca7fb72))
+
+## [20.15.1](https://github.com/netlify/build/compare/config-v20.15.0...config-v20.15.1) (2024-06-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.17 to ^13.1.18
+
+## [20.15.0](https://github.com/netlify/build/compare/config-v20.14.1...config-v20.15.0) (2024-06-06)
+
+
+### Features
+
+* add new endpoint that uses flags and accountId ([#5700](https://github.com/netlify/build/issues/5700)) ([07def29](https://github.com/netlify/build/commit/07def2916208d1acf6eee1d24b56547b81222f3a))
+
+## [20.14.1](https://github.com/netlify/build/compare/config-v20.14.0...config-v20.14.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* [CRE-1203] adds `dev` to config mutable props ([#5695](https://github.com/netlify/build/issues/5695)) ([f560fc1](https://github.com/netlify/build/commit/f560fc18a5f6a2b3fca131706d45bb292923d0c4))
+
+## [20.14.0](https://github.com/netlify/build/compare/config-v20.13.2...config-v20.14.0) (2024-06-03)
+
+
+### Features
+
+* added dev.processing.html.injections to mutable props [CRE-1203] ([#5692](https://github.com/netlify/build/issues/5692)) ([2ee98a5](https://github.com/netlify/build/commit/2ee98a5daa6c71c800acdb908cfaca25ffc9c6fc))
+
+## [20.13.2](https://github.com/netlify/build/compare/config-v20.13.1...config-v20.13.2) (2024-05-29)
+
+
+### Bug Fixes
+
+* revert b8899e06a31f5615ef41d8a4ab251bcc96717837 ([#5689](https://github.com/netlify/build/issues/5689)) ([15bec28](https://github.com/netlify/build/commit/15bec2818f0c4dfe07265a2b16d7bec09ce9f01d))
+
+## [20.13.1](https://github.com/netlify/build/compare/config-v20.13.0...config-v20.13.1) (2024-05-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.16 to ^13.1.17
+
+## [20.13.0](https://github.com/netlify/build/compare/config-v20.12.6...config-v20.13.0) (2024-05-29)
+
+
+### Features
+
+* retrieve integration meta data from new endpoint ([#5647](https://github.com/netlify/build/issues/5647)) ([b8899e0](https://github.com/netlify/build/commit/b8899e06a31f5615ef41d8a4ab251bcc96717837))
+
+## [20.12.6](https://github.com/netlify/build/compare/config-v20.12.5...config-v20.12.6) (2024-05-23)
+
+
+### Bug Fixes
+
+* update config logger ([#5658](https://github.com/netlify/build/issues/5658)) ([bbbba76](https://github.com/netlify/build/commit/bbbba7604f01163a9f790694ddb247d5ea6242f3))
+
+## [20.12.5](https://github.com/netlify/build/compare/config-v20.12.4...config-v20.12.5) (2024-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-redirect-parser bumped from ^14.2.2 to ^14.3.0
+
+## [20.12.4](https://github.com/netlify/build/compare/config-v20.12.3...config-v20.12.4) (2024-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.15 to ^13.1.16
+
+## [20.12.3](https://github.com/netlify/build/compare/config-v20.12.2...config-v20.12.3) (2024-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.14 to ^13.1.15
+
+## [20.12.2](https://github.com/netlify/build/compare/config-v20.12.1...config-v20.12.2) (2024-04-23)
+
+
+### Bug Fixes
+
+* when fetching env from envelope, pass context ([#5426](https://github.com/netlify/build/issues/5426)) ([8301161](https://github.com/netlify/build/commit/8301161d88d343eb9abbca226cba397a20bc581e))
+
+## [20.12.1](https://github.com/netlify/build/compare/config-v20.12.0...config-v20.12.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* remove cli_fetch_integrations and cli_fetch_integrations ([#5534](https://github.com/netlify/build/issues/5534)) ([281c12b](https://github.com/netlify/build/commit/281c12ba31de6622cbd3796b3de1f0cff7f256ba))
+
+## [20.12.0](https://github.com/netlify/build/compare/config-v20.11.1...config-v20.12.0) (2024-02-14)
+
+
+### Features
+
+* initial support for Deploy Configuration API ([#5509](https://github.com/netlify/build/issues/5509)) ([70ef75f](https://github.com/netlify/build/commit/70ef75fa8afbfb84e726bf5e0fd65544e8b46c7a))
+
+## [20.11.1](https://github.com/netlify/build/compare/config-v20.11.0...config-v20.11.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* switch to @iarna/toml ([#5508](https://github.com/netlify/build/issues/5508)) ([ba81c85](https://github.com/netlify/build/commit/ba81c85aad902380d24fc1722bc65d4feed24b84))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.1.3 to ^7.1.4
+    * netlify-redirect-parser bumped from ^14.2.1 to ^14.2.2
+
+## [20.11.0](https://github.com/netlify/build/compare/config-v20.10.3...config-v20.11.0) (2024-02-02)
+
+
+### Features
+
+* allow mutating images field in NetlifyConfig ([#5464](https://github.com/netlify/build/issues/5464)) ([8d33d21](https://github.com/netlify/build/commit/8d33d217c2ee13643d3c8d6818bde01da7217093))
+
+## [20.10.3](https://github.com/netlify/build/compare/config-v20.10.2...config-v20.10.3) (2024-01-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.13 to ^13.1.14
+
+## [20.10.2](https://github.com/netlify/build/compare/config-v20.10.1...config-v20.10.2) (2024-01-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.12 to ^13.1.13
+
+## [20.10.1](https://github.com/netlify/build/compare/config-v20.10.0...config-v20.10.1) (2024-01-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.11 to ^13.1.12
+    * netlify-headers-parser bumped from ^7.1.2 to ^7.1.3
+    * netlify-redirect-parser bumped from ^14.2.0 to ^14.2.1
+
+## [20.10.0](https://github.com/netlify/build/compare/config-v20.9.0...config-v20.10.0) (2023-11-14)
+
+
+### Features
+
+* fetch integrations only when online ([#5380](https://github.com/netlify/build/issues/5380)) ([916a54c](https://github.com/netlify/build/commit/916a54c8b2389ea856b974b92443cbd0e77613f2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.10 to ^13.1.11
+
+## [20.9.0](https://github.com/netlify/build/compare/config-v20.8.1...config-v20.9.0) (2023-09-13)
+
+
+### Features
+
+* parse integrations from the config, including local dev support ([#5251](https://github.com/netlify/build/issues/5251)) ([08dbe97](https://github.com/netlify/build/commit/08dbe97b2da5fd5772dff851be59bd56b3f61561))
+
+## [20.8.1](https://github.com/netlify/build/compare/config-v20.8.0...config-v20.8.1) (2023-09-01)
+
+
+### Bug Fixes
+
+* add ef-method field ([#5270](https://github.com/netlify/build/issues/5270)) ([eb83967](https://github.com/netlify/build/commit/eb839670c9e8410fe8bd58ef93c531f77733c8fd))
+
+## [20.8.0](https://github.com/netlify/build/compare/config-v20.7.0...config-v20.8.0) (2023-08-08)
+
+
+### Features
+
+* add packagePath property for config ([#5223](https://github.com/netlify/build/issues/5223)) ([4a62bac](https://github.com/netlify/build/commit/4a62baca49747a1cb28eb31002765d8bcfe43ac5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-redirect-parser bumped from ^14.1.3 to ^14.2.0
+
+## [20.7.0](https://github.com/netlify/build/compare/config-v20.6.4...config-v20.7.0) (2023-08-01)
+
+
+### Features
+
+* remove tokens related to integrations, improve typings ([#5211](https://github.com/netlify/build/issues/5211)) ([3b13192](https://github.com/netlify/build/commit/3b131924df7e2b898fc72de1de21bde7ae6709fb))
+
+## [20.6.4](https://github.com/netlify/build/compare/config-v20.6.3...config-v20.6.4) (2023-07-19)
+
+
+### Bug Fixes
+
+* correctly reference env from testOpts to install integrations ([#5193](https://github.com/netlify/build/issues/5193)) ([bda6ff5](https://github.com/netlify/build/commit/bda6ff583e963ebbbe87ec4c78e3608b9c2c2cd8))
+
+## [20.6.3](https://github.com/netlify/build/compare/config-v20.6.2...config-v20.6.3) (2023-07-18)
+
+
+### Bug Fixes
+
+* pull integrations in buildy botty mode ([#5168](https://github.com/netlify/build/issues/5168)) ([0650bda](https://github.com/netlify/build/commit/0650bda48b6749b14e6026e9d3c1d446b1d85675))
+
+## [20.6.2](https://github.com/netlify/build/compare/config-v20.6.1...config-v20.6.2) (2023-07-17)
+
+
+### Bug Fixes
+
+* do not allow excluded path and pattern together ([#5142](https://github.com/netlify/build/issues/5142)) ([4c9aefe](https://github.com/netlify/build/commit/4c9aefe0e512abcd44ec963cd37cd8b4afb1aaf8))
+
+## [20.6.1](https://github.com/netlify/build/compare/config-v20.6.0...config-v20.6.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* references to token in fetch integrations and include some tests ([#5164](https://github.com/netlify/build/issues/5164)) ([9fe7880](https://github.com/netlify/build/commit/9fe78807ebd3e56c6e58e0dd2591a8a0598d6327))
+
+## [20.6.0](https://github.com/netlify/build/compare/config-v20.5.2...config-v20.6.0) (2023-07-12)
+
+
+### Features
+
+* install integrations alongside plugins ([#5116](https://github.com/netlify/build/issues/5116)) ([8982903](https://github.com/netlify/build/commit/8982903b7724d736c9f9514aed8f6c960c6378ba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.9 to ^13.1.10
+
+## [20.5.2](https://github.com/netlify/build/compare/config-v20.5.1...config-v20.5.2) (2023-07-06)
+
+
+### Bug Fixes
+
+* support edge_functions `excludedPath` ([#5135](https://github.com/netlify/build/issues/5135)) ([74edbee](https://github.com/netlify/build/commit/74edbee82cc811f54ec5b47e9db6b17f783dcd30))
+* support edge_functions.pattern ([#5136](https://github.com/netlify/build/issues/5136)) ([a04905b](https://github.com/netlify/build/commit/a04905b5fc325824a76b71e9b48e9dc1597548bf))
+
 ## [20.5.1](https://github.com/netlify/build/compare/config-v20.5.0...config-v20.5.1) (2023-06-14)
 
 
