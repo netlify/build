@@ -23,6 +23,7 @@ import { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } from './origin.js'
 import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
+import { handleAutoInstallExtensions } from './utils/extensions/auto-install-extensions.js'
 
 export type Config = {
   accounts: MinimalAccount[] | undefined
@@ -192,6 +193,15 @@ export const resolveConfig = async function (opts): Promise<Config> {
     api,
     logs,
   }
+
+  if (result.siteInfo?.feature_flags?.auto_install_required_extensions === true) {
+    try {
+      await handleAutoInstallExtensions(opts, api)
+    } catch (e) {
+      console.warn(`Failed handling auto install extensions:`, e)
+    }
+  }
+
   logResult(result, { logs, debug })
   return result
 }
