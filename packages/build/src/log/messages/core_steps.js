@@ -136,6 +136,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
     `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
   )
 
+  // Explicit secret matches
   if (Object.keys(secretMatches).length > 0) {
     Object.keys(secretMatches).forEach((key) => {
       logError(logs, `Secret env var "${key}"'s value detected:`)
@@ -150,6 +151,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
     })
   }
 
+  // Likely secret matches from enhanced scan
   if (Object.keys(enhancedSecretMatches).length > 0) {
     Object.keys(enhancedSecretMatches).forEach((key) => {
       logError(logs, `Env var "${key}"'s value detected as a likely secret value:`)

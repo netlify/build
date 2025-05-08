@@ -58,8 +58,7 @@ const coreStep: CoreStepFunction = async function ({
   const keysToSearchFor = explicitSecretKeysToScanFor.concat(otherKeysToScanFor)
 
   if (keysToSearchFor.length === 0) {
-    const skippedTheEnhancedScan = enhancedSecretScan && otherKeysToScanFor.length > 0
-    const msg = skippedTheEnhancedScan
+    const msg = enhancedSecretScan
       ? 'Secrets scanning skipped because no env vars are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.'
       : 'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.'
     logSecretsScanSkipMessage(logs, msg)
