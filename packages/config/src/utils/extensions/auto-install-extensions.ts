@@ -1,5 +1,5 @@
-import { Project } from '@netlify/build-info'
-import { NodeFS } from '@netlify/build-info/node'
+import { promises as fs } from 'fs'
+
 import { NetlifyAPI } from 'netlify'
 
 import { JIGSAW_URL } from './constants.js'
@@ -71,14 +71,20 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
   const accountId = opts.accountId
   const siteId = opts.siteId
 
-  const fs = new NodeFS()
-  const project = new Project(fs, opts.repositoryRoot, opts.repositoryRoot)
-    .setEnvironment(process.env)
-    .setNodeVersion(process.version)
+  const getPackageJSON = async () => {
+    const packageJsonPath = `${opts.repositoryRoot}/package.json`
+    try {
+      const packageJson = await fs.readFile(packageJsonPath, 'utf8')
+      return JSON.parse(packageJson)
+    } catch (e) {
+      console.error(`[@netlify/config] Failed to read ${packageJsonPath}`, e)
+      return {}
+    }
+  }
 
   const [autoInstallableExtensions, packageJson, installedExtensions] = await Promise.all([
     getAutoInstallableExtensions(),
-    project.getPackageJSON(),
+    getPackageJSON(),
     getInstalledExtensionsForSite({
       accountId: accountId,
       siteId: siteId,
@@ -88,7 +94,7 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
 
   const autoInstallExtensions = autoInstallableExtensions.filter((extension) => {
     return extension.packages.some((pkg) => {
-      return packageJson.dependencies?.[pkg]
+      return packageJson?.dependencies?.[pkg]
     })
   })
 
