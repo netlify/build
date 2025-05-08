@@ -74,7 +74,6 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
   const siteId = opts.siteId
 
   const fs = new NodeFS()
-  console.log('opts', opts)
   const project = new Project(fs, opts.repositoryRoot, opts.repositoryRoot)
     .setEnvironment(process.env)
     .setNodeVersion(process.version)
