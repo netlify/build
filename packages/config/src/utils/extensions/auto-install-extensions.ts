@@ -22,7 +22,6 @@ export async function handleAutoInstallExtensions(opts: $TSFixMe, api?: NetlifyA
     return
   }
 
-  const netlifyToken = opts.token
   const accountId = opts.accountId
   const account = await getAccount(api, { accountId })
 
@@ -46,7 +45,7 @@ export async function handleAutoInstallExtensions(opts: $TSFixMe, api?: NetlifyA
 
       return installExtension({
         accountId: accountId,
-        netlifyToken: netlifyToken,
+        netlifyToken: opts.token,
         slug: installableExt.slug,
         hostSiteUrl: installableExt.hostSiteUrl,
       })
@@ -69,7 +68,6 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
     return []
   }
 
-  const netlifyToken = api.accessToken.replace('Bearer ', '')
   const accountId = opts.accountId
   const siteId = opts.siteId
 
@@ -84,7 +82,7 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
     getInstalledExtensionsForSite({
       accountId: accountId,
       siteId: siteId,
-      netlifyToken: netlifyToken,
+      netlifyToken: opts.token,
     }),
   ])
 
@@ -103,7 +101,7 @@ async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
       extensionsToInstallMeta.map(async (extMeta) => {
         const extensionData = await getExtension({
           accountId: accountId,
-          netlifyToken: netlifyToken,
+          netlifyToken: opts.token,
           slug: extMeta.slug,
         })
 
