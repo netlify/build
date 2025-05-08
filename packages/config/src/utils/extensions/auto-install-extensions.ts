@@ -27,10 +27,10 @@ export async function handleAutoInstallExtensions(opts: $TSFixMe, api?: NetlifyA
   const account = await getAccount(api, { accountId })
 
   const results: InstallExtensionResult[] = await Promise.all(
-    installableExtensions.map((requiredExt) => {
-      if (!requiredExt.hostSiteUrl) {
+    installableExtensions.map((installableExt) => {
+      if (!installableExt.hostSiteUrl) {
         return {
-          slug: requiredExt.slug,
+          slug: installableExt.slug,
           error: {
             code: 'FAILED_TO_FETCH_EXTENSION',
             message: 'Failed to fetch extension host site url',
@@ -39,16 +39,16 @@ export async function handleAutoInstallExtensions(opts: $TSFixMe, api?: NetlifyA
       }
 
       console.log(
-        `Installing extension "${requiredExt.name ?? requiredExt.slug}" on team "${
+        `Installing extension "${installableExt.name ?? installableExt.slug}" on team "${
           account.name
-        }" required by package(s): "${requiredExt.meta.packages.join('",')}"`,
+        }" required by package(s): "${installableExt.meta.packages.join('",')}"`,
       )
 
       return installExtension({
         accountId: accountId,
         netlifyToken: netlifyToken,
-        slug: requiredExt.slug,
-        hostSiteUrl: requiredExt.hostSiteUrl,
+        slug: installableExt.slug,
+        hostSiteUrl: installableExt.hostSiteUrl,
       })
     }),
   )
