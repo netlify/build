@@ -174,8 +174,7 @@ export const bundleJsFile = async function ({
             `
 var __glob = (map) => (path) => {
   var fn = map[path];
-  if (fn)
-    return fn();
+  if (fn) return fn();
   throw new Error("Module not found in bundle: " + path);
 };
       `.trim(),

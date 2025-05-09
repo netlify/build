@@ -1,5 +1,13 @@
 # Changelog
 
+## [13.0.3](https://github.com/netlify/build/compare/edge-bundler-v13.0.2...edge-bundler-v13.0.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.3 ([#6216](https://github.com/netlify/build/issues/6216)) ([ddd27b7](https://github.com/netlify/build/commit/ddd27b7f895acb8874efcc78d507048fb8bf2fbf))
+* **deps:** update dependency esbuild to v0.25.4 ([#6282](https://github.com/netlify/build/issues/6282)) ([6099258](https://github.com/netlify/build/commit/6099258ec3d085a7e1e33042d435edf5880c8fdb))
+
 ## [13.0.2](https://github.com/netlify/build/compare/edge-bundler-v13.0.1...edge-bundler-v13.0.2) (2025-04-10)
 
 
