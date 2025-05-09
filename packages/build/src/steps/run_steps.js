@@ -45,6 +45,7 @@ export const runSteps = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
 }) {
   const {
@@ -153,6 +154,7 @@ export const runSteps = async function ({
         quiet,
         userNodeVersion,
         explicitSecretKeys,
+        enhancedSecretScan,
         edgeFunctionsBootstrapURL,
       })
 

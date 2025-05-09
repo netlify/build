@@ -37,6 +37,7 @@ export const fireCoreStep = async function ({
   saveConfig,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   deployId,
   outputFlusher,
@@ -79,6 +80,7 @@ export const fireCoreStep = async function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
     })

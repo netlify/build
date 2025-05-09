@@ -218,4 +218,9 @@ Default: false`,
     describe: 'Env var keys that are marked as secret explicitly.',
     hidden: true,
   },
+  enhancedSecretScan: {
+    boolean: true,
+    hidden: true,
+    describe: 'Scan for potential secrets in all env vars',
+  },
 }
