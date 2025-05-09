@@ -1,0 +1,140 @@
+{
+  "errors": [
+    {
+      "instancePath": "/dev",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/properties/dev/additionalProperties",
+    },
+    {
+      "instancePath": "/dev/autoLaunch",
+      "keyword": "type",
+      "message": "must be boolean",
+      "params": {
+        "type": "boolean",
+      },
+      "schemaPath": "#/properties/dev/properties/autoLaunch/type",
+    },
+    {
+      "instancePath": "/dev/command",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/command/type",
+    },
+    {
+      "instancePath": "/dev/envFiles",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/properties/dev/properties/envFiles/type",
+    },
+    {
+      "instancePath": "/dev/framework",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/framework/type",
+    },
+    {
+      "instancePath": "/dev/functionsPort",
+      "keyword": "type",
+      "message": "must be number",
+      "params": {
+        "type": "number",
+      },
+      "schemaPath": "#/properties/dev/properties/functionsPort/type",
+    },
+    {
+      "instancePath": "/dev/https",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "nay",
+      },
+      "schemaPath": "#/properties/dev/properties/https/additionalProperties",
+    },
+    {
+      "instancePath": "/dev/https/certFile",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/https/properties/certFile/type",
+    },
+    {
+      "instancePath": "/dev/https/keyFile",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/https/properties/keyFile/type",
+    },
+    {
+      "instancePath": "/dev/jwtRolePath",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/jwtRolePath/type",
+    },
+    {
+      "instancePath": "/dev/jwtSecret",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/jwtSecret/type",
+    },
+    {
+      "instancePath": "/dev/port",
+      "keyword": "type",
+      "message": "must be number",
+      "params": {
+        "type": "number",
+      },
+      "schemaPath": "#/properties/dev/properties/port/type",
+    },
+    {
+      "instancePath": "/dev/publish",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/publish/type",
+    },
+    {
+      "instancePath": "/dev/staticServerPort",
+      "keyword": "type",
+      "message": "must be number",
+      "params": {
+        "type": "number",
+      },
+      "schemaPath": "#/properties/dev/properties/staticServerPort/type",
+    },
+    {
+      "instancePath": "/dev/targetPort",
+      "keyword": "type",
+      "message": "must be number",
+      "params": {
+        "type": "number",
+      },
+      "schemaPath": "#/properties/dev/properties/targetPort/type",
+    },
+  ],
+  "valid": false,
+}

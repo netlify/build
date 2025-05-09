@@ -1,0 +1,160 @@
+{
+  "errors": [
+    {
+      "instancePath": "/redirects/0/conditions/Cookie/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Cookie/items/type",
+    },
+    {
+      "instancePath": "/redirects/0/conditions/Country/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Country/items/type",
+    },
+    {
+      "instancePath": "/redirects/0/conditions/Language/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Language/items/type",
+    },
+    {
+      "instancePath": "/redirects/0/conditions/Role/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Role/items/type",
+    },
+    {
+      "instancePath": "/redirects/0/force",
+      "keyword": "type",
+      "message": "must be boolean",
+      "params": {
+        "type": "boolean",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/force/type",
+    },
+    {
+      "instancePath": "/redirects/0/from",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/from/type",
+    },
+    {
+      "instancePath": "/redirects/0/headers/X-From",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/headers/additionalProperties/type",
+    },
+    {
+      "instancePath": "/redirects/0/query/path",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/query/additionalProperties/type",
+    },
+    {
+      "instancePath": "/redirects/0/signed",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/signed/type",
+    },
+    {
+      "instancePath": "/redirects/0/status",
+      "keyword": "exclusiveMaximum",
+      "message": "must be < 600",
+      "params": {
+        "comparison": "<",
+        "limit": 600,
+      },
+      "schemaPath": "#/properties/redirects/items/properties/status/exclusiveMaximum",
+    },
+    {
+      "instancePath": "/redirects/0/to",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/to/type",
+    },
+    {
+      "instancePath": "/redirects/1/conditions/Country/0",
+      "keyword": "pattern",
+      "message": "must match pattern \"^[a-zA-Z]{2}$\"",
+      "params": {
+        "pattern": "^[a-zA-Z]{2}$",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Country/items/pattern",
+    },
+    {
+      "instancePath": "/redirects/1/conditions/Language/0",
+      "keyword": "pattern",
+      "message": "must match pattern \"^[a-zA-Z]{2}(-[a-zA-Z]{2})?$\"",
+      "params": {
+        "pattern": "^[a-zA-Z]{2}(-[a-zA-Z]{2})?$",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/properties/Language/items/pattern",
+    },
+    {
+      "instancePath": "/redirects/1/query",
+      "keyword": "type",
+      "message": "must be object",
+      "params": {
+        "type": "object",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/query/type",
+    },
+    {
+      "instancePath": "/redirects/1/status",
+      "keyword": "minimum",
+      "message": "must be >= 100",
+      "params": {
+        "comparison": ">=",
+        "limit": 100,
+      },
+      "schemaPath": "#/properties/redirects/items/properties/status/minimum",
+    },
+    {
+      "instancePath": "/redirects/2/conditions",
+      "keyword": "type",
+      "message": "must be object",
+      "params": {
+        "type": "object",
+      },
+      "schemaPath": "#/properties/redirects/items/properties/conditions/type",
+    },
+    {
+      "instancePath": "/redirects/3",
+      "keyword": "required",
+      "message": "must have required property 'from'",
+      "params": {
+        "missingProperty": "from",
+      },
+      "schemaPath": "#/properties/redirects/items/required",
+    },
+  ],
+  "valid": false,
+}
