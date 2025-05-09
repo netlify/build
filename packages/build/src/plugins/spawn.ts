@@ -128,6 +128,8 @@ const startPlugin = async function ({
     // noop
   }
 
+  process.stdout.write(`Starting plugin ${pluginPackageJson?.name} (${pluginPackageJson?.version})\n`)
+
   const childProcess = execaNode(CHILD_MAIN_FILE, args, {
     cwd: buildDir,
     preferLocal: true,
@@ -146,6 +148,15 @@ const startPlugin = async function ({
         ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile]
         : undefined,
   })
+
+  childProcess.stdout?.on('data', (chunk) => {
+    process.stdout.write(chunk)
+  })
+
+  childProcess.stderr?.on('data', (chunk) => {
+    process.stderr.write(chunk)
+  })
+
   const readyEvent = 'ready'
   const cleanup = captureStandardError(
     childProcess,
