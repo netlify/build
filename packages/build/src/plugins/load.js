@@ -89,7 +89,12 @@ const loadPlugin = async function (
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
-  const cleanup = captureStandardError(childProcess, systemLog, loadEvent, featureFlags)
+  const cleanup = captureStandardError(
+    childProcess,
+    systemLog,
+    `Plugin failed to initialize during the "${loadEvent}" phase`,
+    featureFlags,
+  )
 
   try {
     const { events } = await callChild({

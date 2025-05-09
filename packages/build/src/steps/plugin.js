@@ -6,6 +6,7 @@ import { logStepCompleted } from '../log/messages/ipc.js'
 import { getStandardStreams } from '../log/output_flusher.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
 import { callChild } from '../plugins/ipc.js'
+import { captureStandardError } from '../plugins/system_log.js'
 import { getSuccessStatus } from '../status/success.js'
 
 import { getPluginErrorType } from './error.js'
@@ -48,6 +49,13 @@ export const firePluginStep = async function ({
   propagation.inject(context.active(), otelCarrier)
 
   const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
+
+  const flushStdErr = captureStandardError(
+    childProcess,
+    systemLog,
+    `Plugin failed to execute "${event}" step`,
+    featureFlags,
+  )
 
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
@@ -110,6 +118,8 @@ export const firePluginStep = async function ({
     })
     return { newError }
   } finally {
+    flushStdErr()
+
     if (!isTrustedPlugin(pluginPackageJson?.name) || listeners) {
       await unpipePluginOutput(childProcess, logs, listeners, standardStreams)
     }
