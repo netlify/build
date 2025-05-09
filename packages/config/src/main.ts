@@ -170,8 +170,22 @@ export const resolveConfig = async function (opts): Promise<Config> {
   // @todo Remove in the next major version.
   const configA = addLegacyFunctionsDirectory(config)
 
+  const updatedIntegrations = await handleAutoInstallExtensions({
+    featureFlags,
+    accounts,
+    integrations,
+    siteId,
+    accountId,
+    token,
+    cwd,
+    extensionApiBaseUrl,
+    testOpts,
+    offline,
+    mode,
+  })
+
   const mergedIntegrations = await mergeIntegrations({
-    apiIntegrations: integrations,
+    apiIntegrations: updatedIntegrations,
     configIntegrations: configA.integrations,
     context: context,
   })
@@ -192,14 +206,6 @@ export const resolveConfig = async function (opts): Promise<Config> {
     token,
     api,
     logs,
-  }
-
-  if (result.siteInfo?.feature_flags?.auto_install_required_extensions === true) {
-    try {
-      await handleAutoInstallExtensions(opts, api)
-    } catch (e) {
-      console.warn(`Failed handling auto install extensions:`, e)
-    }
   }
 
   logResult(result, { logs, debug })

@@ -1,47 +1,4 @@
-import { NetlifyAPI } from 'netlify'
-
-import { JIGSAW_URL } from './constants.js'
-
-export type Extension = {
-  id: string
-  name: string
-  slug: string
-  hostSiteUrl: string
-  installedOnTeam: boolean
-}
-
-export const getInstalledExtensionsForSite = async ({
-  accountId,
-  siteId,
-  netlifyToken,
-}: {
-  accountId: string
-  siteId: string
-  netlifyToken: string
-}) => {
-  const url = new URL(
-    `${JIGSAW_URL}/team/${encodeURIComponent(accountId)}/integrations/installations/${encodeURIComponent(siteId)}`,
-    JIGSAW_URL,
-  )
-  const extensionsResponse = await fetch(url.toString(), {
-    headers: {
-      'netlify-token': netlifyToken,
-      'Api-Version': '2',
-    },
-  })
-  if (!extensionsResponse.ok) {
-    throw new Error(`Failed to fetch extensions`)
-  }
-
-  const extensions = (await extensionsResponse.json()) as {
-    id: number
-    name: string
-    integrationId: number
-    integrationSlug: string
-  }[]
-
-  return extensions
-}
+import { EXTENSION_API_BASE_URL } from '../../integrations.js'
 
 export type InstallExtensionResult =
   | {
@@ -67,22 +24,6 @@ export const installExtension = async ({
   slug: string
   hostSiteUrl: string
 }): Promise<InstallExtensionResult> => {
-  const { data: jigsawToken, error } = await getJigsawToken({
-    netlifyToken: netlifyToken,
-    accountId,
-    integrationSlug: slug,
-    isEnable: true,
-  })
-  if (error || !jigsawToken) {
-    return {
-      slug,
-      error: {
-        code: 'FAILED_TO_GET_JIGSAW_TOKEN',
-        message: error?.message ?? 'Unknown error',
-      },
-    }
-  }
-
   const extensionOnInstallUrl = new URL('/.netlify/functions/handler/on-install', hostSiteUrl)
   const installedResponse = await fetch(extensionOnInstallUrl, {
     method: 'POST',
@@ -90,7 +31,7 @@ export const installExtension = async ({
       teamId: accountId,
     }),
     headers: {
-      'netlify-token': jigsawToken,
+      'netlify-token': netlifyToken,
     },
   })
 
@@ -99,7 +40,7 @@ export const installExtension = async ({
     return {
       slug,
       error: {
-        code: 'FAILED_TO_INSTALL_EXTENSION',
+        code: installedResponse.status.toString(),
         message: text,
       },
     }
@@ -110,133 +51,25 @@ export const installExtension = async ({
   }
 }
 
-type JigsawTokenResult =
-  | {
-      data: string
-      error: null
-    }
-  | {
-      data: null
-      error: { code: number; message: string }
-    }
-
-const getJigsawToken = async ({
-  netlifyToken,
-  accountId,
-  integrationSlug,
-  isEnable,
-}: {
-  netlifyToken: string
-  accountId: string
-  integrationSlug?: string
-  /**
-   * isEnable will make a token that can install the extension
-   */
-  isEnable?: boolean
-}): Promise<JigsawTokenResult> => {
-  try {
-    const tokenResponse = await fetch(`${JIGSAW_URL}/generate-token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `_nf-auth=${netlifyToken}`,
-        'Api-Version': '2',
-      },
-      body: JSON.stringify({
-        ownerId: accountId,
-        integrationSlug,
-        isEnable,
-      }),
-    })
-
-    if (!tokenResponse.ok) {
-      return {
-        data: null,
-        error: {
-          code: 401,
-          message: `Unauthorized`,
-        },
-      }
-    }
-
-    const tokenData = (await tokenResponse.json()) as { token?: string } | undefined
-
-    if (!tokenData?.token) {
-      return {
-        data: null,
-        error: {
-          code: 401,
-          message: `Unauthorized`,
-        },
-      }
-    }
-    return {
-      data: tokenData.token,
-      error: null,
-    }
-  } catch (e) {
-    console.error('Failed to get Jigsaw token', e)
-    return {
-      data: null,
-      error: {
-        code: 401,
-        message: `Unauthorized`,
-      },
-    }
-  }
-}
-
-export const getExtension = async ({
-  accountId,
-  netlifyToken,
-  slug,
-}: {
-  accountId: string
-  netlifyToken: string
+type AutoInstallableExtensionMeta = {
   slug: string
-}) => {
-  const extensionResponse = await fetch(
-    `${JIGSAW_URL}/${encodeURIComponent(accountId)}/integrations/${encodeURIComponent(slug)}`,
-    {
-      headers: {
-        'netlify-token': netlifyToken,
-        'Api-Version': '2',
-      },
-    },
-  )
-  if (!extensionResponse.ok) {
-    throw new Error(`Failed to fetch extension: ${slug}`)
-  }
-
-  const extension = (await extensionResponse.json()) as Extension | undefined
-
-  return extension
+  hostSiteUrl: string
+  packages: string[]
 }
-
-// temporary getAccount with correct types
-// This can be removed when the netlify api getAccount return type is fixed.
-export const getAccount = async (
-  api: NetlifyAPI,
-  {
-    accountId,
-  }: {
-    accountId: string
-  },
-) => {
-  let account: Awaited<ReturnType<typeof api.getAccount>>[number]
-  try {
-    // @ts-expect-error -- TODO: fix the getAccount type in the openapi spec. It should not be an array of accounts, just one account.
-    account = await api.getAccount({ accountId })
-  } catch (e) {
-    throw new Error(`Error getting account, make sure you are logged in with netlify login`, {
-      cause: e,
-    })
+/**
+ * Fetches the list of extensions from Jigsaw that declare associated packages.
+ * Used to determine which extensions should be auto-installed based on the packages
+ * present in the package.json (e.g., if an extension lists '@netlify/neon',
+ * and that package exists in package.json, the extension will be auto-installed).
+ *
+ * @returns Array of extensions with their associated packages
+ */
+export async function fetchAutoInstallableExtensionsMeta(): Promise<AutoInstallableExtensionMeta[]> {
+  const url = new URL(`/meta/auto-installable`, process.env.EXTENSION_API_BASE_URL ?? EXTENSION_API_BASE_URL)
+  const response = await fetch(url.toString())
+  if (!response.ok) {
+    throw new Error(`Failed to fetch extensions meta`)
   }
-  if (!account.id || !account.name) {
-    throw new Error(`Error getting account, make sure you are logged in with netlify login`)
-  }
-  return account as { id: string; name: string } & Omit<
-    Awaited<ReturnType<typeof api.getAccount>>[number],
-    'id' | 'name'
-  >
+  const data = await response.json()
+  return data as AutoInstallableExtensionMeta[]
 }

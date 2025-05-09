@@ -1,138 +1,100 @@
-import { promises as fs } from 'fs'
+import { createRequire } from 'module'
+import { join } from 'path'
 
-import { NetlifyAPI } from 'netlify'
+import { getIntegrations } from '../../api/site_info.js'
+import { type IntegrationResponse } from '../../types/api.js'
+import { type ModeOption } from '../../types/options.js'
 
-import { JIGSAW_URL } from './constants.js'
-import {
-  getExtension,
-  getInstalledExtensionsForSite,
-  installExtension,
-  InstallExtensionResult,
-  getAccount,
-} from './utils.js'
+import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
 
-export async function handleAutoInstallExtensions(opts: $TSFixMe, api?: NetlifyAPI) {
-  if (!opts.accountId || !opts.token || !api?.accessToken) {
-    // skip installing extensions if not logged in
-    return
-  }
-
-  const installableExtensions = await getExtensionsToInstall(opts, api)
-  if (installableExtensions.length === 0) {
-    return
-  }
-
-  const accountId = opts.accountId
-  const account = await getAccount(api, { accountId })
-
-  const results: InstallExtensionResult[] = await Promise.all(
-    installableExtensions.map((installableExt) => {
-      if (!installableExt.hostSiteUrl) {
-        return {
-          slug: installableExt.slug,
-          error: {
-            code: 'FAILED_TO_FETCH_EXTENSION',
-            message: 'Failed to fetch extension host site url',
-          },
-        }
-      }
-
-      console.log(
-        `Installing extension "${installableExt.name ?? installableExt.slug}" on team "${
-          account.name
-        }" required by package(s): "${installableExt.meta.packages.join('",')}"`,
-      )
-
-      return installExtension({
-        accountId: accountId,
-        netlifyToken: opts.token,
-        slug: installableExt.slug,
-        hostSiteUrl: installableExt.hostSiteUrl,
-      })
-    }),
-  )
-
-  results.forEach(({ error, slug }) => {
-    if (error) {
-      console.warn(`Failed to install "${slug}" extension on team "${account.name}": ${error.message}`)
-      return
-    }
-    const ext = installableExtensions.find((ext) => ext.slug === slug)
-    console.log(`Installed${ext?.name ? ` "${ext.name}" ` : ` "${slug}" `}extension on team "${account.name}"`)
-  })
+function getPackageJSON(directory: string) {
+  const require = createRequire(join(directory, 'package.json'))
+  return require('./package.json')
 }
 
-async function getExtensionsToInstall(opts: $TSFixMe, api: NetlifyAPI) {
-  if (!opts.accountId || !api.accessToken) {
-    // skip installing extensions if not logged in
-    return []
+interface AutoInstallOptions {
+  featureFlags: any
+  siteId: string
+  accountId: string
+  token: string
+  cwd: string
+  accounts: any
+  integrations: IntegrationResponse[]
+  offline: boolean
+  testOpts: any
+  mode: ModeOption
+  extensionApiBaseUrl: string
+}
+
+export async function handleAutoInstallExtensions({
+  featureFlags,
+  siteId,
+  accountId,
+  token,
+  cwd,
+  accounts,
+  integrations,
+  offline,
+  testOpts = {},
+  mode,
+  extensionApiBaseUrl,
+}: AutoInstallOptions) {
+  if (!featureFlags?.auto_install_required_extensions || !accountId || !siteId || !token || !cwd || offline) {
+    return integrations
   }
-
-  const accountId = opts.accountId
-  const siteId = opts.siteId
-
-  const getPackageJSON = async () => {
-    const packageJsonPath = `${opts.repositoryRoot}/package.json`
-    try {
-      const packageJson = await fs.readFile(packageJsonPath, 'utf8')
-      return JSON.parse(packageJson)
-    } catch (e) {
-      console.error(`[@netlify/config] Failed to read ${packageJsonPath}`, e)
-      return {}
+  const account = accounts?.find((account: any) => account.id === accountId)
+  if (!account) {
+    return integrations
+  }
+  try {
+    const packageJson = getPackageJSON(cwd)
+    if (
+      !packageJson?.dependencies ||
+      typeof packageJson?.dependencies !== 'object' ||
+      Object.keys(packageJson?.dependencies)?.length === 0
+    ) {
+      return integrations
     }
-  }
 
-  const [autoInstallableExtensions, packageJson, installedExtensions] = await Promise.all([
-    getAutoInstallableExtensions(),
-    getPackageJSON(),
-    getInstalledExtensionsForSite({
-      accountId: accountId,
-      siteId: siteId,
-      netlifyToken: opts.token,
-    }),
-  ])
-
-  const autoInstallExtensions = autoInstallableExtensions.filter((extension) => {
-    return extension.packages.some((pkg) => {
-      return packageJson?.dependencies?.[pkg]
+    const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
+    const extensionsToInstall = autoInstallableExtensions.filter((ext) => {
+      return !integrations?.some((integration) => integration.slug === ext.slug)
     })
-  })
+    if (extensionsToInstall.length === 0) {
+      return integrations
+    }
 
-  const extensionsToInstallMeta = autoInstallExtensions.filter((extension) => {
-    return !installedExtensions.find((installedExtension) => installedExtension.integrationSlug === extension.slug)
-  })
-
-  const extensionsToInstall = (
-    await Promise.all(
-      extensionsToInstallMeta.map(async (extMeta) => {
-        const extensionData = await getExtension({
-          accountId: accountId,
-          netlifyToken: opts.token,
-          slug: extMeta.slug,
+    const results = await Promise.all(
+      extensionsToInstall.map(async (ext) => {
+        console.log(
+          `Installing extension "${ext.slug}" on team "${account.name}" required by package(s): "${ext.packages.join(
+            '",',
+          )}"`,
+        )
+        return installExtension({
+          accountId,
+          netlifyToken: token,
+          slug: ext.slug,
+          hostSiteUrl: ext.hostSiteUrl,
         })
-
-        return {
-          slug: extMeta.slug,
-          ...(extensionData ?? {}),
-          meta: extMeta,
-        }
       }),
     )
-  ).filter(Boolean)
 
-  return extensionsToInstall
-}
-
-type AutoInstallableExtensionMeta = {
-  slug: string
-  packages: string[]
-}
-export async function getAutoInstallableExtensions() {
-  const url = new URL(`/meta/auto-installable`, JIGSAW_URL)
-  const metaResponse = await fetch(url.toString())
-  if (!metaResponse.ok) {
-    throw new Error(`Failed to fetch extensions meta`)
+    if (results.length > 0 && results.some((result) => !result.error)) {
+      return getIntegrations({
+        siteId,
+        accountId,
+        testOpts,
+        offline,
+        token,
+        featureFlags,
+        extensionApiBaseUrl,
+        mode,
+      })
+    }
+    return integrations
+  } catch (error) {
+    console.error(`Failed to auto install extension(s): ${error.message}`, error)
+    return integrations
   }
-  const meta = await metaResponse.json()
-  return meta as AutoInstallableExtensionMeta[]
 }
