@@ -42,38 +42,41 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
 }
 
 function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
-  let omitKeys: string[] = []
-  if (typeof env.SECRETS_SCAN_OMIT_KEYS === 'string') {
-    omitKeys = env.SECRETS_SCAN_OMIT_KEYS.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
+  if (typeof env.SECRETS_SCAN_OMIT_KEYS !== 'string') {
+    return envKeys
   }
+  const omitKeys = env.SECRETS_SCAN_OMIT_KEYS.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
 
   return envKeys.filter((key) => !omitKeys.includes(key))
 }
 
 /**
- * non-trivial values are values that are:
- *  - >4 characters/digits
- *  - not booleans
+ * Trivial values are values that are:
+ *  - empty or short strings
+ *  - string forms of booleans
+ *  - booleans
+ *  - numbers or objects with fewer than 4 chars
  */
-function isValueNonTrivial(val): boolean {
+function isValueTrivial(val): boolean {
   if (typeof val === 'string') {
     // string forms of booleans
     if (val === 'true' || val === 'false') {
-      return false
+      return true
     }
-
-    // non-trivial/non-empty values only
-    return val.trim().length > 4
-  } else if (typeof val === 'boolean') {
-    // booleans are trivial values
-    return false
-  } else if (typeof val === 'number' || typeof val === 'object') {
-    return JSON.stringify(val).length > 4
+    // trivial values are empty or short strings
+    return val.trim().length < 4
+  }
+  if (typeof val === 'boolean') {
+    // booleans are always considered trivial
+    return true
+  }
+  if (typeof val === 'number' || typeof val === 'object') {
+    return JSON.stringify(val).length < 4
   }
 
-  return !!val
+  return !val
 }
 
 /**
@@ -90,7 +93,7 @@ function isValueNonTrivial(val): boolean {
  */
 export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys: string[]): string[] {
   const filteredSecretKeys = filterOmittedKeys(env, secretKeys)
-  return filteredSecretKeys.filter((key) => isValueNonTrivial(env[key]))
+  return filteredSecretKeys.filter((key) => !isValueTrivial(env[key]))
 }
 
 /**
@@ -108,7 +111,7 @@ export function getNonSecretKeysToScanFor(env: Record<string, unknown>, secretKe
 
   const nonSecretKeysToScanFor = filteredNonSecretKeys.filter((key) => {
     const val = env[key]
-    if (!isValueNonTrivial(val)) {
+    if (isValueTrivial(val)) {
       return false
     }
     return isLikelySecretValue(val)

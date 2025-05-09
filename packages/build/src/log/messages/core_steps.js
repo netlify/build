@@ -137,34 +137,30 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
   )
 
   // Explicit secret matches
-  if (Object.keys(secretMatches).length > 0) {
-    Object.keys(secretMatches).forEach((key) => {
-      logError(logs, `Secret env var "${key}"'s value detected:`)
+  Object.keys(secretMatches).forEach((key) => {
+    logError(logs, `Secret env var "${key}"'s value detected:`)
 
-      secretMatches[key]
-        .sort((a, b) => {
-          return a.file > b.file ? 0 : 1
-        })
-        .forEach(({ lineNumber, file }) => {
-          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
-        })
-    })
-  }
+    secretMatches[key]
+      .sort((a, b) => {
+        return a.file > b.file ? 0 : 1
+      })
+      .forEach(({ lineNumber, file }) => {
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
 
   // Likely secret matches from enhanced scan
-  if (Object.keys(enhancedSecretMatches).length > 0) {
-    Object.keys(enhancedSecretMatches).forEach((key) => {
-      logError(logs, `Env var "${key}"'s value detected as a likely secret value:`)
+  Object.keys(enhancedSecretMatches).forEach((key) => {
+    logError(logs, `Env var "${key}"'s value detected as a likely secret value:`)
 
-      enhancedSecretMatches[key]
-        .sort((a, b) => {
-          return a.file > b.file ? 0 : 1
-        })
-        .forEach(({ lineNumber, file }) => {
-          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
-        })
-    })
-  }
+    enhancedSecretMatches[key]
+      .sort((a, b) => {
+        return a.file > b.file ? 0 : 1
+      })
+      .forEach(({ lineNumber, file }) => {
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
 
   logError(
     logs,
