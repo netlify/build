@@ -1,4 +1,4 @@
-import type { NetlifyAPI } from 'netlify'
+import type { NetlifyAPI } from '@netlify/api'
 import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'

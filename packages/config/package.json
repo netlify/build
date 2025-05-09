@@ -72,7 +72,7 @@
     "is-plain-obj": "^4.0.0",
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
-    "netlify": "^13.3.5",
+    "@netlify/api": "^13.3.5",
     "@netlify/headers-parser": "^8.0.0",
     "@netlify/redirect-parser": "^14.5.1",
     "node-fetch": "^3.3.1",

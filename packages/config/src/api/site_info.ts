@@ -1,4 +1,4 @@
-import { NetlifyAPI } from 'netlify'
+import { NetlifyAPI } from '@netlify/api'
 import fetch from 'node-fetch'
 import type { RequestInit } from 'node-fetch'
 
