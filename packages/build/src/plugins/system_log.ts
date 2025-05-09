@@ -6,7 +6,7 @@ import type { ChildProcess } from './spawn.js'
 export const captureStandardError = (
   childProcess: ChildProcess,
   systemLog: SystemLogger,
-  eventName: string,
+  stdErrMessagePrefix: string,
   featureFlags: FeatureFlags,
 ) => {
   if (!featureFlags.netlify_build_plugin_system_log) {
@@ -27,7 +27,7 @@ export const captureStandardError = (
     childProcess.stderr?.removeListener('data', listener)
 
     if (buffer.length !== 0) {
-      systemLog(`Plugin failed to initialize during the "${eventName}" phase: ${buffer.trim()}`)
+      systemLog(`${stdErrMessagePrefix}: ${buffer.trim()}`)
     }
   }
 

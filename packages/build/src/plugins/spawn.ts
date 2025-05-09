@@ -147,7 +147,12 @@ const startPlugin = async function ({
         : undefined,
   })
   const readyEvent = 'ready'
-  const cleanup = captureStandardError(childProcess, systemLog, readyEvent, featureFlags)
+  const cleanup = captureStandardError(
+    childProcess,
+    systemLog,
+    `Plugin failed to initialize during the "${readyEvent}" phase`,
+    featureFlags,
+  )
 
   try {
     await getEventFromChild(childProcess, readyEvent)
