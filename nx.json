@@ -1,7 +1,7 @@
 {
   "implicitDependencies": {
     ".c8rc.json": "*",
-    "ava.base.js": ["@netlify/build", "@netlify/config", "netlify"],
+    "ava.base.js": ["@netlify/build", "@netlify/config", "@netlify/api"],
     "package.json": "*",
     "package-lock.json": "*",
     "nx.json": "*",
