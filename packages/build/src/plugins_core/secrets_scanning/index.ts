@@ -54,8 +54,8 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   const explicitSecretKeysToScanFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
-  const otherKeysToScanFor = enhancedSecretScan ? getNonSecretKeysToScanFor(envVars, passedSecretKeys) : []
-  const keysToSearchFor = explicitSecretKeysToScanFor.concat(otherKeysToScanFor)
+  const potentialSecretKeysToScanFor = enhancedSecretScan ? getNonSecretKeysToScanFor(envVars, passedSecretKeys) : []
+  const keysToSearchFor = explicitSecretKeysToScanFor.concat(potentialSecretKeysToScanFor)
 
   if (keysToSearchFor.length === 0) {
     const msg = enhancedSecretScan
@@ -94,7 +94,7 @@ const coreStep: CoreStepFunction = async function ({
       })
 
       secretMatches = scanResults.matches.filter((match) => match.key in explicitSecretKeysToScanFor)
-      enhancedSecretMatches = scanResults.matches.filter((match) => match.key in otherKeysToScanFor)
+      enhancedSecretMatches = scanResults.matches.filter((match) => match.key in potentialSecretKeysToScanFor)
 
       const attributesForLogsAndSpan = {
         secretsScanFoundSecrets: secretMatches.length > 0,
@@ -133,7 +133,7 @@ const coreStep: CoreStepFunction = async function ({
   logSecretsScanFailBuildMessage({
     logs,
     scanResults,
-    groupedResults: groupScanResultsByKeyAndScanType(scanResults, otherKeysToScanFor),
+    groupedResults: groupScanResultsByKeyAndScanType(scanResults, potentialSecretKeysToScanFor),
   })
 
   const error = new Error(`Secrets scanning found secrets in build.`)
