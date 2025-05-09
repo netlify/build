@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.3.18](https://github.com/netlify/build/compare/functions-utils-v5.3.17...functions-utils-v5.3.18) (2025-05-09)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 10.1.0 to 10.1.1
+
 ## [5.3.17](https://github.com/netlify/build/compare/functions-utils-v5.3.16...functions-utils-v5.3.17) (2025-05-08)
 
 
