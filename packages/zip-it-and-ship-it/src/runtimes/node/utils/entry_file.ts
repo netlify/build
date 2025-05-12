@@ -1,5 +1,3 @@
-import { readFileSync } from 'fs'
-import { createRequire } from 'module'
 import { basename, extname, resolve } from 'path'
 
 import type { FeatureFlags } from '../../../feature_flags.js'
@@ -19,9 +17,6 @@ export const ENTRY_FILE_NAME = '___netlify-entry-point'
 export const BOOTSTRAP_FILE_NAME = '___netlify-bootstrap.mjs'
 export const BOOTSTRAP_VERSION_FILE_NAME = '___netlify-bootstrap-version'
 export const METADATA_FILE_NAME = '___netlify-metadata.json'
-export const TELEMETRY_FILE_NAME = '___netlify-telemetry.mjs'
-
-const require = createRequire(import.meta.url)
 
 export interface EntryFile {
   contents: string
@@ -178,40 +173,6 @@ const getEntryFileName = ({
   }
 
   return `${basename(filename, extname(filename))}${extension}`
-}
-
-export const getTelemetryFile = (generator?: string): EntryFile => {
-  // TODO: switch with import.meta.resolve once we drop support for Node 16.x
-  const filePath = require.resolve('@netlify/serverless-functions-api/instrumentation.js')
-  let serviceName: string | undefined
-  let serviceVersion: string | undefined
-
-  if (generator) {
-    // the generator can be something like: `@netlify/plugin-nextjs@14.13.2`
-    // following the convention of name@version but it must not have a version.
-    // split the generator by the @ sign to separate name and version.
-    // pop the last part (the version) and join the rest with a @ again.
-    const versionSepPos = generator.lastIndexOf('@')
-    if (versionSepPos > 1) {
-      const name = generator.substring(0, versionSepPos)
-      const version = generator.substring(versionSepPos + 1)
-      serviceVersion = version
-      serviceName = kebabCase(name)
-    } else {
-      serviceName = kebabCase(generator)
-    }
-  }
-
-  const contents = `
-var SERVICE_NAME = ${JSON.stringify(serviceName)};
-var SERVICE_VERSION = ${JSON.stringify(serviceVersion)};
-${readFileSync(filePath, 'utf8')}
-`
-
-  return {
-    contents,
-    filename: TELEMETRY_FILE_NAME,
-  }
 }
 
 export const getEntryFile = ({
