@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [22.2.0](https://github.com/netlify/build/compare/config-v22.1.0...config-v22.2.0) (2025-05-12)
+
+
+### Features
+
+* **config:** handle auto installable extensions ([#6284](https://github.com/netlify/build/issues/6284)) ([dfab3a3](https://github.com/netlify/build/commit/dfab3a3fca69870143d17bb3e3610e49b62c0bd3))
+
 ## [22.1.0](https://github.com/netlify/build/compare/config-v22.0.1...config-v22.1.0) (2025-05-09)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "22.1.0",
+  "version": "22.2.0",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
