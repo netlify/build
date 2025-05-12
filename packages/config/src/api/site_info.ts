@@ -138,7 +138,7 @@ type GetIntegrationsOpts = {
   mode: ModeOption
 }
 
-const getIntegrations = async function ({
+export const getIntegrations = async function ({
   siteId,
   accountId,
   testOpts,
