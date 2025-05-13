@@ -58,7 +58,7 @@
     "@vitest/eslint-plugin": "^1.0.1",
     "husky": "^8.0.0",
     "lerna": "^5.5.2",
-    "lint-staged": "^15.0.0",
+    "lint-staged": "^16.0.0",
     "nx": "^14.7.13",
     "prettier": "^3.0.0"
   },
