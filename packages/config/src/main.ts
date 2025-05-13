@@ -23,6 +23,7 @@ import { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } from './origin.js'
 import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
+import { handleAutoInstallExtensions } from './utils/extensions/auto-install-extensions.js'
 
 export type Config = {
   accounts: MinimalAccount[] | undefined
@@ -169,8 +170,22 @@ export const resolveConfig = async function (opts): Promise<Config> {
   // @todo Remove in the next major version.
   const configA = addLegacyFunctionsDirectory(config)
 
+  const updatedIntegrations = await handleAutoInstallExtensions({
+    featureFlags,
+    accounts,
+    integrations,
+    siteId,
+    accountId,
+    token,
+    cwd,
+    extensionApiBaseUrl,
+    testOpts,
+    offline,
+    mode,
+  })
+
   const mergedIntegrations = await mergeIntegrations({
-    apiIntegrations: integrations,
+    apiIntegrations: updatedIntegrations,
     configIntegrations: configA.integrations,
     context: context,
   })
@@ -192,6 +207,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     api,
     logs,
   }
+
   logResult(result, { logs, debug })
   return result
 }

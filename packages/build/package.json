@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "32.1.2",
+  "version": "32.1.4",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -69,7 +69,7 @@
     "@bugsnag/js": "^7.0.0",
     "@netlify/blobs": "^8.2.0",
     "@netlify/cache-utils": "^5.2.0",
-    "@netlify/config": "^22.0.1",
+    "@netlify/config": "^22.2.0",
     "@netlify/edge-bundler": "13.0.3",
     "@netlify/framework-info": "^9.9.3",
     "@netlify/functions-utils": "^5.3.18",

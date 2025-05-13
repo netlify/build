@@ -1,4 +1,4 @@
-import { NetlifyAPI } from 'netlify'
+import { NetlifyAPI } from '@netlify/api'
 import fetch from 'node-fetch'
 import type { RequestInit } from 'node-fetch'
 
@@ -138,7 +138,7 @@ type GetIntegrationsOpts = {
   mode: ModeOption
 }
 
-const getIntegrations = async function ({
+export const getIntegrations = async function ({
   siteId,
   accountId,
   testOpts,

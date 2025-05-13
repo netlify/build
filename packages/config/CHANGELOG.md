@@ -76,6 +76,27 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [22.2.0](https://github.com/netlify/build/compare/config-v22.1.0...config-v22.2.0) (2025-05-12)
+
+
+### Features
+
+* **config:** handle auto installable extensions ([#6284](https://github.com/netlify/build/issues/6284)) ([dfab3a3](https://github.com/netlify/build/commit/dfab3a3fca69870143d17bb3e3610e49b62c0bd3))
+
+## [22.1.0](https://github.com/netlify/build/compare/config-v22.0.1...config-v22.1.0) (2025-05-09)
+
+
+### Features
+
+* rename API package to `@netlify/api` ([#6247](https://github.com/netlify/build/issues/6247)) ([27ddc1b](https://github.com/netlify/build/commit/27ddc1b91d3d66780166483b42a0f6efddaa14ea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^13.3.5 to ^13.4.0
+
 ## [22.0.1](https://github.com/netlify/build/compare/config-v22.0.0...config-v22.0.1) (2025-04-23)
 
 
