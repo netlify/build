@@ -93,8 +93,8 @@ const coreStep: CoreStepFunction = async function ({
         filePaths,
       })
 
-      secretMatches = scanResults.matches.filter((match) => match.key in explicitSecretKeysToScanFor)
-      enhancedSecretMatches = scanResults.matches.filter((match) => match.key in potentialSecretKeysToScanFor)
+      secretMatches = scanResults.matches.filter((match) => explicitSecretKeysToScanFor.includes(match.key))
+      enhancedSecretMatches = scanResults.matches.filter((match) => potentialSecretKeysToScanFor.includes(match.key))
 
       const attributesForLogsAndSpan = {
         secretsScanFoundSecrets: secretMatches.length > 0,
