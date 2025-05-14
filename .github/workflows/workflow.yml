@@ -146,13 +146,6 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: corepack update
-        # corepack version distributed with Node.js has a problem with new package manager releases,
-        # so forcing fixed version of corepack here
-        run: npm i -g corepack --force
-      - name: setup pnpm/yarn
-        run: corepack enable
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -163,6 +156,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: corepack update
+        # corepack version distributed with Node.js has a problem with new package manager releases,
+        # so forcing fixed version of corepack here
+        run: npm i -g corepack --force
+      - name: setup pnpm/yarn
+        run: corepack enable
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v5
