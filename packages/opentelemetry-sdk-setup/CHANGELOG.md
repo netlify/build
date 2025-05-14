@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.2...opentelemetry-sdk-setup-v2.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~1.3.1 to ~2.0.0
+
 ## [1.2.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v1.2.1...opentelemetry-sdk-setup-v1.2.2) (2025-04-09)
 
 

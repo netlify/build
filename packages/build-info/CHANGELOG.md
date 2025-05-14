@@ -64,6 +64,17 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.0](https://github.com/netlify/build/compare/build-info-v9.0.4...build-info-v10.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
 ## [9.0.4](https://github.com/netlify/build/compare/build-info-v9.0.3...build-info-v9.0.4) (2025-04-25)
 
 
