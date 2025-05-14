@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/netlify/build/compare/run-utils-v5.2.0...run-utils-v6.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
 ## [5.2.0](https://github.com/netlify/build/compare/run-utils-v5.1.1...run-utils-v5.2.0) (2024-12-11)
 
 
