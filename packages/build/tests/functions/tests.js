@@ -1,5 +1,6 @@
 import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
+import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
@@ -164,37 +165,40 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
   t.snapshot(normalizeOutput(output))
 })
 
-test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
-  const app1 = await fixture
-    .withFlags({
-      cwd: fixture.repositoryRoot,
-      packagePath: 'apps/app-1',
-    })
-    .runWithBuildAndIntrospect()
+// the monorepo works with pnpm which is not always available
+if (semver.gte(nodeVersion, '18.19.0')) {
+  test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
+    const app1 = await fixture
+      .withFlags({
+        cwd: fixture.repositoryRoot,
+        packagePath: 'apps/app-1',
+      })
+      .runWithBuildAndIntrospect()
 
-  t.true(app1.success)
+    t.true(app1.success)
 
-  const app2 = await fixture
-    .withFlags({
-      cwd: fixture.repositoryRoot,
-      packagePath: 'apps/app-2',
-    })
-    .runWithBuildAndIntrospect()
+    const app2 = await fixture
+      .withFlags({
+        cwd: fixture.repositoryRoot,
+        packagePath: 'apps/app-2',
+      })
+      .runWithBuildAndIntrospect()
 
-  t.true(app2.success)
+    t.true(app2.success)
 
-  const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
-  t.is(app1FunctionsDist.length, 2)
-  t.true(app1FunctionsDist.includes('manifest.json'))
-  t.true(app1FunctionsDist.includes('server.zip'))
+    const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
+    t.is(app1FunctionsDist.length, 2)
+    t.true(app1FunctionsDist.includes('manifest.json'))
+    t.true(app1FunctionsDist.includes('server.zip'))
 
-  const app2FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-2/.netlify/functions'))
-  t.is(app2FunctionsDist.length, 3)
-  t.true(app2FunctionsDist.includes('manifest.json'))
-  t.true(app2FunctionsDist.includes('server.zip'))
-  t.true(app2FunctionsDist.includes('worker.zip'))
-})
+    const app2FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-2/.netlify/functions'))
+    t.is(app2FunctionsDist.length, 3)
+    t.true(app2FunctionsDist.includes('manifest.json'))
+    t.true(app2FunctionsDist.includes('server.zip'))
+    t.true(app2FunctionsDist.includes('worker.zip'))
+  })
+}
 
 test('Functions: creates metadata file', async (t) => {
   const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
