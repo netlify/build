@@ -1,7 +1,7 @@
 {
   "name": "@netlify/api",
   "description": "Netlify Node.js API client",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "type": "module",
   "exports": "./lib/index.js",
   "main": "./lib/index.js",
@@ -57,7 +57,7 @@
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "engines": {
     "node": ">=18.14.0"

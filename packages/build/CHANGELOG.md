@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.0.1](https://github.com/netlify/build/compare/build-v33.0.0...build-v33.0.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v11 ([#6309](https://github.com/netlify/build/issues/6309)) ([d6471d0](https://github.com/netlify/build/commit/d6471d0a05a9d3b49b8b5a0ee500279d72ab3c92))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.0 to ^23.0.1
+    * @netlify/edge-bundler bumped from 14.0.0 to 14.0.1
+    * @netlify/functions-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/zip-it-and-ship-it bumped from 11.0.0 to 11.0.1
+
 ## [33.0.0](https://github.com/netlify/build/compare/build-v32.2.0...build-v33.0.0) (2025-05-14)
 
 
