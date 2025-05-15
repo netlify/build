@@ -137,7 +137,7 @@
     "cpy": "^9.0.0",
     "get-node": "^12.0.0",
     "get-port": "^6.0.0",
-    "has-ansi": "^5.0.0",
+    "has-ansi": "^6.0.0",
     "moize": "^6.0.0",
     "npm-run-all2": "^5.0.0",
     "process-exists": "^5.0.0",
