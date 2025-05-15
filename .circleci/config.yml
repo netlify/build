@@ -49,7 +49,7 @@ workflows:
 executors:
   node:
     docker:
-      - image: cimg/node:18.20.8
+      - image: cimg/node:22.15.1
   windows:
     machine:
       image: windows-server-2019-vs2019:stable
