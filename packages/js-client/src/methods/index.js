@@ -1,3 +1,5 @@
+import fetch from 'node-fetch-native';
+
 import { getOperations } from '../operations.js'
 
 import { addBody } from './body.js'
