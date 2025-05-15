@@ -105,6 +105,36 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.0.0](https://github.com/netlify/build/compare/build-v32.2.0...build-v33.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/config bumped from ^22.2.0 to ^23.0.0
+    * @netlify/edge-bundler bumped from 13.0.3 to 14.0.0
+    * @netlify/framework-info bumped from ^9.9.3 to ^10.0.0
+    * @netlify/functions-utils bumped from ^5.3.18 to ^6.0.0
+    * @netlify/git-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/opentelemetry-utils bumped from ^1.3.1 to ^2.0.0
+    * @netlify/run-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/zip-it-and-ship-it bumped from 10.1.1 to 11.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^4.0.0 to ^5.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^2.0.0
+
 ## [32.2.0](https://github.com/netlify/build/compare/build-v32.1.4...build-v32.2.0) (2025-05-13)
 
 

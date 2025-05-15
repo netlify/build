@@ -210,8 +210,8 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
   t.is(severityCode, 4)
 })
 
-// the monorepo works with pnpm which is not available on node 14 tests
-if (semver.gte(nodeVersion, '16.9.0')) {
+// the monorepo works with pnpm which is not always available
+if (semver.gte(nodeVersion, '18.19.0')) {
   test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
     const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
     const { success } = await fixture

@@ -54,7 +54,7 @@ jobs:
         include:
           - os: ubuntu-24.04
             # Earliest supported version
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             deno-version: 'v2.2.4'
       fail-fast: false
     steps:
@@ -76,9 +76,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -115,23 +112,23 @@ jobs:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '0'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '1'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '2'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '3'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '4'
       fail-fast: false
@@ -149,13 +146,6 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: corepack update
-        # corepack version distributed with Node.js has a problem with new package manager releases,
-        # so forcing fixed version of corepack here
-        run: npm i -g corepack --force
-      - name: setup pnpm/yarn
-        run: corepack enable
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -167,9 +157,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
+      - name: corepack update
+        # corepack version distributed with Node.js has a problem with new package manager releases,
+        # so forcing fixed version of corepack here
+        run: npm i -g corepack --force
+      - name: setup pnpm/yarn
+        run: corepack enable
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
