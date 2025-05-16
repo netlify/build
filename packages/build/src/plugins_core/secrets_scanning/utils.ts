@@ -23,6 +23,7 @@ interface MatchResult {
   lineNumber: number
   key: string
   file: string
+  enhancedMatch: boolean
 }
 
 export type SecretScanResult = {
@@ -98,50 +99,10 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
   return filteredSecretKeys.filter((key) => !isValueTrivial(env[key]))
 }
 
-/**
- * given the explicit secret keys and env vars, return the list of non-secret keys which should be scanned in the enhanced secret scan
- * (i.e. any that look very likely to be secrets).
- * This will also filter out keys passed in the SECRETS_SCAN_OMIT_KEYS env var.
- *
- * @param env env vars list
- * @param secretKeys
- * @returns string[]
- */
-export function getNonSecretKeysToScanFor(env: Record<string, unknown>, secretKeys: string[]): string[] {
-  const nonSecretKeys = Object.keys(env).filter((key) => !secretKeys.includes(key))
-  const filteredNonSecretKeys = filterOmittedKeys(env, nonSecretKeys)
-
-  const nonSecretKeysToScanFor = filteredNonSecretKeys.filter((key) => {
-    const val = env[key]
-    if (isValueTrivial(val)) {
-      return false
-    }
-    return isLikelySecretValue(val)
-  })
-  return nonSecretKeysToScanFor
-}
-
-const LIKELY_SECRET_MIN_LENGTH = 16
-
-/**
- * When the enhanced secret scan is run, we check any env vars _not_ marked as secret if they are highly likely to be secret values.
- * For now, this means the value is a string of at least 16 chars and starts with one of the known prefixes.
- *
- * @param val env var value
- * @returns boolean
- */
-function isLikelySecretValue(val): boolean {
-  if (typeof val !== 'string') {
-    return false
-  }
-  if (val.length < LIKELY_SECRET_MIN_LENGTH) {
-    return false
-  }
-  if (LIKELY_SECRET_PREFIXES.some((prefix) => val.toLowerCase().startsWith(prefix))) {
-    return true
-  }
-  return false
-}
+const ENHANCED_MATCH_PREFIX_LENGTH = 4
+// Minimum number of characters we expect after the prefix
+// Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
+const MIN_CHARS_AFTER_PREFIX = 12
 
 /**
  * Given the env and base directory, find all file paths to scan. It will look at the
@@ -300,11 +261,40 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
 
     let lineNumber = 0
 
+    function checkForLikelySecrets(line: string) {
+      // Create a regex pattern that matches strings that:
+      // 1. Start with one of these delimiters:
+      //    - Start of line
+      //    - Space
+      //    - Double quote ("), single quote ('), or backtick (`)
+      //    - Equals sign (=)
+      //    - Colon (:)
+      //    - Comma (,)
+      // 2. Followed by one of our prefixes
+      // 3. Followed by typical secret characters (letters, numbers, +, /, =, -)
+      // Example matches: "github_pat_123", key=aws_456, tokens: xoxb-789
+      const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')
+      const regex = new RegExp(`(?:[ "'\`=:,]|^)(${prefixPattern}[\\w+/=\\-]{${MIN_CHARS_AFTER_PREFIX},})`, 'gi')
+
+      let match
+      while ((match = regex.exec(line)) !== null) {
+        const fullMatch = match[0]
+        matches.push({
+          file,
+          lineNumber,
+          key: fullMatch.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
+          enhancedMatch: true,
+        })
+      }
+    }
+
     rl.on('line', function (line) {
       // iterating here so the first line will always appear as line 1 to be human friendly
       // and match what an IDE would show for a line number.
       lineNumber++
       if (typeof line === 'string') {
+        // Check for likely secrets in the line
+        checkForLikelySecrets(line)
         if (maxMultiLineCount > 1) {
           lines.push(line)
         }
@@ -322,6 +312,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
               file,
               lineNumber,
               key: getKeyForValue(valVariant),
+              enhancedMatch: false,
             })
             return
           }
@@ -368,6 +359,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
                 file,
                 lineNumber: lineNumber - lines.length + 1,
                 key: getKeyForValue(valVariant),
+                enhancedMatch: false,
               })
               return
             }
@@ -402,15 +394,14 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
  * @param scanResults
  * @returns
  */
-export function groupScanResultsByKeyAndScanType(
-  scanResults: ScanResults,
-  enhancedScanKeys: string[] = [],
-): { secretMatches: { [key: string]: MatchResult[] }; enhancedSecretMatches: { [key: string]: MatchResult[] } } {
+export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
+  secretMatches: { [key: string]: MatchResult[] }
+  enhancedSecretMatches: { [key: string]: MatchResult[] }
+} {
   const secretMatchesByKeys: { [key: string]: MatchResult[] } = {}
   const enhancedSecretMatchesByKeys: { [key: string]: MatchResult[] } = {}
   scanResults.matches.forEach((matchResult) => {
-    const isEnhancedCheck = enhancedScanKeys.includes(matchResult.key)
-    if (isEnhancedCheck) {
+    if (matchResult.enhancedMatch) {
       if (!enhancedSecretMatchesByKeys[matchResult.key]) {
         enhancedSecretMatchesByKeys[matchResult.key] = []
       }
