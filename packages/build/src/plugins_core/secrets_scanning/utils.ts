@@ -5,6 +5,8 @@ import { createInterface } from 'node:readline'
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
 
+import { LIKELY_SECRET_PREFIXES } from './secret_prefixes.js'
+
 export interface ScanResults {
   matches: MatchResult[]
   scannedFilesCount: number
@@ -119,9 +121,6 @@ export function getNonSecretKeysToScanFor(env: Record<string, unknown>, secretKe
   return nonSecretKeysToScanFor
 }
 
-const AWS_PREFIXES = ['aws_', 'asia']
-const SLACK_PREFIXES = ['xoxb-', 'xwfp-', 'xoxb-', 'xoxp-', 'xapp-']
-const LIKELY_SECRET_PREFIXES = ['pk_', 'sk_', 'pat_', 'db_', 'github_pat_', ...AWS_PREFIXES, ...SLACK_PREFIXES]
 const LIKELY_SECRET_MIN_LENGTH = 16
 
 /**
