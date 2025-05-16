@@ -1,3 +1,8 @@
+/**
+ * Likely secret prefixes used for enhanced secret scanning.
+ * Note: string comparison is case-insensitive so we use all lowercase here.
+ */
+
 const AWS_PREFIXES = ['aws_', 'asia', 'akia', 'aida', 'ar0a', 'apka', 'abia', 'asca']
 const SLACK_PREFIXES = ['xoxb-', 'xwfp-', 'xoxb-', 'xoxp-', 'xapp-']
 const GCP_PREFIXES = ['aiza', 'ya29']
