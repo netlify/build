@@ -59,7 +59,7 @@
     "sort-on": "^6.0.0",
     "tmp-promise": "^3.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^0.34.0"
+    "vitest": "^3.0.0"
   },
   "engines": {
     "node": ">=18.14.0"

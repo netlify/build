@@ -144,7 +144,7 @@
     "sinon": "^20.0.0",
     "tmp-promise": "^3.0.2",
     "tsd": "^0.32.0",
-    "vitest": "^0.34.0",
+    "vitest": "^3.0.0",
     "yarn": "^1.22.22"
   },
   "peerDependencies": {
