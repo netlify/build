@@ -51,7 +51,7 @@
     "@commitlint/config-conventional": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "ci-info": "^4.0.0",
-    "eslint": "^8.24.0",
+    "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-ava": "^14.0.0",
     "eslint-plugin-import": "^2.26.0",
