@@ -29,6 +29,7 @@ const coreStep: CoreStepFunction = async function ({
   netlifyConfig,
   explicitSecretKeys,
   enhancedSecretScan,
+  featureFlags,
   systemLog,
   deployId,
   api,
@@ -37,8 +38,9 @@ const coreStep: CoreStepFunction = async function ({
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
+  const useReadLine = !featureFlags?.secret_scanning_no_readline
 
-  systemLog?.({ passedSecretKeys, buildDir })
+  systemLog?.({ passedSecretKeys, buildDir, useReadLine })
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
@@ -91,6 +93,7 @@ const coreStep: CoreStepFunction = async function ({
         keys: keysToSearchFor,
         base: buildDir as string,
         filePaths,
+        useReadLine,
       })
 
       secretMatches = scanResults.matches.filter((match) => explicitSecretKeysToScanFor.includes(match.key))
@@ -103,6 +106,7 @@ const coreStep: CoreStepFunction = async function ({
         enhancedSecretsScanMatchesCount: enhancedSecretMatches.length,
         secretsFilesCount: scanResults.scannedFilesCount,
         keysToSearchFor,
+        useReadLine,
       }
 
       systemLog?.(attributesForLogsAndSpan)
