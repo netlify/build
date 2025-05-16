@@ -23,20 +23,6 @@ export interface EntryFile {
   filename: string
 }
 
-/**
- * A minimal implementation of kebab-case.
- * It is used to transform the generator name into a service name for the telemetry file.
- * As DataDog has a special handling for the service name, we need to make sure it is kebab-case.
- */
-export const kebabCase = (input: string): string =>
-  input
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/[@#//$\s_\\.-]+/g, ' ')
-    .trim()
-    .toLowerCase()
-    .split(' ')
-    .join('-')
-
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
