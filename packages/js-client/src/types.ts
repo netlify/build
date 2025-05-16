@@ -1,7 +1,6 @@
 import type { ReadStream } from 'node:fs'
 
 import type { operations } from '@netlify/open-api'
-import type { RequestInit } from '@types/node'
 
 /**
  * Determines whether all keys in T are optional.
