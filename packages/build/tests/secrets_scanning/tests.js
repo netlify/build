@@ -352,3 +352,25 @@ test('secrets scanning, enhanced scanning failure should produce a user error', 
   // Severity code of 2 is user error
   t.is(severityCode, 2)
 })
+
+test('does not crash if line in scanned file exceed available memory', async (t) => {
+  const { output } = await new Fixture('./fixtures/src_scanning_large_binary_file')
+    .withEnv({
+      // fixture produces a ~256MB file with single line, so this intentionally limits available memory
+      // to check if scanner can process it without crashing
+      NODE_OPTIONS: '--max-old-space-size=128',
+    })
+    .withFlags({
+      debug: false,
+      defaultConfig: JSON.stringify({ build: { environment: { ENV_SECRET: 'this is a secret' } } }),
+      explicitSecretKeys: 'ENV_SECRET',
+    })
+    .runBuildBinary()
+
+  t.assert(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_SECRET"'s value detected:\n` + `  found value at line 1 in dist/out.txt\n`,
+    ),
+    'Scanning should find a secret, instead got: ' + normalizeOutput(output),
+  )
+})
