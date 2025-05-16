@@ -3,7 +3,7 @@ import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { DiagLogLevel, TraceFlags, context, diag, trace } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import type { PackageJson } from 'read-pkg-up'
+import type { PackageJson } from 'read-package-up'
 
 import { getDiagLogger, loadBaggageFromFile } from './util.js'
 
