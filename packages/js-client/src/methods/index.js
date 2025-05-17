@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import fetch from 'node-fetch-native';
 
 import { getOperations } from '../operations.js'
 
