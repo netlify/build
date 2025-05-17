@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "instancePath": "/headers",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/properties/headers/type",
+    },
+  ],
+  "valid": false,
+}

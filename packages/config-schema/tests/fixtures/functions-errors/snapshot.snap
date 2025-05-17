@@ -1,0 +1,109 @@
+{
+  "errors": [
+    {
+      "instancePath": "/functions/api_*",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "nay",
+      },
+      "schemaPath": "#/properties/functions/additionalProperties/additionalProperties",
+    },
+    {
+      "instancePath": "/functions/api_*/external_node_modules/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/FunctionConfigExternalNodeModules/items/type",
+    },
+    {
+      "instancePath": "/functions/api_*/included_files/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/FunctionConfigIncludedFiles/items/type",
+    },
+    {
+      "instancePath": "/functions/api_*/schedule",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/functions/additionalProperties/properties/schedule/type",
+    },
+    {
+      "instancePath": "/functions/deno_import_map",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/functions/properties/deno_import_map/type",
+    },
+    {
+      "instancePath": "/functions/directory",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/functions/properties/directory/type",
+    },
+    {
+      "instancePath": "/functions/external_node_modules",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/definitions/FunctionConfigExternalNodeModules/type",
+    },
+    {
+      "instancePath": "/functions/included_files",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/definitions/FunctionConfigIncludedFiles/type",
+    },
+    {
+      "instancePath": "/functions/node_bundler",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/definitions/FunctionConfigNodeBundler/type",
+    },
+    {
+      "instancePath": "/functions/node_bundler",
+      "keyword": "enum",
+      "message": "must be equal to one of the allowed values",
+      "params": {
+        "allowedValues": [
+          "zisi",
+          "esbuild",
+          "nft",
+          "none",
+        ],
+      },
+      "schemaPath": "#/definitions/FunctionConfigNodeBundler/enum",
+    },
+    {
+      "instancePath": "/functions/other",
+      "keyword": "type",
+      "message": "must be object",
+      "params": {
+        "type": "object",
+      },
+      "schemaPath": "#/properties/functions/additionalProperties/type",
+    },
+  ],
+  "valid": false,
+}

@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "instancePath": "/plugins",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/definitions/Plugins/type",
+    },
+  ],
+  "valid": false,
+}
