@@ -53,6 +53,27 @@ test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PA
   t.assert(normalizeOutput(output).includes('found value at line 1 in src/static-files/notsafefile.js'))
 })
 
+test('secrets scanning, should padd when secret found but SECRETS_SCAN_OMIT_VALUES omits the value', async (t) => {
+  const { output, requests } = await new Fixture('./fixtures/src_scanning_secret_value_omitted')
+    .withFlags({
+      debug: false,
+      enhancedSecretScan: true,
+      explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2',
+      deployId: 'test',
+      token: 'test',
+    })
+    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
+
+  t.snapshot(normalizeOutput(output))
+  t.true(requests.length === 1)
+  const request = requests[0]
+  t.is(request.method, 'PATCH')
+  t.is(request.url, '/api/v1/deploys/test/validations_report')
+  t.truthy(request.body.secrets_scan.scannedFilesCount)
+  t.is(request.body.secrets_scan.secretsScanMatches.length, 0)
+  t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
+})
+
 test('secrets scanning, should fail build and report to API when it finds secrets in the src and build output', async (t) => {
   const { output, requests } = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
     .withFlags({

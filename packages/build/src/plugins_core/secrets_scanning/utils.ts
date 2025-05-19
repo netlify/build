@@ -389,6 +389,9 @@ const searchStream = ({
         }
 
         keyVals.forEach((valVariant) => {
+          if (omitValues.includes(valVariant)) {
+            return
+          }
           // matching of single/whole values
           if (line.includes(valVariant)) {
             matches.push({
