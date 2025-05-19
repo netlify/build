@@ -172,7 +172,6 @@ export function findLikelySecrets({
   const regex = new RegExp(`^(?:${prefixPattern})[^\\s]{${MIN_CHARS_AFTER_PREFIX},}$`, 'i')
 
   const matches: MatchResult[] = []
-  // Split by quotes, whitespace, equals, or colon
   const tokens = line
     .split(/["'`]/) // Split by quotes first
     .flatMap((token) => token.split(/[\s=:,]+/)) // Split by whitespace, equals, colon, or comma
