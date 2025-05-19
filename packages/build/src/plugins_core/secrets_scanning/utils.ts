@@ -100,9 +100,61 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
 }
 
 const ENHANCED_MATCH_PREFIX_LENGTH = 4
-// Minimum number of characters we expect after the prefix
 // Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
 const MIN_CHARS_AFTER_PREFIX = 12
+
+/**
+ * Checks a line of text for likely secrets based on known prefixes and patterns.
+ * The function works by:
+ * 1. Splitting the line into tokens using quotes, whitespace, equals signs, colons, and commas as delimiters
+ * 2. For each token, checking if it matches our secret pattern:
+ *    - Must start (^) with one of our known prefixes (e.g. aws_, github_pat_, etc)
+ *    - Must be followed by at least MIN_CHARS_AFTER_PREFIX non-whitespace characters
+ *    - Must extend to the end ($) of the token
+ *
+ * For example, given the line: secretKey='aws_123456789012345678'
+ * 1. It's split into tokens: ['secretKey', 'aws_123456789012345678']
+ * 2. Each token is checked against the regex pattern:
+ *    - 'secretKey' doesn't match (doesn't start with a known prefix)
+ *    - 'aws_123456789012345678' matches (starts with 'aws_' and has sufficient length)
+ *
+ * @param line The line of text to check
+ * @param file The file path where this line was found
+ * @param lineNumber The line number in the file
+ * @returns Array of matches found in the line
+ */
+export function findLikelySecrets(line: string, file: string, lineNumber: number): MatchResult[] {
+  if (!line) return []
+
+  // Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
+  const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
+  // Build regex pattern:
+  // ^ - match start of token
+  // (?:${prefixPattern}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
+  // [^\\s]{${MIN_CHARS_AFTER_PREFIX},} - at least MIN_CHARS_AFTER_PREFIX non-whitespace chars
+  // $ - match end of token
+  // i - case insensitive flag
+  const regex = new RegExp(`^(?:${prefixPattern})[^\\s]{${MIN_CHARS_AFTER_PREFIX},}$`, 'i')
+
+  const matches: MatchResult[] = []
+  // Split by quotes, whitespace, equals, or colon
+  const tokens = line
+    .split(/["'`]/) // Split by quotes first
+    .flatMap((token) => token.split(/[\s=:,]+/)) // Split by whitespace, equals, colon, or comma
+    .filter(Boolean) // Remove empty strings
+
+  for (const token of tokens) {
+    if (regex.test(token)) {
+      matches.push({
+        file,
+        lineNumber,
+        key: token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
+        enhancedMatch: true,
+      })
+    }
+  }
+  return matches
+}
 
 /**
  * Given the env and base directory, find all file paths to scan. It will look at the
@@ -261,40 +313,13 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
 
     let lineNumber = 0
 
-    function checkForLikelySecrets(line: string) {
-      // Create a regex pattern that matches strings that:
-      // 1. Start with one of these delimiters:
-      //    - Start of line
-      //    - Space
-      //    - Double quote ("), single quote ('), or backtick (`)
-      //    - Equals sign (=)
-      //    - Colon (:)
-      //    - Comma (,)
-      // 2. Followed by one of our prefixes
-      // 3. Followed by typical secret characters (letters, numbers, +, /, =, -)
-      // Example matches: "github_pat_123", key=aws_456, tokens: xoxb-789
-      const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')
-      const regex = new RegExp(`(?:[ "'\`=:,]|^)(${prefixPattern}[\\w+/=\\-]{${MIN_CHARS_AFTER_PREFIX},})`, 'gi')
-
-      let match
-      while ((match = regex.exec(line)) !== null) {
-        const fullMatch = match[0]
-        matches.push({
-          file,
-          lineNumber,
-          key: fullMatch.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
-          enhancedMatch: true,
-        })
-      }
-    }
-
     rl.on('line', function (line) {
       // iterating here so the first line will always appear as line 1 to be human friendly
       // and match what an IDE would show for a line number.
       lineNumber++
       if (typeof line === 'string') {
         // Check for likely secrets in the line
-        checkForLikelySecrets(line)
+        matches.push(...findLikelySecrets(line, file, lineNumber))
         if (maxMultiLineCount > 1) {
           lines.push(line)
         }
