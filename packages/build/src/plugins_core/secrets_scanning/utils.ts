@@ -157,7 +157,7 @@ export function findLikelySecrets({
   line: string
   file: string
   lineNumber: number
-  omitValues: unknown[]
+  omitValues?: unknown[]
 }): MatchResult[] {
   if (!line) return []
 
@@ -182,10 +182,11 @@ export function findLikelySecrets({
       continue
     }
     if (regex.test(token)) {
+      const prefix = LIKELY_SECRET_PREFIXES.find((p) => token.toLowerCase().startsWith(p.toLowerCase()))
       matches.push({
         file,
         lineNumber,
-        key: token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
+        key: prefix ?? token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
         enhancedMatch: true,
       })
     }

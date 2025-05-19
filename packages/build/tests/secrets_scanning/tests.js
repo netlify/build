@@ -159,6 +159,15 @@ test('secrets scanning, enhanced scan should not find matches when disabled with
   t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
 })
 
+test('secrets scanning, enhanced scan should skip matches defined in SECRETS_SCAN_OMIT_VALUES', async (t) => {
+  const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_omitted')
+    .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
+    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
+  t.true(requests.length === 1)
+  const request = requests[0]
+  t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
+})
+
 test('secrets scanning, should run when enhanced scan enabled and no env vars set', async (t) => {
   const { requests } = await new Fixture('./fixtures/src_default')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
@@ -204,7 +213,7 @@ test('secrets scanning, should fail build and report to API when enhanced scan f
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-  t.assert(normalizeOutput(output).includes(`sk_1"... detected as a likely secret`))
+  t.assert(normalizeOutput(output).includes(`"sk_1..." detected as a likely secret`))
   t.assert(
     normalizeOutput(output).includes(
       `the build will fail until these secret values are not found in build output or repo files`,

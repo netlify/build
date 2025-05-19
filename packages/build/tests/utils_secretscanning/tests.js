@@ -56,10 +56,10 @@ test('findLikelySecrets - should not match values that are too short', async (t)
   t.is(matches.length, 0)
 })
 
-test('findLikelySecrets - should truncate the key to 4 characters', async (t) => {
+test('findLikelySecrets - should return the matched prefix as the key', async (t) => {
   const matches = findLikelySecrets({ line: 'github_pat_123456789012345678', file: testFile, lineNumber: 1 })
   t.is(matches.length, 1)
-  t.is(matches[0].key, 'gith')
+  t.is(matches[0].key, 'github_pat_')
 })
 
 test('findLikelySecrets - should handle empty or invalid input', async (t) => {
@@ -103,7 +103,7 @@ test('findLikelySecrets - should match secrets with special characters', async (
   })
 })
 
-test('findLikelySecrets - should not match secrets with that correspond to a SECRET_SCAN_OMIT_KEYS value', async (t) => {
+test('findLikelySecrets - should not match secrets with that correspond to a SECRET_SCAN_OMIT_VALUES value', async (t) => {
   const matches = findLikelySecrets({
     line: 'match is explicitly omitted aws_123456789012345678',
     file: testFile,
