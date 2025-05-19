@@ -204,7 +204,7 @@ test('secrets scanning, should fail build and report to API when enhanced scan f
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-  t.assert(normalizeOutput(output).includes(`pk_1"... detected as a likely secret`))
+  t.assert(normalizeOutput(output).includes(`sk_1"... detected as a likely secret`))
   t.assert(
     normalizeOutput(output).includes(
       `the build will fail until these secret values are not found in build output or repo files`,
