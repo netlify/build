@@ -127,6 +127,8 @@ const MIN_CHARS_AFTER_PREFIX = 12
 export function findLikelySecrets(line: string, file: string, lineNumber: number): MatchResult[] {
   if (!line) return []
 
+  // TODO: if the match has been explicitly ignored, we should ignore it.
+
   // Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
   const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
   // Build regex pattern:

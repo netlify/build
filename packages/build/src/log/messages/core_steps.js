@@ -151,7 +151,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
 
   // Likely secret matches from enhanced scan
   Object.keys(enhancedSecretMatches).forEach((key) => {
-    logError(logs, `Env var "${key}"'s value detected as a likely secret value:`)
+    logError(logs, `"${key}"... detected as a likely secret:`)
 
     enhancedSecretMatches[key]
       .sort((a, b) => {
