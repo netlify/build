@@ -17,6 +17,7 @@ import {
   getOmitValuesFromEnv,
   getSecretKeysToScanFor,
   groupScanResultsByKeyAndScanType,
+  isEnhancedSecretsScanningEnabled,
   isSecretsScanningEnabled,
   scanFilesForKeyValues,
 } from './utils.js'
@@ -51,6 +52,13 @@ const coreStep: CoreStepFunction = async function ({
   }
   if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
     log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
+  }
+  const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
+  if (enhancedSecretScan && !enhancedScanningEnabledInEnv) {
+    logSecretsScanSkipMessage(
+      logs,
+      'Automatic secrets detection disabled via AUTOMATIC_SECRET_DETECTION_ENABLED flag set to false.',
+    )
   }
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
@@ -89,7 +97,7 @@ const coreStep: CoreStepFunction = async function ({
         keys: keysToSearchFor,
         base: buildDir as string,
         filePaths,
-        enhancedScanning: enhancedSecretScan,
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
         omitValues: getOmitValuesFromEnv(envVars),
       })
 

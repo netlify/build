@@ -46,6 +46,18 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
   return true
 }
 
+/**
+ * Determine if the user disabled enhanced scanning via env var
+ * @param env current envars
+ * @returns
+ */
+export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): boolean {
+  if (env.AUTOMATIC_SECRET_DETECTION_ENABLED === false || env.AUTOMATIC_SECRET_DETECTION_ENABLED === 'false') {
+    return false
+  }
+  return true
+}
+
 export function getOmitKeysFromEnv(env: Record<string, unknown>): string[] {
   if (typeof env.SECRETS_SCAN_OMIT_KEYS !== 'string') {
     return []

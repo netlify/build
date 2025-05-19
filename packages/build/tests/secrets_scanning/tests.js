@@ -142,20 +142,21 @@ test('secrets scanning, enhanced scan should not run when disabled', async (t) =
   t.true(requests.length === 0)
 })
 
-test('secrets scanning, should skip with enhanced scan but SECRETS_SCAN_ENABLED=false', async (t) => {
-  const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
-    .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
-    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
-
-  t.true(requests.length === 0)
-})
-
 test('secrets scanning, should skip when enhanced scan and likely secrets passed but SECRETS_SCAN_OMIT_PATHS omits all files', async (t) => {
   const { requests } = await new Fixture('./fixtures/src_scanning_omit_all_paths')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   t.true(requests.length === 0)
+})
+
+test('secrets scanning, enhanced scan should not find matches when disabled with AUTOMATIC_SECRET_DETECTION_ENABLED set to false', async (t) => {
+  const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
+    .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
+    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
+  t.true(requests.length === 1)
+  const request = requests[0]
+  t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
 })
 
 test('secrets scanning, should run when enhanced scan enabled and no env vars set', async (t) => {
