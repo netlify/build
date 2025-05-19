@@ -145,7 +145,7 @@ export function findLikelySecrets({
   line: string
   file: string
   lineNumber: number
-  omitValues: string[]
+  omitValues: unknown[]
 }): MatchResult[] {
   if (!line) return []
 
@@ -326,7 +326,7 @@ const searchStream = ({
   file: string
   keyValues: Record<string, string[]>
   enhancedScanning?: boolean
-  omitValues?: string[]
+  omitValues?: unknown[]
 }): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
