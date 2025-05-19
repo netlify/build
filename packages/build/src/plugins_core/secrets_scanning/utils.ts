@@ -17,6 +17,7 @@ interface ScanArgs {
   keys: string[]
   base: string
   filePaths: string[]
+  enhancedScanning?: boolean
 }
 
 interface MatchResult {
@@ -228,7 +229,13 @@ const omitPathMatches = (relativePath, omitPaths) => {
  * @param scanArgs {ScanArgs} scan options
  * @returns promise with all of the scan results, if any
  */
-export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
+export async function scanFilesForKeyValues({
+  env,
+  keys,
+  filePaths,
+  base,
+  enhancedScanning,
+}: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
     scannedFilesCount: 0,
@@ -267,7 +274,7 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
     settledPromises = settledPromises.concat(
       await Promise.allSettled(
         batch.map((file) => {
-          return searchStream(base, file, keyValues)
+          return searchStream({ basePath: base, file, keyValues, enhancedScanning })
         }),
       ),
     )
@@ -282,7 +289,17 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
   return scanResults
 }
 
-const searchStream = (basePath: string, file: string, keyValues: Record<string, string[]>): Promise<MatchResult[]> => {
+const searchStream = ({
+  basePath,
+  file,
+  keyValues,
+  enhancedScanning,
+}: {
+  basePath: string
+  file: string
+  keyValues: Record<string, string[]>
+  enhancedScanning?: boolean
+}): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
 
@@ -318,8 +335,9 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
       // and match what an IDE would show for a line number.
       lineNumber++
       if (typeof line === 'string') {
-        // Check for likely secrets in the line
-        matches.push(...findLikelySecrets(line, file, lineNumber))
+        if (enhancedScanning) {
+          matches.push(...findLikelySecrets(line, file, lineNumber))
+        }
         if (maxMultiLineCount > 1) {
           lines.push(line)
         }

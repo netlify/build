@@ -88,6 +88,7 @@ const coreStep: CoreStepFunction = async function ({
         keys: keysToSearchFor,
         base: buildDir as string,
         filePaths,
+        enhancedScanning: enhancedSecretScan,
       })
 
       secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
