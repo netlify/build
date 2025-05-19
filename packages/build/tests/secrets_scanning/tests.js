@@ -1,7 +1,6 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-
 test('secrets scanning, should not run when disabled', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_disabled').withFlags({ debug: false }).runWithBuild()
   t.snapshot(normalizeOutput(output))

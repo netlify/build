@@ -13,7 +13,7 @@ test('findLikelySecrets - should find secrets with common prefixes at the beginn
   ]
 
   lines.forEach((line, index) => {
-    const matches = findLikelySecrets(line, testFile, index)
+    const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
     t.is(matches.length, 1)
     t.like(matches[0], {
       file: testFile,
@@ -34,7 +34,7 @@ test('findLikelySecrets - should find secrets with various delimiters at the beg
     'someKey, aws_123456789012345678, otherKey',
   ]
   matchingLines.forEach((line, index) => {
-    const matches = findLikelySecrets(line, testFile, index)
+    const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
     t.is(matches.length, 1)
 
     t.like(matches[0], {
@@ -47,17 +47,17 @@ test('findLikelySecrets - should find secrets with various delimiters at the beg
 
 test('findLikelySecrets - should not match values with spaces after prefix', async (t) => {
   const nonMatchingLine = 'aws_ "123456789012345678"'
-  const matches = findLikelySecrets(nonMatchingLine, testFile, 0)
+  const matches = findLikelySecrets({ line: nonMatchingLine, file: testFile, lineNumber: 0 })
   t.is(matches.length, 0)
 })
 
 test('findLikelySecrets - should not match values that are too short', async (t) => {
-  const matches = findLikelySecrets('aws_key=12345678901', testFile, 1)
+  const matches = findLikelySecrets({ line: 'aws_key=12345678901', file: testFile, lineNumber: 1 })
   t.is(matches.length, 0)
 })
 
 test('findLikelySecrets - should truncate the key to 4 characters', async (t) => {
-  const matches = findLikelySecrets('github_pat_123456789012345678', testFile, 1)
+  const matches = findLikelySecrets({ line: 'github_pat_123456789012345678', file: testFile, lineNumber: 1 })
   t.is(matches.length, 1)
   t.is(matches[0].key, 'gith')
 })
@@ -66,14 +66,14 @@ test('findLikelySecrets - should handle empty or invalid input', async (t) => {
   const invalidInputs = ['', ' ', null, undefined]
 
   for (const input of invalidInputs) {
-    const matches = findLikelySecrets(input, testFile, 1)
+    const matches = findLikelySecrets({ line: input, file: testFile, lineNumber: 1 })
     t.is(matches.length, 0)
   }
 })
 
 test('findLikelySecrets - should match exactly minimum chars after prefix', async (t) => {
   const exactMinChars = 'aws_123456789012' // Exactly 12 chars after prefix
-  const matches = findLikelySecrets(exactMinChars, testFile, 1)
+  const matches = findLikelySecrets({ line: exactMinChars, file: testFile, lineNumber: 1 })
   t.is(matches.length, 1)
 })
 
@@ -85,7 +85,7 @@ test('findLikelySecrets - should match different prefixes from LIKELY_SECRET_PRE
   ]
 
   lines.forEach((line, index) => {
-    const matches = findLikelySecrets(line, testFile, index)
+    const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
     t.is(matches.length, 1)
   })
 })
@@ -98,7 +98,17 @@ test('findLikelySecrets - should match secrets with special characters', async (
   ]
 
   lines.forEach((line, index) => {
-    const matches = findLikelySecrets(line, testFile, index)
+    const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
     t.is(matches.length, 1)
   })
+})
+
+test('findLikelySecrets - should not match secrets with that correspond to a SECRET_SCAN_OMIT_KEYS value', async (t) => {
+  const matches = findLikelySecrets({
+    line: 'match is explicitly omitted aws_123456789012345678',
+    file: testFile,
+    lineNumber: 1,
+    omitValues: ['aws_123456789012345678'],
+  })
+  t.is(matches.length, 0)
 })

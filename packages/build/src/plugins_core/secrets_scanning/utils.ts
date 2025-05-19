@@ -18,6 +18,7 @@ interface ScanArgs {
   base: string
   filePaths: string[]
   enhancedScanning?: boolean
+  omitValues?: unknown[]
 }
 
 interface MatchResult {
@@ -45,14 +46,24 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
   return true
 }
 
-function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
+export function getOmitKeysFromEnv(env: Record<string, unknown>): string[] {
   if (typeof env.SECRETS_SCAN_OMIT_KEYS !== 'string') {
-    return envKeys
+    return []
   }
   const omitKeys = env.SECRETS_SCAN_OMIT_KEYS.split(',')
     .map((s) => s.trim())
     .filter(Boolean)
+  return omitKeys
+}
 
+export function getOmitValuesFromEnv(env: Record<string, unknown>): unknown[] {
+  const omitKeys = getOmitKeysFromEnv(env)
+  const omitValues = omitKeys.map((key) => env[key])
+  return omitValues
+}
+
+function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
+  const omitKeys = getOmitKeysFromEnv(env)
   return envKeys.filter((key) => !omitKeys.includes(key))
 }
 
@@ -122,12 +133,21 @@ const MIN_CHARS_AFTER_PREFIX = 12
  * @param line The line of text to check
  * @param file The file path where this line was found
  * @param lineNumber The line number in the file
+ * @param omitValues Optional array of values to exclude from matching
  * @returns Array of matches found in the line
  */
-export function findLikelySecrets(line: string, file: string, lineNumber: number): MatchResult[] {
+export function findLikelySecrets({
+  line,
+  file,
+  lineNumber,
+  omitValues = [],
+}: {
+  line: string
+  file: string
+  lineNumber: number
+  omitValues: string[]
+}): MatchResult[] {
   if (!line) return []
-
-  // TODO: if the match has been explicitly ignored, we should ignore it.
 
   // Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
   const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
@@ -147,6 +167,9 @@ export function findLikelySecrets(line: string, file: string, lineNumber: number
     .filter(Boolean) // Remove empty strings
 
   for (const token of tokens) {
+    if (omitValues.includes(token)) {
+      continue
+    }
     if (regex.test(token)) {
       matches.push({
         file,
@@ -237,6 +260,7 @@ export async function scanFilesForKeyValues({
   filePaths,
   base,
   enhancedScanning,
+  omitValues = [],
 }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
@@ -276,7 +300,7 @@ export async function scanFilesForKeyValues({
     settledPromises = settledPromises.concat(
       await Promise.allSettled(
         batch.map((file) => {
-          return searchStream({ basePath: base, file, keyValues, enhancedScanning })
+          return searchStream({ basePath: base, file, keyValues, enhancedScanning, omitValues })
         }),
       ),
     )
@@ -296,11 +320,13 @@ const searchStream = ({
   file,
   keyValues,
   enhancedScanning,
+  omitValues = [],
 }: {
   basePath: string
   file: string
   keyValues: Record<string, string[]>
   enhancedScanning?: boolean
+  omitValues?: string[]
 }): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
@@ -338,7 +364,7 @@ const searchStream = ({
       lineNumber++
       if (typeof line === 'string') {
         if (enhancedScanning) {
-          matches.push(...findLikelySecrets(line, file, lineNumber))
+          matches.push(...findLikelySecrets({ line, file, lineNumber, omitValues }))
         }
         if (maxMultiLineCount > 1) {
           lines.push(line)
