@@ -111,6 +111,7 @@ const coreStep: CoreStepFunction = async function ({
         enhancedSecretsScanMatchesCount: enhancedSecretMatches.length,
         secretsFilesCount: scanResults.scannedFilesCount,
         keysToSearchFor,
+        enhancedPrefixMatches: enhancedSecretMatches.length ? enhancedSecretMatches.map((match) => match.key) : [],
       }
 
       systemLog?.(attributesForLogsAndSpan)
