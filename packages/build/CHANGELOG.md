@@ -105,6 +105,31 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.0](https://github.com/netlify/build/compare/build-v33.0.1...build-v33.1.0) (2025-05-16)
+
+
+### Features
+
+* expand secret prefixes ([#6319](https://github.com/netlify/build/issues/6319)) ([6c23028](https://github.com/netlify/build/commit/6c230280d5cfe80885cfc6e78ee9e3ecc61b9d78))
+
+
+### Bug Fixes
+
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#6314](https://github.com/netlify/build/issues/6314)) ([16f548a](https://github.com/netlify/build/commit/16f548a99da7a864fb4057f30b3118c01b542bb7))
+* **deps:** update dependency supports-color to v10 ([#6315](https://github.com/netlify/build/issues/6315)) ([77d7c1c](https://github.com/netlify/build/commit/77d7c1c463fdd47d76a982883edea81b3a56671f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.0.1 to 14.0.2
+    * @netlify/framework-info bumped from ^10.0.0 to ^10.0.1
+    * @netlify/functions-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/zip-it-and-ship-it bumped from 11.0.1 to 12.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 to ^2.0.1
+
 ## [33.0.1](https://github.com/netlify/build/compare/build-v33.0.0...build-v33.0.1) (2025-05-15)
 
 

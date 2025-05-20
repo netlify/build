@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.0.2](https://github.com/netlify/build/compare/edge-bundler-v14.0.1...edge-bundler-v14.0.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency archiver to v7 ([#6273](https://github.com/netlify/build/issues/6273)) ([a14b9d5](https://github.com/netlify/build/commit/a14b9d5334f82bcea3b2504c43ff371015b3164d))
+
 ## [14.0.1](https://github.com/netlify/build/compare/edge-bundler-v14.0.0...edge-bundler-v14.0.1) (2025-05-15)
 
 

@@ -27,7 +27,6 @@ import {
   conflictsWithEntryFile,
   EntryFile,
   getEntryFile,
-  getTelemetryFile,
   isNamedLikeEntryFile,
 } from './entry_file.js'
 import { getMetadataFile } from './metadata_file.js'
@@ -112,7 +111,6 @@ const createDirectory = async function ({
     userNamespace,
     runtimeAPIVersion,
   })
-  const { contents: telemetryContents, filename: telemetryFilename } = getTelemetryFile()
   const functionFolder = join(destFolder, basename(filename, extension))
 
   // Deleting the functions directory in case it exists before creating it.
@@ -120,12 +118,7 @@ const createDirectory = async function ({
   await mkdir(functionFolder, { recursive: true })
 
   // Writing entry files.
-  await Promise.all([
-    writeFile(join(functionFolder, entryFilename), entryContents),
-    featureFlags.zisi_add_instrumentation_loader
-      ? writeFile(join(functionFolder, telemetryFilename), telemetryContents)
-      : Promise.resolve(),
-  ])
+  await writeFile(join(functionFolder, entryFilename), entryContents)
 
   if (runtimeAPIVersion === 2) {
     addBootstrapFile(srcFiles, aliases)
@@ -199,7 +192,6 @@ const createZipArchive = async function ({
   rewrites,
   runtimeAPIVersion,
   srcFiles,
-  generator,
 }: ZipNodeParameters) {
   const destPath = join(destFolder, `${basename(filename, extension)}.zip`)
   const { archive, output } = startZip(destPath)
@@ -245,11 +237,6 @@ const createZipArchive = async function ({
     entryFilename = entryFile.filename
 
     addEntryFileToZip(archive, entryFile)
-  }
-  const telemetryFile = getTelemetryFile(generator)
-
-  if (featureFlags.zisi_add_instrumentation_loader === true) {
-    addEntryFileToZip(archive, telemetryFile)
   }
 
   if (runtimeAPIVersion === 2) {
