@@ -149,6 +149,17 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
       })
   })
 
+  if (Object.keys(secretMatches).length) {
+    logError(
+      logs,
+      `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
+    )
+    logError(
+      logs,
+      `\nIf these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
+    )
+  }
+
   // Likely secret matches from enhanced scan
   Object.keys(enhancedSecretMatches).forEach((key) => {
     logError(logs, `"${key}***" detected as a likely secret:`)
@@ -162,16 +173,19 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
       })
   })
 
+  if (Object.keys(enhancedSecretMatches).length) {
+    logError(
+      logs,
+      `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
+    )
+    logError(
+      logs,
+      `\nIf these are expected, use ENHANCED_SECRETS_SCAN_OMIT_VALUES, or ENHANCED_SECRETS_SCAN_ENABLED to prevent detecting.`,
+    )
+  }
+
   logError(
     logs,
-    `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
-  )
-  logError(
-    logs,
-    `If these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, SECRETS_SCAN_OMIT_VALUES, or SECRETS_SCAN_ENABLED to prevent detecting.`,
-  )
-  logError(
-    logs,
-    `For more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`,
+    `\nFor more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`,
   )
 }

@@ -18,7 +18,7 @@ interface ScanArgs {
   base: string
   filePaths: string[]
   enhancedScanning?: boolean
-  omitValues?: unknown[]
+  omitValuesFromEnhancedScan?: unknown[]
 }
 
 interface MatchResult {
@@ -58,24 +58,23 @@ export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): 
   return true
 }
 
-export function getOmitKeysFromEnv(env: Record<string, unknown>): string[] {
-  if (typeof env.SECRETS_SCAN_OMIT_KEYS !== 'string') {
+export function getStringArrayFromEnvValue(env: Record<string, unknown>, envVarName: string): string[] {
+  if (typeof env[envVarName] !== 'string') {
     return []
   }
-  const omitKeys = env.SECRETS_SCAN_OMIT_KEYS.split(',')
+  const omitKeys = env[envVarName]
+    .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
   return omitKeys
 }
 
-export function getOmitValuesFromEnv(env: Record<string, unknown>): unknown[] {
-  const omitKeys = getOmitKeysFromEnv(env)
-  const omitValues = omitKeys.map((key) => env[key])
-  return omitValues
+export function getomitValuesFromEnhancedScanForEnhancedScanFromEnv(env: Record<string, unknown>): unknown[] {
+  return getStringArrayFromEnvValue(env, 'ENHANCED_SECRETS_SCAN_OMIT_VALUES')
 }
 
 function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
-  const omitKeys = getOmitKeysFromEnv(env)
+  const omitKeys = getStringArrayFromEnvValue(env, 'SECRETS_SCAN_OMIT_KEYS')
   return envKeys.filter((key) => !omitKeys.includes(key))
 }
 
@@ -145,19 +144,19 @@ const MIN_CHARS_AFTER_PREFIX = 12
  * @param line The line of text to check
  * @param file The file path where this line was found
  * @param lineNumber The line number in the file
- * @param omitValues Optional array of values to exclude from matching
+ * @param omitValuesFromEnhancedScan Optional array of values to exclude from matching
  * @returns Array of matches found in the line
  */
 export function findLikelySecrets({
   line,
   file,
   lineNumber,
-  omitValues = [],
+  omitValuesFromEnhancedScan = [],
 }: {
   line: string
   file: string
   lineNumber: number
-  omitValues?: unknown[]
+  omitValuesFromEnhancedScan?: unknown[]
 }): MatchResult[] {
   if (!line) return []
 
@@ -178,7 +177,7 @@ export function findLikelySecrets({
     .filter(Boolean) // Remove empty strings
 
   for (const token of tokens) {
-    if (omitValues.includes(token)) {
+    if (omitValuesFromEnhancedScan.includes(token)) {
       continue
     }
     if (regex.test(token)) {
@@ -272,7 +271,7 @@ export async function scanFilesForKeyValues({
   filePaths,
   base,
   enhancedScanning,
-  omitValues = [],
+  omitValuesFromEnhancedScan = [],
 }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
@@ -312,7 +311,7 @@ export async function scanFilesForKeyValues({
     settledPromises = settledPromises.concat(
       await Promise.allSettled(
         batch.map((file) => {
-          return searchStream({ basePath: base, file, keyValues, enhancedScanning, omitValues })
+          return searchStream({ basePath: base, file, keyValues, enhancedScanning, omitValuesFromEnhancedScan })
         }),
       ),
     )
@@ -332,13 +331,13 @@ const searchStream = ({
   file,
   keyValues,
   enhancedScanning,
-  omitValues = [],
+  omitValuesFromEnhancedScan = [],
 }: {
   basePath: string
   file: string
   keyValues: Record<string, string[]>
   enhancedScanning?: boolean
-  omitValues?: unknown[]
+  omitValuesFromEnhancedScan?: unknown[]
 }): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
@@ -376,7 +375,7 @@ const searchStream = ({
       lineNumber++
       if (typeof line === 'string') {
         if (enhancedScanning) {
-          matches.push(...findLikelySecrets({ line, file, lineNumber, omitValues }))
+          matches.push(...findLikelySecrets({ line, file, lineNumber, omitValuesFromEnhancedScan }))
         }
         if (maxMultiLineCount > 1) {
           lines.push(line)
@@ -389,9 +388,6 @@ const searchStream = ({
         }
 
         keyVals.forEach((valVariant) => {
-          if (omitValues.includes(valVariant)) {
-            return
-          }
           // matching of single/whole values
           if (line.includes(valVariant)) {
             matches.push({

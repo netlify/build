@@ -108,7 +108,7 @@ test('findLikelySecrets - should not match secrets with that correspond to a SEC
     line: 'match is explicitly omitted aws_123456789012345678',
     file: testFile,
     lineNumber: 1,
-    omitValues: ['aws_123456789012345678'],
+    omitValuesFromEnhancedScan: ['aws_123456789012345678'],
   })
   t.is(matches.length, 0)
 })
