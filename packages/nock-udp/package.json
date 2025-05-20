@@ -28,7 +28,7 @@
   },
   "author": "Netlify Inc.",
   "devDependencies": {
-    "@types/node": "^14.18.53",
+    "@types/node": "^20.12.11",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
   },
