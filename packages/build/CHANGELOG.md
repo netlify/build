@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.2](https://github.com/netlify/build/compare/build-v33.1.1...build-v33.1.2) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency os-name to v6 ([#6342](https://github.com/netlify/build/issues/6342)) ([6aa984d](https://github.com/netlify/build/commit/6aa984d9a2049ccbec51f2b9db7c68b693037710))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.1 to ^23.0.2
+    * @netlify/edge-bundler bumped from 14.0.3 to 14.0.4
+    * @netlify/framework-info bumped from ^10.0.2 to ^10.0.3
+    * @netlify/functions-utils bumped from ^6.0.3 to ^6.0.4
+    * @netlify/git-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/run-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/zip-it-and-ship-it bumped from 12.0.1 to 12.0.2
+
 ## [33.1.1](https://github.com/netlify/build/compare/build-v33.1.0...build-v33.1.1) (2025-05-20)
 
 

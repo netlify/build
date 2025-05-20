@@ -64,6 +64,15 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.1](https://github.com/netlify/build/compare/build-info-v10.0.0...build-info-v10.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v9 ([#6338](https://github.com/netlify/build/issues/6338)) ([b6622a8](https://github.com/netlify/build/commit/b6622a8404dbf391a8024a9c82abb4f16af41f38))
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
 ## [10.0.0](https://github.com/netlify/build/compare/build-info-v9.0.4...build-info-v10.0.0) (2025-05-14)
 
 
