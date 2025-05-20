@@ -82,7 +82,7 @@
     "ansi-escapes": "^6.0.0",
     "chalk": "^5.0.0",
     "clean-stack": "^5.0.0",
-    "execa": "^7.0.0",
+    "execa": "^8.0.0",
     "fdir": "^6.0.1",
     "figures": "^5.0.0",
     "filter-obj": "^5.0.0",
