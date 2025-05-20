@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.0.3](https://github.com/netlify/build/compare/edge-bundler-v14.0.2...edge-bundler-v14.0.3) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency p-retry to v6 ([#6321](https://github.com/netlify/build/issues/6321)) ([a0ba9d6](https://github.com/netlify/build/commit/a0ba9d68b3d2d4caaa2652fbccb4265b51fa6126))
+
 ## [14.0.2](https://github.com/netlify/build/compare/edge-bundler-v14.0.1...edge-bundler-v14.0.2) (2025-05-16)
 
 

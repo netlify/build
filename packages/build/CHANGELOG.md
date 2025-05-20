@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.1](https://github.com/netlify/build/compare/build-v33.1.0...build-v33.1.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency string-width to v7 ([#6316](https://github.com/netlify/build/issues/6316)) ([9a3ab1e](https://github.com/netlify/build/commit/9a3ab1e6796ed39ad634b46f2f1da499da4a1586))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/edge-bundler bumped from 14.0.2 to 14.0.3
+    * @netlify/framework-info bumped from ^10.0.1 to ^10.0.2
+    * @netlify/functions-utils bumped from ^6.0.2 to ^6.0.3
+    * @netlify/zip-it-and-ship-it bumped from 12.0.0 to 12.0.1
+
 ## [33.1.0](https://github.com/netlify/build/compare/build-v33.0.1...build-v33.1.0) (2025-05-16)
 
 
