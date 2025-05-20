@@ -130,14 +130,16 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
 
 export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
   const { secretMatches, enhancedSecretMatches } = groupedResults
+  const secretMatchesKeys = Object.keys(secretMatches)
+  const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
   // Explicit secret matches
-  Object.keys(secretMatches).forEach((key) => {
+  secretMatchesKeys.forEach((key) => {
     logError(logs, `Secret env var "${key}"'s value detected:`)
 
     secretMatches[key]
@@ -149,7 +151,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
       })
   })
 
-  if (Object.keys(secretMatches).length) {
+  if (secretMatchesKeys.length) {
     logError(
       logs,
       `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
@@ -161,8 +163,8 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
   }
 
   // Likely secret matches from enhanced scan
-  Object.keys(enhancedSecretMatches).forEach((key) => {
-    logError(logs, `"${key}***" detected as a likely secret:`)
+  enhancedSecretMatchesKeys.forEach((key, index) => {
+    logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
 
     enhancedSecretMatches[key]
       .sort((a, b) => {
@@ -173,7 +175,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
       })
   })
 
-  if (Object.keys(enhancedSecretMatches).length) {
+  if (enhancedSecretMatchesKeys.length) {
     logError(
       logs,
       `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
