@@ -69,7 +69,7 @@ export function getStringArrayFromEnvValue(env: Record<string, unknown>, envVarN
   return omitKeys
 }
 
-export function getomitValuesFromEnhancedScanForEnhancedScanFromEnv(env: Record<string, unknown>): unknown[] {
+export function getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(env: Record<string, unknown>): unknown[] {
   return getStringArrayFromEnvValue(env, 'ENHANCED_SECRETS_SCAN_OMIT_VALUES')
 }
 

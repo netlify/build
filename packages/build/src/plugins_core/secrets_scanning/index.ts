@@ -14,7 +14,7 @@ import {
   ScanResults,
   SecretScanResult,
   getFilePathsToScan,
-  getomitValuesFromEnhancedScanForEnhancedScanFromEnv,
+  getOmitValuesFromEnhancedScanForEnhancedScanFromEnv,
   getSecretKeysToScanFor,
   groupScanResultsByKeyAndScanType,
   isEnhancedSecretsScanningEnabled,
@@ -108,7 +108,7 @@ const coreStep: CoreStepFunction = async function ({
         base: buildDir as string,
         filePaths,
         enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
-        omitValuesFromEnhancedScan: getomitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
+        omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
       })
 
       secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
