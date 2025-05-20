@@ -52,7 +52,7 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
  * @returns
  */
 export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): boolean {
-  if (env.AUTOMATIC_SECRET_DETECTION_ENABLED === false || env.AUTOMATIC_SECRET_DETECTION_ENABLED === 'false') {
+  if (env.ENHANCED_SECRETS_SCAN_ENABLED === false || env.ENHANCED_SECRETS_SCAN_ENABLED === 'false') {
     return false
   }
   return true

@@ -171,7 +171,7 @@ test('secrets scanning, should skip when enhanced scan and likely secrets passed
   t.true(requests.length === 0)
 })
 
-test('secrets scanning, enhanced scan should not find matches when disabled with AUTOMATIC_SECRET_DETECTION_ENABLED set to false', async (t) => {
+test('secrets scanning, enhanced scan should not find matches when disabled with ENHANCED_SECRETS_SCAN_ENABLED set to false', async (t) => {
   const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })

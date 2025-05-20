@@ -57,7 +57,7 @@ const coreStep: CoreStepFunction = async function ({
   if (enhancedSecretScan && !enhancedScanningEnabledInEnv) {
     logSecretsScanSkipMessage(
       logs,
-      'Automatic secrets detection disabled via AUTOMATIC_SECRET_DETECTION_ENABLED flag set to false.',
+      'Automatic secrets detection disabled via ENHANCED_SECRETS_SCAN_ENABLED flag set to false.',
     )
   }
 
