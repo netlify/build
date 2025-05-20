@@ -5,7 +5,7 @@ import os from 'os'
 import { basename, dirname, extname, join } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
-import { copyFile } from 'cp-file'
+import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
 import {
