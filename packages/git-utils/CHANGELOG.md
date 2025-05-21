@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.1](https://github.com/netlify/build/compare/git-utils-v6.0.0...git-utils-v6.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
 ## [6.0.0](https://github.com/netlify/build/compare/git-utils-v5.2.0...git-utils-v6.0.0) (2025-05-14)
 
 
