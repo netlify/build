@@ -93,7 +93,6 @@ const createDirectory = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -210,7 +209,6 @@ const createZipArchive = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -219,10 +217,9 @@ const createZipArchive = async function ({
   // We don't need an entry file if it would end up with the same path as the
   // function's main file. Unless we have a file conflict and need to move everything into a subfolder
   const needsEntryFile =
-    featureFlags.zisi_unique_entry_file ||
     runtimeAPIVersion === 2 ||
     hasEntryFileConflict ||
-    !isNamedLikeEntryFile(mainFile, { basePath, featureFlags, filename, runtimeAPIVersion })
+    !isNamedLikeEntryFile(mainFile, { basePath, filename, runtimeAPIVersion })
 
   // If there is a naming conflict, we move all user files (everything other
   // than the entry file) to its own sub-directory.
