@@ -9,6 +9,7 @@ import { ModuleFormat } from './runtimes/node/utils/module_format.js'
 import { GetSrcFilesFunction, RuntimeName, RUNTIME } from './runtimes/runtime.js'
 import { RuntimeCache } from './utils/cache.js'
 import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
+import type { ExtendedRoute, Route } from './utils/routes.js'
 
 export { Config, FunctionConfig } from './config.js'
 export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
@@ -33,6 +34,8 @@ export interface ListedFunction {
   generator?: string
   timeout?: number
   inputModuleFormat?: ModuleFormat
+  excludedRoutes?: Route[]
+  routes?: ExtendedRoute[]
 }
 
 type ListedFunctionFile = ListedFunction & {
@@ -145,10 +148,12 @@ const getListedFunction = function ({
   return {
     displayName: config.name,
     extension,
+    excludedRoutes: staticAnalysisResult?.excludedRoutes,
     generator: config.generator,
     timeout: config.timeout,
     mainFile,
     name,
+    routes: staticAnalysisResult?.routes,
     runtime: runtime.name,
     runtimeAPIVersion: staticAnalysisResult ? (staticAnalysisResult?.runtimeAPIVersion ?? 1) : undefined,
     schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,

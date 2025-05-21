@@ -51,13 +51,13 @@
   "license": "MIT",
   "dependencies": {
     "cpy": "^11.0.0",
-    "get-stream": "^6.0.0",
+    "get-stream": "^9.0.0",
     "globby": "^13.0.0",
     "junk": "^4.0.0",
     "locate-path": "^7.0.0",
     "move-file": "^3.0.0",
     "path-exists": "^5.0.0",
-    "readdirp": "^3.4.0"
+    "readdirp": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.18.53",
