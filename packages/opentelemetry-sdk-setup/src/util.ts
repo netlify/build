@@ -3,7 +3,7 @@ import { readFile, realpath } from 'node:fs/promises'
 
 import { diag, DiagLogger } from '@opentelemetry/api'
 import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
-import { PackageJson, readPackageUp } from 'read-pkg-up'
+import { PackageJson, readPackageUp } from 'read-package-up'
 
 /**
  * Builds a function for logging data to a provided fileDescriptor (i.e. hidden from

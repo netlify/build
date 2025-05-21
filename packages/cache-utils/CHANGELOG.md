@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.1](https://github.com/netlify/build/compare/cache-utils-v6.0.0...cache-utils-v6.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+
 ## [6.0.0](https://github.com/netlify/build/compare/cache-utils-v5.2.0...cache-utils-v6.0.0) (2025-05-14)
 
 

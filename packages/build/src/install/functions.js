@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import readdirp from 'readdirp'
+import { readdirpPromise } from 'readdirp'
 
 import { logInstallFunctionDependencies } from '../log/messages/install.js'
 
@@ -20,7 +20,7 @@ export const installFunctionDependencies = async function (functionsSrc, isLocal
 }
 
 const getPackagePaths = function (functionsSrc) {
-  return readdirp.promise(functionsSrc, { depth: 1, fileFilter: 'package.json' })
+  return readdirpPromise(functionsSrc, { depth: 1, fileFilter: 'package.json' })
 }
 
 const getPackageRoot = function ({ fullPath }) {

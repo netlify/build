@@ -1,6 +1,6 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Utility for caching files in Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",
@@ -50,14 +50,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cpy": "^9.0.0",
-    "get-stream": "^6.0.0",
+    "cpy": "^11.0.0",
+    "get-stream": "^9.0.0",
     "globby": "^13.0.0",
     "junk": "^4.0.0",
     "locate-path": "^7.0.0",
     "move-file": "^3.0.0",
     "path-exists": "^5.0.0",
-    "readdirp": "^3.4.0"
+    "readdirp": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.18.53",

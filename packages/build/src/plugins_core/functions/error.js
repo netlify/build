@@ -1,4 +1,4 @@
-import readdirp from 'readdirp'
+import { readdirpPromise } from 'readdirp'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -123,7 +123,7 @@ const lacksNodeModules = async function (functionsSrc) {
 // Functions can be either files or directories, so we need to check on two
 // depth levels
 const hasFunctionRootFile = async function (filename, functionsSrc) {
-  const files = await readdirp.promise(functionsSrc, { depth: 1, fileFilter: filename })
+  const files = await readdirpPromise(functionsSrc, { depth: 1, fileFilter: filename })
   return files.length !== 0
 }
 

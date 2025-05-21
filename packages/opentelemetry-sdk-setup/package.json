@@ -1,6 +1,6 @@
 {
   "name": "@netlify/opentelemetry-sdk-setup",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Opentelemetry SDK setup script",
   "type": "module",
   "bin": {
@@ -38,7 +38,7 @@
     "@opentelemetry/core": "~1.24.0",
     "@opentelemetry/resources": "~1.24.0",
     "@opentelemetry/semantic-conventions": "~1.24.0",
-    "read-pkg-up": "^9",
+    "read-package-up": "^11.0.0",
     "yargs-parser": "^21.1.1"
   },
   "devDependencies": {

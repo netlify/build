@@ -1,5 +1,28 @@
 # Changelog
 
+## [14.0.4](https://github.com/netlify/build/compare/edge-bundler-v14.0.3...edge-bundler-v14.0.4) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+## [14.0.3](https://github.com/netlify/build/compare/edge-bundler-v14.0.2...edge-bundler-v14.0.3) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency p-retry to v6 ([#6321](https://github.com/netlify/build/issues/6321)) ([a0ba9d6](https://github.com/netlify/build/commit/a0ba9d68b3d2d4caaa2652fbccb4265b51fa6126))
+
+## [14.0.2](https://github.com/netlify/build/compare/edge-bundler-v14.0.1...edge-bundler-v14.0.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency archiver to v7 ([#6273](https://github.com/netlify/build/issues/6273)) ([a14b9d5](https://github.com/netlify/build/commit/a14b9d5334f82bcea3b2504c43ff371015b3164d))
+
 ## [14.0.1](https://github.com/netlify/build/compare/edge-bundler-v14.0.0...edge-bundler-v14.0.1) (2025-05-15)
 
 
