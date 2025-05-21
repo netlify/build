@@ -76,6 +76,21 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.3](https://github.com/netlify/build/compare/config-v23.0.2...config-v23.0.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency figures to v6 ([#6339](https://github.com/netlify/build/issues/6339)) ([8936cee](https://github.com/netlify/build/commit/8936cee7a6c7619f2e8ea6e3e0bf9de52e5ded04))
+* **deps:** update dependency filter-obj to v6 ([#6340](https://github.com/netlify/build/issues/6340)) ([cad4c01](https://github.com/netlify/build/commit/cad4c01213811d8663e1b137da522a0380f01254))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/redirect-parser bumped from ^15.0.0 to ^15.0.1
+
 ## [23.0.2](https://github.com/netlify/build/compare/config-v23.0.1...config-v23.0.2) (2025-05-20)
 
 
