@@ -51,7 +51,7 @@ const getEntryFileContents = (
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
   if (runtimeAPIVersion === 2) {
-    if (featureFlags.zisi_dynamic_import_function_handler) {
+    if (featureFlags.zisi_dynamic_import_function_handler_entry_point) {
       return [
         `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
         `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
