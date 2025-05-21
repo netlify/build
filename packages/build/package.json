@@ -108,7 +108,7 @@
     "path-exists": "^5.0.0",
     "path-type": "^6.0.0",
     "pkg-dir": "^8.0.0",
-    "pretty-ms": "^8.0.0",
+    "pretty-ms": "^9.0.0",
     "ps-list": "^8.0.0",
     "read-package-up": "^11.0.0",
     "readdirp": "^4.0.0",
