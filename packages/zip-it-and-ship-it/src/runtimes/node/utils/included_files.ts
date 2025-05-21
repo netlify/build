@@ -1,6 +1,6 @@
 import { normalize, resolve } from 'path'
 
-import fastGlob from 'fast-glob'
+import { glob } from 'tinyglobby'
 
 import { minimatch } from '../../../utils/matching.js'
 
@@ -48,18 +48,17 @@ export const getPathsOfIncludedFiles = async (
     { include: [], excludePatterns: [] },
   )
 
-  const pathGroups = await fastGlob(include, {
+  const pathGroups = await glob(include, {
     absolute: true,
     cwd: basePath,
     dot: true,
     ignore: excludePatterns,
     onlyFiles: false,
-    // get directories as well to get symlinked directories,
-    // to filter the regular non symlinked directories out mark them with a slash at the end to filter them out.
-    markDirectories: true,
     followSymbolicLinks: false,
+    expandDirectories: false,
   })
 
+  // tinyglobby ends directories with `/`, so we can filter them out using that
   const paths = pathGroups.filter((path) => !path.endsWith('/')).map(normalize)
 
   // now filter the non symlinked directories out that got marked with a trailing slash
