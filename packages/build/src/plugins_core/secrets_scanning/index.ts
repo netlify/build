@@ -62,7 +62,7 @@ const coreStep: CoreStepFunction = async function ({
   }
   if (
     enhancedSecretScan &&
-    !enhancedScanningEnabledInEnv &&
+    enhancedScanningEnabledInEnv &&
     envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES'] !== undefined
   ) {
     log(
@@ -122,6 +122,7 @@ const coreStep: CoreStepFunction = async function ({
         secretsFilesCount: scanResults.scannedFilesCount,
         keysToSearchFor,
         enhancedPrefixMatches: enhancedSecretMatches.length ? enhancedSecretMatches.map((match) => match.key) : [],
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
       }
 
       systemLog?.(attributesForLogsAndSpan)
