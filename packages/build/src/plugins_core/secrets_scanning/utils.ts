@@ -128,6 +128,21 @@ const MIN_CHARS_AFTER_PREFIX = 12
 
 // Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
 const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
+
+// Build regex pattern for matching secrets with various delimiters and quotes:
+// (?:["'`]|^|[=:,]) - match either quotes, start of line, or delimiters (=:,) at the start
+// (?:${prefixMatchingRegex}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
+// [^ "'`=:,]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars that aren't quotes/delimiters
+// [^ "'`=:,]*? - lazily match any additional non-delimiter chars (stops at minimum length when possible)
+// (?:["'`]|[ =:,]|$) - end with either quotes, delimiters, whitespace, or end of line
+// gi - global and case insensitive flags
+// Note: Using the global flag (g) means this regex object maintains state between executions.
+// We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
+const likelySecretRegex = new RegExp(
+  `(?:["'\`]|^|[=:,]) *(?:${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?(?:["'\`]|[ =:,]|$)`,
+  'gi',
+)
+
 /**
  * Checks a line of text for likely secrets based on known prefixes and patterns.
  * The function works by:
@@ -162,35 +177,23 @@ export function findLikelySecrets({
 }): MatchResult[] {
   if (!line) return []
 
-  // Build regex pattern:
-  // ^ - match start of token
-  // (?:${prefixMatchingRegex}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
-  // [^ ]{${MIN_CHARS_AFTER_PREFIX}} - first match exactly MIN_CHARS_AFTER_PREFIX non-whitespace chars
-  // [^ ]*? - then lazily match any remaining non-whitespace chars - this makes sure strings longer than the minimum are matched, but we don't need to capture them since we only report the prefix
-  // $ - match end of token
-  // i - case insensitive flag
-  const regex = new RegExp(`^(?:${prefixMatchingRegex})[^ ]{${MIN_CHARS_AFTER_PREFIX}}[^ ]*?$`, 'i')
-
   const matches: MatchResult[] = []
-  const tokens = line
-    .split(/["'`]/) // Split by quotes first
-    .flatMap((token) => token.split(/[\s=:,]+/)) // Split by whitespace, equals, colon, or comma
-    .filter(Boolean) // Remove empty strings
+  let match
 
-  for (const token of tokens) {
-    if (omitValuesFromEnhancedScan.includes(token)) {
+  while ((match = likelySecretRegex.exec(line)) !== null) {
+    const token = match[0].replace(/^["'`=:, ]+|["'`=:, ]+$/g, '')
+    if (omitValuesFromEnhancedScan?.includes(token)) {
       continue
     }
-    if (regex.test(token)) {
-      const prefix = LIKELY_SECRET_PREFIXES.find((p) => token.toLowerCase().startsWith(p.toLowerCase()))
-      matches.push({
-        file,
-        lineNumber,
-        key: prefix ?? token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
-        enhancedMatch: true,
-      })
-    }
+    const prefix = LIKELY_SECRET_PREFIXES.find((p) => token.toLowerCase().startsWith(p.toLowerCase()))
+    matches.push({
+      file,
+      lineNumber,
+      key: prefix ?? token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
+      enhancedMatch: true,
+    })
   }
+
   return matches
 }
 
