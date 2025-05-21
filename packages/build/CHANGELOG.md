@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.3](https://github.com/netlify/build/compare/build-v33.1.2...build-v33.1.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ansi-escapes to v7 ([#6336](https://github.com/netlify/build/issues/6336)) ([bf11542](https://github.com/netlify/build/commit/bf11542cdc3d8873043637d384ea80f2830e2c15))
+* **deps:** update dependency figures to v6 ([#6339](https://github.com/netlify/build/issues/6339)) ([8936cee](https://github.com/netlify/build/commit/8936cee7a6c7619f2e8ea6e3e0bf9de52e5ded04))
+* **deps:** update dependency filter-obj to v6 ([#6340](https://github.com/netlify/build/issues/6340)) ([cad4c01](https://github.com/netlify/build/commit/cad4c01213811d8663e1b137da522a0380f01254))
+* **deps:** update dependency pkg-dir to v8 ([#6343](https://github.com/netlify/build/issues/6343)) ([d708907](https://github.com/netlify/build/commit/d708907106bdf80a46da99d06f269a2aa76971c8))
+* **deps:** update dependency terminal-link to v4 ([#6344](https://github.com/netlify/build/issues/6344)) ([ef1e151](https://github.com/netlify/build/commit/ef1e1510cf8a85082cca24c096e544094ff9f8c8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.2 to ^23.0.3
+    * @netlify/framework-info bumped from ^10.0.3 to ^10.0.4
+    * @netlify/functions-utils bumped from ^6.0.4 to ^6.0.5
+    * @netlify/zip-it-and-ship-it bumped from 12.0.2 to 12.0.3
+
 ## [33.1.2](https://github.com/netlify/build/compare/build-v33.1.1...build-v33.1.2) (2025-05-20)
 
 
