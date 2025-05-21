@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.0.4](https://github.com/netlify/build/compare/edge-bundler-v14.0.3...edge-bundler-v14.0.4) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
 ## [14.0.3](https://github.com/netlify/build/compare/edge-bundler-v14.0.2...edge-bundler-v14.0.3) (2025-05-20)
 
 
