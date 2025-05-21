@@ -126,6 +126,8 @@ const ENHANCED_MATCH_PREFIX_LENGTH = 4
 // Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
 const MIN_CHARS_AFTER_PREFIX = 12
 
+// Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
+const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
 /**
  * Checks a line of text for likely secrets based on known prefixes and patterns.
  * The function works by:
@@ -160,15 +162,14 @@ export function findLikelySecrets({
 }): MatchResult[] {
   if (!line) return []
 
-  // Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
-  const prefixPattern = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
   // Build regex pattern:
   // ^ - match start of token
-  // (?:${prefixPattern}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
-  // [^\\s]{${MIN_CHARS_AFTER_PREFIX},} - at least MIN_CHARS_AFTER_PREFIX non-whitespace chars
+  // (?:${prefixMatchingRegex}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
+  // [^ ]{${MIN_CHARS_AFTER_PREFIX}} - first match exactly MIN_CHARS_AFTER_PREFIX non-whitespace chars
+  // [^ ]*? - then lazily match any remaining non-whitespace chars - this makes sure strings longer than the minimum are matched, but we don't need to capture them since we only report the prefix
   // $ - match end of token
   // i - case insensitive flag
-  const regex = new RegExp(`^(?:${prefixPattern})[^\\s]{${MIN_CHARS_AFTER_PREFIX},}$`, 'i')
+  const regex = new RegExp(`^(?:${prefixMatchingRegex})[^ ]{${MIN_CHARS_AFTER_PREFIX}}[^ ]*?$`, 'i')
 
   const matches: MatchResult[] = []
   const tokens = line
