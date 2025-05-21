@@ -50,16 +50,15 @@
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@vitest/eslint-plugin": "^1.0.1",
     "ci-info": "^4.0.0",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-ava": "^14.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "@vitest/eslint-plugin": "^1.0.1",
     "husky": "^8.0.0",
-    "lerna": "^5.5.2",
+    "lerna": "^8.2.2",
     "lint-staged": "^16.0.0",
-    "nx": "^14.7.13",
     "prettier": "^3.0.0"
   },
   "engines": {
