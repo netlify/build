@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -47,8 +47,8 @@
   "dependencies": {
     "@bugsnag/js": "^7.20.0",
     "@iarna/toml": "^2.2.5",
-    "dot-prop": "^7.2.0",
-    "find-up": "^6.3.0",
+    "dot-prop": "^9.0.0",
+    "find-up": "^7.0.0",
     "minimatch": "^9.0.0",
     "read-pkg": "^7.1.0",
     "semver": "^7.3.8",
@@ -60,7 +60,7 @@
     "@types/node": "^14.18.53",
     "@types/semver": "^7.3.13",
     "@vitest/ui": "^0.34.0",
-    "execa": "^7.0.0",
+    "execa": "^8.0.0",
     "memfs": "^4.0.0",
     "node-fetch": "^3.3.1",
     "typescript": "^5.0.0",
