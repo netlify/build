@@ -103,12 +103,23 @@ test('findLikelySecrets - should match secrets with special characters', async (
   })
 })
 
-test('findLikelySecrets - should not match secrets with that correspond to a SECRET_SCAN_OMIT_VALUES value', async (t) => {
-  const matches = findLikelySecrets({
-    line: 'match is explicitly omitted aws_123456789012345678',
+test('findLikelySecrets - should match full secret value against omitValues', async (t) => {
+  // Test both partial and full matches to ensure proper behavior
+  const partialMatch = findLikelySecrets({
+    line: 'aws_123456789012_extra_chars_here',
     file: testFile,
     lineNumber: 1,
-    omitValuesFromEnhancedScan: ['aws_123456789012345678'],
+    // The omitValue only partially matches the secret - we should still detect the secret
+    omitValuesFromEnhancedScan: ['aws_123456789012'],
   })
-  t.is(matches.length, 0)
+  t.is(partialMatch.length, 1)
+
+  const fullMatch = findLikelySecrets({
+    line: 'aws_123456789012_extra_chars_here',
+    file: testFile,
+    lineNumber: 1,
+    // Omit the full secret value - we should not detect the secret
+    omitValuesFromEnhancedScan: ['aws_123456789012_extra_chars_here'],
+  })
+  t.is(fullMatch.length, 0)
 })
