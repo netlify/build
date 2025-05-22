@@ -122,7 +122,6 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
   return filteredSecretKeys.filter((key) => !isValueTrivial(env[key]))
 }
 
-const ENHANCED_MATCH_PREFIX_LENGTH = 4
 // Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
 const MIN_CHARS_AFTER_PREFIX = 12
 
@@ -139,7 +138,7 @@ const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.(
 // Note: Using the global flag (g) means this regex object maintains state between executions.
 // We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
 const likelySecretRegex = new RegExp(
-  `(?:["'\`]|^|[=:,]) *(?:${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?(?:["'\`]|[ =:,]|$)`,
+  `(?:["'\`]|^|[=:,]) *(?<token>(?<prefix>${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?)(?:["'\`]|[ =:,]|$)`,
   'gi',
 )
 
@@ -178,18 +177,18 @@ export function findLikelySecrets({
   if (!line) return []
 
   const matches: MatchResult[] = []
-  let match
+  let match: RegExpExecArray | null
 
   while ((match = likelySecretRegex.exec(line)) !== null) {
-    const token = match[0].replace(/^["'`=:, ]+|["'`=:, ]+$/g, '')
-    if (omitValuesFromEnhancedScan?.includes(token)) {
+    const token = match.groups?.token
+    const prefix = match.groups?.prefix
+    if (!token || !prefix || omitValuesFromEnhancedScan?.includes(token)) {
       continue
     }
-    const prefix = LIKELY_SECRET_PREFIXES.find((p) => token.toLowerCase().startsWith(p.toLowerCase()))
     matches.push({
       file,
       lineNumber,
-      key: prefix ?? token.slice(0, ENHANCED_MATCH_PREFIX_LENGTH),
+      key: prefix,
       enhancedMatch: true,
     })
   }
