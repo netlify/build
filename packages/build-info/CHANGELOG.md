@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.3](https://github.com/netlify/build/compare/build-info-v10.0.2...build-info-v10.0.3) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
 ## [10.0.2](https://github.com/netlify/build/compare/build-info-v10.0.1...build-info-v10.0.2) (2025-05-22)
 
 
