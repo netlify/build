@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.4](https://github.com/netlify/build/compare/build-v33.1.3...build-v33.1.4) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency path-type to v6 ([#6358](https://github.com/netlify/build/issues/6358)) ([77557fe](https://github.com/netlify/build/commit/77557fe197c20d1d5597a8c70d92944f22515293))
+* **deps:** update dependency pretty-ms to v9 ([#6359](https://github.com/netlify/build/issues/6359)) ([25ec5ef](https://github.com/netlify/build/commit/25ec5ef7e982ef93166ef2cb8a61871470210008))
+* **deps:** update dependency readdirp to v4 ([#6335](https://github.com/netlify/build/issues/6335)) ([bbc39d2](https://github.com/netlify/build/commit/bbc39d2c665b68dcbfaa4b32b783d38fa517c413))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/config bumped from ^23.0.3 to ^23.0.4
+    * @netlify/functions-utils bumped from ^6.0.5 to ^6.0.6
+    * @netlify/zip-it-and-ship-it bumped from 12.0.3 to 12.1.0
+
 ## [33.1.3](https://github.com/netlify/build/compare/build-v33.1.2...build-v33.1.3) (2025-05-21)
 
 
