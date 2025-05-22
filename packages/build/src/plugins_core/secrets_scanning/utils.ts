@@ -130,9 +130,12 @@ const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.(
 
 // Build regex pattern for matching secrets with various delimiters and quotes:
 // (?:["'`]|^|[=:,]) - match either quotes, start of line, or delimiters (=:,) at the start
-// (?:${prefixMatchingRegex}) - non-capturing group containing our prefixes (e.g. aws_|github_pat_|etc)
-// [^ "'`=:,]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars that aren't quotes/delimiters
-// [^ "'`=:,]*? - lazily match any additional non-delimiter chars (stops at minimum length when possible)
+// Named capturing groups:
+//   - <token>: captures the entire secret value including its prefix
+//   - <prefix>: captures just the prefix part (e.g. 'aws_', 'github_pat_')
+// (?:${prefixMatchingRegex}) - non-capturing group containing our escaped prefixes (e.g. aws_|github_pat_|etc)
+// [^ "'`=:,]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars after the prefix
+// [^ "'`=:,]*? - lazily match any additional chars that aren't quotes/delimiters
 // (?:["'`]|[ =:,]|$) - end with either quotes, delimiters, whitespace, or end of line
 // gi - global and case insensitive flags
 // Note: Using the global flag (g) means this regex object maintains state between executions.
