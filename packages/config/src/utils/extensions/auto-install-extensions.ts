@@ -96,6 +96,13 @@ export async function handleAutoInstallExtensions({
   try {
     const account = accounts?.find((account: any) => account.id === accountId)
     if (!account) {
+      console.error(`Failed to auto install extension(s): Couldn't find 'account' with id '${accountId}'`, {
+        accountId,
+        siteId,
+        cwd,
+        offline,
+        mode,
+      })
       return integrations
     }
 
