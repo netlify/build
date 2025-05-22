@@ -33,7 +33,7 @@ export type Detection = {
   accuracy: Accuracy
   /** The NPM package that was able to detect it (high accuracy) */
   package?: { name: string; version?: SemVer }
-  packageJSON?: PackageJson
+  packageJSON?: Partial<PackageJson>
   /** The absolute path to config file that is associated with the framework */
   config?: string
   /** The name of config file that is associated with the framework */
@@ -246,7 +246,9 @@ export abstract class BaseFramework implements Framework {
   }
 
   /** check if the npmDependencies are used inside the provided package.json */
-  private async npmDependenciesUsed(pkgJSON: PackageJson): Promise<{ name: string; version?: SemVer } | undefined> {
+  private async npmDependenciesUsed(
+    pkgJSON: Partial<PackageJson>,
+  ): Promise<{ name: string; version?: SemVer } | undefined> {
     const allDeps = [...Object.entries(pkgJSON.dependencies || {}), ...Object.entries(pkgJSON.devDependencies || {})]
 
     const found = allDeps.find(([depName]) => this.npmDependencies.includes(depName))
