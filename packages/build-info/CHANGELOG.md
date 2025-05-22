@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.2](https://github.com/netlify/build/compare/build-info-v10.0.1...build-info-v10.0.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency read-pkg to v9 ([#6346](https://github.com/netlify/build/issues/6346)) ([fe2a1b4](https://github.com/netlify/build/commit/fe2a1b4062b3db2ee16f47815d0bec1379ba7b11))
+
 ## [10.0.1](https://github.com/netlify/build/compare/build-info-v10.0.0...build-info-v10.0.1) (2025-05-20)
 
 
