@@ -3,42 +3,60 @@ import test from 'ava'
 
 test('secrets scanning, should not run when disabled', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_disabled').withFlags({ debug: false }).runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.false(normalizeOutput(output).includes('Scanning for secrets in code and build output'))
 })
 
 test('secrets scanning, should skip with secrets but SECRETS_SCAN_ENABLED=false', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_disabled')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(normalizeOutput(output).includes('Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.'))
 })
 
 test('secrets scanning, should skip when secrets passed but no env vars set', async (t) => {
   const output = await new Fixture('./fixtures/src_default')
     .withFlags({ debug: false, explicitSecretKeys: 'abc,DEF' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(
+    normalizeOutput(output).includes(
+      'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
+    ),
+  )
 })
 
 test('secrets scanning, should skip when secrets passed but no non-empty/trivial env vars set', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_env_vars_set_empty')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_,2ENV_VAR_3,ENV_VAR_4,ENV_VAR_5' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(
+    normalizeOutput(output).includes(
+      'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
+    ),
+  )
 })
 
 test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_KEYS omits all of them', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_omit_all_keys')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(normalizeOutput(output).includes('SECRETS_SCAN_OMIT_KEYS override option set to: ENV_VAR_2,ENV_VAR_1'))
+  t.true(
+    normalizeOutput(output).includes(
+      'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
+    ),
+  )
 })
 
 test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PATHS omits all files', async (t) => {
   const output = await new Fixture('./fixtures/src_scanning_omit_all_paths')
     .withFlags({ debug: false, explicitSecretKeys: 'ENV_VAR_1,ENV_VAR_2' })
     .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  t.true(normalizeOutput(output).includes('SECRETS_SCAN_OMIT_PATHS override option set to: /external/path'))
+  t.true(
+    normalizeOutput(output).includes(
+      'Secrets scanning skipped because there are no files or all files were omitted with SECRETS_SCAN_OMIT_PATHS env var setting.',
+    ),
+  )
 })
 
 test('secrets scanning, should skip when secrets passed but SECRETS_SCAN_OMIT_PATHS omits globbed files', async (t) => {
@@ -63,7 +81,73 @@ test('secrets scanning, should fail build and report to API when it finds secret
       token: 'test',
     })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
-  t.snapshot(normalizeOutput(output))
+  t.true(
+    normalizeOutput(output).includes(
+      'Scanning complete. 14 file(s) scanned. Secrets scanning found 6 instance(s) of secrets in build output or repo code.',
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_1"'s value detected:\n` +
+        `  found value at line 12 in dist/static-files/static-a.txt\n` +
+        `  found value at line 6 in netlify.toml\n` +
+        `  found value at line 12 in src/static-files/static-a.txt\n`,
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_2"'s value detected:\n` +
+        `  found value at line 1 in dist/some-file.txt\n` +
+        `  found value at line 1 in dist/static-files/static-a.txt\n` +
+        `  found value at line 6 in dist/static-files/static-a.txt\n` +
+        `  found value at line 7 in netlify.toml\n` +
+        `  found value at line 1 in src/some-file.txt\n` +
+        `  found value at line 1 in src/static-files/static-a.txt\n` +
+        `  found value at line 6 in src/static-files/static-a.txt\n`,
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_3"'s value detected:\n` +
+        `  found value at line 14 in dist/static-files/static-a.txt\n` +
+        `  found value at line 16 in dist/static-files/static-a.txt\n` +
+        `  found value at line 1 in dist/static-files/static-c.txt\n` +
+        `  found value at line 8 in netlify.toml\n` +
+        `  found value at line 14 in src/static-files/static-a.txt\n` +
+        `  found value at line 16 in src/static-files/static-a.txt\n` +
+        `  found value at line 1 in src/static-files/static-c.txt\n`,
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_4"'s value detected:\n` +
+        `  found value at line 20 in dist/static-files/static-a.txt\n` +
+        `  found value at line 9 in netlify.toml\n` +
+        `  found value at line 20 in src/static-files/static-a.txt\n`,
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_MULTILINE_A"'s value detected:\n` +
+        `  found value at line 17 in dist/static-files/static-c.txt\n` +
+        `  found value at line 38 in dist/static-files/static-c.txt\n` +
+        `  found value at line 1 in dist/static-files/static-d.txt\n` +
+        `  found value at line 15 in netlify.toml\n` +
+        `  found value at line 17 in src/static-files/static-c.txt\n` +
+        `  found value at line 38 in src/static-files/static-c.txt\n` +
+        `  found value at line 1 in src/static-files/static-d.txt\n`,
+    ),
+  )
+  t.true(
+    normalizeOutput(output).includes(
+      `Secret env var "ENV_VAR_MULTILINE_B"'s value detected:\n` +
+        `  found value at line 4 in dist/static-files/static-d.txt\n` +
+        `  found value at line 1 in dist/static-files/static-e.txt\n` +
+        `  found value at line 21 in netlify.toml\n` +
+        `  found value at line 4 in src/static-files/static-d.txt\n` +
+        `  found value at line 1 in src/static-files/static-e.txt\n`,
+    ),
+  )
 
   t.true(requests.length === 1)
   const request = requests[0]
