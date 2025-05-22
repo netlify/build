@@ -39,14 +39,66 @@ export async function handleAutoInstallExtensions({
   mode,
   extensionApiBaseUrl,
 }: AutoInstallOptions) {
-  if (!featureFlags?.auto_install_required_extensions || !accountId || !siteId || !token || !cwd || offline) {
+  if (!featureFlags?.auto_install_required_extensions) {
     return integrations
   }
-  const account = accounts?.find((account: any) => account.id === accountId)
-  if (!account) {
+  if (!accountId) {
+    console.error("Failed to auto install extension(s): Missing 'accountId'", {
+      accountId,
+      siteId,
+      cwd,
+      offline,
+      mode,
+    })
     return integrations
   }
+  if (!siteId) {
+    console.error("Failed to auto install extension(s): Missing 'siteId'", {
+      accountId,
+      siteId,
+      cwd,
+      offline,
+      mode,
+    })
+    return integrations
+  }
+  if (!token) {
+    console.error("Failed to auto install extension(s): Missing 'token'", {
+      accountId,
+      siteId,
+      cwd,
+      offline,
+      mode,
+    })
+    return integrations
+  }
+  if (!cwd) {
+    console.error("Failed to auto install extension(s): Missing 'cwd'", {
+      accountId,
+      siteId,
+      cwd,
+      offline,
+      mode,
+    })
+    return integrations
+  }
+  if (offline) {
+    console.error("Failed to auto install extension(s): Running as 'offline'", {
+      accountId,
+      siteId,
+      cwd,
+      offline,
+      mode,
+    })
+    return integrations
+  }
+
   try {
+    const account = accounts?.find((account: any) => account.id === accountId)
+    if (!account) {
+      return integrations
+    }
+
     const packageJson = getPackageJSON(cwd)
     if (
       !packageJson?.dependencies ||
