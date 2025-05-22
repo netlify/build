@@ -95,5 +95,15 @@ describe('listFunctions', () => {
 
       expect(normalizeFiles(fixtureDir, func)).toMatchSnapshot()
     })
+
+    test('listFunctions includes routes when parseISC is true', async () => {
+      const fixtureDir = join(FIXTURES_ESM_DIR, 'v2-api-with-path')
+      const [func] = await listFunctions([fixtureDir], {
+        basePath: fixtureDir,
+        parseISC: true,
+      })
+
+      expect(normalizeFiles(fixtureDir, func)).toMatchSnapshot()
+    })
   })
 })
