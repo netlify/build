@@ -1,0 +1,3 @@
+[build]
+command = 'node generate.mjs'
+publish = "./dist"

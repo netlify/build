@@ -17,6 +17,7 @@ interface ScanArgs {
   keys: string[]
   base: string
   filePaths: string[]
+  useReadLine: boolean
 }
 
 interface MatchResult {
@@ -215,7 +216,13 @@ const omitPathMatches = (relativePath, omitPaths) => {
  * @param scanArgs {ScanArgs} scan options
  * @returns promise with all of the scan results, if any
  */
-export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
+export async function scanFilesForKeyValues({
+  env,
+  keys,
+  filePaths,
+  base,
+  useReadLine,
+}: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
     scannedFilesCount: 0,
@@ -245,6 +252,8 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
 
   let settledPromises: PromiseSettledResult<MatchResult[]>[] = []
 
+  const searchStream = useReadLine ? searchStreamReadline : searchStreamNoReadline
+
   // process the scanning in batches to not run into memory issues by
   // processing all files at the same time.
   while (filePaths.length > 0) {
@@ -269,7 +278,14 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
   return scanResults
 }
 
-const searchStream = (basePath: string, file: string, keyValues: Record<string, string[]>): Promise<MatchResult[]> => {
+/**
+ * Search stream implementation using node:readline
+ */
+const searchStreamReadline = (
+  basePath: string,
+  file: string,
+  keyValues: Record<string, string[]>,
+): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
 
@@ -386,6 +402,143 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
     })
 
     rl.on('close', function () {
+      resolve(matches)
+    })
+  })
+}
+
+/**
+ * Search stream implementation using just read stream that allows to buffer less content
+ */
+const searchStreamNoReadline = (
+  basePath: string,
+  file: string,
+  keyValues: Record<string, string[]>,
+): Promise<MatchResult[]> => {
+  return new Promise((resolve, reject) => {
+    const filePath = path.resolve(basePath, file)
+
+    const inStream = createReadStream(filePath)
+    const matches: MatchResult[] = []
+
+    const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
+
+    const maxValLength = Math.max(0, ...keyVals.map((v) => v.length))
+    if (maxValLength === 0) {
+      // no non-empty values to scan for
+      return matches
+    }
+
+    const minValLength = Math.min(...keyVals.map((v) => v.length))
+
+    function getKeyForValue(val) {
+      let key = ''
+      for (const [secretKeyName, valuePermutations] of Object.entries(keyValues)) {
+        if (valuePermutations.includes(val)) {
+          key = secretKeyName
+        }
+      }
+      return key
+    }
+
+    let buffer = ''
+
+    function getCurrentBufferNewLineIndexes() {
+      const newLinesIndexesInCurrentBuffer = [] as number[]
+      let newLineIndex = -1
+      while ((newLineIndex = buffer.indexOf('\n', newLineIndex + 1)) !== -1) {
+        newLinesIndexesInCurrentBuffer.push(newLineIndex)
+      }
+
+      return newLinesIndexesInCurrentBuffer
+    }
+    let fileIndex = 0
+    let processedLines = 0
+    const foundIndexes = new Map<string, Set<number>>()
+    const foundLines = new Map<string, Set<number>>()
+    inStream.on('data', function (chunk) {
+      const newChunk = chunk.toString()
+
+      buffer += newChunk
+
+      let newLinesIndexesInCurrentBuffer = null as null | number[]
+
+      if (buffer.length > minValLength) {
+        for (const valVariant of keyVals) {
+          let valVariantIndex = -1
+          while ((valVariantIndex = buffer.indexOf(valVariant, valVariantIndex + 1)) !== -1) {
+            const pos = fileIndex + valVariantIndex
+            let foundIndexesForValVariant = foundIndexes.get(valVariant)
+            if (!foundIndexesForValVariant?.has(pos)) {
+              if (newLinesIndexesInCurrentBuffer === null) {
+                newLinesIndexesInCurrentBuffer = getCurrentBufferNewLineIndexes()
+              }
+
+              let lineNumber = processedLines + 1
+              for (const newLineIndex of newLinesIndexesInCurrentBuffer) {
+                if (valVariantIndex > newLineIndex) {
+                  lineNumber++
+                } else {
+                  break
+                }
+              }
+
+              let foundLinesForValVariant = foundLines.get(valVariant)
+              if (!foundLinesForValVariant?.has(lineNumber)) {
+                matches.push({
+                  file,
+                  lineNumber,
+                  key: getKeyForValue(valVariant),
+                })
+
+                if (!foundLinesForValVariant) {
+                  foundLinesForValVariant = new Set<number>()
+                  foundLines.set(valVariant, foundLinesForValVariant)
+                }
+                foundLinesForValVariant.add(lineNumber)
+              }
+
+              if (!foundIndexesForValVariant) {
+                foundIndexesForValVariant = new Set<number>()
+                foundIndexes.set(valVariant, foundIndexesForValVariant)
+              }
+              foundIndexesForValVariant.add(pos)
+            }
+          }
+        }
+      }
+
+      if (buffer.length > maxValLength) {
+        const lengthDiff = buffer.length - maxValLength
+        fileIndex += lengthDiff
+        if (newLinesIndexesInCurrentBuffer === null) {
+          newLinesIndexesInCurrentBuffer = getCurrentBufferNewLineIndexes()
+        }
+
+        // advanced processed lines
+        for (const newLineIndex of newLinesIndexesInCurrentBuffer) {
+          if (newLineIndex < lengthDiff) {
+            processedLines++
+          } else {
+            break
+          }
+        }
+
+        // Keep the last part of the buffer to handle split values across chunks
+        buffer = buffer.slice(-maxValLength)
+      }
+    })
+
+    inStream.on('error', function (error: any) {
+      if (error?.code === 'EISDIR') {
+        // file path is a directory - do nothing
+        resolve(matches)
+      } else {
+        reject(error)
+      }
+    })
+
+    inStream.on('close', function () {
       resolve(matches)
     })
   })
