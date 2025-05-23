@@ -1,6 +1,7 @@
 import type { ReadStream } from 'node:fs'
 
 import type { operations } from '@netlify/open-api'
+// TODO: remove once we support native fetch
 import type { RequestInit } from 'node-fetch'
 
 /**
