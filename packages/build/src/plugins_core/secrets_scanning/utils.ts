@@ -5,6 +5,8 @@ import { createInterface } from 'node:readline'
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
 
+import { LIKELY_SECRET_PREFIXES, SAFE_LISTED_VALUES } from './secret_prefixes.js'
+
 export interface ScanResults {
   matches: MatchResult[]
   scannedFilesCount: number
@@ -15,12 +17,21 @@ interface ScanArgs {
   keys: string[]
   base: string
   filePaths: string[]
+  enhancedScanning?: boolean
+  omitValuesFromEnhancedScan?: unknown[]
 }
 
 interface MatchResult {
   lineNumber: number
   key: string
   file: string
+  enhancedMatch: boolean
+}
+
+export type SecretScanResult = {
+  scannedFilesCount: number
+  secretsScanMatches: MatchResult[]
+  enhancedSecretsScanMatches: MatchResult[]
 }
 
 /**
@@ -36,6 +47,65 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
 }
 
 /**
+ * Determine if the user disabled enhanced scanning via env var
+ * @param env current envars
+ * @returns
+ */
+export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): boolean {
+  if (env.ENHANCED_SECRETS_SCAN_ENABLED === false || env.ENHANCED_SECRETS_SCAN_ENABLED === 'false') {
+    return false
+  }
+  return true
+}
+
+export function getStringArrayFromEnvValue(env: Record<string, unknown>, envVarName: string): string[] {
+  if (typeof env[envVarName] !== 'string') {
+    return []
+  }
+  const omitKeys = env[envVarName]
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return omitKeys
+}
+
+export function getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(env: Record<string, unknown>): unknown[] {
+  return getStringArrayFromEnvValue(env, 'ENHANCED_SECRETS_SCAN_OMIT_VALUES')
+}
+
+function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
+  const omitKeys = getStringArrayFromEnvValue(env, 'SECRETS_SCAN_OMIT_KEYS')
+  return envKeys.filter((key) => !omitKeys.includes(key))
+}
+
+/**
+ * Trivial values are values that are:
+ *  - empty or short strings
+ *  - string forms of booleans
+ *  - booleans
+ *  - numbers or objects with fewer than 4 chars
+ */
+function isValueTrivial(val): boolean {
+  if (typeof val === 'string') {
+    // string forms of booleans
+    if (val === 'true' || val === 'false') {
+      return true
+    }
+    // trivial values are empty or short strings
+    return val.trim().length < 4
+  }
+  if (typeof val === 'boolean') {
+    // booleans are always considered trivial
+    return true
+  }
+  if (typeof val === 'number' || typeof val === 'object') {
+    return JSON.stringify(val).length < 4
+  }
+
+  return !val
+}
+
+/**
  * given the explicit secret keys and env vars, return the list of secret keys which have non-empty or non-trivial values. This
  * will also filter out keys passed in the SECRETS_SCAN_OMIT_KEYS env var.
  *
@@ -48,36 +118,86 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
  * @returns string[]
  */
 export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys: string[]): string[] {
-  let omitKeys: string[] = []
-  if (typeof env.SECRETS_SCAN_OMIT_KEYS === 'string') {
-    omitKeys = env.SECRETS_SCAN_OMIT_KEYS.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
+  const filteredSecretKeys = filterOmittedKeys(env, secretKeys)
+  return filteredSecretKeys.filter((key) => !isValueTrivial(env[key]))
+}
+
+// Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
+const MIN_CHARS_AFTER_PREFIX = 12
+
+// Escape special regex characters (like $, *, +, etc) in prefixes so they're treated as literal characters
+const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
+
+// Build regex pattern for matching secrets with various delimiters and quotes:
+// (?:["'`]|^|[=:,]) - match either quotes, start of line, or delimiters (=:,) at the start
+// Named capturing groups:
+//   - <token>: captures the entire secret value including its prefix
+//   - <prefix>: captures just the prefix part (e.g. 'aws_', 'github_pat_')
+// (?:${prefixMatchingRegex}) - non-capturing group containing our escaped prefixes (e.g. aws_|github_pat_|etc)
+// [^ "'`=:,]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars after the prefix
+// [^ "'`=:,]*? - lazily match any additional chars that aren't quotes/delimiters
+// (?:["'`]|[ =:,]|$) - end with either quotes, delimiters, whitespace, or end of line
+// gi - global and case insensitive flags
+// Note: Using the global flag (g) means this regex object maintains state between executions.
+// We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
+const likelySecretRegex = new RegExp(
+  `(?:["'\`]|^|[=:,]) *(?<token>(?<prefix>${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?)(?:["'\`]|[ =:,]|$)`,
+  'gi',
+)
+
+/**
+ * Checks a line of text for likely secrets based on known prefixes and patterns.
+ * The function works by:
+ * 1. Splitting the line into tokens using quotes, whitespace, equals signs, colons, and commas as delimiters
+ * 2. For each token, checking if it matches our secret pattern:
+ *    - Must start (^) with one of our known prefixes (e.g. aws_, github_pat_, etc)
+ *    - Must be followed by at least MIN_CHARS_AFTER_PREFIX non-whitespace characters
+ *    - Must extend to the end ($) of the token
+ *
+ * For example, given the line: secretKey='aws_123456789012345678'
+ * 1. It's split into tokens: ['secretKey', 'aws_123456789012345678']
+ * 2. Each token is checked against the regex pattern:
+ *    - 'secretKey' doesn't match (doesn't start with a known prefix)
+ *    - 'aws_123456789012345678' matches (starts with 'aws_' and has sufficient length)
+ *
+ * @param line The line of text to check
+ * @param file The file path where this line was found
+ * @param lineNumber The line number in the file
+ * @param omitValuesFromEnhancedScan Optional array of values to exclude from matching
+ * @returns Array of matches found in the line
+ */
+export function findLikelySecrets({
+  line,
+  file,
+  lineNumber,
+  omitValuesFromEnhancedScan = [],
+}: {
+  line: string
+  file: string
+  lineNumber: number
+  omitValuesFromEnhancedScan?: unknown[]
+}): MatchResult[] {
+  if (!line) return []
+
+  const matches: MatchResult[] = []
+  let match: RegExpExecArray | null
+  const allOmittedValues = [...omitValuesFromEnhancedScan, ...SAFE_LISTED_VALUES]
+
+  while ((match = likelySecretRegex.exec(line)) !== null) {
+    const token = match.groups?.token
+    const prefix = match.groups?.prefix
+    if (!token || !prefix || allOmittedValues.includes(token)) {
+      continue
+    }
+    matches.push({
+      file,
+      lineNumber,
+      key: prefix,
+      enhancedMatch: true,
+    })
   }
 
-  return secretKeys.filter((key) => {
-    if (omitKeys.includes(key)) {
-      return false
-    }
-
-    const val = env[key]
-    if (typeof val === 'string') {
-      // string forms of booleans
-      if (val === 'true' || val === 'false') {
-        return false
-      }
-
-      // non-trivial/non-empty values only
-      return val.trim().length > 4
-    } else if (typeof val === 'boolean') {
-      // booleans are trivial values
-      return false
-    } else if (typeof val === 'number' || typeof val === 'object') {
-      return JSON.stringify(val).length > 4
-    }
-
-    return !!val
-  })
+  return matches
 }
 
 /**
@@ -152,7 +272,14 @@ const omitPathMatches = (relativePath, omitPaths) => {
  * @param scanArgs {ScanArgs} scan options
  * @returns promise with all of the scan results, if any
  */
-export async function scanFilesForKeyValues({ env, keys, filePaths, base }: ScanArgs): Promise<ScanResults> {
+export async function scanFilesForKeyValues({
+  env,
+  keys,
+  filePaths,
+  base,
+  enhancedScanning,
+  omitValuesFromEnhancedScan = [],
+}: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
     scannedFilesCount: 0,
@@ -191,7 +318,7 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
     settledPromises = settledPromises.concat(
       await Promise.allSettled(
         batch.map((file) => {
-          return searchStream(base, file, keyValues)
+          return searchStream({ basePath: base, file, keyValues, enhancedScanning, omitValuesFromEnhancedScan })
         }),
       ),
     )
@@ -206,7 +333,19 @@ export async function scanFilesForKeyValues({ env, keys, filePaths, base }: Scan
   return scanResults
 }
 
-const searchStream = (basePath: string, file: string, keyValues: Record<string, string[]>): Promise<MatchResult[]> => {
+const searchStream = ({
+  basePath,
+  file,
+  keyValues,
+  enhancedScanning,
+  omitValuesFromEnhancedScan = [],
+}: {
+  basePath: string
+  file: string
+  keyValues: Record<string, string[]>
+  enhancedScanning?: boolean
+  omitValuesFromEnhancedScan?: unknown[]
+}): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
 
@@ -242,6 +381,9 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
       // and match what an IDE would show for a line number.
       lineNumber++
       if (typeof line === 'string') {
+        if (enhancedScanning) {
+          matches.push(...findLikelySecrets({ line, file, lineNumber, omitValuesFromEnhancedScan }))
+        }
         if (maxMultiLineCount > 1) {
           lines.push(line)
         }
@@ -259,6 +401,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
               file,
               lineNumber,
               key: getKeyForValue(valVariant),
+              enhancedMatch: false,
             })
             return
           }
@@ -305,6 +448,7 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
                 file,
                 lineNumber: lineNumber - lines.length + 1,
                 key: getKeyForValue(valVariant),
+                enhancedMatch: false,
               })
               return
             }
@@ -330,43 +474,63 @@ const searchStream = (basePath: string, file: string, keyValues: Record<string, 
 
 /**
  * ScanResults are all of the finds for all keys and their disparate locations. Scanning is
- * async in streams so order can change a lot. This function groups the results into an object
- * where the keys are the env var keys and the values are all match results for that key
+ * async in streams so order can change a lot. Some matches are the result of an env var explictly being marked as secret,
+ * while others are part of the enhanced secret scan.
+ *
+ * This function groups the results into an object where the results are separate into the secretMatches and enhancedSecretMatches,
+ * their value being an object where the keys are the env var keys and the values are all match results for that key.
  *
  * @param scanResults
  * @returns
  */
-export function groupScanResultsByKey(scanResults: ScanResults): { [key: string]: MatchResult[] } {
-  const matchesByKeys: { [key: string]: MatchResult[] } = {}
+export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
+  secretMatches: { [key: string]: MatchResult[] }
+  enhancedSecretMatches: { [key: string]: MatchResult[] }
+} {
+  const secretMatchesByKeys: { [key: string]: MatchResult[] } = {}
+  const enhancedSecretMatchesByKeys: { [key: string]: MatchResult[] } = {}
   scanResults.matches.forEach((matchResult) => {
-    if (!matchesByKeys[matchResult.key]) {
-      matchesByKeys[matchResult.key] = []
+    if (matchResult.enhancedMatch) {
+      if (!enhancedSecretMatchesByKeys[matchResult.key]) {
+        enhancedSecretMatchesByKeys[matchResult.key] = []
+      }
+      enhancedSecretMatchesByKeys[matchResult.key].push(matchResult)
+    } else {
+      if (!secretMatchesByKeys[matchResult.key]) {
+        secretMatchesByKeys[matchResult.key] = []
+      }
+      secretMatchesByKeys[matchResult.key].push(matchResult)
     }
-    matchesByKeys[matchResult.key].push(matchResult)
   })
 
   // sort results to get a consistent output and logically ordered match results
-  Object.keys(matchesByKeys).forEach((key) => {
-    matchesByKeys[key].sort((a, b) => {
-      // sort by file name first
-      if (a.file > b.file) {
-        return 1
-      }
-
-      // sort by line number second
-      if (a.file === b.file) {
-        if (a.lineNumber > b.lineNumber) {
+  const sortMatches = (matchesByKeys: { [key: string]: MatchResult[] }) => {
+    Object.keys(matchesByKeys).forEach((key) => {
+      matchesByKeys[key].sort((a, b) => {
+        // sort by file name first
+        if (a.file > b.file) {
           return 1
         }
-        if (a.lineNumber === b.lineNumber) {
-          return 0
+
+        // sort by line number second
+        if (a.file === b.file) {
+          if (a.lineNumber > b.lineNumber) {
+            return 1
+          }
+          if (a.lineNumber === b.lineNumber) {
+            return 0
+          }
+          return -1
         }
         return -1
-      }
-      return -1
+      })
     })
-  })
-  return matchesByKeys
+  }
+
+  sortMatches(secretMatchesByKeys)
+  sortMatches(enhancedSecretMatchesByKeys)
+
+  return { secretMatches: secretMatchesByKeys, enhancedSecretMatches: enhancedSecretMatchesByKeys }
 }
 
 function isMultiLineVal(v) {

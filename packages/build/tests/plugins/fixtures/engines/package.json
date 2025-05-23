@@ -6,6 +6,6 @@
   "license": "MIT",
   "repository": "test",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=99.0.0"
   }
 }

@@ -1,5 +1,23 @@
 # Changelog
 
+## [6.0.1](https://github.com/netlify/build/compare/run-utils-v6.0.0...run-utils-v6.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+## [6.0.0](https://github.com/netlify/build/compare/run-utils-v5.2.0...run-utils-v6.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
 ## [5.2.0](https://github.com/netlify/build/compare/run-utils-v5.1.1...run-utils-v5.2.0) (2024-12-11)
 
 

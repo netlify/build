@@ -95,7 +95,8 @@ Current core steps are:
   [build command](https://github.com/netlify/build/blob/9b261a6182e1ba6853966bd8d0bde9064209af7d/packages/build/src/plugins_core/build_command.js#L11).
 - [Functions bundling](https://github.com/netlify/build/blob/9b261a6182e1ba6853966bd8d0bde9064209af7d/packages/build/src/plugins_core/functions/index.js#L142),
   which uses [`zip-it-and-ship-it`](https://github.com/netlify/zip-it-and-ship-it).
-- Secrets Scanning only runs when the account passes non-empty explicitSecretKeys.
+- Secrets Scanning only runs when the account passes non-empty explicitSecretKeys, or when the account has
+  enhancedSecretScan enabled (only applies to certain plan types).
 - [Site deploy](https://github.com/netlify/build/blob/9b261a6182e1ba6853966bd8d0bde9064209af7d/packages/build/src/plugins_core/deploy/index.js#L66):
   - This sends a network request to the buildbot to initiate site deploy.
   - When the buildbot

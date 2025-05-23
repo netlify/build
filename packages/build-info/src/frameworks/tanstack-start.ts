@@ -3,7 +3,7 @@ import { BaseFramework, Category, Framework } from './framework.js'
 export class TanStackStart extends BaseFramework implements Framework {
   readonly id = 'tanstack-start'
   name = 'TanStack Start'
-  npmDependencies = ['@tanstack/start']
+  npmDependencies = ['@tanstack/start', '@tanstack/react-start', '@tanstack/solid-start']
   category = Category.SSG
 
   dev = {

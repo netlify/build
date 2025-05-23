@@ -172,7 +172,7 @@ export class Project {
   }
 
   /** retrieves the root package.json file */
-  async getRootPackageJSON(): Promise<PackageJson> {
+  async getRootPackageJSON(): Promise<Partial<PackageJson>> {
     // get the most upper json file
     const rootJSONPath = (
       await this.fs.findUpMultiple('package.json', { cwd: this.baseDirectory, stopAt: this.root })
@@ -185,17 +185,14 @@ export class Project {
   }
 
   /** Retrieves the package.json and if one found with it's pkgPath */
-  async getPackageJSON(startDirectory?: string): Promise<PackageJson & { pkgPath: string | null }> {
+  async getPackageJSON(startDirectory?: string): Promise<Partial<PackageJson> & { pkgPath: string | null }> {
     const pkgPath = await this.fs.findUp('package.json', {
       cwd: startDirectory || this.baseDirectory,
       stopAt: this.root,
     })
     if (pkgPath) {
       const json = await this.fs.readJSON<PackageJson>(pkgPath)
-      return {
-        ...json,
-        pkgPath,
-      }
+      return Object.assign(json, { pkgPath })
     }
     return { pkgPath: null }
   }

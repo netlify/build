@@ -7,20 +7,33 @@ import {
   logSecretsScanSkipMessage,
   logSecretsScanSuccessMessage,
 } from '../../log/messages/core_steps.js'
+import { reportValidations } from '../../status/validations.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
 import {
   ScanResults,
+  SecretScanResult,
   getFilePathsToScan,
+  getOmitValuesFromEnhancedScanForEnhancedScanFromEnv,
   getSecretKeysToScanFor,
-  groupScanResultsByKey,
+  groupScanResultsByKeyAndScanType,
+  isEnhancedSecretsScanningEnabled,
   isSecretsScanningEnabled,
   scanFilesForKeyValues,
 } from './utils.js'
 
 const tracer = trace.getTracer('secrets-scanning')
 
-const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConfig, explicitSecretKeys, systemLog }) {
+const coreStep: CoreStepFunction = async function ({
+  buildDir,
+  logs,
+  netlifyConfig,
+  explicitSecretKeys,
+  enhancedSecretScan,
+  systemLog,
+  deployId,
+  api,
+}) {
   const stepResults = {}
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
@@ -40,10 +53,27 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
   if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
     log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
   }
+  const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
+  if (enhancedSecretScan && !enhancedScanningEnabledInEnv) {
+    logSecretsScanSkipMessage(
+      logs,
+      'Enhanced secrets detection disabled via ENHANCED_SECRETS_SCAN_ENABLED flag set to false.',
+    )
+  }
+  if (
+    enhancedSecretScan &&
+    enhancedScanningEnabledInEnv &&
+    envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES'] !== undefined
+  ) {
+    log(
+      logs,
+      `ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set to: ${envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES']}\n`,
+    )
+  }
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
-  if (keysToSearchFor.length === 0) {
+  if (keysToSearchFor.length === 0 && !enhancedSecretScan) {
     logSecretsScanSkipMessage(
       logs,
       'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
@@ -65,6 +95,8 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
   }
 
   let scanResults: ScanResults | undefined
+  let secretMatches: SecretScanResult['secretsScanMatches'] | undefined
+  let enhancedSecretMatches: SecretScanResult['enhancedSecretsScanMatches'] | undefined
 
   await tracer.startActiveSpan(
     'scanning-files',
@@ -75,13 +107,22 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
         keys: keysToSearchFor,
         base: buildDir as string,
         filePaths,
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
+        omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
       })
 
+      secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
+      enhancedSecretMatches = scanResults.matches.filter((match) => match.enhancedMatch)
+
       const attributesForLogsAndSpan = {
-        secretsScanFoundSecrets: scanResults.matches.length > 0,
-        secretsScanMatchesCount: scanResults.matches.length,
+        secretsScanFoundSecrets: secretMatches.length > 0,
+        enhancedSecretsScanFoundSecrets: enhancedSecretMatches.length > 0,
+        secretsScanMatchesCount: secretMatches.length,
+        enhancedSecretsScanMatchesCount: enhancedSecretMatches.length,
         secretsFilesCount: scanResults.scannedFilesCount,
         keysToSearchFor,
+        enhancedPrefixMatches: enhancedSecretMatches.length ? enhancedSecretMatches.map((match) => match.key) : [],
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
       }
 
       systemLog?.(attributesForLogsAndSpan)
@@ -89,6 +130,15 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
       span.end()
     },
   )
+
+  if (deployId !== '0') {
+    const secretScanResult: SecretScanResult = {
+      scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
+      secretsScanMatches: secretMatches ?? [],
+      enhancedSecretsScanMatches: enhancedSecretMatches ?? [],
+    }
+    reportValidations({ api, secretScanResult, deployId, systemLog })
+  }
 
   if (!scanResults || scanResults.matches.length === 0) {
     logSecretsScanSuccessMessage(
@@ -100,18 +150,27 @@ const coreStep: CoreStepFunction = async function ({ buildDir, logs, netlifyConf
 
   // at this point we have found matching secrets
   // Output the results and fail the build
-
-  logSecretsScanFailBuildMessage({ logs, scanResults, groupedResults: groupScanResultsByKey(scanResults) })
+  logSecretsScanFailBuildMessage({
+    logs,
+    scanResults,
+    groupedResults: groupScanResultsByKeyAndScanType(scanResults),
+  })
 
   const error = new Error(`Secrets scanning found secrets in build.`)
   addErrorInfo(error, { type: 'secretScanningFoundSecrets' })
   throw error
 }
 
-// We run this core step if the build was run with explicit secret keys. This
-// is passed from BB to build so only accounts that are allowed to have explicit
-// secrets and actually have them will have them.
-const hasExplicitSecretsKeys: CoreStepCondition = function ({ explicitSecretKeys }): boolean {
+// We run this core step if the build was run with explicit secret keys or if enhanced secret scanning is enabled.
+// This is passed from BB to build so only accounts that are allowed to have explicit
+// secrets and actually have them / have enhanced secret scanning enabled will have them.
+const hasExplicitSecretsKeysOrEnhancedScanningEnabled: CoreStepCondition = function ({
+  explicitSecretKeys,
+  enhancedSecretScan,
+}): boolean {
+  if (enhancedSecretScan) {
+    return true
+  }
   if (typeof explicitSecretKeys !== 'string') {
     return false
   }
@@ -125,5 +184,5 @@ export const scanForSecrets: CoreStep = {
   coreStepId: 'secrets_scanning',
   coreStepName: 'Secrets scanning',
   coreStepDescription: () => 'Scanning for secrets in code and build output.',
-  condition: hasExplicitSecretsKeys,
+  condition: hasExplicitSecretsKeysOrEnhancedScanningEnabled,
 }

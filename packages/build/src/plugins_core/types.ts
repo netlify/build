@@ -1,3 +1,5 @@
+import { type DynamicMethods } from 'packages/js-client/lib/types.js'
+
 import { NetlifyPluginConstants } from '../core/constants.js'
 import { BufferedLogs } from '../log/logger.js'
 import { NetlifyConfig } from '../types/config/netlify_config.js'
@@ -15,7 +17,7 @@ export type CoreStepFunctionArgs = {
    * `undefined` if none is set.
    */
   packagePath?: string
-  deployId?: string
+  deployId: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
   quiet?: boolean
@@ -27,8 +29,10 @@ export type CoreStepFunctionArgs = {
 
   netlifyConfig: NetlifyConfig
   explicitSecretKeys: $TSFixme
+  enhancedSecretScan: boolean
 
   buildbotServerSocket: $TSFixme
+  api: DynamicMethods
 }
 
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>

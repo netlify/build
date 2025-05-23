@@ -87,20 +87,15 @@ test.serial('Blobs upload step uploads files to deploy store (legacy API)', asyn
   t.true(success)
   t.is(t.context.blobRequests.set.length, 6)
 
-  const regionRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const defaultRegionRequests = t.context.blobRequests.set.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
-    return url.searchParams.has('region')
+    return url.searchParams.get('region') === 'us-east-2'
   })
 
-  t.is(regionRequests.length, 0)
+  t.is(defaultRegionRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -125,20 +120,15 @@ test.serial('Blobs upload step uploads files to deploy store (legacy deploy conf
   t.true(success)
   t.is(t.context.blobRequests.set.length, 6)
 
-  const regionRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const regionAutoRequests = t.context.blobRequests.set.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
-    return url.searchParams.has('region')
+    return url.searchParams.get('region') === 'auto'
   })
 
-  t.is(regionRequests.length, 3)
+  t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -175,11 +165,6 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
   t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -210,8 +195,8 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
   t.is(severityCode, 4)
 })
 
-// the monorepo works with pnpm which is not available on node 14 tests
-if (semver.gte(nodeVersion, '16.9.0')) {
+// the monorepo works with pnpm which is not always available
+if (semver.gte(nodeVersion, '18.19.0')) {
   test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
     const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
     const { success } = await fixture
@@ -222,11 +207,6 @@ if (semver.gte(nodeVersion, '16.9.0')) {
     t.is(t.context.blobRequests.set.length, 6)
 
     const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-    if (semver.lt(nodeVersion, '18.0.0')) {
-      const nodeFetch = await import('node-fetch')
-      storeOpts.fetch = nodeFetch.default
-    }
-
     const store = getDeployStore(storeOpts)
 
     const blob1 = await store.getWithMetadata('something.txt')

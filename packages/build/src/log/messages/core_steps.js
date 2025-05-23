@@ -129,15 +129,20 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
 }
 
 export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
+  const { secretMatches, enhancedSecretMatches } = groupedResults
+  const secretMatchesKeys = Object.keys(secretMatches)
+  const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
+
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${scanResults.matches.length} instance(s) of secrets in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
-  Object.keys(groupedResults).forEach((key) => {
+  // Explicit secret matches
+  secretMatchesKeys.forEach((key) => {
     logError(logs, `Secret env var "${key}"'s value detected:`)
 
-    groupedResults[key]
+    secretMatches[key]
       .sort((a, b) => {
         return a.file > b.file ? 0 : 1
       })
@@ -146,16 +151,43 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
       })
   })
 
+  if (secretMatchesKeys.length) {
+    logError(
+      logs,
+      `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
+    )
+    logError(
+      logs,
+      `\nIf these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
+    )
+  }
+
+  // Likely secret matches from enhanced scan
+  enhancedSecretMatchesKeys.forEach((key, index) => {
+    logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
+
+    enhancedSecretMatches[key]
+      .sort((a, b) => {
+        return a.file > b.file ? 0 : 1
+      })
+      .forEach(({ lineNumber, file }) => {
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
+
+  if (enhancedSecretMatchesKeys.length) {
+    logError(
+      logs,
+      `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
+    )
+    logError(
+      logs,
+      `\nIf these are expected, use ENHANCED_SECRETS_SCAN_OMIT_VALUES, or ENHANCED_SECRETS_SCAN_ENABLED to prevent detecting.`,
+    )
+  }
+
   logError(
     logs,
-    `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
-  )
-  logError(
-    logs,
-    `If these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
-  )
-  logError(
-    logs,
-    `For more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`,
+    `\nFor more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`,
   )
 }

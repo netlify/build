@@ -26,7 +26,7 @@ export const logLoadingIntegration = (logs, pluginOptions) => {
     return
   }
 
-  logSubHeader(logs, 'Loading integrations')
+  logSubHeader(logs, 'Loading extensions')
   logArray(logs, loadingPlugins)
 }
 

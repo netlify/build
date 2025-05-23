@@ -105,6 +105,429 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.2.0](https://github.com/netlify/build/compare/build-v33.1.5...build-v33.2.0) (2025-05-23)
+
+
+### Features
+
+* Enhanced secret scan no longer relies on env vars ([#6333](https://github.com/netlify/build/issues/6333)) ([86dead5](https://github.com/netlify/build/commit/86dead5ca2f78f27006bb44d22e72641b2f23940))
+* safelist common string in react proptypes from secret detection ([#6375](https://github.com/netlify/build/issues/6375)) ([4fd7f7c](https://github.com/netlify/build/commit/4fd7f7c3f7a0b4fcd893928a83ef083b67f3e4db))
+
+
+### Bug Fixes
+
+* drop node-fetch from build package ([#6377](https://github.com/netlify/build/issues/6377)) ([3c28af0](https://github.com/netlify/build/commit/3c28af05d66997f257f650f3841981f16c104a44))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.5 to ^23.0.6
+
+## [33.1.5](https://github.com/netlify/build/compare/build-v33.1.4...build-v33.1.5) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.4 to ^23.0.5
+
+## [33.1.4](https://github.com/netlify/build/compare/build-v33.1.3...build-v33.1.4) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency path-type to v6 ([#6358](https://github.com/netlify/build/issues/6358)) ([77557fe](https://github.com/netlify/build/commit/77557fe197c20d1d5597a8c70d92944f22515293))
+* **deps:** update dependency pretty-ms to v9 ([#6359](https://github.com/netlify/build/issues/6359)) ([25ec5ef](https://github.com/netlify/build/commit/25ec5ef7e982ef93166ef2cb8a61871470210008))
+* **deps:** update dependency readdirp to v4 ([#6335](https://github.com/netlify/build/issues/6335)) ([bbc39d2](https://github.com/netlify/build/commit/bbc39d2c665b68dcbfaa4b32b783d38fa517c413))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/config bumped from ^23.0.3 to ^23.0.4
+    * @netlify/functions-utils bumped from ^6.0.5 to ^6.0.6
+    * @netlify/zip-it-and-ship-it bumped from 12.0.3 to 12.1.0
+
+## [33.1.3](https://github.com/netlify/build/compare/build-v33.1.2...build-v33.1.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ansi-escapes to v7 ([#6336](https://github.com/netlify/build/issues/6336)) ([bf11542](https://github.com/netlify/build/commit/bf11542cdc3d8873043637d384ea80f2830e2c15))
+* **deps:** update dependency figures to v6 ([#6339](https://github.com/netlify/build/issues/6339)) ([8936cee](https://github.com/netlify/build/commit/8936cee7a6c7619f2e8ea6e3e0bf9de52e5ded04))
+* **deps:** update dependency filter-obj to v6 ([#6340](https://github.com/netlify/build/issues/6340)) ([cad4c01](https://github.com/netlify/build/commit/cad4c01213811d8663e1b137da522a0380f01254))
+* **deps:** update dependency pkg-dir to v8 ([#6343](https://github.com/netlify/build/issues/6343)) ([d708907](https://github.com/netlify/build/commit/d708907106bdf80a46da99d06f269a2aa76971c8))
+* **deps:** update dependency terminal-link to v4 ([#6344](https://github.com/netlify/build/issues/6344)) ([ef1e151](https://github.com/netlify/build/commit/ef1e1510cf8a85082cca24c096e544094ff9f8c8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.2 to ^23.0.3
+    * @netlify/framework-info bumped from ^10.0.3 to ^10.0.4
+    * @netlify/functions-utils bumped from ^6.0.4 to ^6.0.5
+    * @netlify/zip-it-and-ship-it bumped from 12.0.2 to 12.0.3
+
+## [33.1.2](https://github.com/netlify/build/compare/build-v33.1.1...build-v33.1.2) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency os-name to v6 ([#6342](https://github.com/netlify/build/issues/6342)) ([6aa984d](https://github.com/netlify/build/commit/6aa984d9a2049ccbec51f2b9db7c68b693037710))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.1 to ^23.0.2
+    * @netlify/edge-bundler bumped from 14.0.3 to 14.0.4
+    * @netlify/framework-info bumped from ^10.0.2 to ^10.0.3
+    * @netlify/functions-utils bumped from ^6.0.3 to ^6.0.4
+    * @netlify/git-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/run-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/zip-it-and-ship-it bumped from 12.0.1 to 12.0.2
+
+## [33.1.1](https://github.com/netlify/build/compare/build-v33.1.0...build-v33.1.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency string-width to v7 ([#6316](https://github.com/netlify/build/issues/6316)) ([9a3ab1e](https://github.com/netlify/build/commit/9a3ab1e6796ed39ad634b46f2f1da499da4a1586))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/edge-bundler bumped from 14.0.2 to 14.0.3
+    * @netlify/framework-info bumped from ^10.0.1 to ^10.0.2
+    * @netlify/functions-utils bumped from ^6.0.2 to ^6.0.3
+    * @netlify/zip-it-and-ship-it bumped from 12.0.0 to 12.0.1
+
+## [33.1.0](https://github.com/netlify/build/compare/build-v33.0.1...build-v33.1.0) (2025-05-16)
+
+
+### Features
+
+* expand secret prefixes ([#6319](https://github.com/netlify/build/issues/6319)) ([6c23028](https://github.com/netlify/build/commit/6c230280d5cfe80885cfc6e78ee9e3ecc61b9d78))
+
+
+### Bug Fixes
+
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#6314](https://github.com/netlify/build/issues/6314)) ([16f548a](https://github.com/netlify/build/commit/16f548a99da7a864fb4057f30b3118c01b542bb7))
+* **deps:** update dependency supports-color to v10 ([#6315](https://github.com/netlify/build/issues/6315)) ([77d7c1c](https://github.com/netlify/build/commit/77d7c1c463fdd47d76a982883edea81b3a56671f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.0.1 to 14.0.2
+    * @netlify/framework-info bumped from ^10.0.0 to ^10.0.1
+    * @netlify/functions-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/zip-it-and-ship-it bumped from 11.0.1 to 12.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 to ^2.0.1
+
+## [33.0.1](https://github.com/netlify/build/compare/build-v33.0.0...build-v33.0.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v11 ([#6309](https://github.com/netlify/build/issues/6309)) ([d6471d0](https://github.com/netlify/build/commit/d6471d0a05a9d3b49b8b5a0ee500279d72ab3c92))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.0 to ^23.0.1
+    * @netlify/edge-bundler bumped from 14.0.0 to 14.0.1
+    * @netlify/functions-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/zip-it-and-ship-it bumped from 11.0.0 to 11.0.1
+
+## [33.0.0](https://github.com/netlify/build/compare/build-v32.2.0...build-v33.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/config bumped from ^22.2.0 to ^23.0.0
+    * @netlify/edge-bundler bumped from 13.0.3 to 14.0.0
+    * @netlify/framework-info bumped from ^9.9.3 to ^10.0.0
+    * @netlify/functions-utils bumped from ^5.3.18 to ^6.0.0
+    * @netlify/git-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/opentelemetry-utils bumped from ^1.3.1 to ^2.0.0
+    * @netlify/run-utils bumped from ^5.2.0 to ^6.0.0
+    * @netlify/zip-it-and-ship-it bumped from 10.1.1 to 11.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^4.0.0 to ^5.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^2.0.0
+
+## [32.2.0](https://github.com/netlify/build/compare/build-v32.1.4...build-v32.2.0) (2025-05-13)
+
+
+### Features
+
+* introduce enhanced secret scanning ([#6230](https://github.com/netlify/build/issues/6230)) ([cd41d3b](https://github.com/netlify/build/commit/cd41d3b1e50587c63d95380af85d43923a548214))
+
+## [32.1.4](https://github.com/netlify/build/compare/build-v32.1.3...build-v32.1.4) (2025-05-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^22.1.0 to ^22.2.0
+
+## [32.1.3](https://github.com/netlify/build/compare/build-v32.1.2...build-v32.1.3) (2025-05-09)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^22.0.1 to ^22.1.0
+
+## [32.1.2](https://github.com/netlify/build/compare/build-v32.1.1...build-v32.1.2) (2025-05-09)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.17 to ^5.3.18
+    * @netlify/zip-it-and-ship-it bumped from 10.1.0 to 10.1.1
+
+## [32.1.1](https://github.com/netlify/build/compare/build-v32.1.0...build-v32.1.1) (2025-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 13.0.2 to 13.0.3
+    * @netlify/functions-utils bumped from ^5.3.16 to ^5.3.17
+    * @netlify/zip-it-and-ship-it bumped from 10.0.7 to 10.1.0
+
+## [32.1.0](https://github.com/netlify/build/compare/build-v32.0.1...build-v32.1.0) (2025-04-23)
+
+
+### Features
+
+* send deploy validations report on secret scan ([#6205](https://github.com/netlify/build/issues/6205)) ([5505efb](https://github.com/netlify/build/commit/5505efb8f655dd3f11a7f173e9bdab7a717ff1d9))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^8.2.0 ([#6203](https://github.com/netlify/build/issues/6203)) ([7ca6d21](https://github.com/netlify/build/commit/7ca6d21e20e041f7e1849707005740c23136ef48))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^22.0.0 to ^22.0.1
+
+## [32.0.1](https://github.com/netlify/build/compare/build-v32.0.0...build-v32.0.1) (2025-04-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.15 to ^5.3.16
+    * @netlify/zip-it-and-ship-it bumped from 10.0.6 to 10.0.7
+
+## [32.0.0](https://github.com/netlify/build/compare/build-v31.0.2...build-v32.0.0) (2025-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193))
+
+### Bug Fixes
+
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193)) ([c4f7caa](https://github.com/netlify/build/commit/c4f7caa2d21380f5d1f6cc8159aa0783dccd137a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.7 to ^22.0.0
+    * @netlify/functions-utils bumped from ^5.3.14 to ^5.3.15
+    * @netlify/zip-it-and-ship-it bumped from 10.0.5 to 10.0.6
+
+## [31.0.2](https://github.com/netlify/build/compare/build-v31.0.1...build-v31.0.2) (2025-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 13.0.1 to 13.0.2
+
+## [31.0.1](https://github.com/netlify/build/compare/build-v31.0.0...build-v31.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 13.0.0 to 13.0.1
+    * @netlify/framework-info bumped from ^9.9.2 to ^9.9.3
+    * @netlify/functions-utils bumped from ^5.3.13 to ^5.3.14
+    * @netlify/zip-it-and-ship-it bumped from 10.0.4 to 10.0.5
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.2.2
+
+## [31.0.0](https://github.com/netlify/build/compare/build-v30.1.1...build-v31.0.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+
+
+### Bug Fixes
+
+* add extra types for extensionMetaData ([#6186](https://github.com/netlify/build/issues/6186)) ([c1c7aed](https://github.com/netlify/build/commit/c1c7aed096edc490ef8b6731c8c16eb877856df4))
+* changing wording to extensions in more places ([#6185](https://github.com/netlify/build/issues/6185)) ([752f9a1](https://github.com/netlify/build/commit/752f9a1c3ccf67ac339c472a676838c6ceff9d64))
+* changing wording to extensions instead of integrations ([#6180](https://github.com/netlify/build/issues/6180)) ([95d03d9](https://github.com/netlify/build/commit/95d03d958d3a0ca6f7aaadda06d3ae38a7528794))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.6 to ^21.0.7
+    * @netlify/edge-bundler bumped from 12.4.0 to 13.0.0
+
+## [30.1.1](https://github.com/netlify/build/compare/build-v30.1.0...build-v30.1.1) (2025-04-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.5 to ^21.0.6
+
+## [30.1.0](https://github.com/netlify/build/compare/build-v30.0.6...build-v30.1.0) (2025-03-28)
+
+
+### Features
+
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.4 to ^21.0.5
+    * @netlify/edge-bundler bumped from 12.3.3 to 12.4.0
+
+## [30.0.6](https://github.com/netlify/build/compare/build-v30.0.5...build-v30.0.6) (2025-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^8.1.2 ([#6162](https://github.com/netlify/build/issues/6162)) ([8cbeae7](https://github.com/netlify/build/commit/8cbeae7a1c67ac70ffd928ac91cff31730b3becd))
+
+## [30.0.5](https://github.com/netlify/build/compare/build-v30.0.4...build-v30.0.5) (2025-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to v8 ([#5756](https://github.com/netlify/build/issues/5756)) ([a71b6ce](https://github.com/netlify/build/commit/a71b6ce6f14f01dfb55ab34c7e1e1dd5d6df0a0b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.3 to ^21.0.4
+
+## [30.0.4](https://github.com/netlify/build/compare/build-v30.0.3...build-v30.0.4) (2025-03-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.2 to ^21.0.3
+    * @netlify/functions-utils bumped from ^5.3.12 to ^5.3.13
+    * @netlify/zip-it-and-ship-it bumped from 10.0.3 to 10.0.4
+
+## [30.0.3](https://github.com/netlify/build/compare/build-v30.0.2...build-v30.0.3) (2025-03-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.3.11 to ^5.3.12
+    * @netlify/zip-it-and-ship-it bumped from 10.0.2 to 10.0.3
+
+## [30.0.2](https://github.com/netlify/build/compare/build-v30.0.1...build-v30.0.2) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^21.0.1 to ^21.0.2
+    * @netlify/edge-bundler bumped from 12.3.2 to 12.3.3
+    * @netlify/framework-info bumped from ^9.9.1 to ^9.9.2
+    * @netlify/functions-utils bumped from ^5.3.10 to ^5.3.11
+    * @netlify/opentelemetry-utils bumped from ^1.3.0 to ^1.3.1
+    * @netlify/zip-it-and-ship-it bumped from 10.0.1 to 10.0.2
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^1.1.0 to ^1.2.1
+
 ## [30.0.1](https://github.com/netlify/build/compare/build-v30.0.0...build-v30.0.1) (2025-03-18)
 
 

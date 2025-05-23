@@ -1,5 +1,16 @@
 # Changelog
 
+## [9.0.0](https://github.com/netlify/build/compare/headers-parser-v8.0.0...headers-parser-v9.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
 ## [8.0.0](https://github.com/netlify/build/compare/headers-parser-v7.3.0...headers-parser-v8.0.0) (2025-03-12)
 
 

@@ -37,9 +37,11 @@ export const fireCoreStep = async function ({
   saveConfig,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   deployId,
   outputFlusher,
+  api,
 }) {
   const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
@@ -52,6 +54,7 @@ export const fireCoreStep = async function ({
       tags,
       metrics,
     } = await coreStep({
+      api,
       configPath,
       outputConfigPath,
       buildDir,
@@ -77,6 +80,7 @@ export const fireCoreStep = async function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
     })

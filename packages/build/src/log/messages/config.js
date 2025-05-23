@@ -56,6 +56,7 @@ const INTERNAL_FLAGS = [
   'systemLogFile',
   'timeline',
   'explicitSecretKeys',
+  'enhancedSecretScan',
   'edgeFunctionsBootstrapURL',
   'eventHandlers',
 ]

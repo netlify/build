@@ -68,6 +68,7 @@ export const runStep = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   extensionMetadata,
 }) {
@@ -108,6 +109,7 @@ export const runStep = async function ({
       buildDir,
       saveConfig,
       explicitSecretKeys,
+      enhancedSecretScan,
       deployId,
       featureFlags,
     })
@@ -182,8 +184,10 @@ export const runStep = async function ({
       featureFlags,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
     })
 
     const newValues = await getStepReturn({
@@ -263,6 +267,7 @@ const shouldRunStep = async function ({
   buildDir,
   saveConfig,
   explicitSecretKeys,
+  enhancedSecretScan,
   deployId,
   featureFlags = {},
 }) {
@@ -277,6 +282,7 @@ const shouldRunStep = async function ({
         netlifyConfig,
         saveConfig,
         explicitSecretKeys,
+        enhancedSecretScan,
         deployId,
         featureFlags,
       })))
@@ -343,9 +349,11 @@ const tFireStep = function ({
   featureFlags,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   deployId,
   extensionMetadata,
+  api,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -381,8 +389,10 @@ const tFireStep = function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
     })
   }
 

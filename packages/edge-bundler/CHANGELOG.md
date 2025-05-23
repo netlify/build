@@ -1,5 +1,93 @@
 # Changelog
 
+## [14.0.4](https://github.com/netlify/build/compare/edge-bundler-v14.0.3...edge-bundler-v14.0.4) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+## [14.0.3](https://github.com/netlify/build/compare/edge-bundler-v14.0.2...edge-bundler-v14.0.3) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency p-retry to v6 ([#6321](https://github.com/netlify/build/issues/6321)) ([a0ba9d6](https://github.com/netlify/build/commit/a0ba9d68b3d2d4caaa2652fbccb4265b51fa6126))
+
+## [14.0.2](https://github.com/netlify/build/compare/edge-bundler-v14.0.1...edge-bundler-v14.0.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency archiver to v7 ([#6273](https://github.com/netlify/build/issues/6273)) ([a14b9d5](https://github.com/netlify/build/commit/a14b9d5334f82bcea3b2504c43ff371015b3164d))
+
+## [14.0.1](https://github.com/netlify/build/compare/edge-bundler-v14.0.0...edge-bundler-v14.0.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v11 ([#6309](https://github.com/netlify/build/issues/6309)) ([d6471d0](https://github.com/netlify/build/commit/d6471d0a05a9d3b49b8b5a0ee500279d72ab3c92))
+
+## [14.0.0](https://github.com/netlify/build/compare/edge-bundler-v13.0.3...edge-bundler-v14.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+## [13.0.3](https://github.com/netlify/build/compare/edge-bundler-v13.0.2...edge-bundler-v13.0.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.3 ([#6216](https://github.com/netlify/build/issues/6216)) ([ddd27b7](https://github.com/netlify/build/commit/ddd27b7f895acb8874efcc78d507048fb8bf2fbf))
+* **deps:** update dependency esbuild to v0.25.4 ([#6282](https://github.com/netlify/build/issues/6282)) ([6099258](https://github.com/netlify/build/commit/6099258ec3d085a7e1e33042d435edf5880c8fdb))
+
+## [13.0.2](https://github.com/netlify/build/compare/edge-bundler-v13.0.1...edge-bundler-v13.0.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* **edge-bundler:** only parse a file once for it's npm specifiers ([#6196](https://github.com/netlify/build/issues/6196)) ([bbe9313](https://github.com/netlify/build/commit/bbe93132d12b11afd98dfca25b8339004d99a2b2))
+
+## [13.0.1](https://github.com/netlify/build/compare/edge-bundler-v13.0.0...edge-bundler-v13.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+
+## [13.0.0](https://github.com/netlify/build/compare/edge-bundler-v12.4.0...edge-bundler-v13.0.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+
+## [12.4.0](https://github.com/netlify/build/compare/edge-bundler-v12.3.3...edge-bundler-v12.4.0) (2025-03-28)
+
+
+### Features
+
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
+## [12.3.3](https://github.com/netlify/build/compare/edge-bundler-v12.3.2...edge-bundler-v12.3.3) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
 ## [12.3.2](https://github.com/netlify/build/compare/edge-bundler-v12.3.1...edge-bundler-v12.3.2) (2025-01-08)
 
 

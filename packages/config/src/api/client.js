@@ -1,4 +1,4 @@
-import { NetlifyAPI } from 'netlify'
+import { NetlifyAPI } from '@netlify/api'
 
 import { removeUndefined } from '../utils/remove_falsy.js'
 
