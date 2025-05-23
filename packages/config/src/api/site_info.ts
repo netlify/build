@@ -1,6 +1,4 @@
 import { NetlifyAPI } from '@netlify/api'
-import fetch from 'node-fetch'
-import type { RequestInit } from 'node-fetch'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
