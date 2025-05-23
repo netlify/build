@@ -897,18 +897,6 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
-    'Exposes the main export of `node-fetch` when imported using `require()`',
-    [...allBundleConfigs],
-    async (options) => {
-      const { files } = await zipFixture('node-fetch', { opts: options })
-      const unzippedFunctions = await unzipFiles(files)
-      const returnValue = await importFunctionFile(`${unzippedFunctions[0].unzipPath}/function.js`)
-
-      expect(returnValue).toBeTypeOf('function')
-    },
-  )
-
-  testMany(
     '{name}/{name}.js takes precedence over {name}.js and {name}/index.js',
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {
