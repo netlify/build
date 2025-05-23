@@ -170,7 +170,7 @@ const coreStep: CoreStepFunction = async function ({
     logs,
     scanResults,
     groupedResults: groupScanResultsByKeyAndScanType(scanResults),
-    enhancedScanShouldImpactBuilds: enhancedScanShouldRunInActiveMode,
+    enhancedScanShouldRunInActiveMode,
   })
 
   const error = new Error(`Secrets scanning found secrets in build.`)

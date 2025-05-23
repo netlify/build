@@ -132,7 +132,7 @@ export const logSecretsScanFailBuildMessage = function ({
   logs,
   scanResults,
   groupedResults,
-  enhancedScanShouldImpactBuilds,
+  enhancedScanShouldRunInActiveMode,
 }) {
   const { secretMatches, enhancedSecretMatches } = groupedResults
   const secretMatchesKeys = Object.keys(secretMatches)
@@ -140,7 +140,7 @@ export const logSecretsScanFailBuildMessage = function ({
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 && enhancedScanShouldImpactBuilds ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 && enhancedScanShouldRunInActiveMode ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
   // Explicit secret matches
@@ -167,7 +167,7 @@ export const logSecretsScanFailBuildMessage = function ({
     )
   }
 
-  if (enhancedScanShouldImpactBuilds) {
+  if (enhancedScanShouldRunInActiveMode) {
     // Likely secret matches from enhanced scan
     enhancedSecretMatchesKeys.forEach((key, index) => {
       logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
