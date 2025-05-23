@@ -75,8 +75,8 @@ test('findLikelySecrets - should match exactly minimum chars after prefix', asyn
 test('findLikelySecrets - should match different prefixes from LIKELY_SECRET_PREFIXES', async (t) => {
   const lines = [
     'key="ghp_123456789012345678"', // GitHub personal access token
-    'key="sk_live_123456789012345678"', // Stripe key
-    'key="AKIAXXXXXXXXXXXXXXXX"', // AWS access key
+    'key="sk_123456789012345678"', // Stripe key
+    'key="aws_123456789012345678"', // AWS access key
   ]
 
   lines.forEach((line, index) => {
@@ -91,23 +91,26 @@ test('findLikelySecrets - should skip safe-listed values', async (t) => {
   t.is(matches.length, 0)
 })
 
-test('findLikelySecrets - should match secrets with special characters', async (t) => {
-  const lines = [
-    'key="aws_abc123!@#$%^&*()_+"', // Special chars
-    'key="ghp_abc-123_456.789"', // Common separator chars
-    'key="sk_live_123-456_789.000"', // Mix of numbers and separators
-  ]
+test('findLikelySecrets - should allow dashes and alphanumeric characters only', async (t) => {
+  const validLines = ['key="aws_abc123-456-789"', 'key="ghp_abc-123-def-456"']
 
-  lines.forEach((line, index) => {
+  validLines.forEach((line, index) => {
     const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
-    t.is(matches.length, 1)
+    t.is(matches.length, 1, `Should match line with dashes: ${line}`)
+  })
+
+  const invalidLines = ['key="aws_abc123!@#$%^&*()_+"', 'key="ghp_abc.123_456.789"', 'key="sk_live_123_456_789"']
+
+  invalidLines.forEach((line, index) => {
+    const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
+    t.is(matches.length, 0, `Should not match line with special characters: ${line}`)
   })
 })
 
 test('findLikelySecrets - should match full secret value against omitValues', async (t) => {
   // Test both partial and full matches to ensure proper behavior
   const partialMatch = findLikelySecrets({
-    line: 'key="aws_123456789012_extra_chars_here"',
+    line: 'key="aws_123456789012extracharshere"',
     file: testFile,
     lineNumber: 1,
     // The omitValue only partially matches the secret - we should still detect the secret
@@ -116,11 +119,11 @@ test('findLikelySecrets - should match full secret value against omitValues', as
   t.is(partialMatch.length, 1)
 
   const fullMatch = findLikelySecrets({
-    line: 'key="aws_123456789012_extra_chars_here"',
+    line: 'key="aws_123456789012extracharshere"',
     file: testFile,
     lineNumber: 1,
     // Omit the full secret value - we should not detect the secret
-    omitValuesFromEnhancedScan: ['aws_123456789012_extra_chars_here'],
+    omitValuesFromEnhancedScan: ['aws_123456789012extracharshere'],
   })
   t.is(fullMatch.length, 0)
 })
