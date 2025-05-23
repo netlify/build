@@ -1,6 +1,7 @@
 import type { ReadStream } from 'node:fs'
 
 import type { operations } from '@netlify/open-api'
+import type { RequestInit } from 'node-fetch'
 
 /**
  * Determines whether all keys in T are optional.
@@ -205,7 +206,7 @@ export type DynamicMethods = {
   [K in keyof operations]: (
     params: OperationParams<K>,
     /**
-     * Any properties you want passed to `fetch`.
+     * Any properties you want passed to `node-fetch`.
      *
      * The `headers` property is merged with some `defaultHeaders`:
      * ```ts
