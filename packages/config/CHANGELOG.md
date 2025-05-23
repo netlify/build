@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.6](https://github.com/netlify/build/compare/config-v23.0.5...config-v23.0.6) (2025-05-23)
+
+
+### Bug Fixes
+
+* drop node-fetch from config package ([#6380](https://github.com/netlify/build/issues/6380)) ([c88f8d3](https://github.com/netlify/build/commit/c88f8d3635633ff1445af8054693f94c07e59065))
+
 ## [23.0.5](https://github.com/netlify/build/compare/config-v23.0.4...config-v23.0.5) (2025-05-22)
 
 
