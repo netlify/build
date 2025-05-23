@@ -172,7 +172,6 @@ export const resolveConfig = async function (opts): Promise<Config> {
 
   const updatedIntegrations = await handleAutoInstallExtensions({
     featureFlags,
-    accounts,
     integrations,
     siteId,
     accountId,
