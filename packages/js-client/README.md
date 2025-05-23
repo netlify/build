@@ -94,8 +94,8 @@ const params = {
 }
 ```
 
-Optional `opts` can include any property you want passed to [`node-fetch`](https://github.com/bitinn/node-fetch). The
-`headers` property is merged with some `defaultHeaders`.
+Optional `opts` can include any property you want passed to `fetch`. The `headers` property is merged with some
+`defaultHeaders`.
 
 ```js
 // example opts
@@ -105,7 +105,7 @@ const opts = {
     'User-agent': 'netlify-js-client',
     accept: 'application/json',
   },
-  // any other properties for node-fetch
+  // any other properties for fetch
 }
 ```
 
