@@ -59,6 +59,7 @@ test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` 
   expect(await readDirWithType(unzippedPath)).toEqual({
     '___netlify-bootstrap.mjs': false,
     '___netlify-entry-point.mjs': false,
+    '___netlify-telemetry.mjs': false,
     '___netlify-metadata.json': false,
     'function.mjs': false,
     [join('node_modules/.pnpm/crazy-dep/package.json')]: false,
@@ -108,6 +109,7 @@ test('preserves multiple symlinks that link to the same target', async () => {
   expect(await readDirWithType(join(tmpDir, 'function'))).toEqual({
     '___netlify-bootstrap.mjs': false,
     '___netlify-entry-point.mjs': false,
+    '___netlify-telemetry.mjs': false,
     'function.mjs': false,
     ['node_modules/.pnpm/is-even-or-odd@1.0.0/node_modules/is-even'.replace(/\//g, sep)]: true,
     ['node_modules/.pnpm/is-even-or-odd@1.0.0/node_modules/is-even-or-odd/index.js'.replace(/\//g, sep)]: false,
@@ -151,6 +153,7 @@ test('symlinks in subdir of `includedFiles` are copied over successfully', async
   expect(await readDirWithType(join(tmpDir, 'function'))).toEqual({
     '___netlify-bootstrap.mjs': false,
     '___netlify-entry-point.mjs': false,
+    '___netlify-telemetry.mjs': false,
     'function.cjs': false,
     [join('subproject/node_modules/.bin/cli.js')]: true,
     [join('subproject/node_modules/tool/cli.js')]: false,

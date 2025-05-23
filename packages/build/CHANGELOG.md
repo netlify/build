@@ -105,6 +105,101 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.1.5](https://github.com/netlify/build/compare/build-v33.1.4...build-v33.1.5) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.4 to ^23.0.5
+
+## [33.1.4](https://github.com/netlify/build/compare/build-v33.1.3...build-v33.1.4) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency path-type to v6 ([#6358](https://github.com/netlify/build/issues/6358)) ([77557fe](https://github.com/netlify/build/commit/77557fe197c20d1d5597a8c70d92944f22515293))
+* **deps:** update dependency pretty-ms to v9 ([#6359](https://github.com/netlify/build/issues/6359)) ([25ec5ef](https://github.com/netlify/build/commit/25ec5ef7e982ef93166ef2cb8a61871470210008))
+* **deps:** update dependency readdirp to v4 ([#6335](https://github.com/netlify/build/issues/6335)) ([bbc39d2](https://github.com/netlify/build/commit/bbc39d2c665b68dcbfaa4b32b783d38fa517c413))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/config bumped from ^23.0.3 to ^23.0.4
+    * @netlify/functions-utils bumped from ^6.0.5 to ^6.0.6
+    * @netlify/zip-it-and-ship-it bumped from 12.0.3 to 12.1.0
+
+## [33.1.3](https://github.com/netlify/build/compare/build-v33.1.2...build-v33.1.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ansi-escapes to v7 ([#6336](https://github.com/netlify/build/issues/6336)) ([bf11542](https://github.com/netlify/build/commit/bf11542cdc3d8873043637d384ea80f2830e2c15))
+* **deps:** update dependency figures to v6 ([#6339](https://github.com/netlify/build/issues/6339)) ([8936cee](https://github.com/netlify/build/commit/8936cee7a6c7619f2e8ea6e3e0bf9de52e5ded04))
+* **deps:** update dependency filter-obj to v6 ([#6340](https://github.com/netlify/build/issues/6340)) ([cad4c01](https://github.com/netlify/build/commit/cad4c01213811d8663e1b137da522a0380f01254))
+* **deps:** update dependency pkg-dir to v8 ([#6343](https://github.com/netlify/build/issues/6343)) ([d708907](https://github.com/netlify/build/commit/d708907106bdf80a46da99d06f269a2aa76971c8))
+* **deps:** update dependency terminal-link to v4 ([#6344](https://github.com/netlify/build/issues/6344)) ([ef1e151](https://github.com/netlify/build/commit/ef1e1510cf8a85082cca24c096e544094ff9f8c8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.2 to ^23.0.3
+    * @netlify/framework-info bumped from ^10.0.3 to ^10.0.4
+    * @netlify/functions-utils bumped from ^6.0.4 to ^6.0.5
+    * @netlify/zip-it-and-ship-it bumped from 12.0.2 to 12.0.3
+
+## [33.1.2](https://github.com/netlify/build/compare/build-v33.1.1...build-v33.1.2) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency os-name to v6 ([#6342](https://github.com/netlify/build/issues/6342)) ([6aa984d](https://github.com/netlify/build/commit/6aa984d9a2049ccbec51f2b9db7c68b693037710))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.1 to ^23.0.2
+    * @netlify/edge-bundler bumped from 14.0.3 to 14.0.4
+    * @netlify/framework-info bumped from ^10.0.2 to ^10.0.3
+    * @netlify/functions-utils bumped from ^6.0.3 to ^6.0.4
+    * @netlify/git-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/run-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/zip-it-and-ship-it bumped from 12.0.1 to 12.0.2
+
+## [33.1.1](https://github.com/netlify/build/compare/build-v33.1.0...build-v33.1.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency string-width to v7 ([#6316](https://github.com/netlify/build/issues/6316)) ([9a3ab1e](https://github.com/netlify/build/commit/9a3ab1e6796ed39ad634b46f2f1da499da4a1586))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.0 to ^6.0.1
+    * @netlify/edge-bundler bumped from 14.0.2 to 14.0.3
+    * @netlify/framework-info bumped from ^10.0.1 to ^10.0.2
+    * @netlify/functions-utils bumped from ^6.0.2 to ^6.0.3
+    * @netlify/zip-it-and-ship-it bumped from 12.0.0 to 12.0.1
+
 ## [33.1.0](https://github.com/netlify/build/compare/build-v33.0.1...build-v33.1.0) (2025-05-16)
 
 

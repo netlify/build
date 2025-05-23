@@ -64,6 +64,29 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.3](https://github.com/netlify/build/compare/build-info-v10.0.2...build-info-v10.0.3) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
+## [10.0.2](https://github.com/netlify/build/compare/build-info-v10.0.1...build-info-v10.0.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency read-pkg to v9 ([#6346](https://github.com/netlify/build/issues/6346)) ([fe2a1b4](https://github.com/netlify/build/commit/fe2a1b4062b3db2ee16f47815d0bec1379ba7b11))
+
+## [10.0.1](https://github.com/netlify/build/compare/build-info-v10.0.0...build-info-v10.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v9 ([#6338](https://github.com/netlify/build/issues/6338)) ([b6622a8](https://github.com/netlify/build/commit/b6622a8404dbf391a8024a9c82abb4f16af41f38))
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
 ## [10.0.0](https://github.com/netlify/build/compare/build-info-v9.0.4...build-info-v10.0.0) (2025-05-14)
 
 

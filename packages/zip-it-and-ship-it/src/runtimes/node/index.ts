@@ -1,6 +1,6 @@
 import { extname, join } from 'path'
 
-import { copyFile } from 'cp-file'
+import { copyFile } from 'copy-file'
 
 import { INVOCATION_MODE } from '../../function.js'
 import { Priority } from '../../priority.js'

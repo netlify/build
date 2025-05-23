@@ -5,7 +5,7 @@ import os from 'os'
 import { basename, dirname, extname, join } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
-import { copyFile } from 'cp-file'
+import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
 import {
@@ -27,6 +27,7 @@ import {
   conflictsWithEntryFile,
   EntryFile,
   getEntryFile,
+  getTelemetryFile,
   isNamedLikeEntryFile,
 } from './entry_file.js'
 import { getMetadataFile } from './metadata_file.js'
@@ -92,7 +93,6 @@ const createDirectory = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -111,6 +111,7 @@ const createDirectory = async function ({
     userNamespace,
     runtimeAPIVersion,
   })
+  const { contents: telemetryContents, filename: telemetryFilename } = getTelemetryFile()
   const functionFolder = join(destFolder, basename(filename, extension))
 
   // Deleting the functions directory in case it exists before creating it.
@@ -118,7 +119,12 @@ const createDirectory = async function ({
   await mkdir(functionFolder, { recursive: true })
 
   // Writing entry files.
-  await writeFile(join(functionFolder, entryFilename), entryContents)
+  await Promise.all([
+    writeFile(join(functionFolder, entryFilename), entryContents),
+    featureFlags.zisi_add_instrumentation_loader
+      ? writeFile(join(functionFolder, telemetryFilename), telemetryContents)
+      : Promise.resolve(),
+  ])
 
   if (runtimeAPIVersion === 2) {
     addBootstrapFile(srcFiles, aliases)
@@ -192,6 +198,7 @@ const createZipArchive = async function ({
   rewrites,
   runtimeAPIVersion,
   srcFiles,
+  generator,
 }: ZipNodeParameters) {
   const destPath = join(destFolder, `${basename(filename, extension)}.zip`)
   const { archive, output } = startZip(destPath)
@@ -202,7 +209,6 @@ const createZipArchive = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -211,10 +217,9 @@ const createZipArchive = async function ({
   // We don't need an entry file if it would end up with the same path as the
   // function's main file. Unless we have a file conflict and need to move everything into a subfolder
   const needsEntryFile =
-    featureFlags.zisi_unique_entry_file ||
     runtimeAPIVersion === 2 ||
     hasEntryFileConflict ||
-    !isNamedLikeEntryFile(mainFile, { basePath, featureFlags, filename, runtimeAPIVersion })
+    !isNamedLikeEntryFile(mainFile, { basePath, filename, runtimeAPIVersion })
 
   // If there is a naming conflict, we move all user files (everything other
   // than the entry file) to its own sub-directory.
@@ -237,6 +242,11 @@ const createZipArchive = async function ({
     entryFilename = entryFile.filename
 
     addEntryFileToZip(archive, entryFile)
+  }
+  const telemetryFile = getTelemetryFile(generator)
+
+  if (featureFlags.zisi_add_instrumentation_loader === true) {
+    addEntryFileToZip(archive, telemetryFile)
   }
 
   if (runtimeAPIVersion === 2) {
