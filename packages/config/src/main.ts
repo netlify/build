@@ -43,6 +43,8 @@ export type Config = {
   token: any
 }
 
+console.log('using NOT released @netlify/config')
+
 /**
  * Load the configuration file.
  * Takes an optional configuration file path as input and return the resolved

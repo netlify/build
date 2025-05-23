@@ -17,6 +17,8 @@ import { BuildFlags } from './types.js'
 
 const tracer = trace.getTracer('core')
 
+console.log('using NOT released @netlify/build')
+
 /**
  * Main entry point of Netlify Build.
  * Runs a builds and returns whether it succeeded or not.
