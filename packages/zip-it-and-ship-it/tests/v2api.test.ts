@@ -4,7 +4,7 @@ import { platform, version as nodeVersion } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
-import glob from 'fast-glob'
+import { glob } from 'glob'
 import { pathExists } from 'path-exists'
 import semver from 'semver'
 import { dir as getTmpDir } from 'tmp-promise'
