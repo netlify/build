@@ -167,7 +167,7 @@ test('secrets scanning, enhanced scan should not find matches when disabled with
   const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
     .withFlags({
       debug: false,
-      explicitSecretKeys: '',
+      explicitSecretKeys: 'ENV_VAR_1',
       featureFlags: { enhanced_secret_scan_impacts_builds: true },
       deployId: 'test',
       token: 'test',
@@ -372,4 +372,38 @@ test('secrets scanning, should not log omit values message when enhanced_secret_
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   t.false(normalizeOutput(output).includes('ENHANCED_SECRETS_SCAN_OMIT_VALUES'))
+})
+
+test('secrets scanning, should run enhanced scan in passive mode when explicit keys are present', async (t) => {
+  const { requests } = await new Fixture('./fixtures/src_scanning_env_vars_set_non_empty')
+    .withFlags({
+      debug: false,
+      explicitSecretKeys: 'ENV_VAR_1',
+      enhancedSecretScan: true,
+      featureFlags: { enhanced_secret_scan_impacts_builds: false },
+      deployId: 'test',
+      token: 'test',
+    })
+    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
+
+  t.true(requests.length === 1)
+  const request = requests[0]
+  t.is(request.url, '/api/v1/deploys/test/validations_report')
+  t.truthy(request.body.secrets_scan.scannedFilesCount)
+  t.truthy(request.body.secrets_scan.enhancedSecretsScanMatches)
+})
+
+test('secrets scanning, should not run enhanced scan in passive mode when no explicit keys', async (t) => {
+  const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets')
+    .withFlags({
+      debug: false,
+      explicitSecretKeys: '',
+      enhancedSecretScan: true,
+      featureFlags: { enhanced_secret_scan_impacts_builds: false },
+      deployId: 'test',
+      token: 'test',
+    })
+    .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
+
+  t.true(requests.length === 0)
 })
