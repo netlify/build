@@ -1,0 +1,32 @@
+{
+  "errors": [
+    {
+      "instancePath": "/plugins/0",
+      "keyword": "required",
+      "message": "must have required property 'package'",
+      "params": {
+        "missingProperty": "package",
+      },
+      "schemaPath": "#/definitions/Plugins/items/required",
+    },
+    {
+      "instancePath": "/plugins/0",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/definitions/Plugins/items/additionalProperties",
+    },
+    {
+      "instancePath": "/plugins/0",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "more",
+      },
+      "schemaPath": "#/definitions/Plugins/items/additionalProperties",
+    },
+  ],
+  "valid": false,
+}
