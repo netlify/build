@@ -34,3 +34,8 @@ export const LIKELY_SECRET_PREFIXES = [
   ...SQUARE_PREFIXES,
   ...OTHER_COMMON_PREFIXES,
 ]
+
+/**
+ * Known values that we do not want to trigger secret detection failures (e.g. common to framework build output)
+ */
+export const SAFE_LISTED_VALUES = ['SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED'] // Common to code using React PropTypes

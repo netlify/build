@@ -5,7 +5,7 @@ import { createInterface } from 'node:readline'
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
 
-import { LIKELY_SECRET_PREFIXES } from './secret_prefixes.js'
+import { LIKELY_SECRET_PREFIXES, SAFE_LISTED_VALUES } from './secret_prefixes.js'
 
 export interface ScanResults {
   matches: MatchResult[]
@@ -181,11 +181,12 @@ export function findLikelySecrets({
 
   const matches: MatchResult[] = []
   let match: RegExpExecArray | null
+  const allOmittedValues = [...omitValuesFromEnhancedScan, ...SAFE_LISTED_VALUES]
 
   while ((match = likelySecretRegex.exec(line)) !== null) {
     const token = match.groups?.token
     const prefix = match.groups?.prefix
-    if (!token || !prefix || omitValuesFromEnhancedScan?.includes(token)) {
+    if (!token || !prefix || allOmittedValues.includes(token)) {
       continue
     }
     matches.push({
