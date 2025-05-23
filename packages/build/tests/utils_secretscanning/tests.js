@@ -4,7 +4,7 @@ import { findLikelySecrets } from '../../lib/plugins_core/secrets_scanning/utils
 
 const testFile = 'test.txt'
 
-test('findLikelySecrets - should find secrets with common prefixes at the beginning of a line', async (t) => {
+test('findLikelySecrets - should not find secrets without quotes or delimiters', async (t) => {
   const lines = [
     'aws_123456789012345678',
     'ghp_1234567890123456789',
@@ -14,16 +14,11 @@ test('findLikelySecrets - should find secrets with common prefixes at the beginn
 
   lines.forEach((line, index) => {
     const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
-    t.is(matches.length, 1)
-    t.like(matches[0], {
-      file: testFile,
-      lineNumber: index,
-      enhancedMatch: true,
-    })
+    t.is(matches.length, 0, `Should not match line: ${line}`)
   })
 })
 
-test('findLikelySecrets - should find secrets with various delimiters at the beginning', async (t) => {
+test('findLikelySecrets - should find secrets with quotes or delimiters', async (t) => {
   const matchingLines = [
     'my_secret_key=aws_123456789012345678',
     'awsKey: aws_123456789012345678',
@@ -57,7 +52,7 @@ test('findLikelySecrets - should not match values that are too short', async (t)
 })
 
 test('findLikelySecrets - should return the matched prefix as the key', async (t) => {
-  const matches = findLikelySecrets({ line: 'github_pat_123456789012345678', file: testFile, lineNumber: 1 })
+  const matches = findLikelySecrets({ line: 'key="github_pat_123456789012345678"', file: testFile, lineNumber: 1 })
   t.is(matches.length, 1)
   t.is(matches[0].key, 'github_pat_')
 })
@@ -72,16 +67,16 @@ test('findLikelySecrets - should handle empty or invalid input', async (t) => {
 })
 
 test('findLikelySecrets - should match exactly minimum chars after prefix', async (t) => {
-  const exactMinChars = 'aws_123456789012' // Exactly 12 chars after prefix
+  const exactMinChars = 'key="aws_123456789012"' // Exactly 12 chars after prefix
   const matches = findLikelySecrets({ line: exactMinChars, file: testFile, lineNumber: 1 })
   t.is(matches.length, 1)
 })
 
 test('findLikelySecrets - should match different prefixes from LIKELY_SECRET_PREFIXES', async (t) => {
   const lines = [
-    'ghp_123456789012345678', // GitHub personal access token
-    'sk_live_123456789012345678', // Stripe key
-    'AKIAXXXXXXXXXXXXXXXX', // AWS access key
+    'key="ghp_123456789012345678"', // GitHub personal access token
+    'key="sk_live_123456789012345678"', // Stripe key
+    'key="AKIAXXXXXXXXXXXXXXXX"', // AWS access key
   ]
 
   lines.forEach((line, index) => {
@@ -98,9 +93,9 @@ test('findLikelySecrets - should skip safe-listed values', async (t) => {
 
 test('findLikelySecrets - should match secrets with special characters', async (t) => {
   const lines = [
-    'aws_abc123!@#$%^&*()_+', // Special chars
-    'ghp_abc-123_456.789', // Common separator chars
-    'sk_live_123-456_789.000', // Mix of numbers and separators
+    'key="aws_abc123!@#$%^&*()_+"', // Special chars
+    'key="ghp_abc-123_456.789"', // Common separator chars
+    'key="sk_live_123-456_789.000"', // Mix of numbers and separators
   ]
 
   lines.forEach((line, index) => {
@@ -112,7 +107,7 @@ test('findLikelySecrets - should match secrets with special characters', async (
 test('findLikelySecrets - should match full secret value against omitValues', async (t) => {
   // Test both partial and full matches to ensure proper behavior
   const partialMatch = findLikelySecrets({
-    line: 'aws_123456789012_extra_chars_here',
+    line: 'key="aws_123456789012_extra_chars_here"',
     file: testFile,
     lineNumber: 1,
     // The omitValue only partially matches the secret - we should still detect the secret
@@ -121,7 +116,7 @@ test('findLikelySecrets - should match full secret value against omitValues', as
   t.is(partialMatch.length, 1)
 
   const fullMatch = findLikelySecrets({
-    line: 'aws_123456789012_extra_chars_here',
+    line: 'key="aws_123456789012_extra_chars_here"',
     file: testFile,
     lineNumber: 1,
     // Omit the full secret value - we should not detect the secret

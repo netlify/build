@@ -129,7 +129,7 @@ const MIN_CHARS_AFTER_PREFIX = 12
 const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
 
 // Build regex pattern for matching secrets with various delimiters and quotes:
-// (?:["'`]|^|[=:,]) - match either quotes, start of line, or delimiters (=:,) at the start
+// (?:["'\`]|[=:,]) - match either quotes, or delimiters (=:,) at the start
 // Named capturing groups:
 //   - <token>: captures the entire secret value including its prefix
 //   - <prefix>: captures just the prefix part (e.g. 'aws_', 'github_pat_')
@@ -141,7 +141,7 @@ const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.(
 // Note: Using the global flag (g) means this regex object maintains state between executions.
 // We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
 const likelySecretRegex = new RegExp(
-  `(?:["'\`]|^|[=:,]) *(?<token>(?<prefix>${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?)(?:["'\`]|[ =:,]|$)`,
+  `(?:["'\`]|[=:,]) *(?<token>(?<prefix>${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?)(?:["'\`]|[ =:,]|$)`,
   'gi',
 )
 
