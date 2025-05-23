@@ -90,6 +90,12 @@ test('findLikelySecrets - should match different prefixes from LIKELY_SECRET_PRE
   })
 })
 
+test('findLikelySecrets - should skip safe-listed values', async (t) => {
+  const line = 'const someString = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED"'
+  const matches = findLikelySecrets({ line, file: testFile, lineNumber: 1 })
+  t.is(matches.length, 0)
+})
+
 test('findLikelySecrets - should match secrets with special characters', async (t) => {
   const lines = [
     'aws_abc123!@#$%^&*()_+', // Special chars
