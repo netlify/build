@@ -30,6 +30,7 @@ const coreStep: CoreStepFunction = async function ({
   netlifyConfig,
   explicitSecretKeys,
   enhancedSecretScan,
+  featureFlags,
   systemLog,
   deployId,
   api,
@@ -38,6 +39,7 @@ const coreStep: CoreStepFunction = async function ({
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
+  const enhancedScanShouldImpactBuilds = featureFlags?.enhanced_secret_scan_impacts_builds ?? false
 
   systemLog?.({ passedSecretKeys, buildDir })
 
@@ -54,14 +56,16 @@ const coreStep: CoreStepFunction = async function ({
     log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
   }
   const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
-  if (enhancedSecretScan && !enhancedScanningEnabledInEnv) {
+  if (enhancedSecretScan && enhancedScanShouldImpactBuilds && !enhancedScanningEnabledInEnv) {
     logSecretsScanSkipMessage(
       logs,
       'Enhanced secrets detection disabled via ENHANCED_SECRETS_SCAN_ENABLED flag set to false.',
     )
   }
+
   if (
     enhancedSecretScan &&
+    enhancedScanShouldImpactBuilds &&
     enhancedScanningEnabledInEnv &&
     envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES'] !== undefined
   ) {
@@ -73,7 +77,7 @@ const coreStep: CoreStepFunction = async function ({
 
   const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
-  if (keysToSearchFor.length === 0 && !enhancedSecretScan) {
+  if (keysToSearchFor.length === 0 && (!enhancedSecretScan || !enhancedScanShouldImpactBuilds)) {
     logSecretsScanSkipMessage(
       logs,
       'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
@@ -123,6 +127,7 @@ const coreStep: CoreStepFunction = async function ({
         keysToSearchFor,
         enhancedPrefixMatches: enhancedSecretMatches.length ? enhancedSecretMatches.map((match) => match.key) : [],
         enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
+        enhancedSecretScanImpactsBuild: enhancedScanShouldImpactBuilds,
       }
 
       systemLog?.(attributesForLogsAndSpan)
@@ -135,7 +140,7 @@ const coreStep: CoreStepFunction = async function ({
     const secretScanResult: SecretScanResult = {
       scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
       secretsScanMatches: secretMatches ?? [],
-      enhancedSecretsScanMatches: enhancedSecretMatches ?? [],
+      enhancedSecretsScanMatches: enhancedScanShouldImpactBuilds && enhancedSecretMatches ? enhancedSecretMatches : [],
     }
     reportValidations({ api, secretScanResult, deployId, systemLog })
   }
@@ -154,6 +159,7 @@ const coreStep: CoreStepFunction = async function ({
     logs,
     scanResults,
     groupedResults: groupScanResultsByKeyAndScanType(scanResults),
+    enhancedScanShouldImpactBuilds,
   })
 
   const error = new Error(`Secrets scanning found secrets in build.`)
