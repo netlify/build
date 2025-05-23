@@ -145,11 +145,7 @@ const coreStep: CoreStepFunction = async function ({
     reportValidations({ api, secretScanResult, deployId, systemLog })
   }
 
-  if (
-    !scanResults ||
-    scanResults.matches.length === 0 ||
-    (!enhancedScanShouldImpactBuilds && (secretMatches?.length ?? 0) === 0)
-  ) {
+  if (!scanResults || scanResults.matches.length === 0 || (!enhancedScanShouldImpactBuilds && !secretMatches?.length)) {
     logSecretsScanSuccessMessage(
       logs,
       `Secrets scanning complete. ${scanResults?.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
