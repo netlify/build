@@ -11,7 +11,6 @@ const GITHUB_PREFIXES = ['ghp_', 'gho_', 'ghu_', 'ghs_', 'ghr_', 'github_pat_']
 const SHOPIFY_PREFIXES = ['shpss_', 'shpat_', 'shpca_', 'shppa_']
 const SQUARE_PREFIXES = ['sq0atp-']
 const OTHER_COMMON_PREFIXES = [
-  'pk_',
   'sk_',
   'pat_',
   'sk-',

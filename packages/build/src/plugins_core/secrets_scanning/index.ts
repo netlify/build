@@ -14,9 +14,10 @@ import {
   ScanResults,
   SecretScanResult,
   getFilePathsToScan,
-  getNonSecretKeysToScanFor,
+  getOmitValuesFromEnhancedScanForEnhancedScanFromEnv,
   getSecretKeysToScanFor,
   groupScanResultsByKeyAndScanType,
+  isEnhancedSecretsScanningEnabled,
   isSecretsScanningEnabled,
   scanFilesForKeyValues,
 } from './utils.js'
@@ -52,16 +53,31 @@ const coreStep: CoreStepFunction = async function ({
   if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
     log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
   }
+  const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
+  if (enhancedSecretScan && !enhancedScanningEnabledInEnv) {
+    logSecretsScanSkipMessage(
+      logs,
+      'Enhanced secrets detection disabled via ENHANCED_SECRETS_SCAN_ENABLED flag set to false.',
+    )
+  }
+  if (
+    enhancedSecretScan &&
+    enhancedScanningEnabledInEnv &&
+    envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES'] !== undefined
+  ) {
+    log(
+      logs,
+      `ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set to: ${envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES']}\n`,
+    )
+  }
 
-  const explicitSecretKeysToScanFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
-  const potentialSecretKeysToScanFor = enhancedSecretScan ? getNonSecretKeysToScanFor(envVars, passedSecretKeys) : []
-  const keysToSearchFor = explicitSecretKeysToScanFor.concat(potentialSecretKeysToScanFor)
+  const keysToSearchFor = getSecretKeysToScanFor(envVars, passedSecretKeys)
 
-  if (keysToSearchFor.length === 0) {
-    const msg = enhancedSecretScan
-      ? 'Secrets scanning skipped because no env vars are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.'
-      : 'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.'
-    logSecretsScanSkipMessage(logs, msg)
+  if (keysToSearchFor.length === 0 && !enhancedSecretScan) {
+    logSecretsScanSkipMessage(
+      logs,
+      'Secrets scanning skipped because no env vars marked as secret are set to non-empty/non-trivial values or they are all omitted with SECRETS_SCAN_OMIT_KEYS env var setting.',
+    )
     return stepResults
   }
 
@@ -91,10 +107,12 @@ const coreStep: CoreStepFunction = async function ({
         keys: keysToSearchFor,
         base: buildDir as string,
         filePaths,
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
+        omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
       })
 
-      secretMatches = scanResults.matches.filter((match) => explicitSecretKeysToScanFor.includes(match.key))
-      enhancedSecretMatches = scanResults.matches.filter((match) => potentialSecretKeysToScanFor.includes(match.key))
+      secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
+      enhancedSecretMatches = scanResults.matches.filter((match) => match.enhancedMatch)
 
       const attributesForLogsAndSpan = {
         secretsScanFoundSecrets: secretMatches.length > 0,
@@ -103,6 +121,8 @@ const coreStep: CoreStepFunction = async function ({
         enhancedSecretsScanMatchesCount: enhancedSecretMatches.length,
         secretsFilesCount: scanResults.scannedFilesCount,
         keysToSearchFor,
+        enhancedPrefixMatches: enhancedSecretMatches.length ? enhancedSecretMatches.map((match) => match.key) : [],
+        enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
       }
 
       systemLog?.(attributesForLogsAndSpan)
@@ -133,7 +153,7 @@ const coreStep: CoreStepFunction = async function ({
   logSecretsScanFailBuildMessage({
     logs,
     scanResults,
-    groupedResults: groupScanResultsByKeyAndScanType(scanResults, potentialSecretKeysToScanFor),
+    groupedResults: groupScanResultsByKeyAndScanType(scanResults),
   })
 
   const error = new Error(`Secrets scanning found secrets in build.`)
