@@ -96,7 +96,7 @@
     "is-ci": "4.1.0",
     "lambda-local": "2.2.0",
     "source-map-support": "0.5.21",
-    "typescript": "5.5.3",
+    "typescript": "5.8.3",
     "vitest": "0.34.6"
   },
   "engines": {
