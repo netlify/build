@@ -30,6 +30,7 @@ const coreStep: CoreStepFunction = async function ({
   netlifyConfig,
   explicitSecretKeys,
   enhancedSecretScan,
+  featureFlags,
   systemLog,
   deployId,
   api,
@@ -38,6 +39,7 @@ const coreStep: CoreStepFunction = async function ({
 
   const passedSecretKeys = (explicitSecretKeys || '').split(',')
   const envVars = netlifyConfig.build.environment as Record<string, unknown>
+  const useMinimalChunks = featureFlags?.secret_scanning_minimal_chunks
 
   systemLog?.({ passedSecretKeys, buildDir })
 
@@ -109,6 +111,7 @@ const coreStep: CoreStepFunction = async function ({
         filePaths,
         enhancedScanning: enhancedSecretScan && enhancedScanningEnabledInEnv,
         omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
+        useMinimalChunks,
       })
 
       secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
