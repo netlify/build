@@ -76,6 +76,20 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.7](https://github.com/netlify/build/compare/config-v23.0.6...config-v23.0.7) (2025-05-26)
+
+
+### Bug Fixes
+
+* **config:** auto install required extensions in buildbot ([#6386](https://github.com/netlify/build/issues/6386)) ([d4b2046](https://github.com/netlify/build/commit/d4b204638b0dd9a325632f0273caa962b005c022))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.1 to ^14.0.2
+
 ## [23.0.6](https://github.com/netlify/build/compare/config-v23.0.5...config-v23.0.6) (2025-05-23)
 
 
