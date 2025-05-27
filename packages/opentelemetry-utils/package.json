@@ -34,7 +34,7 @@
     "@opentelemetry/api": "~1.8.0",
     "@opentelemetry/sdk-trace-base": "~1.24.0",
     "@opentelemetry/sdk-trace-node": "~1.24.0",
-    "@types/node": "^18.14.0",
+    "@types/node": "18.14.0",
     "@vitest/ui": "^0.34.0",
     "typescript": "^5.0.0",
     "vite": "^6.0.0",

@@ -34,7 +34,7 @@
     "path-exists": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.14.0",
+    "@types/node": "18.14.0",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
   },
