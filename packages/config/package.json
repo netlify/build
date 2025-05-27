@@ -83,7 +83,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
-    "@types/node": "^14.18.53",
+    "@types/node": "^18.14.0",
     "ava": "^5.0.0",
     "c8": "^10.0.0",
     "has-ansi": "^6.0.0",
