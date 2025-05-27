@@ -1,8 +1,8 @@
 import { createWriteStream, promises as fs } from 'fs'
+import { Readable } from 'node:stream'
 import path from 'path'
 import { promisify } from 'util'
 
-import fetch from 'node-fetch'
 import StreamZip from 'node-stream-zip'
 import pRetry from 'p-retry'
 import semver from 'semver'
@@ -56,7 +56,7 @@ const downloadVersion = async (versionRange: string) => {
     throw new Error(`Download failed with status code ${res.status}`)
   }
 
-  return res.body
+  return Readable.from(res.body)
 }
 
 const extractBinaryFromZip = async (zipPath: string, binaryPath: string, binaryName: string) => {
