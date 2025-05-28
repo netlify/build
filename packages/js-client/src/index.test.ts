@@ -1,5 +1,3 @@
-import http from 'http'
-
 import test from 'ava'
 import fromString from 'from2-string'
 import { TextHTTPError, JSONHTTPError } from 'micro-api-client'
@@ -16,18 +14,6 @@ const host = `${domain}:${port}`
 const origin = `${scheme}://${host}`
 const testAccessToken = 'testAccessToken'
 
-const AGENT_KEEP_ALIVE_MSECS = 60_000
-const AGENT_MAX_SOCKETS = 10
-const AGENT_MAX_FREE_SOCKETS = 10
-const AGENT_TIMEOUT = 60_000
-const agent = new http.Agent({
-  keepAlive: true,
-  keepAliveMsecs: AGENT_KEEP_ALIVE_MSECS,
-  maxSockets: AGENT_MAX_SOCKETS,
-  maxFreeSockets: AGENT_MAX_FREE_SOCKETS,
-  timeout: AGENT_TIMEOUT,
-})
-
 const getClient = function (opts: any = {}) {
   return new NetlifyAPI(opts.accessToken, { scheme, host, pathPrefix, ...opts })
 }
@@ -38,7 +24,6 @@ test('Default options', (t) => {
   t.is(client.host, 'api.netlify.com')
   t.is(client.pathPrefix, '/api/v1')
   t.is(client.accessToken, null)
-  t.is(client.agent, undefined)
   t.deepEqual(client.globalParams, {})
   t.deepEqual(client.defaultHeaders, {
     'User-agent': 'netlify/js-client',
@@ -642,29 +627,6 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
   t.true(Date.now() >= retryAtMs)
   t.deepEqual(response, expectedResponse)
   t.true(scope.isDone())
-})
-
-test('Can set (proxy) agent', (t) => {
-  const client: any = getClient({ accessToken: testAccessToken, agent })
-  t.is(client.agent, agent)
-})
-
-test('(Proxy) agent is passed as request option', async (t) => {
-  const accountId = uuidv4()
-  const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
-
-  const client: any = getClient({ accessToken: testAccessToken, agent })
-  await client.getAccount({ account_id: accountId })
-  t.is((scope as any).interceptors[0].req.options.agent, agent)
-})
-
-test('(Proxy) agent is not passed as request option if not set', async (t) => {
-  const accountId = uuidv4()
-  const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
-
-  const client: any = getClient({ accessToken: testAccessToken })
-  await client.getAccount({ account_id: accountId })
-  t.falsy((scope as any).interceptors[0].req.options.agent)
 })
 
 const TEST_RATE_LIMIT_DELAY = 5e3

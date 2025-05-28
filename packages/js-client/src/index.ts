@@ -76,7 +76,6 @@ export class NetlifyAPI {
     const methods = getMethods({
       basePath: this.basePath,
       defaultHeaders: this.defaultHeaders,
-      agent: this.agent,
       globalParams: this.globalParams,
     })
     Object.assign(this, { ...methods })
