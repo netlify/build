@@ -1,7 +1,7 @@
 import http from 'http'
+import { Readable } from 'node:stream'
 
 import test from 'ava'
-import fromString from 'from2-string'
 import { TextHTTPError, JSONHTTPError } from 'micro-api-client'
 import nock from 'nock'
 import { v4 as uuidv4 } from 'uuid'
@@ -224,7 +224,7 @@ test('Can specify binary request body as a stream', async (t) => {
     .reply(200, expectedResponse)
 
   const client: any = getClient()
-  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: fromString(body) })
+  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: Readable.from(body) })
 
   t.deepEqual(response, expectedResponse)
   t.true(scope.isDone())
@@ -240,7 +240,7 @@ test('Can specify binary request body as a function', async (t) => {
     .reply(200, expectedResponse)
 
   const client: any = getClient()
-  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
+  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => Readable.from(body) })
 
   t.deepEqual(response, expectedResponse)
   t.true(scope.isDone())
@@ -273,7 +273,7 @@ test('Can set header parameters', async (t) => {
   const response = await client.uploadDeployFunction({
     deploy_id: deployId,
     name: functionName,
-    body: fromString(body),
+    body: Readable.from(body),
     xNfRetryCount: retryCount,
   })
 
@@ -640,7 +640,7 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
   const client: any = getClient()
-  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
+  const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => Readable.from(body) })
 
   t.true(Date.now() >= retryAtMs)
   t.deepEqual(response, expectedResponse)
