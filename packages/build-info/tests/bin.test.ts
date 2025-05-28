@@ -42,23 +42,23 @@ test('CLI does not print js-workspaces if given a project without it', async (ct
   const { stdout } = await runBinary(fixture.cwd)
   expect(stdout).toMatchInlineSnapshot(`
     "{
-      \\"frameworks\\": [],
-      \\"settings\\": [],
-      \\"langRuntimes\\": [
+      "frameworks": [],
+      "settings": [],
+      "langRuntimes": [
         {
-          \\"id\\": \\"node\\",
-          \\"name\\": \\"NodeJS\\"
+          "id": "node",
+          "name": "NodeJS"
         }
       ],
-      \\"buildSystems\\": [],
-      \\"packageManager\\": {
-        \\"name\\": \\"pnpm\\",
-        \\"installCommand\\": \\"pnpm install\\",
-        \\"runCommand\\": \\"pnpm run\\",
-        \\"lockFiles\\": [
-          \\"pnpm-lock.yaml\\"
+      "buildSystems": [],
+      "packageManager": {
+        "name": "pnpm",
+        "installCommand": "pnpm install",
+        "runCommand": "pnpm run",
+        "lockFiles": [
+          "pnpm-lock.yaml"
         ],
-        \\"forceEnvironment\\": \\"NETLIFY_USE_PNPM\\"
+        "forceEnvironment": "NETLIFY_USE_PNPM"
       }
     }"
   `)

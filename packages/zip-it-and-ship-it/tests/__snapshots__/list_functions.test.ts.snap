@@ -5,7 +5,7 @@ exports[`listFunctions > V2 API > listFunctions includes routes when parseISC is
   "displayName": undefined,
   "excludedRoutes": [
     {
-      "expression": "^\\\\/products\\\\/sale(.*)\\\\/?$",
+      "expression": "^\\/products\\/sale(.*)\\/?$",
       "pattern": "/products/sale*",
     },
   ],
@@ -16,7 +16,7 @@ exports[`listFunctions > V2 API > listFunctions includes routes when parseISC is
   "name": "with-excluded-expression",
   "routes": [
     {
-      "expression": "^\\\\/products(?:\\\\/([^\\\\/]+?))\\\\/?$",
+      "expression": "^\\/products(?:\\/([^\\/]+?))\\/?$",
       "methods": [],
       "pattern": "/products/:id",
       "prefer_static": undefined,
