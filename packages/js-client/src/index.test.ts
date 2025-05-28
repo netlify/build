@@ -537,7 +537,7 @@ test('Handles API rate limiting', async (t) => {
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
@@ -552,9 +552,10 @@ test('Handles API rate limiting', async (t) => {
 test('Handles API rate limiting when date is in the past', async (t) => {
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
+  const retryAt = '0'
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
-    .reply(429, { retryAt: 0 }, { 'X-RateLimit-Reset': 0 })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
@@ -588,7 +589,7 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
     .times(times)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
@@ -632,7 +633,7 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
   const client: any = getClient()
