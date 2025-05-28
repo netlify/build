@@ -195,7 +195,7 @@ const getNPMSpecifiers = async (
 
           const { matched, resolvedImport } = resolve(specifier, importMap, baseURL)
           if (matched) {
-            if (resolvedImport.protocol === 'file:') {
+            if (resolvedImport?.protocol === 'file:') {
               const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
               if (alreadySeenPaths.has(newSpecifier)) {
                 break
