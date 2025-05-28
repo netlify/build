@@ -6,7 +6,7 @@
   "type": "module",
   "author": "Netlify Inc.",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 . --fix",
     "lint:ci": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 .",
     "build": "lerna run build",
