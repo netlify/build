@@ -39,7 +39,7 @@
     "@opentelemetry/resources": "~1.24.0",
     "@opentelemetry/semantic-conventions": "~1.24.0",
     "read-package-up": "^11.0.0",
-    "yargs-parser": "^21.1.1"
+    "yargs-parser": "^22.0.0"
   },
   "devDependencies": {
     "@opentelemetry/api": "~1.8.0",
