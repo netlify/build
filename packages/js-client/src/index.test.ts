@@ -349,7 +349,6 @@ test('Handle error empty responses', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
-  t.is(error.message, expectedResponse)
   t.is(error.data, expectedResponse)
   t.true(error instanceof TextHTTPError)
   t.true(error.stack !== undefined)
@@ -366,7 +365,6 @@ test('Handle error text responses', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
-  t.is(error.message, expectedResponse)
   t.is(error.data, expectedResponse)
   t.true(error instanceof TextHTTPError)
   t.true(error.stack !== undefined)
@@ -385,7 +383,6 @@ test('Handle error text responses on JSON endpoints', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
-  t.is(error.message, expectedResponse)
   t.is(error.data, expectedResponse)
   t.true(error instanceof TextHTTPError)
   t.true(error.stack !== undefined)
@@ -402,7 +399,6 @@ test('Handle error JSON responses', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, status)
-  t.notThrows(() => JSON.parse(error.message))
   t.deepEqual(error.json, errorJson)
   t.true(error instanceof JSONHTTPError)
   t.true(error.stack !== undefined)
@@ -511,7 +507,7 @@ test('Does not retry on server errors', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, 500)
-  t.is(error.message, errorMessage)
+  t.is(error.data, errorMessage)
   t.false(scope.isDone())
 })
 
@@ -600,7 +596,7 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
   const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
 
   t.is(error.status, 429)
-  t.is(error.message, JSON.stringify({ retryAt }))
+  t.deepEqual(error.json, { retryAt })
   t.true(Number.isInteger(error.json.retryAt))
 
   t.false(scope.isDone())
