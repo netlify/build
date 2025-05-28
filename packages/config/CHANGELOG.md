@@ -76,6 +76,41 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.7](https://github.com/netlify/build/compare/config-v23.0.6...config-v23.0.7) (2025-05-26)
+
+
+### Bug Fixes
+
+* **config:** auto install required extensions in buildbot ([#6386](https://github.com/netlify/build/issues/6386)) ([d4b2046](https://github.com/netlify/build/commit/d4b204638b0dd9a325632f0273caa962b005c022))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.1 to ^14.0.2
+
+## [23.0.6](https://github.com/netlify/build/compare/config-v23.0.5...config-v23.0.6) (2025-05-23)
+
+
+### Bug Fixes
+
+* drop node-fetch from config package ([#6380](https://github.com/netlify/build/issues/6380)) ([c88f8d3](https://github.com/netlify/build/commit/c88f8d3635633ff1445af8054693f94c07e59065))
+
+## [23.0.5](https://github.com/netlify/build/compare/config-v23.0.4...config-v23.0.5) (2025-05-22)
+
+
+### Bug Fixes
+
+* **config:** add more logging for `auto_install_required_extensions` feature flag ([#6372](https://github.com/netlify/build/issues/6372)) ([7974d26](https://github.com/netlify/build/commit/7974d266633e300c8d43ec57a55c346ebfa08a05))
+
+## [23.0.4](https://github.com/netlify/build/compare/config-v23.0.3...config-v23.0.4) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency path-type to v6 ([#6358](https://github.com/netlify/build/issues/6358)) ([77557fe](https://github.com/netlify/build/commit/77557fe197c20d1d5597a8c70d92944f22515293))
+
 ## [23.0.3](https://github.com/netlify/build/compare/config-v23.0.2...config-v23.0.3) (2025-05-21)
 
 

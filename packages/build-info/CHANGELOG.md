@@ -64,6 +64,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.4](https://github.com/netlify/build/compare/build-info-v10.0.3...build-info-v10.0.4) (2025-05-23)
+
+
+### Bug Fixes
+
+* remove node-fetch from build-info package ([#6378](https://github.com/netlify/build/issues/6378)) ([ed08b0d](https://github.com/netlify/build/commit/ed08b0dc1a4b8e916b1c72b5eddda21bb79bbcfe))
+
+## [10.0.3](https://github.com/netlify/build/compare/build-info-v10.0.2...build-info-v10.0.3) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
+## [10.0.2](https://github.com/netlify/build/compare/build-info-v10.0.1...build-info-v10.0.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency read-pkg to v9 ([#6346](https://github.com/netlify/build/issues/6346)) ([fe2a1b4](https://github.com/netlify/build/commit/fe2a1b4062b3db2ee16f47815d0bec1379ba7b11))
+
 ## [10.0.1](https://github.com/netlify/build/compare/build-info-v10.0.0...build-info-v10.0.1) (2025-05-20)
 
 

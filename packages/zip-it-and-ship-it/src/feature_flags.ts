@@ -21,9 +21,6 @@ export const defaultFlags = {
   // Output CJS file extension.
   zisi_output_cjs_extension: false,
 
-  // Create unique entry file instead of a file that is based on the function name.
-  zisi_unique_entry_file: false,
-
   // If multiple glob stars are in includedFiles, fail the build instead of warning.
   zisi_esbuild_fail_double_glob: false,
 
