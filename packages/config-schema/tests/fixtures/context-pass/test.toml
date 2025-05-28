@@ -1,0 +1,21 @@
+[context.production]
+command = "make production"
+[context.production.environment]
+ACCESS_TOKEN = "super secret"
+[[context.production.plugins]]
+package = "@netlify/plugin-sitemap"
+
+[context.deploy-preview.environment]
+ACCESS_TOKEN = "not so secret"
+
+[context.branch-deploy]
+command = "make staging"
+
+[context.dev.environment]
+NODE_ENV = "development"
+
+[context.feature]
+command = "make feature"
+
+[context."features/branch"]
+command = "gulp"
