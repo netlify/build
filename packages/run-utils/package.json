@@ -56,7 +56,7 @@
     "@types/node": "^18.0.0",
     "semver": "^7.3.8",
     "typescript": "^5.0.0",
-    "vitest": "^0.34.0"
+    "vitest": "^3.0.0"
   },
   "engines": {
     "node": ">=18.14.0"
