@@ -60,7 +60,7 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "chalk": "^5.0.0",
-    "cron-parser": "^4.1.0",
+    "cron-parser": "^5.0.0",
     "deepmerge": "^4.2.2",
     "dot-prop": "^9.0.0",
     "execa": "^8.0.0",
