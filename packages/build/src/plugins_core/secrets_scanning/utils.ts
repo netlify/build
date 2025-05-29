@@ -19,6 +19,7 @@ interface ScanArgs {
   filePaths: string[]
   enhancedScanning?: boolean
   omitValuesFromEnhancedScan?: unknown[]
+  useMinimalChunks: boolean
 }
 
 interface MatchResult {
@@ -146,54 +147,49 @@ const likelySecretRegex = new RegExp(
 )
 
 /**
- * Checks a line of text for likely secrets based on known prefixes and patterns.
+ * Checks a chunk of text for likely secrets based on known prefixes and patterns.
  * The function works by:
- * 1. Splitting the line into tokens using quotes, whitespace, equals signs, colons, and commas as delimiters
+ * 1. Splitting the chunk into tokens using quotes, whitespace, equals signs, colons, and commas as delimiters
  * 2. For each token, checking if it matches our secret pattern:
  *    - Must start (^) with one of our known prefixes (e.g. aws_, github_pat_, etc)
  *    - Must be followed by at least MIN_CHARS_AFTER_PREFIX non-whitespace characters
  *    - Must extend to the end ($) of the token
  *
- * For example, given the line: secretKey='aws_123456789012345678'
+ * For example, given the chunk: secretKey='aws_123456789012345678'
  * 1. It's split into tokens: ['secretKey', 'aws_123456789012345678']
  * 2. Each token is checked against the regex pattern:
  *    - 'secretKey' doesn't match (doesn't start with a known prefix)
  *    - 'aws_123456789012345678' matches (starts with 'aws_' and has sufficient length)
  *
- * @param line The line of text to check
- * @param file The file path where this line was found
- * @param lineNumber The line number in the file
- * @param omitValuesFromEnhancedScan Optional array of values to exclude from matching
- * @returns Array of matches found in the line
  */
 export function findLikelySecrets({
-  line,
-  file,
-  lineNumber,
+  text,
   omitValuesFromEnhancedScan = [],
 }: {
-  line: string
-  file: string
-  lineNumber: number
+  /**
+   * Text to check
+   */
+  text: string
+  /**
+   * Optional array of values to exclude from matching
+   */
   omitValuesFromEnhancedScan?: unknown[]
-}): MatchResult[] {
-  if (!line) return []
+}): { index: number; prefix: string }[] {
+  if (!text) return []
 
-  const matches: MatchResult[] = []
+  const matches: ReturnType<typeof findLikelySecrets> = []
   let match: RegExpExecArray | null
   const allOmittedValues = [...omitValuesFromEnhancedScan, ...SAFE_LISTED_VALUES]
 
-  while ((match = likelySecretRegex.exec(line)) !== null) {
+  while ((match = likelySecretRegex.exec(text)) !== null) {
     const token = match.groups?.token
     const prefix = match.groups?.prefix
     if (!token || !prefix || allOmittedValues.includes(token)) {
       continue
     }
     matches.push({
-      file,
-      lineNumber,
-      key: prefix,
-      enhancedMatch: true,
+      prefix,
+      index: match.index,
     })
   }
 
@@ -279,6 +275,7 @@ export async function scanFilesForKeyValues({
   base,
   enhancedScanning,
   omitValuesFromEnhancedScan = [],
+  useMinimalChunks = false,
 }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
@@ -309,6 +306,8 @@ export async function scanFilesForKeyValues({
 
   let settledPromises: PromiseSettledResult<MatchResult[]>[] = []
 
+  const searchStream = useMinimalChunks ? searchStreamMinimalChunks : searchStreamReadline
+
   // process the scanning in batches to not run into memory issues by
   // processing all files at the same time.
   while (filePaths.length > 0) {
@@ -333,19 +332,24 @@ export async function scanFilesForKeyValues({
   return scanResults
 }
 
-const searchStream = ({
-  basePath,
-  file,
-  keyValues,
-  enhancedScanning,
-  omitValuesFromEnhancedScan = [],
-}: {
+type SearchStreamOptions = {
   basePath: string
   file: string
   keyValues: Record<string, string[]>
   enhancedScanning?: boolean
   omitValuesFromEnhancedScan?: unknown[]
-}): Promise<MatchResult[]> => {
+}
+
+/**
+ * Search stream implementation using node:readline
+ */
+const searchStreamReadline = ({
+  basePath,
+  file,
+  keyValues,
+  enhancedScanning,
+  omitValuesFromEnhancedScan = [],
+}: SearchStreamOptions): Promise<MatchResult[]> => {
   return new Promise((resolve, reject) => {
     const filePath = path.resolve(basePath, file)
 
@@ -382,7 +386,14 @@ const searchStream = ({
       lineNumber++
       if (typeof line === 'string') {
         if (enhancedScanning) {
-          matches.push(...findLikelySecrets({ line, file, lineNumber, omitValuesFromEnhancedScan }))
+          matches.push(
+            ...findLikelySecrets({ text: line, omitValuesFromEnhancedScan }).map(({ prefix }) => ({
+              key: prefix,
+              file,
+              lineNumber,
+              enhancedMatch: true,
+            })),
+          )
         }
         if (maxMultiLineCount > 1) {
           lines.push(line)
@@ -467,6 +478,218 @@ const searchStream = ({
     })
 
     rl.on('close', function () {
+      resolve(matches)
+    })
+  })
+}
+
+/**
+ * Search stream implementation using just read stream that allows to buffer less content
+ */
+const searchStreamMinimalChunks = ({
+  basePath,
+  file,
+  keyValues,
+  enhancedScanning,
+  omitValuesFromEnhancedScan = [],
+}: SearchStreamOptions): Promise<MatchResult[]> => {
+  return new Promise((resolve, reject) => {
+    const matches: MatchResult[] = []
+
+    const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
+
+    // determine longest value that we will search for - needed to determine minimal size of rolling buffer
+    const maxValLength = Math.max(
+      0,
+      // explicit secrets
+      ...keyVals.map((v) => v.length),
+      ...(enhancedScanning
+        ? [
+            // omitted likely secrets (after finding likely secret we check if it should be omitted, so we need to capture at least size of omitted values)
+            ...omitValuesFromEnhancedScan.map((v) => (typeof v === 'string' ? v.length : 0)),
+            // minimum length needed to find likely secret
+            ...LIKELY_SECRET_PREFIXES.map((v) => v.length + MIN_CHARS_AFTER_PREFIX),
+          ]
+        : []),
+    )
+
+    if (maxValLength === 0) {
+      // no non-empty values to scan for
+      resolve(matches)
+      return
+    }
+
+    const filePath = path.resolve(basePath, file)
+
+    const inStream = createReadStream(filePath)
+
+    function getKeyForValue(val) {
+      let key = ''
+      for (const [secretKeyName, valuePermutations] of Object.entries(keyValues)) {
+        if (valuePermutations.includes(val)) {
+          key = secretKeyName
+        }
+      }
+      return key
+    }
+
+    let buffer = ''
+
+    let newLinesIndexesInCurrentBuffer: number[] | null = null
+    function getCurrentBufferNewLineIndexes() {
+      if (newLinesIndexesInCurrentBuffer === null) {
+        newLinesIndexesInCurrentBuffer = [] as number[]
+        let newLineIndex = -1
+        while ((newLineIndex = buffer.indexOf('\n', newLineIndex + 1)) !== -1) {
+          newLinesIndexesInCurrentBuffer.push(newLineIndex)
+        }
+      }
+
+      return newLinesIndexesInCurrentBuffer
+    }
+
+    /**
+     * Amount of characters that were fully processed. Used to determine absolute position of current rolling buffer
+     * in the file.
+     */
+    let processedCharacters = 0
+    /**
+     * Amount of lines that were fully processed. Used to determine absolute line number of matches in current rolling buffer.
+     */
+    let processedLines = 0
+    /**
+     * Map keeping track of found secrets in current file. Used to prevent reporting same secret+position multiple times.
+     * Needed because rolling buffer might retain same secret in multiple passes.
+     */
+    const foundIndexes = new Map<string, Set<number>>()
+    /**
+     * We report given secret at most once per line, so we keep track lines we already reported for given secret.
+     */
+    const foundLines = new Map<string, Set<number>>()
+
+    /**
+     * Calculate absolute line number in a file for given match in the current rolling buffer.
+     */
+    function getLineNumberForMatchInTheBuffer({ indexInBuffer, key }: { indexInBuffer: number; key: string }) {
+      const absolutePositionInFile = processedCharacters + indexInBuffer
+
+      // check if we already handled match for given key in this position
+      let foundIndexesForKey = foundIndexes.get(key)
+      if (!foundIndexesForKey?.has(absolutePositionInFile)) {
+        // ensure we track match for this key and position to not report it again in future passes
+        if (!foundIndexesForKey) {
+          foundIndexesForKey = new Set<number>()
+          foundIndexes.set(key, foundIndexesForKey)
+        }
+        foundIndexesForKey.add(absolutePositionInFile)
+
+        // calculate line number based on amount of fully processed lines and position of line breaks in current buffer
+        let lineNumber = processedLines + 1
+        for (const newLineIndex of getCurrentBufferNewLineIndexes()) {
+          if (indexInBuffer > newLineIndex) {
+            lineNumber++
+          } else {
+            break
+          }
+        }
+
+        // check if we already handled match for given key in this line
+        let foundLinesForKey = foundLines.get(key)
+        if (!foundLinesForKey?.has(lineNumber)) {
+          if (!foundLinesForKey) {
+            foundLinesForKey = new Set<number>()
+            foundLines.set(key, foundLinesForKey)
+          }
+          foundLinesForKey.add(lineNumber)
+
+          // only report line number if we didn't report it yet for this key
+          return lineNumber
+        }
+      }
+    }
+
+    function processBuffer() {
+      for (const valVariant of keyVals) {
+        let indexInBuffer = -1
+        while ((indexInBuffer = buffer.indexOf(valVariant, indexInBuffer + 1)) !== -1) {
+          const key = getKeyForValue(valVariant)
+          const lineNumber = getLineNumberForMatchInTheBuffer({
+            indexInBuffer,
+            key,
+          })
+
+          if (typeof lineNumber === 'number') {
+            matches.push({
+              file,
+              lineNumber,
+              key,
+              enhancedMatch: false,
+            })
+          }
+        }
+      }
+
+      if (enhancedScanning) {
+        const likelySecrets = findLikelySecrets({ text: buffer, omitValuesFromEnhancedScan })
+        for (const { index, prefix } of likelySecrets) {
+          const lineNumber = getLineNumberForMatchInTheBuffer({
+            indexInBuffer: index,
+            key: prefix,
+          })
+
+          if (typeof lineNumber === 'number') {
+            matches.push({
+              file,
+              lineNumber,
+              key: prefix,
+              enhancedMatch: true,
+            })
+          }
+        }
+      }
+    }
+
+    inStream.on('data', function (chunk) {
+      buffer += chunk.toString()
+
+      // reset new line positions in current buffer
+      newLinesIndexesInCurrentBuffer = null
+
+      if (buffer.length > maxValLength) {
+        // only process if buffer is large enough to contain longest secret, if final chunk isn't large enough
+        // it will be processed in `close` event handler
+        processBuffer()
+
+        // we will keep maxValLength characters in the buffer, surplus of characters at this point is fully processed
+        const charactersInBufferThatWereFullyProcessed = buffer.length - maxValLength
+        processedCharacters += charactersInBufferThatWereFullyProcessed
+
+        // advance processed lines
+        for (const newLineIndex of getCurrentBufferNewLineIndexes()) {
+          if (newLineIndex < charactersInBufferThatWereFullyProcessed) {
+            processedLines++
+          } else {
+            break
+          }
+        }
+
+        // Keep the last part of the buffer to handle split values across chunks
+        buffer = buffer.slice(charactersInBufferThatWereFullyProcessed)
+      }
+    })
+
+    inStream.on('error', function (error: any) {
+      if (error?.code === 'EISDIR') {
+        // file path is a directory - do nothing
+        resolve(matches)
+      } else {
+        reject(error)
+      }
+    })
+
+    inStream.on('close', function () {
+      // process any remaining buffer content
+      processBuffer()
       resolve(matches)
     })
   })
