@@ -130,19 +130,19 @@ const MIN_CHARS_AFTER_PREFIX = 12
 const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.()|[\]{}]/g, '\\$&')).join('|')
 
 // Build regex pattern for matching secrets with various delimiters and quotes:
-// (?:["'`]|^|[=:,]) - match either quotes, start of line, or delimiters (=:,) at the start
+// (?:["'\`]|[=]) - match either quotes, or = at the start
 // Named capturing groups:
 //   - <token>: captures the entire secret value including its prefix
 //   - <prefix>: captures just the prefix part (e.g. 'aws_', 'github_pat_')
 // (?:${prefixMatchingRegex}) - non-capturing group containing our escaped prefixes (e.g. aws_|github_pat_|etc)
-// [^ "'`=:,]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars after the prefix
-// [^ "'`=:,]*? - lazily match any additional chars that aren't quotes/delimiters
-// (?:["'`]|[ =:,]|$) - end with either quotes, delimiters, whitespace, or end of line
+// [a-zA-Z0-9-]{${MIN_CHARS_AFTER_PREFIX}} - match exactly MIN_CHARS_AFTER_PREFIX chars (alphanumeric or dash) after the prefix
+// [a-zA-Z0-9-]*? - lazily match any additional chars (alphanumeric or dash)
+// (?:["'\`]|$) - end with either quotes or end of line
 // gi - global and case insensitive flags
 // Note: Using the global flag (g) means this regex object maintains state between executions.
 // We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
 const likelySecretRegex = new RegExp(
-  `(?:["'\`]|^|[=:,]) *(?<token>(?<prefix>${prefixMatchingRegex})[^ "'\`=:,]{${MIN_CHARS_AFTER_PREFIX}}[^ "'\`=:,]*?)(?:["'\`]|[ =:,]|$)`,
+  `(?:["'\`]|[=]) *(?<token>(?<prefix>${prefixMatchingRegex})[a-zA-Z0-9-]{${MIN_CHARS_AFTER_PREFIX}}[a-zA-Z0-9-]*?)(?:["'\`]|$)`,
   'gi',
 )
 
