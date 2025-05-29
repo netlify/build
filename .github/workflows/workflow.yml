@@ -203,3 +203,19 @@ jobs:
             packages/git-utils/coverage/coverage-final.json, packages/run-utils/coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
         continue-on-error: true
+
+  check-engines:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check engines
+        run: npx --yes installed-check --ignore-dev
