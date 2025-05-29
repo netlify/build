@@ -4,7 +4,6 @@ import { join } from 'path'
 import process from 'process'
 
 import getPort from 'get-port'
-import fetch from 'node-fetch'
 import tmp from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'

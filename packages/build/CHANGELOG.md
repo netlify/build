@@ -105,6 +105,35 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.2.1](https://github.com/netlify/build/compare/build-v33.2.0...build-v33.2.1) (2025-05-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.6 to ^23.0.7
+
+## [33.2.0](https://github.com/netlify/build/compare/build-v33.1.5...build-v33.2.0) (2025-05-23)
+
+
+### Features
+
+* Enhanced secret scan no longer relies on env vars ([#6333](https://github.com/netlify/build/issues/6333)) ([86dead5](https://github.com/netlify/build/commit/86dead5ca2f78f27006bb44d22e72641b2f23940))
+* safelist common string in react proptypes from secret detection ([#6375](https://github.com/netlify/build/issues/6375)) ([4fd7f7c](https://github.com/netlify/build/commit/4fd7f7c3f7a0b4fcd893928a83ef083b67f3e4db))
+
+
+### Bug Fixes
+
+* drop node-fetch from build package ([#6377](https://github.com/netlify/build/issues/6377)) ([3c28af0](https://github.com/netlify/build/commit/3c28af05d66997f257f650f3841981f16c104a44))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.5 to ^23.0.6
+
 ## [33.1.5](https://github.com/netlify/build/compare/build-v33.1.4...build-v33.1.5) (2025-05-22)
 
 

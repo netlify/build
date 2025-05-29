@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import cpy from 'cpy'
-import tar from 'tar'
+import { x as tarExtract } from 'tar'
 import tmp from 'tmp-promise'
 
 const exec = promisify(childProcess.exec)
@@ -36,7 +36,7 @@ const installPackage = async () => {
 
   console.log(`Uncompressing the tarball at '${filename}'...`)
 
-  await tar.x({ C: path, file: filename, strip: 1 })
+  await tarExtract({ C: path, file: filename, strip: 1 })
 
   pathsToCleanup.add(path)
   pathsToCleanup.add(filename)

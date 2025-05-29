@@ -1,8 +1,5 @@
-import { version as nodeVersion } from 'node:process'
-
 import { getDeployStore } from '@netlify/blobs'
 import pMap from 'p-map'
-import semver from 'semver'
 
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
 import { logError } from '../../log/logger.js'
@@ -30,12 +27,6 @@ const coreStep: CoreStepFunction = async function ({
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
     apiURL: `https://${apiHost}`,
-  }
-
-  // If we don't have native `fetch` in the global scope, add a polyfill.
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = (await import('node-fetch')).default as unknown as typeof fetch
-    storeOpts.fetch = nodeFetch
   }
 
   const blobs = await scanForBlobs(buildDir, packagePath)
@@ -72,8 +63,7 @@ const coreStep: CoreStepFunction = async function ({
         systemLog(`Uploading blob ${key}`)
 
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.length)
-        await blobStore.set(key, arrayBuffer, { metadata })
+        await blobStore.set(key, new Blob([data]), { metadata })
       },
       { concurrency: 10 },
     )

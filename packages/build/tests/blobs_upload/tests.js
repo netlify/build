@@ -96,11 +96,6 @@ test.serial('Blobs upload step uploads files to deploy store (legacy API)', asyn
   t.is(defaultRegionRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -134,11 +129,6 @@ test.serial('Blobs upload step uploads files to deploy store (legacy deploy conf
   t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -175,11 +165,6 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
   t.is(regionAutoRequests.length, 3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = await import('node-fetch')
-    storeOpts.fetch = nodeFetch.default
-  }
-
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
@@ -222,11 +207,6 @@ if (semver.gte(nodeVersion, '18.19.0')) {
     t.is(t.context.blobRequests.set.length, 6)
 
     const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-    if (semver.lt(nodeVersion, '18.0.0')) {
-      const nodeFetch = await import('node-fetch')
-      storeOpts.fetch = nodeFetch.default
-    }
-
     const store = getDeployStore(storeOpts)
 
     const blob1 = await store.getWithMetadata('something.txt')
