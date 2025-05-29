@@ -1,7 +1,7 @@
 {
   "name": "@netlify/api",
   "description": "Netlify Node.js API client",
-  "version": "14.0.2",
+  "version": "14.0.3",
   "type": "module",
   "exports": "./lib/index.js",
   "main": "./lib/index.js",

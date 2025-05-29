@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.0.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.1...opentelemetry-sdk-setup-v2.0.2) (2025-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency yargs-parser to v22 ([#6411](https://github.com/netlify/build/issues/6411)) ([80179bc](https://github.com/netlify/build/commit/80179bc7a5b0370045077f40443c513c88f971ed))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~2.0.0 to ~2.0.1
+
 ## [2.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.0...opentelemetry-sdk-setup-v2.0.1) (2025-05-16)
 
 

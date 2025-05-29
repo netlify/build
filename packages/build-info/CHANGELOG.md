@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.5](https://github.com/netlify/build/compare/build-info-v10.0.4...build-info-v10.0.5) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
 ## [10.0.4](https://github.com/netlify/build/compare/build-info-v10.0.3...build-info-v10.0.4) (2025-05-23)
 
 

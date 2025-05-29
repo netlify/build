@@ -1,5 +1,14 @@
 # Changelog
 
+## [14.0.5](https://github.com/netlify/build/compare/edge-bundler-v14.0.4...edge-bundler-v14.0.5) (2025-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @import-maps/resolve to v2 ([#6365](https://github.com/netlify/build/issues/6365)) ([5c0da95](https://github.com/netlify/build/commit/5c0da95c3a3d1aa84214da347c7e51f2ce4764e8))
+* remove node-fetch from edge-bundler package ([#6381](https://github.com/netlify/build/issues/6381)) ([354f1b1](https://github.com/netlify/build/commit/354f1b1ff104299214eb5d2a010f5430ca2581df))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
 ## [14.0.4](https://github.com/netlify/build/compare/edge-bundler-v14.0.3...edge-bundler-v14.0.4) (2025-05-20)
 
 

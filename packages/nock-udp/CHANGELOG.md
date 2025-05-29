@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/netlify/build/compare/nock-udp-v5.0.0...nock-udp-v5.0.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
 ## [5.0.0](https://github.com/netlify/build/compare/nock-udp-v4.0.0...nock-udp-v5.0.0) (2025-05-14)
 
 

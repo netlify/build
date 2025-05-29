@@ -105,6 +105,41 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.3.0](https://github.com/netlify/build/compare/build-v33.2.1...build-v33.3.0) (2025-05-29)
+
+
+### Features
+
+* allow enhanced scan to run without impacting builds ([#6376](https://github.com/netlify/build/issues/6376)) ([9f063f8](https://github.com/netlify/build/commit/9f063f8a409bbeb09b5b2849671daf91640508ac))
+* allow to scan secrets without buffering whole lines ([#6318](https://github.com/netlify/build/issues/6318)) ([5b23ae7](https://github.com/netlify/build/commit/5b23ae7fbd631ead68d4ae5b33454638026cbd8c))
+* rename enhanced secret scan env vars ([#6414](https://github.com/netlify/build/issues/6414)) ([bd2cf20](https://github.com/netlify/build/commit/bd2cf209f8033c02aa18e079bd80df5f9a233374))
+* restrict requirements for enhanced secret scan matches ([#6379](https://github.com/netlify/build/issues/6379)) ([a976d15](https://github.com/netlify/build/commit/a976d1517808ef9b98b5fe8a5c8045455b2cfb00))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to v9 ([#6412](https://github.com/netlify/build/issues/6412)) ([5263015](https://github.com/netlify/build/commit/5263015149d569f7cc7e854aadca1850cb1cf74a))
+* **deps:** update dependency got to v13 ([#6399](https://github.com/netlify/build/issues/6399)) ([c25de20](https://github.com/netlify/build/commit/c25de20999c75fca1a2b868ae73d3d53d85c5638))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.2 to ^6.0.3
+    * @netlify/config bumped from ^23.0.7 to ^23.0.8
+    * @netlify/edge-bundler bumped from 14.0.4 to 14.0.5
+    * @netlify/functions-utils bumped from ^6.0.6 to ^6.0.7
+    * @netlify/git-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/opentelemetry-utils bumped from ^2.0.0 to ^2.0.1
+    * @netlify/run-utils bumped from ^6.0.1 to ^6.0.2
+    * @netlify/zip-it-and-ship-it bumped from 12.1.0 to 12.1.1
+  * devDependencies
+    * @netlify/nock-udp bumped from ^5.0.0 to ^5.0.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 to ^2.0.2
+
 ## [33.2.1](https://github.com/netlify/build/compare/build-v33.2.0...build-v33.2.1) (2025-05-26)
 
 
