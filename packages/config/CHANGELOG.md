@@ -76,6 +76,23 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.8](https://github.com/netlify/build/compare/config-v23.0.7...config-v23.0.8) (2025-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency validate-npm-package-name to v5 ([#6389](https://github.com/netlify/build/issues/6389)) ([6871865](https://github.com/netlify/build/commit/687186542bf6b75ed25d715313470bf66815bad5))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.2 to ^14.0.3
+    * @netlify/headers-parser bumped from ^9.0.0 to ^9.0.1
+    * @netlify/redirect-parser bumped from ^15.0.1 to ^15.0.2
+
 ## [23.0.7](https://github.com/netlify/build/compare/config-v23.0.6...config-v23.0.7) (2025-05-26)
 
 

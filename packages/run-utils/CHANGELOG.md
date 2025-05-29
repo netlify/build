@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.2](https://github.com/netlify/build/compare/run-utils-v6.0.1...run-utils-v6.0.2) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
 ## [6.0.1](https://github.com/netlify/build/compare/run-utils-v6.0.0...run-utils-v6.0.1) (2025-05-20)
 
 
