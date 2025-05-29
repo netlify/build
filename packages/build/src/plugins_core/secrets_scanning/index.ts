@@ -64,18 +64,18 @@ const coreStep: CoreStepFunction = async function ({
   if (enhancedSecretScan && enhancedScanShouldRunInActiveMode && !enhancedScanningEnabledInEnv) {
     logSecretsScanSkipMessage(
       logs,
-      'Enhanced secrets detection disabled via ENHANCED_SECRETS_SCAN_ENABLED flag set to false.',
+      'Enhanced secrets detection disabled via SECRETS_SCAN_SMART_DETECTION_ENABLED flag set to false.',
     )
   }
 
   if (
     enhancedScanShouldRunInActiveMode &&
     enhancedScanConfigured &&
-    envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES'] !== undefined
+    envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES'] !== undefined
   ) {
     log(
       logs,
-      `ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set to: ${envVars['ENHANCED_SECRETS_SCAN_OMIT_VALUES']}\n`,
+      `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set to: ${envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES']}\n`,
     )
   }
 

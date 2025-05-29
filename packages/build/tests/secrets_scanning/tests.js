@@ -294,7 +294,7 @@ for (const { testPrefix, featureFlags } of [
 
   test(
     testPrefix +
-      'secrets scanning, enhanced scan should not find matches when disabled with ENHANCED_SECRETS_SCAN_ENABLED set to false',
+      'secrets scanning, enhanced scan should not find matches when disabled with SECRETS_SCAN_SMART_DETECTION_ENABLED set to false',
     async (t) => {
       const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
         .withFlags({
@@ -313,7 +313,8 @@ for (const { testPrefix, featureFlags } of [
   )
 
   test(
-    testPrefix + 'secrets scanning, enhanced scan should skip matches defined in ENHANCED_SECRETS_SCAN_OMIT_VALUES',
+    testPrefix +
+      'secrets scanning, enhanced scan should skip matches defined in SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES',
     async (t) => {
       const { requests, output } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_omitted')
         .withFlags({
@@ -326,7 +327,7 @@ for (const { testPrefix, featureFlags } of [
         })
         .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-      t.true(normalizeOutput(output).includes('ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set'))
+      t.true(normalizeOutput(output).includes('SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set'))
       t.true(requests.length === 1)
       const request = requests[0]
       t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
@@ -334,7 +335,8 @@ for (const { testPrefix, featureFlags } of [
   )
 
   test(
-    testPrefix + 'secrets scanning, ENHANCED_SECRETS_SCAN_OMIT_VALUES not logged if enhanced scanning not enabled',
+    testPrefix +
+      'secrets scanning, SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES not logged if enhanced scanning not enabled',
     async (t) => {
       const { output } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_omitted')
         .withFlags({
@@ -347,7 +349,7 @@ for (const { testPrefix, featureFlags } of [
         })
         .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-      t.false(normalizeOutput(output).includes('ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set'))
+      t.false(normalizeOutput(output).includes('SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set'))
     },
   )
 

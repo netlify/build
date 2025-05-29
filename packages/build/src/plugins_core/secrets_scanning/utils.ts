@@ -53,7 +53,7 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
  * @returns
  */
 export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): boolean {
-  if (env.ENHANCED_SECRETS_SCAN_ENABLED === false || env.ENHANCED_SECRETS_SCAN_ENABLED === 'false') {
+  if (env.SECRETS_SCAN_SMART_DETECTION_ENABLED === false || env.SECRETS_SCAN_SMART_DETECTION_ENABLED === 'false') {
     return false
   }
   return true
@@ -71,7 +71,7 @@ export function getStringArrayFromEnvValue(env: Record<string, unknown>, envVarN
 }
 
 export function getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(env: Record<string, unknown>): unknown[] {
-  return getStringArrayFromEnvValue(env, 'ENHANCED_SECRETS_SCAN_OMIT_VALUES')
+  return getStringArrayFromEnvValue(env, 'SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES')
 }
 
 function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = []): string[] {
