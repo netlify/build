@@ -299,7 +299,7 @@ for (const { testPrefix, featureFlags } of [
       const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
         .withFlags({
           debug: false,
-          explicitSecretKeys: '',
+          explicitSecretKeys: 'ENV_VAR_1',
           enhancedSecretScan: true,
           deployId: 'test',
           token: 'test',
