@@ -18,16 +18,14 @@ test('findLikelySecrets - should not find secrets without quotes or delimiters',
   })
 })
 
-test('findLikelySecrets - should find secrets with quotes or delimiters', async (t) => {
+test('findLikelySecrets - should find secrets with quotes or equals', async (t) => {
   const matchingLines = [
     'my_secret_key=aws_123456789012345678',
-    'awsKey: aws_123456789012345678',
     'mySecretKey = aws_123456789012345678',
     'secretKey="aws_123456789012345678"',
     'secretKey = "aws_123456789012345678"',
     "secretKey='aws_123456789012345678'",
     'secretKey=`aws_123456789012345678`',
-    'someKey, aws_123456789012345678, otherKey',
   ]
   matchingLines.forEach((line, index) => {
     const matches = findLikelySecrets({ line, file: testFile, lineNumber: index })
