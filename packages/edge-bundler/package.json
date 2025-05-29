@@ -42,7 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@types/node": "^14.18.32",
+    "@types/node": "^18.0.0",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^0.34.0",
@@ -50,7 +50,7 @@
     "chalk": "^5.4.0",
     "nock": "^14.0.0",
     "npm-run-all2": "^6.0.0",
-    "tar": "^6.1.11",
+    "tar": "^7.0.0",
     "typescript": "^5.0.0",
     "vitest": "^0.34.0"
   },
@@ -58,7 +58,7 @@
     "node": ">=18.14.0"
   },
   "dependencies": {
-    "@import-maps/resolve": "^1.0.1",
+    "@import-maps/resolve": "^2.0.0",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
     "better-ajv-errors": "^1.2.0",
