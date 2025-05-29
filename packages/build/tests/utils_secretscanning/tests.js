@@ -24,6 +24,7 @@ test('findLikelySecrets - should find secrets with quotes or delimiters', async 
     'awsKey: aws_123456789012345678',
     'mySecretKey = aws_123456789012345678',
     'secretKey="aws_123456789012345678"',
+    'secretKey = "aws_123456789012345678"',
     "secretKey='aws_123456789012345678'",
     'secretKey=`aws_123456789012345678`',
     'someKey, aws_123456789012345678, otherKey',
