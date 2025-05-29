@@ -150,7 +150,7 @@ test('secrets scanning, should skip when enhanced scan and likely secrets passed
   t.true(requests.length === 0)
 })
 
-test('secrets scanning, enhanced scan should not find matches when disabled with ENHANCED_SECRETS_SCAN_ENABLED set to false', async (t) => {
+test('secrets scanning, enhanced scan should not find matches when disabled with SECRETS_SCAN_SMART_DETECTION_ENABLED set to false', async (t) => {
   const { requests } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_disabled')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
@@ -159,23 +159,23 @@ test('secrets scanning, enhanced scan should not find matches when disabled with
   t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
 })
 
-test('secrets scanning, enhanced scan should skip matches defined in ENHANCED_SECRETS_SCAN_OMIT_VALUES', async (t) => {
+test('secrets scanning, enhanced scan should skip matches defined in SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES', async (t) => {
   const { requests, output } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_omitted')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: true, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-  t.true(normalizeOutput(output).includes('ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set'))
+  t.true(normalizeOutput(output).includes('SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set'))
   t.true(requests.length === 1)
   const request = requests[0]
   t.is(request.body.secrets_scan.enhancedSecretsScanMatches.length, 0)
 })
 
-test('secrets scanning, ENHANCED_SECRETS_SCAN_OMIT_VALUES not logged if enhanced scanning not enabled', async (t) => {
+test('secrets scanning, SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES not logged if enhanced scanning not enabled', async (t) => {
   const { output } = await new Fixture('./fixtures/src_scanning_likely_enhanced_scan_secrets_omitted')
     .withFlags({ debug: false, explicitSecretKeys: '', enhancedSecretScan: false, deployId: 'test', token: 'test' })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
-  t.false(normalizeOutput(output).includes('ENHANCED_SECRETS_SCAN_OMIT_VALUES override option set'))
+  t.false(normalizeOutput(output).includes('SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set'))
 })
 
 test('secrets scanning, should run when enhanced scan enabled and no env vars set', async (t) => {

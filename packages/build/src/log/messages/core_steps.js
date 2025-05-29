@@ -182,7 +182,7 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
     )
     logError(
       logs,
-      `\nIf these are expected, use ENHANCED_SECRETS_SCAN_OMIT_VALUES, or ENHANCED_SECRETS_SCAN_ENABLED to prevent detecting.`,
+      `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
     )
   }
 
