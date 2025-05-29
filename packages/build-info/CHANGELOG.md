@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.4](https://github.com/netlify/build/compare/build-info-v10.0.3...build-info-v10.0.4) (2025-05-23)
+
+
+### Bug Fixes
+
+* remove node-fetch from build-info package ([#6378](https://github.com/netlify/build/issues/6378)) ([ed08b0d](https://github.com/netlify/build/commit/ed08b0dc1a4b8e916b1c72b5eddda21bb79bbcfe))
+
 ## [10.0.3](https://github.com/netlify/build/compare/build-info-v10.0.2...build-info-v10.0.3) (2025-05-22)
 
 

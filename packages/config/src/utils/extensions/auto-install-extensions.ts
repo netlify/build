@@ -18,7 +18,6 @@ interface AutoInstallOptions {
   accountId: string
   token: string
   cwd: string
-  accounts: any
   integrations: IntegrationResponse[]
   offline: boolean
   testOpts: any
@@ -32,7 +31,6 @@ export async function handleAutoInstallExtensions({
   accountId,
   token,
   cwd,
-  accounts,
   integrations,
   offline,
   testOpts = {},
@@ -94,18 +92,6 @@ export async function handleAutoInstallExtensions({
   }
 
   try {
-    const account = accounts?.find((account: any) => account.id === accountId)
-    if (!account) {
-      console.error(`Failed to auto install extension(s): Couldn't find 'account' with id '${accountId}'`, {
-        accountId,
-        siteId,
-        cwd,
-        offline,
-        mode,
-      })
-      return integrations
-    }
-
     const packageJson = getPackageJSON(cwd)
     if (
       !packageJson?.dependencies ||
@@ -126,7 +112,7 @@ export async function handleAutoInstallExtensions({
     const results = await Promise.all(
       extensionsToInstall.map(async (ext) => {
         console.log(
-          `Installing extension "${ext.slug}" on team "${account.name}" required by package(s): "${ext.packages.join(
+          `Installing extension "${ext.slug}" on team "${accountId}" required by package(s): "${ext.packages.join(
             '",',
           )}"`,
         )
