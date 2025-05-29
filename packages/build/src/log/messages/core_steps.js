@@ -128,14 +128,19 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
   log(logs, msg, { color: THEME.highlightWords })
 }
 
-export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
+export const logSecretsScanFailBuildMessage = function ({
+  logs,
+  scanResults,
+  groupedResults,
+  enhancedScanShouldRunInActiveMode,
+}) {
   const { secretMatches, enhancedSecretMatches } = groupedResults
   const secretMatchesKeys = Object.keys(secretMatches)
   const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 && enhancedScanShouldRunInActiveMode ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
   // Explicit secret matches
@@ -162,28 +167,30 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
     )
   }
 
-  // Likely secret matches from enhanced scan
-  enhancedSecretMatchesKeys.forEach((key, index) => {
-    logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
+  if (enhancedScanShouldRunInActiveMode) {
+    // Likely secret matches from enhanced scan
+    enhancedSecretMatchesKeys.forEach((key, index) => {
+      logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
 
-    enhancedSecretMatches[key]
-      .sort((a, b) => {
-        return a.file > b.file ? 0 : 1
-      })
-      .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
-      })
-  })
+      enhancedSecretMatches[key]
+        .sort((a, b) => {
+          return a.file > b.file ? 0 : 1
+        })
+        .forEach(({ lineNumber, file }) => {
+          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+        })
+    })
 
-  if (enhancedSecretMatchesKeys.length) {
-    logError(
-      logs,
-      `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
-    )
-    logError(
-      logs,
-      `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
-    )
+    if (enhancedSecretMatchesKeys.length) {
+      logError(
+        logs,
+        `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
+      )
+      logError(
+        logs,
+        `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
+      )
+    }
   }
 
   logError(
