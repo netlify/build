@@ -12,9 +12,9 @@ interface Redirect {
   status?: HttpStatusCode
   force?: boolean
   signed?: string
-  query?: Partial<Record<string, string>>
-  headers?: Partial<Record<string, string>>
-  conditions?: Partial<Record<'Language' | 'Role' | 'Country' | 'Cookie', readonly string[]>>
+  query?: Record<string, string>
+  headers?: Record<string, string>
+  conditions?: Record<'Language' | 'Role' | 'Country' | 'Cookie', string[]>
 }
 
 interface Header {
