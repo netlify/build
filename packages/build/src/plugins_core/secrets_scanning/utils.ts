@@ -123,6 +123,30 @@ export function getSecretKeysToScanFor(env: Record<string, unknown>, secretKeys:
   return filteredSecretKeys.filter((key) => !isValueTrivial(env[key]))
 }
 
+const getShannonEntropy = (str: string): number => {
+  const len = str.length
+  if (len === 0) return 0
+
+  const freqMap = {}
+  for (const char of str) {
+    freqMap[char] = (freqMap[char] || 0) + 1
+  }
+
+  let entropy = 0
+  for (const char in freqMap) {
+    const p = freqMap[char] / len
+    entropy -= p * Math.log2(p)
+  }
+
+  return entropy
+}
+
+const HIGH_ENTROPY_THRESHOLD = 4.5
+const doesEntropyMeetThresholdForSecret = (str: string): boolean => {
+  const entropy = getShannonEntropy(str)
+  return entropy >= HIGH_ENTROPY_THRESHOLD
+}
+
 // Most prefixes are 4-5 chars, so requiring 12 chars after ensures a reasonable secret length
 const MIN_CHARS_AFTER_PREFIX = 12
 
@@ -185,6 +209,10 @@ export function findLikelySecrets({
     const token = match.groups?.token
     const prefix = match.groups?.prefix
     if (!token || !prefix || allOmittedValues.includes(token)) {
+      continue
+    }
+    // Despite the prefix, the string does not look random enough to be convinced it's a secret
+    if (!doesEntropyMeetThresholdForSecret(token)) {
       continue
     }
     matches.push({
