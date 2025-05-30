@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.4.0](https://github.com/netlify/build/compare/build-v33.3.0...build-v33.4.0) (2025-05-30)
+
+
+### Features
+
+* smart secret detection looks for high entropy level ([#6418](https://github.com/netlify/build/issues/6418)) ([c48e090](https://github.com/netlify/build/commit/c48e09048650601811c32f7a2e5d3640a8457f35))
+
 ## [33.3.0](https://github.com/netlify/build/compare/build-v33.2.1...build-v33.3.0) (2025-05-29)
 
 
