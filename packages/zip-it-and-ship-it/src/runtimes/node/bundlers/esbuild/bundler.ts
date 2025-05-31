@@ -60,11 +60,13 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 
     if (hasMultipleGlobs) {
       const resolved = await glob(pattern, {
-        noglobstar: true,
+        globstar: false,
         cwd: baseDir,
       })
 
-      result.push(...resolved)
+      // esbuild expects relative paths, but tinyglobby uses `posix.normalize()` which strips leading `./`
+      const esbuildPatterns = resolved.map((pattern) => `./${pattern}`)
+      result.push(...esbuildPatterns)
     } else {
       result.push(pattern)
     }

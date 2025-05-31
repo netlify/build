@@ -17,8 +17,7 @@ export const getSideFiles = async function (functionPath: string, stat: Stats): 
   const paths = await glob(`${functionPath}/**`, {
     absolute: true,
     cwd: functionPath,
-    ignore: `**/node_modules/**`,
-    nodir: true,
+    ignore: [`**/node_modules/**`],
   })
 
   return paths.filter((path) => !isJunk(basename(path)))
