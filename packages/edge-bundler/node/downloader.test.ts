@@ -119,7 +119,7 @@ test('fails downloading binary after 4th time', async (ctx: TestContext) => {
   try {
     await download(ctx.tmpDir, `^${version}`, testLogger)
   } catch (error) {
-    expect(error).toMatch(/Download failed with status code 500/)
+    expect((error as Error).message).toMatch(/Download failed with status code 500/)
   }
 
   expect(latestVersionMock.isDone()).toBe(true)
@@ -158,7 +158,7 @@ test('fails downloading if response stream throws error', async (ctx: TestContex
   try {
     await download(ctx.tmpDir, `^${version}`, testLogger)
   } catch (error) {
-    expect(error).toMatch(/stream error/)
+    expect((error as Error).message).toMatch(/stream error/)
   }
 
   expect(latestVersionMock.isDone()).toBe(true)
