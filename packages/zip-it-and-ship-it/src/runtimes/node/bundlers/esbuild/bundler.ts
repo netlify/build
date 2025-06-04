@@ -64,7 +64,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
         cwd: baseDir,
       })
 
-      // esbuild expects relative paths instead of posix paths
+      // esbuild expects relative paths to always have a leading `./`
       const esbuildPatterns = resolved.map((pattern) => `./${pattern}`)
       result.push(...esbuildPatterns)
     } else {
