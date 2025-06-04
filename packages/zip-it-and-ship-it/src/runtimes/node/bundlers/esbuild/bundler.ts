@@ -64,7 +64,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
         cwd: baseDir,
       })
 
-      // esbuild expects relative paths, but tinyglobby uses `posix.normalize()` which strips leading `./`
+      // esbuild expects relative paths instead of posix paths
       const esbuildPatterns = resolved.map((pattern) => `./${pattern}`)
       result.push(...esbuildPatterns)
     } else {
