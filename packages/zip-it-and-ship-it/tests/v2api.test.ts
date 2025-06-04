@@ -1,13 +1,11 @@
 import { readFile } from 'fs/promises'
 import { join, resolve } from 'path'
-import { platform, version as nodeVersion } from 'process'
-import { promisify } from 'util'
+import { platform } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
-import glob from 'glob'
+import glob from 'fast-glob'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
@@ -18,11 +16,9 @@ import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
 import { testMany } from './helpers/test_many.js'
 
-const pGlob = promisify(glob)
-
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
 
-describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
+describe('V2 functions API', () => {
   afterEach(() => {
     vi.resetAllMocks()
   })
@@ -132,7 +128,7 @@ describe.runIf(semver.gte(nodeVersion, '18.13.0'))('V2 functions API', () => {
 
       const [{ name: archive, entryFilename, path }] = files
 
-      const untranspiledFiles = await pGlob(`${path}/**/*.ts`)
+      const untranspiledFiles = await glob(`${path}/**/*.ts`)
       expect(untranspiledFiles).toEqual([])
 
       const func = await importFunctionFile(`${tmpDir}/${archive}/${entryFilename}`)

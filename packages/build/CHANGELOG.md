@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.4.1](https://github.com/netlify/build/compare/build-v33.4.0...build-v33.4.1) (2025-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^9.1.4 ([#6425](https://github.com/netlify/build/issues/6425)) ([c9b42d1](https://github.com/netlify/build/commit/c9b42d1e61e93bbe07b1ef7f9d26290d2a200ec5))
+* **deps:** update dependency @netlify/blobs to ^9.1.5 ([#6426](https://github.com/netlify/build/issues/6426)) ([7bbb47f](https://github.com/netlify/build/commit/7bbb47f96f6ab4f813e1eb07c555993786744b29))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.7 to ^6.0.8
+    * @netlify/zip-it-and-ship-it bumped from 12.1.1 to 12.1.2
+
 ## [33.4.0](https://github.com/netlify/build/compare/build-v33.3.0...build-v33.4.0) (2025-05-30)
 
 
