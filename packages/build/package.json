@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "prebuild": "rm -rf lib",
-    "postbuild": "npx copyfiles \"src/**/*.yml\" lib/ -u 1",
+    "postbuild": "npx cpy \"src/**/*.yml\" \"lib/\"",
     "build": "tsc",
     "test:types": "tsd",
     "test": "ava && tsd && vitest run",
@@ -132,7 +132,6 @@
     "atob": "^2.1.2",
     "ava": "^5.0.0",
     "c8": "^10.0.0",
-    "copyfiles": "^2.4.1",
     "cpy": "^11.0.0",
     "get-node": "^14.2.1",
     "get-port": "^7.0.0",
