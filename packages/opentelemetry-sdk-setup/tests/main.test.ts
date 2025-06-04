@@ -98,7 +98,7 @@ test.each(testSpanMatrix)('Tracing spans - $description', async ({ input, expect
   expect(span.parentSpanId).toEqual(expects.parentSpanId)
   expect(span.attributes).toStrictEqual(expects.attributes)
   if (expects.checkResource) {
-    expect(span.resource.attributes).include({
+    expect(span.resource.attributes).toMatchObject({
       'service.name': 'mock-package',
       'service.version': '1.0.0',
     })
