@@ -74,9 +74,13 @@ export const resolveConfig = async function (opts): Promise<Config> {
   }
 
   // TODO(kh): remove this mapping and get the extensionApiHost from the opts
-  const extensionApiBaseUrl = host?.includes(NETLIFY_API_STAGING_BASE_URL)
-    ? EXTENSION_API_STAGING_BASE_URL
-    : EXTENSION_API_BASE_URL
+  let extensionApiBaseUrl = EXTENSION_API_BASE_URL
+  if (host?.includes(NETLIFY_API_STAGING_BASE_URL)) {
+    extensionApiBaseUrl = EXTENSION_API_STAGING_BASE_URL
+  } else if (testOpts?.host) {
+    // For test servers - use testOpts.host for extension API calls
+    extensionApiBaseUrl = `http://${testOpts.host}`
+  }
 
   const {
     config: configOpt,

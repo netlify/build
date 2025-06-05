@@ -64,8 +64,11 @@ type AutoInstallableExtensionMeta = {
  *
  * @returns Array of extensions with their associated packages
  */
-export async function fetchAutoInstallableExtensionsMeta(): Promise<AutoInstallableExtensionMeta[]> {
-  const url = new URL(`/meta/auto-installable`, process.env.EXTENSION_API_BASE_URL ?? EXTENSION_API_BASE_URL)
+export async function fetchAutoInstallableExtensionsMeta(
+  extensionApiBaseUrl?: string,
+): Promise<AutoInstallableExtensionMeta[]> {
+  const baseUrl = extensionApiBaseUrl ?? process.env.EXTENSION_API_BASE_URL ?? EXTENSION_API_BASE_URL
+  const url = new URL(`/meta/auto-installable`, baseUrl)
   const response = await fetch(url.toString())
   if (!response.ok) {
     throw new Error(`Failed to fetch extensions meta`)
