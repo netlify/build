@@ -102,9 +102,19 @@ export async function handleAutoInstallExtensions({
     }
 
     const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
-    const extensionsToInstall = autoInstallableExtensions.filter((ext) => {
-      return !integrations?.some((integration) => integration.slug === ext.slug)
+    const enabledExtensionSlugs = new Set((integrations ?? []).map(({ slug }) => slug))
+    const extensionsToInstallCandidates = autoInstallableExtensions.filter(
+      ({ slug }) => !enabledExtensionSlugs.has(slug),
+    )
+    const extensionsToInstall = extensionsToInstallCandidates.filter(({ packages }) => {
+      for (const pkg of packages) {
+        if (Object.hasOwn(packageJson.dependencies, pkg)) {
+          return true
+        }
+      }
+      return false
     })
+
     if (extensionsToInstall.length === 0) {
       return integrations
     }
