@@ -181,6 +181,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     testOpts,
     offline,
     mode,
+    debug,
   })
 
   const mergedIntegrations = await mergeIntegrations({
