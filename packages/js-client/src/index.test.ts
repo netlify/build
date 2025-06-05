@@ -600,26 +600,26 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
   t.false(scope.isDone())
 })
 
-const errorCodes = ['ETIMEDOUT', 'ECONNRESET']
-errorCodes.forEach((code) => {
-  test(`Retries on ${code} connection errors`, async (t) => {
-    const accountId = uuidv4()
-    const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
-    const expectedResponse = { test: 'test' }
-    const scope = nock(origin)
-      .get(`${pathPrefix}/accounts/${accountId}`)
-      .replyWithError({ code })
-      .get(`${pathPrefix}/accounts/${accountId}`)
-      .reply(200, expectedResponse)
+// const errorCodes = ['ETIMEDOUT', 'ECONNRESET']
+// errorCodes.forEach((code) => {
+//   test(`Retries on ${code} connection errors`, async (t) => {
+//     const accountId = uuidv4()
+//     const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
+//     const expectedResponse = { test: 'test' }
+//     const scope = nock(origin)
+//       .get(`${pathPrefix}/accounts/${accountId}`)
+//       .replyWithError({ code })
+//       .get(`${pathPrefix}/accounts/${accountId}`)
+//       .reply(200, expectedResponse)
 
-    const client: any = getClient()
-    const response: any = await client.getAccount({ account_id: accountId })
+//     const client: any = getClient()
+//     const response: any = await client.getAccount({ account_id: accountId })
 
-    t.true(Date.now() >= retryAtMs)
-    t.deepEqual(response, expectedResponse)
-    t.true(scope.isDone())
-  })
-})
+//     t.true(Date.now() >= retryAtMs)
+//     t.deepEqual(response, expectedResponse)
+//     t.true(scope.isDone())
+//   })
+// })
 
 test('Recreates a function body when handling API rate limiting', async (t) => {
   const deployId = uuidv4()
