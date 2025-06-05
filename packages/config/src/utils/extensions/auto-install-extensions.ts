@@ -28,6 +28,7 @@ interface AutoInstallOptions {
   testOpts: any
   mode: ModeOption
   extensionApiBaseUrl: string
+  debug?: boolean
 }
 
 export async function handleAutoInstallExtensions({
@@ -41,58 +42,31 @@ export async function handleAutoInstallExtensions({
   testOpts = {},
   mode,
   extensionApiBaseUrl,
+  debug = false,
 }: AutoInstallOptions) {
   if (!featureFlags?.auto_install_required_extensions) {
     return integrations
   }
-  if (!accountId) {
-    console.error("Failed to auto install extension(s): Missing 'accountId'", {
-      accountId,
-      siteId,
-      buildDir,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!siteId) {
-    console.error("Failed to auto install extension(s): Missing 'siteId'", {
-      accountId,
-      siteId,
-      buildDir,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!token) {
-    console.error("Failed to auto install extension(s): Missing 'token'", {
-      accountId,
-      siteId,
-      buildDir,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!buildDir) {
-    console.error("Failed to auto install extension(s): Missing 'buildDir'", {
-      accountId,
-      siteId,
-      buildDir,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (offline) {
-    console.error("Failed to auto install extension(s): Running as 'offline'", {
-      accountId,
-      siteId,
-      buildDir,
-      offline,
-      mode,
-    })
+  if (!accountId || !siteId || !token || !buildDir || offline) {
+    const reason = !accountId
+      ? 'Missing accountId'
+      : !siteId
+        ? 'Missing siteId'
+        : !token
+          ? 'Missing token'
+          : !buildDir
+            ? 'Missing buildDir'
+            : 'Running as offline'
+
+    if (debug) {
+      console.error(`Failed to auto install extension(s): ${reason}`, {
+        accountId,
+        siteId,
+        buildDir,
+        offline,
+        mode,
+      })
+    }
     return integrations
   }
 
