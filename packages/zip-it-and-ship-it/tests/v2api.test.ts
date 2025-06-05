@@ -4,8 +4,8 @@ import { platform } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
-import glob from 'fast-glob'
 import { pathExists } from 'path-exists'
+import { glob } from 'tinyglobby'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
@@ -128,7 +128,7 @@ describe('V2 functions API', () => {
 
       const [{ name: archive, entryFilename, path }] = files
 
-      const untranspiledFiles = await glob(`${path}/**/*.ts`)
+      const untranspiledFiles = await glob(`${path}/**/*.ts`, { expandDirectories: false })
       expect(untranspiledFiles).toEqual([])
 
       const func = await importFunctionFile(`${tmpDir}/${archive}/${entryFilename}`)
