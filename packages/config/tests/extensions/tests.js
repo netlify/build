@@ -1,6 +1,40 @@
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
 
+// Mock fetch for external extension installation requests
+const originalFetch = globalThis.fetch
+const mockInstallationResponse = { success: true, mocked: true, testId: 'MOCK_RESPONSE_12345' }
+
+// Track installation requests for testing
+let installationRequests = []
+
+const mockFetch = async (url, options) => {
+  // Convert URL object to string if needed
+  const urlString = url.toString()
+
+  // If it's an installation request to an external extension URL
+  if (urlString.includes('/.netlify/functions/handler/on-install')) {
+    installationRequests.push({ url: urlString, options })
+    return {
+      ok: true,
+      status: 200,
+      json: async () => mockInstallationResponse,
+      text: async () => JSON.stringify(mockInstallationResponse),
+    }
+  }
+
+  // For all other requests, use the original fetch
+  return originalFetch(url, options)
+}
+
+// Set up global fetch mock
+globalThis.fetch = mockFetch
+
+// Reset installation requests before each test
+test.beforeEach(() => {
+  installationRequests = []
+})
+
 const SITE_INFO_DATA = {
   path: '/api/v1/sites/test',
   response: { id: 'test', name: 'test' },
@@ -22,7 +56,7 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
   response: [
     {
       slug: 'neon',
-      hostSiteUrl: 'https://neon-extension.netlify.app',
+      hostSiteUrl: 'https://neon-extension.netlify.app', // Mocked by fetch mock
       packages: ['@netlify/neon'],
     },
   ],
@@ -109,6 +143,19 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
   // Should have made a request to fetch auto-installable extensions
   const autoInstallRequest = requests.find((request) => request.url.includes('/meta/auto-installable'))
   t.assert(autoInstallRequest, 'Should have fetched auto-installable extensions')
+
+  // Should have attempted to install the extension (mocked)
+  t.assert(installationRequests.length > 0, 'Should have attempted to install extension')
+  t.assert(
+    installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
+    'Should have called installation endpoint',
+  )
+  t.assert(
+    installationRequests[0].url.includes('neon-extension.netlify.app'),
+    'Should have called correct external URL',
+  )
+  t.assert(installationRequests[0].options.method === 'POST', 'Should use POST method')
+  t.assert(installationRequests[0].options.body.includes('account1'), 'Should include team ID in request body')
 })
 
 test('Auto-install extensions: does not install when required packages are missing', async (t) => {
@@ -175,4 +222,11 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
   // Should have made a request to fetch auto-installable extensions
   const autoInstallRequest = requests.find((request) => request.url.includes('/meta/auto-installable'))
   t.assert(autoInstallRequest, 'Should have fetched auto-installable extensions')
+
+  // Should have attempted to install the extension
+  t.assert(installationRequests.length > 0, 'Should have attempted to install extension')
+  t.assert(
+    installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
+    'Should have called installation endpoint',
+  )
 })
