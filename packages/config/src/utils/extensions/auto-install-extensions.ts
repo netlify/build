@@ -106,7 +106,7 @@ export async function handleAutoInstallExtensions({
       return integrations
     }
 
-    const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta(extensionApiBaseUrl)
+    const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
     const enabledExtensionSlugs = new Set((integrations ?? []).map(({ slug }) => slug))
     const extensionsToInstallCandidates = autoInstallableExtensions.filter(
       ({ slug }) => !enabledExtensionSlugs.has(slug),
