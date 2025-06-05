@@ -32,12 +32,13 @@ const callMethod = async function ({ method, basePath, defaultHeaders, globalPar
 }
 
 const getOpts = function ({ method: { verb, parameters }, defaultHeaders, requestParams, opts }) {
-  const { body } = requestParams
+  const { body, duplex } = requestParams
   const optsA = addHttpMethod(verb, opts)
   const optsB = addHeaderParams(parameters, requestParams, optsA)
   const optsC = addDefaultHeaders(defaultHeaders, optsB)
   const optsD = addBody(body, parameters, optsC)
-  return optsD
+  const optsE = addDuplex(duplex, optsD)
+  return optsE
 }
 
 // Add header parameters
@@ -57,6 +58,15 @@ const addHttpMethod = function (verb, opts) {
 // Assign default HTTP headers
 const addDefaultHeaders = function (defaultHeaders, opts) {
   return { ...opts, headers: { ...defaultHeaders, ...opts.headers } }
+}
+
+// Set duplex value
+const addDuplex = function (duplex, opts) {
+  if (duplex === undefined) {
+    return opts
+  }
+
+  return { ...opts, duplex }
 }
 
 const makeRequestOrRetry = async function ({ url, method, defaultHeaders, requestParams, opts }) {
