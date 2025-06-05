@@ -176,7 +176,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     siteId,
     accountId,
     token,
-    cwd,
+    buildDir,
     extensionApiBaseUrl,
     testOpts,
     offline,
