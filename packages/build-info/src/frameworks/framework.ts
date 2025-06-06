@@ -132,14 +132,14 @@ export function filterByRelevance(detected: DetectedFramework[]) {
  * 3. an npm dependency was specified but matched over the config file (least accurate)
  */
 export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedFramework): number {
-  let sort = a.detected.accuracy > b.detected.accuracy ? -1 : a.detected.accuracy < b.detected.accuracy ? 1 : 0
+  const sort = b.detected.accuracy - a.detected.accuracy
 
-  if (sort >= 0) {
-    // prefer SSG over build tools
-    if (a.category === Category.SSG && b.category === Category.BuildTool) {
-      sort--
-    }
+  // Secondary sorting on Category
+  if (sort === 0) {
+    const categoryRanking = [Category.FrontendFramework, Category.BuildTool, Category.SSG]
+    return categoryRanking.indexOf(b.category) - categoryRanking.indexOf(a.category)
   }
+
   return sort
 }
 
