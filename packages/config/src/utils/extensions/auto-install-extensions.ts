@@ -8,8 +8,13 @@ import { type ModeOption } from '../../types/options.js'
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
 
 function getPackageJSON(directory: string) {
-  const require = createRequire(join(directory, 'package.json'))
-  return require('./package.json')
+  try {
+    const require = createRequire(join(directory, 'package.json'))
+    return require('./package.json')
+  } catch {
+    // Gracefully fail if no package.json found in buildDir
+    return {}
+  }
 }
 
 interface AutoInstallOptions {
@@ -17,12 +22,13 @@ interface AutoInstallOptions {
   siteId: string
   accountId: string
   token: string
-  cwd: string
+  buildDir: string
   integrations: IntegrationResponse[]
   offline: boolean
   testOpts: any
   mode: ModeOption
   extensionApiBaseUrl: string
+  debug?: boolean
 }
 
 export async function handleAutoInstallExtensions({
@@ -30,69 +36,42 @@ export async function handleAutoInstallExtensions({
   siteId,
   accountId,
   token,
-  cwd,
+  buildDir,
   integrations,
   offline,
   testOpts = {},
   mode,
   extensionApiBaseUrl,
+  debug = false,
 }: AutoInstallOptions) {
   if (!featureFlags?.auto_install_required_extensions) {
     return integrations
   }
-  if (!accountId) {
-    console.error("Failed to auto install extension(s): Missing 'accountId'", {
-      accountId,
-      siteId,
-      cwd,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!siteId) {
-    console.error("Failed to auto install extension(s): Missing 'siteId'", {
-      accountId,
-      siteId,
-      cwd,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!token) {
-    console.error("Failed to auto install extension(s): Missing 'token'", {
-      accountId,
-      siteId,
-      cwd,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (!cwd) {
-    console.error("Failed to auto install extension(s): Missing 'cwd'", {
-      accountId,
-      siteId,
-      cwd,
-      offline,
-      mode,
-    })
-    return integrations
-  }
-  if (offline) {
-    console.error("Failed to auto install extension(s): Running as 'offline'", {
-      accountId,
-      siteId,
-      cwd,
-      offline,
-      mode,
-    })
+  if (!accountId || !siteId || !token || !buildDir || offline) {
+    const reason = !accountId
+      ? 'Missing accountId'
+      : !siteId
+        ? 'Missing siteId'
+        : !token
+          ? 'Missing token'
+          : !buildDir
+            ? 'Missing buildDir'
+            : 'Running as offline'
+
+    if (debug) {
+      console.error(`Failed to auto install extension(s): ${reason}`, {
+        accountId,
+        siteId,
+        buildDir,
+        offline,
+        mode,
+      })
+    }
     return integrations
   }
 
   try {
-    const packageJson = getPackageJSON(cwd)
+    const packageJson = getPackageJSON(buildDir)
     if (
       !packageJson?.dependencies ||
       typeof packageJson?.dependencies !== 'object' ||
@@ -102,9 +81,19 @@ export async function handleAutoInstallExtensions({
     }
 
     const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
-    const extensionsToInstall = autoInstallableExtensions.filter((ext) => {
-      return !integrations?.some((integration) => integration.slug === ext.slug)
+    const enabledExtensionSlugs = new Set((integrations ?? []).map(({ slug }) => slug))
+    const extensionsToInstallCandidates = autoInstallableExtensions.filter(
+      ({ slug }) => !enabledExtensionSlugs.has(slug),
+    )
+    const extensionsToInstall = extensionsToInstallCandidates.filter(({ packages }) => {
+      for (const pkg of packages) {
+        if (packageJson?.dependencies && Object.hasOwn(packageJson.dependencies, pkg)) {
+          return true
+        }
+      }
+      return false
     })
+
     if (extensionsToInstall.length === 0) {
       return integrations
     }

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/zip-it-and-ship-it",
-  "version": "12.1.2",
+  "version": "12.1.4",
   "description": "Zip it and ship it",
   "main": "./dist/main.js",
   "type": "module",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@babel/parser": "^7.22.5",
-    "@babel/types": "7.27.3",
+    "@babel/types": "7.27.6",
     "@netlify/binary-info": "^1.0.0",
     "@netlify/serverless-functions-api": "^2.1.1",
     "@vercel/nft": "0.29.4",
@@ -50,12 +50,11 @@
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
-    "esbuild": "0.25.4",
+    "esbuild": "0.25.5",
     "execa": "^8.0.0",
-    "fast-glob": "^3.3.2",
+    "fast-glob": "^3.3.3",
     "filter-obj": "^6.0.0",
     "find-up": "^7.0.0",
-    "glob": "^8.0.3",
     "is-builtin-module": "^3.1.0",
     "is-path-inside": "^4.0.0",
     "junk": "^4.0.0",
@@ -78,7 +77,6 @@
   },
   "devDependencies": {
     "@types/archiver": "6.0.3",
-    "@types/glob": "8.1.0",
     "@types/is-ci": "3.0.4",
     "@types/node": "20.12.11",
     "@types/normalize-path": "3.0.2",
@@ -86,8 +84,8 @@
     "@types/semver": "7.7.0",
     "@types/unixify": "1.0.2",
     "@types/yargs": "17.0.33",
-    "@vitest/coverage-v8": "0.34.6",
-    "browserslist": "4.24.5",
+    "@vitest/coverage-v8": "^3.0.0",
+    "browserslist": "4.25.0",
     "cardinal": "2.1.1",
     "cpy": "11.1.0",
     "decompress": "4.2.1",
@@ -97,7 +95,7 @@
     "lambda-local": "2.2.0",
     "source-map-support": "0.5.21",
     "typescript": "5.8.3",
-    "vitest": "0.34.6"
+    "vitest": "^3.0.0"
   },
   "engines": {
     "node": ">=18.14.0"

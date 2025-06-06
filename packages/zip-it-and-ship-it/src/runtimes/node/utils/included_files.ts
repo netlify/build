@@ -1,6 +1,6 @@
 import { normalize, resolve } from 'path'
 
-import fastGlob from 'fast-glob'
+import glob from 'fast-glob'
 
 import { minimatch } from '../../../utils/matching.js'
 
@@ -48,7 +48,7 @@ export const getPathsOfIncludedFiles = async (
     { include: [], excludePatterns: [] },
   )
 
-  const pathGroups = await fastGlob(include, {
+  const pathGroups = await glob(include, {
     absolute: true,
     cwd: basePath,
     dot: true,

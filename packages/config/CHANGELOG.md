@@ -76,6 +76,20 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.10](https://github.com/netlify/build/compare/config-v23.0.9...config-v23.0.10) (2025-06-05)
+
+
+### Bug Fixes
+
+* only log auto install extension errors with debug flag ([#6436](https://github.com/netlify/build/issues/6436)) ([0add4c5](https://github.com/netlify/build/commit/0add4c58344779bf0ba68e239227bf1b307dc073))
+
+## [23.0.9](https://github.com/netlify/build/compare/config-v23.0.8...config-v23.0.9) (2025-06-05)
+
+
+### Bug Fixes
+
+* auto-install extension filtering logic and add comprehensive tests ([#6434](https://github.com/netlify/build/issues/6434)) ([0296018](https://github.com/netlify/build/commit/02960186990ad54ea1f15f83322696d9807e92ed))
+
 ## [23.0.8](https://github.com/netlify/build/compare/config-v23.0.7...config-v23.0.8) (2025-05-29)
 
 
