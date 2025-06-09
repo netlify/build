@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.30.0",
-    "@types/node": "^18.0.0",
+    "@types/node": "^20.19.0",
     "@types/semver": "^7.3.13",
     "@vitest/ui": "^3.0.0",
     "execa": "^8.0.0",
