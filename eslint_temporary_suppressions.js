@@ -134,7 +134,6 @@ export default [
     files: ['packages/build-info/src/frameworks/framework.ts'],
     rules: {
       '@typescript-eslint/no-redundant-type-constituents': 'off',
-      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
     },
@@ -1239,24 +1238,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/types/options/netlify_plugin_functions_util.ts'],
-    rules: {
-      '@typescript-eslint/array-type': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/types/options/netlify_plugin_git_util.ts'],
-    rules: {
-      '@typescript-eslint/array-type': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/types/utils/json_value.ts'],
-    rules: {
-      '@typescript-eslint/array-type': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/utils/blobs.ts'],
     rules: {
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
@@ -1277,12 +1258,6 @@ export default [
     files: ['packages/build/src/utils/json.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/utils/omit.ts'],
-    rules: {
-      '@typescript-eslint/array-type': 'off',
     },
   },
   {
@@ -2026,7 +2001,6 @@ export default [
   {
     files: ['packages/edge-bundler/deno/vendor/deno.land/std@0.98.0/async/mux_async_iterator.ts'],
     rules: {
-      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -2038,7 +2012,6 @@ export default [
     rules: {
       'n/no-unsupported-features/node-builtins': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
-      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
   },
@@ -2586,7 +2559,6 @@ export default [
   {
     files: ['packages/headers-parser/src/line_parser.ts'],
     rules: {
-      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -3232,7 +3204,6 @@ export default [
     files: ['packages/zip-it-and-ship-it/tests/helpers/lambda.ts'],
     rules: {
       '@typescript-eslint/consistent-indexed-object-style': 'off',
-      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',

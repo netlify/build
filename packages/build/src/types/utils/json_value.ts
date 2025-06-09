@@ -1,1 +1,1 @@
-export type JSONValue = string | number | boolean | null | { [key: string]: JSONValue } | Array<JSONValue>
+export type JSONValue = string | number | boolean | null | { [key: string]: JSONValue } | JSONValue[]
