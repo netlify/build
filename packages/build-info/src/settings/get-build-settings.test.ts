@@ -1,6 +1,6 @@
 import { join, posix } from 'path'
 
-import { beforeEach, expect, test, describe, TestContext } from 'vitest'
+import { beforeEach, expect, test, describe, type TestContext } from 'vitest'
 
 import { createFixture, createWebFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'

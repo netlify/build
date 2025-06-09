@@ -2,7 +2,7 @@ import { promises as fs, Stats } from 'fs'
 import { basename, dirname, join } from 'path'
 
 import cpy from 'cpy'
-import { Options, globby } from 'globby'
+import { type Options, globby } from 'globby'
 import { isNotJunk } from 'junk'
 import { moveFile } from 'move-file'
 

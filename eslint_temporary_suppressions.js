@@ -12,7 +12,7 @@ export default [
 
   {
     rules: {
-      // projects are currently making use of both `interface` and `type`
+      // Projects are currently making use of both `interface` and `type`
       '@typescript-eslint/consistent-type-definitions': 'off',
 
       // The Fetch API was technically marked stable in node 21
@@ -22,6 +22,9 @@ export default [
           ignores: ['Response', 'fetch'],
         },
       ],
+
+      // Silencing false positives
+      'import/no-unresolved': ['off'],
     },
   },
 
@@ -1024,6 +1027,7 @@ export default [
   {
     files: ['packages/build/src/plugins_core/functions/index.ts'],
     rules: {
+      'import/named': 'off',
       'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -1376,6 +1380,9 @@ export default [
   {
     files: ['packages/cache-utils/tests/dir.test.ts'],
     rules: {
+      'import/named': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
@@ -3053,6 +3060,36 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
+    },
+  },
+  {
+    files: ['packages/build/tests/core/tests.js'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
+    },
+  },
+  {
+    files: ['packages/build/tests/error_reporting/tests.js'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
+    },
+  },
+  {
+    files: ['packages/build/tests/monitor/tests.js'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
+    },
+  },
+  {
+    files: ['packages/build/tests/plugins_events/tests.js'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
+    },
+  },
+  {
+    files: ['packages/build/tests/time/tests.js'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
     },
   },
 ]

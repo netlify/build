@@ -1,12 +1,14 @@
 // @ts-check
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import { includeIgnoreFile } from '@eslint/compat'
 import eslint from '@eslint/js'
-import node from 'eslint-plugin-n'
-import prettier from 'eslint-config-prettier'
-import tseslint from 'typescript-eslint'
 import vitest from '@vitest/eslint-plugin'
+import prettier from 'eslint-config-prettier'
+import * as importPlugin from 'eslint-plugin-import'
+import node from 'eslint-plugin-n'
+import tseslint from 'typescript-eslint'
 
 import temporarySuppressions from './eslint_temporary_suppressions.js'
 
@@ -49,9 +51,39 @@ export default tseslint.config(
     },
   },
 
+  // Import rules
+
+  importPlugin.flatConfigs?.recommended,
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    rules: {
+      'import/extensions': ['error', 'ignorePackages'], // This requires for esm modules .js file extensions on relative paths
+      'import/no-absolute-path': ['error'],
+      'import/no-cycle': ['error', { ignoreExternal: true }],
+      'import/no-duplicates': ['error', { considerQueryString: true }],
+      'import/no-mutable-exports': ['error'],
+      'import/no-self-import': ['error'],
+      'import/no-useless-path-segments': ['error'],
+      'import/order': [
+        'error',
+        {
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+    },
+  },
+
   // Project-specific rules
   {
-    ignores: ['packages/**/dist'],
+    ignores: ['packages/**/dist', 'packages/**/lib'],
   },
   {
     files: ['**/*.?(c|m)ts?(x)'],
@@ -83,7 +115,7 @@ export default tseslint.config(
     ignores: ['packages/**/fixtures', 'packages/**/fixtures-esm'],
   },
   {
-    files: ['**/*.test.?(c|m)[jt]s?(x)', '**/test/*'],
+    files: ['**/*.test.?(c|m)[jt]s?(x)'],
     plugins: { vitest },
     rules: {
       ...vitest.configs.recommended.rules,

@@ -1,6 +1,6 @@
 import process from 'process'
 
-import { execa, ExecaChildProcess, execaCommand, Options, CommonOptions } from 'execa'
+import { execa, type ExecaChildProcess, execaCommand, type Options, type CommonOptions } from 'execa'
 
 /** Allow running local binaries by default */
 const DEFAULT_OPTIONS: Partial<CommonOptions> = { preferLocal: true }

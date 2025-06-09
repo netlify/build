@@ -5,7 +5,7 @@ import { PassThrough } from 'stream'
 import { execa } from 'execa'
 import nock from 'nock'
 import tmp from 'tmp-promise'
-import { beforeEach, afterEach, test, expect, TestContext as VitestTestContext, vi } from 'vitest'
+import { beforeEach, afterEach, test, expect, type TestContext as VitestTestContext, vi } from 'vitest'
 
 import { fixturesDir, testLogger } from '../test/util.js'
 

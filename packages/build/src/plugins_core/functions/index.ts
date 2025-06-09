@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { NodeBundlerName, RUNTIME, zipFunctions, FunctionResult } from '@netlify/zip-it-and-ship-it'
+import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
