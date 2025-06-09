@@ -28,7 +28,6 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
  * Non-existing files and empty directories are always skipped
  */
 export const hasFiles = async function (src: string): Promise<boolean> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { srcGlob, isDir, dest, ...options } = await getSrcAndDest(src, '')
   return srcGlob !== undefined && !(await isEmptyDir(srcGlob, isDir, options))
 }

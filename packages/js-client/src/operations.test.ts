@@ -8,7 +8,6 @@ test('Exported methods', (t) => {
   const api = new NetlifyAPI()
 
   for (const path in openApiSpec.paths) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { parameters: _, ...verbs } = openApiSpec.paths[path]
 
     for (const verb in verbs) {

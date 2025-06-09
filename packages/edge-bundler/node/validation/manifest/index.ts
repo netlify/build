@@ -30,7 +30,6 @@ const initializeValidator = () => {
 }
 
 // throws on validation error
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const validateManifest = (manifestData: unknown, _featureFlags: FeatureFlags = {}): void => {
   const validate = initializeValidator()
 
