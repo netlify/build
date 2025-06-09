@@ -88,24 +88,6 @@ export default tseslint.config(
     rules: {
       ...vitest.configs.recommended.rules,
 
-      'vitest/expect-expect': [
-        'error',
-        {
-          assertFunctionNames: [
-            // Defaults
-            'assert',
-            'expect',
-
-            // Fix issue where text-context-specific `expect()` calls trigger false positive
-            't.expect',
-            'ctx.expect',
-            'context.expect',
-
-            // Custom assertion functions
-            'assertNetlifyToml',
-          ],
-        },
-      ],
       'vitest/no-disabled-tests': ['error'],
       'vitest/no-focused-tests': ['error'],
       'vitest/no-commented-out-tests': ['error'],

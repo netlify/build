@@ -10,6 +10,21 @@
 export default [
   /* Global rule suppressions */
 
+  {
+    rules: {
+      // projects are currently making use of both `interface` and `type`
+      '@typescript-eslint/consistent-type-definitions': 'off',
+
+      // The Fetch API was technically marked stable in node 21
+      'n/no-unsupported-features/node-builtins': [
+        'error',
+        {
+          ignores: ['Response', 'fetch'],
+        },
+      ],
+    },
+  },
+
   /* Per-file rule suppressions */
 
   {
@@ -31,7 +46,6 @@ export default [
     files: ['packages/build-info/src/browser/file-system.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-return': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
     },
@@ -330,7 +344,6 @@ export default [
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/require-await': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
@@ -1400,7 +1413,6 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
@@ -1651,7 +1663,8 @@ export default [
   {
     files: ['packages/config/src/utils/extensions/utils.ts'],
     rules: {
-      'n/no-unsupported-features/node-builtins': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
     },
   },
@@ -1801,7 +1814,6 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
@@ -1872,14 +1884,12 @@ export default [
     files: ['packages/edge-bundler/deno/vendor/deno.land/x/retry@v2.0.0/retry/utils/untilResponse/decorators.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
     files: ['packages/edge-bundler/deno/vendor/deno.land/x/retry@v2.0.0/retry/utils/untilResponse/retry.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-type-parameters': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
@@ -2025,7 +2035,6 @@ export default [
   {
     files: ['packages/edge-bundler/node/downloader.ts'],
     rules: {
-      'n/no-unsupported-features/node-builtins': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/prefer-regexp-exec': 'off',
     },
@@ -2134,7 +2143,6 @@ export default [
     files: ['packages/edge-bundler/node/server/util.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
@@ -2145,12 +2153,6 @@ export default [
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
-  {
-    files: ['packages/edge-bundler/node/types.ts'],
-    rules: {
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
@@ -2195,14 +2197,12 @@ export default [
     files: ['packages/edge-bundler/test/integration/functions/func1.ts'],
     rules: {
       '@typescript-eslint/require-await': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
     files: ['packages/edge-bundler/test/integration/internal-functions/func2.ts'],
     rules: {
       '@typescript-eslint/require-await': 'off',
-      'n/no-unsupported-features/node-builtins': 'off',
     },
   },
   {
