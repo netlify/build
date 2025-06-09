@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.6](https://github.com/netlify/build/compare/build-info-v10.0.5...build-info-v10.0.6) (2025-06-09)
+
+
+### Bug Fixes
+
+* ensure order of framework detection returns more consistently ([#6429](https://github.com/netlify/build/issues/6429)) ([4fb908e](https://github.com/netlify/build/commit/4fb908e4d8a890830ece369a119a0efad4026115))
+
 ## [10.0.5](https://github.com/netlify/build/compare/build-info-v10.0.4...build-info-v10.0.5) (2025-05-29)
 
 
