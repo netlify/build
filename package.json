@@ -7,8 +7,8 @@
   "author": "Netlify Inc.",
   "scripts": {
     "prepare": "husky",
-    "lint": "eslint --cache",
-    "lint:fix": "eslint --cache --fix",
+    "lint": "eslint --cache --fix",
+    "lint:ci": "eslint --cache",
     "build": "lerna run build",
     "test": "lerna run test",
     "test:ci": "lerna run test:ci",
