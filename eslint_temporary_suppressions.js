@@ -13,12 +13,6 @@ export default [
   /* Per-file rule suppressions */
 
   {
-    files: ['ava.base.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
     files: ['commitlint.config.cjs'],
     rules: {
       'no-undef': 'off',
@@ -1311,178 +1305,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/tests/blobs_upload/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/constants/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/core/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/deploy/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/edge_functions/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/env/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/error/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/error_reporting/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/frameworks_api/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/tests/functions/tests.js'],
     rules: {
-      'n/no-extraneous-import': 'off',
       '@typescript-eslint/no-empty-function': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/install/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/log/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/manifest/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/monitor/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/mutate/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/mutate_headers_redirects/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/mutate_save/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/plugins/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/plugins_events/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/plugins_list/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/pre_cleanup/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/secrets_scanning/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/stack/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/status/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/steps/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/telemetry/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/time/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/unit/logger/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/utils_build/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
     },
   },
   {
@@ -1846,78 +1671,6 @@ export default [
     files: ['packages/config/src/validate/validations.js'],
     rules: {
       'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/api/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/base/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/cli/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/context/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/cwd/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/env/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/load/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/log/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/mutate/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/normalize/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/parse/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tests/validate/tests.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
     },
   },
   {
@@ -2453,12 +2206,6 @@ export default [
     },
   },
   {
-    files: ['packages/edge-bundler/test/integration/test.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
-  {
     files: ['packages/edge-bundler/test/util.ts'],
     rules: {
       '@typescript-eslint/restrict-template-expressions': 'off',
@@ -2716,7 +2463,6 @@ export default [
   {
     files: ['packages/opentelemetry-sdk-setup/tests/main.test.ts'],
     rules: {
-      'n/no-extraneous-import': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
     },

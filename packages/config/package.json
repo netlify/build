@@ -59,6 +59,9 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
+    "@netlify/api": "^14.0.3",
+    "@netlify/headers-parser": "^9.0.1",
+    "@netlify/redirect-parser": "^15.0.2",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
@@ -72,9 +75,6 @@
     "is-plain-obj": "^4.0.0",
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
-    "@netlify/api": "^14.0.3",
-    "@netlify/headers-parser": "^9.0.1",
-    "@netlify/redirect-parser": "^15.0.2",
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
     "path-type": "^6.0.0",
@@ -83,6 +83,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@netlify/testing": "*",
     "@types/node": "^18.19.111",
     "ava": "^5.0.0",
     "c8": "^10.0.0",
