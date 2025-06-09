@@ -606,9 +606,12 @@ errorCodes.forEach((code) => {
     const accountId = uuidv4()
     const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
     const expectedResponse = { test: 'test' }
+    const error = new Error('Error Response') as NodeJS.ErrnoException
+    error.code = code
+
     const scope = nock(origin)
       .get(`${pathPrefix}/accounts/${accountId}`)
-      .replyWithError({ code })
+      .replyWithError(error)
       .get(`${pathPrefix}/accounts/${accountId}`)
       .reply(200, expectedResponse)
 
