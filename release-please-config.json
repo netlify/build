@@ -6,7 +6,6 @@
     "packages/cache-utils": {},
     "packages/config": {},
     "packages/edge-bundler": {},
-    "packages/framework-info": {},
     "packages/functions-utils": {},
     "packages/git-utils": {},
     "packages/headers-parser": {},
