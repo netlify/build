@@ -60,7 +60,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 
     if (hasMultipleGlobs) {
       const resolved = await glob(pattern, {
-        globstar: false,
+        // globstar: false,
         cwd: baseDir,
       })
 

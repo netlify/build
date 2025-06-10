@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url'
 
 import Ajv from 'ajv'
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import { describe, expect, test } from 'vitest'
 
 import { FRAMEWORK_NAMES } from '../src/generated/frameworkNames.js'
@@ -139,7 +139,7 @@ test.each(FRAMEWORKS)('Framework $id should have a valid shape', (framework) => 
 })
 
 describe('JSON files', async () => {
-  const jsonFiles = await glob('*.json', { cwd: fileURLToPath(FRAMEWORKS_DIR) })
+  const jsonFiles = await glob('*.json', { cwd: fileURLToPath(FRAMEWORKS_DIR), expandDirectories: false })
 
   test('each json file should be required in main.ts FRAMEWORKS', async () => {
     expect(FRAMEWORKS).toHaveLength(jsonFiles.length)
