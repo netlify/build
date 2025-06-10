@@ -1,6 +1,8 @@
-import { JSONHTTPError, TextHTTPError } from 'micro-api-client'
-
 import omit from '../omit.js'
+
+class TextHTTPError extends Error {}
+
+class JSONHTTPError extends Error {}
 
 // Read and parse the HTTP response
 export const parseResponse = async function (response) {
