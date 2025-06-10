@@ -10,15 +10,23 @@ export const initTimers = function () {
   return []
 }
 
+type MeasureDurationOptions = {
+  metricName?: string
+  parentTag?: string
+  category?: string
+  tags?: string[]
+}
+
 // Wrap an async function to measure how long it takes.
 // The function must:
 //   - take a plain object as first argument. This must contain a `timers`.
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationNs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function (func, stageTag, { parentTag = undefined, category = undefined } = {}) {
+const kMeasureDuration = function (func, stageTag, options: MeasureDurationOptions = {}) {
   return async function measuredFunc({ timers, ...opts }, ...args) {
     const timerNs = startTimer()
+    const { parentTag, category } = options
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const { tags = {} } = returnObject
     const durationNs = endTimer(timerNs)
@@ -41,7 +49,12 @@ export const measureDuration = keepFuncProps(kMeasureDuration)
 export const createTimer = function (
   stageTag,
   durationNs,
-  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category = undefined, tags = undefined } = {},
+  {
+    metricName = DEFAULT_METRIC_NAME,
+    parentTag = TOP_PARENT_TAG,
+    category = undefined,
+    tags = undefined,
+  }: MeasureDurationOptions = {},
 ) {
   return { metricName, stageTag, parentTag, durationNs, category, tags }
 }
