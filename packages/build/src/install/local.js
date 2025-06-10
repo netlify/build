@@ -1,4 +1,4 @@
-import { packageDirectory } from 'pkg-dir'
+import { packageDirectory } from 'package-directory'
 
 import { logInstallLocalPluginsDeps } from '../log/messages/install.js'
 
