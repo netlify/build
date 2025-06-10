@@ -125,7 +125,6 @@
   },
   "devDependencies": {
     "@netlify/nock-udp": "^5.0.1",
-    "@netlify/testing": "*",
     "@opentelemetry/api": "~1.8.0",
     "@opentelemetry/sdk-trace-base": "~1.24.0",
     "@types/node": "^18.19.111",
