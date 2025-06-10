@@ -1,6 +1,31 @@
-import { JSONHTTPError, TextHTTPError } from 'micro-api-client'
-
 import omit from '../omit.js'
+
+export class HTTPError extends Error {
+  constructor(response) {
+    super(response.statusText)
+    this.name = this.constructor.name
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor)
+    } else {
+      this.stack = new Error(response.statusText).stack
+    }
+    this.status = response.status
+  }
+}
+
+export class TextHTTPError extends HTTPError {
+  constructor(response, data) {
+    super(response)
+    this.data = data
+  }
+}
+
+export class JSONHTTPError extends HTTPError {
+  constructor(response, json) {
+    super(response)
+    this.json = json
+  }
+}
 
 // Read and parse the HTTP response
 export const parseResponse = async function (response) {

@@ -2,11 +2,11 @@ import http from 'http'
 
 import test from 'ava'
 import fromString from 'from2-string'
-import { TextHTTPError, JSONHTTPError } from 'micro-api-client'
 import nock from 'nock'
 import { v4 as uuidv4 } from 'uuid'
 
 import { NetlifyAPI } from '../lib/index.js'
+import { TextHTTPError, JSONHTTPError } from '../lib/methods/response.js'
 
 const scheme = 'http'
 const domain = 'localhost'
