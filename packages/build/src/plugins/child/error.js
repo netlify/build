@@ -1,7 +1,7 @@
 import logProcessErrors from 'log-process-errors'
 
 import { errorToJson } from '../../error/build.js'
-import { addDefaultErrorInfo, isBuildError } from '../../error/info.js'
+import { addDefaultErrorInfo } from '../../error/info.js'
 import { normalizeError } from '../../error/parse/normalize.js'
 import { sendEventToParent } from '../ipc.js'
 
@@ -16,17 +16,14 @@ export const handleError = async function (error, verbose) {
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
 export const handleProcessErrors = function () {
-  logProcessErrors({ log: handleProcessError, exitOn: [] })
+  logProcessErrors({ onError: handleProcessError, exit: false })
 }
 
-const handleProcessError = async function (error, level, originalError) {
-  if (level !== 'error') {
-    console[level](error)
+const handleProcessError = async function (error, event) {
+  if (event === 'warning') {
+    console.warn(error)
     return
   }
 
-  // Do not use log-process-errors prettification with errors thrown by `utils.build.*`
-  const errorA = isBuildError(originalError) ? originalError : error
-
-  await handleError(errorA)
+  await handleError(error)
 }
