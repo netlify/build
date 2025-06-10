@@ -1,6 +1,6 @@
 {
   "name": "@netlify/framework-info",
-  "version": "10.0.4",
+  "version": "10.0.5",
   "description": "Framework detection utility",
   "type": "module",
   "main": "./dist/index.umd.cjs",
