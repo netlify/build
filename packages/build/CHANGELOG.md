@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.4.5](https://github.com/netlify/build/compare/build-v33.4.4...build-v33.4.5) (2025-06-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency keep-func-props to v6 ([#6441](https://github.com/netlify/build/issues/6441)) ([3f73828](https://github.com/netlify/build/commit/3f7382898cd868e54a7d16d8d2d468b965f3a06d))
+* **deps:** update dependency log-process-errors to v11 ([#6443](https://github.com/netlify/build/issues/6443)) ([ab8f6e8](https://github.com/netlify/build/commit/ab8f6e88c4f4711c881fa74df784383d1669cf1a))
+* no framework special case for ntl dev ([#6449](https://github.com/netlify/build/issues/6449)) ([b0ba6d9](https://github.com/netlify/build/commit/b0ba6d9d498fb9c5c5b912b393d9a39da01c179c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^10.0.4 to ^10.0.5
+
 ## [33.4.4](https://github.com/netlify/build/compare/build-v33.4.3...build-v33.4.4) (2025-06-09)
 
 
