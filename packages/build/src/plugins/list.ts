@@ -120,15 +120,8 @@ const normalizePluginsList = function (pluginsList: PluginListEntry[]) {
   ) as PluginList
 }
 
-/**
- * `version` in `plugins.json` is the latest version.
- * A `compatibility` array of objects can be added to specify conditions to
- * apply different versions.
- * `netlify/plugins` ensures that `compatibility`:
- *  - Has the proper shape.
- *  - Is sorted from the highest to lowest version.
- *  - Does not include the latest `version`.
- */
+// When `compatability` array is present it takes precedence, otherwise top-level `version` field is used as latest version
+// Plugin data comes from @netlify/plugins
 const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }: PluginListEntry) {
   const versions = compatibility.length === 0 ? [{ version }] : compatibility
   const versionsA = versions.map(normalizeCompatVersion)
