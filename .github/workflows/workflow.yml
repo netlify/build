@@ -47,7 +47,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
         deno-version: ['v1.39.0', 'v2.2.4']
@@ -104,7 +104,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         install-command: ['npm ci']
         machine: ['0', '1', '2', '3', '4']
