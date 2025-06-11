@@ -61,7 +61,7 @@
     "@import-maps/resolve": "^2.0.0",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
-    "better-ajv-errors": "^1.2.0",
+    "better-ajv-errors": "^2.0.0",
     "common-path-prefix": "^3.0.0",
     "env-paths": "^3.0.0",
     "esbuild": "0.25.5",
