@@ -98,8 +98,6 @@ any @netlify/*-utils        -> @netlify/build
                             -> buildbot
 build-image                 -> buildbot
 netlify/plugins             -> buildbot
-@netlify/framework-info     -> buildbot
-                            -> netlify-cli
 ```
 
 Note that Renovate should take care of opening PRs to update the relevant packages that depend upon the modules you just
