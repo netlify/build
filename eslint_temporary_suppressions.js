@@ -20,7 +20,7 @@ export default [
       'n/no-unsupported-features/node-builtins': [
         'error',
         {
-          ignores: ['Response', 'fetch'],
+          ignores: ['FormData', 'Headers', 'ReadableStream', 'Response', 'Request', 'fetch'],
         },
       ],
 
