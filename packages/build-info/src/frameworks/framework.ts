@@ -144,7 +144,7 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
 }
 
 /** Merges a list of detection results based on accuracy to get the one with the highest accuracy that still contains information provided by all other detections */
-export function mergeDetections(detections: Array<Detection | undefined>): Detection | undefined {
+export function mergeDetections(detections: (Detection | undefined)[]): Detection | undefined {
   const definedDetections = detections
     .filter(function isDetection(d): d is Detection {
       return Boolean(d)

@@ -27,7 +27,6 @@ export const mergeDeclarations = (
   userFunctionsConfig: Record<string, FunctionConfig>,
   internalFunctionsConfig: Record<string, FunctionConfig>,
   deployConfigDeclarations: Declaration[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _featureFlags: FeatureFlags = {},
 ) => {
   const functionsVisited: Set<string> = new Set()
@@ -81,7 +80,6 @@ const getDeclarationsFromInput = (
       })
     } else {
       // With an in-source config without a path, add the config to the declaration.
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { path, excludedPath, pattern, excludedPattern, ...rest } = config as FunctionConfigWithAllPossibleFields
 
       declarations.push({ ...declaration, ...rest })

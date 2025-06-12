@@ -1,5 +1,5 @@
 import { minimatch, Minimatch } from 'minimatch'
-import { PackageJson } from 'read-pkg'
+import { type PackageJson } from 'read-pkg'
 
 import { DirType } from '../file-system.js'
 import type { Project } from '../project.js'

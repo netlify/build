@@ -1,4 +1,4 @@
-import { Attributes } from '@opentelemetry/api'
+import { type Attributes } from '@opentelemetry/api'
 
 // We override errorProps and title through getTitle and getErrorProps
 export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {

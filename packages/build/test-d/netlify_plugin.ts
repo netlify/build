@@ -11,7 +11,6 @@ export const testEventNames = function () {
   expectAssignable<OnEnd>(noop)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = function () {}
 
 export const testOnError: OnError = function ({ error }) {

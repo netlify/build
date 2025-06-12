@@ -22,7 +22,7 @@ export const parseFileHeaders = async function (headersFile: string): Promise<Pa
   return { headers: reducedHeaders, errors }
 }
 
-const parseHeaders = async function (headersFile: string): Promise<Array<Error | RawHeaderFileLine>> {
+const parseHeaders = async function (headersFile: string): Promise<(Error | RawHeaderFileLine)[]> {
   if (!(await pathExists(headersFile))) {
     return []
   }

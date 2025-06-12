@@ -135,4 +135,5 @@ jobs:
       - checkout
       - npm-install-deps
       - run: npm run format:ci
+      - run: npm run build
       - run: npm run lint:ci

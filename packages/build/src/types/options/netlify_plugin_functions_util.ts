@@ -14,14 +14,14 @@ export interface NetlifyPluginFunctionsUtil {
    * - `extension`: file extension of the Function's main file. For Go Functions, this might be an empty string.  For Node.js Functions, this is either `.js` or `.zip`.
    * - `runtime` `"js" | "go"`: Function's language runtime. TypeScript Functions use the "js" runtime
    */
-  list(): Promise<Array<ListedFunction>>
+  list(): Promise<ListedFunction[]>
 
   /**
    * Same as `list()` except it also returns the files required by the Functions' main files. This is much slower. The object have the following additional member:
    *
    * - `srcFile`: absolute path to the file
    */
-  listAll(): Promise<Array<ListedFunctionFile>>
+  listAll(): Promise<ListedFunctionFile[]>
 
   /**
    * Add a Functions file or directory to a build.

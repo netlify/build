@@ -3,7 +3,7 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 
-import { TestContext, vi } from 'vitest'
+import { type TestContext, vi } from 'vitest'
 
 /**
  * Copies a fixture to a temp folder on the system and runs the tests inside.

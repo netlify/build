@@ -1,6 +1,6 @@
 import { platform } from 'os'
 
-import { ExecaChildProcess } from 'execa'
+import { type ExecaChildProcess } from 'execa'
 import waitFor from 'p-wait-for'
 import { satisfies } from 'semver'
 

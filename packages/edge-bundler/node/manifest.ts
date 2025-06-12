@@ -185,7 +185,6 @@ const generateManifest = ({
       continue
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { onError, rateLimit, path, excludedPath, pattern, excludedPattern, ...rest } =
       singleInternalFunctionConfig as FunctionConfigWithAllPossibleFields
 

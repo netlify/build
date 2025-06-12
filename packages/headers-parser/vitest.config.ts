@@ -1,4 +1,4 @@
-import type { BenchmarkUserOptions } from 'vitest'
+import type { BenchmarkUserOptions } from 'vitest/node'
 import { defineConfig } from 'vitest/config'
 
 const benchmarkOptions: BenchmarkUserOptions = {}

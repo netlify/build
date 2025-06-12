@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import { PackageJson } from 'read-package-up'
+import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
 
 import { addErrorInfo } from '../error/info.js'
