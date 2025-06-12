@@ -134,7 +134,7 @@ export default tseslint.config(
     },
   },
 
-  ...temporarySuppressions,
+  temporarySuppressions,
 
   // Must be last
   prettier,

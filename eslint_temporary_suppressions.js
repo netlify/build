@@ -1,3 +1,4 @@
+// @ts-check
 /*
  * XXX: Temporary suppressions
  *
