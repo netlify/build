@@ -287,8 +287,15 @@ test('--branch', async (t) => {
 })
 
 test('--baseRelDir', async (t) => {
-  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithConfigAsObject()
+
+  // Asserts that paths in `netlify.toml` are relative to the repository root instead of the build directory
+  t.is(output.config.build.command, 'echo command')
+  t.is(output.config.build.publish, output.repositoryRoot)
+  t.is(output.config.build.publishOrigin, 'config')
+  t.is(output.configPath, join(output.repositoryRoot, 'netlify.toml'))
+  t.is(output.headersPath, join(output.repositoryRoot, '_headers'))
+  t.is(output.redirectsPath, join(output.repositoryRoot, '_redirects'))
 })
 
 test('User error', async (t) => {
