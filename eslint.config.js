@@ -45,12 +45,6 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   node.configs['flat/recommended'],
-  {
-    rules: {
-      'n/no-unpublished-import': 'off',
-      'n/no-unpublished-require': 'off',
-    },
-  },
 
   // Import rules
 
