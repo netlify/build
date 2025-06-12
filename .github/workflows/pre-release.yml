@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Used by "Prefix package to git tag"
+          fetch-tags: true
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

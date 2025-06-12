@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 🔎 Get changed JavaScript files
         id: changed-javascript-files
