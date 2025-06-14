@@ -1,5 +1,4 @@
 import { pluginsUrl, pluginsList as oldPluginsList } from '@netlify/plugins-list'
-import got from 'got'
 import isPlainObj from 'is-plain-obj'
 
 import { BufferedLogs } from '../log/logger.js'
@@ -91,7 +90,8 @@ const fetchPluginsList = async function ({
   pluginsListUrl: string
 }): Promise<PluginListEntry[]> {
   try {
-    const { body } = await got(pluginsListUrl, { responseType: 'json', timeout: { request: PLUGINS_LIST_TIMEOUT } })
+    const response = await fetch(pluginsListUrl, { signal: AbortSignal.timeout(PLUGINS_LIST_TIMEOUT) })
+    const body = await response.json()
 
     if (!isValidPluginsList(body)) {
       throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
