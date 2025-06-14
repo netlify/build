@@ -1,16 +1,16 @@
-import test from 'ava'
+import { expect, test } from 'vitest'
 
 import omit from './omit.js'
 
-test('creates a shallow copy', (t) => {
+test('creates a shallow copy', () => {
   const obj = { name: 'Benjy' }
   const copy = omit(obj, [])
-  t.not(obj, copy)
-  t.deepEqual(obj, copy)
+  expect(obj).not.toBe(copy)
+  expect(obj).toEqual(copy)
 })
 
-test('returns an object without the specified fields', (t) => {
+test('returns an object without the specified fields', () => {
   const obj = { name: 'Benjy', age: 18 }
-  t.deepEqual(omit(obj, ['age']), { name: 'Benjy' })
-  t.deepEqual(omit(obj, ['name', 'age']), {})
+  expect(omit(obj, ['age'])).toEqual({ name: 'Benjy' })
+  expect(omit(obj, ['name', 'age'])).toEqual({})
 })

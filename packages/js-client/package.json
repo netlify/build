@@ -12,9 +12,9 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "test": "ava",
-    "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava"
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "test:ci": "vitest run --reporter=default"
   },
   "license": "MIT",
   "author": "Netlify Inc.",
@@ -50,13 +50,12 @@
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.19.111",
-    "ava": "^5.0.0",
-    "c8": "^10.0.0",
     "from2-string": "^1.1.0",
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "uuid": "^11.0.0"
+    "uuid": "^11.0.0",
+    "vitest": "^3.2.3"
   },
   "engines": {
     "node": ">=18.14.0"
