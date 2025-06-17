@@ -80,7 +80,7 @@ test('Auto-install extensions: feature flag disabled returns integrations unchan
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions: false,
+        auto_install_required_extensions_v2: false,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -101,7 +101,7 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions: true,
+        auto_install_required_extensions_v2: true,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -123,7 +123,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions: true,
+        auto_install_required_extensions_v2: true,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -161,7 +161,7 @@ test('Auto-install extensions: does not install when required packages are missi
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions: true,
+        auto_install_required_extensions_v2: true,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
@@ -187,7 +187,7 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions: true,
+        auto_install_required_extensions_v2: true,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
