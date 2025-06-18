@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import { load as loadYaml, JSON_SCHEMA } from 'js-yaml'
+import { parse } from 'yaml'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -10,7 +10,7 @@ import { validateManifest } from './validate.js'
 export const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
   try {
     const rawManifest = await loadRawManifest(manifestPath)
-    const manifest = await parseManifest(rawManifest)
+    const manifest = parseManifest(rawManifest)
     validateManifest(manifest, rawManifest)
     return manifest
   } catch (error) {
@@ -32,9 +32,9 @@ const loadRawManifest = async function (manifestPath) {
   }
 }
 
-const parseManifest = async function (rawManifest) {
+const parseManifest = function (rawManifest) {
   try {
-    return await loadYaml(rawManifest, { schema: JSON_SCHEMA, json: true })
+    return parse(rawManifest, { logLevel: 'error' })
   } catch (error) {
     throw new Error(`Could not parse plugin's "manifest.yml"\n${error.message}`)
   }
