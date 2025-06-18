@@ -44,7 +44,7 @@ export async function handleAutoInstallExtensions({
   extensionApiBaseUrl,
   debug = false,
 }: AutoInstallOptions) {
-  if (!featureFlags?.auto_install_required_extensions) {
+  if (!featureFlags?.auto_install_required_extensions_v2) {
     return integrations
   }
   if (!accountId || !siteId || !token || !buildDir || offline) {
