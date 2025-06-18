@@ -35,7 +35,7 @@ export const installExtension = async ({
     }),
     headers: {
       'netlify-token': netlifyToken,
-      'extension-install-source': extensionInstallSource,
+      'User-Agent': extensionInstallSource,
     },
   })
 
