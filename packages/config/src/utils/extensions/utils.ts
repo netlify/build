@@ -1,5 +1,9 @@
+import { createRequire } from 'module'
 import { EXTENSION_API_BASE_URL } from '../../integrations.js'
 import { ModeOption } from '../../types/options.js'
+
+const require = createRequire(import.meta.url)
+const { version: configVersion } = require('@netlify/config/package.json')
 
 export type InstallExtensionResult =
   | {
@@ -19,14 +23,15 @@ export const installExtension = async ({
   accountId,
   slug,
   hostSiteUrl,
-  extensionInstallSource,
+  extensionInstallationSource,
 }: {
   netlifyToken: string
   accountId: string
   slug: string
   hostSiteUrl: string
-  extensionInstallSource: ModeOption
+  extensionInstallationSource: ModeOption
 }): Promise<InstallExtensionResult> => {
+  const userAgent = `Netlify Config (mode:${extensionInstallationSource}) / ${configVersion}`
   const extensionOnInstallUrl = new URL('/.netlify/functions/handler/on-install', hostSiteUrl)
   const installedResponse = await fetch(extensionOnInstallUrl, {
     method: 'POST',
@@ -35,7 +40,7 @@ export const installExtension = async ({
     }),
     headers: {
       'netlify-token': netlifyToken,
-      'User-Agent': extensionInstallSource,
+      'User-Agent': userAgent,
     },
   })
 
