@@ -76,6 +76,7 @@ const zipFunction: ZipFunction = async function ({
     runtimeAPIVersion,
   })
   const bundler = getBundler(bundlerName)
+  const functionBasePath = mergedConfig.scopedToFunctionDirectory && srcDir === srcPath ? srcDir : repositoryRoot
   const {
     aliases = new Map(),
     cleanupFunction,
@@ -99,7 +100,7 @@ const zipFunction: ZipFunction = async function ({
     mainFile,
     name,
     pluginsModulesPath,
-    repositoryRoot,
+    repositoryRoot: functionBasePath,
     runtime,
     runtimeAPIVersion,
     srcDir,

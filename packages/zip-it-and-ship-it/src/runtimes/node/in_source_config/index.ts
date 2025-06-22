@@ -53,6 +53,7 @@ export const inSourceConfig = functionConfig
     nodeBundler: true,
     nodeVersion: true,
     schedule: true,
+    scopedToFunctionDirectory: true,
     timeout: true,
   })
   .extend({

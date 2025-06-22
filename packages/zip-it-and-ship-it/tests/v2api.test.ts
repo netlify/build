@@ -13,7 +13,14 @@ import { ARCHIVE_FORMAT } from '../src/archive.js'
 import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
-import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
+import {
+  zipFixture,
+  unzipFiles,
+  importFunctionFile,
+  FIXTURES_ESM_DIR,
+  FIXTURES_DIR,
+  getFunctionResultsByName,
+} from './helpers/main.js'
 import { testMany } from './helpers/test_many.js'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
@@ -768,5 +775,47 @@ describe('V2 functions API', () => {
     expect(manifest.functions.length).toBe(1)
     expect(manifest.functions[0].name).toBe('function')
     expect(manifest.functions[0].buildData).toEqual({ bootstrapVersion, runtimeAPIVersion: 2 })
+  })
+
+  test('Keeps module resolution to the function directory if `scopedToFunctionDirectory` is set', async () => {
+    const fixtureName = 'v2-api-isolated'
+    const { files, tmpDir } = await zipFixture(join(fixtureName, 'netlify', 'functions'), {
+      fixtureDir: FIXTURES_ESM_DIR,
+      length: 4,
+      opts: {
+        archiveFormat: ARCHIVE_FORMAT.NONE,
+        basePath: join(FIXTURES_ESM_DIR, fixtureName),
+        configFileDirectories: [join(FIXTURES_ESM_DIR, fixtureName)],
+      },
+    })
+    const functions = getFunctionResultsByName(files)
+
+    // func1 should work because user modules will be loaded.
+    const func1 = await importFunctionFile(`${tmpDir}/${functions.func1.name}/${functions.func1.entryFilename}`)
+    const { body: bodyStream1, statusCode: statusCode1 } = await invokeLambda(func1)
+    const body1 = await readAsBuffer(bodyStream1)
+    expect(statusCode1).toBe(200)
+    expect(body1).toStrictEqual(
+      JSON.stringify({ mod1: 'module-1-local', mod2: 'module-2-local', mod3: 'module-3-user' }),
+    )
+
+    // func2 should error because module-3 isn't loaded.
+    expect(() =>
+      importFunctionFile(`${tmpDir}/${functions.func2.name}/${functions.func2.entryFilename}`),
+    ).rejects.toThrowError(`Cannot find package 'module-3' imported from`)
+
+    // func3 should work because module-3 is included.
+    const func3 = await importFunctionFile(`${tmpDir}/${functions.func3.name}/${functions.func3.entryFilename}`)
+    const { body: bodyStream3, statusCode: statusCode3 } = await invokeLambda(func3)
+    const body3 = await readAsBuffer(bodyStream3)
+    expect(statusCode3).toBe(200)
+    expect(body3).toStrictEqual(
+      JSON.stringify({ mod1: 'module-1-local', mod2: 'module-2-local', mod3: 'module-3-local' }),
+    )
+
+    // func4 should fail because no modules are included.
+    expect(() =>
+      importFunctionFile(`${tmpDir}/${functions.func4.name}/${functions.func4.entryFilename}`),
+    ).rejects.toThrowError(`Cannot find package 'module-1' imported from`)
   })
 })
