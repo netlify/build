@@ -800,7 +800,7 @@ describe('V2 functions API', () => {
     )
 
     // func2 should error because module-3 isn't loaded.
-    expect(() =>
+    await expect(() =>
       importFunctionFile(`${tmpDir}/${functions.func2.name}/${functions.func2.entryFilename}`),
     ).rejects.toThrowError(`Cannot find package 'module-3' imported from`)
 
@@ -814,7 +814,7 @@ describe('V2 functions API', () => {
     )
 
     // func4 should fail because no modules are included.
-    expect(() =>
+    await expect(() =>
       importFunctionFile(`${tmpDir}/${functions.func4.name}/${functions.func4.entryFilename}`),
     ).rejects.toThrowError(`Cannot find package 'module-1' imported from`)
   })
