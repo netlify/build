@@ -163,7 +163,6 @@ export const runSteps = async function ({
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
-      const stepId = packageName || event
       return {
         index: newIndex,
         error: newError,
@@ -176,7 +175,7 @@ export const runSteps = async function ({
         statuses: statusesA,
         timers: timersB,
         metrics: [...metricsA, ...metricsB],
-        returnValues: returnValue ? { ...returnValues, [stepId]: returnValue } : returnValues,
+        returnValues: returnValue ? { ...returnValues, [packageName]: returnValue } : returnValues,
       }
     },
     {

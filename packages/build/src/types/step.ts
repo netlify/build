@@ -1,4 +1,6 @@
 interface GeneratedFunction {
+  displayName?: string
+  generator?: string
   path: string
 }
 

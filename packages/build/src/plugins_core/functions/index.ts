@@ -159,6 +159,8 @@ const coreStep = async function ({
     }
   }
 
+  const generatedFunctions = getGeneratedFunctions(returnValues)
+
   logFunctionsToBundle({
     logs,
     userFunctions,
@@ -167,9 +169,15 @@ const coreStep = async function ({
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
     frameworkFunctions,
+    generatedFunctions,
   })
 
-  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
+  if (
+    userFunctions.length === 0 &&
+    internalFunctions.length === 0 &&
+    frameworkFunctions.length === 0 &&
+    generatedFunctions.length === 0
+  ) {
     return {}
   }
 
@@ -188,7 +196,7 @@ const coreStep = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
-    generatedFunctions: getGeneratedFunctions(returnValues),
+    generatedFunctions: generatedFunctions.map((func) => func.path),
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
@@ -228,9 +236,7 @@ const hasFunctionsDirectories = async function ({
 }
 
 const getGeneratedFunctions = (returnValues: Record<string, ReturnValue>) => {
-  return Object.values(returnValues).flatMap((returnValue) =>
-    (returnValue.generatedFunctions || []).map((generatedFunction) => generatedFunction.path),
-  )
+  return Object.values(returnValues).flatMap((returnValue) => returnValue.generatedFunctions || [])
 }
 
 export const bundleFunctions = {
