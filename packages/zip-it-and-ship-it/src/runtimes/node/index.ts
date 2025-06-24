@@ -1,4 +1,4 @@
-import { extname, join } from 'path'
+import { dirname, extname, join } from 'path'
 
 import { copyFile } from 'copy-file'
 
@@ -64,10 +64,19 @@ const zipFunction: ZipFunction = async function ({
     return { config, path: destPath, entryFilename: '' }
   }
 
+  // If the function is inside the plugins modules path, we need to treat that
+  // directory as the base path, not as an extra directory used for module
+  // resolution. So we unset `pluginsModulesPath` for this function.
+  let pluginsModulesPath = await getPluginsModulesPath(srcDir)
+  const isInPluginsModulesPath = Boolean(pluginsModulesPath && srcDir.startsWith(pluginsModulesPath))
+  if (isInPluginsModulesPath) {
+    basePath = dirname(pluginsModulesPath as string)
+    pluginsModulesPath = undefined
+  }
+
   const staticAnalysisResult = await parseFile(mainFile, { functionName: name })
   const runtimeAPIVersion = staticAnalysisResult.runtimeAPIVersion === 2 ? 2 : 1
   const mergedConfig = augmentFunctionConfig(mainFile, config, staticAnalysisResult.config)
-  const pluginsModulesPath = await getPluginsModulesPath(srcDir)
   const bundlerName = await getBundlerName({
     config: mergedConfig,
     extension,
@@ -76,11 +85,10 @@ const zipFunction: ZipFunction = async function ({
     runtimeAPIVersion,
   })
   const bundler = getBundler(bundlerName)
-  const functionBasePath = mergedConfig.scopedToFunctionDirectory && srcDir === srcPath ? srcDir : repositoryRoot
   const {
     aliases = new Map(),
     cleanupFunction,
-    basePath: finalBasePath,
+    basePath: basePathFromBundler,
     bundlerWarnings,
     includedFiles,
     inputs,
@@ -100,7 +108,7 @@ const zipFunction: ZipFunction = async function ({
     mainFile,
     name,
     pluginsModulesPath,
-    repositoryRoot: functionBasePath,
+    repositoryRoot,
     runtime,
     runtimeAPIVersion,
     srcDir,
@@ -108,7 +116,13 @@ const zipFunction: ZipFunction = async function ({
     stat,
   })
 
-  createPluginsModulesPathAliases(srcFiles, pluginsModulesPath, aliases, finalBasePath)
+  createPluginsModulesPathAliases(srcFiles, pluginsModulesPath, aliases, basePathFromBundler)
+
+  // If the function is inside the plugins modules path, we need to force the
+  // base path to be that directory. If not, we'll run the logic that finds the
+  // common path prefix and that will break module resolution, as the modules
+  // will no longer be inside a `node_modules` directory.
+  const finalBasePath = isInPluginsModulesPath ? (basePath as string) : basePathFromBundler
 
   const generator = mergedConfig?.generator || getInternalValue(isInternal)
   const zipResult = await zipNodeJs({

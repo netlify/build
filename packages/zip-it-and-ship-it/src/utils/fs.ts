@@ -85,10 +85,15 @@ ${errorMessages.join('\n')}`)
   return validDirectories.flat()
 }
 
-const listFunctionsDirectory = async function (srcFolder: string) {
-  const filenames = await fs.readdir(srcFolder)
+const listFunctionsDirectory = async function (srcPath: string) {
+  const stat = await fs.stat(srcPath)
+  if (stat.isFile()) {
+    return srcPath
+  }
 
-  return filenames.map((name) => join(srcFolder, name))
+  const filenames = await fs.readdir(srcPath)
+
+  return filenames.map((name) => join(srcPath, name))
 }
 
 export const resolveFunctionsDirectories = (input: string | string[]) => {

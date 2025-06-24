@@ -10,6 +10,7 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { ARCHIVE_FORMAT } from '../src/archive.js'
+import { zipFunctions } from '../src/zip.js'
 import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
@@ -778,44 +779,49 @@ describe('V2 functions API', () => {
   })
 
   test('Keeps module resolution to the function directory if `scopedToFunctionDirectory` is set', async () => {
-    const fixtureName = 'v2-api-isolated'
-    const { files, tmpDir } = await zipFixture(join(fixtureName, 'netlify', 'functions'), {
-      fixtureDir: FIXTURES_ESM_DIR,
-      length: 4,
-      opts: {
-        archiveFormat: ARCHIVE_FORMAT.NONE,
-        basePath: join(FIXTURES_ESM_DIR, fixtureName),
-        configFileDirectories: [join(FIXTURES_ESM_DIR, fixtureName)],
-      },
+    const tmpDir = await getTmpDir({
+      // Cleanup the folder even if there are still files in them
+      unsafeCleanup: true,
     })
-    const functions = getFunctionResultsByName(files)
+    const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
+    const individualFunctions = [
+      join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+      join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2.mjs'),
+    ]
+    const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
+      basePath,
+    })
 
-    // func1 should work because user modules will be loaded.
-    const func1 = await importFunctionFile(`${tmpDir}/${functions.func1.name}/${functions.func1.entryFilename}`)
-    const { body: bodyStream1, statusCode: statusCode1 } = await invokeLambda(func1)
-    const body1 = await readAsBuffer(bodyStream1)
-    expect(statusCode1).toBe(200)
-    expect(body1).toStrictEqual(
-      JSON.stringify({ mod1: 'module-1-local', mod2: 'module-2-local', mod3: 'module-3-user' }),
+    const unzippedFunctions = await unzipFiles(files)
+    const functions = getFunctionResultsByName(unzippedFunctions)
+
+    // extension-func1 should work because all modules are in scope.
+    const extensionFunc1 = await importFunctionFile(
+      `${tmpDir.path}/${functions['extension-func1'].name}/${functions['extension-func1'].entryFilename}`,
+    )
+    const extensionFunc1Result = await invokeLambda(extensionFunc1)
+    expect(extensionFunc1Result.statusCode).toBe(200)
+    expect(await readAsBuffer(extensionFunc1Result.body)).toStrictEqual(
+      JSON.stringify({ mod1: 'module-1-plugins', mod2: 'module-2-plugins', mod3: 'module-3-plugins' }),
     )
 
-    // func2 should error because module-3 isn't loaded.
+    // extension-func2 should error because module-4 isn't in scope.
     await expect(() =>
-      importFunctionFile(`${tmpDir}/${functions.func2.name}/${functions.func2.entryFilename}`),
-    ).rejects.toThrowError(`Cannot find package 'module-3' imported from`)
+      importFunctionFile(
+        `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
+      ),
+    ).rejects.toThrowError(`Cannot find package 'module-4' imported from`)
 
-    // func3 should work because module-3 is included.
-    const func3 = await importFunctionFile(`${tmpDir}/${functions.func3.name}/${functions.func3.entryFilename}`)
-    const { body: bodyStream3, statusCode: statusCode3 } = await invokeLambda(func3)
-    const body3 = await readAsBuffer(bodyStream3)
-    expect(statusCode3).toBe(200)
-    expect(body3).toStrictEqual(
-      JSON.stringify({ mod1: 'module-1-local', mod2: 'module-2-local', mod3: 'module-3-local' }),
+    // user-func1 should work because all modules are in scope.
+    const userFunc1 = await importFunctionFile(
+      `${tmpDir.path}/${functions['user-func1'].name}/${functions['user-func1'].entryFilename}`,
+    )
+    const userFunc1Result = await invokeLambda(userFunc1)
+    expect(userFunc1Result.statusCode).toBe(200)
+    expect(await readAsBuffer(userFunc1Result.body)).toStrictEqual(
+      JSON.stringify({ mod3: 'module-3-user', mod4: 'module-4-user' }),
     )
 
-    // func4 should fail because no modules are included.
-    await expect(() =>
-      importFunctionFile(`${tmpDir}/${functions.func4.name}/${functions.func4.entryFilename}`),
-    ).rejects.toThrowError(`Cannot find package 'module-1' imported from`)
+    await tmpDir.cleanup()
   })
 })

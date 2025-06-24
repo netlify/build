@@ -24,7 +24,6 @@ export const functionConfig = z.object({
   nodeVersion: z.string().optional().catch(undefined),
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
-  scopedToFunctionDirectory: z.boolean().optional().catch(false),
   timeout: z.number().optional().catch(undefined),
   zipGo: z.boolean().optional().catch(undefined),
 

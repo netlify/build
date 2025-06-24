@@ -1,5 +1,0 @@
-import mod1 from 'module-1'
-import mod2 from 'module-2'
-import mod3 from 'module-3'
-
-export default async () => Response.json({ mod1, mod2, mod3 })
