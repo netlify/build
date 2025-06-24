@@ -5,6 +5,7 @@ import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
+import type { ReturnValue } from '../../types/step.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
 
@@ -68,6 +69,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  generatedFunctions,
   frameworkFunctionsSrc,
   internalFunctionsSrc,
   isRunningLocally,
@@ -94,7 +96,9 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc].filter(Boolean)
+    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc, ...generatedFunctions].filter(
+      Boolean,
+    )
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     validateCustomRoutes(results)
@@ -128,6 +132,7 @@ const coreStep = async function ({
   repositoryRoot,
   userNodeVersion,
   systemLog,
+  returnValues,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -183,6 +188,7 @@ const coreStep = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
+    generatedFunctions: getGeneratedFunctions(returnValues),
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
@@ -219,6 +225,12 @@ const hasFunctionsDirectories = async function ({
   const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
 
   return await pathExists(frameworkFunctionsSrc)
+}
+
+const getGeneratedFunctions = (returnValues: Record<string, ReturnValue>) => {
+  return Object.values(returnValues).flatMap((returnValue) =>
+    (returnValue.generatedFunctions || []).map((generatedFunction) => generatedFunction.path),
+  )
 }
 
 export const bundleFunctions = {

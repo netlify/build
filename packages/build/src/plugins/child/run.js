@@ -37,12 +37,12 @@ export const run = async function (
     const envBefore = setEnvChanges(envChanges)
 
     logPluginMethodStart(verbose)
-    await method(runOptions)
+    const returnValue = await method(runOptions)
     logPluginMethodEnd(verbose)
 
     const newEnvChanges = getNewEnvChanges(envBefore, netlifyConfig, netlifyConfigCopy)
 
     const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
-    return { ...runState, newEnvChanges, configMutations }
+    return { ...runState, newEnvChanges, configMutations, returnValue }
   })
 }
