@@ -70,7 +70,7 @@ const zipFunction: ZipFunction = async function ({
   let pluginsModulesPath = await getPluginsModulesPath(srcDir)
   const isInPluginsModulesPath = Boolean(pluginsModulesPath && srcDir.startsWith(pluginsModulesPath))
   if (isInPluginsModulesPath) {
-    basePath = dirname(pluginsModulesPath as string)
+    basePath = dirname(pluginsModulesPath!)
     pluginsModulesPath = undefined
   }
 
@@ -122,7 +122,7 @@ const zipFunction: ZipFunction = async function ({
   // base path to be that directory. If not, we'll run the logic that finds the
   // common path prefix and that will break module resolution, as the modules
   // will no longer be inside a `node_modules` directory.
-  const finalBasePath = isInPluginsModulesPath ? (basePath as string) : basePathFromBundler
+  const finalBasePath = isInPluginsModulesPath ? basePath! : basePathFromBundler
 
   const generator = mergedConfig?.generator || getInternalValue(isInternal)
   const zipResult = await zipNodeJs({
