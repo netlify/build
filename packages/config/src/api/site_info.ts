@@ -150,7 +150,12 @@ export const getIntegrations = async function ({
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
+  const buildFetchExtensions = featureFlags?.build_fetch_extensions
   const { host: originalHost, setBaseUrl } = testOpts
+
+  if (!buildFetchExtensions) {
+    return []
+  }
 
   // TODO(kh): I am adding this purely for local staging development.
   // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
