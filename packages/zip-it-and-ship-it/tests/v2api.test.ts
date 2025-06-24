@@ -10,18 +10,10 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { ARCHIVE_FORMAT } from '../src/archive.js'
-import { zipFunctions } from '../src/zip.js'
 import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
-import {
-  zipFixture,
-  unzipFiles,
-  importFunctionFile,
-  FIXTURES_ESM_DIR,
-  FIXTURES_DIR,
-  getFunctionResultsByName,
-} from './helpers/main.js'
+import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
 import { testMany } from './helpers/test_many.js'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
