@@ -150,10 +150,10 @@ export const getIntegrations = async function ({
     return []
   }
   const sendBuildBotTokenToJigsaw = featureFlags?.send_build_bot_token_to_jigsaw
-  const buildFetchExtensions = featureFlags?.build_fetch_extensions
+  const skipFetchingExtensions = featureFlags?.build_skip_fetching_extensions
   const { host: originalHost, setBaseUrl } = testOpts
 
-  if (!buildFetchExtensions) {
+  if (skipFetchingExtensions) {
     return []
   }
 
