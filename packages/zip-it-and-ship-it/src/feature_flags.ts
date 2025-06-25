@@ -29,6 +29,9 @@ export const defaultFlags = {
 
   // Dynamically import the function handler.
   zisi_dynamic_import_function_handler_entry_point: false,
+
+  // Support individual files (in addition to directories) in the zip methods.
+  zisi_zip_individual_files: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>

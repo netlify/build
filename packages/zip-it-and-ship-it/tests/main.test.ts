@@ -2932,6 +2932,9 @@ test('Supports functions inside the plugins modules path', async () => {
   ]
   const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
     basePath,
+    featureFlags: {
+      zisi_zip_individual_files: true,
+    },
   })
 
   const unzippedFunctions = await unzipFiles(files)

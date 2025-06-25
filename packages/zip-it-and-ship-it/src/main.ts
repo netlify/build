@@ -73,7 +73,7 @@ export const listFunctions = async function (
 ) {
   const featureFlags = getFlags(inputFeatureFlags)
   const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
-  const paths = await listFunctionsDirectories(srcFolders)
+  const paths = await listFunctionsDirectories(srcFolders, featureFlags.zisi_zip_individual_files)
   const cache = new RuntimeCache()
   const functionsMap = await getFunctionsFromPaths(paths, { cache, config, configFileDirectories, featureFlags })
   const functions = [...functionsMap.values()]
@@ -123,7 +123,7 @@ export const listFunctionsFiles = async function (
 ): Promise<ListedFunctionFile[]> {
   const featureFlags = getFlags(inputFeatureFlags)
   const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
-  const paths = await listFunctionsDirectories(srcFolders)
+  const paths = await listFunctionsDirectories(srcFolders, featureFlags.zisi_zip_individual_files)
   const cache = new RuntimeCache()
   const functionsMap = await getFunctionsFromPaths(paths, { cache, config, configFileDirectories, featureFlags })
   const functions = [...functionsMap.values()]

@@ -55,9 +55,9 @@ export const safeUnlink = async (path: string) => {
 // Takes a list of absolute paths and returns an array containing all the
 // filenames within those directories, if at least one of the directories
 // exists. If not, an error is thrown.
-export const listFunctionsDirectories = async function (srcFolders: string[]) {
+export const listFunctionsDirectories = async function (srcFolders: string[], allowFiles = false) {
   const filenamesByDirectory = await Promise.allSettled(
-    srcFolders.map((srcFolder) => listFunctionsDirectory(srcFolder)),
+    srcFolders.map((srcFolder) => listFunctionsDirectory(srcFolder, allowFiles)),
   )
   const errorMessages: string[] = []
   const validDirectories = filenamesByDirectory
@@ -85,10 +85,12 @@ ${errorMessages.join('\n')}`)
   return validDirectories.flat()
 }
 
-const listFunctionsDirectory = async function (srcPath: string) {
-  const stat = await fs.stat(srcPath)
-  if (stat.isFile()) {
-    return srcPath
+const listFunctionsDirectory = async function (srcPath: string, allowFiles: boolean) {
+  if (allowFiles) {
+    const stat = await fs.stat(srcPath)
+    if (stat.isFile()) {
+      return srcPath
+    }
   }
 
   const filenames = await fs.readdir(srcPath)
