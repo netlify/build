@@ -23,11 +23,6 @@ import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
 import type { BuildFlags } from './types.js'
 
-const supportedRuntimes = {
-  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
-  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
-}
-
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
@@ -87,7 +82,6 @@ const tExecBuild = async function ({
   timeline,
   devCommand,
   quiet,
-  framework,
   explicitSecretKeys,
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
@@ -145,19 +139,6 @@ const tExecBuild = async function ({
     quiet,
     featureFlags,
   })
-
-  if (featureFlags.build_automatic_runtime && framework) {
-    const runtime = supportedRuntimes[framework]
-
-    if (runtime !== undefined) {
-      const skip = childEnv[runtime.skipFlag] === 'true'
-      const installed = netlifyConfig.plugins.some((plugin) => plugin.package === runtime.package)
-
-      if (!installed && !skip) {
-        netlifyConfig.plugins.push({ package: runtime.package })
-      }
-    }
-  }
 
   const constants = await getConstants({
     configPath,
