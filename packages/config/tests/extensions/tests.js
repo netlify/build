@@ -72,7 +72,7 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
   ],
 }
 
-test('Auto-install extensions: feature flag disabled returns integrations unchanged', async (t) => {
+test('Auto-install extensions: build_skip_fetching_extensions flag disabled returns integrations unchanged', async (t) => {
   const { output } = await new Fixture('./fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
@@ -80,7 +80,7 @@ test('Auto-install extensions: feature flag disabled returns integrations unchan
       token: 'test',
       mode: 'dev',
       featureFlags: {
-        auto_install_required_extensions_v2: false,
+        build_skip_fetching_extensions: true,
       },
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
