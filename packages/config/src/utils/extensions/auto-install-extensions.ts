@@ -44,9 +44,10 @@ export async function handleAutoInstallExtensions({
   extensionApiBaseUrl,
   debug = false,
 }: AutoInstallOptions) {
-  if (!featureFlags?.auto_install_required_extensions_v2) {
+  if (!featureFlags?.auto_install_required_extensions_v2 || featureFlags?.build_skip_fetching_extensions) {
     return integrations
   }
+
   if (!accountId || !siteId || !token || !buildDir || offline) {
     const reason = !accountId
       ? 'Missing accountId'
