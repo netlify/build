@@ -92,11 +92,6 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
   },
 }
 
-const FETCH_INTEGRATIONS_EMPTY_RESPONSE = {
-  path: '/integrations',
-  response: [],
-}
-
 test('--token', async (t) => {
   const output = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', testOpts: { env: true } })
@@ -115,14 +110,12 @@ test('NETLIFY_AUTH_TOKEN environment variable', async (t) => {
   const output = await new Fixture('./fixtures/empty')
     .withFlags({ testOpts: { env: true } })
     .withEnv({ NETLIFY_AUTH_TOKEN: 'test' })
-    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--site-id', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
-    .withFlags({ siteId: 'test' })
-    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+  const output = await new Fixture('./fixtures/empty').withFlags({ siteId: 'test' }).runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -136,93 +129,91 @@ test('--account-id in offline and buildbot mode', async (t) => {
 })
 
 test('NETLIFY_SITE_ID environment variable', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
-    .withEnv({ NETLIFY_SITE_ID: 'test' })
-    .runWithConfig([FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+  const output = await new Fixture('./fixtures/empty').withEnv({ NETLIFY_SITE_ID: 'test' }).runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo success', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo API error', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_ERROR, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_ERROR])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no token', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ siteId: 'test' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no siteId', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo offline', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ siteId: 'test', token: 'test', offline: true })
-    .runConfigServer([SITE_INFO_DATA, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo CI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings can be null', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS_NULL, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS_NULL])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use build settings if a siteId and token are provided', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings have low merging priority', async (t) => {
   const { output } = await new Fixture('./fixtures/build_settings')
     .withFlags({ token: 'test', siteId: 'test', baseRelDir: true })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a token', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ siteId: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a siteId', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS])
 
   t.snapshot(normalizeOutput(output))
 })
@@ -233,7 +224,7 @@ test('Integrations are returned from getSiteInfo from v1 safe API when there is 
       token: 'test',
       siteId: 'test',
     })
-    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -252,7 +243,7 @@ test('In integration dev mode, integration specified in config is returned even 
       context: 'dev',
       accountId: 'account1',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -272,7 +263,7 @@ test('In integration dev mode, integration specified in config is returned even 
       context: 'dev',
       accountId: 'account1',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -290,7 +281,7 @@ test('In integration dev mode, integration specified in config is returned even 
       siteId: 'test',
       context: 'dev',
     })
-    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, SITE_INTEGRATIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -309,7 +300,7 @@ test('In integration dev mode, integration specified in config is returned and b
       context: 'dev',
       accountId: 'account1',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -328,7 +319,7 @@ test('Integrations are not returned if offline', async (t) => {
       mode: 'buildbot',
       accountId: 'account1',
     })
-    .runConfigServer([TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -344,7 +335,7 @@ test('Integrations and account id are returned if mode is buildbot', async (t) =
       accountId: 'account1',
       token: 'test',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -367,7 +358,7 @@ test('Integrations are returned if accountId is present and mode is dev', async 
       token: 'test',
       accountId: 'account1',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -389,7 +380,7 @@ test('Integrations are returned and called with a netlify-sdk-build-bot-token he
         send_build_bot_token_to_jigsaw: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
   const installationsHeaders = requests.find(
@@ -415,7 +406,7 @@ test('Integrations are returned and called with a netlify-config-mode header', a
         send_build_bot_token_to_jigsaw: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   const config = JSON.parse(output)
   const installationsHeaders = requests.find(
@@ -438,11 +429,7 @@ test('Integrations are not returned if failed to fetch integrations', async (t) 
       accountId: 'account1',
       token: 'test',
     })
-    .runConfigServer([
-      SITE_INFO_DATA,
-      TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR,
-      FETCH_INTEGRATIONS_EMPTY_RESPONSE,
-    ])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE_INTERNAL_SERVER_ERROR])
 
   t.snapshot(normalizeOutput(output))
 })
@@ -452,7 +439,7 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
 
   const { output } = await new Fixture('./fixtures/build_base_override')
     .withFlags({ cwd: `${fixturesDir}/build_base_override/subdir`, token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BASE_REL_DIR, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BASE_REL_DIR])
   t.snapshot(normalizeOutput(output))
 })
 
@@ -518,7 +505,7 @@ test('We call the staging extension API when the apiHost is not api.netlify.com'
       testOpts: { host: undefined, setBaseUrl },
       host: NETLIFY_API_STAGING_BASE_URL,
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   t.assert(baseUrl === EXTENSION_API_STAGING_BASE_URL)
 })
@@ -538,7 +525,7 @@ test('We call the production extension API when the apiHost is api.netlify.com',
       testOpts: { host: undefined, setBaseUrl },
       host: 'api.netlify.com',
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
 
   t.assert(baseUrl === EXTENSION_API_BASE_URL)
 })
