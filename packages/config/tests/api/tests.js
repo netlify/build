@@ -542,3 +542,40 @@ test('We call the production extension API when the apiHost is api.netlify.com',
 
   t.assert(baseUrl === EXTENSION_API_BASE_URL)
 })
+
+test('getIntegrations returns empty array when build_skip_fetching_extensions feature flag is true', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        build_skip_fetching_extensions: true,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
+
+  const config = JSON.parse(output)
+  t.assert(Array.isArray(config.integrations))
+  t.assert(config.integrations.length === 0)
+})
+
+test('getIntegrations returns extension array when build_skip_fetching_extensions feature flag is false', async (t) => {
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({
+      siteId: 'test',
+      token: 'test',
+      accountId: 'account1',
+      featureFlags: {
+        build_skip_fetching_extensions: false,
+      },
+    })
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE])
+
+  const config = JSON.parse(output)
+  t.assert(Array.isArray(config.integrations))
+  t.assert(config.integrations.length === 1)
+  t.assert(config.integrations[0].slug === 'test')
+  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].has_build === true)
+})
