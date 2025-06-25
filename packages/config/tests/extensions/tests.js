@@ -72,7 +72,6 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
   ],
 }
 
-
 test('Auto-install extensions: auto_install_required_extensions_v2 flag disabled returns integrations unchanged', async (t) => {
   const { output } = await new Fixture('./fixtures/with_neon_package')
     .withFlags({
@@ -93,7 +92,6 @@ test('Auto-install extensions: auto_install_required_extensions_v2 flag disabled
   t.assert(config.integrations)
   t.is(config.integrations.length, 0)
 })
-
 
 test('Auto-install extensions: build_skip_fetching_extensions flag disabled returns integrations unchanged', async (t) => {
   const { output } = await new Fixture('./fixtures/with_neon_package')
