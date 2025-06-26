@@ -1,9 +1,9 @@
 interface GeneratedFunction {
-  displayName?: string
-  generator?: string
   path: string
 }
 
 export interface ReturnValue {
+  displayName: string
   generatedFunctions?: GeneratedFunction[]
+  generatorType: 'build plugin' | 'extension'
 }

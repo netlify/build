@@ -163,6 +163,16 @@ export const runSteps = async function ({
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
+
+      /** @type import('../types/step.js').ReturnValue */
+      const augmentedReturnValue = returnValue
+        ? {
+            ...returnValue,
+            displayName: extensionMetadata?.name || extensionMetadata?.slug || packageName,
+            generatorType: extensionMetadata ? 'extension' : 'build plugin',
+          }
+        : undefined
+
       return {
         index: newIndex,
         error: newError,
@@ -175,7 +185,7 @@ export const runSteps = async function ({
         statuses: statusesA,
         timers: timersB,
         metrics: [...metricsA, ...metricsB],
-        returnValues: returnValue ? { ...returnValues, [packageName]: returnValue } : returnValues,
+        returnValues: augmentedReturnValue ? { ...returnValues, [packageName]: augmentedReturnValue } : returnValues,
       }
     },
     {

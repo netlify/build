@@ -112,6 +112,7 @@ export const runStep = async function ({
       explicitSecretKeys,
       enhancedSecretScan,
       deployId,
+      returnValues,
       featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
@@ -273,6 +274,7 @@ const shouldRunStep = async function ({
   explicitSecretKeys,
   enhancedSecretScan,
   deployId,
+  returnValues,
   featureFlags = {},
 }) {
   if (
@@ -288,6 +290,7 @@ const shouldRunStep = async function ({
         explicitSecretKeys,
         enhancedSecretScan,
         deployId,
+        returnValues,
         featureFlags,
       })))
   ) {

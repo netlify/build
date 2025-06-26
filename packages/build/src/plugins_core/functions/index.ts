@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { basename, resolve } from 'path'
 
 import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
@@ -159,7 +159,7 @@ const coreStep = async function ({
     }
   }
 
-  const generatedFunctions = getGeneratedFunctions(returnValues)
+  const generatedFunctions = getGeneratedFunctionPaths(returnValues)
 
   logFunctionsToBundle({
     logs,
@@ -169,7 +169,7 @@ const coreStep = async function ({
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
     frameworkFunctions,
-    generatedFunctions,
+    generatedFunctions: getGeneratedFunctionsByGenerator(returnValues),
   })
 
   if (
@@ -196,7 +196,7 @@ const coreStep = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
-    generatedFunctions: generatedFunctions.map((func) => func.path),
+    generatedFunctions,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
@@ -217,6 +217,7 @@ const hasFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
   packagePath,
+  returnValues,
 }) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
@@ -232,11 +233,49 @@ const hasFunctionsDirectories = async function ({
 
   const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
 
-  return await pathExists(frameworkFunctionsSrc)
+  if (await pathExists(frameworkFunctionsSrc)) {
+    return true
+  }
+
+  // We must run the core step if the return value of any of the previous steps
+  // has declared generated functions.
+  for (const id in returnValues) {
+    if (returnValues[id].generatedFunctions && returnValues[id].generatedFunctions.length !== 0) {
+      return true
+    }
+  }
+
+  return false
 }
 
-const getGeneratedFunctions = (returnValues: Record<string, ReturnValue>) => {
-  return Object.values(returnValues).flatMap((returnValue) => returnValue.generatedFunctions || [])
+// Takes a list of return values and produces an array with the paths of all
+// generated functions.
+const getGeneratedFunctionPaths = (returnValues: Record<string, ReturnValue>) => {
+  return Object.values(returnValues).flatMap(
+    (returnValue) => returnValue.generatedFunctions?.map((func) => func.path) || [],
+  )
+}
+
+// Takes a list of return values and produces an object with the names of the
+// generated functions for each generator. This is used for printing logs only.
+const getGeneratedFunctionsByGenerator = (returnValues: Record<string, ReturnValue>) => {
+  const result: Record<string, { displayName: string; generatorType: string; functionNames: string[] }> = {}
+
+  for (const id in returnValues) {
+    const { displayName, generatedFunctions, generatorType } = returnValues[id]
+
+    if (!generatedFunctions || generatedFunctions.length === 0) {
+      continue
+    }
+
+    result[id] = {
+      displayName,
+      generatorType,
+      functionNames: generatedFunctions.map((func) => basename(func.path)),
+    }
+  }
+
+  return result
 }
 
 export const bundleFunctions = {
