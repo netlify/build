@@ -76,6 +76,14 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.0.11](https://github.com/netlify/build/compare/config-v23.0.10...config-v23.0.11) (2025-06-25)
+
+
+### Bug Fixes
+
+* replace js-yaml with yaml package ([#6469](https://github.com/netlify/build/issues/6469)) ([1628170](https://github.com/netlify/build/commit/1628170df6afa98352901c98f2e0a1587d24c9bc))
+* use auto_install_required_extensions_v2 instead of auto_install_required_extensions ([#6477](https://github.com/netlify/build/issues/6477)) ([78b7da5](https://github.com/netlify/build/commit/78b7da5dd5b31898b2a25d16eb1008f5fdb27e36))
+
 ## [23.0.10](https://github.com/netlify/build/compare/config-v23.0.9...config-v23.0.10) (2025-06-05)
 
 
