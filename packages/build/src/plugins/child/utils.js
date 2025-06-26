@@ -48,7 +48,9 @@ const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, gener
   const add = (src) => functionsAdd(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
   const list = functionsList.bind(null, functionsDirectories, { fail: failBuild })
   const listAll = functionsListAll.bind(null, functionsDirectories, { fail: failBuild })
-  const generate = (func) => generatedFunctions.push(func)
+  const generate = (functionPath) => generatedFunctions.push({ path: functionPath })
+
+  /** @type import('../../types/options/netlify_plugin_functions_util.js').NetlifyPluginFunctionsUtil */
   return { add, list, listAll, generate }
 }
 
