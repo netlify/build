@@ -66,7 +66,9 @@ const zipFunction: ZipFunction = async function ({
 
   // If the function is inside the plugins modules path, we need to treat that
   // directory as the base path, not as an extra directory used for module
-  // resolution. So we unset `pluginsModulesPath` for this function.
+  // resolution. So we unset `pluginsModulesPath` for this function. We do
+  // this because we want the modules used by those functions to be isolated
+  // from the ones defined in the project root.
   let pluginsModulesPath = await getPluginsModulesPath(srcDir)
   const isInPluginsModulesPath = Boolean(pluginsModulesPath && srcDir.startsWith(pluginsModulesPath))
   if (isInPluginsModulesPath) {

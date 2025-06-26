@@ -74,10 +74,7 @@ export const zipFunctions = async function (
   const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
   const internalFunctionsPath = internalSrcFolder && resolve(internalSrcFolder)
 
-  const [paths] = await Promise.all([
-    listFunctionsDirectories(srcFolders, featureFlags.zisi_zip_individual_files),
-    fs.mkdir(destFolder, { recursive: true }),
-  ])
+  const [paths] = await Promise.all([listFunctionsDirectories(srcFolders), fs.mkdir(destFolder, { recursive: true })])
   const functions = await getFunctionsFromPaths(paths, {
     cache,
     config,

@@ -2920,6 +2920,27 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
   expect(rewriteConfig.aggregate.keys).toStrictEqual([{ type: 'ip' }, { type: 'domain' }])
 })
 
+test('Supports both files and directories and ignores files that are not functions', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
+  const individualFunctions = [join(basePath, 'cat.jpg'), join(basePath, 'func2.mjs')]
+  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
+    basePath,
+  })
+
+  expect(files.length).toBe(2)
+
+  const functions = getFunctionResultsByName(files)
+
+  expect(functions.func1.name).toBe('func1')
+  expect(functions.func2.name).toBe('func2')
+
+  await tmpDir.cleanup()
+})
+
 test('Supports functions inside the plugins modules path', async () => {
   const tmpDir = await getTmpDir({
     // Cleanup the folder even if there are still files in them
@@ -2932,9 +2953,6 @@ test('Supports functions inside the plugins modules path', async () => {
   ]
   const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
     basePath,
-    featureFlags: {
-      zisi_zip_individual_files: true,
-    },
   })
 
   const unzippedFunctions = await unzipFiles(files)
