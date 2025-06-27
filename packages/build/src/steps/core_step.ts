@@ -42,6 +42,7 @@ export const fireCoreStep = async function ({
   deployId,
   outputFlusher,
   api,
+  returnValues,
 }) {
   const logsA = outputFlusher ? addOutputFlusher(logs, outputFlusher) : logs
 
@@ -83,6 +84,7 @@ export const fireCoreStep = async function ({
       enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
+      returnValues,
     })
     const {
       netlifyConfig: netlifyConfigA,

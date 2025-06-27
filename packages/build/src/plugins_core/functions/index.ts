@@ -1,10 +1,11 @@
-import { resolve } from 'path'
+import { basename, resolve } from 'path'
 
 import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
+import type { ReturnValue } from '../../types/step.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
 
@@ -68,6 +69,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  generatedFunctions,
   frameworkFunctionsSrc,
   internalFunctionsSrc,
   isRunningLocally,
@@ -94,7 +96,9 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc].filter(Boolean)
+    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc, ...generatedFunctions].filter(
+      Boolean,
+    )
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     validateCustomRoutes(results)
@@ -128,6 +132,7 @@ const coreStep = async function ({
   repositoryRoot,
   userNodeVersion,
   systemLog,
+  returnValues,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -154,6 +159,8 @@ const coreStep = async function ({
     }
   }
 
+  const generatedFunctions = getGeneratedFunctionPaths(returnValues)
+
   logFunctionsToBundle({
     logs,
     userFunctions,
@@ -162,9 +169,15 @@ const coreStep = async function ({
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
     frameworkFunctions,
+    generatedFunctions: getGeneratedFunctionsByGenerator(returnValues),
   })
 
-  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
+  if (
+    userFunctions.length === 0 &&
+    internalFunctions.length === 0 &&
+    frameworkFunctions.length === 0 &&
+    generatedFunctions.length === 0
+  ) {
     return {}
   }
 
@@ -183,6 +196,7 @@ const coreStep = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
+    generatedFunctions,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
@@ -203,6 +217,7 @@ const hasFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
   packagePath,
+  returnValues,
 }) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
@@ -218,7 +233,49 @@ const hasFunctionsDirectories = async function ({
 
   const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
 
-  return await pathExists(frameworkFunctionsSrc)
+  if (await pathExists(frameworkFunctionsSrc)) {
+    return true
+  }
+
+  // We must run the core step if the return value of any of the previous steps
+  // has declared generated functions.
+  for (const id in returnValues) {
+    if (returnValues[id].generatedFunctions && returnValues[id].generatedFunctions.length !== 0) {
+      return true
+    }
+  }
+
+  return false
+}
+
+// Takes a list of return values and produces an array with the paths of all
+// generated functions.
+const getGeneratedFunctionPaths = (returnValues: Record<string, ReturnValue>) => {
+  return Object.values(returnValues).flatMap(
+    (returnValue) => returnValue.generatedFunctions?.map((func) => func.path) || [],
+  )
+}
+
+// Takes a list of return values and produces an object with the names of the
+// generated functions for each generator. This is used for printing logs only.
+const getGeneratedFunctionsByGenerator = (returnValues: Record<string, ReturnValue>) => {
+  const result: Record<string, { displayName: string; generatorType: string; functionNames: string[] }> = {}
+
+  for (const id in returnValues) {
+    const { displayName, generatedFunctions, generatorType } = returnValues[id]
+
+    if (!generatedFunctions || generatedFunctions.length === 0) {
+      continue
+    }
+
+    result[id] = {
+      displayName,
+      generatorType,
+      functionNames: generatedFunctions.map((func) => basename(func.path)),
+    }
+  }
+
+  return result
 }
 
 export const bundleFunctions = {
