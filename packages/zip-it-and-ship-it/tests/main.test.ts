@@ -21,11 +21,14 @@ import { detectEsModule } from '../src/runtimes/node/utils/detect_es_module.js'
 import { MODULE_FORMAT } from '../src/runtimes/node/utils/module_format.js'
 import { shellUtils } from '../src/utils/shell.js'
 import type { ZipFunctionsOptions } from '../src/zip.js'
+import { zipFunctions } from '../src/zip.js'
 
 import {
   BINARY_PATH,
   FIXTURES_DIR,
+  FIXTURES_ESM_DIR,
   getBundlerNameFromOptions,
+  getFunctionResultsByName,
   getRequires,
   importFunctionFile,
   unzipFiles,
@@ -37,6 +40,7 @@ import { computeSha1 } from './helpers/sha.js'
 import { allBundleConfigs, testMany } from './helpers/test_many.js'
 
 import 'source-map-support/register'
+import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
 
@@ -2914,4 +2918,72 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
   expect(rewriteConfig.rateLimitConfig.windowSize).toBe(20)
   expect(rewriteConfig.rateLimitConfig.algorithm).toBe('sliding_window')
   expect(rewriteConfig.aggregate.keys).toStrictEqual([{ type: 'ip' }, { type: 'domain' }])
+})
+
+test('Supports both files and directories and ignores files that are not functions', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
+  const individualFunctions = [join(basePath, 'cat.jpg'), join(basePath, 'func2.mjs')]
+  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
+    basePath,
+  })
+
+  expect(files.length).toBe(2)
+
+  const functions = getFunctionResultsByName(files)
+
+  expect(functions.func1.name).toBe('func1')
+  expect(functions.func2.name).toBe('func2')
+
+  await tmpDir.cleanup()
+})
+
+test('Supports functions inside the plugins modules path', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
+  const individualFunctions = [
+    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2.mjs'),
+  ]
+  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
+    basePath,
+  })
+
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
+
+  // extension-func1 should work because all modules are in scope.
+  const extensionFunc1 = await importFunctionFile(
+    `${tmpDir.path}/${functions['extension-func1'].name}/${functions['extension-func1'].entryFilename}`,
+  )
+  const extensionFunc1Result = await invokeLambda(extensionFunc1)
+  expect(extensionFunc1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(extensionFunc1Result.body)).toStrictEqual(
+    JSON.stringify({ mod1: 'module-1-plugins', mod2: 'module-2-plugins', mod3: 'module-3-plugins' }),
+  )
+
+  // extension-func2 should error because module-4 isn't in scope.
+  await expect(() =>
+    importFunctionFile(
+      `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
+    ),
+  ).rejects.toThrowError(`Cannot find package 'module-4' imported from`)
+
+  // user-func1 should work because all modules are in scope.
+  const userFunc1 = await importFunctionFile(
+    `${tmpDir.path}/${functions['user-func1'].name}/${functions['user-func1'].entryFilename}`,
+  )
+  const userFunc1Result = await invokeLambda(userFunc1)
+  expect(userFunc1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(userFunc1Result.body)).toStrictEqual(
+    JSON.stringify({ mod3: 'module-3-user', mod4: 'module-4-user' }),
+  )
+
+  await tmpDir.cleanup()
 })
