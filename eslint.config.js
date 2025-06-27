@@ -102,6 +102,12 @@ export default tseslint.config(
       // scenarios to communicate intent.
       'no-empty': 'off',
       '@typescript-eslint/no-empty-function': 'off',
+
+      // `@typescript-eslint/non-nullable-type-assertion-style` prohibits type assertions
+      // and pushes people to use the non-null assertion operator. Except that is also not
+      // allowed, giving us no option to mark something as non-nullable. Disabling the
+      // latter to make this possible.
+      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
 

@@ -54,6 +54,7 @@ export const firePluginStep = async function ({
     const {
       newEnvChanges,
       configMutations: newConfigMutations,
+      returnValue,
       status,
     } = await callChild({
       childProcess,
@@ -100,6 +101,7 @@ export const firePluginStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       newStatus,
+      returnValue,
     }
   } catch (newError) {
     const errorType = getPluginErrorType(newError, loadedFrom, packageName)
