@@ -1,6 +1,7 @@
 import { normalize, resolve } from 'path'
+import { lstatSync } from 'fs'
 
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 
 import { minimatch } from '../../../utils/matching.js'
 
@@ -54,14 +55,21 @@ export const getPathsOfIncludedFiles = async (
     dot: true,
     ignore: excludePatterns,
     onlyFiles: false,
-    // get directories as well to get symlinked directories,
-    // to filter the regular non symlinked directories out mark them with a slash at the end to filter them out.
-    markDirectories: true,
     followSymbolicLinks: false,
+    expandDirectories: false,
   })
 
-  const paths = pathGroups.filter((path) => !path.endsWith('/')).map(normalize)
+  const paths = pathGroups.filter(pathFilter).map(normalize)
 
   // now filter the non symlinked directories out that got marked with a trailing slash
   return { excludePatterns, paths }
+}
+
+function pathFilter(path: string) {
+  try {
+    const stats = lstatSync(path)
+    return !stats.isDirectory() || stats.isSymbolicLink()
+  } catch (_err) {
+    return false
+  }
 }
