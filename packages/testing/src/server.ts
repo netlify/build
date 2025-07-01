@@ -4,7 +4,7 @@ import { promisify } from 'util'
 
 import getStream from 'get-stream'
 
-type Handler = { path: string; response: unknown; status?: number }
+type Handler = { path: string; response?: object; status?: number; wait?: number }
 export type ServerHandler = Handler | Handler[]
 
 export type Request = {
@@ -70,8 +70,8 @@ const requestHandler = async (req: IncomingMessage, res: ServerResponse, request
   res.end(responseBody)
 }
 
-const getHandler = function (handlers, url) {
-  const handler = handlers.find(({ path }) => url === path || url.startsWith(`${path}?`))
+const getHandler = function (handlers: Handler[], url?: string) {
+  const handler = handlers.find(({ path }) => url === path || url?.startsWith(`${path}?`))
   if (handler === undefined) {
     return {}
   }

@@ -105,6 +105,39 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.5.0](https://github.com/netlify/build/compare/build-v33.4.7...build-v33.5.0) (2025-06-27)
+
+
+### Features
+
+* add `functions.generate` util ([#6487](https://github.com/netlify/build/issues/6487)) ([dfb4a07](https://github.com/netlify/build/commit/dfb4a07a880dce50de806e4147d708d016747e9f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.11 to ^6.0.12
+    * @netlify/zip-it-and-ship-it bumped from 12.1.5 to 12.2.0
+
+## [33.4.7](https://github.com/netlify/build/compare/build-v33.4.6...build-v33.4.7) (2025-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.1 ([#6480](https://github.com/netlify/build/issues/6480)) ([17e14e9](https://github.com/netlify/build/commit/17e14e97f83926de60a1ea191680be431bc08fee))
+* remove got as a dependency, replace with fetch ([#6468](https://github.com/netlify/build/issues/6468)) ([fed9e58](https://github.com/netlify/build/commit/fed9e58c2a177796f0d14e606778d804a6111260))
+* replace js-yaml with yaml package ([#6469](https://github.com/netlify/build/issues/6469)) ([1628170](https://github.com/netlify/build/commit/1628170df6afa98352901c98f2e0a1587d24c9bc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.10 to ^23.0.11
+    * @netlify/functions-utils bumped from ^6.0.10 to ^6.0.11
+    * @netlify/zip-it-and-ship-it bumped from 12.1.4 to 12.1.5
+
 ## [33.4.6](https://github.com/netlify/build/compare/build-v33.4.5...build-v33.4.6) (2025-06-11)
 
 

@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.7](https://github.com/netlify/build/compare/build-info-v10.0.6...build-info-v10.0.7) (2025-06-27)
+
+
+### Bug Fixes
+
+* handle changed TanStack Start commands ([#6495](https://github.com/netlify/build/issues/6495)) ([7438003](https://github.com/netlify/build/commit/743800365ee4ad282a2df19d17d414effa1a1269))
+
 ## [10.0.6](https://github.com/netlify/build/compare/build-info-v10.0.5...build-info-v10.0.6) (2025-06-09)
 
 

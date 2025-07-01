@@ -57,6 +57,7 @@ export const runSteps = async function ({
     timers: timersC,
     configMutations: configMutationsB,
     metrics: metricsC,
+    returnValues,
   } = await pReduce(
     steps,
     async (
@@ -72,6 +73,7 @@ export const runSteps = async function ({
         statuses,
         timers: timersA,
         metrics: metricsA,
+        returnValues,
       },
       {
         event,
@@ -101,6 +103,7 @@ export const runSteps = async function ({
         newStatus,
         timers: timersB = timersA,
         metrics: metricsB = [],
+        returnValue,
       } = await runStep({
         event,
         childProcess,
@@ -136,6 +139,7 @@ export const runSteps = async function ({
         deployId,
         errorParams,
         error,
+        returnValues,
         failedPlugins,
         configOpts,
         defaultConfig,
@@ -159,6 +163,16 @@ export const runSteps = async function ({
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
+
+      /** @type import('../types/step.js').ReturnValue */
+      const augmentedReturnValue = returnValue
+        ? {
+            ...returnValue,
+            displayName: extensionMetadata?.name || extensionMetadata?.slug || packageName,
+            generatorType: extensionMetadata ? 'extension' : 'build plugin',
+          }
+        : undefined
+
       return {
         index: newIndex,
         error: newError,
@@ -171,6 +185,7 @@ export const runSteps = async function ({
         statuses: statusesA,
         timers: timersB,
         metrics: [...metricsA, ...metricsB],
+        returnValues: augmentedReturnValue ? { ...returnValues, [packageName]: augmentedReturnValue } : returnValues,
       }
     },
     {
@@ -184,6 +199,7 @@ export const runSteps = async function ({
       statuses: [],
       timers,
       metrics: [],
+      returnValues: {},
     },
   )
 
@@ -202,5 +218,6 @@ export const runSteps = async function ({
     timers: timersC,
     configMutations: configMutationsB,
     metrics: metricsC,
+    returnValues,
   }
 }

@@ -89,6 +89,16 @@ export const zipFixture = async function (
   return { files, tmpDir }
 }
 
+export const getFunctionResultsByName = (files: FunctionResult[]): Record<string, FunctionResult> => {
+  const results: Record<string, FunctionResult> = {}
+
+  for (const file of files) {
+    results[file.name] = file
+  }
+
+  return results
+}
+
 export const zipCheckFunctions = async function (
   fixture: string[] | string,
   { length = 1, fixtureDir = FIXTURES_DIR, tmpDir, opts = {} }: ZipOptions & { tmpDir: string },

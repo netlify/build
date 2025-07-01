@@ -71,6 +71,7 @@ export const runStep = async function ({
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   extensionMetadata,
+  returnValues,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -111,6 +112,7 @@ export const runStep = async function ({
       explicitSecretKeys,
       enhancedSecretScan,
       deployId,
+      returnValues,
       featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
@@ -140,6 +142,7 @@ export const runStep = async function ({
       timers: timersA,
       durationNs,
       metrics,
+      returnValue,
     } = await fireStep({
       extensionMetadata,
       defaultConfig,
@@ -188,6 +191,7 @@ export const runStep = async function ({
       edgeFunctionsBootstrapURL,
       deployId,
       api,
+      returnValues,
     })
 
     const newValues = await getStepReturn({
@@ -216,6 +220,7 @@ export const runStep = async function ({
       systemLog,
       quiet: quiet || coreStepQuiet,
       metrics,
+      returnValue,
     })
 
     span.end()
@@ -269,6 +274,7 @@ const shouldRunStep = async function ({
   explicitSecretKeys,
   enhancedSecretScan,
   deployId,
+  returnValues,
   featureFlags = {},
 }) {
   if (
@@ -284,6 +290,7 @@ const shouldRunStep = async function ({
         explicitSecretKeys,
         enhancedSecretScan,
         deployId,
+        returnValues,
         featureFlags,
       })))
   ) {
@@ -354,6 +361,7 @@ const tFireStep = function ({
   deployId,
   extensionMetadata,
   api,
+  returnValues,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -393,6 +401,7 @@ const tFireStep = function ({
       edgeFunctionsBootstrapURL,
       deployId,
       api,
+      returnValues,
     })
   }
 

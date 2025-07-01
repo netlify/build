@@ -1,6 +1,5 @@
 import { platform } from 'process'
 
-import got, { OptionsOfTextResponseBody } from 'got'
 import osName from 'os-name'
 
 import { addErrorInfo } from '../error/info.js'
@@ -11,7 +10,7 @@ const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
   origin: 'https://api.segment.io/v1',
   writeKey: 'dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6',
-  timeout: { request: DEFAULT_TELEMETRY_TIMEOUT },
+  timeout: DEFAULT_TELEMETRY_TIMEOUT,
 }
 
 // Send telemetry request when build completes
@@ -54,18 +53,25 @@ export const trackBuildComplete = async function ({
 interface TrackConfig {
   origin: string
   writeKey: string
-  timeout: OptionsOfTextResponseBody['timeout']
+  timeout: number
 }
 
 // Send track HTTP request to telemetry.
 const track = async function (payload: Record<string, unknown>, { origin, writeKey, timeout }: TrackConfig) {
   const url = `${origin}/track`
-  await got.post(url, {
-    json: payload,
-    timeout,
-    retry: { limit: 0 },
-    headers: { Authorization: `Basic ${writeKey}` },
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(timeout),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${writeKey}`,
+    },
   })
+
+  if (!response.ok) {
+    throw new Error(`Response code: ${response.status.toString()}`)
+  }
 }
 
 // Retrieve telemetry information

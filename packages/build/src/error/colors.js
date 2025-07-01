@@ -6,6 +6,11 @@ export const removeErrorColors = function (error) {
     return
   }
 
-  error.message = stripAnsi(error.message)
-  error.stack = stripAnsi(error.stack)
+  // Setting error values might fail if they are getters or are non-writable.
+  try {
+    error.message = stripAnsi(error.message)
+    error.stack = stripAnsi(error.stack)
+  } catch {
+    // continue
+  }
 }
