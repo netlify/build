@@ -13,5 +13,10 @@ export default async () => {
 }
 
 export const config: Config = {
+  header: {
+    "x-must-be-there": true,
+    "x-must-not-be-there": false,
+    "x-must-match": "^(foo|bar)$",
+  },
   path: '/user-func1',
 }
