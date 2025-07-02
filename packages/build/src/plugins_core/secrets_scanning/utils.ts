@@ -1,6 +1,5 @@
 import { createReadStream, promises as fs, existsSync } from 'node:fs'
 import path from 'node:path'
-import { createInterface } from 'node:readline'
 
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
@@ -19,7 +18,6 @@ interface ScanArgs {
   filePaths: string[]
   enhancedScanning?: boolean
   omitValuesFromEnhancedScan?: unknown[]
-  useMinimalChunks: boolean
 }
 
 interface MatchResult {
@@ -303,7 +301,6 @@ export async function scanFilesForKeyValues({
   base,
   enhancedScanning,
   omitValuesFromEnhancedScan = [],
-  useMinimalChunks = false,
 }: ScanArgs): Promise<ScanResults> {
   const scanResults: ScanResults = {
     matches: [],
@@ -334,8 +331,6 @@ export async function scanFilesForKeyValues({
 
   let settledPromises: PromiseSettledResult<MatchResult[]>[] = []
 
-  const searchStream = useMinimalChunks ? searchStreamMinimalChunks : searchStreamReadline
-
   // process the scanning in batches to not run into memory issues by
   // processing all files at the same time.
   while (filePaths.length > 0) {
@@ -345,7 +340,13 @@ export async function scanFilesForKeyValues({
     settledPromises = settledPromises.concat(
       await Promise.allSettled(
         batch.map((file) => {
-          return searchStream({ basePath: base, file, keyValues, enhancedScanning, omitValuesFromEnhancedScan })
+          return searchStreamMinimalChunks({
+            basePath: base,
+            file,
+            keyValues,
+            enhancedScanning,
+            omitValuesFromEnhancedScan,
+          })
         }),
       ),
     )
@@ -366,149 +367,6 @@ type SearchStreamOptions = {
   keyValues: Record<string, string[]>
   enhancedScanning?: boolean
   omitValuesFromEnhancedScan?: unknown[]
-}
-
-/**
- * Search stream implementation using node:readline
- */
-const searchStreamReadline = ({
-  basePath,
-  file,
-  keyValues,
-  enhancedScanning,
-  omitValuesFromEnhancedScan = [],
-}: SearchStreamOptions): Promise<MatchResult[]> => {
-  return new Promise((resolve, reject) => {
-    const filePath = path.resolve(basePath, file)
-
-    const inStream = createReadStream(filePath)
-    const rl = createInterface({ input: inStream, terminal: false })
-    const matches: MatchResult[] = []
-
-    const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
-
-    function getKeyForValue(val) {
-      let key = ''
-      for (const [secretKeyName, valuePermutations] of Object.entries(keyValues)) {
-        if (valuePermutations.includes(val)) {
-          key = secretKeyName
-        }
-      }
-      return key
-    }
-
-    // how many lines is the largest multiline string
-    let maxMultiLineCount = 1
-
-    keyVals.forEach((valVariant) => {
-      maxMultiLineCount = Math.max(maxMultiLineCount, valVariant.split('\n').length)
-    })
-
-    const lines: string[] = []
-
-    let lineNumber = 0
-
-    rl.on('line', function (line) {
-      // iterating here so the first line will always appear as line 1 to be human friendly
-      // and match what an IDE would show for a line number.
-      lineNumber++
-      if (typeof line === 'string') {
-        if (enhancedScanning) {
-          matches.push(
-            ...findLikelySecrets({ text: line, omitValuesFromEnhancedScan }).map(({ prefix }) => ({
-              key: prefix,
-              file,
-              lineNumber,
-              enhancedMatch: true,
-            })),
-          )
-        }
-        if (maxMultiLineCount > 1) {
-          lines.push(line)
-        }
-
-        // only track the max number of lines needed to match our largest
-        // multiline value. If we get above that remove the first value from the list
-        if (lines.length > maxMultiLineCount) {
-          lines.shift()
-        }
-
-        keyVals.forEach((valVariant) => {
-          // matching of single/whole values
-          if (line.includes(valVariant)) {
-            matches.push({
-              file,
-              lineNumber,
-              key: getKeyForValue(valVariant),
-              enhancedMatch: false,
-            })
-            return
-          }
-
-          // matching of multiline values
-          if (isMultiLineVal(valVariant)) {
-            // drop empty values at beginning and end
-            const multiStringLines = valVariant.split('\n')
-
-            // drop early if we don't have enough lines for all values
-            if (lines.length < multiStringLines.length) {
-              return
-            }
-
-            let stillMatches = true
-            let fullMatch = false
-
-            multiStringLines.forEach((valLine, valIndex) => {
-              if (valIndex === 0) {
-                // first lines have to end with the line value
-                if (!lines[valIndex].endsWith(valLine)) {
-                  stillMatches = false
-                }
-              } else if (valIndex !== multiStringLines.length - 1) {
-                // middle lines have to have full line match
-                // middle lines
-                if (lines[valIndex] !== valLine) {
-                  stillMatches = false
-                }
-              } else {
-                // last lines have start with the value
-                if (!lines[valIndex].startsWith(valLine)) {
-                  stillMatches = false
-                }
-
-                if (stillMatches === true) {
-                  fullMatch = true
-                }
-              }
-            })
-
-            if (fullMatch) {
-              matches.push({
-                file,
-                lineNumber: lineNumber - lines.length + 1,
-                key: getKeyForValue(valVariant),
-                enhancedMatch: false,
-              })
-              return
-            }
-          }
-        })
-      }
-    })
-
-    rl.on('error', function (error) {
-      if (error?.code === 'EISDIR') {
-        // file path is a directory - do nothing
-        resolve(matches)
-      } else {
-        reject(error)
-      }
-    })
-
-    rl.on('close', function () {
-      resolve(matches)
-    })
-  })
 }
 
 /**
@@ -782,8 +640,4 @@ export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
   sortMatches(enhancedSecretMatchesByKeys)
 
   return { secretMatches: secretMatchesByKeys, enhancedSecretMatches: enhancedSecretMatchesByKeys }
-}
-
-function isMultiLineVal(v) {
-  return typeof v === 'string' && v.includes('\n')
 }
