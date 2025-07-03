@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.5.0](https://github.com/netlify/build/compare/build-v33.4.7...build-v33.5.0) (2025-06-27)
+
+
+### Features
+
+* add `functions.generate` util ([#6487](https://github.com/netlify/build/issues/6487)) ([dfb4a07](https://github.com/netlify/build/commit/dfb4a07a880dce50de806e4147d708d016747e9f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.11 to ^6.0.12
+    * @netlify/zip-it-and-ship-it bumped from 12.1.5 to 12.2.0
+
 ## [33.4.7](https://github.com/netlify/build/compare/build-v33.4.6...build-v33.4.7) (2025-06-25)
 
 
