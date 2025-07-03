@@ -40,8 +40,11 @@ export const isValidOnError = (value: unknown): value is OnError => {
   return value === 'fail' || value === 'bypass' || value.startsWith('/')
 }
 
+export type HeadersConfig = Record<string, boolean | string>
+
 interface BaseFunctionConfig {
   cache?: Cache
+  header?: HeadersConfig
   onError?: OnError
   name?: string
   generator?: string

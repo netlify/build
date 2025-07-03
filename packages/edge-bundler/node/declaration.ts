@@ -1,9 +1,14 @@
-import { FunctionConfig, FunctionConfigWithAllPossibleFields, HTTPMethod, Path } from './config.js'
+import { BundleError } from './bundle_error.js'
+import { FunctionConfig, FunctionConfigWithAllPossibleFields, HeadersConfig, HTTPMethod, Path } from './config.js'
 import { FeatureFlags } from './feature_flags.js'
+
+export type HeaderMatch = { pattern: string; style: 'regex' } | { style: 'exists' | 'missing' }
+type HeaderMatchers = Record<string, HeaderMatch>
 
 interface BaseDeclaration {
   cache?: string
   function: string
+  header?: HeadersConfig
   method?: HTTPMethod | HTTPMethod[]
   // todo: remove these two after a while and only support in-source config for non-route related configs
   name?: string
@@ -104,7 +109,7 @@ const createDeclarationsFromFunctionConfigs = (
     if (!functionsVisited.has(name)) {
       // If we have a pattern specified, create a declaration for each pattern.
       if ('pattern' in functionConfig && functionConfig.pattern) {
-        const { pattern, excludedPattern } = functionConfig
+        const { header, pattern, excludedPattern } = functionConfig
         const patterns = Array.isArray(pattern) ? pattern : [pattern]
         patterns.forEach((singlePattern) => {
           const declaration: Declaration = { function: name, pattern: singlePattern }
@@ -117,12 +122,15 @@ const createDeclarationsFromFunctionConfigs = (
           if (excludedPattern) {
             declaration.excludedPattern = excludedPattern
           }
+          if (header) {
+            declaration.header = header
+          }
           declarations.push(declaration)
         })
       }
       // If we don't have a pattern but we have a path specified, create a declaration for each path.
       else if ('path' in functionConfig && functionConfig.path) {
-        const { path, excludedPath } = functionConfig
+        const { header, path, excludedPath } = functionConfig
         const paths = Array.isArray(path) ? path : [path]
 
         paths.forEach((singlePath) => {
@@ -135,6 +143,9 @@ const createDeclarationsFromFunctionConfigs = (
           }
           if (excludedPath) {
             declaration.excludedPath = excludedPath
+          }
+          if (header) {
+            declaration.header = header
           }
           declarations.push(declaration)
         })
@@ -164,4 +175,30 @@ export const normalizePattern = (pattern: string) => {
 
   // Strip leading and forward slashes.
   return regexp.toString().slice(1, -1)
+}
+
+const headerConfigError = `The 'header' configuration property must be an object where keys are strings and values are either booleans or strings (e.g. { "x-header-present": true, "x-header-absent": false, "x-header-matching": "^prefix" }).`
+
+export const getHeaderMatchers = (headers?: HeadersConfig): HeaderMatchers => {
+  const matchers: HeaderMatchers = {}
+
+  if (!headers) {
+    return matchers
+  }
+
+  if (Object.getPrototypeOf(headers) !== Object.prototype) {
+    throw new BundleError(new Error(headerConfigError))
+  }
+
+  for (const header in headers) {
+    if (typeof headers[header] === 'boolean') {
+      matchers[header] = { style: headers[header] ? 'exists' : 'missing' }
+    } else if (typeof headers[header] === 'string') {
+      matchers[header] = { style: 'regex', pattern: normalizePattern(headers[header]) }
+    } else {
+      throw new BundleError(new Error(headerConfigError))
+    }
+  }
+
+  return matchers
 }

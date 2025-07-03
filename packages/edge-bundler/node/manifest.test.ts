@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 
 // @ts-expect-error current tsconfig.json doesn't allow this, but I don't want to change it
 import { version } from '../package.json' assert { type: 'json' }
@@ -571,4 +571,98 @@ test('Generates a manifest with rewrite config', () => {
   }
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.function_config).toEqual(expectedFunctionConfig)
+})
+
+describe('Header matching', () => {
+  test('Throws a bundling error if the type is incorrect', () => {
+    const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+
+    expect(() =>
+      generateManifest({
+        bundles: [],
+
+        // @ts-expect-error Incorrect type
+        declarations: [{ function: 'func-1', path: '/f1/*', header: 'foo' }],
+        functions,
+      }),
+    ).toThrowError(BundleError)
+
+    expect(() =>
+      generateManifest({
+        bundles: [],
+
+        declarations: [
+          {
+            function: 'func-1',
+            path: '/f1/*',
+            header: {
+              'x-correct': true,
+
+              // @ts-expect-error Incorrect type
+              'x-not-correct': {
+                problem: true,
+              },
+            },
+          },
+        ],
+        functions,
+      }),
+    ).toThrowError(BundleError)
+  })
+
+  test('Writes header matching rules to the manifest', () => {
+    const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+    const declarations: Declaration[] = [
+      {
+        function: 'func-1',
+        path: '/f1/*',
+        header: {
+          'x-present': true,
+          'x-also-present': true,
+          'x-absent': false,
+          'x-match-prefix': '^prefix(.*)',
+          'x-match-exact': 'exact',
+          'x-match-suffix': '(.*)suffix$',
+        },
+      },
+    ]
+    const { manifest } = generateManifest({
+      bundles: [],
+      declarations,
+      functions,
+    })
+
+    const expectedRoutes = [
+      {
+        function: 'func-1',
+        pattern: '^/f1(?:/(.*))/?$',
+        excluded_patterns: [],
+        path: '/f1/*',
+        headers: {
+          'x-absent': {
+            style: 'missing',
+          },
+          'x-also-present': {
+            style: 'exists',
+          },
+          'x-match-exact': {
+            pattern: '^exact$',
+            style: 'regex',
+          },
+          'x-match-prefix': {
+            pattern: '^prefix(.*)$',
+            style: 'regex',
+          },
+          'x-match-suffix': {
+            pattern: '^(.*)suffix$',
+            style: 'regex',
+          },
+          'x-present': {
+            style: 'exists',
+          },
+        },
+      },
+    ]
+    expect(manifest.routes).toEqual(expectedRoutes)
+  })
 })
