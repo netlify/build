@@ -4,6 +4,6 @@
   "automerge": true,
   "dependencyDashboard": true,
   "ignorePresets": [":prHourlyLimit2"],
-  "ignorePaths": ["**/benchmarks/fixtures", "**/tests/fixtures"],
+  "ignorePaths": ["**/fixtures"],
   "semanticCommits": "enabled"
 }
