@@ -6,6 +6,6 @@
   "license": "MIT",
   "repository": "test",
   "dependencies": {
-    "netlify-plugin-contextual-env": "0.2.0"
+    "netlify-plugin-contextual-env": "0.3.0"
   }
 }
