@@ -2984,13 +2984,19 @@ test('Supports functions inside the plugins modules path', async () => {
     unsafeCleanup: true,
   })
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
-  const individualFunctions = [
-    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
-    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2.mjs'),
-  ]
-  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
-    basePath,
-  })
+  const files = await zipFunctions(
+    {
+      directories: [join(basePath, 'netlify/functions')],
+      functions: [
+        join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+        join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2'),
+      ],
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
 
   const unzippedFunctions = await unzipFiles(files)
   const functions = getFunctionResultsByName(unzippedFunctions)
