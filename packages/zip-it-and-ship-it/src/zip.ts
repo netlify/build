@@ -47,10 +47,26 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
 }
 
 interface FunctionsBag {
+  /**
+   * List of paths for directories containing one or more functions. Entries in
+   * these directories are considered functions when they are files that match
+   * one of the supported extensions or when they are sub-directories that
+   * contain a function following the sub-directory naming patterns.
+   * Paths can be relative.
+   */
   directories: string[]
+
+  /**
+   * List of paths for specificc functions. Paths can be files that match one
+   * of the supported extensions or sub-directories that contain a function
+   * following the sub-directory naming patterns. Paths can be relative.
+   */
   functions: string[]
 }
 
+/**
+ * Normalizes the `zipFunctions` input into a `FunctionsBag` object.
+ */
 const getFunctionsBag = (input: string | string[] | Partial<FunctionsBag>): FunctionsBag => {
   if (typeof input === 'string') {
     return {
