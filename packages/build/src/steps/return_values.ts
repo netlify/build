@@ -15,8 +15,8 @@ export interface ReturnValue {
   generatorType: GeneratorType
 }
 
-export const getGeneratedFunctions = (returnValues: Record<string, ReturnValue>): GeneratedFunction[] => {
-  return Object.entries(returnValues).flatMap(([name, returnValue]) => {
+export const getGeneratedFunctions = (returnValues?: Record<string, ReturnValue>): GeneratedFunction[] => {
+  return Object.entries(returnValues ?? {}).flatMap(([name, returnValue]) => {
     const generator = {
       displayName: returnValue.displayName ?? name,
       name,
