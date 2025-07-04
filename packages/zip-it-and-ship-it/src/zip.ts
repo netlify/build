@@ -46,7 +46,7 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
   }
 }
 
-interface FunctionsBag {
+export interface FunctionsBag {
   /**
    * List of paths for directories containing one or more functions. Entries in
    * these directories are considered functions when they are files that match

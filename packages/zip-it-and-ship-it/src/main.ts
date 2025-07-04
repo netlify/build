@@ -12,7 +12,7 @@ import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/f
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
 export { Config, FunctionConfig } from './config.js'
-export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
+export { type FunctionsBag, zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export type { TrafficRules } from './rate_limit.js'
