@@ -164,7 +164,7 @@ export const runSteps = async function ({
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
 
-      /** @type import('../types/step.js').ReturnValue */
+      /** @type import('../steps/return_values.js').ReturnValue */
       const augmentedReturnValue = returnValue
         ? {
             ...returnValue,

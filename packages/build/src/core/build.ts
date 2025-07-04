@@ -166,6 +166,7 @@ const tExecBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -222,6 +223,7 @@ const tExecBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   }
 }
 
@@ -285,6 +287,7 @@ export const runAndReportBuild = async function ({
       timers: timersA,
       configMutations,
       metrics,
+      returnValues,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -370,6 +373,7 @@ export const runAndReportBuild = async function ({
       timers: timersA,
       configMutations,
       metrics,
+      returnValues,
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
@@ -502,6 +506,7 @@ const initAndRunBuild = async function ({
       timers: timersC,
       configMutations,
       metrics,
+      returnValues,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -560,6 +565,7 @@ const initAndRunBuild = async function ({
       timers: timersC,
       configMutations,
       metrics,
+      returnValues,
     }
   } finally {
     // Terminate the child processes of plugins so that they don't linger after
@@ -651,6 +657,7 @@ const runBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   } = await runSteps({
     steps,
     buildbotServerSocket,
@@ -698,5 +705,6 @@ const runBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   }
 }

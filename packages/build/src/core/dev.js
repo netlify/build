@@ -1,4 +1,5 @@
 import { handleBuildError } from '../error/handle.js'
+import { getGeneratedFunctions } from '../steps/return_values.js'
 
 import { execBuild, startBuild } from './build.js'
 import { getSeverity } from './severity.js'
@@ -8,7 +9,11 @@ export const startDev = async (devCommand, flags = {}) => {
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
-    const { netlifyConfig: netlifyConfigA, configMutations } = await execBuild({
+    const {
+      netlifyConfig: netlifyConfigA,
+      configMutations,
+      returnValues,
+    } = await execBuild({
       ...normalizedFlags,
       errorMonitor,
       errorParams,
@@ -21,7 +26,14 @@ export const startDev = async (devCommand, flags = {}) => {
     })
     const { success, severityCode } = getSeverity('success')
 
-    return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
+    return {
+      success,
+      severityCode,
+      netlifyConfig: netlifyConfigA,
+      logs,
+      configMutations,
+      generatedFunctions: getGeneratedFunctions(returnValues),
+    }
   } catch (error) {
     const { severity, message, stack } = await handleBuildError(error, errorParams)
     const { success, severityCode } = getSeverity(severity)
