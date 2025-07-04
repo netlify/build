@@ -110,6 +110,7 @@ export async function handleAutoInstallExtensions({
           netlifyToken: token,
           slug: ext.slug,
           hostSiteUrl: ext.hostSiteUrl,
+          extensionInstallationSource: mode,
         })
       }),
     )
