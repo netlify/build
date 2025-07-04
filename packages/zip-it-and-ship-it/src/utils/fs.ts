@@ -86,25 +86,9 @@ ${errorMessages.join('\n')}`)
 }
 
 const listFunctionsDirectory = async function (srcPath: string) {
-  try {
-    const filenames = await fs.readdir(srcPath)
+  const filenames = await fs.readdir(srcPath)
 
-    return filenames.map((name) => join(srcPath, name))
-  } catch (error) {
-    // We could move the `stat` call up and use its result to decide whether to
-    // treat the path as a file or as a directory. We're doing it this way since
-    // historically this method only supported directories, and only later we
-    // made it accept files. To roll out that change as safely as possible, we
-    // keep the directory flow untouched and look for files only as a fallback.
-    if ((error as NodeJS.ErrnoException).code === 'ENOTDIR') {
-      const stat = await fs.stat(srcPath)
-      if (stat.isFile()) {
-        return srcPath
-      }
-    }
-
-    throw error
-  }
+  return filenames.map((name) => join(srcPath, name))
 }
 
 export const resolveFunctionsDirectories = (input: string | string[]) => {

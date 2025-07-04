@@ -2926,17 +2926,54 @@ test('Supports both files and directories and ignores files that are not functio
     unsafeCleanup: true,
   })
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
-  const individualFunctions = [join(basePath, 'cat.jpg'), join(basePath, 'func2.mjs')]
-  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
-    basePath,
-  })
+  const files = await zipFunctions(
+    {
+      directories: [join(basePath, 'netlify/functions')],
+      functions: [
+        join(basePath, 'cat.jpg'),
+        join(basePath, 'func2.mjs'),
+        join(basePath, 'func3'),
+        join(basePath, 'func4'),
+      ],
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
 
-  expect(files.length).toBe(2)
+  expect(files.length).toBe(4)
 
-  const functions = getFunctionResultsByName(files)
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
 
-  expect(functions.func1.name).toBe('func1')
-  expect(functions.func2.name).toBe('func2')
+  const func1 = await importFunctionFile(`${tmpDir.path}/${functions.func1.name}/${functions.func1.entryFilename}`)
+  const func1Result = await invokeLambda(func1)
+  expect(func1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func1Result.body)).toStrictEqual(
+    JSON.stringify({ func: 1, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2Result = await invokeLambda(func2)
+  expect(func2Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func2Result.body)).toStrictEqual(
+    JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3Result = await invokeLambda(func3)
+  expect(func3Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func3Result.body)).toStrictEqual(
+    JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4Result = await invokeLambda(func4)
+  expect(func4Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func4Result.body)).toStrictEqual(
+    JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
+  )
 
   await tmpDir.cleanup()
 })

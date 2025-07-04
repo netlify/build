@@ -46,10 +46,36 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
   }
 }
 
+interface FunctionsBag {
+  directories: string[]
+  functions: string[]
+}
+
+const getFunctionsBag = (input: string | string[] | Partial<FunctionsBag>): FunctionsBag => {
+  if (typeof input === 'string') {
+    return {
+      directories: [input],
+      functions: [],
+    }
+  }
+
+  if (Array.isArray(input)) {
+    return {
+      directories: input,
+      functions: [],
+    }
+  }
+
+  return {
+    directories: input.directories ?? [],
+    functions: input.functions ?? [],
+  }
+}
+
 // Zip `srcFolder/*` (Node.js or Go files) to `destFolder/*.zip` so it can be
 // used by AWS Lambda
 export const zipFunctions = async function (
-  relativeSrcFolders: string | string[],
+  input: string | string[] | Partial<FunctionsBag>,
   destFolder: string,
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
@@ -71,11 +97,12 @@ export const zipFunctions = async function (
   const logger = getLogger(systemLog, debug)
   const cache = new RuntimeCache()
   const featureFlags = getFlags(inputFeatureFlags)
-  const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
+  const bag = getFunctionsBag(input)
+  const srcFolders = resolveFunctionsDirectories(bag.directories)
   const internalFunctionsPath = internalSrcFolder && resolve(internalSrcFolder)
 
   const [paths] = await Promise.all([listFunctionsDirectories(srcFolders), fs.mkdir(destFolder, { recursive: true })])
-  const functions = await getFunctionsFromPaths(paths, {
+  const functions = await getFunctionsFromPaths([...paths, ...bag.functions], {
     cache,
     config,
     configFileDirectories,
