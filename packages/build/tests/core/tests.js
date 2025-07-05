@@ -653,10 +653,24 @@ test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill
   zipItAndShipItSpy.restore()
   const { args: call1Args } = zipItAndShipItSpy.getCall(0)
 
-  const { internalSrcFolder, manifest } = call1Args[2]
+  const [paths, , options] = call1Args
+
+  t.deepEqual(paths, {
+    generated: {
+      directories: [
+        join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'),
+        join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/v1/functions'),
+      ],
+      functions: [],
+    },
+    user: {
+      directories: [join(FIXTURES_DIR, 'functions_internal_src_folder/netlify/functions')],
+    },
+  })
+
+  const { manifest } = options
   const { functions } = await importJsonFile(manifest)
 
-  t.is(internalSrcFolder, join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'))
   t.is(functions[0].generator, 'internalFunc')
   t.is(functions[1].generator, undefined)
 })
