@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { join, relative, resolve } from 'path'
+import { join, resolve } from 'path'
 import { arch, kill, platform } from 'process'
 import { fileURLToPath } from 'url'
 
