@@ -35,7 +35,6 @@ export type ZipFunctionsOptions = ZipFunctionOptions & {
   configFileDirectories?: string[]
   manifest?: string
   parallelLimit?: number
-  internalSrcFolder?: string
 }
 
 const DEFAULT_PARALLEL_LIMIT = 5
@@ -46,10 +45,91 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
   }
 }
 
+export interface FunctionsBag {
+  generated: FunctionsCategory
+  user: FunctionsCategory
+}
+
+export interface FunctionsCategory {
+  /**
+   * List of paths for directories containing one or more functions. Entries in
+   * these directories are considered functions when they are files that match
+   * one of the supported extensions or when they are sub-directories that
+   * contain a function following the sub-directory naming patterns.
+   * Paths can be relative.
+   */
+  directories: string[]
+
+  /**
+   * List of paths for specific functions. Paths can be files that match one
+   * of the supported extensions or sub-directories that contain a function
+   * following the sub-directory naming patterns. Paths can be relative.
+   */
+  functions: string[]
+}
+
+/**
+ * Normalizes the `zipFunctions` input into a `FunctionsBag` object.
+ */
+export const getFunctionsBag = (input: ZipFunctionsPaths): FunctionsBag => {
+  if (typeof input === 'string') {
+    return {
+      generated: {
+        directories: [],
+        functions: [],
+      },
+      user: {
+        directories: [input],
+        functions: [],
+      },
+    }
+  }
+
+  if (Array.isArray(input)) {
+    return {
+      generated: {
+        directories: [],
+        functions: [],
+      },
+      user: {
+        directories: input,
+        functions: [],
+      },
+    }
+  }
+
+  return {
+    generated: {
+      directories: input.generated?.directories ?? [],
+      functions: input.generated?.functions ?? [],
+    },
+    user: {
+      directories: input.user?.directories ?? [],
+      functions: input.user?.functions ?? [],
+    },
+  }
+}
+
+export type ZipFunctionsPaths =
+  | string
+  | string[]
+  | {
+      /**
+       * Functions generated on behalf of the user by a build plugin, extension
+       * or a framework.
+       */
+      generated?: Partial<FunctionsCategory>
+
+      /**
+       * Functions authored by the user.
+       */
+      user?: Partial<FunctionsCategory>
+    }
+
 // Zip `srcFolder/*` (Node.js or Go files) to `destFolder/*.zip` so it can be
 // used by AWS Lambda
 export const zipFunctions = async function (
-  relativeSrcFolders: string | string[],
+  input: ZipFunctionsPaths,
   destFolder: string,
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
@@ -63,7 +143,6 @@ export const zipFunctions = async function (
     repositoryRoot = basePath,
     systemLog,
     debug,
-    internalSrcFolder,
   }: ZipFunctionsOptions = {},
 ): Promise<FunctionResult[]> {
   validateArchiveFormat(archiveFormat)
@@ -71,11 +150,11 @@ export const zipFunctions = async function (
   const logger = getLogger(systemLog, debug)
   const cache = new RuntimeCache()
   const featureFlags = getFlags(inputFeatureFlags)
-  const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
-  const internalFunctionsPath = internalSrcFolder && resolve(internalSrcFolder)
+  const bag = getFunctionsBag(input)
+  const srcFolders = resolveFunctionsDirectories([...bag.generated.directories, ...bag.user.directories])
 
   const [paths] = await Promise.all([listFunctionsDirectories(srcFolders), fs.mkdir(destFolder, { recursive: true })])
-  const functions = await getFunctionsFromPaths(paths, {
+  const functions = await getFunctionsFromPaths([...paths, ...bag.generated.functions, ...bag.user.functions], {
     cache,
     config,
     configFileDirectories,
@@ -93,6 +172,10 @@ export const zipFunctions = async function (
         ...(func.config.nodeModuleFormat === MODULE_FORMAT.ESM ? { zisi_pure_esm_mjs: true } : {}),
       }
 
+      const isInternal =
+        bag.generated.functions.includes(func.srcPath) ||
+        bag.generated.directories.some((directory) => isPathInside(func.srcPath, directory))
+
       const zipResult = await func.runtime.zipFunction({
         archiveFormat,
         basePath,
@@ -103,7 +186,7 @@ export const zipFunctions = async function (
         extension: func.extension,
         featureFlags: functionFlags,
         filename: func.filename,
-        isInternal: Boolean(internalFunctionsPath && isPathInside(func.srcPath, internalFunctionsPath)),
+        isInternal,
         logger,
         mainFile: func.mainFile,
         name: func.name,

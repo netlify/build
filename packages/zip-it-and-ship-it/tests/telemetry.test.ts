@@ -25,7 +25,6 @@ test('The telemetry file should be added by default to the function bundle', asy
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   const unzippedPath = join(tmpDir, 'extracted')
@@ -59,7 +58,6 @@ test('The telemetry file should be added if bundler is none', async () => {
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   const files = await glob('**/*', { cwd: result!.path })
@@ -89,7 +87,6 @@ test('The telemetry file should not be added to the bundle if the feature flag i
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   const unzippedPath = join(tmpDir, 'extracted')

@@ -49,7 +49,6 @@ test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` 
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   const unzippedPath = join(tmpDir, 'extracted')
@@ -102,7 +101,6 @@ test('preserves multiple symlinks that link to the same target', async () => {
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   // Test to be sure we've made both symlinks, not just one of them
@@ -147,7 +145,6 @@ test('symlinks in subdir of `includedFiles` are copied over successfully', async
     repositoryRoot: basePath,
     systemLog: console.log,
     debug: true,
-    internalSrcFolder: undefined,
   })
 
   expect(await readDirWithType(join(tmpDir, 'function'))).toEqual({
