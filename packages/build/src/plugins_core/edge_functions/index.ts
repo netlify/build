@@ -206,7 +206,7 @@ const logFunctions = async ({
     internalFunctionsSrc: internalSrcDirectory,
     frameworkFunctions: frameworkFunctions.map(({ name }) => name),
     type: 'Edge Functions',
-    generatedFunctions: [],
+    generatedFunctions: {},
   })
 }
 
