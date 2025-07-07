@@ -76,6 +76,18 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.1.0](https://github.com/netlify/build/compare/config-v23.0.11...config-v23.1.0) (2025-07-07)
+
+
+### Features
+
+* add header to installing extension with the build mode so we know where the installation is coming from ([#6478](https://github.com/netlify/build/issues/6478)) ([ca66176](https://github.com/netlify/build/commit/ca661760594a24f979457fa001c2db98213d259f))
+
+
+### Bug Fixes
+
+* put exports back to normal for config ([#6528](https://github.com/netlify/build/issues/6528)) ([db1435c](https://github.com/netlify/build/commit/db1435c471b7fcc26b07a1de7c485f30866a1fc9))
+
 ## [23.0.11](https://github.com/netlify/build/compare/config-v23.0.10...config-v23.0.11) (2025-06-25)
 
 
