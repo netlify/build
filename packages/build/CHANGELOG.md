@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [33.5.1](https://github.com/netlify/build/compare/build-v33.5.0...build-v33.5.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.2 ([#6494](https://github.com/netlify/build/issues/6494)) ([2f99eba](https://github.com/netlify/build/commit/2f99ebaa40f22a113e8c73a3ebfc4825302c1efb))
+* **deps:** update dependency hot-shots to v11 ([#6511](https://github.com/netlify/build/issues/6511)) ([41d2890](https://github.com/netlify/build/commit/41d2890f93bd350c42b7eabc70575039dcdacfcf))
+* **deps:** update dependency netlify-plugin-contextual-env to v0.3.0 ([#6515](https://github.com/netlify/build/issues/6515)) ([a5fb91e](https://github.com/netlify/build/commit/a5fb91e4deeaa37500edcbb15f7eac48b243953a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.12 to ^6.0.13
+    * @netlify/zip-it-and-ship-it bumped from 12.2.0 to 12.2.1
+
 ## [33.5.0](https://github.com/netlify/build/compare/build-v33.4.7...build-v33.5.0) (2025-06-27)
 
 
