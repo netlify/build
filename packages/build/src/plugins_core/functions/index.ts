@@ -96,10 +96,19 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc, ...generatedFunctions].filter(
-      Boolean,
+    const results = await zipItAndShipIt.zipFunctions(
+      {
+        generated: {
+          directories: [internalFunctionsSrc, frameworkFunctionsSrc].filter(Boolean),
+          functions: generatedFunctions,
+        },
+        user: {
+          directories: [functionsSrc].filter(Boolean),
+        },
+      },
+      functionsDist,
+      zisiParameters,
     )
-    const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     validateCustomRoutes(results)
 
