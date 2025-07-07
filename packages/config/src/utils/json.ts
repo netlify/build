@@ -2,8 +2,6 @@ import { fileURLToPath } from 'url'
 
 import type { PackageJson } from 'read-package-up'
 
-// We know how our package.json looks like, so we can be very specific with the type
-// and only add the properties we want to use
 export type RootPackageJson = { name: string; version: string }
 
 const ROOT_PACKAGE_JSON_PATH = fileURLToPath(new URL('../../package.json', import.meta.url))

@@ -1,10 +1,8 @@
-import { createRequire } from 'module'
 import { EXTENSION_API_BASE_URL } from '../../integrations.js'
 import { ModeOption } from '../../types/options.js'
+import { ROOT_PACKAGE_JSON } from '../json.js'
 
-const require = createRequire(import.meta.url)
-const { version: configVersion } = require('@netlify/config/package.json')
-
+const configVersion = ROOT_PACKAGE_JSON.version
 export type InstallExtensionResult =
   | {
       slug: string
