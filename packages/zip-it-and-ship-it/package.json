@@ -50,7 +50,7 @@
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
-    "esbuild": "0.25.5",
+    "esbuild": "0.25.6",
     "execa": "^8.0.0",
     "fast-glob": "^3.3.3",
     "filter-obj": "^6.0.0",
