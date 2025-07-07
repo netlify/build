@@ -4,6 +4,6 @@
   "automerge": true,
   "dependencyDashboard": true,
   "ignorePresets": [":prHourlyLimit2"],
-  "ignorePaths": ["**/fixtures"],
+  "ignorePaths": ["**/fixtures/**", "**/fixtures-esm/**", "**/node_modules/**"],
   "semanticCommits": "enabled"
 }
