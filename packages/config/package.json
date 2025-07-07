@@ -3,9 +3,7 @@
   "version": "23.0.11",
   "description": "Netlify config module",
   "type": "module",
-  "exports": {
-    ".": "./lib/index.js"
-  },
+  "exports": "./lib/index.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
