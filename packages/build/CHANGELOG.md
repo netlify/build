@@ -105,6 +105,50 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.0.0](https://github.com/netlify/build/compare/build-v33.5.1...build-v34.0.0) (2025-07-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524))
+
+### Features
+
+* add header to installing extension with the build mode so we know where the installation is coming from ([#6478](https://github.com/netlify/build/issues/6478)) ([ca66176](https://github.com/netlify/build/commit/ca661760594a24f979457fa001c2db98213d259f))
+* expose `generatedFunctions` to consumers ([#6525](https://github.com/netlify/build/issues/6525)) ([536630e](https://github.com/netlify/build/commit/536630e0470a1f81a04ff82059a22c27786aec1b))
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524)) ([f719b07](https://github.com/netlify/build/commit/f719b0719ad7b719211904f573d8f3539b58ecbb))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.3 ([#6526](https://github.com/netlify/build/issues/6526)) ([9d10c78](https://github.com/netlify/build/commit/9d10c782200be8b59737c05623068ecc59b199b7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.11 to ^23.1.0
+    * @netlify/functions-utils bumped from ^6.0.13 to ^6.0.14
+    * @netlify/zip-it-and-ship-it bumped from 12.2.1 to 13.0.0
+
+## [33.5.1](https://github.com/netlify/build/compare/build-v33.5.0...build-v33.5.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.2 ([#6494](https://github.com/netlify/build/issues/6494)) ([2f99eba](https://github.com/netlify/build/commit/2f99ebaa40f22a113e8c73a3ebfc4825302c1efb))
+* **deps:** update dependency hot-shots to v11 ([#6511](https://github.com/netlify/build/issues/6511)) ([41d2890](https://github.com/netlify/build/commit/41d2890f93bd350c42b7eabc70575039dcdacfcf))
+* **deps:** update dependency netlify-plugin-contextual-env to v0.3.0 ([#6515](https://github.com/netlify/build/issues/6515)) ([a5fb91e](https://github.com/netlify/build/commit/a5fb91e4deeaa37500edcbb15f7eac48b243953a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.12 to ^6.0.13
+    * @netlify/zip-it-and-ship-it bumped from 12.2.0 to 12.2.1
+
 ## [33.5.0](https://github.com/netlify/build/compare/build-v33.4.7...build-v33.5.0) (2025-06-27)
 
 
