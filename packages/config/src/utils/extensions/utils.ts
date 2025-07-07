@@ -2,7 +2,6 @@ import { EXTENSION_API_BASE_URL } from '../../integrations.js'
 import { ModeOption } from '../../types/options.js'
 import { ROOT_PACKAGE_JSON } from '../json.js'
 
-const configVersion = ROOT_PACKAGE_JSON.version
 export type InstallExtensionResult =
   | {
       slug: string
@@ -29,7 +28,7 @@ export const installExtension = async ({
   hostSiteUrl: string
   extensionInstallationSource: ModeOption
 }): Promise<InstallExtensionResult> => {
-  const userAgent = `Netlify Config (mode:${extensionInstallationSource}) / ${configVersion}`
+  const userAgent = `Netlify Config (mode:${extensionInstallationSource}) / ${ROOT_PACKAGE_JSON.version}`
   const extensionOnInstallUrl = new URL('/.netlify/functions/handler/on-install', hostSiteUrl)
   const installedResponse = await fetch(extensionOnInstallUrl, {
     method: 'POST',
