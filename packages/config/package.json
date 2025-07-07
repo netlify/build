@@ -3,7 +3,9 @@
   "version": "23.0.11",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js"
+  },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
@@ -77,6 +79,7 @@
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
     "path-type": "^6.0.0",
+    "read-package-up": "^11.0.0",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^5.0.0",
     "yaml": "^2.8.0",
