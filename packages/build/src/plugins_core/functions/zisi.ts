@@ -73,7 +73,6 @@ export const getZisiParameters = ({
     featureFlags: zisiFeatureFlags,
     repositoryRoot,
     configFileDirectories,
-    internalSrcFolder: internalFunctionsSrc,
     systemLog,
   }
 }
