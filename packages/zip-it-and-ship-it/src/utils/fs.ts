@@ -1,4 +1,4 @@
-import { promises as fs, Stats } from 'fs'
+import { promises as fs, PathLike, Stats } from 'fs'
 import { dirname, format, join, parse, resolve } from 'path'
 
 import { FileCache, LstatCache, ReaddirCache } from './cache.js'
@@ -98,12 +98,13 @@ export const resolveFunctionsDirectories = (input: string | string[]) => {
   return absoluteDirectories
 }
 
-export const mkdirAndWriteFile: typeof fs.writeFile = async (path, ...params) => {
+export const mkdirAndWriteFile: typeof fs.writeFile = async (path: PathLike | fs.FileHandle, ...params) => {
   if (typeof path === 'string') {
     const directory = dirname(path)
 
     await fs.mkdir(directory, { recursive: true })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return fs.writeFile(path, ...params)
 }
