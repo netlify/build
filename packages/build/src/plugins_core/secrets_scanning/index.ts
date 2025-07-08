@@ -43,8 +43,6 @@ const coreStep: CoreStepFunction = async function ({
   // In this case, we hide any output to the user and simply gather the information in our logs
   const enhancedScanShouldRunInActiveMode = featureFlags?.enhanced_secret_scan_impacts_builds ?? false
 
-  const useMinimalChunks = featureFlags?.secret_scanning_minimal_chunks
-
   systemLog?.({ passedSecretKeys, buildDir })
 
   if (!isSecretsScanningEnabled(envVars)) {
@@ -121,7 +119,6 @@ const coreStep: CoreStepFunction = async function ({
         filePaths,
         enhancedScanning: enhancedScanShouldRun,
         omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
-        useMinimalChunks,
       })
 
       secretMatches = scanResults.matches.filter((match) => !match.enhancedMatch)
