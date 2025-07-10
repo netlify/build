@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.1.0](https://github.com/netlify/build/compare/build-v34.0.1...build-v34.1.0) (2025-07-10)
+
+
+### Features
+
+* accept mixed paths in `listFunctions` ([#6537](https://github.com/netlify/build/issues/6537)) ([2e264e3](https://github.com/netlify/build/commit/2e264e3caf37e96d8da4a589c8eb858a40baf43e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.15 to ^6.0.16
+    * @netlify/zip-it-and-ship-it bumped from 13.0.1 to 13.1.0
+
 ## [34.0.1](https://github.com/netlify/build/compare/build-v34.0.0...build-v34.0.1) (2025-07-08)
 
 
