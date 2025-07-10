@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.2.0](https://github.com/netlify/build/compare/build-v34.1.0...build-v34.2.0) (2025-07-10)
+
+
+### Features
+
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.16 to ^6.1.0
+    * @netlify/zip-it-and-ship-it bumped from 13.1.0 to 13.2.0
+
 ## [34.1.0](https://github.com/netlify/build/compare/build-v34.0.1...build-v34.1.0) (2025-07-10)
 
 
