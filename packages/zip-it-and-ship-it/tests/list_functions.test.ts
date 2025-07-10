@@ -105,5 +105,44 @@ describe('listFunctions', () => {
 
       expect(normalizeFiles(fixtureDir, func)).toMatchSnapshot()
     })
+
+    test('Accepts an object with mixed paths', async () => {
+      const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
+      const functions = await listFunctions(
+        {
+          generated: {
+            functions: [
+              join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+              join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2'),
+            ],
+          },
+          user: {
+            directories: [join(basePath, 'netlify/functions')],
+          },
+        },
+        {
+          basePath,
+          parseISC: true,
+        },
+      )
+
+      expect(functions.length).toBe(3)
+
+      const userFunc1 = normalizeFiles(basePath, functions[0])
+      expect(userFunc1.name).toBe('user-func1')
+      expect(userFunc1.mainFile).toBe('netlify/functions/user-func1.mjs')
+
+      const extensionFunc1 = normalizeFiles(basePath, functions[1])
+      expect(extensionFunc1.name).toBe('extension-func1')
+      expect(extensionFunc1.mainFile).toBe(
+        '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs',
+      )
+
+      const extensionFunc2 = normalizeFiles(basePath, functions[2])
+      expect(extensionFunc2.name).toBe('extension-func2')
+      expect(extensionFunc2.mainFile).toBe(
+        '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2/index.mjs',
+      )
+    })
   })
 })

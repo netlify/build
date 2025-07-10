@@ -11,8 +11,9 @@ import { afterAll, expect } from 'vitest'
 import type { Config } from '../../src/config.js'
 import { ListedFunction, zipFunctions } from '../../src/main.js'
 import { listImports } from '../../src/runtimes/node/bundlers/zisi/list_imports.js'
+import { getFunctionsBag, type MixedPaths } from '../../src/paths.js'
 import type { FunctionResult } from '../../src/utils/format_result.js'
-import { getFunctionsBag, ZipFunctionsOptions, type ZipFunctionsPaths } from '../../src/zip.js'
+import { ZipFunctionsOptions } from '../../src/zip.js'
 
 export const FIXTURES_DIR = fileURLToPath(new URL('../fixtures', import.meta.url))
 export const FIXTURES_ESM_DIR = fileURLToPath(new URL('../fixtures-esm', import.meta.url))
@@ -49,10 +50,7 @@ afterAll(async () => {
   cleanupDirectories = []
 })
 
-export const zipNode = async function (
-  fixture: ZipFunctionsPaths,
-  zipOptions: ZipOptions = {},
-): Promise<ZipNodeReturn> {
+export const zipNode = async function (fixture: MixedPaths, zipOptions: ZipOptions = {}): Promise<ZipNodeReturn> {
   const { files, tmpDir } = await zipFixture(fixture, zipOptions)
   const { archiveFormat } = zipOptions.opts || {}
 
@@ -67,7 +65,7 @@ export const getBundlerNameFromOptions = ({ config = {} }: { config?: Config }) 
   config['*'] && config['*'].nodeBundler
 
 export const zipFixture = async function (
-  fixture: ZipFunctionsPaths,
+  fixture: MixedPaths,
   { length, fixtureDir, opts = {} }: ZipOptions = {},
 ): Promise<ZipReturn> {
   const bundlerString = getBundlerNameFromOptions(opts) || 'default'
@@ -100,7 +98,7 @@ export const getFunctionResultsByName = (files: FunctionResult[]): Record<string
 }
 
 export const zipCheckFunctions = async function (
-  fixture: ZipFunctionsPaths,
+  fixture: MixedPaths,
   { length = 1, fixtureDir = FIXTURES_DIR, tmpDir, opts = {} }: ZipOptions & { tmpDir: string },
 ): Promise<ZipReturn> {
   const bag = getFunctionsBag(fixture)

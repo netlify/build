@@ -11,6 +11,7 @@ import { FunctionSource } from './function.js'
 import { createManifest } from './manifest.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
+import { type MixedPaths, getFunctionsBag } from './paths.js'
 import { addArchiveSize } from './utils/archive_size.js'
 import { RuntimeCache } from './utils/cache.js'
 import { formatZipResult, FunctionResult } from './utils/format_result.js'
@@ -45,91 +46,10 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
   }
 }
 
-export interface FunctionsBag {
-  generated: FunctionsCategory
-  user: FunctionsCategory
-}
-
-export interface FunctionsCategory {
-  /**
-   * List of paths for directories containing one or more functions. Entries in
-   * these directories are considered functions when they are files that match
-   * one of the supported extensions or when they are sub-directories that
-   * contain a function following the sub-directory naming patterns.
-   * Paths can be relative.
-   */
-  directories: string[]
-
-  /**
-   * List of paths for specific functions. Paths can be files that match one
-   * of the supported extensions or sub-directories that contain a function
-   * following the sub-directory naming patterns. Paths can be relative.
-   */
-  functions: string[]
-}
-
-/**
- * Normalizes the `zipFunctions` input into a `FunctionsBag` object.
- */
-export const getFunctionsBag = (input: ZipFunctionsPaths): FunctionsBag => {
-  if (typeof input === 'string') {
-    return {
-      generated: {
-        directories: [],
-        functions: [],
-      },
-      user: {
-        directories: [input],
-        functions: [],
-      },
-    }
-  }
-
-  if (Array.isArray(input)) {
-    return {
-      generated: {
-        directories: [],
-        functions: [],
-      },
-      user: {
-        directories: input,
-        functions: [],
-      },
-    }
-  }
-
-  return {
-    generated: {
-      directories: input.generated?.directories ?? [],
-      functions: input.generated?.functions ?? [],
-    },
-    user: {
-      directories: input.user?.directories ?? [],
-      functions: input.user?.functions ?? [],
-    },
-  }
-}
-
-export type ZipFunctionsPaths =
-  | string
-  | string[]
-  | {
-      /**
-       * Functions generated on behalf of the user by a build plugin, extension
-       * or a framework.
-       */
-      generated?: Partial<FunctionsCategory>
-
-      /**
-       * Functions authored by the user.
-       */
-      user?: Partial<FunctionsCategory>
-    }
-
 // Zip `srcFolder/*` (Node.js or Go files) to `destFolder/*.zip` so it can be
 // used by AWS Lambda
 export const zipFunctions = async function (
-  input: ZipFunctionsPaths,
+  input: MixedPaths,
   destFolder: string,
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
