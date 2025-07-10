@@ -209,6 +209,7 @@ export const normalizeFiles = function (
   fixtureDir: string,
   {
     mainFile,
+    srcDir,
     srcFile,
     ...rest
   }: ListedFunction & {
@@ -218,6 +219,7 @@ export const normalizeFiles = function (
   return {
     ...rest,
     mainFile: normalizedRelative(fixtureDir, mainFile),
+    srcDir: srcDir ? normalizedRelative(fixtureDir, srcDir) : undefined,
     srcFile: srcFile ? normalizedRelative(fixtureDir, srcFile) : undefined,
   }
 }
