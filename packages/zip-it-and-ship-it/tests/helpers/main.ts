@@ -11,6 +11,7 @@ import { afterAll, expect } from 'vitest'
 import type { Config } from '../../src/config.js'
 import { ListedFunction, zipFunctions } from '../../src/main.js'
 import { listImports } from '../../src/runtimes/node/bundlers/zisi/list_imports.js'
+import { getFunctionsBag, type MixedPaths } from '../../src/paths.js'
 import type { FunctionResult } from '../../src/utils/format_result.js'
 import { ZipFunctionsOptions } from '../../src/zip.js'
 
@@ -49,10 +50,7 @@ afterAll(async () => {
   cleanupDirectories = []
 })
 
-export const zipNode = async function (
-  fixture: string[] | string,
-  zipOptions: ZipOptions = {},
-): Promise<ZipNodeReturn> {
+export const zipNode = async function (fixture: MixedPaths, zipOptions: ZipOptions = {}): Promise<ZipNodeReturn> {
   const { files, tmpDir } = await zipFixture(fixture, zipOptions)
   const { archiveFormat } = zipOptions.opts || {}
 
@@ -67,7 +65,7 @@ export const getBundlerNameFromOptions = ({ config = {} }: { config?: Config }) 
   config['*'] && config['*'].nodeBundler
 
 export const zipFixture = async function (
-  fixture: string[] | string,
+  fixture: MixedPaths,
   { length, fixtureDir, opts = {} }: ZipOptions = {},
 ): Promise<ZipReturn> {
   const bundlerString = getBundlerNameFromOptions(opts) || 'default'
@@ -100,12 +98,15 @@ export const getFunctionResultsByName = (files: FunctionResult[]): Record<string
 }
 
 export const zipCheckFunctions = async function (
-  fixture: string[] | string,
+  fixture: MixedPaths,
   { length = 1, fixtureDir = FIXTURES_DIR, tmpDir, opts = {} }: ZipOptions & { tmpDir: string },
 ): Promise<ZipReturn> {
-  const srcFolders = Array.isArray(fixture)
-    ? fixture.map((srcFolder) => `${fixtureDir}/${srcFolder}`)
-    : `${fixtureDir}/${fixture}`
+  const bag = getFunctionsBag(fixture)
+
+  bag.generated.directories = bag.generated.directories.map((path) => `${fixtureDir}/${path}`)
+  bag.generated.functions = bag.generated.functions.map((path) => `${fixtureDir}/${path}`)
+  bag.user.directories = bag.user.directories.map((path) => `${fixtureDir}/${path}`)
+  bag.user.functions = bag.user.functions.map((path) => `${fixtureDir}/${path}`)
 
   let basePath: string | undefined
 
@@ -113,7 +114,7 @@ export const zipCheckFunctions = async function (
     basePath = resolve(fixtureDir, fixture)
   }
 
-  const files = await zipFunctions(srcFolders, tmpDir, { basePath, ...opts })
+  const files = await zipFunctions(bag, tmpDir, { basePath, ...opts })
 
   if (!Array.isArray(files)) {
     throw new TypeError(`Expected 'zipFunctions' to return an array, found ${typeof files}`)
@@ -208,6 +209,7 @@ export const normalizeFiles = function (
   fixtureDir: string,
   {
     mainFile,
+    srcDir,
     srcFile,
     ...rest
   }: ListedFunction & {
@@ -217,6 +219,7 @@ export const normalizeFiles = function (
   return {
     ...rest,
     mainFile: normalizedRelative(fixtureDir, mainFile),
+    srcDir: srcDir ? normalizedRelative(fixtureDir, srcDir) : undefined,
     srcFile: srcFile ? normalizedRelative(fixtureDir, srcFile) : undefined,
   }
 }

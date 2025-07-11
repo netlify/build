@@ -83,14 +83,20 @@ describe('zip-it-and-ship-it', () => {
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {
       const fixtureName = join('node-internal', '.netlify/internal-functions')
-      const { files } = await zipFixture(fixtureName, {
-        length: 2,
-        opts: {
-          ...options,
-          internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-          config: { 'function-1': { name: 'Function One', generator: '@netlify/mock-plugin@1.0.0' } },
+      const { files } = await zipFixture(
+        {
+          generated: {
+            directories: [fixtureName],
+          },
         },
-      })
+        {
+          length: 2,
+          opts: {
+            ...options,
+            config: { 'function-1': { name: 'Function One', generator: '@netlify/mock-plugin@1.0.0' } },
+          },
+        },
+      )
 
       expect(files[0].displayName).toBe('Function One')
       expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -1845,18 +1851,20 @@ describe('zip-it-and-ship-it', () => {
     })
 
     const fixtureName = join('go-internal', '.netlify/internal-functions')
-    const { files } = await zipFixture(fixtureName, {
-      length: 2,
-      opts: {
-        internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-        config: {
-          'go-func-1': {
-            name: 'Go Function One',
-            generator: '@netlify/mock-plugin@1.0.0',
+    const { files } = await zipFixture(
+      { generated: { directories: [fixtureName] } },
+      {
+        length: 2,
+        opts: {
+          config: {
+            'go-func-1': {
+              name: 'Go Function One',
+              generator: '@netlify/mock-plugin@1.0.0',
+            },
           },
         },
       },
-    })
+    )
 
     expect(files[0].displayName).toBe('Go Function One')
     expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -2035,21 +2043,27 @@ describe('zip-it-and-ship-it', () => {
     })
 
     const fixtureName = join('rust-internal', '.netlify/internal-functions')
-    const { files } = await zipFixture(fixtureName, {
-      length: 2,
-      opts: {
-        internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-        config: {
-          'rust-func-1': {
-            name: 'Rust Function Two',
-            generator: '@netlify/mock-plugin@1.0.0',
-          },
-        },
-        featureFlags: {
-          buildRustSource: true,
+    const { files } = await zipFixture(
+      {
+        generated: {
+          directories: [fixtureName],
         },
       },
-    })
+      {
+        length: 2,
+        opts: {
+          config: {
+            'rust-func-1': {
+              name: 'Rust Function Two',
+              generator: '@netlify/mock-plugin@1.0.0',
+            },
+          },
+          featureFlags: {
+            buildRustSource: true,
+          },
+        },
+      },
+    )
 
     expect(files[0].displayName).toBe('Rust Function Two')
     expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -2855,14 +2869,17 @@ test('Adds a `priority` field to the generated manifest file', async () => {
   const fixtureName = 'multiple-src-directories'
   const manifestPath = join(tmpDir, 'manifest.json')
   const paths = {
-    generated: `${fixtureName}/.netlify/internal-functions`,
-    user: `${fixtureName}/netlify/functions`,
+    generated: {
+      directories: [`${fixtureName}/.netlify/internal-functions`],
+    },
+    user: {
+      directories: [`${fixtureName}/netlify/functions`],
+    },
   }
 
-  await zipNode([paths.generated, paths.user], {
+  await zipNode(paths, {
     length: 3,
     opts: {
-      internalSrcFolder: join(FIXTURES_DIR, paths.generated),
       manifest: manifestPath,
     },
   })
@@ -2926,17 +2943,56 @@ test('Supports both files and directories and ignores files that are not functio
     unsafeCleanup: true,
   })
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
-  const individualFunctions = [join(basePath, 'cat.jpg'), join(basePath, 'func2.mjs')]
-  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
-    basePath,
-  })
+  const files = await zipFunctions(
+    {
+      user: {
+        directories: [join(basePath, 'netlify/functions')],
+        functions: [
+          join(basePath, 'cat.jpg'),
+          join(basePath, 'func2.mjs'),
+          join(basePath, 'func3'),
+          join(basePath, 'func4'),
+        ],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
 
-  expect(files.length).toBe(2)
+  expect(files.length).toBe(4)
 
-  const functions = getFunctionResultsByName(files)
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
 
-  expect(functions.func1.name).toBe('func1')
-  expect(functions.func2.name).toBe('func2')
+  const func1 = await importFunctionFile(`${tmpDir.path}/${functions.func1.name}/${functions.func1.entryFilename}`)
+  const func1Result = await invokeLambda(func1)
+  expect(func1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func1Result.body)).toStrictEqual(
+    JSON.stringify({ func: 1, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2Result = await invokeLambda(func2)
+  expect(func2Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func2Result.body)).toStrictEqual(
+    JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3Result = await invokeLambda(func3)
+  expect(func3Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func3Result.body)).toStrictEqual(
+    JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4Result = await invokeLambda(func4)
+  expect(func4Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func4Result.body)).toStrictEqual(
+    JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
+  )
 
   await tmpDir.cleanup()
 })
@@ -2947,13 +3003,23 @@ test('Supports functions inside the plugins modules path', async () => {
     unsafeCleanup: true,
   })
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
-  const individualFunctions = [
-    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
-    join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2.mjs'),
-  ]
-  const files = await zipFunctions([join(basePath, 'netlify/functions'), ...individualFunctions], tmpDir.path, {
-    basePath,
-  })
+  const files = await zipFunctions(
+    {
+      generated: {
+        functions: [
+          join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+          join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2'),
+        ],
+      },
+      user: {
+        directories: [join(basePath, 'netlify/functions')],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
 
   const unzippedFunctions = await unzipFiles(files)
   const functions = getFunctionResultsByName(unzippedFunctions)
@@ -2967,6 +3033,8 @@ test('Supports functions inside the plugins modules path', async () => {
   expect(await readAsBuffer(extensionFunc1Result.body)).toStrictEqual(
     JSON.stringify({ mod1: 'module-1-plugins', mod2: 'module-2-plugins', mod3: 'module-3-plugins' }),
   )
+  expect(functions['extension-func1'].generator).toBe('internalFunc')
+  expect(functions['extension-func1'].priority).toBe(0)
 
   // extension-func2 should error because module-4 isn't in scope.
   await expect(() =>
@@ -2974,6 +3042,8 @@ test('Supports functions inside the plugins modules path', async () => {
       `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
     ),
   ).rejects.toThrowError(`Cannot find package 'module-4' imported from`)
+  expect(functions['extension-func2'].generator).toBe('internalFunc')
+  expect(functions['extension-func2'].priority).toBe(0)
 
   // user-func1 should work because all modules are in scope.
   const userFunc1 = await importFunctionFile(
@@ -2984,6 +3054,8 @@ test('Supports functions inside the plugins modules path', async () => {
   expect(await readAsBuffer(userFunc1Result.body)).toStrictEqual(
     JSON.stringify({ mod3: 'module-3-user', mod4: 'module-4-user' }),
   )
+  expect(functions['user-func1'].generator).toBeUndefined()
+  expect(functions['user-func1'].priority).toBe(10)
 
   await tmpDir.cleanup()
 })

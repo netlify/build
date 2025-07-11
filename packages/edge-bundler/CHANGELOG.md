@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.0.7](https://github.com/netlify/build/compare/edge-bundler-v14.0.6...edge-bundler-v14.0.7) (2025-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.6 ([#6531](https://github.com/netlify/build/issues/6531)) ([c4dfe7c](https://github.com/netlify/build/commit/c4dfe7c754cfd761e35025cad01820add4bc42c9))
+
 ## [14.0.6](https://github.com/netlify/build/compare/edge-bundler-v14.0.5...edge-bundler-v14.0.6) (2025-06-05)
 
 

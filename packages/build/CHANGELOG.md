@@ -105,6 +105,96 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.2.0](https://github.com/netlify/build/compare/build-v34.1.0...build-v34.2.0) (2025-07-10)
+
+
+### Features
+
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.16 to ^6.1.0
+    * @netlify/zip-it-and-ship-it bumped from 13.1.0 to 13.2.0
+
+## [34.1.0](https://github.com/netlify/build/compare/build-v34.0.1...build-v34.1.0) (2025-07-10)
+
+
+### Features
+
+* accept mixed paths in `listFunctions` ([#6537](https://github.com/netlify/build/issues/6537)) ([2e264e3](https://github.com/netlify/build/commit/2e264e3caf37e96d8da4a589c8eb858a40baf43e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.15 to ^6.0.16
+    * @netlify/zip-it-and-ship-it bumped from 13.0.1 to 13.1.0
+
+## [34.0.1](https://github.com/netlify/build/compare/build-v34.0.0...build-v34.0.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.4 ([#6533](https://github.com/netlify/build/issues/6533)) ([e4ac362](https://github.com/netlify/build/commit/e4ac362ba2f1941ae29eab0ee22de8ce502828c9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.0.6 to 14.0.7
+    * @netlify/functions-utils bumped from ^6.0.14 to ^6.0.15
+    * @netlify/zip-it-and-ship-it bumped from 13.0.0 to 13.0.1
+
+## [34.0.0](https://github.com/netlify/build/compare/build-v33.5.1...build-v34.0.0) (2025-07-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524))
+
+### Features
+
+* add header to installing extension with the build mode so we know where the installation is coming from ([#6478](https://github.com/netlify/build/issues/6478)) ([ca66176](https://github.com/netlify/build/commit/ca661760594a24f979457fa001c2db98213d259f))
+* expose `generatedFunctions` to consumers ([#6525](https://github.com/netlify/build/issues/6525)) ([536630e](https://github.com/netlify/build/commit/536630e0470a1f81a04ff82059a22c27786aec1b))
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524)) ([f719b07](https://github.com/netlify/build/commit/f719b0719ad7b719211904f573d8f3539b58ecbb))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.3 ([#6526](https://github.com/netlify/build/issues/6526)) ([9d10c78](https://github.com/netlify/build/commit/9d10c782200be8b59737c05623068ecc59b199b7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.0.11 to ^23.1.0
+    * @netlify/functions-utils bumped from ^6.0.13 to ^6.0.14
+    * @netlify/zip-it-and-ship-it bumped from 12.2.1 to 13.0.0
+
+## [33.5.1](https://github.com/netlify/build/compare/build-v33.5.0...build-v33.5.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.2 ([#6494](https://github.com/netlify/build/issues/6494)) ([2f99eba](https://github.com/netlify/build/commit/2f99ebaa40f22a113e8c73a3ebfc4825302c1efb))
+* **deps:** update dependency hot-shots to v11 ([#6511](https://github.com/netlify/build/issues/6511)) ([41d2890](https://github.com/netlify/build/commit/41d2890f93bd350c42b7eabc70575039dcdacfcf))
+* **deps:** update dependency netlify-plugin-contextual-env to v0.3.0 ([#6515](https://github.com/netlify/build/issues/6515)) ([a5fb91e](https://github.com/netlify/build/commit/a5fb91e4deeaa37500edcbb15f7eac48b243953a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.12 to ^6.0.13
+    * @netlify/zip-it-and-ship-it bumped from 12.2.0 to 12.2.1
+
 ## [33.5.0](https://github.com/netlify/build/compare/build-v33.4.7...build-v33.5.0) (2025-06-27)
 
 
