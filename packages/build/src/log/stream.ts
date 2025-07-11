@@ -1,5 +1,4 @@
-import { promisify } from 'util'
-
+import { setTimeout as pSetTimeout } from 'timers/promises'
 import type { ChildProcess } from '../plugins/spawn.js'
 
 import { BufferedLogs, logsAreBuffered, Logs } from './logger.js'
@@ -13,9 +12,6 @@ export type StandardStreams = {
 
 type LogsListener = (logs: string[], outputFlusher: OutputFlusher | undefined, chunk: Buffer) => void
 type LogsListeners = { stderrListener: LogsListener; stdoutListener: LogsListener }
-
-// TODO: replace with `timers/promises` after dropping Node < 15.0.0
-const pSetTimeout = promisify(setTimeout)
 
 // We try to use `stdio: inherit` because it keeps `stdout/stderr` as `TTY`,
 // which solves many problems. However we can only do it in build.command.

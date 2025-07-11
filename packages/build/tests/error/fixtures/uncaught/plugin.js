@@ -1,7 +1,4 @@
-import { promisify } from 'util'
-
-// TODO: replace with `timers/promises` after dropping Node < 15.0.0
-const pSetTimeout = promisify(setTimeout)
+import { setTimeout as pSetTimeout } from 'timers/promises'
 
 export const onPreBuild = async function () {
   setTimeout(function callback() {

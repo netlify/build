@@ -1,10 +1,7 @@
 import { env, kill } from 'process'
-import { promisify } from 'util'
+import { setTimeout as pSetTimeout } from 'timers/promises'
 
 import { processExists } from 'process-exists'
-
-// TODO: replace with `timers/promises` after dropping Node < 15.0.0
-const pSetTimeout = promisify(setTimeout)
 
 // 100ms
 const PROCESS_TIMEOUT = 1e2
