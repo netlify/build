@@ -291,6 +291,18 @@ test('Loads function paths from the in-source `config` function', async () => {
     pattern: '^/user-func1/?$',
     excluded_patterns: [],
     path: '/user-func1',
+    headers: {
+      'x-must-be-there': {
+        style: 'exists',
+      },
+      'x-must-match': {
+        pattern: '^(foo|bar)$',
+        style: 'regex',
+      },
+      'x-must-not-be-there': {
+        style: 'missing',
+      },
+    },
   })
   expect(routes[7]).toEqual({
     function: 'user-func3',
