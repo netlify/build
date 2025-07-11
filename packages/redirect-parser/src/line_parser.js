@@ -1,6 +1,4 @@
-import { promises as fs } from 'fs'
-
-import { pathExists } from 'path-exists'
+import { promises as fs, access } from 'fs/promises'
 
 import { splitResults } from './results.js'
 import { transtypeStatusCode, isValidStatusCode } from './status.js'
@@ -30,7 +28,9 @@ export const parseFileRedirects = async function (redirectFile) {
 }
 
 const parseRedirects = async function (redirectFile) {
-  if (!(await pathExists(redirectFile))) {
+  try {
+    await access(redirectFile)
+  } catch {
     return []
   }
 
