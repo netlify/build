@@ -1,9 +1,8 @@
-import { readFile, rm } from 'fs/promises'
+import { readFile, rm, access } from 'fs/promises'
 import { normalize, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import cpy from 'cpy'
-import { pathExists } from 'path-exists'
 import sortOn from 'sort-on'
 import { expect, test, vi } from 'vitest'
 
@@ -17,7 +16,13 @@ test('Should copy a source file to a dist directory', async () => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
+
+    try {
+      await access(`${dist}/test.mjs`)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await rm(dist, { force: true, recursive: true })
   }
@@ -27,7 +32,13 @@ test('Should copy a source directory to a dist directory', async () => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/directory/test`, dist)
-    expect(await pathExists(`${dist}/test/index.js`)).toBe(true)
+
+    try {
+      await access(`${dist}/test/index.js`)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await rm(dist, { force: true, recursive: true })
   }
@@ -68,7 +79,13 @@ test('Should copy a source file even if dist directory already exists', async ()
   const dist = await createDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
+
+    try {
+      await access(`${dist}/test.mjs`)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await rm(dist, { force: true, recursive: true })
   }

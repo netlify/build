@@ -1,9 +1,9 @@
 import { promises as fs } from 'fs'
+import { access } from 'fs/promises'
 import { basename, dirname, join } from 'path'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
-import { pathExists } from 'path-exists'
 
 // Add a Netlify Function file to the `functions` directory, so it is processed
 // by `@netlify/plugin-functions-core`
@@ -12,7 +12,9 @@ export const add = async function (src?: string, dist?: string, { fail = default
     return fail('No function source directory was specified')
   }
 
-  if (!(await pathExists(src))) {
+  try {
+    await access(src)
+  } catch {
     return fail(`No function file or directory found at "${src}"`)
   }
 
