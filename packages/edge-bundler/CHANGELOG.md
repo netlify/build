@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.1.0](https://github.com/netlify/build/compare/edge-bundler-v14.0.7...edge-bundler-v14.1.0) (2025-07-11)
+
+
+### Features
+
+* match edge functions on headers ([#6501](https://github.com/netlify/build/issues/6501)) ([23d5dce](https://github.com/netlify/build/commit/23d5dce31d85b4618dc496c53577fd43fb64d317))
+
 ## [14.0.7](https://github.com/netlify/build/compare/edge-bundler-v14.0.6...edge-bundler-v14.0.7) (2025-07-08)
 
 
