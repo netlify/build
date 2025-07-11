@@ -42,7 +42,6 @@
   ],
   "dependencies": {
     "@netlify/open-api": "^2.37.0",
-    "lodash-es": "^4.17.21",
     "node-fetch": "^3.0.0",
     "p-wait-for": "^5.0.0",
     "qs": "^6.9.6"
