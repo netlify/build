@@ -1,6 +1,4 @@
-import fs from 'fs/promises'
-
-import { pathExists } from 'path-exists'
+import fs, { access } from 'fs/promises'
 
 import { splitResults } from './results.js'
 import type { MinimalHeader } from './types.js'
@@ -23,7 +21,9 @@ export const parseFileHeaders = async function (headersFile: string): Promise<Pa
 }
 
 const parseHeaders = async function (headersFile: string): Promise<(Error | RawHeaderFileLine)[]> {
-  if (!(await pathExists(headersFile))) {
+  try {
+    await access(headersFile)
+  } catch {
     return []
   }
 
