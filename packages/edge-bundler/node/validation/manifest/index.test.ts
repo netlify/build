@@ -181,10 +181,10 @@ describe('import map URL', () => {
   })
 })
 
-describe('headers', () => {
+describe('route headers', () => {
   test('should accept valid headers with exists style', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'exists',
       },
@@ -195,7 +195,7 @@ describe('headers', () => {
 
   test('should accept valid headers with missing style', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'missing',
       },
@@ -206,7 +206,7 @@ describe('headers', () => {
 
   test('should accept valid headers with regex style and pattern', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'regex',
         pattern: '^Bearer .+$',
@@ -218,9 +218,9 @@ describe('headers', () => {
 
   test('should throw on missing style property', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
-        pattern: '^Bearer .+',
+        pattern: '^Bearer .+$',
       },
     }
 
@@ -229,7 +229,7 @@ describe('headers', () => {
 
   test('should throw on invalid style value', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'invalid',
       },
@@ -240,7 +240,7 @@ describe('headers', () => {
 
   test('should throw when style is regex but pattern is missing', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'regex',
       },
@@ -251,7 +251,7 @@ describe('headers', () => {
 
   test('should throw on invalid pattern format', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'regex',
         pattern: '/^Bearer .+/',
@@ -263,7 +263,7 @@ describe('headers', () => {
 
   test('should throw on additional property in headers', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-custom-header': {
         style: 'exists',
         foo: 'bar',
@@ -275,7 +275,7 @@ describe('headers', () => {
 
   test('should accept multiple headers with different styles', () => {
     const manifest = getBaseManifest()
-    manifest.headers = {
+    manifest.routes[0].headers = {
       'x-exists-header': {
         style: 'exists',
       },
