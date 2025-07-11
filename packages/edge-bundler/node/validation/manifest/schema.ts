@@ -23,13 +23,13 @@ const headersSchema = {
   patternProperties: {
     '.*': {
       type: 'object',
-      required: ['style'],
+      required: ['matcher'],
       properties: {
         pattern: {
           type: 'string',
           format: 'regexPattern',
         },
-        style: {
+        matcher: {
           type: 'string',
           enum: ['exists', 'missing', 'regex'],
         },
@@ -37,7 +37,7 @@ const headersSchema = {
       additionalProperties: false,
       if: {
         properties: {
-          style: { const: 'regex' },
+          matcher: { const: 'regex' },
         },
       },
       then: {
