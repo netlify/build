@@ -237,11 +237,11 @@ test('excludedPath from ISC goes into function_config, TOML goes into routes', (
 
   const matcher = getRouteMatcher(manifest)
 
-  expect(matcher('/showcases/boho-style')).toBeDefined()
+  expect(matcher('/showcases/boho-matcher')).toBeDefined()
   expect(matcher('/checkout/address')).toBeDefined()
   expect(matcher('/checkout/terms-and-conditions')).toBeUndefined()
   expect(matcher('/checkout/scrooge-mc-duck-animation.css')).toBeUndefined()
-  expect(matcher('/showcases/boho-style/expensive-chair.jpg')).toBeUndefined()
+  expect(matcher('/showcases/boho-matcher/expensive-chair.jpg')).toBeUndefined()
 })
 
 test('URLPattern named groups are supported', () => {
@@ -620,9 +620,9 @@ describe('Header matching', () => {
           'x-present': true,
           'x-also-present': true,
           'x-absent': false,
-          'x-match-prefix': '^prefix(.*)',
-          'x-match-exact': 'exact',
-          'x-match-suffix': '(.*)suffix$',
+          'x-match-prefix': '^prefix',
+          'x-match-exact': '^exact$',
+          'x-match-suffix': 'suffix$',
         },
       },
     ]
@@ -640,25 +640,25 @@ describe('Header matching', () => {
         path: '/f1/*',
         headers: {
           'x-absent': {
-            style: 'missing',
+            matcher: 'missing',
           },
           'x-also-present': {
-            style: 'exists',
+            matcher: 'exists',
           },
           'x-match-exact': {
             pattern: '^exact$',
-            style: 'regex',
+            matcher: 'regex',
           },
           'x-match-prefix': {
-            pattern: '^prefix(.*)$',
-            style: 'regex',
+            pattern: '^prefix',
+            matcher: 'regex',
           },
           'x-match-suffix': {
-            pattern: '^(.*)suffix$',
-            style: 'regex',
+            pattern: 'suffix$',
+            matcher: 'regex',
           },
           'x-present': {
-            style: 'exists',
+            matcher: 'exists',
           },
         },
       },
