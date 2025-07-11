@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import isBuiltinModule from 'is-builtin-module'
+import { isBuiltin } from 'module'
 import precinct from 'precinct'
 import { tmpName } from 'tmp-promise'
 
@@ -19,7 +19,7 @@ const getListImportsPlugin = ({ imports, path }: { imports: Set<string>; path: s
   setup(build) {
     build.onResolve({ filter: /.*/ }, (args) => {
       const isEntryPoint = args.path === path
-      const isImport = !isEntryPoint && !isBuiltinModule(args.path)
+      const isImport = !isEntryPoint && !isBuiltin(args.path)
 
       if (isImport) {
         imports.add(args.path)
