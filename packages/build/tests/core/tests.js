@@ -589,6 +589,12 @@ test('Bundles functions from the `.netlify/functions-internal` directory even if
   t.snapshot(normalizeOutput(output))
 })
 
+test('Removes duplicate function names from the list of processed functions', async (t) => {
+  const output = await new Fixture('./fixtures/functions_duplicate_names').runWithBuild()
+  t.true(normalizeOutput(output).includes(`- function_one.js`))
+  t.false(normalizeOutput(output).includes(`- function_one.ts`))
+})
+
 test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
   const runCount = 4
   const mockZipFunctions = sinon.stub().resolves()
