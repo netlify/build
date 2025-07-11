@@ -186,8 +186,8 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-custom-header': {
-        style: 'exists'
-      }
+        style: 'exists',
+      },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
@@ -197,8 +197,8 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-custom-header': {
-        style: 'missing'
-      }
+        style: 'missing',
+      },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
@@ -209,8 +209,8 @@ describe('headers', () => {
     manifest.headers = {
       'x-custom-header': {
         style: 'regex',
-        pattern: '^Bearer .+$'
-      }
+        pattern: '^Bearer .+$',
+      },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
@@ -220,8 +220,8 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-custom-header': {
-        pattern: '^Bearer .+'
-      }
+        pattern: '^Bearer .+',
+      },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
@@ -231,8 +231,8 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-custom-header': {
-        style: 'invalid'
-      }
+        style: 'invalid',
+      },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
@@ -242,8 +242,8 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-custom-header': {
-        style: 'regex'
-      }
+        style: 'regex',
+      },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
@@ -254,8 +254,8 @@ describe('headers', () => {
     manifest.headers = {
       'x-custom-header': {
         style: 'regex',
-        pattern: '/^Bearer .+/'
-      }
+        pattern: '/^Bearer .+/',
+      },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
@@ -266,8 +266,8 @@ describe('headers', () => {
     manifest.headers = {
       'x-custom-header': {
         style: 'exists',
-        foo: 'bar'
-      }
+        foo: 'bar',
+      },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
@@ -277,15 +277,15 @@ describe('headers', () => {
     const manifest = getBaseManifest()
     manifest.headers = {
       'x-exists-header': {
-        style: 'exists'
+        style: 'exists',
       },
       'x-missing-header': {
-        style: 'missing'
+        style: 'missing',
       },
-      'authorization': {
+      authorization: {
         style: 'regex',
-        pattern: '^Bearer [a-zA-Z0-9]+$'
-      }
+        pattern: '^Bearer [a-zA-Z0-9]+$',
+      },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
