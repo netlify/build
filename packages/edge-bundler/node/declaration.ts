@@ -194,7 +194,10 @@ export const getHeaderMatchers = (headers?: HeadersConfig): HeaderMatchers => {
     if (typeof headers[header] === 'boolean') {
       matchers[header] = { matcher: headers[header] ? 'exists' : 'missing' }
     } else if (typeof headers[header] === 'string') {
-      matchers[header] = { matcher: 'regex', pattern: normalizePattern(headers[header]) }
+      // Strip leading and forward slashes.
+      const pattern = new RegExp(headers[header]).toString().slice(1, -1)
+
+      matchers[header] = { matcher: 'regex', pattern }
     } else {
       throw new BundleError(new Error(headerConfigError))
     }
