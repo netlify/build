@@ -4,7 +4,7 @@ import { env, platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { execa } from 'execa'
-import isCI from 'is-ci'
+import { isCI } from 'ci-info'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterAll, expect } from 'vitest'
 

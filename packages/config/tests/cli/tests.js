@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import isCI from 'is-ci'
+import isCI from 'ci-info'
 import { tmpName as getTmpName } from 'tmp-promise'
 
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
