@@ -2,7 +2,7 @@ import { BundleError } from './bundle_error.js'
 import { FunctionConfig, FunctionConfigWithAllPossibleFields, HeadersConfig, HTTPMethod, Path } from './config.js'
 import { FeatureFlags } from './feature_flags.js'
 
-export type HeaderMatch = { pattern: string; style: 'regex' } | { style: 'exists' | 'missing' }
+export type HeaderMatch = { pattern: string; matcher: 'regex' } | { matcher: 'exists' | 'missing' }
 type HeaderMatchers = Record<string, HeaderMatch>
 
 interface BaseDeclaration {
@@ -192,9 +192,9 @@ export const getHeaderMatchers = (headers?: HeadersConfig): HeaderMatchers => {
 
   for (const header in headers) {
     if (typeof headers[header] === 'boolean') {
-      matchers[header] = { style: headers[header] ? 'exists' : 'missing' }
+      matchers[header] = { matcher: headers[header] ? 'exists' : 'missing' }
     } else if (typeof headers[header] === 'string') {
-      matchers[header] = { style: 'regex', pattern: normalizePattern(headers[header]) }
+      matchers[header] = { matcher: 'regex', pattern: normalizePattern(headers[header]) }
     } else {
       throw new BundleError(new Error(headerConfigError))
     }

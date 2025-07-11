@@ -182,33 +182,33 @@ describe('import map URL', () => {
 })
 
 describe('route headers', () => {
-  test('should accept valid headers with exists style', () => {
+  test('should accept valid headers with exists matcher', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'exists',
+        matcher: 'exists',
       },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
   })
 
-  test('should accept valid headers with missing style', () => {
+  test('should accept valid headers with missing matcher', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'missing',
+        matcher: 'missing',
       },
     }
 
     expect(() => validateManifest(manifest)).not.toThrowError()
   })
 
-  test('should accept valid headers with regex style and pattern', () => {
+  test('should accept valid headers with regex matcher and pattern', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'regex',
+        matcher: 'regex',
         pattern: '^Bearer .+$',
       },
     }
@@ -216,7 +216,7 @@ describe('route headers', () => {
     expect(() => validateManifest(manifest)).not.toThrowError()
   })
 
-  test('should throw on missing style property', () => {
+  test('should throw on missing matcher property', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
@@ -227,22 +227,22 @@ describe('route headers', () => {
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 
-  test('should throw on invalid style value', () => {
+  test('should throw on invalid matcher value', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'invalid',
+        matcher: 'invalid',
       },
     }
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 
-  test('should throw when style is regex but pattern is missing', () => {
+  test('should throw when matcher is regex but pattern is missing', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'regex',
+        matcher: 'regex',
       },
     }
 
@@ -253,7 +253,7 @@ describe('route headers', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'regex',
+        matcher: 'regex',
         pattern: '/^Bearer .+/',
       },
     }
@@ -265,7 +265,7 @@ describe('route headers', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-custom-header': {
-        style: 'exists',
+        matcher: 'exists',
         foo: 'bar',
       },
     }
@@ -273,17 +273,17 @@ describe('route headers', () => {
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 
-  test('should accept multiple headers with different styles', () => {
+  test('should accept multiple headers with different matchers', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].headers = {
       'x-exists-header': {
-        style: 'exists',
+        matcher: 'exists',
       },
       'x-missing-header': {
-        style: 'missing',
+        matcher: 'missing',
       },
       authorization: {
-        style: 'regex',
+        matcher: 'regex',
         pattern: '^Bearer [a-zA-Z0-9]+$',
       },
     }
