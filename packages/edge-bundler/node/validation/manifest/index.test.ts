@@ -180,3 +180,114 @@ describe('import map URL', () => {
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 })
+
+describe('headers', () => {
+  test('should accept valid headers with exists style', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'exists'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should accept valid headers with missing style', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'missing'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should accept valid headers with regex style and pattern', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'regex',
+        pattern: '^Bearer .+$'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should throw on missing style property', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        pattern: '^Bearer .+'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on invalid style value', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'invalid'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw when style is regex but pattern is missing', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'regex'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on invalid pattern format', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'regex',
+        pattern: '/^Bearer .+/'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on additional property in headers', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-custom-header': {
+        style: 'exists',
+        foo: 'bar'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should accept multiple headers with different styles', () => {
+    const manifest = getBaseManifest()
+    manifest.headers = {
+      'x-exists-header': {
+        style: 'exists'
+      },
+      'x-missing-header': {
+        style: 'missing'
+      },
+      'authorization': {
+        style: 'regex',
+        pattern: '^Bearer [a-zA-Z0-9]+$'
+      }
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+})

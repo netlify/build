@@ -60,6 +60,36 @@ const layersSchema = {
   additionalProperties: false,
 }
 
+const headersSchema = {
+  type: 'object',
+  patternProperties: {
+    '.*': {
+      type: 'object',
+      required: ['style'],
+      properties: {
+        pattern: {
+          type: 'string',
+          format: 'regexPattern',
+        },
+        style: {
+          type: 'string',
+          enum: ['exists', 'missing', 'regex'],
+        },
+      },
+      additionalProperties: false,
+      if: {
+        properties: {
+          style: { const: 'regex' },
+        },
+      },
+      then: {
+        required: ['pattern'],
+      },
+    },
+  },
+  additionalProperties: false,
+}
+
 const edgeManifestSchema = {
   type: 'object',
   required: ['bundles', 'routes', 'bundler_version'],
@@ -83,6 +113,7 @@ const edgeManifestSchema = {
     import_map: { type: 'string' },
     bundler_version: { type: 'string' },
     function_config: { type: 'object', additionalProperties: functionConfigSchema },
+    headers: headersSchema,
   },
   additionalProperties: false,
 }
