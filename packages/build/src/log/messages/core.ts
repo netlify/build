@@ -1,4 +1,4 @@
-import ansiEscapes from 'ansi-escapes'
+import terminalLink from 'terminal-link'
 import prettyMs from 'pretty-ms'
 
 import { getFullErrorInfo } from '../../error/parse/parse.js'
@@ -52,9 +52,6 @@ A "${sideFile}" file is present in the repository but is missing in the publish 
   )
 }
 
-// @todo use `terminal-link` (https://github.com/sindresorhus/terminal-link)
-// instead of `ansi-escapes` once
-// https://github.com/jamestalmage/supports-hyperlinks/pull/12 is fixed
 export const logLingeringProcesses = function (logs, commands) {
   logWarning(
     logs,
@@ -66,7 +63,7 @@ The build completed successfully, but the following processes were still running
   logWarning(
     logs,
     `
-These processes have been terminated. In case this creates a problem for your build, refer to this ${ansiEscapes.link(
+These processes have been terminated. In case this creates a problem for your build, refer to this ${terminalLink(
       'article',
       'https://answers.netlify.com/t/support-guide-how-to-address-the-warning-message-related-to-terminating-processes-in-builds/35277',
     )} for details about why this process termination happens and how to fix it.`,
