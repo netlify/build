@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.2.0](https://github.com/netlify/build/compare/edge-bundler-v14.1.0...edge-bundler-v14.2.0) (2025-07-11)
+
+
+### Features
+
+* add `headers` to edge functions manifest validation ([#6542](https://github.com/netlify/build/issues/6542)) ([f0004f3](https://github.com/netlify/build/commit/f0004f329ba2e82e14462b29b9267383fecb058b))
+
 ## [14.1.0](https://github.com/netlify/build/compare/edge-bundler-v14.0.7...edge-bundler-v14.1.0) (2025-07-11)
 
 
