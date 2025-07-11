@@ -620,9 +620,9 @@ describe('Header matching', () => {
           'x-present': true,
           'x-also-present': true,
           'x-absent': false,
-          'x-match-prefix': '^prefix(.*)',
-          'x-match-exact': 'exact',
-          'x-match-suffix': '(.*)suffix$',
+          'x-match-prefix': '^prefix',
+          'x-match-exact': '^exact$',
+          'x-match-suffix': 'suffix$',
         },
       },
     ]
@@ -650,11 +650,11 @@ describe('Header matching', () => {
             matcher: 'regex',
           },
           'x-match-prefix': {
-            pattern: '^prefix(.*)$',
+            pattern: '^prefix',
             matcher: 'regex',
           },
           'x-match-suffix': {
-            pattern: '^(.*)suffix$',
+            pattern: 'suffix$',
             matcher: 'regex',
           },
           'x-present': {
