@@ -234,6 +234,7 @@ test('Telemetry calls timeout by default', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     // Force a client side timeout
     telemetryTimeout: 0,
+    waitTelemetryServer: 1000,
     // The error monitor snapshot should contain the timeout error
     snapshot: true,
   })
