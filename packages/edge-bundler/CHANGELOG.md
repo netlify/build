@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.2.1](https://github.com/netlify/build/compare/edge-bundler-v14.2.0...edge-bundler-v14.2.1) (2025-07-11)
+
+
+### Bug Fixes
+
+* rename edge functions manifest property ([#6544](https://github.com/netlify/build/issues/6544)) ([0a9271d](https://github.com/netlify/build/commit/0a9271d517476f3426cac8e79403bb0d87dda49d))
+
 ## [14.2.0](https://github.com/netlify/build/compare/edge-bundler-v14.1.0...edge-bundler-v14.2.0) (2025-07-11)
 
 
