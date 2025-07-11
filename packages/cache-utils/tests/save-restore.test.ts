@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
+import { access } from 'fs/promises'
 
-import { pathExists } from 'path-exists'
 import { expect, test } from 'vitest'
 
 import { save, restore, bindOpts, getCacheDir } from '../src/main.js'
@@ -18,7 +18,13 @@ test('Should cache and restore one file', async () => {
     expect(await save(srcFile, { cacheDir })).toBe(true)
     await removeFiles(srcFile)
     expect(await restore(srcFile, { cacheDir })).toBe(true)
-    expect(await pathExists(srcFile)).toBe(true)
+
+    try {
+      await access(srcFile)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -34,7 +40,12 @@ test('Should cache and restore several files', async () => {
     expect(await save([srcFile, otherSrcFile], { cacheDir })).toBe(true)
     await removeFiles(srcFile)
     expect(await restore([srcFile, otherSrcFile], { cacheDir })).toBe(true)
-    expect(await Promise.all([pathExists(srcFile), pathExists(otherSrcFile)])).toEqual([true, true])
+
+    const results = await Promise.all([
+      access(srcFile).then(() => true).catch(() => false),
+      access(otherSrcFile).then(() => true).catch(() => false)
+    ])
+    expect(results).toEqual([true, true])
   } finally {
     await removeFiles([cacheDir, srcDir, otherSrcDir])
   }
@@ -48,7 +59,13 @@ test('Should cache and restore one directory', async () => {
     expect(await save(srcDir, { cacheDir })).toBe(true)
     await removeFiles(srcDir)
     expect(await restore(srcDir, { cacheDir })).toBe(true)
-    expect(await pathExists(srcFile)).toBe(true)
+
+    try {
+      await access(srcFile)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -61,7 +78,14 @@ test('Should keep file contents when caching files', async () => {
     expect(await save(srcFile, { cacheDir })).toBe(true)
     await removeFiles(srcFile)
     expect(await restore(srcFile, { cacheDir })).toBe(true)
-    expect(await pathExists(srcFile)).toBe(true)
+
+    try {
+      await access(srcFile)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
+
     expect(await fs.readFile(srcFile, 'utf8')).toBe('test')
   } finally {
     await removeFiles([cacheDir, srcDir])
@@ -75,7 +99,14 @@ test('Should overwrite files on restore', async () => {
     expect(await save(srcFile, { cacheDir })).toBe(true)
     await fs.writeFile(srcFile, 'newTest')
     expect(await restore(srcFile, { cacheDir })).toBe(true)
-    expect(await pathExists(srcFile)).toBe(true)
+
+    try {
+      await access(srcFile)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
+
     expect(await fs.readFile(srcFile, 'utf8')).toBe('test')
   } finally {
     await removeFiles([cacheDir, srcDir])

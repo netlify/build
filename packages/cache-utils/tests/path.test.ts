@@ -1,7 +1,7 @@
 import { homedir } from 'os'
 import { platform } from 'process'
+import { access } from 'fs/promises'
 
-import { pathExists } from 'path-exists'
 import { test, expect } from 'vitest'
 
 import { save, restore } from '../src/main.js'
@@ -14,7 +14,13 @@ test('Should allow caching files in home directory', async () => {
     expect(await save(srcFile, { cacheDir })).toBe(true)
     await removeFiles(srcFile)
     expect(await restore(srcFile, { cacheDir })).toBe(true)
-    expect(await pathExists(srcFile)).toBe(true)
+
+    try {
+      await access(srcFile)
+      expect(true).toBe(true)
+    } catch {
+      expect(true).toBe(false)
+    }
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -43,7 +49,13 @@ if (platform !== 'win32') {
       await save(srcFile, { cwd: tmpDir })
       await removeFiles(srcFile)
       await restore(srcFile, { cwd: tmpDir })
-      expect(await pathExists(srcFile)).toBe(true)
+
+      try {
+        await access(srcFile)
+        expect(true).toBe(true)
+      } catch {
+        expect(true).toBe(false)
+      }
     } finally {
       await removeFiles(srcDir)
     }
