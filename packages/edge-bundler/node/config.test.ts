@@ -293,14 +293,14 @@ test('Loads function paths from the in-source `config` function', async () => {
     path: '/user-func1',
     headers: {
       'x-must-be-there': {
-        style: 'exists',
+        matcher: 'exists',
       },
       'x-must-match': {
         pattern: '^(foo|bar)$',
-        style: 'regex',
+        matcher: 'regex',
       },
       'x-must-not-be-there': {
-        style: 'missing',
+        matcher: 'missing',
       },
     },
   })
