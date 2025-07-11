@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.2.2](https://github.com/netlify/build/compare/edge-bundler-v14.2.1...edge-bundler-v14.2.2) (2025-07-11)
+
+
+### Bug Fixes
+
+* stop adding start/end chars to header patterns ([#6547](https://github.com/netlify/build/issues/6547)) ([de51c14](https://github.com/netlify/build/commit/de51c14c8b4ff120c47ab873ebe034c81609bb0c))
+
 ## [14.2.1](https://github.com/netlify/build/compare/edge-bundler-v14.2.0...edge-bundler-v14.2.1) (2025-07-11)
 
 
