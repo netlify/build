@@ -53,6 +53,72 @@ REQUIRED must have required property 'format'
   6 |   ],]
 `;
 
+exports[`headers > should throw on additional property in headers 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  33 |     "x-custom-header": {
+  34 |       "style": "exists",
+> 35 |       "foo": "bar"
+     |       ^^^^^ 😲  foo is not expected to be here!
+  36 |     }
+  37 |   }
+  38 | }]
+`;
+
+exports[`headers > should throw on invalid pattern format 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+FORMAT must match format "regexPattern"
+
+  33 |     "x-custom-header": {
+  34 |       "style": "regex",
+> 35 |       "pattern": "/^Bearer .+/"
+     |                  ^^^^^^^^^^^^^^ 👈🏽  format must match format "regexPattern"
+  36 |     }
+  37 |   }
+  38 | }]
+`;
+
+exports[`headers > should throw on invalid style value 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ENUM must be equal to one of the allowed values
+(exists, missing, regex)
+
+  32 |   "headers": {
+  33 |     "x-custom-header": {
+> 34 |       "style": "invalid"
+     |                ^^^^^^^^^ 👈🏽  Unexpected value, should be equal to one of the allowed values
+  35 |     }
+  36 |   }
+  37 | }]
+`;
+
+exports[`headers > should throw on missing style property 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'style'
+
+  31 |   "bundler_version": "1.6.0",
+  32 |   "headers": {
+> 33 |     "x-custom-header": {
+     |                        ^ ☹️  style is missing here!
+  34 |       "pattern": "^Bearer .+"
+  35 |     }
+  36 |   }]
+`;
+
+exports[`headers > should throw when style is regex but pattern is missing 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'pattern'
+
+  31 |   "bundler_version": "1.6.0",
+  32 |   "headers": {
+> 33 |     "x-custom-header": {
+     |                        ^ ☹️  pattern is missing here!
+  34 |       "style": "regex"
+  35 |     }
+  36 |   }]
+`;
+
 exports[`import map URL > should throw on wrong type 1`] = `
 [ManifestValidationError: Validation of Edge Functions manifest failed
 TYPE must be string
@@ -157,6 +223,72 @@ REQUIRED must have required property 'pattern'
   10 |       "name": "name",
   11 |       "function": "hello",
   12 |       "generator": "@netlify/fake-plugin@1.0.0"]
+`;
+
+exports[`route headers > should throw on additional property in headers 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  15 |         "x-custom-header": {
+  16 |           "style": "exists",
+> 17 |           "foo": "bar"
+     |           ^^^^^ 😲  foo is not expected to be here!
+  18 |         }
+  19 |       }
+  20 |     }]
+`;
+
+exports[`route headers > should throw on invalid pattern format 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+FORMAT must match format "regexPattern"
+
+  15 |         "x-custom-header": {
+  16 |           "style": "regex",
+> 17 |           "pattern": "/^Bearer .+/"
+     |                      ^^^^^^^^^^^^^^ 👈🏽  format must match format "regexPattern"
+  18 |         }
+  19 |       }
+  20 |     }]
+`;
+
+exports[`route headers > should throw on invalid style value 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ENUM must be equal to one of the allowed values
+(exists, missing, regex)
+
+  14 |       "headers": {
+  15 |         "x-custom-header": {
+> 16 |           "style": "invalid"
+     |                    ^^^^^^^^^ 👈🏽  Unexpected value, should be equal to one of the allowed values
+  17 |         }
+  18 |       }
+  19 |     }]
+`;
+
+exports[`route headers > should throw on missing style property 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'style'
+
+  13 |       "generator": "@netlify/fake-plugin@1.0.0",
+  14 |       "headers": {
+> 15 |         "x-custom-header": {
+     |                            ^ ☹️  style is missing here!
+  16 |           "pattern": "^Bearer .+$"
+  17 |         }
+  18 |       }]
+`;
+
+exports[`route headers > should throw when style is regex but pattern is missing 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'pattern'
+
+  13 |       "generator": "@netlify/fake-plugin@1.0.0",
+  14 |       "headers": {
+> 15 |         "x-custom-header": {
+     |                            ^ ☹️  pattern is missing here!
+  16 |           "style": "regex"
+  17 |         }
+  18 |       }]
 `;
 
 exports[`should show multiple errors 1`] = `

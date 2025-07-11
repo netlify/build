@@ -18,6 +18,36 @@ const excludedPatternsSchema = {
   },
 }
 
+const headersSchema = {
+  type: 'object',
+  patternProperties: {
+    '.*': {
+      type: 'object',
+      required: ['style'],
+      properties: {
+        pattern: {
+          type: 'string',
+          format: 'regexPattern',
+        },
+        style: {
+          type: 'string',
+          enum: ['exists', 'missing', 'regex'],
+        },
+      },
+      additionalProperties: false,
+      if: {
+        properties: {
+          style: { const: 'regex' },
+        },
+      },
+      then: {
+        required: ['pattern'],
+      },
+    },
+  },
+  additionalProperties: false,
+}
+
 const routesSchema = {
   type: 'object',
   required: ['function', 'pattern'],
@@ -36,6 +66,7 @@ const routesSchema = {
       type: 'array',
       items: { type: 'string', enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] },
     },
+    headers: headersSchema,
   },
   additionalProperties: false,
 }
