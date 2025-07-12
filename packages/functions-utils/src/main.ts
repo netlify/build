@@ -1,23 +1,35 @@
-import { promises as fs } from 'fs'
 import { basename, dirname, join } from 'path'
+import { access, stat } from 'fs/promises'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
-import { pathExists } from 'path-exists'
+
+interface FailOptions {
+  fail?: (message: string, options?: { error?: unknown }) => void
+}
 
 // Add a Netlify Function file to the `functions` directory, so it is processed
 // by `@netlify/plugin-functions-core`
-export const add = async function (src?: string, dist?: string, { fail = defaultFail } = {}): Promise<void> {
+export const add = async function (
+  src?: string,
+  dist?: string,
+  { fail = defaultFail }: FailOptions = {},
+): Promise<void> {
   if (src === undefined) {
-    return fail('No function source directory was specified')
+    fail('No function source directory was specified')
+    return
   }
 
-  if (!(await pathExists(src))) {
-    return fail(`No function file or directory found at "${src}"`)
+  try {
+    await access(src)
+  } catch {
+    fail(`No function file or directory found at "${src}"`)
+    return
   }
 
   if (dist === undefined) {
-    return fail('No function directory was specified')
+    fail('No function directory was specified')
+    return
   }
 
   const srcBasename = basename(src)
@@ -26,7 +38,7 @@ export const add = async function (src?: string, dist?: string, { fail = default
 }
 
 const getSrcAndDest = async function (src: string, srcBasename: string, dist: string): Promise<[string, string]> {
-  const srcStat = await fs.stat(src)
+  const srcStat = await stat(src)
 
   if (srcStat.isDirectory()) {
     return [`${srcBasename}/**`, join(dist, srcBasename)]
@@ -35,9 +47,10 @@ const getSrcAndDest = async function (src: string, srcBasename: string, dist: st
   return [srcBasename, dist]
 }
 
-export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {
-  if (functionsSrc === undefined || functionsSrc.length === 0) {
-    return fail('No function directory was specified')
+export const list = async function (functionsSrc: string | string[], { fail = defaultFail }: FailOptions = {}) {
+  if (Array.isArray(functionsSrc) ? functionsSrc.length === 0 : !functionsSrc) {
+    fail('No function directory was specified')
+    return
   }
 
   try {
@@ -47,9 +60,10 @@ export const list = async function (functionsSrc, { fail = defaultFail } = {} as
   }
 }
 
-export const listAll = async function (functionsSrc, { fail = defaultFail } = {} as any) {
-  if (functionsSrc === undefined || functionsSrc.length === 0) {
-    return fail('No function directory was specified')
+export const listAll = async function (functionsSrc: string | string[], { fail = defaultFail }: FailOptions = {}) {
+  if (Array.isArray(functionsSrc) ? functionsSrc.length === 0 : !functionsSrc) {
+    fail('No function directory was specified')
+    return
   }
 
   try {
@@ -59,6 +73,6 @@ export const listAll = async function (functionsSrc, { fail = defaultFail } = {}
   }
 }
 
-const defaultFail = function (message) {
+const defaultFail = function (message: string): never {
   throw new Error(message)
 }
