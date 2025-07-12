@@ -2229,26 +2229,6 @@ export default [
     },
   },
   {
-    files: ['packages/functions-utils/src/main.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  {
-    files: ['packages/functions-utils/tests/main.test.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
     files: ['packages/git-utils/src/commits.ts'],
     rules: {
       '@typescript-eslint/restrict-template-expressions': 'off',
