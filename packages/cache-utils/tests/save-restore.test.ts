@@ -42,8 +42,12 @@ test('Should cache and restore several files', async () => {
     expect(await restore([srcFile, otherSrcFile], { cacheDir })).toBe(true)
 
     const results = await Promise.all([
-      access(srcFile).then(() => true).catch(() => false),
-      access(otherSrcFile).then(() => true).catch(() => false)
+      access(srcFile)
+        .then(() => true)
+        .catch(() => false),
+      access(otherSrcFile)
+        .then(() => true)
+        .catch(() => false),
     ])
     expect(results).toEqual([true, true])
   } finally {
