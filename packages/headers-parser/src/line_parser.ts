@@ -1,4 +1,4 @@
-import fs, { access } from 'fs/promises'
+import fs from 'fs/promises'
 
 import { splitResults } from './results.js'
 import type { MinimalHeader } from './types.js'
@@ -22,7 +22,7 @@ export const parseFileHeaders = async function (headersFile: string): Promise<Pa
 
 const parseHeaders = async function (headersFile: string): Promise<(Error | RawHeaderFileLine)[]> {
   try {
-    await access(headersFile)
+    await fs.access(headersFile)
   } catch {
     return []
   }

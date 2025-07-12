@@ -1,17 +1,16 @@
-import { promises as fs } from 'fs'
+import fs from 'fs/promises'
 
 import { parse as loadToml } from '@iarna/toml'
 
 import { splitResults } from './results.js'
 import type { MinimalHeader } from './types.js'
-import { access } from 'fs/promises'
 
 // Parse `headers` field in "netlify.toml" to an array of objects.
 // This field is already an array of objects, so it only validates and
 // normalizes it.
 export const parseConfigHeaders = async function (netlifyConfigPath: string) {
   try {
-    await access(netlifyConfigPath)
+    await fs.access(netlifyConfigPath)
   } catch {
     return splitResults([])
   }

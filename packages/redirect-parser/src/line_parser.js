@@ -1,4 +1,4 @@
-import { promises as fs, access } from 'fs/promises'
+import fs from 'fs/promises'
 
 import { splitResults } from './results.js'
 import { transtypeStatusCode, isValidStatusCode } from './status.js'
@@ -29,7 +29,7 @@ export const parseFileRedirects = async function (redirectFile) {
 
 const parseRedirects = async function (redirectFile) {
   try {
-    await access(redirectFile)
+    await fs.access(redirectFile)
   } catch {
     return []
   }

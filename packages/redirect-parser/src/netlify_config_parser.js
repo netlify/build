@@ -1,4 +1,4 @@
-import { promises as fs, access } from 'fs/promises'
+import fs from 'fs/promises'
 
 import { parse as loadToml } from '@iarna/toml'
 
@@ -9,7 +9,7 @@ import { splitResults } from './results.js'
 // normalizes it.
 export const parseConfigRedirects = async function (netlifyConfigPath) {
   try {
-    await access(netlifyConfigPath)
+    await fs.access(netlifyConfigPath)
   } catch {
     return splitResults([])
   }
