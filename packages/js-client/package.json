@@ -48,6 +48,7 @@
     "qs": "^6.9.6"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.19.111",
     "from2-string": "^1.1.0",
     "nock": "^13.0.0",
