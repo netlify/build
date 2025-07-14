@@ -46,7 +46,7 @@ describe('listFunctionsFiles', () => {
       join(FIXTURES_DIR, 'missing-functions-folder', 'functions2'),
     ])
 
-    expect(files).toBe([])
+    expect(files).toStrictEqual([])
   })
 
   test('listFunctionsFiles includes in-source config declarations', async () => {
