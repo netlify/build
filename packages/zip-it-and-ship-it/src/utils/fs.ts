@@ -54,12 +54,11 @@ export const safeUnlink = async (path: string) => {
 
 // Takes a list of absolute paths and returns an array containing all the
 // filenames within those directories, if at least one of the directories
-// exists. If not, an error is thrown.
+// exists.
 export const listFunctionsDirectories = async function (srcFolders: string[]) {
   const filenamesByDirectory = await Promise.allSettled(
     srcFolders.map((srcFolder) => listFunctionsDirectory(srcFolder)),
   )
-  const errorMessages: string[] = []
   const validDirectories = filenamesByDirectory
     .map((result) => {
       if (result.status === 'rejected') {
@@ -76,11 +75,6 @@ export const listFunctionsDirectories = async function (srcFolders: string[]) {
       return result.value
     })
     .filter(nonNullable)
-
-  if (validDirectories.length === 0) {
-    throw new Error(`Functions folders do not exist: ${srcFolders.join(', ')}
-${errorMessages.join('\n')}`)
-  }
 
   return validDirectories.flat()
 }
@@ -105,6 +99,5 @@ export const mkdirAndWriteFile: typeof fs.writeFile = async (path: PathLike | fs
     await fs.mkdir(directory, { recursive: true })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return fs.writeFile(path, ...params)
 }

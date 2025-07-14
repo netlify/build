@@ -40,21 +40,13 @@ describe('listFunctionsFiles', () => {
     },
   )
 
-  test('listFunctionsFiles throws if all function directories do not exist', async () => {
-    await expect(
-      async () =>
-        await listFunctionsFiles([
-          join(FIXTURES_DIR, 'missing-functions-folder', 'functions'),
-          join(FIXTURES_DIR, 'missing-functions-folder', 'functions2'),
-        ]),
-    ).rejects.toThrow(/Functions folders do not exist: /)
-  })
+  test('listFunctionsFiles returns an empty array if none of the function directories exist', async () => {
+    const files = await listFunctionsFiles([
+      join(FIXTURES_DIR, 'missing-functions-folder', 'functions'),
+      join(FIXTURES_DIR, 'missing-functions-folder', 'functions2'),
+    ])
 
-  test('listFunctionsFiles does not hide errors that have nothing todo with folder existents', async () => {
-    // @ts-expect-error test
-    await expect(() => listFunctionsFiles([true])).rejects.toThrow(
-      expect.not.stringContaining('Functions folders do not exist:'),
-    )
+    expect(files).toBe([])
   })
 
   test('listFunctionsFiles includes in-source config declarations', async () => {
