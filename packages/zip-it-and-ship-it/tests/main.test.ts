@@ -2941,6 +2941,9 @@ test('Supports both files and directories and ignores files that are not functio
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
   const files = await zipFunctions(
     {
+      generated: {
+        directories: [join(basePath, '.netlify/functions-internal'), join(basePath, '.netlify/v1/functions')],
+      },
       user: {
         directories: [join(basePath, 'netlify/functions')],
         functions: [
@@ -2957,7 +2960,7 @@ test('Supports both files and directories and ignores files that are not functio
     },
   )
 
-  expect(files.length).toBe(4)
+  expect(files.length).toBe(6)
 
   const unzippedFunctions = await unzipFiles(files)
   const functions = getFunctionResultsByName(unzippedFunctions)
@@ -2989,6 +2992,20 @@ test('Supports both files and directories and ignores files that are not functio
   expect(await readAsBuffer(func4Result.body)).toStrictEqual(
     JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
   )
+
+  const extension1 = await importFunctionFile(
+    `${tmpDir.path}/${functions.extension1.name}/${functions.extension1.entryFilename}`,
+  )
+  const extension1Result = await invokeLambda(extension1)
+  expect(extension1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(extension1Result.body)).toStrictEqual('Hello from extension')
+
+  const framework1 = await importFunctionFile(
+    `${tmpDir.path}/${functions.framework1.name}/${functions.framework1.entryFilename}`,
+  )
+  const framework1Result = await invokeLambda(framework1)
+  expect(framework1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(framework1Result.body)).toStrictEqual('Hello from framework')
 
   await tmpDir.cleanup()
 })
