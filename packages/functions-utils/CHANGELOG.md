@@ -1,5 +1,37 @@
 # Changelog
 
+## [6.1.1](https://github.com/netlify/build/compare/functions-utils-v6.1.0...functions-utils-v6.1.1) (2025-07-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 13.2.0 to 14.0.0
+
+## [6.1.0](https://github.com/netlify/build/compare/functions-utils-v6.0.16...functions-utils-v6.1.0) (2025-07-10)
+
+
+### Features
+
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 13.1.0 to 13.2.0
+
+## [6.0.16](https://github.com/netlify/build/compare/functions-utils-v6.0.15...functions-utils-v6.0.16) (2025-07-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 13.0.1 to 13.1.0
+
 ## [6.0.15](https://github.com/netlify/build/compare/functions-utils-v6.0.14...functions-utils-v6.0.15) (2025-07-08)
 
 

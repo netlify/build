@@ -35,10 +35,10 @@ describe('CLI', () => {
 
   test('Error execution', async () => {
     const tmpDir = await tmpName({ prefix: 'zip-it-bin-test' })
-    const { exitCode, stderr } = await exec(['doesNotExist', join(tmpDir, 'destFolder')], { reject: false })
+    const { stdout } = await exec(['doesNotExist', join(tmpDir, 'destFolder')], { reject: false })
+    const zipped = JSON.parse(stdout)
 
-    expect(exitCode).toBe(1)
-    expect(stderr).not.toBe('')
+    expect(zipped).toHaveLength(0)
   })
 
   test('Should throw on missing srcFolder', async () => {

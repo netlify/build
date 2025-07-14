@@ -105,6 +105,83 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.2.5](https://github.com/netlify/build/compare/build-v34.2.4...build-v34.2.5) (2025-07-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.1.0 to ^23.2.0
+    * @netlify/functions-utils bumped from ^6.1.0 to ^6.1.1
+    * @netlify/zip-it-and-ship-it bumped from 13.2.0 to 14.0.0
+
+## [34.2.4](https://github.com/netlify/build/compare/build-v34.2.3...build-v34.2.4) (2025-07-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.2.1 to 14.2.2
+
+## [34.2.3](https://github.com/netlify/build/compare/build-v34.2.2...build-v34.2.3) (2025-07-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.2.0 to 14.2.1
+
+## [34.2.2](https://github.com/netlify/build/compare/build-v34.2.1...build-v34.2.2) (2025-07-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.1.0 to 14.2.0
+
+## [34.2.1](https://github.com/netlify/build/compare/build-v34.2.0...build-v34.2.1) (2025-07-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.0.7 to 14.1.0
+
+## [34.2.0](https://github.com/netlify/build/compare/build-v34.1.0...build-v34.2.0) (2025-07-10)
+
+
+### Features
+
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.16 to ^6.1.0
+    * @netlify/zip-it-and-ship-it bumped from 13.1.0 to 13.2.0
+
+## [34.1.0](https://github.com/netlify/build/compare/build-v34.0.1...build-v34.1.0) (2025-07-10)
+
+
+### Features
+
+* accept mixed paths in `listFunctions` ([#6537](https://github.com/netlify/build/issues/6537)) ([2e264e3](https://github.com/netlify/build/commit/2e264e3caf37e96d8da4a589c8eb858a40baf43e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.0.15 to ^6.0.16
+    * @netlify/zip-it-and-ship-it bumped from 13.0.1 to 13.1.0
+
 ## [34.0.1](https://github.com/netlify/build/compare/build-v34.0.0...build-v34.0.1) (2025-07-08)
 
 
