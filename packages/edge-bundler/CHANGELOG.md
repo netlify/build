@@ -1,5 +1,33 @@
 # Changelog
 
+## [14.2.2](https://github.com/netlify/build/compare/edge-bundler-v14.2.1...edge-bundler-v14.2.2) (2025-07-11)
+
+
+### Bug Fixes
+
+* stop adding start/end chars to header patterns ([#6547](https://github.com/netlify/build/issues/6547)) ([de51c14](https://github.com/netlify/build/commit/de51c14c8b4ff120c47ab873ebe034c81609bb0c))
+
+## [14.2.1](https://github.com/netlify/build/compare/edge-bundler-v14.2.0...edge-bundler-v14.2.1) (2025-07-11)
+
+
+### Bug Fixes
+
+* rename edge functions manifest property ([#6544](https://github.com/netlify/build/issues/6544)) ([0a9271d](https://github.com/netlify/build/commit/0a9271d517476f3426cac8e79403bb0d87dda49d))
+
+## [14.2.0](https://github.com/netlify/build/compare/edge-bundler-v14.1.0...edge-bundler-v14.2.0) (2025-07-11)
+
+
+### Features
+
+* add `headers` to edge functions manifest validation ([#6542](https://github.com/netlify/build/issues/6542)) ([f0004f3](https://github.com/netlify/build/commit/f0004f329ba2e82e14462b29b9267383fecb058b))
+
+## [14.1.0](https://github.com/netlify/build/compare/edge-bundler-v14.0.7...edge-bundler-v14.1.0) (2025-07-11)
+
+
+### Features
+
+* match edge functions on headers ([#6501](https://github.com/netlify/build/issues/6501)) ([23d5dce](https://github.com/netlify/build/commit/23d5dce31d85b4618dc496c53577fd43fb64d317))
+
 ## [14.0.7](https://github.com/netlify/build/compare/edge-bundler-v14.0.6...edge-bundler-v14.0.7) (2025-07-08)
 
 
