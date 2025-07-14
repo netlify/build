@@ -708,10 +708,6 @@ describe('zip-it-and-ship-it', () => {
     })
   })
 
-  testMany('Throws when the source folder does not exist', [...allBundleConfigs, 'bundler_none'], async (options) => {
-    await expect(zipNode('does-not-exist', { opts: options })).rejects.toThrowError(/Functions folders do not exist/)
-  })
-
   testMany(
     'Works even if destination folder does not exist',
     [...allBundleConfigs, 'bundler_none'],
@@ -3073,6 +3069,62 @@ test('Supports functions inside the plugins modules path', async () => {
   )
   expect(functions['user-func1'].generator).toBeUndefined()
   expect(functions['user-func1'].priority).toBe(10)
+
+  await tmpDir.cleanup()
+})
+
+test('Supports individual functions even when none of the given function directories exist', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
+  const files = await zipFunctions(
+    {
+      generated: {
+        directories: [join(basePath, 'does-not-exist/functions')],
+        functions: [
+          join(basePath, 'cat.jpg'),
+          join(basePath, 'func2.mjs'),
+          join(basePath, 'func3'),
+          join(basePath, 'func4'),
+        ],
+      },
+      user: {
+        directories: [join(basePath, 'does-not-exist-either/functions')],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
+
+  expect(files.length).toBe(3)
+
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
+
+  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2Result = await invokeLambda(func2)
+  expect(func2Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func2Result.body)).toStrictEqual(
+    JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3Result = await invokeLambda(func3)
+  expect(func3Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func3Result.body)).toStrictEqual(
+    JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4Result = await invokeLambda(func4)
+  expect(func4Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func4Result.body)).toStrictEqual(
+    JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
+  )
 
   await tmpDir.cleanup()
 })
