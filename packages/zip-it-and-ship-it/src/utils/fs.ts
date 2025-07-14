@@ -99,5 +99,6 @@ export const mkdirAndWriteFile: typeof fs.writeFile = async (path: PathLike | fs
     await fs.mkdir(directory, { recursive: true })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return fs.writeFile(path, ...params)
 }
