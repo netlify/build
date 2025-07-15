@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^18.19.111",
+    "@types/node": "^24.0.11",
     "from2-string": "^1.1.0",
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
