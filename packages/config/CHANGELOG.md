@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [23.2.0](https://github.com/netlify/build/compare/config-v23.1.0...config-v23.2.0) (2025-07-14)
+
+
+### Features
+
+* add support for EF `header` property in `netlify.toml` ([#6558](https://github.com/netlify/build/issues/6558)) ([55857bb](https://github.com/netlify/build/commit/55857bbd7665555519ddb2b09340f1fbeb9453b4))
+
 ## [23.1.0](https://github.com/netlify/build/compare/config-v23.0.11...config-v23.1.0) (2025-07-07)
 
 

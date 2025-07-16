@@ -320,3 +320,13 @@ test('edge_functions.any.method: disallowed values', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_method_disallowed').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
+
+test('edge_functions.any.header: allowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_header_allowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.header: disallowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_header_disallowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
