@@ -16,6 +16,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -32,6 +33,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -48,6 +50,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -64,6 +67,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -80,6 +84,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -96,6 +101,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -112,6 +118,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -128,6 +135,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -144,6 +152,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -160,6 +169,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -176,6 +186,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -192,6 +203,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -213,6 +225,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -229,6 +242,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -245,6 +259,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -261,6 +276,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -277,6 +293,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -293,6 +310,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -309,6 +327,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -325,6 +344,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -341,6 +361,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -357,6 +378,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -373,6 +395,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -389,6 +412,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -410,6 +434,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -426,6 +451,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -442,6 +468,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -458,6 +485,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -479,6 +507,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -495,6 +524,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -511,6 +541,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -527,6 +558,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -548,6 +580,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -564,6 +597,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -580,6 +614,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -596,6 +631,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -612,6 +648,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -628,6 +665,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -644,6 +682,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -660,6 +699,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -676,6 +716,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -692,6 +733,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -708,6 +750,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/index.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
   {
@@ -724,6 +767,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "node_modules/test/package.json",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -745,6 +789,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function.js",
+    "srcPath": ".netlify/internal-functions/function.js",
     "timeout": undefined,
   },
   {
@@ -761,6 +806,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": ".netlify/internal-functions",
     "srcFile": ".netlify/internal-functions/function_internal.js",
+    "srcPath": ".netlify/internal-functions/function_internal.js",
     "timeout": undefined,
   },
   {
@@ -777,6 +823,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function.js",
+    "srcPath": "netlify/functions/function.js",
     "timeout": undefined,
   },
   {
@@ -793,6 +840,7 @@ exports[`listFunctionsFiles > Can list all function files from multiple source d
     "schedule": undefined,
     "srcDir": "netlify/functions",
     "srcFile": "netlify/functions/function_user.js",
+    "srcPath": "netlify/functions/function_user.js",
     "timeout": undefined,
   },
 ]
@@ -814,6 +862,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -830,6 +879,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -846,6 +896,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -862,6 +913,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -878,6 +930,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -894,6 +947,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/three.json",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -910,6 +964,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -926,6 +981,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]
@@ -947,6 +1003,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -963,6 +1020,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -979,6 +1037,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -995,6 +1054,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -1011,6 +1071,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -1027,6 +1088,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1043,6 +1105,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/three.json",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1059,6 +1122,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]
@@ -1080,6 +1144,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -1096,6 +1161,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -1112,6 +1178,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -1128,6 +1195,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -1144,6 +1212,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -1160,6 +1229,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1176,6 +1246,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]
@@ -1197,6 +1268,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -1213,6 +1285,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -1229,6 +1302,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -1245,6 +1319,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -1261,6 +1336,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -1277,6 +1353,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1293,6 +1370,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]
@@ -1314,6 +1392,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -1330,6 +1409,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -1346,6 +1426,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -1362,6 +1443,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/util.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -1378,6 +1460,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -1394,6 +1477,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -1410,6 +1494,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1426,6 +1511,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/three.json",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1442,6 +1528,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]
@@ -1463,6 +1550,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.zip",
+    "srcPath": "test.zip",
     "timeout": undefined,
   },
   {
@@ -1479,6 +1567,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test.js",
+    "srcPath": "test.js",
     "timeout": undefined,
   },
   {
@@ -1495,6 +1584,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "five",
     "srcFile": "five/index.ts",
+    "srcPath": "five",
     "timeout": undefined,
   },
   {
@@ -1511,6 +1601,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "four.js",
     "srcFile": "four.js/four.js.js",
+    "srcPath": "four.js",
     "timeout": undefined,
   },
   {
@@ -1527,6 +1618,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "one",
     "srcFile": "one/index.js",
+    "srcPath": "one",
     "timeout": undefined,
   },
   {
@@ -1543,6 +1635,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "two",
     "srcFile": "two/two.js",
+    "srcPath": "two",
     "timeout": undefined,
   },
   {
@@ -1559,6 +1652,7 @@ exports[`listFunctionsFiles > Can list all function files with listFunctionsFile
     "schedule": undefined,
     "srcDir": "",
     "srcFile": "test",
+    "srcPath": "test",
     "timeout": undefined,
   },
 ]

@@ -39,6 +39,7 @@ export interface ListedFunction {
   excludedRoutes?: Route[]
   routes?: ExtendedRoute[]
   srcDir?: string
+  srcPath: string
 }
 
 type ListedFunctionFile = ListedFunction & {
@@ -154,6 +155,7 @@ const getListedFunction = function ({
   name,
   runtime,
   srcDir,
+  srcPath,
 }: AugmentedFunctionSource): ListedFunction {
   return {
     displayName: config.name,
@@ -169,6 +171,7 @@ const getListedFunction = function ({
     schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,
     inputModuleFormat: staticAnalysisResult?.inputModuleFormat,
     srcDir,
+    srcPath,
   }
 }
 
