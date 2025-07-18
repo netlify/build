@@ -105,6 +105,28 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.3.0](https://github.com/netlify/build/compare/build-v34.2.5...build-v34.3.0) (2025-07-18)
+
+
+### Features
+
+* add `srcPath` property to output of `listFunctions` ([#6561](https://github.com/netlify/build/issues/6561)) ([b3c2d11](https://github.com/netlify/build/commit/b3c2d11e8113dc446ebc9175feb9b76bb8a07f8c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.5 ([#6560](https://github.com/netlify/build/issues/6560)) ([0112802](https://github.com/netlify/build/commit/0112802f98ab8d469acdfedef1d3c7f86a5b7f9a))
+* **deps:** update dependency @netlify/blobs to ^10.0.6 ([#6562](https://github.com/netlify/build/issues/6562)) ([8f577f7](https://github.com/netlify/build/commit/8f577f77f1e6feb395aeb26a9f8b5056439a1dd9))
+* omit duplicate functions from list of bundled files ([#6535](https://github.com/netlify/build/issues/6535)) ([ce34215](https://github.com/netlify/build/commit/ce34215b6d41ec5e924b8213ab65f6e293f6e3de))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.1.1 to ^6.2.0
+    * @netlify/zip-it-and-ship-it bumped from 14.0.0 to 14.1.0
+
 ## [34.2.5](https://github.com/netlify/build/compare/build-v34.2.4...build-v34.2.5) (2025-07-14)
 
 
