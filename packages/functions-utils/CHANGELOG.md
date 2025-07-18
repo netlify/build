@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.2.0](https://github.com/netlify/build/compare/functions-utils-v6.1.1...functions-utils-v6.2.0) (2025-07-18)
+
+
+### Features
+
+* add `srcPath` property to output of `listFunctions` ([#6561](https://github.com/netlify/build/issues/6561)) ([b3c2d11](https://github.com/netlify/build/commit/b3c2d11e8113dc446ebc9175feb9b76bb8a07f8c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.0.0 to 14.1.0
+
 ## [6.1.1](https://github.com/netlify/build/compare/functions-utils-v6.1.0...functions-utils-v6.1.1) (2025-07-14)
 
 
