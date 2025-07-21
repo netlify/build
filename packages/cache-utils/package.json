@@ -60,7 +60,7 @@
     "readdirp": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.111",
+    "@types/node": "^24.0.11",
     "tmp-promise": "^3.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"

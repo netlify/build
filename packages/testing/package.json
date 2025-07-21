@@ -19,7 +19,7 @@
     "@netlify/build": "*",
     "@netlify/config": "*",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^18.19.111",
+    "@types/node": "^24.0.11",
     "ava": "^5.0.0",
     "c8": "^10.0.0",
     "cpy": "^11.0.0",
