@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import cpy from 'cpy'
-import * as tar from 'tar'
+import { x as tarExtract } from 'tar'
 import tmp from 'tmp-promise'
 
 const exec = promisify(childProcess.exec)
