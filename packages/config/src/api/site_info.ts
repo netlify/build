@@ -12,7 +12,7 @@ import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { ExtensionResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
 
-type GetSiteInfoOpts = {
+type GetSiteInfoOptions = {
   siteId: string
   accountId?: string
   mode: ModeOption
@@ -25,6 +25,16 @@ type GetSiteInfoOpts = {
   token: string
   extensionApiBaseUrl: string
 }
+
+export type SiteInfo = {
+  accounts: MinimalAccount[]
+  extensions: ExtensionResponse[]
+  siteInfo: Awaited<ReturnType<NetlifyAPI['getSite']>> & {
+    feature_flags?: Record<string, string | number | boolean>
+    use_envelope?: boolean
+  }
+}
+
 /**
  * Retrieve Netlify Site information, if available.
  * Used to retrieve local build environment variables and UI build settings.
@@ -46,30 +56,34 @@ export const getSiteInfo = async function ({
   token,
   featureFlags = {},
   extensionApiBaseUrl,
-}: GetSiteInfoOpts) {
+}: GetSiteInfoOptions): Promise<SiteInfo> {
   const { env: testEnv = false } = testOpts
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
-    const siteInfo: { id?: string; account_id?: string } = {}
+    const siteInfo: SiteInfo['siteInfo'] = {}
 
-    if (siteId !== undefined) siteInfo.id = siteId
-    if (accountId !== undefined) siteInfo.account_id = accountId
+    if (siteId !== undefined) {
+      siteInfo.id = siteId
+    }
+    if (accountId !== undefined) {
+      siteInfo.account_id = accountId
+    }
 
-    const extensions =
-      mode === 'buildbot' && !offline
-        ? await getExtensions({
-            siteId,
-            testOpts,
-            offline,
-            accountId,
-            token,
-            featureFlags,
-            extensionApiBaseUrl,
-            mode,
-          })
-        : []
+    let extensions: SiteInfo['extensions'] = []
+    if (mode === 'buildbot' && !offline) {
+      extensions = await getExtensions({
+        siteId,
+        testOpts,
+        offline,
+        accountId,
+        token,
+        featureFlags,
+        extensionApiBaseUrl,
+        mode,
+      })
+    }
 
-    return { siteInfo, accounts: [], extensions }
+    return { accounts: [], extensions, siteInfo }
   }
 
   const [siteInfo, accounts, extensions] = await Promise.all([
@@ -79,25 +93,34 @@ export const getSiteInfo = async function ({
   ])
 
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug!, siteId, context })
 
-    siteInfo.build_settings.env = envelope
+    siteInfo.build_settings!.env = envelope
   }
 
   return { siteInfo, accounts, extensions }
 }
 
-const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
-  if (siteId === undefined) {
-    return {}
+const getSite = async function (
+  api: NetlifyAPI,
+  siteId: string,
+  siteFeatureFlagPrefix: string,
+): Promise<SiteInfo['siteInfo']> {
+  if (siteId !== undefined) {
+    try {
+      const site = await api.getSite({
+        // @ts-expect-error: Internal parameter that instructs the API to include all the site's
+        // feature flags in the response.
+        feature_flags: siteFeatureFlagPrefix,
+        siteId,
+      })
+      return { ...site, id: siteId }
+    } catch (err) {
+      throwUserError(`Failed retrieving site data for site ${siteId}: ${err.message}. ${ERROR_CALL_TO_ACTION}`)
+    }
   }
 
-  try {
-    const site = await (api as any).getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
-    return { ...site, id: siteId }
-  } catch (error) {
-    throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
-  }
+  return {}
 }
 
 export type MinimalAccount = {
@@ -180,21 +203,15 @@ export const getExtensions = async function ({
     : `${baseUrl}site/${siteId}/integrations/safe`
 
   try {
-    const requestOptions = {} as RequestInit
-
-    // This is used to identify where the request is coming from
-    requestOptions.headers = {
-      'netlify-config-mode': mode,
-    }
-
+    const headers = new Headers({
+      'Netlify-Config-Mode': mode,
+      'User-Agent': `node (@netlify/build; mode:${mode})`,
+    })
     if (sendBuildBotTokenToJigsaw && token) {
-      requestOptions.headers = {
-        ...requestOptions.headers,
-        'netlify-sdk-build-bot-token': token,
-      }
+      headers.set('Netlify-SDK-Build-Bot-Token', token)
     }
+    const response = await fetch(url, { headers })
 
-    const response = await fetch(url, requestOptions)
     if (!response.ok) {
       throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
     }
@@ -205,7 +222,9 @@ export const getExtensions = async function ({
 
     const extensions = await JSON.parse(bodyText)
     return Array.isArray(extensions) ? extensions : []
-  } catch (error) {
-    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  } catch (err: unknown) {
+    return throwUserError(
+      `Failed retrieving extensions for site ${siteId}: ${err instanceof Error ? err.message : 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,
+    )
   }
 }
