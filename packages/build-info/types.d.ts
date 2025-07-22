@@ -1,4 +1,4 @@
-import { TestContext } from 'vitest'
+import { type TestContext } from 'vitest'
 
 import type { FileSystem } from './src/file-system.js'
 

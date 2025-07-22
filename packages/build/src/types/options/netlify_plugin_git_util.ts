@@ -19,7 +19,7 @@ export interface NetlifyPluginGitUtil {
   /**
    * Array of commits with details.
    */
-  commits: ReadonlyArray<{
+  commits: readonly {
     sha: string
     parents: string
     author: {
@@ -33,7 +33,7 @@ export interface NetlifyPluginGitUtil {
       date: string
     }
     message: string
-  }>
+  }[]
   /**
    * How many lines of code have changed
    */

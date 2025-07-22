@@ -23,8 +23,6 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: nrwl/nx-set-shas@v3
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -36,7 +34,7 @@ jobs:
         run: npx playwright install --with-deps
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: test
-        run: npx nx affected --target=e2e
+        run: npx nx run-many --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/upload-artifact@v4
         if: always()
@@ -49,23 +47,17 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        deno-version: ['v2.1.4']
+        deno-version: ['v1.39.0', 'v2.2.4']
         include:
           - os: ubuntu-24.04
             # Earliest supported version
-            node-version: '14.16.0'
-            deno-version: 'v2.1.4'
+            node-version: '18.14.0'
+            deno-version: 'v2.2.4'
       fail-fast: false
     steps:
-      # Increasing the maximum number of open files. See:
-      # https://github.com/actions/virtual-environments/issues/268
-      - name: Increase open file limit
-        run: sudo ulimit -Sn 65536
-        if: "${{ matrix.os == 'macos-14' }}"
-      - run: git config --global core.symlinks true
       # Sets an output parameter if this is a release PR
       - name: Check for release
         id: release-check
@@ -78,17 +70,12 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: nrwl/nx-set-shas@v3
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -106,23 +93,18 @@ jobs:
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Build
-        run: npx nx affected --target=build
+        run: npx nx run-many --target=build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v3
+        run: npx nx run-many --target=test:ci --exclude=@netlify/build --parallel=3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          retry_on: error
-          command: npx nx affected --target=test:ci --exclude=@netlify/build --parallel=3
 
   test-build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         install-command: ['npm ci']
         machine: ['0', '1', '2', '3', '4']
@@ -130,23 +112,23 @@ jobs:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '0'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '1'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '2'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '3'
           - os: ubuntu-24.04
-            node-version: '14.16.0'
+            node-version: '18.14.0'
             install-command: npm ci
             machine: '4'
       fail-fast: false
@@ -164,13 +146,10 @@ jobs:
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: setup pnpm/yarn
-        run: corepack enable
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.1.4
+          deno-version: v2.2.4
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -178,9 +157,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '14.16.0' && !steps.release-check.outputs.IS_RELEASE }}
+      - name: corepack update
+        # corepack version distributed with Node.js has a problem with new package manager releases,
+        # so forcing fixed version of corepack here
+        run: npm i -g corepack --force
+      - name: setup pnpm/yarn
+        run: corepack enable
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -193,17 +176,12 @@ jobs:
         run: npm run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
-        uses: nick-fields/retry@v3
+        run: npx lerna run test:ci --scope @netlify/build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         env:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
-          CI_NODE_TOTAL: 4
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          retry_on: error
-          command: npx lerna run test:ci --scope @netlify/build
+          CI_NODE_TOTAL: 5
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -216,7 +194,7 @@ jobs:
           echo "node=node_${node/.*.*/}" >> $GITHUB_OUTPUT
           echo "node=node_${node/.*.*/}" >> $env:GITHUB_OUTPUT
         shell: bash
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           files:

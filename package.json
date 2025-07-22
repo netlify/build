@@ -6,9 +6,8 @@
   "type": "module",
   "author": "Netlify Inc.",
   "scripts": {
-    "prepare": "husky install",
-    "lint": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 . --fix",
-    "lint:ci": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 .",
+    "lint": "eslint --cache --fix",
+    "lint:ci": "eslint --cache",
     "build": "lerna run build",
     "test": "lerna run test",
     "test:ci": "lerna run test:ci",
@@ -16,7 +15,6 @@
     "format:ci": "prettier --check ."
   },
   "workspaces": [
-    "tools",
     "packages/*"
   ],
   "keywords": [
@@ -48,24 +46,23 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "ci-info": "^3.3.0",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "husky": "^8.0.0",
-    "lerna": "^5.5.2",
-    "lint-staged": "^13.0.3",
-    "nx": "^14.7.13",
-    "prettier": "^2.8.4"
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@eslint/compat": "^1.2.9",
+    "@eslint/js": "^9.28.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@vitest/eslint-plugin": "^1.2.1",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-ava": "^15.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.19.0",
+    "execa": "^8.0.1",
+    "lerna": "^8.2.2",
+    "prettier": "^3.0.0",
+    "typescript-eslint": "^8.34.0"
   },
   "engines": {
-    "node": "^14.16.0 || >=16.0.0"
-  },
-  "lint-staged": {
-    "!(packages/*/tests/**/fixtures/**/*)*.+(j|t)s": "eslint --ignore-path .gitignore --cache --fix",
-    "*": "prettier --write --ignore-unknown"
+    "node": ">=18.14.0"
   }
 }

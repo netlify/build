@@ -33,7 +33,7 @@ export const updateConfig = async function (
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
+  const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs })
   const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
   const simplifiedConfig = simplifyConfig(finalConfig)
 

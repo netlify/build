@@ -60,11 +60,13 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 
     if (hasMultipleGlobs) {
       const resolved = await glob(pattern, {
-        noglobstar: true,
+        globstar: false,
         cwd: baseDir,
       })
 
-      result.push(...resolved)
+      // esbuild expects relative paths to always have a leading `./`
+      const esbuildPatterns = resolved.map((pattern) => `./${pattern}`)
+      result.push(...esbuildPatterns)
     } else {
       result.push(pattern)
     }
@@ -174,8 +176,7 @@ export const bundleJsFile = async function ({
             `
 var __glob = (map) => (path) => {
   var fn = map[path];
-  if (fn)
-    return fn();
+  if (fn) return fn();
   throw new Error("Module not found in bundle: " + path);
 };
       `.trim(),

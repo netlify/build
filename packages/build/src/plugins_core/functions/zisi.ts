@@ -1,6 +1,6 @@
 import { join, resolve } from 'path'
 
-import { FunctionConfig, ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
+import { type FunctionConfig, type ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
 import mapObject from 'map-obj'
 import semver from 'semver'
 
@@ -73,7 +73,6 @@ export const getZisiParameters = ({
     featureFlags: zisiFeatureFlags,
     repositoryRoot,
     configFileDirectories,
-    internalSrcFolder: internalFunctionsSrc,
     systemLog,
   }
 }

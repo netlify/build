@@ -51,6 +51,12 @@ const getEntryFileContents = (
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
   if (runtimeAPIVersion === 2) {
+    if (featureFlags.zisi_dynamic_import_function_handler_entry_point) {
+      return [
+        `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
+        `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
+      ].join(';')
+    }
     return [
       `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
       `import * as func from '${importPath}'`,
@@ -60,11 +66,6 @@ const getEntryFileContents = (
 
       `export const handler = bootstrap.getLambdaHandler(funcModule)`,
     ].join(';')
-  }
-
-  if (featureFlags.zisi_unique_entry_file) {
-    // we use dynamic import because we do not know if the user code is cjs or esm
-    return [`const { handler } = await import('${importPath}')`, 'export { handler }'].join(';')
   }
 
   if (moduleFormat === MODULE_FORMAT.COMMONJS) {
@@ -86,18 +87,16 @@ export const isNamedLikeEntryFile = (
   file: string,
   {
     basePath,
-    featureFlags,
     filename,
     runtimeAPIVersion,
   }: {
     basePath: string
-    featureFlags: FeatureFlags
     filename: string
     runtimeAPIVersion: number
   },
 ) =>
   POSSIBLE_LAMBDA_ENTRY_EXTENSIONS.some((extension) => {
-    const entryFilename = getEntryFileName({ extension, featureFlags, filename, runtimeAPIVersion })
+    const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
     const entryFilePath = resolve(basePath, entryFilename)
 
     return entryFilePath === file
@@ -109,14 +108,12 @@ export const conflictsWithEntryFile = (
   {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
   }: {
     basePath: string
     extension: string
-    featureFlags: FeatureFlags
     filename: string
     mainFile: string
     runtimeAPIVersion: number
@@ -137,13 +134,13 @@ export const conflictsWithEntryFile = (
 
     // If we're generating a unique entry file, we know we don't have a conflict
     // at this point.
-    if (featureFlags.zisi_unique_entry_file || runtimeAPIVersion === 2) {
+    if (runtimeAPIVersion === 2) {
       return
     }
 
     if (
       !hasConflict &&
-      isNamedLikeEntryFile(srcFile, { basePath, featureFlags, filename, runtimeAPIVersion }) &&
+      isNamedLikeEntryFile(srcFile, { basePath, filename, runtimeAPIVersion }) &&
       srcFile !== mainFile
     ) {
       hasConflict = true
@@ -158,16 +155,14 @@ export const conflictsWithEntryFile = (
 // this it considers `<func-name>.(c|m)?js` as possible entry-points
 const getEntryFileName = ({
   extension,
-  featureFlags,
   filename,
   runtimeAPIVersion,
 }: {
   extension: ModuleFileExtension
-  featureFlags: FeatureFlags
   filename: string
   runtimeAPIVersion: number
 }) => {
-  if (featureFlags.zisi_unique_entry_file || runtimeAPIVersion === 2) {
+  if (runtimeAPIVersion === 2) {
     return `${ENTRY_FILE_NAME}.mjs`
   }
 
@@ -227,7 +222,7 @@ export const getEntryFile = ({
 }): EntryFile => {
   const mainPath = normalizeFilePath({ commonPrefix, path: mainFile, userNamespace })
   const extension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
-  const entryFilename = getEntryFileName({ extension, featureFlags, filename, runtimeAPIVersion })
+  const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
   const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion)
 
   return {

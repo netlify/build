@@ -64,6 +64,125 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.7](https://github.com/netlify/build/compare/build-info-v10.0.6...build-info-v10.0.7) (2025-06-27)
+
+
+### Bug Fixes
+
+* handle changed TanStack Start commands ([#6495](https://github.com/netlify/build/issues/6495)) ([7438003](https://github.com/netlify/build/commit/743800365ee4ad282a2df19d17d414effa1a1269))
+
+## [10.0.6](https://github.com/netlify/build/compare/build-info-v10.0.5...build-info-v10.0.6) (2025-06-09)
+
+
+### Bug Fixes
+
+* ensure order of framework detection returns more consistently ([#6429](https://github.com/netlify/build/issues/6429)) ([4fb908e](https://github.com/netlify/build/commit/4fb908e4d8a890830ece369a119a0efad4026115))
+
+## [10.0.5](https://github.com/netlify/build/compare/build-info-v10.0.4...build-info-v10.0.5) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+## [10.0.4](https://github.com/netlify/build/compare/build-info-v10.0.3...build-info-v10.0.4) (2025-05-23)
+
+
+### Bug Fixes
+
+* remove node-fetch from build-info package ([#6378](https://github.com/netlify/build/issues/6378)) ([ed08b0d](https://github.com/netlify/build/commit/ed08b0dc1a4b8e916b1c72b5eddda21bb79bbcfe))
+
+## [10.0.3](https://github.com/netlify/build/compare/build-info-v10.0.2...build-info-v10.0.3) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+
+## [10.0.2](https://github.com/netlify/build/compare/build-info-v10.0.1...build-info-v10.0.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency read-pkg to v9 ([#6346](https://github.com/netlify/build/issues/6346)) ([fe2a1b4](https://github.com/netlify/build/commit/fe2a1b4062b3db2ee16f47815d0bec1379ba7b11))
+
+## [10.0.1](https://github.com/netlify/build/compare/build-info-v10.0.0...build-info-v10.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v9 ([#6338](https://github.com/netlify/build/issues/6338)) ([b6622a8](https://github.com/netlify/build/commit/b6622a8404dbf391a8024a9c82abb4f16af41f38))
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+
+## [10.0.0](https://github.com/netlify/build/compare/build-info-v9.0.4...build-info-v10.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+## [9.0.4](https://github.com/netlify/build/compare/build-info-v9.0.3...build-info-v9.0.4) (2025-04-25)
+
+
+### Bug Fixes
+
+* detect new TanStack Start package names ([#6212](https://github.com/netlify/build/issues/6212)) ([937a981](https://github.com/netlify/build/commit/937a98193bd9070850c220d8aa75f2dd3fe08f9f))
+
+## [9.0.3](https://github.com/netlify/build/compare/build-info-v9.0.2...build-info-v9.0.3) (2025-04-09)
+
+
+### Bug Fixes
+
+* **build-info:** update expo build config ([#6191](https://github.com/netlify/build/issues/6191)) ([6e57910](https://github.com/netlify/build/commit/6e57910d89c1d4140395fae9c06b6fd7f88cfff9))
+
+## [9.0.2](https://github.com/netlify/build/compare/build-info-v9.0.1...build-info-v9.0.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* **types:** add missing `schedule` to functions config type ([#6151](https://github.com/netlify/build/issues/6151)) ([4866964](https://github.com/netlify/build/commit/486696497e29b9e0270ea234b97e94fa0e73fb64))
+
+## [9.0.1](https://github.com/netlify/build/compare/build-info-v9.0.0...build-info-v9.0.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
+## [9.0.0](https://github.com/netlify/build/compare/build-info-v8.1.0...build-info-v9.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
+## [8.1.0](https://github.com/netlify/build/compare/build-info-v8.0.0...build-info-v8.1.0) (2025-02-24)
+
+
+### Features
+
+* change default node version to v22 ([#5958](https://github.com/netlify/build/issues/5958)) ([59cda04](https://github.com/netlify/build/commit/59cda04d87af434bafa71c0509f958365b4fab34))
+
+## [8.0.0](https://github.com/netlify/build/compare/build-info-v7.17.0...build-info-v8.0.0) (2025-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* packageManager.lockFile field containing single name of lock file is removed from output and packageManager.lockFiles field with array of possible lock files is introduced
+
+### Bug Fixes
+
+* use bun as package manager when bun.lock is found ([44bb81c](https://github.com/netlify/build/commit/44bb81c51f24ba8e39e2bf6f6b4cf9ac837afd3c))
+
 ## [7.17.0](https://github.com/netlify/build/compare/build-info-v7.16.0...build-info-v7.17.0) (2024-12-16)
 
 

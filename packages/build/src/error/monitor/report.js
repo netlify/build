@@ -30,7 +30,12 @@ export const reportBuildError = async function ({ error, errorMonitor, childEnv,
   try {
     await reportError({ errorMonitor, error, logs, testOpts, eventProps })
   } finally {
-    error.name = errorName
+    try {
+      // Setting error values might fail if they are getters or are non-writable.
+      error.name = errorName
+    } catch {
+      // continue
+    }
   }
 }
 

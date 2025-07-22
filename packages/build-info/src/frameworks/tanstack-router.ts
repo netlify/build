@@ -4,7 +4,7 @@ export class TanStackRouter extends BaseFramework implements Framework {
   readonly id = 'tanstack-router'
   name = 'TanStack Router'
   npmDependencies = ['@tanstack/react-router']
-  excludedNpmDependencies = ['@tanstack/start']
+  excludedNpmDependencies = ['@tanstack/start', '@tanstack/react-start', '@tanstack/solid-start']
   category = Category.SSG
 
   dev = {

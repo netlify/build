@@ -1,4 +1,4 @@
-import { context, Context, propagation, trace, SpanStatusCode, Attributes } from '@opentelemetry/api'
+import { context, type Context, propagation, trace, SpanStatusCode, type Attributes } from '@opentelemetry/api'
 
 /**
  * Sets attributes to be propagated across child spans under the current active context. Contexts are immutable so the

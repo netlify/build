@@ -34,11 +34,6 @@ export class Nuxt extends BaseFramework implements Framework {
         this.build.command = `nuxt build`
         this.build.directory = `dist`
         this.dev.command = `nuxt dev`
-
-        this.env = {
-          AWS_LAMBDA_JS_RUNTIME: 'nodejs18.x',
-          NODE_VERSION: '18',
-        }
       }
       return this as DetectedFramework
     }

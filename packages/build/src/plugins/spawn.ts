@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import { trace } from '@opentelemetry/api'
-import { ExecaChildProcess, execaNode } from 'execa'
+import { type ExecaChildProcess, execaNode } from 'execa'
 import { gte, satisfies } from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'

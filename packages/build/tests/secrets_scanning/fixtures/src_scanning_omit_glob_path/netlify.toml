@@ -3,6 +3,6 @@
   publish = "./dist"
 
 [build.environment]
-  ENV_VAR_1 = "val1-val1-val1"
+  ENV_VAR_1 = "sk_12345678901234567890"
   ENV_VAR_2 = "val2-val2-val2"
   SECRETS_SCAN_OMIT_PATHS = "netlify.toml,**/safefile.js"

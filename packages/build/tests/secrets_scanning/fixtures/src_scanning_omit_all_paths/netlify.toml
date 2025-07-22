@@ -3,7 +3,7 @@
   publish = "./dist"
 
 [build.environment]
-  ENV_VAR_1 = "val1-val1-val1"
+  ENV_VAR_1 = "sk_12345678901234567890"
   ENV_VAR_2 = "val2-val2-val2"
   # the / path here will skip all files
   SECRETS_SCAN_OMIT_PATHS = "/some-path-that-doesnt-exist,src/,dist,netlify.toml"

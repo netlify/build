@@ -1,5 +1,4 @@
 import { pluginsUrl, pluginsList as oldPluginsList } from '@netlify/plugins-list'
-import got from 'got'
 import isPlainObj from 'is-plain-obj'
 
 import { BufferedLogs } from '../log/logger.js'
@@ -91,7 +90,13 @@ const fetchPluginsList = async function ({
   pluginsListUrl: string
 }): Promise<PluginListEntry[]> {
   try {
-    const { body } = await got(pluginsListUrl, { responseType: 'json', timeout: { request: PLUGINS_LIST_TIMEOUT } })
+    const response = await fetch(pluginsListUrl, { signal: AbortSignal.timeout(PLUGINS_LIST_TIMEOUT) })
+
+    if (!response.ok) {
+      throw new Error(`Request failed with a response code: ${response.status.toString()}`)
+    }
+
+    const body = await response.json()
 
     if (!isValidPluginsList(body)) {
       throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
@@ -120,15 +125,8 @@ const normalizePluginsList = function (pluginsList: PluginListEntry[]) {
   ) as PluginList
 }
 
-/**
- * `version` in `plugins.json` is the latest version.
- * A `compatibility` array of objects can be added to specify conditions to
- * apply different versions.
- * `netlify/plugins` ensures that `compatibility`:
- *  - Has the proper shape.
- *  - Is sorted from the highest to lowest version.
- *  - Does not include the latest `version`.
- */
+// When `compatability` array is present it takes precedence, otherwise top-level `version` field is used as latest version
+// Plugin data comes from @netlify/plugins
 const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }: PluginListEntry) {
   const versions = compatibility.length === 0 ? [{ version }] : compatibility
   const versionsA = versions.map(normalizeCompatVersion)

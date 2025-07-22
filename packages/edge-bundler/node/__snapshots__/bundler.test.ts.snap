@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Adds a custom error property to user errors during bundling 1`] = `
+"error: Uncaught (in promise) Error: The module's source code could not be parsed: Unexpected eof at file:///root/functions/func1.ts:1:27
+
+  export default async () => 
+                            ~
+      const ret = new Error(getStringFromWasm0(arg0, arg1));
+                  ^
+    at <anonymous> (file://build/packages/edge-bundler/deno/vendor/deno.land/x/eszip@v0.55.2/eszip_wasm.generated.js:443:19)"
+`;

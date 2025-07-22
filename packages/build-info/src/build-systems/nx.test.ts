@@ -163,7 +163,7 @@ describe('getDist', () => {
     expect(await nx?.getDist(join('packages/vue-app'))).toBe(join('dist/packages/vue-app-from-option'))
   })
 
-  test('retrieve the package path as fallback ', async ({ fs }) => {
+  test('retrieve the package path as fallback', async ({ fs }) => {
     const cwd = mockFileSystem({
       'nx.json': '{"workspaceLayout":{"appsDir":"packages"}}',
       'packages/vue-app/project.json': JSON.stringify({

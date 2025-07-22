@@ -1,4 +1,4 @@
-import type { NetlifyAPI } from 'netlify'
+import type { NetlifyAPI } from '@netlify/api'
 import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
@@ -7,7 +7,7 @@ import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
-// environment variables and addons.
+// environment variables.
 // The buildbot already has the right environment variables. This is mostly
 // meant so that local builds can mimic production builds
 // TODO: add `netlify.toml` `build.environment`, after normalization
@@ -18,7 +18,6 @@ export const getEnv = async function ({
   config,
   siteInfo,
   accounts,
-  addons,
   buildDir,
   branch,
   deployId,
@@ -32,12 +31,11 @@ export const getEnv = async function ({
 
   const internalEnv = getInternalEnv(cachedEnv)
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
-  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({
+  const [accountEnv, uiEnv, configFileEnv] = await getUserEnv({
     api,
     config,
     siteInfo,
     accounts,
-    addons,
     context,
   })
 
@@ -45,7 +43,6 @@ export const getEnv = async function ({
   const sources = [
     { key: 'configFile', values: configFileEnv },
     { key: 'ui', values: uiEnv },
-    { key: 'addons', values: addonsEnv },
     { key: 'account', values: accountEnv },
     { key: 'general', values: generalEnv },
     { key: 'internal', values: internalEnv },
@@ -94,7 +91,7 @@ const convertToString = (value) => {
 // environment.
 const getGeneralEnv = async function ({
   siteInfo,
-  siteInfo: { id, name },
+  siteInfo: { id, name, account_id: accountId },
   buildDir,
   branch,
   deployId,
@@ -108,6 +105,7 @@ const getGeneralEnv = async function ({
     SITE_NAME: name,
     DEPLOY_ID: deployId,
     BUILD_ID: buildId,
+    ACCOUNT_ID: accountId,
     ...deployUrls,
     CONTEXT: context,
     NETLIFY_LOCAL: 'true',
@@ -130,12 +128,15 @@ const getGeneralEnv = async function ({
 const getInternalEnv = function (
   cachedEnv: Record<string, { sources: string[]; value: string }>,
 ): Record<string, string> {
-  return Object.entries(cachedEnv).reduce((prev, [key, { sources, value }]) => {
-    if (sources.includes('internal')) {
-      prev[key] = value
-    }
-    return prev
-  }, {} as Record<string, string>)
+  return Object.entries(cachedEnv).reduce(
+    (prev, [key, { sources, value }]) => {
+      if (sources.includes('internal')) {
+        prev[key] = value
+      }
+      return prev
+    },
+    {} as Record<string, string>,
+  )
 }
 
 const getDeployUrls = function ({
@@ -160,12 +161,11 @@ const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
 const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
-const getUserEnv = async function ({ api, config, siteInfo, accounts, addons, context }) {
+const getUserEnv = async function ({ api, config, siteInfo, accounts, context }) {
   const accountEnv = await getAccountEnv({ api, siteInfo, accounts, context })
-  const addonsEnv = getAddonsEnv(addons)
   const uiEnv = getUiEnv({ siteInfo })
   const configFileEnv = getConfigFileEnv({ config })
-  return [accountEnv, addonsEnv, uiEnv, configFileEnv].map(cleanUserEnv)
+  return [accountEnv, uiEnv, configFileEnv].map(cleanUserEnv)
 }
 
 // Account-wide environment variables
@@ -181,20 +181,10 @@ const getAccountEnv = async function ({
   context?: string
 }) {
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId: siteInfo.site_id, context })
-    return envelope
+    return await getEnvelope({ api, accountId: siteInfo.account_slug, context })
   }
   const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
   return siteEnv
-}
-
-// Environment variables from addons
-const getAddonsEnv = function (addons) {
-  return Object.assign({}, ...addons.map(getAddonEnv))
-}
-
-const getAddonEnv = function ({ env }) {
-  return env
 }
 
 // Site-specific environment variables set in the UI

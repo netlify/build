@@ -1,5 +1,6 @@
 import process from 'process'
 
+// eslint-disable-next-line n/no-unpublished-import
 import { zipFunctions } from '../dist/main.js'
 
 import { timeFunction, FIXTURES_DIR } from './helpers/main.js'

@@ -1,10 +1,11 @@
 import { resolve } from 'path'
 
-import { NodeBundlerName, RUNTIME, zipFunctions, FunctionResult } from '@netlify/zip-it-and-ship-it'
+import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
+import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
 
@@ -68,6 +69,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  generatedFunctions,
   frameworkFunctionsSrc,
   internalFunctionsSrc,
   isRunningLocally,
@@ -94,8 +96,19 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const sourceDirectories = [internalFunctionsSrc, frameworkFunctionsSrc, functionsSrc].filter(Boolean)
-    const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
+    const results = await zipItAndShipIt.zipFunctions(
+      {
+        generated: {
+          directories: [internalFunctionsSrc, frameworkFunctionsSrc].filter(Boolean),
+          functions: generatedFunctions,
+        },
+        user: {
+          directories: [functionsSrc].filter(Boolean),
+        },
+      },
+      functionsDist,
+      zisiParameters,
+    )
 
     validateCustomRoutes(results)
 
@@ -128,6 +141,7 @@ const coreStep = async function ({
   repositoryRoot,
   userNodeVersion,
   systemLog,
+  returnValues,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -154,6 +168,8 @@ const coreStep = async function ({
     }
   }
 
+  const generatedFunctions = getGeneratedFunctions(returnValues)
+
   logFunctionsToBundle({
     logs,
     userFunctions,
@@ -162,9 +178,15 @@ const coreStep = async function ({
     internalFunctions,
     internalFunctionsSrc: relativeInternalFunctionsSrc,
     frameworkFunctions,
+    generatedFunctions: getGeneratedFunctionsByGenerator(generatedFunctions),
   })
 
-  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
+  if (
+    userFunctions.length === 0 &&
+    internalFunctions.length === 0 &&
+    frameworkFunctions.length === 0 &&
+    generatedFunctions.length === 0
+  ) {
     return {}
   }
 
@@ -183,6 +205,7 @@ const coreStep = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
+    generatedFunctions: generatedFunctions.map((func) => func.path),
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
@@ -202,8 +225,8 @@ const coreStep = async function ({
 const hasFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
-  featureFlags,
   packagePath,
+  returnValues,
 }) {
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
@@ -217,13 +240,37 @@ const hasFunctionsDirectories = async function ({
     return true
   }
 
-  if (featureFlags.netlify_build_frameworks_api) {
-    const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
 
-    return await pathExists(frameworkFunctionsSrc)
+  if (await pathExists(frameworkFunctionsSrc)) {
+    return true
+  }
+
+  // We must run the core step if the return value of any of the previous steps
+  // has declared generated functions.
+  for (const id in returnValues) {
+    if (returnValues[id].generatedFunctions && returnValues[id].generatedFunctions.length !== 0) {
+      return true
+    }
   }
 
   return false
+}
+
+// Takes a list of return values and produces an object with the names of the
+// generated functions for each generator. This is used for printing logs only.
+const getGeneratedFunctionsByGenerator = (
+  generatedFunctions: GeneratedFunction[],
+): Record<string, GeneratedFunction[]> => {
+  const result: Record<string, GeneratedFunction[]> = {}
+
+  for (const func of generatedFunctions) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    result[func.generator.name] = result[func.generator.name] || []
+    result[func.generator.name].push(func)
+  }
+
+  return result
 }
 
 export const bundleFunctions = {

@@ -4,6 +4,7 @@ import { normalize, delimiter } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
 
+import { default as build, startDev } from '@netlify/build'
 import test from 'ava'
 import cpy from 'cpy'
 import { execa, execaCommand } from 'execa'
@@ -194,7 +195,6 @@ export class Fixture {
 
   /** Runs @netlify/build main function programmatic with the provided flags  */
   async runBuildProgrammatic(): Promise<object> {
-    const { default: build } = await import('@netlify/build')
     return await build(this.getBuildFlags())
   }
 
@@ -203,8 +203,7 @@ export class Fixture {
     return output
   }
 
-  async runWithBuildAndIntrospect() {
-    const { default: build } = await import('@netlify/build')
+  async runWithBuildAndIntrospect(): Promise<Awaited<ReturnType<typeof build>> & { output: string }> {
     const buildResult = await build(this.getBuildFlags())
     const output = [buildResult.logs?.stdout.join('\n'), buildResult.logs?.stderr.join('\n')]
       .filter(Boolean)
@@ -218,10 +217,9 @@ export class Fixture {
 
   // TODO: provide better typing if we know what's possible
   async runDev(devCommand: unknown): Promise<string> {
-    const { startDev } = await import('@netlify/build')
     const entryPoint = startDev.bind(null, devCommand)
     const { logs } = await entryPoint(this.getBuildFlags())
-    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+    return [logs?.stdout.join('\n'), logs?.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 
   /** use the CLI entry point instead of the Node.js main function */

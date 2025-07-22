@@ -4,7 +4,6 @@ import { join } from 'path'
 import process from 'process'
 
 import getPort from 'get-port'
-import fetch from 'node-fetch'
 import tmp from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'
@@ -47,7 +46,7 @@ test('Starts a server and serves requests for edge functions', async () => {
     importMapPaths,
   }
 
-  const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
+  const { features, functionsConfig, graph, success } = await server(
     functions,
     {
       very_secret_secret: 'i love netlify',
@@ -57,12 +56,10 @@ test('Starts a server and serves requests for edge functions', async () => {
   expect(features).toEqual({ npmModules: true })
   expect(success).toBe(true)
   expect(functionsConfig).toEqual([{ path: '/my-function' }, {}, { path: '/global-netlify' }])
-  expect(npmSpecifiersWithExtraneousFiles).toEqual(['dictionary'])
 
+  const modules = graph?.modules.filter(({ kind, mediaType }) => kind === 'esm' && mediaType === 'TypeScript')
   for (const key in functions) {
-    const graphEntry = graph?.modules.some(
-      ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functions[key].path,
-    )
+    const graphEntry = modules?.some(({ local }) => local === functions[key].path)
 
     expect(graphEntry).toBe(true)
   }
@@ -102,7 +99,7 @@ test('Starts a server and serves requests for edge functions', async () => {
   const idBarrelFile = await readFile(join(servePath, 'bundled-id.js'), 'utf-8')
   expect(idBarrelFile).toContain(`/// <reference types="${join('..', '..', 'node_modules', 'id', 'types.d.ts')}" />`)
 
-  const identidadeBarrelFile = await readFile(join(servePath, 'bundled-pt-committee__identidade.js'), 'utf-8')
+  const identidadeBarrelFile = await readFile(join(servePath, 'bundled-@pt-committee_identidade.js'), 'utf-8')
   expect(identidadeBarrelFile).toContain(
     `/// <reference types="${join('..', '..', 'node_modules', '@types', 'pt-committee__identidade', 'index.d.ts')}" />`,
   )
@@ -140,7 +137,7 @@ test('Serves edge functions in a monorepo setup', async () => {
     importMapPaths,
   }
 
-  const { features, functionsConfig, graph, success, npmSpecifiersWithExtraneousFiles } = await server(
+  const { features, functionsConfig, graph, success } = await server(
     functions,
     {
       very_secret_secret: 'i love netlify',
@@ -151,7 +148,6 @@ test('Serves edge functions in a monorepo setup', async () => {
   expect(features).toEqual({ npmModules: true })
   expect(success).toBe(true)
   expect(functionsConfig).toEqual([{ path: '/func1' }])
-  expect(npmSpecifiersWithExtraneousFiles).toEqual(['child-1'])
 
   for (const key in functions) {
     const graphEntry = graph?.modules.some(

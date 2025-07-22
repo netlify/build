@@ -1,5 +1,39 @@
 # Changelog
 
+## [6.0.3](https://github.com/netlify/build/compare/cache-utils-v6.0.2...cache-utils-v6.0.3) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+## [6.0.2](https://github.com/netlify/build/compare/cache-utils-v6.0.1...cache-utils-v6.0.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-stream to v9 ([#6352](https://github.com/netlify/build/issues/6352)) ([f39bf0c](https://github.com/netlify/build/commit/f39bf0c94c9f3385283acee4a5685dea34dc0eca))
+* **deps:** update dependency globby to v14 ([#6363](https://github.com/netlify/build/issues/6363)) ([0f00451](https://github.com/netlify/build/commit/0f00451bc758f7b9d408d691ae1d80f8e9856ab7))
+* **deps:** update dependency readdirp to v4 ([#6335](https://github.com/netlify/build/issues/6335)) ([bbc39d2](https://github.com/netlify/build/commit/bbc39d2c665b68dcbfaa4b32b783d38fa517c413))
+
+## [6.0.1](https://github.com/netlify/build/compare/cache-utils-v6.0.0...cache-utils-v6.0.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+
+## [6.0.0](https://github.com/netlify/build/compare/cache-utils-v5.2.0...cache-utils-v6.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
 ## [5.2.0](https://github.com/netlify/build/compare/cache-utils-v5.1.6...cache-utils-v5.2.0) (2024-12-11)
 
 

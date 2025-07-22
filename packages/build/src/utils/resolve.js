@@ -23,7 +23,7 @@ export const resolvePath = async function (path, basedir) {
     // Fallback.
     // `resolve` sometimes gives unhelpful error messages.
     // https://github.com/browserify/resolve/issues/223
-  } catch (e) {
+  } catch {
     return require.resolve(path, { paths: [basedir] })
   }
 }

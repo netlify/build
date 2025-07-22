@@ -38,7 +38,6 @@ export const getNativeModulesPlugin = (externalizedModules: NativeNodeModules): 
 
       let directory = args.resolveDir
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         if (path.basename(directory) !== 'node_modules') {
           const modulePath = path.join(directory, 'node_modules', pkg[1])

@@ -1,5 +1,5 @@
 import { readFile, rm } from 'fs/promises'
-import { normalize } from 'path'
+import { normalize, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import cpy from 'cpy'
@@ -107,10 +107,15 @@ test('Should allow "fail" option to customize failures', async () => {
   expect(fail).toHaveBeenCalledWith('No function source directory was specified')
 })
 
-const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile, schedule }) {
+const normalizeFiles = function (
+  fixtureDir,
+  { name, mainFile, runtime, extension, srcDir, srcFile, srcPath, schedule },
+) {
   const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
   const srcFileA = srcFile === undefined ? {} : { srcFile: normalize(`${fixtureDir}/${srcFile}`) }
-  return { name, mainFile: mainFileA, runtime, extension, schedule, ...srcFileA }
+  const srcDirA = srcDir ? { srcDir: resolve(fixtureDir, srcDir) } : {}
+  const srcPathA = srcPath ? { srcPath: resolve(fixtureDir, srcPath) } : {}
+  return { name, mainFile: mainFileA, runtime, extension, schedule, ...srcFileA, ...srcDirA, ...srcPathA }
 }
 
 test('Can list function main files with list()', async () => {
@@ -118,12 +123,26 @@ test('Can list function main files with list()', async () => {
   const functions = await list(fixtureDir)
   expect(sortOn(functions, ['mainFile', 'extension'])).toEqual(
     [
-      { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js' },
-      { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
-      { name: 'test', mainFile: 'test', runtime: 'go', extension: '' },
-      { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js' },
-      { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip' },
-      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js' },
+      {
+        name: 'four',
+        mainFile: 'four.js/four.js.js',
+        runtime: 'js',
+        extension: '.js',
+        srcDir: 'four.js',
+        srcPath: 'four.js',
+      },
+      {
+        name: 'one',
+        mainFile: 'one/index.js',
+        runtime: 'js',
+        extension: '.js',
+        srcDir: 'one',
+        srcPath: 'one',
+      },
+      { name: 'test', mainFile: 'test', runtime: 'go', extension: '', srcDir: '.', srcPath: 'test' },
+      { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js', srcDir: '.', srcPath: 'test.js' },
+      { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcDir: '.', srcPath: 'test.zip' },
+      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcDir: 'two', srcPath: 'two' },
     ].map(normalizeFiles.bind(null, fixtureDir)),
   )
 })
@@ -139,6 +158,8 @@ test('Can list all function files with listAll()', async () => {
         runtime: 'js',
         extension: '.js',
         srcFile: 'four.js/four.js.js',
+        srcDir: 'four.js',
+        srcPath: 'four.js',
       },
       {
         name: 'four',
@@ -146,33 +167,89 @@ test('Can list all function files with listAll()', async () => {
         runtime: 'js',
         extension: '.json',
         srcFile: '../../../package.json',
+        srcPath: 'four.js',
+        srcDir: 'four.js',
       },
-      { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFile: 'one/index.js' },
+      {
+        name: 'one',
+        mainFile: 'one/index.js',
+        runtime: 'js',
+        extension: '.js',
+        srcFile: 'one/index.js',
+        srcPath: 'one',
+        srcDir: 'one',
+      },
       {
         name: 'one',
         mainFile: 'one/index.js',
         runtime: 'js',
         extension: '.json',
         srcFile: '../../../package.json',
+        srcPath: 'one',
+        srcDir: 'one',
       },
-      { name: 'test', mainFile: 'test', runtime: 'go', extension: '', srcFile: 'test' },
-      { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js', srcFile: 'test.js' },
+      {
+        name: 'test',
+        mainFile: 'test',
+        runtime: 'go',
+        extension: '',
+        srcFile: 'test',
+        srcPath: 'test',
+        srcDir: '.',
+      },
+      {
+        name: 'test',
+        mainFile: 'test.js',
+        runtime: 'js',
+        extension: '.js',
+        srcFile: 'test.js',
+        srcPath: 'test.js',
+        srcDir: '.',
+      },
       {
         name: 'test',
         mainFile: 'test.js',
         runtime: 'js',
         extension: '.json',
         srcFile: '../../../package.json',
+        srcPath: 'test.js',
+        srcDir: '.',
       },
-      { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcFile: 'test.zip' },
-      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/two.js' },
-      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/three.js' },
+      {
+        name: 'test',
+        mainFile: 'test.zip',
+        runtime: 'js',
+        extension: '.zip',
+        srcFile: 'test.zip',
+        srcPath: 'test.zip',
+        srcDir: '.',
+      },
+      {
+        name: 'two',
+        mainFile: 'two/two.js',
+        runtime: 'js',
+        extension: '.js',
+        srcFile: 'two/two.js',
+        srcPath: 'two',
+        srcDir: 'two',
+      },
+      {
+        name: 'two',
+        mainFile: 'two/two.js',
+        runtime: 'js',
+        extension: '.js',
+        srcFile: 'two/three.js',
+        srcPath: 'two',
+        srcDir: 'two',
+      },
       {
         name: 'two',
         mainFile: 'two/two.js',
         runtime: 'js',
         extension: '.json',
         srcFile: '../../../package.json',
+        srcPath: 'two',
+        srcDir: 'two',
       },
     ].map(normalizeFiles.bind(null, fixtureDir)),
   )

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/headers-parser",
-  "version": "7.3.0",
+  "version": "9.0.1",
   "description": "Parses Netlify headers into a JavaScript object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -21,7 +21,7 @@
     "netlify"
   ],
   "engines": {
-    "node": "^14.16.0 || >=16.0.0"
+    "node": ">=18.14.0"
   },
   "author": "Netlify",
   "license": "MIT",
@@ -34,9 +34,9 @@
     "path-exists": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.18.53",
+    "@types/node": "^18.19.111",
     "typescript": "^5.0.0",
-    "vitest": "^0.34.0"
+    "vitest": "^3.0.0"
   },
   "repository": {
     "type": "git",

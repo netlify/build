@@ -109,10 +109,10 @@ Current directory used to resolve relative paths.
 `options`: `object`\
 _Returns_: `Promise<Boolean>`
 
-Restore a file/directory previously cached. Skipped if the file/directory already exists locally or if it has not been
-cached yet.
+Restore a file/directory previously cached. Skipped if it has not been cached yet.
 
-Please be careful: this overwrites the local file/directory if any exists.
+Please be careful: if the file/directory was cached, this will delete local file/directory and replace it with cached
+content.
 
 Returns `false` if the file/directory was not cached yet. Returns `true` otherwise.
 

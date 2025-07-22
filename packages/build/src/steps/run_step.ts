@@ -68,8 +68,10 @@ export const runStep = async function ({
   quiet,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   extensionMetadata,
+  returnValues,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -108,7 +110,9 @@ export const runStep = async function ({
       buildDir,
       saveConfig,
       explicitSecretKeys,
+      enhancedSecretScan,
       deployId,
+      returnValues,
       featureFlags,
     })
     span.setAttribute('build.execution.step.should_run', shouldRun)
@@ -124,13 +128,7 @@ export const runStep = async function ({
             // no-op
           }
 
-    let outputFlusher: OutputFlusher | undefined
-
-    if (featureFlags.netlify_build_reduced_output) {
-      outputFlusher = new OutputFlusher(logPluginStart)
-    } else {
-      logPluginStart()
-    }
+    const outputFlusher = new OutputFlusher(logPluginStart)
 
     const fireStep = getFireStep(packageName, coreStepId, event)
     const {
@@ -144,6 +142,7 @@ export const runStep = async function ({
       timers: timersA,
       durationNs,
       metrics,
+      returnValue,
     } = await fireStep({
       extensionMetadata,
       defaultConfig,
@@ -188,8 +187,11 @@ export const runStep = async function ({
       featureFlags,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
+      returnValues,
     })
 
     const newValues = await getStepReturn({
@@ -218,6 +220,7 @@ export const runStep = async function ({
       systemLog,
       quiet: quiet || coreStepQuiet,
       metrics,
+      returnValue,
     })
 
     span.end()
@@ -269,7 +272,9 @@ const shouldRunStep = async function ({
   buildDir,
   saveConfig,
   explicitSecretKeys,
+  enhancedSecretScan,
   deployId,
+  returnValues,
   featureFlags = {},
 }) {
   if (
@@ -283,7 +288,9 @@ const shouldRunStep = async function ({
         netlifyConfig,
         saveConfig,
         explicitSecretKeys,
+        enhancedSecretScan,
         deployId,
+        returnValues,
         featureFlags,
       })))
   ) {
@@ -349,9 +356,12 @@ const tFireStep = function ({
   featureFlags,
   userNodeVersion,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   deployId,
   extensionMetadata,
+  api,
+  returnValues,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -387,8 +397,11 @@ const tFireStep = function ({
       saveConfig,
       userNodeVersion,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       deployId,
+      api,
+      returnValues,
     })
   }
 

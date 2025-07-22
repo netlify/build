@@ -1,12 +1,12 @@
 import process from 'process'
 
-import { execa, ExecaChildProcess, execaCommand, Options } from 'execa'
+import { execa, type ExecaChildProcess, execaCommand, type Options, type CommonOptions } from 'execa'
 
 /** Allow running local binaries by default */
-const DEFAULT_OPTIONS: Partial<Options<string>> = { preferLocal: true }
+const DEFAULT_OPTIONS: Partial<CommonOptions> = { preferLocal: true }
 
 /** Run a command, with arguments being an array */
-export const run = (file: string, args?: string[] | object, options?: Record<string, unknown>) => {
+export const run = (file: string, args?: string[] | object, options?: Options) => {
   const [argsA, optionsA] = parseArgs(args, options)
   const optionsB = { ...DEFAULT_OPTIONS, ...optionsA }
   const childProcess = execa(file, argsA, optionsB)
@@ -15,9 +15,9 @@ export const run = (file: string, args?: string[] | object, options?: Record<str
 }
 
 /** Run a command, with file + arguments being a single string */
-export const runCommand = (command: string, options: Options<string>) => {
+export const runCommand = (command: string, options: Options) => {
   const optionsA = { ...DEFAULT_OPTIONS, ...options }
-  const childProcess = execaCommand(command, optionsA)
+  const childProcess = execaCommand(command, options)
   redirectOutput(childProcess, optionsA)
   return childProcess
 }
@@ -38,7 +38,7 @@ const parseArgs = function (args, options) {
 /**
  * Redirect output by default, unless specified otherwise
  * */
-const redirectOutput = (childProcess: ExecaChildProcess<string>, options: Options<string>) => {
+const redirectOutput = (childProcess: ExecaChildProcess<string>, options: CommonOptions) => {
   if (options.stdio !== undefined || options.stdout !== undefined || options.stderr !== undefined) {
     return
   }

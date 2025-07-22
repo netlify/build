@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "lib" /* Specify an output folder for all emitted files. */
+    "outDir": "lib" /* Specify an output folder for all emitted files. */,
+    "strictBindCallApply": false /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
   "exclude": ["test/**"]

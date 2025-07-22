@@ -29,6 +29,7 @@ export const getStepReturn = function ({
   systemLog,
   quiet,
   metrics,
+  returnValue,
 }) {
   if (newError !== undefined) {
     return handleStepError({
@@ -51,5 +52,15 @@ export const getStepReturn = function ({
     logTimer(logs, durationNs, timerName, systemLog, outputFlusher)
   }
 
-  return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers, metrics }
+  return {
+    newEnvChanges,
+    netlifyConfig,
+    configMutations,
+    headersPath,
+    redirectsPath,
+    newStatus,
+    timers,
+    metrics,
+    returnValue,
+  }
 }

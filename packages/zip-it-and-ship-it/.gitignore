@@ -1,5 +1,6 @@
 /build
 !tests/fixtures/**/node_modules
+!tests/fixtures-esm/v2-api-isolated/.netlify
 !tests/fixtures-esm/**/node_modules
 benchmarks/fixtures/*/package*.json
 benchmarks/output

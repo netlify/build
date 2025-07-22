@@ -1,0 +1,3 @@
+[build]
+  command = "echo 'no package.json here'"
+  publish = "dist"

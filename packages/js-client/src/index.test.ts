@@ -1,12 +1,12 @@
 import http from 'http'
 
-import test from 'ava'
 import fromString from 'from2-string'
-import { TextHTTPError, JSONHTTPError } from 'micro-api-client'
 import nock from 'nock'
 import { v4 as uuidv4 } from 'uuid'
+import { assert, expect, test } from 'vitest'
 
 import { NetlifyAPI } from '../lib/index.js'
+import { TextHTTPError, JSONHTTPError } from '../lib/methods/response.js'
 
 const scheme = 'http'
 const domain = 'localhost'
@@ -32,42 +32,42 @@ const getClient = function (opts: any = {}) {
   return new NetlifyAPI(opts.accessToken, { scheme, host, pathPrefix, ...opts })
 }
 
-test('Default options', (t) => {
-  const client: any = new NetlifyAPI({})
-  t.is(client.scheme, 'https')
-  t.is(client.host, 'api.netlify.com')
-  t.is(client.pathPrefix, '/api/v1')
-  t.is(client.accessToken, null)
-  t.is(client.agent, undefined)
-  t.deepEqual(client.globalParams, {})
-  t.deepEqual(client.defaultHeaders, {
+test('Default options', () => {
+  const client = new NetlifyAPI({})
+  expect(client.scheme).toBe('https')
+  expect(client.host).toBe('api.netlify.com')
+  expect(client.pathPrefix).toBe('/api/v1')
+  expect(client.accessToken).toBe(null)
+  expect(client.agent).toBe(undefined)
+  expect(client.globalParams).toEqual({})
+  expect(client.defaultHeaders).toEqual({
     'User-agent': 'netlify/js-client',
     accept: 'application/json',
   })
 })
 
-test('Can set|get scheme', (t) => {
-  const client: any = new NetlifyAPI({ scheme })
-  t.is(client.scheme, scheme)
+test('Can set|get scheme', () => {
+  const client = new NetlifyAPI({ scheme })
+  expect(client.scheme).toBe(scheme)
 })
 
-test('Can set|get host', (t) => {
-  const client: any = new NetlifyAPI({ host })
-  t.is(client.host, host)
+test('Can set|get host', () => {
+  const client = new NetlifyAPI({ host })
+  expect(client.host).toBe(host)
 })
 
-test('Can set|get pathPrefix', (t) => {
-  const client: any = new NetlifyAPI({ pathPrefix })
-  t.is(client.pathPrefix, pathPrefix)
+test('Can set|get pathPrefix', () => {
+  const client = new NetlifyAPI({ pathPrefix })
+  expect(client.pathPrefix).toBe(pathPrefix)
 })
 
-test('Can set|get basePath', (t) => {
+test('Can set|get basePath', () => {
   const client = new NetlifyAPI({ scheme, host, pathPrefix })
-  t.is(client.basePath, `${scheme}://${host}${pathPrefix}`)
+  expect(client.basePath).toBe(`${scheme}://${host}${pathPrefix}`)
 })
 
-test('Can update basePath', (t) => {
-  const client: any = new NetlifyAPI({ scheme, host, pathPrefix })
+test('Can update basePath', () => {
+  const client = new NetlifyAPI({ scheme, host, pathPrefix })
 
   const newScheme = 'https'
   const newHost = `${domain}:1224`
@@ -76,107 +76,107 @@ test('Can update basePath', (t) => {
   client.host = newHost
   client.pathPrefix = newPathPrefix
 
-  t.is(client.basePath, `${newScheme}://${newHost}${newPathPrefix}`)
+  expect(client.basePath).toBe(`${newScheme}://${newHost}${newPathPrefix}`)
 })
 
-test('Can set user agent', (t) => {
+test('Can set user agent', () => {
   const userAgent = 'test'
-  const client: any = new NetlifyAPI({ userAgent })
-  t.is(client.defaultHeaders['User-agent'], userAgent)
+  const client = new NetlifyAPI({ userAgent })
+  expect(client.defaultHeaders['User-agent']).toBe(userAgent)
 })
 
-test('Can set|get globalParams', (t) => {
+test('Can set|get globalParams', () => {
   const testGlobalParams = { test: 'test' }
-  const client: any = new NetlifyAPI({ globalParams: testGlobalParams })
-  t.deepEqual(client.globalParams, testGlobalParams)
+  const client = new NetlifyAPI({ globalParams: testGlobalParams })
+  expect(client.globalParams).toEqual(testGlobalParams)
 })
 
-test('Can set|get access token', (t) => {
-  const client: any = getClient()
+test('Can set|get access token', () => {
+  const client = getClient()
   client.accessToken = testAccessToken
-  t.is(client.accessToken, testAccessToken)
-  t.is(client.defaultHeaders.Authorization, `Bearer ${testAccessToken}`)
+  expect(client.accessToken).toBe(testAccessToken)
+  expect(client.defaultHeaders.Authorization).toBe(`Bearer ${testAccessToken}`)
 
   client.accessToken = undefined
-  t.is(client.accessToken, null)
-  t.is(client.defaultHeaders.Authorization, undefined)
+  expect(client.accessToken).toBe(null)
+  expect(client.defaultHeaders.Authorization).toBe(undefined)
 
   client.accessToken = testAccessToken
-  t.is(client.accessToken, testAccessToken)
-  t.is(client.defaultHeaders.Authorization, `Bearer ${testAccessToken}`)
+  expect(client.accessToken).toBe(testAccessToken)
+  expect(client.defaultHeaders.Authorization).toBe(`Bearer ${testAccessToken}`)
 })
 
-test('Can specify access token as the first argument', (t) => {
+test('Can specify access token as the first argument', () => {
   const client = new NetlifyAPI(testAccessToken, {})
-  t.is(client.accessToken, testAccessToken)
+  expect(client.accessToken).toBe(testAccessToken)
 })
 
-test('Can specify access token as an option', (t) => {
+test('Can specify access token as an option', () => {
   const client = new NetlifyAPI({ accessToken: testAccessToken })
-  t.is(client.accessToken, testAccessToken)
+  expect(client.accessToken).toBe(testAccessToken)
 })
 
-test('Can use underscored parameters in path variables', async (t) => {
+test('Can use underscored parameters in path variables', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use camelcase parameters in path variables', async (t) => {
+test('Can use camelcase parameters in path variables', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ accountId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use global parameters in path variables', async (t) => {
+test('Can use global parameters in path variables', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client: any = getClient({ globalParams: { account_id: accountId } })
   await client.getAccount()
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use underscored parameters in query variables', async (t) => {
+test('Can use underscored parameters in query variables', async () => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createTicket({ client_id: clientId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use camelcase parameters in query variables', async (t) => {
+test('Can use camelcase parameters in query variables', async () => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.createTicket({ clientId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use global parameters in query variables', async (t) => {
+test('Can use global parameters in query variables', async () => {
   const clientId = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
   const client: any = getClient({ globalParams: { client_id: clientId } })
   await client.createTicket()
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Allow array query parameters', async (t) => {
+test('Allow array query parameters', async () => {
   const siteId = uuidv4()
   const scope = nock(origin)
     .get(
@@ -187,10 +187,10 @@ test('Allow array query parameters', async (t) => {
   const client: any = getClient()
   await client.getLatestPluginRuns({ site_id: siteId, packages: ['@scope/package', '@scope/package-two'] })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can specify JSON request body as an object', async (t) => {
+test('Can specify JSON request body as an object', async () => {
   const body = { test: 'test' }
   const scope = nock(origin)
     .post(`${pathPrefix}/accounts`, body, { 'Content-Type': 'application/json' } as any)
@@ -199,10 +199,10 @@ test('Can specify JSON request body as an object', async (t) => {
   const client: any = getClient()
   await client.createAccount({ body })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can specify JSON request body as a function', async (t) => {
+test('Can specify JSON request body as a function', async () => {
   const body = { test: 'test' }
   const scope = nock(origin)
     .post(`${pathPrefix}/accounts`, body, { 'Content-Type': 'application/json' } as any)
@@ -211,10 +211,10 @@ test('Can specify JSON request body as a function', async (t) => {
   const client: any = getClient()
   await client.createAccount({ body: () => body })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can specify binary request body as a stream', async (t) => {
+test('Can specify binary request body as a stream', async () => {
   const deployId = uuidv4()
   const path = 'testPath'
   const body = 'test'
@@ -223,14 +223,14 @@ test('Can specify binary request body as a stream', async (t) => {
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: fromString(body) })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Can specify binary request body as a function', async (t) => {
+test('Can specify binary request body as a function', async () => {
   const deployId = uuidv4()
   const path = 'testPath'
   const body = 'test'
@@ -239,24 +239,24 @@ test('Can specify binary request body as a function', async (t) => {
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Can use global parameters in request body', async (t) => {
+test('Can use global parameters in request body', async () => {
   const body = { test: 'test' }
   const scope = nock(origin).post(`${pathPrefix}/accounts`, body).reply(200)
 
-  const client: any = getClient({ globalParams: { body } })
+  const client = getClient({ globalParams: { body } })
   await client.createAccount()
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can set header parameters', async (t) => {
+test('Can set header parameters', async () => {
   const deployId = uuidv4()
   const functionName = 'testFunction'
   const body = 'test'
@@ -277,103 +277,105 @@ test('Can set header parameters', async (t) => {
     xNfRetryCount: retryCount,
   })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Validates required path parameters', async (t) => {
+test('Validates required path parameters', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).put(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client: any = getClient()
-  await t.throwsAsync(client.updateAccount(), { message: "Missing required path variable 'account_id'" })
+  await expect(client.updateAccount()).rejects.toThrow("Missing required path variable 'account_id'")
 
-  t.false(scope.isDone())
+  assert.isFalse(scope.isDone())
 })
 
-test('Validates required query parameters', async (t) => {
+test('Validates required query parameters', async () => {
   const zone_id = uuidv4()
   const scope = nock(origin).post(`${pathPrefix}/dns_zones/${zone_id}/transfer`).reply(200)
 
   const client: any = getClient()
-  await t.throwsAsync(client.transferDnsZone({ zone_id }), {
-    message: "Missing required query variable 'account_id'",
-  })
+  await expect(client.transferDnsZone({ zone_id })).rejects.toThrow("Missing required query variable 'account_id'")
 
-  t.false(scope.isDone())
+  assert.isFalse(scope.isDone())
 })
 
-test('Can set request headers', async (t) => {
+test('Can set request headers', async () => {
   const headerName = 'test'
   const headerValue = 'test'
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).matchHeader(headerName, headerValue).reply(200)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId }, { headers: { [headerName]: headerValue } })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can parse JSON responses', async (t) => {
+test('Can parse JSON responses', async () => {
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Can parse text responses', async (t) => {
+test('Can parse text responses', async () => {
   const accountId = uuidv4()
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Handle error empty responses', async (t) => {
+test('Handle error empty responses', async () => {
   const accountId = uuidv4()
   const status = 404
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, status)
-  t.is(error.message, expectedResponse)
-  t.is(error.data, expectedResponse)
-  t.true(error instanceof TextHTTPError)
-  t.true(error.stack !== undefined)
-  t.true(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(status)
+    expect(error.message).toBe(expectedResponse)
+    expect(error.data).toBe(expectedResponse)
+    assert.isTrue(error instanceof TextHTTPError)
+    assert.isTrue(error.stack !== undefined)
+    assert.isTrue(scope.isDone())
+  }
 })
 
-test('Handle error text responses', async (t) => {
+test('Handle error text responses', async () => {
   const accountId = uuidv4()
   const status = 404
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, status)
-  t.is(error.message, expectedResponse)
-  t.is(error.data, expectedResponse)
-  t.true(error instanceof TextHTTPError)
-  t.true(error.stack !== undefined)
-  t.true(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(status)
+    expect(error.message).toBe(expectedResponse)
+    expect(error.data).toBe(expectedResponse)
+    assert.isTrue(error instanceof TextHTTPError)
+    assert.isTrue(error.stack !== undefined)
+    assert.isTrue(scope.isDone())
+  }
 })
 
-test('Handle error text responses on JSON endpoints', async (t) => {
+test('Handle error text responses on JSON endpoints', async () => {
   const accountId = uuidv4()
   const status = 404
   const expectedResponse = 'test'
@@ -381,52 +383,58 @@ test('Handle error text responses on JSON endpoints', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(status, expectedResponse, { 'Content-Type': 'application/json' })
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, status)
-  t.is(error.message, expectedResponse)
-  t.is(error.data, expectedResponse)
-  t.true(error instanceof TextHTTPError)
-  t.true(error.stack !== undefined)
-  t.true(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(status)
+    expect(error.message).toBe(expectedResponse)
+    expect(error.data).toBe(expectedResponse)
+    assert.isTrue(error instanceof TextHTTPError)
+    assert.isTrue(error.stack !== undefined)
+    assert.isTrue(scope.isDone())
+  }
 })
 
-test('Handle error JSON responses', async (t) => {
+test('Handle error JSON responses', async () => {
   const accountId = uuidv4()
   const status = 404
   const errorJson = { error: true }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, errorJson)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, status)
-  t.notThrows(() => JSON.parse(error.message))
-  t.deepEqual(error.json, errorJson)
-  t.true(error instanceof JSONHTTPError)
-  t.true(error.stack !== undefined)
-  t.true(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(status)
+    expect(JSON.parse(error.message)).toEqual({ error: true })
+    expect(error.json).toEqual(errorJson)
+    assert.isTrue(error instanceof JSONHTTPError)
+    assert.isTrue(error.stack !== undefined)
+    assert.isTrue(scope.isDone())
+  }
 })
 
-test('Handle network errors', async (t) => {
+test('Handle network errors', async () => {
   const accountId = uuidv4()
   const expectedResponse = 'test'
   const url = `${pathPrefix}/accounts/${accountId}`
   const scope = nock(origin).get(url).replyWithError(expectedResponse)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.true(error instanceof Error)
-  t.is(error.name, 'FetchError')
-  t.true(error.message.includes(expectedResponse))
-  t.is(error.url, `${origin}${url}`)
-  t.is(error.data.method, 'GET')
-  t.true(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    assert.isTrue(error instanceof Error)
+    expect(error.name).toBe('FetchError')
+    assert.isTrue(error.message.includes(expectedResponse))
+    expect(error.url).toBe(`${origin}${url}`)
+    expect(error.data.method).toBe('GET')
+    assert.isTrue(scope.isDone())
+  }
 })
 
-test('Can get an access token from a ticket', async (t) => {
+test('Can get an access token from a ticket', async () => {
   const ticketId = uuidv4()
   const accessToken = 'test'
   const scope = nock(origin)
@@ -439,12 +447,12 @@ test('Can get an access token from a ticket', async (t) => {
   const timeout = 5e3
   const response = await client.getAccessToken({ id: ticketId, poll: 1, timeout })
 
-  t.is(response, accessToken)
-  t.is(client.accessToken, accessToken)
-  t.true(scope.isDone())
+  expect(response).toBe(accessToken)
+  expect(client.accessToken).toBe(accessToken)
+  assert.isTrue(scope.isDone())
 })
 
-test('Can poll for access token', async (t) => {
+test('Can poll for access token', async () => {
   const ticketId = uuidv4()
   const accessToken = 'test'
   const scope = nock(origin)
@@ -458,10 +466,10 @@ test('Can poll for access token', async (t) => {
   const client = getClient()
   await client.getAccessToken({ id: ticketId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can change access token polling', async (t) => {
+test('Can change access token polling', async () => {
   const ticketId = uuidv4()
   const accessToken = 'test'
   const scope = nock(origin)
@@ -475,10 +483,10 @@ test('Can change access token polling', async (t) => {
   const client = getClient()
   await client.getAccessToken({ id: ticketId }, { poll: 1 })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Can timeout access token polling', async (t) => {
+test('Can timeout access token polling', async () => {
   const ticketId = uuidv4()
   const accessToken = 'test'
   const scope = nock(origin)
@@ -490,14 +498,12 @@ test('Can timeout access token polling', async (t) => {
     .reply(200, { access_token: accessToken })
 
   const client = getClient()
-  await t.throwsAsync(client.getAccessToken({ id: ticketId }, { poll: 1, timeout: 1 }), {
-    message: 'Promise timed out after 1 milliseconds',
-  })
+  await expect(client.getAccessToken({ id: ticketId }, { poll: 1, timeout: 1 })).rejects.toThrow()
 
-  t.false(scope.isDone())
+  assert.isFalse(scope.isDone())
 })
 
-test('Does not retry on server errors', async (t) => {
+test('Does not retry on server errors', async () => {
   const errorMessage = 'Something went zap!'
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
@@ -507,15 +513,17 @@ test('Does not retry on server errors', async (t) => {
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, 500)
-  t.is(error.message, errorMessage)
-  t.false(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(500)
+    expect(error.message).toBe(errorMessage)
+    assert.isFalse(scope.isDone())
+  }
 })
 
-test('Retries on server errors for the `getLatestPluginRuns` endpoint', async (t) => {
+test('Retries on server errors for the `getLatestPluginRuns` endpoint', async () => {
   const packages = 'foo'
   const siteId = uuidv4()
   const expectedResponse = { test: 'test' }
@@ -530,45 +538,46 @@ test('Retries on server errors for the `getLatestPluginRuns` endpoint', async (t
   const client: any = getClient()
   const response = await client.getLatestPluginRuns({ site_id: siteId, packages })
 
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Handles API rate limiting', async (t) => {
+test('Handles API rate limiting', async () => {
   const accountId = uuidv4()
   const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
   const retryAt = Math.ceil(retryAtMs / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.getAccount({ account_id: accountId })
 
-  t.true(Date.now() >= retryAtMs)
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  assert.isTrue(Date.now() >= retryAtMs)
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Handles API rate limiting when date is in the past', async (t) => {
+test('Handles API rate limiting when date is in the past', async () => {
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
+  const retryAt = 0
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
-    .reply(429, { retryAt: 0 }, { 'X-RateLimit-Reset': 0 })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Handles API rate limiting when X-RateLimit-Reset is missing', async (t) => {
+test('Handles API rate limiting when X-RateLimit-Reset is missing', async () => {
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
   const retryAt = 'invalid'
@@ -578,13 +587,13 @@ test('Handles API rate limiting when X-RateLimit-Reset is missing', async (t) =>
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
+  const client = getClient()
   await client.getAccount({ account_id: accountId })
 
-  t.true(scope.isDone())
+  assert.isTrue(scope.isDone())
 })
 
-test('Gives up retrying on API rate limiting after a timeout', async (t) => {
+test('Gives up retrying on API rate limiting after a timeout', async () => {
   const accountId = uuidv4()
   const retryAt = Math.ceil(Date.now() / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
@@ -592,23 +601,24 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
     .times(times)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(200, expectedResponse)
 
-  const client: any = getClient()
-  const error: any = await t.throwsAsync(client.getAccount({ account_id: accountId }))
-
-  t.is(error.status, 429)
-  t.is(error.message, JSON.stringify({ retryAt }))
-  t.true(Number.isInteger(error.json.retryAt))
-
-  t.false(scope.isDone())
+  const client = getClient()
+  try {
+    await client.getAccount({ account_id: accountId })
+  } catch (error) {
+    expect(error.status).toBe(429)
+    expect(error.message).toBe(JSON.stringify({ retryAt }))
+    assert.isTrue(Number.isInteger(error.json.retryAt))
+    assert.isFalse(scope.isDone())
+  }
 })
 
 const errorCodes = ['ETIMEDOUT', 'ECONNRESET']
 errorCodes.forEach((code) => {
-  test(`Retries on ${code} connection errors`, async (t) => {
+  test(`Retries on ${code} connection errors`, async () => {
     const accountId = uuidv4()
     const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
     const expectedResponse = { test: 'test' }
@@ -618,16 +628,16 @@ errorCodes.forEach((code) => {
       .get(`${pathPrefix}/accounts/${accountId}`)
       .reply(200, expectedResponse)
 
-    const client: any = getClient()
+    const client = getClient()
     const response: any = await client.getAccount({ account_id: accountId })
 
-    t.true(Date.now() >= retryAtMs)
-    t.deepEqual(response, expectedResponse)
-    t.true(scope.isDone())
+    assert.isTrue(Date.now() >= retryAtMs)
+    expect(response).toEqual(expectedResponse)
+    assert.isTrue(scope.isDone())
   })
 })
 
-test('Recreates a function body when handling API rate limiting', async (t) => {
+test('Recreates a function body when handling API rate limiting', async () => {
   const deployId = uuidv4()
   const path = 'testPath'
   const body = 'test'
@@ -636,38 +646,38 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
-    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
+    .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt.toString() })
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(200, expectedResponse)
-  const client: any = getClient()
+  const client = getClient()
   const response = await client.uploadDeployFile({ deploy_id: deployId, path, body: () => fromString(body) })
 
-  t.true(Date.now() >= retryAtMs)
-  t.deepEqual(response, expectedResponse)
-  t.true(scope.isDone())
+  assert.isTrue(Date.now() >= retryAtMs)
+  expect(response).toEqual(expectedResponse)
+  assert.isTrue(scope.isDone())
 })
 
-test('Can set (proxy) agent', (t) => {
-  const client: any = getClient({ accessToken: testAccessToken, agent })
-  t.is(client.agent, agent)
+test('Can set (proxy) agent', () => {
+  const client = getClient({ accessToken: testAccessToken, agent })
+  expect(client.agent).toBe(agent)
 })
 
-test('(Proxy) agent is passed as request option', async (t) => {
+test('(Proxy) agent is passed as request option', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient({ accessToken: testAccessToken, agent })
+  const client = getClient({ accessToken: testAccessToken, agent })
   await client.getAccount({ account_id: accountId })
-  t.is((scope as any).interceptors[0].req.options.agent, agent)
+  expect((scope as any).interceptors[0].req.options.agent).toBe(agent)
 })
 
-test('(Proxy) agent is not passed as request option if not set', async (t) => {
+test('(Proxy) agent is not passed as request option if not set', async () => {
   const accountId = uuidv4()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
-  const client: any = getClient({ accessToken: testAccessToken })
+  const client = getClient({ accessToken: testAccessToken })
   await client.getAccount({ account_id: accountId })
-  t.falsy((scope as any).interceptors[0].req.options.agent)
+  assert.isUndefined((scope as any).interceptors[0].req.options.agent)
 })
 
 const TEST_RATE_LIMIT_DELAY = 5e3

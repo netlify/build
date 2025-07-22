@@ -1,15 +1,13 @@
 import { rm, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import { listFrameworks } from '@netlify/framework-info'
-
 import { CoreStep, CoreStepCondition, CoreStepFunction, CoreStepFunctionArgs } from '../types.js'
 
 const dirExists = async (path: string): Promise<boolean> => {
   try {
     await stat(path)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -41,20 +39,6 @@ const coreStep: CoreStepFunction = async (input) => {
 }
 
 const condition: CoreStepCondition = async (input) => {
-  // We don't want to clear directories for Remix or Remix-based frameworks,
-  // due to the way they run Netlify Dev.
-  try {
-    const frameworks = await listFrameworks({ projectDir: input.buildDir })
-
-    for (const framework of frameworks) {
-      if (framework.id === 'hydrogen' || framework.id === 'remix') {
-        return false
-      }
-    }
-  } catch {
-    // no-op
-  }
-
   const dirs = await getDirtyDirs(input)
   return dirs.length > 0
 }

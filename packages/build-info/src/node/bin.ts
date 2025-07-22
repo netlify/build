@@ -1,6 +1,6 @@
 import { argv, exit } from 'process'
 
-import yargs, { Arguments } from 'yargs'
+import yargs, { type Arguments } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { report } from '../metrics.js'

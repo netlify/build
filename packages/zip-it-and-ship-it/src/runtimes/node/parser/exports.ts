@@ -200,23 +200,26 @@ const parseConfigESMExport = (node: Statement) => {
  * and any others will be ignored and excluded from the resulting object.
  */
 const parseObject = (node: ObjectExpression) =>
-  node.properties.reduce((acc, property): Record<string, unknown> => {
-    if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {
-      return {
-        ...acc,
-        [property.key.name]: parsePrimitive(property.value),
+  node.properties.reduce(
+    (acc, property): Record<string, unknown> => {
+      if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {
+        return {
+          ...acc,
+          [property.key.name]: parsePrimitive(property.value),
+        }
       }
-    }
 
-    if (property.type === 'ObjectProperty' && property.key.type === 'StringLiteral') {
-      return {
-        ...acc,
-        [property.key.value]: parsePrimitive(property.value),
+      if (property.type === 'ObjectProperty' && property.key.type === 'StringLiteral') {
+        return {
+          ...acc,
+          [property.key.value]: parsePrimitive(property.value),
+        }
       }
-    }
 
-    return acc
-  }, {} as Record<string, unknown>)
+      return acc
+    },
+    {} as Record<string, unknown>,
+  )
 
 /**
  * Takes an expression and, if it matches a JavaScript primitive type, returns

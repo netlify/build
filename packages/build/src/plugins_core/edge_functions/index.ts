@@ -55,21 +55,19 @@ const coreStep = async function ({
   const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
   const generatedFunctionPaths = [internalSrcPath]
 
-  if (featureFlags.netlify_build_frameworks_api) {
-    if (await pathExists(frameworksAPISrcPath)) {
-      generatedFunctionPaths.push(frameworksAPISrcPath)
-    }
+  if (await pathExists(frameworksAPISrcPath)) {
+    generatedFunctionPaths.push(frameworksAPISrcPath)
+  }
 
-    const frameworkImportMap = resolve(
-      buildDir,
-      packagePath || '',
-      FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
-      FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
-    )
+  const frameworkImportMap = resolve(
+    buildDir,
+    packagePath || '',
+    FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+    FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
+  )
 
-    if (await pathExists(frameworkImportMap)) {
-      importMapPaths.push(frameworkImportMap)
-    }
+  if (await pathExists(frameworkImportMap)) {
+    importMapPaths.push(frameworkImportMap)
   }
 
   const sourcePaths = [...generatedFunctionPaths, srcPath].filter(Boolean) as string[]
@@ -158,7 +156,6 @@ const getMetrics = (manifest): Metric[] => {
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
-  featureFlags,
   packagePath,
 }): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
@@ -173,13 +170,9 @@ const hasEdgeFunctionsDirectories = async function ({
     return true
   }
 
-  if (featureFlags.netlify_build_frameworks_api) {
-    const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
 
-    return await pathExists(frameworkFunctionsSrc)
-  }
-
-  return false
+  return await pathExists(frameworkFunctionsSrc)
 }
 
 const logFunctions = async ({
@@ -213,6 +206,7 @@ const logFunctions = async ({
     internalFunctionsSrc: internalSrcDirectory,
     frameworkFunctions: frameworkFunctions.map(({ name }) => name),
     type: 'Edge Functions',
+    generatedFunctions: {},
   })
 }
 

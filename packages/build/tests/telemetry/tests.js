@@ -43,8 +43,8 @@ const runWithApiMock = async function (
     env = {},
     snapshot = false,
     telemetry = true,
-    // Disables the timeout by default because of latency issues in the CI windows boxes
-    disableTelemetryTimeout = true,
+    // Long default timeout to avoid client side timeout during tests
+    telemetryTimeout = 9999,
     responseStatusCode = 200,
     // By default, run build programmatically
     useBinary = false,
@@ -69,9 +69,8 @@ const runWithApiMock = async function (
     const fix = new Fixture(`./fixtures/${fixture}`).withEnv(env).withFlags({
       siteId: 'test',
       testOpts: {
-        // {} disables all request timeouts
-        telemetryTimeout: disableTelemetryTimeout ? {} : undefined,
         telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
+        telemetryTimeout,
         // Any telemetry errors will be logged
         errorMonitor: true,
         ...testOpts,
@@ -233,14 +232,11 @@ test('Telemetry reports a deploy id if given via --deployId flag', async (t) => 
 
 test('Telemetry calls timeout by default', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    // We want to rely on the default timeout value
-    disableTelemetryTimeout: false,
-    // Introduce an arbitrary large timeout on the server side so that we can validate the client timeout works
-    waitTelemetryServer: WAIT_TELEMETRY_SERVER,
+    // Force a client side timeout
+    telemetryTimeout: 0,
+    waitTelemetryServer: 1000,
     // The error monitor snapshot should contain the timeout error
     snapshot: true,
   })
   t.is(telemetryRequests.length, 0)
 })
-
-const WAIT_TELEMETRY_SERVER = 3e5

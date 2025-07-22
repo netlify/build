@@ -1,6 +1,7 @@
 import type { WriteStream } from 'fs'
 import { readdir, unlink } from 'fs/promises'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
@@ -96,8 +97,6 @@ const prepareServer = ({
     const importMap = new ImportMap()
     await importMap.addFiles(options.importMapPaths ?? [], logger)
 
-    const npmSpecifiersWithExtraneousFiles: string[] = []
-
     // we keep track of the files that are relevant to the user's code, so we can clean up leftovers from past executions later
     const relevantFiles = [stage2Path]
 
@@ -114,7 +113,6 @@ const prepareServer = ({
     if (vendor) {
       features.npmModules = true
       importMap.add(vendor.importMap)
-      npmSpecifiersWithExtraneousFiles.push(...vendor.npmSpecifiersWithExtraneousFiles)
       relevantFiles.push(...vendor.outputFiles)
     }
 
@@ -125,7 +123,7 @@ const prepareServer = ({
       // the `stage2Path` file as well as all of their dependencies.
       // Consumers such as the CLI can use this information to watch all the
       // relevant files and issue an isolate restart when one of them changes.
-      const { stdout } = await deno.run(['info', '--no-lock', '--json', stage2Path])
+      const { stdout } = await deno.run(['info', '--json', pathToFileURL(stage2Path).href])
 
       graph = JSON.parse(stdout)
     } catch {
@@ -164,7 +162,6 @@ const prepareServer = ({
       features,
       functionsConfig,
       graph,
-      npmSpecifiersWithExtraneousFiles,
       success,
     }
   }

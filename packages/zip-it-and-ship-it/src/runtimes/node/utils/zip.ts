@@ -5,7 +5,7 @@ import os from 'os'
 import { basename, dirname, extname, join } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
-import { copyFile } from 'cp-file'
+import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
 import {
@@ -93,7 +93,6 @@ const createDirectory = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -210,7 +209,6 @@ const createZipArchive = async function ({
   const hasEntryFileConflict = conflictsWithEntryFile(srcFiles, {
     basePath,
     extension,
-    featureFlags,
     filename,
     mainFile,
     runtimeAPIVersion,
@@ -219,10 +217,9 @@ const createZipArchive = async function ({
   // We don't need an entry file if it would end up with the same path as the
   // function's main file. Unless we have a file conflict and need to move everything into a subfolder
   const needsEntryFile =
-    featureFlags.zisi_unique_entry_file ||
     runtimeAPIVersion === 2 ||
     hasEntryFileConflict ||
-    !isNamedLikeEntryFile(mainFile, { basePath, featureFlags, filename, runtimeAPIVersion })
+    !isNamedLikeEntryFile(mainFile, { basePath, filename, runtimeAPIVersion })
 
   // If there is a naming conflict, we move all user files (everything other
   // than the entry file) to its own sub-directory.
@@ -255,14 +252,12 @@ const createZipArchive = async function ({
   if (runtimeAPIVersion === 2) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
-    if (featureFlags.zisi_add_metadata_file === true) {
-      const { version } = await getPackageJsonIfAvailable(bootstrapPath)
-      const payload = JSON.stringify(getMetadataFile(version, branch))
+    const { version } = await getPackageJsonIfAvailable(bootstrapPath)
+    const payload = JSON.stringify(getMetadataFile(version, branch))
 
-      bootstrapVersion = version
+    bootstrapVersion = version
 
-      addZipContent(archive, payload, METADATA_FILE_NAME)
-    }
+    addZipContent(archive, payload, METADATA_FILE_NAME)
   }
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]

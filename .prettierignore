@@ -2,7 +2,6 @@
 packages/*/tests/**/fixtures/**
 packages/*/test/**/fixtures*/**
 packages/*/benchmarks/**/fixtures*/**
-packages/framework-info/test/fixtures/**
 # don't lint outputs
 packages/*/lib
 packages/*/dist

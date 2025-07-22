@@ -1,4 +1,3 @@
-import { supportedRuntimes } from '@netlify/framework-info'
 import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
@@ -83,8 +82,8 @@ const tExecBuild = async function ({
   timeline,
   devCommand,
   quiet,
-  framework,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -141,19 +140,6 @@ const tExecBuild = async function ({
     featureFlags,
   })
 
-  if (featureFlags.build_automatic_runtime && framework) {
-    const runtime = supportedRuntimes[framework]
-
-    if (runtime !== undefined) {
-      const skip = childEnv[runtime.skipFlag] === 'true'
-      const installed = netlifyConfig.plugins.some((plugin) => plugin.package === runtime.package)
-
-      if (!installed && !skip) {
-        netlifyConfig.plugins.push({ package: runtime.package })
-      }
-    }
-  }
-
   const constants = await getConstants({
     configPath,
     buildDir,
@@ -180,6 +166,7 @@ const tExecBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -223,6 +210,7 @@ const tExecBuild = async function ({
     quiet,
     integrations,
     explicitSecretKeys,
+    enhancedSecretScan,
     edgeFunctionsBootstrapURL,
     eventHandlers,
   })
@@ -235,6 +223,7 @@ const tExecBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   }
 }
 
@@ -284,6 +273,7 @@ export const runAndReportBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -297,6 +287,7 @@ export const runAndReportBuild = async function ({
       timers: timersA,
       configMutations,
       metrics,
+      returnValues,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -340,6 +331,7 @@ export const runAndReportBuild = async function ({
       quiet,
       integrations,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       eventHandlers,
     })
@@ -381,6 +373,7 @@ export const runAndReportBuild = async function ({
       timers: timersA,
       configMutations,
       metrics,
+      returnValues,
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
@@ -446,6 +439,7 @@ const initAndRunBuild = async function ({
   quiet,
   integrations,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -512,6 +506,7 @@ const initAndRunBuild = async function ({
       timers: timersC,
       configMutations,
       metrics,
+      returnValues,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -551,6 +546,7 @@ const initAndRunBuild = async function ({
       devCommand,
       quiet,
       explicitSecretKeys,
+      enhancedSecretScan,
       edgeFunctionsBootstrapURL,
       eventHandlers,
     })
@@ -569,6 +565,7 @@ const initAndRunBuild = async function ({
       timers: timersC,
       configMutations,
       metrics,
+      returnValues,
     }
   } finally {
     // Terminate the child processes of plugins so that they don't linger after
@@ -627,6 +624,7 @@ const runBuild = async function ({
   devCommand,
   quiet,
   explicitSecretKeys,
+  enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
 }) {
@@ -659,6 +657,7 @@ const runBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   } = await runSteps({
     steps,
     buildbotServerSocket,
@@ -694,6 +693,7 @@ const runBuild = async function ({
     quiet,
     userNodeVersion,
     explicitSecretKeys,
+    enhancedSecretScan,
     edgeFunctionsBootstrapURL,
   })
 
@@ -705,5 +705,6 @@ const runBuild = async function ({
     timers: timersB,
     configMutations,
     metrics,
+    returnValues,
   }
 }

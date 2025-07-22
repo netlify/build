@@ -1,8 +1,6 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import fetch from 'node-fetch'
-
 import type { DenoBridge } from './bridge.js'
 import type { Logger } from './logger.js'
 

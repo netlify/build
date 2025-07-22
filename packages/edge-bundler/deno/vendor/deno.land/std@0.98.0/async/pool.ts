@@ -31,7 +31,7 @@ export function pooledMap<T, R>(
   // Start processing items from the iterator
   (async () => {
     const writer = res.writable.getWriter();
-    const executing: Array<Promise<unknown>> = [];
+    const executing: Promise<unknown>[] = [];
     try {
       for await (const item of array) {
         const p = Promise.resolve().then(() => iteratorFn(item));

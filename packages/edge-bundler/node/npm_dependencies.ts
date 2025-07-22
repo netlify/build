@@ -4,16 +4,19 @@ import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import { resolve, ParsedImportMap } from '@import-maps/resolve'
-import { nodeFileTrace, resolve as nftResolve } from '@vercel/nft'
 import { build } from 'esbuild'
 import { findUp } from 'find-up'
-import getPackageName from 'get-package-name'
+import { parseImports } from 'parse-imports'
 import tmp from 'tmp-promise'
 
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { pathsBetween } from './utils/fs.js'
 import { transpile, TYPESCRIPT_EXTENSIONS } from './utils/typescript.js'
+
+const slugifyFileName = (specifier: string) => {
+  return specifier.replace(/\//g, '_')
+}
 
 const slugifyPackageName = (specifier: string) => {
   if (!specifier.startsWith('@')) return specifier
@@ -69,9 +72,20 @@ const getTypesPath = async (packageJsonPath: string): Promise<string | undefined
   return await getTypePathFromTypesPackage(name, packageJsonPath)
 }
 
-const safelyDetectTypes = async (packageJsonPath: string): Promise<string | undefined> => {
+function packageName(specifier: string) {
+  if (!specifier.startsWith('@')) return specifier.split('/')[0]
+  const [scope, pkg] = specifier.split('/')
+  return `${scope}/${pkg}`
+}
+
+const safelyDetectTypes = async (pkg: string, basePath: string): Promise<string | undefined> => {
   try {
-    return await getTypesPath(packageJsonPath)
+    const json = await findUp(`node_modules/${packageName(pkg)}/package.json`, {
+      cwd: basePath,
+    })
+    if (json) {
+      return await getTypesPath(json)
+    }
   } catch {
     return undefined
   }
@@ -104,93 +118,115 @@ interface GetNPMSpecifiersOptions {
   rootPath: string
 }
 
+async function compileTypeScript(file: string): Promise<string> {
+  const compiled = await build({
+    bundle: false,
+    entryPoints: [file],
+    logLevel: 'silent',
+    platform: 'node',
+    write: false,
+  })
+
+  return compiled.outputFiles[0].text
+}
+
+async function parseImportsForFile(file: string, rootPath: string) {
+  const source = TYPESCRIPT_EXTENSIONS.has(path.extname(file))
+    ? await compileTypeScript(file)
+    : await fs.readFile(file, 'utf-8')
+
+  return await parseImports(source, {
+    resolveFrom: rootPath,
+  })
+}
+
 /**
  * Parses a set of functions and returns a list of specifiers that correspond
  * to npm modules.
  */
-const getNPMSpecifiers = async ({ basePath, functions, importMap, environment, rootPath }: GetNPMSpecifiersOptions) => {
+const getNPMSpecifiers = async (
+  { basePath, functions, importMap, environment, rootPath }: GetNPMSpecifiersOptions,
+  alreadySeenPaths = new Set<string>(),
+) => {
   const baseURL = pathToFileURL(basePath)
-  const { reasons } = await nodeFileTrace(functions, {
-    base: rootPath,
-    processCwd: basePath,
-    readFile: async (filePath: string) => {
-      // If this is a TypeScript file, we need to compile in before we can
-      // parse it.
-      if (TYPESCRIPT_EXTENSIONS.has(path.extname(filePath))) {
-        return transpile(filePath)
-      }
-
-      return fs.readFile(filePath, 'utf8')
-    },
-    resolve: async (specifier, ...args) => {
-      // Start by checking whether the specifier matches any import map defined
-      // by the user.
-      const { matched, resolvedImport } = resolve(specifier, importMap, baseURL)
-
-      // If it does, the resolved import is the specifier we'll evaluate going
-      // forward.
-      if (matched && resolvedImport.protocol === 'file:') {
-        const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
-
-        return nftResolve(newSpecifier, ...args)
-      }
-
-      return nftResolve(specifier, ...args)
-    },
-  })
   const npmSpecifiers: { specifier: string; types?: string }[] = []
-  const npmSpecifiersWithExtraneousFiles = new Set<string>()
+  for (const func of functions) {
+    const imports = await parseImportsForFile(func, rootPath)
 
-  for (const [filePath, reason] of reasons.entries()) {
-    const parents = [...reason.parents]
-    const isExtraneousFile = reason.type.every((type) => type === 'asset')
-
-    // An extraneous file is a dependency that was traced by NFT and marked
-    // as not being statically imported. We can't process dynamic importing
-    // at runtime, so we gather the list of modules that may use these files
-    // so that we can warn users about this caveat.
-    if (isExtraneousFile) {
-      parents.forEach((path) => {
-        const specifier = getPackageName(path)
-
-        if (specifier) {
-          npmSpecifiersWithExtraneousFiles.add(specifier)
+    for (const i of imports) {
+      // The non-null assertion is required because typescript can not infer that `moduleSpecifier.value` can be narrowed to a string.
+      // The narrowing is possible because `moduleSpecifier.value` will always be a string when `moduleSpecifier.isConstant` is true.
+      const specifier = i.moduleSpecifier.isConstant ? i.moduleSpecifier.value! : i.moduleSpecifier.code
+      switch (i.moduleSpecifier.type) {
+        case 'absolute': {
+          if (alreadySeenPaths.has(specifier)) {
+            break
+          }
+          alreadySeenPaths.add(specifier)
+          npmSpecifiers.push(
+            ...(await getNPMSpecifiers(
+              { basePath, functions: [specifier], importMap, environment, rootPath },
+              alreadySeenPaths,
+            )),
+          )
+          break
         }
-      })
-    }
+        case 'relative': {
+          const filePath = path.join(path.dirname(func), specifier)
+          if (alreadySeenPaths.has(filePath)) {
+            break
+          }
+          alreadySeenPaths.add(filePath)
+          npmSpecifiers.push(
+            ...(await getNPMSpecifiers(
+              { basePath, functions: [filePath], importMap, environment, rootPath },
+              alreadySeenPaths,
+            )),
+          )
+          break
+        }
+        case 'package': {
+          // node: prefixed imports are detected as packages instead of as builtins
+          // we don't want to try and bundle builtins so we ignore node: prefixed imports
+          if (specifier.startsWith('node:')) {
+            break
+          }
 
-    // every dependency will have its `package.json` in `reasons` exactly once.
-    // by only looking at this file, we save us from doing duplicate work.
-    const isPackageJson = filePath.endsWith('package.json')
-    if (!isPackageJson) continue
-
-    const packageName = getPackageName(filePath)
-    if (packageName === undefined) continue
-
-    const isDirectDependency = parents.some((parentPath) => {
-      if (!parentPath.startsWith(`node_modules${path.sep}`)) return true
-      // typically, edge functions have no direct dependency on the `package.json` of a module.
-      // it's the impl files that depend on `package.json`, so we need to check the parents of
-      // the `package.json` file as well to see if the module is a direct dependency.
-      const parents = [...(reasons.get(parentPath)?.parents ?? [])]
-      return parents.some((parentPath) => !parentPath.startsWith(`node_modules${path.sep}`))
-    })
-
-    // We're only interested in capturing the specifiers that are first-level
-    // dependencies. Because we'll bundle all modules in a subsequent step,
-    // any transitive dependencies will be handled then.
-    if (isDirectDependency) {
-      npmSpecifiers.push({
-        specifier: packageName,
-        types: environment === 'development' ? await safelyDetectTypes(path.join(basePath, filePath)) : undefined,
-      })
+          const { matched, resolvedImport } = resolve(specifier, importMap, baseURL)
+          if (matched) {
+            if (resolvedImport?.protocol === 'file:') {
+              const newSpecifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
+              if (alreadySeenPaths.has(newSpecifier)) {
+                break
+              }
+              alreadySeenPaths.add(newSpecifier)
+              npmSpecifiers.push(
+                ...(await getNPMSpecifiers(
+                  { basePath, functions: [newSpecifier], importMap, environment, rootPath },
+                  alreadySeenPaths,
+                )),
+              )
+            }
+          } else if (!resolvedImport?.protocol?.startsWith('http')) {
+            const t = await safelyDetectTypes(specifier, basePath)
+            npmSpecifiers.push({
+              specifier: specifier,
+              types: t,
+            })
+          }
+          break
+        }
+        case 'builtin':
+        case 'invalid':
+        case 'unknown': {
+          // We don't bundle these types of modules
+          break
+        }
+      }
     }
   }
 
-  return {
-    npmSpecifiers,
-    npmSpecifiersWithExtraneousFiles: [...npmSpecifiersWithExtraneousFiles],
-  }
+  return npmSpecifiers
 }
 
 interface VendorNPMSpecifiersOptions {
@@ -222,7 +258,7 @@ export const vendorNPMSpecifiers = async ({
   // Otherwise, create a random temporary directory.
   const temporaryDirectory = directory ? { path: directory } : await tmp.dir()
 
-  const { npmSpecifiers, npmSpecifiersWithExtraneousFiles } = await getNPMSpecifiers({
+  const npmSpecifiers = await getNPMSpecifiers({
     basePath,
     functions,
     importMap: importMap.getContentsWithURLObjects(),
@@ -235,8 +271,8 @@ export const vendorNPMSpecifiers = async ({
   // specifier, and each of these files will become entry points to esbuild.
   const ops = await Promise.all(
     npmSpecifiers.map(async ({ specifier, types }) => {
-      const code = `import * as mod from "${specifier}"; export default mod.default; export * from "${specifier}";`
-      const filePath = path.join(temporaryDirectory.path, `bundled-${slugifyPackageName(specifier)}.js`)
+      const code = `import * as mod from "${specifier}";\nexport default mod.default;\nexport * from "${specifier}";`
+      const filePath = path.join(temporaryDirectory.path, `bundled-${slugifyFileName(specifier)}.js`)
 
       await fs.writeFile(filePath, code)
 
@@ -332,7 +368,6 @@ export const vendorNPMSpecifiers = async ({
     cleanup,
     directory: temporaryDirectory.path,
     importMap: newImportMap,
-    npmSpecifiersWithExtraneousFiles,
     outputFiles,
   }
 }

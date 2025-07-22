@@ -3,7 +3,7 @@ A Netlify [OpenAPI](https://github.com/netlify/open-api) client that works in th
 ## Usage
 
 ```js
-import { NetlifyAPI } from 'netlify'
+import { NetlifyAPI } from '@netlify/api'
 
 const client = new NetlifyAPI('1234myAccessToken')
 const sites = await client.listSites()
@@ -12,7 +12,7 @@ const sites = await client.listSites()
 ## Using OpenAPI operations
 
 ```js
-import { NetlifyAPI } from 'netlify'
+import { NetlifyAPI } from '@netlify/api'
 
 const client = new NetlifyAPI('1234myAccessToken')
 

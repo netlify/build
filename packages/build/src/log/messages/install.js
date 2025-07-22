@@ -15,7 +15,7 @@ export const logInstallIntegrations = function (logs, integrations) {
     return
   }
 
-  logSubHeader(logs, 'Installing integrations')
+  logSubHeader(logs, 'Installing extensions')
   logArray(
     logs,
     integrations.map((integration) => integration.slug),

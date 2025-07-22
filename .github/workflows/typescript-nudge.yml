@@ -18,7 +18,7 @@ jobs:
 
       - name: 🔎 Get changed JavaScript files
         id: changed-javascript-files
-        uses: tj-actions/changed-files@v36
+        uses: tj-actions/changed-files@v46
         with:
           base_sha: ${{ github.event.pull_request.base.sha }}
           files: |
@@ -41,13 +41,13 @@ jobs:
         if:
           steps.changed-javascript-files.outputs.modified_files != '' ||
           steps.changed-javascript-files.outputs.added_files != ''
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
             This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files.
             Consider converting them to TypeScript.
-          comment_tag: tsnudge
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: tsnudge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Add a label to the PR to help track how many pull requests adds or modifies JavaScript files
         if:
@@ -62,13 +62,13 @@ jobs:
           contains(github.event.pull_request.labels.*.name, 'Adds or modifies js files') &&
           steps.changed-javascript-files.outputs.modified_files == '' &&
           steps.changed-javascript-files.outputs.added_files == ''
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
             ~This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files. Consider converting them to TypeScript.~
             Thank you for converting JavaScript files to TypeScript 🎉"
-          comment_tag: tsnudge
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: tsnudge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Remove the label if JavaScript was converted
         if:

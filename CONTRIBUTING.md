@@ -51,12 +51,6 @@ See our [testing documentation](packages/build/tests/README.md) to learn about o
 
 After submitting the pull request, please make sure the Continuous Integration checks (GitHub actions) are passing.
 
-### Testing in CI
-
-To speed up CI, we load balance the tests across multiple machines. The information required to load balance the tests
-is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10). To regenerate the data (e.g.
-when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
-
 ### Testing locally
 
 The `@netlify/testing` package will need to be built regardless of which package you are working on. In order to do this
@@ -104,8 +98,6 @@ any @netlify/*-utils        -> @netlify/build
                             -> buildbot
 build-image                 -> buildbot
 netlify/plugins             -> buildbot
-@netlify/framework-info     -> buildbot
-                            -> netlify-cli
 ```
 
 Note that Renovate should take care of opening PRs to update the relevant packages that depend upon the modules you just

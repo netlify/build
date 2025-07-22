@@ -1,6 +1,6 @@
 import { env } from 'process'
 
-import { TestAPI, describe, test } from 'vitest'
+import { type TestAPI, describe, test } from 'vitest'
 
 import type { Config } from '../../src/config'
 import type { FeatureFlags } from '../../src/feature_flags'

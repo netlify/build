@@ -1,27 +1,24 @@
 {
   "implicitDependencies": {
     ".c8rc.json": "*",
-    "ava.base.js": ["@netlify/build", "@netlify/config", "netlify"],
+    "ava.base.js": ["@netlify/build", "@netlify/config", "@netlify/api"],
     "package.json": "*",
     "package-lock.json": "*",
     "nx.json": "*",
     "tsconfig.base.json": "*"
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "test", "test:ci"]
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["{projectRoot}/lib"]
+      "outputs": ["{projectRoot}/lib"],
+      "cache": true
     },
     "test:ci": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
+      "cache": true
+    },
+    "test": {
+      "cache": true
     }
   }
 }

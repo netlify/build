@@ -180,3 +180,114 @@ describe('import map URL', () => {
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 })
+
+describe('route headers', () => {
+  test('should accept valid headers with exists matcher', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'exists',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should accept valid headers with missing matcher', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'missing',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should accept valid headers with regex matcher and pattern', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'regex',
+        pattern: '^Bearer .+$',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+
+  test('should throw on missing matcher property', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        pattern: '^Bearer .+$',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on invalid matcher value', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'invalid',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw when matcher is regex but pattern is missing', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'regex',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on invalid pattern format', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'regex',
+        pattern: '/^Bearer .+/',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should throw on additional property in headers', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-custom-header': {
+        matcher: 'exists',
+        foo: 'bar',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should accept multiple headers with different matchers', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].headers = {
+      'x-exists-header': {
+        matcher: 'exists',
+      },
+      'x-missing-header': {
+        matcher: 'missing',
+      },
+      authorization: {
+        matcher: 'regex',
+        pattern: '^Bearer [a-zA-Z0-9]+$',
+      },
+    }
+
+    expect(() => validateManifest(manifest)).not.toThrowError()
+  })
+})

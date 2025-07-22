@@ -1,8 +1,5 @@
-import { version as nodeVersion } from 'node:process'
-
 import { getDeployStore } from '@netlify/blobs'
 import pMap from 'p-map'
-import semver from 'semver'
 
 import { log, logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
@@ -32,12 +29,6 @@ const coreStep: CoreStepFunction = async function ({
     apiURL: `https://${apiHost}`,
   }
 
-  // If we don't have native `fetch` in the global scope, add a polyfill.
-  if (semver.lt(nodeVersion, '18.0.0')) {
-    const nodeFetch = (await import('node-fetch')).default as unknown as typeof fetch
-    storeOpts.fetch = nodeFetch
-  }
-
   const blobs = await scanForBlobs(buildDir, packagePath)
 
   // We checked earlier, but let's be extra safe
@@ -51,8 +42,8 @@ const coreStep: CoreStepFunction = async function ({
   // If using the deploy config API or the Frameworks API, configure the store
   // to use the region that was configured for the deploy. We don't do it for
   // the legacy file-based upload API since that would be a breaking change.
-  if (blobs.apiVersion > 1) {
-    storeOpts.experimentalRegion = 'auto'
+  if (blobs.apiVersion === 1) {
+    storeOpts.region = 'us-east-2'
   }
 
   const blobStore = getDeployStore(storeOpts)
@@ -77,8 +68,7 @@ const coreStep: CoreStepFunction = async function ({
           log(logs, `- Uploading blob ${key}`, { indent: true })
         }
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.length)
-        await blobStore.set(key, arrayBuffer, { metadata })
+        await blobStore.set(key, new Blob([data]), { metadata })
       },
       { concurrency: 10 },
     )

@@ -16,7 +16,9 @@ const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSr
 
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
   const functions = await listFunctions(functionsSrc, { featureFlags: zisiFeatureFlags })
-  return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
+  const dedupedFunctions = new Map(functions.map((func) => [func.name, func]))
+  const relativeMainFiles = [...dedupedFunctions.values()].map(({ mainFile }) => relative(functionsSrc, mainFile))
+  return relativeMainFiles
 }
 
 export const getUserAndInternalFunctions = ({
@@ -31,11 +33,8 @@ export const getUserAndInternalFunctions = ({
   const paths = [
     functionsSrcExists ? functionsSrc : undefined,
     internalFunctionsSrcExists ? internalFunctionsSrc : undefined,
+    frameworkFunctionsSrcExists ? frameworkFunctionsSrc : undefined,
   ]
-
-  if (featureFlags.netlify_build_frameworks_api && frameworkFunctionsSrcExists) {
-    paths.push(frameworkFunctionsSrc)
-  }
 
   return Promise.all(paths.map((path) => path && getRelativeFunctionMainFiles({ featureFlags, functionsSrc: path })))
 }

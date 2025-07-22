@@ -69,7 +69,7 @@ const testSpanMatrix = [
   },
 ]
 
-test.each(testSpanMatrix)('Tracing spans - $testCase.description', async ({ input, expects }) => {
+test.each(testSpanMatrix)('Tracing spans - $description', async ({ input, expects }) => {
   const ctx = await startTracing(
     {
       preloadingEnabled: true,
@@ -98,7 +98,7 @@ test.each(testSpanMatrix)('Tracing spans - $testCase.description', async ({ inpu
   expect(span.parentSpanId).toEqual(expects.parentSpanId)
   expect(span.attributes).toStrictEqual(expects.attributes)
   if (expects.checkResource) {
-    expect(span.resource.attributes).toContain({
+    expect(span.resource.attributes).toMatchObject({
       'service.name': 'mock-package',
       'service.version': '1.0.0',
     })
@@ -126,7 +126,7 @@ test('Tracing - trace id and resource definition', async () => {
   const tracer = trace.getTracer('test')
   const span = tracer.startSpan('test', {}, ctx) as Span
 
-  expect(span.spanContext().traceId).not.empty
+  expect(span.spanContext().traceId).toBeDefined()
   expect(span.parentSpanId).toBeUndefined()
 })
 

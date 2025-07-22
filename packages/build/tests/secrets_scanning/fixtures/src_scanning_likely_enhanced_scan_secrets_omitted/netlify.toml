@@ -1,0 +1,4 @@
+[build.environment]
+  ENV_VAR_1 = "sk_dF6gH9jK4mP7nW2xR5tYc6dBmFP5ym"
+  ENV_VAR_2 = "val2-val2-val2"
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "sk_dF6gH9jK4mP7nW2xR5tYc6dBmFP5ym"

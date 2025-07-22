@@ -14,8 +14,13 @@ test.each([
   ['values_undefined', { netlifyConfigPath: 'values_undefined' }, []],
   ['value_array', { netlifyConfigPath: 'value_array' }, [{ for: '/path', values: { test: 'one, two' } }]],
   ['for_path_no_slash', { netlifyConfigPath: 'for_path_no_slash' }, [{ for: 'path', values: { test: 'one' } }]],
-])(`Parses netlify.toml headers | %s`, async (_, input, output) => {
-  const { headers } = await parseHeaders(input)
+])(`Parses netlify.toml headers | %s`, async (_, { netlifyConfigPath }, output) => {
+  const { headers } = await parseHeaders({
+    headersFiles: undefined,
+    netlifyConfigPath,
+    configHeaders: undefined,
+    minimal: true,
+  })
   expect(headers).toStrictEqual(output)
 })
 
@@ -29,8 +34,13 @@ test.each([
   ['invalid_value_name', { netlifyConfigPath: 'invalid_value_name' }, /Empty header name/],
   ['invalid_value_string', { netlifyConfigPath: 'invalid_value_string' }, /must be a string/],
   ['invalid_value_array', { netlifyConfigPath: 'invalid_value_array' }, /must be a string/],
-])(`Validate syntax errors | %s`, async (_, input, errorMessage) => {
-  const { errors } = await parseHeaders(input)
+])(`Validate syntax errors | %s`, async (_, { netlifyConfigPath }, errorMessage) => {
+  const { errors } = await parseHeaders({
+    headersFiles: undefined,
+    netlifyConfigPath,
+    configHeaders: undefined,
+    minimal: true,
+  })
   expect(errors).not.toHaveLength(0)
   expect(errors.some((error) => errorMessage.test(error.message))).toBeTruthy()
 })

@@ -5,6 +5,7 @@
 [build.environment]
   ENV_VAR_1 = "some other val1"
   ENV_VAR_2 = "some other val2"
+  ENV_VAR_3 = "sk_potential_secret_key"
   ENV_VAR_NOT_SECRET = "not secret val"
   # using the toml to provide the values means we omit this file to result in not matches
   SECRETS_SCAN_OMIT_PATHS = "netlify.toml"

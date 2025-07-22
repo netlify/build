@@ -1,0 +1,6 @@
+{
+    "name": "module_multiple",
+    "workspaces": [
+      "apps/*"
+    ]
+}

@@ -23,4 +23,8 @@ export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TI
   utils: NetlifyPluginUtils
   featureFlags?: Record<string, unknown>
   systemLog?(message: string): void
+  /**
+   * When an extension's event handler executes, we pass extension-specific metadata to the exension
+   */
+  extensionMetadata: { extension_token?: string; slug?: string; author?: string; version?: string }
 }

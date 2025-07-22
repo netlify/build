@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.0.1](https://github.com/netlify/build/compare/opentelemetry-utils-v2.0.0...opentelemetry-utils-v2.0.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+## [2.0.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.3.1...opentelemetry-utils-v2.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+## [1.3.1](https://github.com/netlify/build/compare/opentelemetry-utils-v1.3.0...opentelemetry-utils-v1.3.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+
 ## [1.3.0](https://github.com/netlify/build/compare/opentelemetry-utils-v1.2.1...opentelemetry-utils-v1.3.0) (2024-12-11)
 
 

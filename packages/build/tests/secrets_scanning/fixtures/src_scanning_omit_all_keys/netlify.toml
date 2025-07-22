@@ -1,4 +1,4 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "ENV_VAR_2,ENV_VAR_1"
-  ENV_VAR_1 = "val1-val1-val1"
+  ENV_VAR_1 = "sk_12345678901234567890_val1"
   ENV_VAR_2 = "val2-val2-val2"

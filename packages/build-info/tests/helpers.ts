@@ -1,13 +1,9 @@
-import { execSync } from 'child_process'
-import { readFile, readdir, stat } from 'fs/promises'
+import { readFile, readdir, stat } from 'node:fs/promises'
 import { tmpdir } from 'os'
 import { join } from 'path'
-import { version } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Response } from 'node-fetch'
-import { compare } from 'semver'
-import { TestContext, vi } from 'vitest'
+import { type TestContext, vi } from 'vitest'
 
 /**
  * Copies a fixture to a temp folder on the system and runs the tests inside.
@@ -27,15 +23,7 @@ export const createFixture = async (fixture: string, ctx: TestContext) => {
 
   try {
     const src = fileURLToPath(new URL(`fixtures/${fixture}`, import.meta.url))
-    // fs.cp is only supported in node 16.7+ as long as we have to maintain support for node 14
-    // we need a workaround for the tests (remove once support is dropped)
-    if (compare(version, '16.7.0') < 0) {
-      execSync(`cp -r ${src}/* ${cwd}`)
-    } else {
-      await fs.cp(src, cwd, {
-        recursive: true,
-      })
-    }
+    await fs.cp(src, cwd, { recursive: true })
   } catch {
     // noop
   }

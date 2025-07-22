@@ -20,7 +20,8 @@ export enum Accuracy {
 }
 
 export type PollingStrategy = {
-  name
+  // TODO(serhalp) Define an enum
+  name: string
 }
 
 /** Information on how it was detected and how accurate the detection is */
@@ -32,7 +33,7 @@ export type Detection = {
   accuracy: Accuracy
   /** The NPM package that was able to detect it (high accuracy) */
   package?: { name: string; version?: SemVer }
-  packageJSON?: PackageJson
+  packageJSON?: Partial<PackageJson>
   /** The absolute path to config file that is associated with the framework */
   config?: string
   /** The name of config file that is associated with the framework */
@@ -131,19 +132,19 @@ export function filterByRelevance(detected: DetectedFramework[]) {
  * 3. an npm dependency was specified but matched over the config file (least accurate)
  */
 export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedFramework): number {
-  let sort = a.detected.accuracy > b.detected.accuracy ? -1 : a.detected.accuracy < b.detected.accuracy ? 1 : 0
+  const sort = b.detected.accuracy - a.detected.accuracy
 
-  if (sort >= 0) {
-    // prefer SSG over build tools
-    if (a.category === Category.SSG && b.category === Category.BuildTool) {
-      sort--
-    }
+  // Secondary sorting on Category
+  if (sort === 0) {
+    const categoryRanking = [Category.FrontendFramework, Category.BuildTool, Category.SSG]
+    return categoryRanking.indexOf(b.category) - categoryRanking.indexOf(a.category)
   }
+
   return sort
 }
 
 /** Merges a list of detection results based on accuracy to get the one with the highest accuracy that still contains information provided by all other detections */
-export function mergeDetections(detections: Array<Detection | undefined>): Detection | undefined {
+export function mergeDetections(detections: (Detection | undefined)[]): Detection | undefined {
   const definedDetections = detections
     .filter(function isDetection(d): d is Detection {
       return Boolean(d)
@@ -245,7 +246,9 @@ export abstract class BaseFramework implements Framework {
   }
 
   /** check if the npmDependencies are used inside the provided package.json */
-  private async npmDependenciesUsed(pkgJSON: PackageJson): Promise<{ name: string; version?: SemVer } | undefined> {
+  private async npmDependenciesUsed(
+    pkgJSON: Partial<PackageJson>,
+  ): Promise<{ name: string; version?: SemVer } | undefined> {
     const allDeps = [...Object.entries(pkgJSON.dependencies || {}), ...Object.entries(pkgJSON.devDependencies || {})]
 
     const found = allDeps.find(([depName]) => this.npmDependencies.includes(depName))

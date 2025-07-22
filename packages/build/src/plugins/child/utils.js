@@ -13,13 +13,14 @@ import { show } from './status.js'
 export const getUtils = function ({
   event,
   constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR },
+  generatedFunctions = [],
   runState,
 }) {
   run.command = runCommand
 
   const build = getBuildUtils(event)
   const cache = getCacheUtils(CACHE_DIR)
-  const functions = getFunctionsUtils(FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC)
+  const functions = getFunctionsUtils(FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, generatedFunctions)
   const status = getStatusUtils(runState)
   const utils = { build, cache, run, functions, status }
   addLazyProp(utils, 'git', () => getGitUtils())
@@ -42,12 +43,15 @@ const getCacheUtils = function (CACHE_DIR) {
   return cacheBindOpts({ cacheDir: CACHE_DIR })
 }
 
-const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {
+const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, generatedFunctions) {
   const functionsDirectories = [INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC].filter(Boolean)
   const add = (src) => functionsAdd(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
   const list = functionsList.bind(null, functionsDirectories, { fail: failBuild })
   const listAll = functionsListAll.bind(null, functionsDirectories, { fail: failBuild })
-  return { add, list, listAll }
+  const generate = (functionPath) => generatedFunctions.push({ path: functionPath })
+
+  /** @type import('../../types/options/netlify_plugin_functions_util.js').NetlifyPluginFunctionsUtil */
+  return { add, list, listAll, generate }
 }
 
 const getStatusUtils = function (runState) {

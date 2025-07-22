@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import readdirp from 'readdirp'
+import { readdirpPromise } from 'readdirp'
 
 import { getCacheDir } from './dir.js'
 import { isManifest } from './manifest.js'
@@ -36,7 +36,7 @@ const listBase = async function ({
   cacheDir: string
   depth?: number
 }) {
-  const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter, depth, type: 'files_directories' })
+  const files = await readdirpPromise(`${cacheDir}/${name}`, { fileFilter, depth, type: 'files_directories' })
   const filesA = files.map(({ path }) => join(base, path))
   return filesA
 }

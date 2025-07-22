@@ -36,7 +36,7 @@ const installPackage = async () => {
 
   console.log(`Uncompressing the tarball at '${filename}'...`)
 
-  await tar.x({ C: path, file: filename, strip: 1 })
+  await tarExtract({ C: path, file: filename, strip: 1 })
 
   pathsToCleanup.add(path)
   pathsToCleanup.add(filename)

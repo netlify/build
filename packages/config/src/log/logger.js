@@ -1,6 +1,7 @@
 import figures from 'figures'
 
-import { serializeObject } from './serialize.js'
+import { serializeObject } from '../../lib/log/serialize.js'
+
 import { THEME } from './theme.js'
 
 export const logsAreBuffered = (logs) => {

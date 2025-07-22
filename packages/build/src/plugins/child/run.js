@@ -10,7 +10,7 @@ import { getUtils } from './utils.js'
 
 /** Run a specific plugin event handler */
 export const run = async function (
-  { event, error, constants, envChanges, featureFlags, netlifyConfig, otelCarrier },
+  { event, error, constants, envChanges, featureFlags, netlifyConfig, otelCarrier, extensionMetadata },
   { methods, inputs, packageJson, verbose },
 ) {
   setGlobalContext(propagation.extract(context.active(), otelCarrier))
@@ -19,8 +19,9 @@ export const run = async function (
   return context.with(getGlobalContext(), async () => {
     const method = methods[event]
     const runState = {}
+    const generatedFunctions = []
     const systemLog = getSystemLog()
-    const utils = getUtils({ event, constants, runState })
+    const utils = getUtils({ event, constants, generatedFunctions, runState })
     const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
     const runOptions = {
       utils,
@@ -31,6 +32,7 @@ export const run = async function (
       error,
       featureFlags,
       systemLog,
+      extensionMetadata,
     }
 
     const envBefore = setEnvChanges(envChanges)
@@ -42,6 +44,7 @@ export const run = async function (
     const newEnvChanges = getNewEnvChanges(envBefore, netlifyConfig, netlifyConfigCopy)
 
     const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
-    return { ...runState, newEnvChanges, configMutations }
+    const returnValue = generatedFunctions.length ? { generatedFunctions } : undefined
+    return { ...runState, newEnvChanges, configMutations, returnValue }
   })
 }

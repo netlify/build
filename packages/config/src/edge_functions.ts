@@ -5,10 +5,17 @@ const methodValues = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 
 const isMethod = (value: unknown) => typeof value === 'string' && methodValues.includes(value.toUpperCase())
 
+const isValidHeaderValue = (value: unknown) => typeof value === 'boolean' || typeof value === 'string'
+const isValidHeaders = (value: unknown) =>
+  typeof value === 'object' && value !== null && !Array.isArray(value) && Object.values(value).every(isValidHeaderValue)
+
 export const validations = [
   {
     property: 'edge_functions.*',
-    ...validProperties(['path', 'excludedPath', 'pattern', 'excludedPattern', 'function', 'cache', 'method'], []),
+    ...validProperties(
+      ['path', 'excludedPath', 'pattern', 'excludedPattern', 'function', 'cache', 'method', 'header'],
+      [],
+    ),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
@@ -86,5 +93,23 @@ export const validations = [
     check: (value) => isMethod(value) || (Array.isArray(value) && value.length !== 0 && value.every(isMethod)),
     message: `must be one of or array of: ${methodValues.join(', ')}`,
     example: () => ({ edge_functions: [{ method: ['PUT', 'DELETE'], path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.header',
+    check: isValidHeaders,
+    message: 'must be an object with string keys and boolean or string values.',
+    example: () => ({
+      edge_functions: [
+        {
+          path: '/hello',
+          function: 'hello',
+          header: {
+            'x-must-be-present': true,
+            'x-must-not-be-present': false,
+            'x-must-match-value': '^(value1|value2)$',
+          },
+        },
+      ],
+    }),
   },
 ]

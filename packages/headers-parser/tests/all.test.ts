@@ -38,17 +38,29 @@ test.each([
       { for: '/path', values: { test: 'two' } },
     ],
   ],
-  ['invalid_mixed', { headersFiles: ['success'], configHeaders: {} }, [{ for: '/path', values: { test: 'one' } }]],
+  ['invalid_mixed', { headersFiles: ['success'], configHeaders: [] }, [{ for: '/path', values: { test: 'one' } }]],
 ])(`Parses netlify.toml and _headers | %s`, async (_, input, output) => {
-  const { headers } = await parseHeaders(input)
+  const { headers } = await parseHeaders({
+    headersFiles: undefined,
+    netlifyConfigPath: undefined,
+    configHeaders: undefined,
+    minimal: true,
+    ...input,
+  })
   expect(headers).toStrictEqual(output)
 })
 
 test.each([
   ['invalid_config_headers_array', { configHeaders: {} }, /must be an array/],
   ['invalid_mixed', { headersFiles: ['simple'], configHeaders: {} }, /must be an array/],
-])(`Validate syntax errors | %s`, async (_, input, errorMessage) => {
-  const { errors } = await parseHeaders(input)
+])(`Validates syntax errors | %s`, async (_, input, errorMessage) => {
+  // @ts-expect-error -- Intentional runtime test of invalid input for some reason
+  const { errors } = await parseHeaders({
+    headersFiles: undefined,
+    netlifyConfigPath: undefined,
+    minimal: true,
+    ...input,
+  })
   expect(errors).not.toHaveLength(0)
   expect(errors.some((error) => errorMessage.test(error.message))).toBeTruthy()
 })

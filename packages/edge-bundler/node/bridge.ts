@@ -2,7 +2,7 @@ import { promises as fs, type WriteStream } from 'fs'
 import path from 'path'
 import process from 'process'
 
-import { execa, ExecaChildProcess, Options } from 'execa'
+import { execa, type ExecaChildProcess, type Options } from 'execa'
 import pathKey from 'path-key'
 import semver from 'semver'
 
@@ -12,7 +12,11 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-const DENO_VERSION_RANGE = '^2.1.4'
+
+// When updating DENO_VERSION_RANGE, ensure that the deno version
+// on the netlify/buildbot build image satisfies this range!
+// https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
+const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -96,7 +100,7 @@ class DenoBridge {
     return binaryPath
   }
 
-  private async getBinaryVersion(binaryPath: string) {
+  async getBinaryVersion(binaryPath: string) {
     try {
       const { stdout } = await execa(binaryPath, ['--version'])
       const version = stdout.match(/^deno ([\d.]+)/)
@@ -199,11 +203,13 @@ class DenoBridge {
     await fs.mkdir(this.cacheDirectory, { recursive: true })
   }
 
-  async getBinaryPath() {
+  async getBinaryPath(options?: { silent?: boolean }) {
     const globalPath = await this.getGlobalBinary()
 
     if (globalPath !== undefined) {
-      this.logger.system('Using global installation of Deno CLI')
+      if (!options?.silent) {
+        this.logger.system('Using global installation of Deno CLI')
+      }
 
       return { global: true, path: globalPath }
     }
@@ -211,7 +217,9 @@ class DenoBridge {
     const cachedPath = await this.getCachedBinary()
 
     if (cachedPath !== undefined) {
-      this.logger.system('Using cached Deno CLI from', cachedPath)
+      if (!options?.silent) {
+        this.logger.system('Using cached Deno CLI from', cachedPath)
+      }
 
       return { global: false, path: cachedPath }
     }

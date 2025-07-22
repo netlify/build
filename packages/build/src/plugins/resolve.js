@@ -37,15 +37,13 @@ export const resolvePluginsPath = async function ({
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
+    pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, packagePath, autoPluginsDir })),
   )
   const pluginsOptionsB = await addPluginsNodeVersion({
-    featureFlags,
     pluginsOptions: pluginsOptionsA,
     nodePath,
     userNodeVersion,
     logs,
-    systemLog,
   })
 
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
@@ -100,6 +98,7 @@ const resolvePluginPath = async function ({
   pluginOptions,
   pluginOptions: { packageName, loadedFrom },
   buildDir,
+  packagePath,
   autoPluginsDir,
 }) {
   // Core plugins
@@ -107,9 +106,8 @@ const resolvePluginPath = async function ({
     return pluginOptions
   }
 
-  const localPackageName = normalizeLocalPackageName(packageName)
-
   // Local plugins
+  const localPackageName = normalizeLocalPackageName(packageName)
   if (localPackageName.startsWith('.')) {
     const { path: localPath, error } = await tryResolvePath(localPackageName, buildDir)
     validateLocalPluginPath(error, localPackageName)
@@ -117,7 +115,8 @@ const resolvePluginPath = async function ({
   }
 
   // Plugin added to `package.json`
-  const { path: manualPath } = await tryResolvePath(packageName, buildDir)
+  const packageDir = join(buildDir, packagePath || '')
+  const { path: manualPath } = await tryResolvePath(packageName, packageDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }

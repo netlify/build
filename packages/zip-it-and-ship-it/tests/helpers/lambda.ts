@@ -6,7 +6,7 @@ interface LambdaResponse {
     [header: string]: boolean | number | string
   }
   multiValueHeaders?: {
-    [header: string]: ReadonlyArray<boolean | number | string>
+    [header: string]: readonly (boolean | number | string)[]
   }
   body?: string | NodeJS.ReadableStream
   isBase64Encoded?: boolean

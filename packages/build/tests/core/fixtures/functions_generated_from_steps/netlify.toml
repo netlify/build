@@ -1,0 +1,2 @@
+[[plugins]]
+package = "./.netlify/plugins/node_modules/plugin/plugin.mjs"

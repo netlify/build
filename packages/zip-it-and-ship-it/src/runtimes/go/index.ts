@@ -1,7 +1,7 @@
 import type { Stats } from 'fs'
 import { basename, dirname, extname, join } from 'path'
 
-import { copyFile } from 'cp-file'
+import { copyFile } from 'copy-file'
 
 import { SourceFile } from '../../function.js'
 import type { RuntimeCache } from '../../utils/cache.js'

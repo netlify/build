@@ -4,7 +4,7 @@ import { join } from 'path'
 import type { Bundle } from './bundle.js'
 import { wrapBundleError } from './bundle_error.js'
 import { Cache, FunctionConfig, FunctionConfigWithAllPossibleFields, Path } from './config.js'
-import { Declaration, normalizePattern } from './declaration.js'
+import { Declaration, type HeaderMatch, getHeaderMatchers, normalizePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags } from './feature_flags.js'
 import { Layer } from './layer.js'
@@ -15,6 +15,7 @@ import { ExtendedURLPattern } from './utils/urlpattern.js'
 
 interface Route {
   function: string
+  headers?: Record<string, HeaderMatch>
   pattern: string
   excluded_patterns: string[]
   path?: string
@@ -185,7 +186,6 @@ const generateManifest = ({
       continue
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { onError, rateLimit, path, excludedPath, pattern, excludedPattern, ...rest } =
       singleInternalFunctionConfig as FunctionConfigWithAllPossibleFields
 
@@ -231,6 +231,10 @@ const generateManifest = ({
 
     if ('method' in declaration) {
       route.methods = normalizeMethods(declaration.method, func.name)
+    }
+
+    if ('header' in declaration) {
+      route.headers = getHeaderMatchers(declaration.header)
     }
 
     if ('path' in declaration) {

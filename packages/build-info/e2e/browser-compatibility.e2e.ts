@@ -78,7 +78,7 @@ test('Should detect the package manager', async ({ page }) => {
   expect(await page.evaluate(() => window.detectPackageManager(new window.project(window.fs, '/')))).toMatchObject({
     forceEnvironment: 'NETLIFY_USE_PNPM',
     installCommand: 'pnpm install',
-    lockFile: 'pnpm-lock.yaml',
+    lockFiles: ['pnpm-lock.yaml'],
     name: 'pnpm',
   })
 })

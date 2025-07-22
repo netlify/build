@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 
 import isPathInside from 'is-path-inside'
 import pMap from 'p-map'
@@ -11,6 +11,7 @@ import { FunctionSource } from './function.js'
 import { createManifest } from './manifest.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
+import { type MixedPaths, getFunctionsBag } from './paths.js'
 import { addArchiveSize } from './utils/archive_size.js'
 import { RuntimeCache } from './utils/cache.js'
 import { formatZipResult, FunctionResult } from './utils/format_result.js'
@@ -35,7 +36,6 @@ export type ZipFunctionsOptions = ZipFunctionOptions & {
   configFileDirectories?: string[]
   manifest?: string
   parallelLimit?: number
-  internalSrcFolder?: string
 }
 
 const DEFAULT_PARALLEL_LIMIT = 5
@@ -49,7 +49,7 @@ const validateArchiveFormat = (archiveFormat: ArchiveFormat) => {
 // Zip `srcFolder/*` (Node.js or Go files) to `destFolder/*.zip` so it can be
 // used by AWS Lambda
 export const zipFunctions = async function (
-  relativeSrcFolders: string | string[],
+  input: MixedPaths,
   destFolder: string,
   {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
@@ -63,7 +63,6 @@ export const zipFunctions = async function (
     repositoryRoot = basePath,
     systemLog,
     debug,
-    internalSrcFolder,
   }: ZipFunctionsOptions = {},
 ): Promise<FunctionResult[]> {
   validateArchiveFormat(archiveFormat)
@@ -71,11 +70,11 @@ export const zipFunctions = async function (
   const logger = getLogger(systemLog, debug)
   const cache = new RuntimeCache()
   const featureFlags = getFlags(inputFeatureFlags)
-  const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
-  const internalFunctionsPath = internalSrcFolder && resolve(internalSrcFolder)
+  const bag = getFunctionsBag(input)
+  const srcFolders = resolveFunctionsDirectories([...bag.generated.directories, ...bag.user.directories])
 
   const [paths] = await Promise.all([listFunctionsDirectories(srcFolders), fs.mkdir(destFolder, { recursive: true })])
-  const functions = await getFunctionsFromPaths(paths, {
+  const functions = await getFunctionsFromPaths([...paths, ...bag.generated.functions, ...bag.user.functions], {
     cache,
     config,
     configFileDirectories,
@@ -93,6 +92,10 @@ export const zipFunctions = async function (
         ...(func.config.nodeModuleFormat === MODULE_FORMAT.ESM ? { zisi_pure_esm_mjs: true } : {}),
       }
 
+      const isInternal =
+        bag.generated.functions.includes(func.srcPath) ||
+        bag.generated.directories.some((directory) => isPathInside(func.srcPath, directory))
+
       const zipResult = await func.runtime.zipFunction({
         archiveFormat,
         basePath,
@@ -103,7 +106,7 @@ export const zipFunctions = async function (
         extension: func.extension,
         featureFlags: functionFlags,
         filename: func.filename,
-        isInternal: Boolean(internalFunctionsPath && isPathInside(func.srcPath, internalFunctionsPath)),
+        isInternal,
         logger,
         mainFile: func.mainFile,
         name: func.name,
@@ -128,9 +131,7 @@ export const zipFunctions = async function (
     }),
   )
 
-  if (manifest !== undefined) {
-    await createManifest({ functions: formattedResults, path: resolve(manifest) })
-  }
+  await createManifest({ functions: formattedResults, path: resolve(manifest || join(destFolder, 'manifest.json')) })
 
   return formattedResults
 }
@@ -171,7 +172,7 @@ export const zipFunction = async function (
     runtime,
     srcDir,
     stat: stats,
-  }: FunctionSource = functions.values().next().value
+  }: FunctionSource = functions.values().next().value!
 
   await fs.mkdir(destFolder, { recursive: true })
 

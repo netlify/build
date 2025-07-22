@@ -1,6 +1,6 @@
 import { join, posix } from 'path'
 
-import { beforeEach, expect, test, describe, TestContext } from 'vitest'
+import { beforeEach, expect, test, describe, type TestContext } from 'vitest'
 
 import { createFixture, createWebFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'
@@ -59,22 +59,24 @@ test('retrieve Nx specific dist and commands for a framework', async (ctx) => {
   const project = new Project(ctx.fs, fixture.cwd)
   const settings = await project.getBuildSettings()
 
-  expect(settings).toEqual([
-    expect.objectContaining({
-      baseDirectory: '', // nx needs to be run from the root
-      buildCommand: 'nx run astro:build',
-      devCommand: 'nx run astro:dev',
-      dist: join('dist/packages/astro'),
-      frameworkPort: 3000,
-    }),
-    expect.objectContaining({
-      baseDirectory: '', // nx needs to be run from the root
-      buildCommand: 'nx run website:build',
-      devCommand: 'nx run website:serve',
-      dist: join('dist/packages/website/.next'),
-      frameworkPort: 4200,
-    }),
-  ])
+  expect(settings).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        baseDirectory: '', // nx needs to be run from the root
+        buildCommand: 'nx run astro:build',
+        devCommand: 'nx run astro:dev',
+        dist: join('dist/packages/astro'),
+        frameworkPort: 3000,
+      }),
+      expect.objectContaining({
+        baseDirectory: '', // nx needs to be run from the root
+        buildCommand: 'nx run website:build',
+        devCommand: 'nx run website:serve',
+        dist: join('dist/packages/website/.next'),
+        frameworkPort: 4200,
+      }),
+    ]),
+  )
 })
 
 test('retrieve settings from the root for a base directory', async (ctx) => {
@@ -128,22 +130,23 @@ test('get dev command from npm scripts if defined inside a workspace setup', asy
   fs.cwd = cwd
   const project = new Project(fs, cwd)
   const settings = await project.getBuildSettings()
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
-  expect(sorted).toEqual([
-    expect.objectContaining({
-      baseDirectory: join('apps/next'), // not executed via npm run so we need to have a base directory
-      buildCommand: 'next build',
-      devCommand: 'next',
-      dist: join('apps/next/.next'),
-    }),
-    expect.objectContaining({
-      baseDirectory: '', // executed via npm run so no base directory needed we can run from the root
-      buildCommand: 'npm --workspace svelte-app run site:build',
-      devCommand: 'npm --workspace svelte-app run site:start',
-      dist: join('apps/svelte/public'),
-    }),
-  ])
+
+  expect(settings).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        baseDirectory: join('apps/next'), // not executed via npm run so we need to have a base directory
+        buildCommand: 'next build',
+        devCommand: 'next',
+        dist: join('apps/next/.next'),
+      }),
+      expect.objectContaining({
+        baseDirectory: '', // executed via npm run so no base directory needed we can run from the root
+        buildCommand: 'npm --workspace svelte-app run site:build',
+        devCommand: 'npm --workspace svelte-app run site:start',
+        dist: join('apps/svelte/public'),
+      }),
+    ]),
+  )
 })
 
 describe.each([
@@ -180,24 +183,25 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/blog'),
-          buildCommand: 'npm --workspace @evilcorp/blog run build',
-          devCommand: 'npm --workspace @evilcorp/blog run dev',
-          dist: platformJoin('packages/blog/dist'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/website'),
-          buildCommand: 'npm --workspace @evilcorp/website run build',
-          devCommand: 'npm --workspace @evilcorp/website run dev',
-          dist: platformJoin('packages/website/.next'),
-        }),
-      ])
+
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/website'),
+            buildCommand: 'npm --workspace @evilcorp/website run build',
+            devCommand: 'npm --workspace @evilcorp/website run dev',
+            dist: platformJoin('packages/website/.next'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/blog'),
+            buildCommand: 'npm --workspace @evilcorp/blog run build',
+            devCommand: 'npm --workspace @evilcorp/blog run dev',
+            dist: platformJoin('packages/blog/dist'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
@@ -225,25 +229,25 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/blog'),
-          buildCommand: 'pnpm --filter @evilcorp/blog... run build',
-          devCommand: 'pnpm --filter @evilcorp/blog run dev',
-          dist: platformJoin('packages/blog/dist'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/website'),
-          buildCommand: 'pnpm --filter @evilcorp/website... run build',
-          devCommand: 'pnpm --filter @evilcorp/website run dev',
-          dist: platformJoin('packages/website/.next'),
-        }),
-      ])
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/blog'),
+            buildCommand: 'pnpm --filter @evilcorp/blog... run build',
+            devCommand: 'pnpm --filter @evilcorp/blog run dev',
+            dist: platformJoin('packages/blog/dist'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/website'),
+            buildCommand: 'pnpm --filter @evilcorp/website... run build',
+            devCommand: 'pnpm --filter @evilcorp/website run dev',
+            dist: platformJoin('packages/website/.next'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
@@ -271,25 +275,25 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/blog'),
-          buildCommand: 'yarn workspace @evilcorp/blog build',
-          devCommand: 'yarn workspace @evilcorp/blog dev',
-          dist: platformJoin('packages/blog/dist'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/website'),
-          buildCommand: 'yarn workspace @evilcorp/website build',
-          devCommand: 'yarn workspace @evilcorp/website dev',
-          dist: platformJoin('packages/website/.next'),
-        }),
-      ])
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/blog'),
+            buildCommand: 'yarn workspace @evilcorp/blog build',
+            devCommand: 'yarn workspace @evilcorp/blog dev',
+            dist: platformJoin('packages/blog/dist'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/website'),
+            buildCommand: 'yarn workspace @evilcorp/website build',
+            devCommand: 'yarn workspace @evilcorp/website dev',
+            dist: platformJoin('packages/website/.next'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
@@ -317,25 +321,25 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('apps/docs'),
-          buildCommand: 'turbo run build --filter docs',
-          devCommand: 'turbo run dev --filter docs',
-          dist: platformJoin('apps/docs/.next'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('apps/web'),
-          buildCommand: 'turbo run build --filter web',
-          devCommand: 'turbo run dev --filter web',
-          dist: platformJoin('apps/web/.next'),
-        }),
-      ])
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('apps/docs'),
+            buildCommand: 'turbo run build --filter docs',
+            devCommand: 'turbo run dev --filter docs',
+            dist: platformJoin('apps/docs/.next'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('apps/web'),
+            buildCommand: 'turbo run build --filter web',
+            devCommand: 'turbo run dev --filter web',
+            dist: platformJoin('apps/web/.next'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
@@ -363,25 +367,25 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/astro'),
-          buildCommand: 'nx run astro:build',
-          devCommand: 'nx run astro:dev',
-          dist: platformJoin('dist/packages/astro'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/website'),
-          buildCommand: 'nx run website:build',
-          devCommand: 'nx run website:serve',
-          dist: platformJoin('dist/packages/website/.next'),
-        }),
-      ])
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/astro'),
+            buildCommand: 'nx run astro:build',
+            devCommand: 'nx run astro:dev',
+            dist: platformJoin('dist/packages/astro'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/website'),
+            buildCommand: 'nx run website:build',
+            devCommand: 'nx run website:serve',
+            dist: platformJoin('dist/packages/website/.next'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {
@@ -409,32 +413,32 @@ describe.each([
     test(`should get the settings from the root of the project`, async ({ fs, cwd }) => {
       const project = new Project(fs, cwd)
       const settings = await project.getBuildSettings()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const sorted = settings.sort((a, b) => a.packagePath!.localeCompare(b.packagePath!))
 
-      expect(sorted).toEqual([
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('apps/nuxt-app'),
-          buildCommand: 'nx run nuxt-app:build',
-          devCommand: 'nx run nuxt-app:dev',
-          dist: platformJoin('apps/nuxt-app/dist'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('apps/svelte-app'),
-          buildCommand: 'nx run svelte-app:build',
-          devCommand: 'nx run svelte-app:dev',
-          dist: platformJoin('apps/svelte-app/build'),
-        }),
-        expect.objectContaining({
-          baseDirectory: '',
-          packagePath: platformJoin('packages/ui-components'),
-          buildCommand: 'nx run @my-org/ui-components:build',
-          devCommand: 'nx run @my-org/ui-components:start',
-          dist: platformJoin('packages/ui-components/www'),
-        }),
-      ])
+      expect(settings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('apps/nuxt-app'),
+            buildCommand: 'nx run nuxt-app:build',
+            devCommand: 'nx run nuxt-app:dev',
+            dist: platformJoin('apps/nuxt-app/dist'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('apps/svelte-app'),
+            buildCommand: 'nx run svelte-app:build',
+            devCommand: 'nx run svelte-app:dev',
+            dist: platformJoin('apps/svelte-app/build'),
+          }),
+          expect.objectContaining({
+            baseDirectory: '',
+            packagePath: platformJoin('packages/ui-components'),
+            buildCommand: 'nx run @my-org/ui-components:build',
+            devCommand: 'nx run @my-org/ui-components:start',
+            dist: platformJoin('packages/ui-components/www'),
+          }),
+        ]),
+      )
     })
 
     test(`should get the settings from a package sub path`, async ({ fs, cwd }) => {

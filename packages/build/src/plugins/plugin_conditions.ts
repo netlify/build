@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 import _pEvery from 'p-every'
-import { PackageJson } from 'read-package-up'
+import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
 
 import { importJsonFile } from '../utils/json.js'

@@ -1,0 +1,11 @@
+{
+  "name": "module_plugin",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {
+    "netlify-plugin-test": "^8.5.3"
+  }
+}

@@ -1,191 +1,257 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`bundle > should throw on additional property in bundle 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
 
-  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\",
-  5 |       \\"format\\": \\"js\\",
-> 6 |       \\"foo\\": \\"bar\\"
+  4 |       "asset": "f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js",
+  5 |       "format": "js",
+> 6 |       "foo": "bar"
     |       ^^^^^ 😲  foo is not expected to be here!
   7 |     }
   8 |   ],
-  9 |   \\"routes\\": ["
+  9 |   "routes": []
 `;
 
 exports[`bundle > should throw on invalid format 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ENUM must be equal to one of the allowed values
 (eszip2, js)
 
   3 |     {
-  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\",
-> 5 |       \\"format\\": \\"foo\\"
+  4 |       "asset": "f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js",
+> 5 |       "format": "foo"
     |                 ^^^^^ 👈🏽  Unexpected value, should be equal to one of the allowed values
   6 |     }
   7 |   ],
-  8 |   \\"routes\\": ["
+  8 |   "routes": []
 `;
 
 exports[`bundle > should throw on missing asset 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'asset'
 
   1 | {
-  2 |   \\"bundles\\": [
+  2 |   "bundles": [
 > 3 |     {
     |     ^ ☹️  asset is missing here!
-  4 |       \\"format\\": \\"js\\"
+  4 |       "format": "js"
   5 |     }
-  6 |   ],"
+  6 |   ],]
 `;
 
 exports[`bundle > should throw on missing format 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'format'
 
   1 | {
-  2 |   \\"bundles\\": [
+  2 |   "bundles": [
 > 3 |     {
     |     ^ ☹️  format is missing here!
-  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\"
+  4 |       "asset": "f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js"
   5 |     }
-  6 |   ],"
+  6 |   ],]
 `;
 
 exports[`import map URL > should throw on wrong type 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 TYPE must be string
 
   30 |   ],
-  31 |   \\"bundler_version\\": \\"1.6.0\\",
-> 32 |   \\"import_map\\": [
+  31 |   "bundler_version": "1.6.0",
+> 32 |   "import_map": [
      |                 ^
-> 33 |     \\"file:///root/.netlify/edge-functions-dist/import_map.json\\"
+> 33 |     "file:///root/.netlify/edge-functions-dist/import_map.json"
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 34 |   ]
      | ^^^^ 👈🏽  type must be string
-  35 | }"
+  35 | }]
 `;
 
 exports[`layers > should throw on additional property 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
 
-  27 |       \\"name\\": \\"name\\",
-  28 |       \\"local\\": \\"local\\",
-> 29 |       \\"foo\\": \\"bar\\"
+  27 |       "name": "name",
+  28 |       "local": "local",
+> 29 |       "foo": "bar"
      |       ^^^^^ 😲  foo is not expected to be here!
   30 |     }
   31 |   ],
-  32 |   \\"bundler_version\\": \\"1.6.0\\""
+  32 |   "bundler_version": "1.6.0"]
 `;
 
 exports[`layers > should throw on missing flag 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'flag'
 
   23 |   ],
-  24 |   \\"layers\\": [
+  24 |   "layers": [
 > 25 |     {
      |     ^ ☹️  flag is missing here!
-  26 |       \\"name\\": \\"name\\",
-  27 |       \\"local\\": \\"local\\"
-  28 |     }"
+  26 |       "name": "name",
+  27 |       "local": "local"
+  28 |     }]
 `;
 
 exports[`layers > should throw on missing name 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'name'
 
   23 |   ],
-  24 |   \\"layers\\": [
+  24 |   "layers": [
 > 25 |     {
      |     ^ ☹️  name is missing here!
-  26 |       \\"flag\\": \\"flag\\",
-  27 |       \\"local\\": \\"local\\"
-  28 |     }"
+  26 |       "flag": "flag",
+  27 |       "local": "local"
+  28 |     }]
 `;
 
 exports[`route > should throw on additional property 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
 
-  12 |       \\"pattern\\": \\"^/hello/?$\\",
-  13 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\",
-> 14 |       \\"foo\\": \\"bar\\"
+  12 |       "pattern": "^/hello/?$",
+  13 |       "generator": "@netlify/fake-plugin@1.0.0",
+> 14 |       "foo": "bar"
      |       ^^^^^ 😲  foo is not expected to be here!
   15 |     }
   16 |   ],
-  17 |   \\"post_cache_routes\\": ["
+  17 |   "post_cache_routes": []
 `;
 
 exports[`route > should throw on invalid pattern 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 FORMAT pattern must be a regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)
 
-  10 |       \\"name\\": \\"name\\",
-  11 |       \\"function\\": \\"hello\\",
-> 12 |       \\"pattern\\": \\"/^/hello/?$/\\",
+  10 |       "name": "name",
+  11 |       "function": "hello",
+> 12 |       "pattern": "/^/hello/?$/",
      |                  ^^^^^^^^^^^^^^ 👈🏽  format pattern must be a regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)
-  13 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\"
+  13 |       "generator": "@netlify/fake-plugin@1.0.0"
   14 |     }
-  15 |   ],"
+  15 |   ],]
 `;
 
 exports[`route > should throw on missing function 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'function'
 
    7 |   ],
-   8 |   \\"routes\\": [
+   8 |   "routes": [
 >  9 |     {
      |     ^ ☹️  function is missing here!
-  10 |       \\"name\\": \\"name\\",
-  11 |       \\"pattern\\": \\"^/hello/?$\\",
-  12 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\""
+  10 |       "name": "name",
+  11 |       "pattern": "^/hello/?$",
+  12 |       "generator": "@netlify/fake-plugin@1.0.0"]
 `;
 
 exports[`route > should throw on missing pattern 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 REQUIRED must have required property 'pattern'
 
    7 |   ],
-   8 |   \\"routes\\": [
+   8 |   "routes": [
 >  9 |     {
      |     ^ ☹️  pattern is missing here!
-  10 |       \\"name\\": \\"name\\",
-  11 |       \\"function\\": \\"hello\\",
-  12 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\""
+  10 |       "name": "name",
+  11 |       "function": "hello",
+  12 |       "generator": "@netlify/fake-plugin@1.0.0"]
+`;
+
+exports[`route headers > should throw on additional property in headers 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  15 |         "x-custom-header": {
+  16 |           "matcher": "exists",
+> 17 |           "foo": "bar"
+     |           ^^^^^ 😲  foo is not expected to be here!
+  18 |         }
+  19 |       }
+  20 |     }]
+`;
+
+exports[`route headers > should throw on invalid matcher value 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+ENUM must be equal to one of the allowed values
+(exists, missing, regex)
+
+  14 |       "headers": {
+  15 |         "x-custom-header": {
+> 16 |           "matcher": "invalid"
+     |                      ^^^^^^^^^ 👈🏽  Unexpected value, should be equal to one of the allowed values
+  17 |         }
+  18 |       }
+  19 |     }]
+`;
+
+exports[`route headers > should throw on invalid pattern format 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+FORMAT must match format "regexPattern"
+
+  15 |         "x-custom-header": {
+  16 |           "matcher": "regex",
+> 17 |           "pattern": "/^Bearer .+/"
+     |                      ^^^^^^^^^^^^^^ 👈🏽  format must match format "regexPattern"
+  18 |         }
+  19 |       }
+  20 |     }]
+`;
+
+exports[`route headers > should throw on missing matcher property 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'matcher'
+
+  13 |       "generator": "@netlify/fake-plugin@1.0.0",
+  14 |       "headers": {
+> 15 |         "x-custom-header": {
+     |                            ^ ☹️  matcher is missing here!
+  16 |           "pattern": "^Bearer .+$"
+  17 |         }
+  18 |       }]
+`;
+
+exports[`route headers > should throw when matcher is regex but pattern is missing 1`] = `
+[ManifestValidationError: Validation of Edge Functions manifest failed
+REQUIRED must have required property 'pattern'
+
+  13 |       "generator": "@netlify/fake-plugin@1.0.0",
+  14 |       "headers": {
+> 15 |         "x-custom-header": {
+     |                            ^ ☹️  pattern is missing here!
+  16 |           "matcher": "regex"
+  17 |         }
+  18 |       }]
 `;
 
 exports[`should show multiple errors 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
 
   30 |   ],
-  31 |   \\"bundler_version\\": \\"1.6.0\\",
-> 32 |   \\"foo\\": \\"bar\\",
+  31 |   "bundler_version": "1.6.0",
+> 32 |   "foo": "bar",
      |   ^^^^^ 😲  foo is not expected to be here!
-  33 |   \\"baz\\": \\"bar\\"
+  33 |   "baz": "bar"
   34 | }
 
 ADDTIONAL PROPERTY must NOT have additional properties
 
-  31 |   \\"bundler_version\\": \\"1.6.0\\",
-  32 |   \\"foo\\": \\"bar\\",
-> 33 |   \\"baz\\": \\"bar\\"
+  31 |   "bundler_version": "1.6.0",
+  32 |   "foo": "bar",
+> 33 |   "baz": "bar"
      |   ^^^^^ 😲  baz is not expected to be here!
-  34 | }"
+  34 | }]
 `;
 
 exports[`should throw on additional property on root level 1`] = `
-"Validation of Edge Functions manifest failed
+[ManifestValidationError: Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
 
   30 |   ],
-  31 |   \\"bundler_version\\": \\"1.6.0\\",
-> 32 |   \\"foo\\": \\"bar\\"
+  31 |   "bundler_version": "1.6.0",
+> 32 |   "foo": "bar"
      |   ^^^^^ 😲  foo is not expected to be here!
-  33 | }"
+  33 | }]
 `;

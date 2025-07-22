@@ -2,6 +2,8 @@ import { promises as fs } from 'fs'
 import { basename, extname, dirname, join } from 'path'
 
 import isPathInside from 'is-path-inside'
+// @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
+// this dependency.
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 

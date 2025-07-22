@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
+import { SemVer } from 'semver'
 import tmp from 'tmp-promise'
 
 import { DenoBridge } from './bridge.js'
@@ -39,8 +40,11 @@ export const isValidOnError = (value: unknown): value is OnError => {
   return value === 'fail' || value === 'bypass' || value.startsWith('/')
 }
 
+export type HeadersConfig = Record<string, boolean | string>
+
 interface BaseFunctionConfig {
   cache?: Cache
+  header?: HeadersConfig
   onError?: OnError
   name?: string
   generator?: string
@@ -95,24 +99,26 @@ export const getFunctionConfig = async ({
   // The extractor will use its exit code to signal different error scenarios,
   // based on the list of exit codes we send as an argument. We then capture
   // the exit code to know exactly what happened and guide people accordingly.
+  const version = new SemVer((await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)) || '')
+
   const { exitCode, stderr, stdout } = await deno.run(
     [
       'run',
       '--allow-env',
-      '--allow-import',
+      version.major >= 2 ? '--allow-import' : '',
       '--allow-net',
       '--allow-read',
       `--allow-write=${collector.path}`,
-      '--quiet',
       `--import-map=${importMap.toDataURL()}`,
       '--no-config',
       '--no-lock',
       '--node-modules-dir=false',
+      '--quiet',
       extractorPath,
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,
       JSON.stringify(ConfigExitCode),
-    ],
+    ].filter(Boolean),
     { rejectOnExitCode: false },
   )
 

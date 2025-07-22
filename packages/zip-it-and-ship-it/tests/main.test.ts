@@ -21,11 +21,14 @@ import { detectEsModule } from '../src/runtimes/node/utils/detect_es_module.js'
 import { MODULE_FORMAT } from '../src/runtimes/node/utils/module_format.js'
 import { shellUtils } from '../src/utils/shell.js'
 import type { ZipFunctionsOptions } from '../src/zip.js'
+import { zipFunctions } from '../src/zip.js'
 
 import {
   BINARY_PATH,
   FIXTURES_DIR,
+  FIXTURES_ESM_DIR,
   getBundlerNameFromOptions,
+  getFunctionResultsByName,
   getRequires,
   importFunctionFile,
   unzipFiles,
@@ -37,6 +40,7 @@ import { computeSha1 } from './helpers/sha.js'
 import { allBundleConfigs, testMany } from './helpers/test_many.js'
 
 import 'source-map-support/register'
+import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
 
@@ -53,9 +57,10 @@ interface CustomMatchers {
 }
 
 declare module 'vitest' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Assertion extends CustomMatchers {}
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface AsymmetricMatchersContaining extends CustomMatchers {}
 }
 
@@ -78,14 +83,20 @@ describe('zip-it-and-ship-it', () => {
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {
       const fixtureName = join('node-internal', '.netlify/internal-functions')
-      const { files } = await zipFixture(fixtureName, {
-        length: 2,
-        opts: {
-          ...options,
-          internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-          config: { 'function-1': { name: 'Function One', generator: '@netlify/mock-plugin@1.0.0' } },
+      const { files } = await zipFixture(
+        {
+          generated: {
+            directories: [fixtureName],
+          },
         },
-      })
+        {
+          length: 2,
+          opts: {
+            ...options,
+            config: { 'function-1': { name: 'Function One', generator: '@netlify/mock-plugin@1.0.0' } },
+          },
+        },
+      )
 
       expect(files[0].displayName).toBe('Function One')
       expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -697,10 +708,6 @@ describe('zip-it-and-ship-it', () => {
     })
   })
 
-  testMany('Throws when the source folder does not exist', [...allBundleConfigs, 'bundler_none'], async (options) => {
-    await expect(zipNode('does-not-exist', { opts: options })).rejects.toThrowError(/Functions folders do not exist/)
-  })
-
   testMany(
     'Works even if destination folder does not exist',
     [...allBundleConfigs, 'bundler_none'],
@@ -892,18 +899,6 @@ describe('zip-it-and-ship-it', () => {
       })
 
       await expect(`${files[0].unzipPath}/node_modules/i-do-not-exist`).not.toPathExist()
-    },
-  )
-
-  testMany(
-    'Exposes the main export of `node-fetch` when imported using `require()`',
-    [...allBundleConfigs],
-    async (options) => {
-      const { files } = await zipFixture('node-fetch', { opts: options })
-      const unzippedFunctions = await unzipFiles(files)
-      const returnValue = await importFunctionFile(`${unzippedFunctions[0].unzipPath}/function.js`)
-
-      expect(returnValue).toBeTypeOf('function')
     },
   )
 
@@ -1852,18 +1847,20 @@ describe('zip-it-and-ship-it', () => {
     })
 
     const fixtureName = join('go-internal', '.netlify/internal-functions')
-    const { files } = await zipFixture(fixtureName, {
-      length: 2,
-      opts: {
-        internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-        config: {
-          'go-func-1': {
-            name: 'Go Function One',
-            generator: '@netlify/mock-plugin@1.0.0',
+    const { files } = await zipFixture(
+      { generated: { directories: [fixtureName] } },
+      {
+        length: 2,
+        opts: {
+          config: {
+            'go-func-1': {
+              name: 'Go Function One',
+              generator: '@netlify/mock-plugin@1.0.0',
+            },
           },
         },
       },
-    })
+    )
 
     expect(files[0].displayName).toBe('Go Function One')
     expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -2042,21 +2039,27 @@ describe('zip-it-and-ship-it', () => {
     })
 
     const fixtureName = join('rust-internal', '.netlify/internal-functions')
-    const { files } = await zipFixture(fixtureName, {
-      length: 2,
-      opts: {
-        internalSrcFolder: join(FIXTURES_DIR, fixtureName),
-        config: {
-          'rust-func-1': {
-            name: 'Rust Function Two',
-            generator: '@netlify/mock-plugin@1.0.0',
-          },
-        },
-        featureFlags: {
-          buildRustSource: true,
+    const { files } = await zipFixture(
+      {
+        generated: {
+          directories: [fixtureName],
         },
       },
-    })
+      {
+        length: 2,
+        opts: {
+          config: {
+            'rust-func-1': {
+              name: 'Rust Function Two',
+              generator: '@netlify/mock-plugin@1.0.0',
+            },
+          },
+          featureFlags: {
+            buildRustSource: true,
+          },
+        },
+      },
+    )
 
     expect(files[0].displayName).toBe('Rust Function Two')
     expect(files[0].generator).toBe('@netlify/mock-plugin@1.0.0')
@@ -2862,14 +2865,17 @@ test('Adds a `priority` field to the generated manifest file', async () => {
   const fixtureName = 'multiple-src-directories'
   const manifestPath = join(tmpDir, 'manifest.json')
   const paths = {
-    generated: `${fixtureName}/.netlify/internal-functions`,
-    user: `${fixtureName}/netlify/functions`,
+    generated: {
+      directories: [`${fixtureName}/.netlify/internal-functions`],
+    },
+    user: {
+      directories: [`${fixtureName}/netlify/functions`],
+    },
   }
 
-  await zipNode([paths.generated, paths.user], {
+  await zipNode(paths, {
     length: 3,
     opts: {
-      internalSrcFolder: join(FIXTURES_DIR, paths.generated),
       manifest: manifestPath,
     },
   })
@@ -2925,4 +2931,200 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
   expect(rewriteConfig.rateLimitConfig.windowSize).toBe(20)
   expect(rewriteConfig.rateLimitConfig.algorithm).toBe('sliding_window')
   expect(rewriteConfig.aggregate.keys).toStrictEqual([{ type: 'ip' }, { type: 'domain' }])
+})
+
+test('Supports both files and directories and ignores files that are not functions', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
+  const files = await zipFunctions(
+    {
+      generated: {
+        directories: [join(basePath, '.netlify/functions-internal'), join(basePath, '.netlify/v1/functions')],
+      },
+      user: {
+        directories: [join(basePath, 'netlify/functions')],
+        functions: [
+          join(basePath, 'cat.jpg'),
+          join(basePath, 'func2.mjs'),
+          join(basePath, 'func3'),
+          join(basePath, 'func4'),
+        ],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
+
+  expect(files.length).toBe(6)
+
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
+
+  const func1 = await importFunctionFile(`${tmpDir.path}/${functions.func1.name}/${functions.func1.entryFilename}`)
+  const func1Result = await invokeLambda(func1)
+  expect(func1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func1Result.body)).toStrictEqual(
+    JSON.stringify({ func: 1, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2Result = await invokeLambda(func2)
+  expect(func2Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func2Result.body)).toStrictEqual(
+    JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3Result = await invokeLambda(func3)
+  expect(func3Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func3Result.body)).toStrictEqual(
+    JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4Result = await invokeLambda(func4)
+  expect(func4Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func4Result.body)).toStrictEqual(
+    JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const extension1 = await importFunctionFile(
+    `${tmpDir.path}/${functions.extension1.name}/${functions.extension1.entryFilename}`,
+  )
+  const extension1Result = await invokeLambda(extension1)
+  expect(extension1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(extension1Result.body)).toStrictEqual('Hello from extension')
+
+  const framework1 = await importFunctionFile(
+    `${tmpDir.path}/${functions.framework1.name}/${functions.framework1.entryFilename}`,
+  )
+  const framework1Result = await invokeLambda(framework1)
+  expect(framework1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(framework1Result.body)).toStrictEqual('Hello from framework')
+
+  await tmpDir.cleanup()
+})
+
+test('Supports functions inside the plugins modules path', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
+  const files = await zipFunctions(
+    {
+      generated: {
+        functions: [
+          join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func1.mjs'),
+          join(basePath, '.netlify/plugins/node_modules/extension-buildhooks/functions/extension-func2'),
+        ],
+      },
+      user: {
+        directories: [join(basePath, 'netlify/functions')],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
+
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
+
+  // extension-func1 should work because all modules are in scope.
+  const extensionFunc1 = await importFunctionFile(
+    `${tmpDir.path}/${functions['extension-func1'].name}/${functions['extension-func1'].entryFilename}`,
+  )
+  const extensionFunc1Result = await invokeLambda(extensionFunc1)
+  expect(extensionFunc1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(extensionFunc1Result.body)).toStrictEqual(
+    JSON.stringify({ mod1: 'module-1-plugins', mod2: 'module-2-plugins', mod3: 'module-3-plugins' }),
+  )
+  expect(functions['extension-func1'].generator).toBe('internalFunc')
+  expect(functions['extension-func1'].priority).toBe(0)
+
+  // extension-func2 should error because module-4 isn't in scope.
+  await expect(() =>
+    importFunctionFile(
+      `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
+    ),
+  ).rejects.toThrowError(`Cannot find package 'module-4' imported from`)
+  expect(functions['extension-func2'].generator).toBe('internalFunc')
+  expect(functions['extension-func2'].priority).toBe(0)
+
+  // user-func1 should work because all modules are in scope.
+  const userFunc1 = await importFunctionFile(
+    `${tmpDir.path}/${functions['user-func1'].name}/${functions['user-func1'].entryFilename}`,
+  )
+  const userFunc1Result = await invokeLambda(userFunc1)
+  expect(userFunc1Result.statusCode).toBe(200)
+  expect(await readAsBuffer(userFunc1Result.body)).toStrictEqual(
+    JSON.stringify({ mod3: 'module-3-user', mod4: 'module-4-user' }),
+  )
+  expect(functions['user-func1'].generator).toBeUndefined()
+  expect(functions['user-func1'].priority).toBe(10)
+
+  await tmpDir.cleanup()
+})
+
+test('Supports individual functions even when none of the given function directories exist', async () => {
+  const tmpDir = await getTmpDir({
+    // Cleanup the folder even if there are still files in them
+    unsafeCleanup: true,
+  })
+  const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
+  const files = await zipFunctions(
+    {
+      generated: {
+        directories: [join(basePath, 'does-not-exist/functions')],
+        functions: [
+          join(basePath, 'cat.jpg'),
+          join(basePath, 'func2.mjs'),
+          join(basePath, 'func3'),
+          join(basePath, 'func4'),
+        ],
+      },
+      user: {
+        directories: [join(basePath, 'does-not-exist-either/functions')],
+      },
+    },
+    tmpDir.path,
+    {
+      basePath,
+    },
+  )
+
+  expect(files.length).toBe(3)
+
+  const unzippedFunctions = await unzipFiles(files)
+  const functions = getFunctionResultsByName(unzippedFunctions)
+
+  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2Result = await invokeLambda(func2)
+  expect(func2Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func2Result.body)).toStrictEqual(
+    JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3Result = await invokeLambda(func3)
+  expect(func3Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func3Result.body)).toStrictEqual(
+    JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4Result = await invokeLambda(func4)
+  expect(func4Result.statusCode).toBe(200)
+  expect(await readAsBuffer(func4Result.body)).toStrictEqual(
+    JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
+  )
+
+  await tmpDir.cleanup()
 })

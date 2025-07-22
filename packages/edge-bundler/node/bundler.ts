@@ -262,14 +262,17 @@ interface CreateFunctionConfigOptions {
 }
 
 const createFunctionConfig = ({ internalFunctionsWithConfig, declarations }: CreateFunctionConfigOptions) =>
-  Object.entries(internalFunctionsWithConfig).reduce((acc, [functionName, config]) => {
-    const mergedConfigFields = mergeWithDeclarationConfig({ functionName, config, declarations })
+  Object.entries(internalFunctionsWithConfig).reduce(
+    (acc, [functionName, config]) => {
+      const mergedConfigFields = mergeWithDeclarationConfig({ functionName, config, declarations })
 
-    return {
-      ...acc,
-      [functionName]: addGeneratorFallback(mergedConfigFields),
-    }
-  }, {} as Record<string, FunctionConfig>)
+      return {
+        ...acc,
+        [functionName]: addGeneratorFallback(mergedConfigFields),
+      }
+    },
+    {} as Record<string, FunctionConfig>,
+  )
 
 interface VendorNPMOptions {
   basePath: string

@@ -1,7 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "lib" /* Specify an output folder for all emitted files. */
+    "outDir": "lib" /* Specify an output folder for all emitted files. */,
+    "noImplicitAny": true,
+    "strictFunctionTypes": false /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
+    "strictPropertyInitialization": true,
+    "useUnknownInCatchVariables": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
   "exclude": ["tests/**"]

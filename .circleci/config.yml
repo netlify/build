@@ -49,7 +49,7 @@ workflows:
 executors:
   node:
     docker:
-      - image: cimg/node:18.20.3
+      - image: cimg/node:18.20.8
   windows:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -135,4 +135,5 @@ jobs:
       - checkout
       - npm-install-deps
       - run: npm run format:ci
+      - run: npm run build
       - run: npm run lint:ci

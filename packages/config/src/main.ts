@@ -1,5 +1,5 @@
 import { getApiClient } from './api/client.js'
-import { getSiteInfo } from './api/site_info.js'
+import { getSiteInfo, type MinimalAccount } from './api/site_info.js'
 import { getInitialBase, getBase, addBase } from './base.js'
 import { getBuildDir } from './build_dir.js'
 import { getCachedConfig } from './cached_config.js'
@@ -9,7 +9,12 @@ import { getEnv } from './env/main.js'
 import { resolveConfigPaths } from './files.js'
 import { getHeadersPath, addHeaders } from './headers.js'
 import { getInlineConfig } from './inline_config.js'
-import { mergeIntegrations } from './integrations.js'
+import {
+  EXTENSION_API_BASE_URL,
+  EXTENSION_API_STAGING_BASE_URL,
+  mergeIntegrations,
+  NETLIFY_API_STAGING_BASE_URL,
+} from './integrations.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } from './merge_normalize.js'
@@ -18,13 +23,32 @@ import { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } from './origin.js'
 import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
+import { handleAutoInstallExtensions } from './utils/extensions/auto-install-extensions.js'
+
+export type Config = {
+  accounts: MinimalAccount[] | undefined
+  api: any
+  branch: any
+  buildDir: any
+  config: any
+  configPath: any
+  context: any
+  env: any
+  headersPath: any
+  integrations: any
+  logs: any
+  redirectsPath: any
+  repositoryRoot: any
+  siteInfo: any
+  token: any
+}
 
 /**
  * Load the configuration file.
  * Takes an optional configuration file path as input and return the resolved
  * `config` together with related properties such as the `configPath`.
  */
-export const resolveConfig = async function (opts) {
+export const resolveConfig = async function (opts): Promise<Config> {
   const {
     cachedConfig,
     cachedConfigPath,
@@ -49,6 +73,11 @@ export const resolveConfig = async function (opts) {
     return parsedCachedConfig
   }
 
+  // TODO(kh): remove this mapping and get the extensionApiHost from the opts
+  const extensionApiBaseUrl = host?.includes(NETLIFY_API_STAGING_BASE_URL)
+    ? EXTENSION_API_STAGING_BASE_URL
+    : EXTENSION_API_BASE_URL
+
   const {
     config: configOpt,
     defaultConfig,
@@ -70,17 +99,35 @@ export const resolveConfig = async function (opts) {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons, integrations } = await getSiteInfo({
-    api,
-    context,
-    siteId,
-    accountId,
-    mode,
-    siteFeatureFlagPrefix,
-    offline,
-    featureFlags,
-    testOpts,
-  })
+  let { siteInfo, accounts, integrations } = parsedCachedConfig || {}
+
+  // If we have cached site info, we don't need to fetch it again
+  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && integrations)
+
+  // I'm adding some debug logging to see if the logic is working as expected
+  if (featureFlags?.use_cached_site_info_logging) {
+    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, integrations })
+  }
+
+  if (!useCachedSiteInfo) {
+    const updatedSiteInfo = await getSiteInfo({
+      api,
+      context,
+      siteId,
+      accountId,
+      mode,
+      siteFeatureFlagPrefix,
+      offline,
+      featureFlags,
+      testOpts,
+      token,
+      extensionApiBaseUrl,
+    })
+
+    siteInfo = updatedSiteInfo.siteInfo
+    accounts = updatedSiteInfo.accounts
+    integrations = updatedSiteInfo.integrations
+  }
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
@@ -112,7 +159,6 @@ export const resolveConfig = async function (opts) {
     config,
     siteInfo,
     accounts,
-    addons,
     buildDir,
     branch,
     deployId,
@@ -124,19 +170,30 @@ export const resolveConfig = async function (opts) {
   // @todo Remove in the next major version.
   const configA = addLegacyFunctionsDirectory(config)
 
-  const mergedIntegrations = await mergeIntegrations({
-    apiIntegrations: integrations,
-    configIntegrations: configA.integrations,
-    context: context,
+  const updatedIntegrations = await handleAutoInstallExtensions({
+    featureFlags,
+    integrations,
+    siteId,
+    accountId,
+    token,
+    buildDir,
+    extensionApiBaseUrl,
     testOpts,
     offline,
+    mode,
+    debug,
+  })
+
+  const mergedIntegrations = await mergeIntegrations({
+    apiIntegrations: updatedIntegrations,
+    configIntegrations: configA.integrations,
+    context: context,
   })
 
   const result = {
     siteInfo,
     integrations: mergedIntegrations,
     accounts,
-    addons,
     env,
     configPath,
     redirectsPath,
@@ -150,6 +207,7 @@ export const resolveConfig = async function (opts) {
     api,
     logs,
   }
+
   logResult(result, { logs, debug })
   return result
 }
@@ -163,13 +221,7 @@ const addLegacyFunctionsDirectory = (config) => {
     return config
   }
 
-  return {
-    ...config,
-    build: {
-      ...config.build,
-      functions: config.functionsDirectory,
-    },
-  }
+  return { ...config, build: { ...config.build, functions: config.functionsDirectory } }
 }
 
 /**
@@ -263,31 +315,17 @@ const getFullConfig = async function ({
   logs,
   featureFlags,
 }) {
-  const configPath = await getConfigPath({
-    configOpt,
-    cwd,
-    repositoryRoot,
-    packagePath,
-    configBase,
-  })
+  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, packagePath, configBase })
   try {
     const config = await parseConfig(configPath)
-    const configA = mergeAndNormalizeConfig({
-      config,
-      defaultConfig,
-      inlineConfig,
-      context,
-      branch,
-      logs,
-      packagePath,
-    })
+    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs, packagePath })
     const {
       config: configB,
       buildDir,
       base: baseA,
     } = await resolveFiles({ packagePath, config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
-    const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
+    const configC = await addHeaders({ config: configB, headersPath, logs })
     const redirectsPath = getRedirectsPath(configC)
     const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }

@@ -1,5 +1,6 @@
-export const onPreDev = function ({ constants }) {
+export const onPreDev = function ({ constants, netlifyConfig }) {
   console.log('onPreDev:', constants)
+  netlifyConfig.build.environment.TEST_ASSIGN = 'true';
 }
 
 export const onDev = function ({ constants }) {

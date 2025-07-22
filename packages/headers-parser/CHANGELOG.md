@@ -1,5 +1,34 @@
 # Changelog
 
+## [9.0.1](https://github.com/netlify/build/compare/headers-parser-v9.0.0...headers-parser-v9.0.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+## [9.0.0](https://github.com/netlify/build/compare/headers-parser-v8.0.0...headers-parser-v9.0.0) (2025-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+## [8.0.0](https://github.com/netlify/build/compare/headers-parser-v7.3.0...headers-parser-v8.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Bug Fixes
+
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+
 ## [7.3.0](https://github.com/netlify/build/compare/headers-parser-v7.2.0...headers-parser-v7.3.0) (2024-12-14)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/nock-udp",
-  "version": "3.2.0",
+  "version": "5.0.1",
   "description": "Here to mock your UDP packets",
   "exports": "./lib/main.js",
   "main": "./lib/main.js",
@@ -28,11 +28,11 @@
   },
   "author": "Netlify Inc.",
   "devDependencies": {
-    "@types/node": "^14.18.53",
+    "@types/node": "^18.19.111",
     "typescript": "^5.0.0",
-    "vitest": "^0.34.0"
+    "vitest": "^3.0.0"
   },
   "engines": {
-    "node": "^14.16.0 || >=16.0.0"
+    "node": ">=18.14.0"
   }
 }

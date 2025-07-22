@@ -7,8 +7,25 @@ export type NetlifyPluginCacheUtil = {
   save(
     path: Many<string>,
     options?: {
+      /**
+       * @default `false`
+       */
+      move?: boolean
       ttl?: number
       digests?: string[]
+      /**
+       * @default `process.cwd()`
+       */
+      cwd?: string
+    },
+  ): Promise<boolean>
+  restore(
+    path: Many<string>,
+    options?: {
+      /**
+       * @default `false`
+       */
+      move?: boolean
       /**
        * @default `process.cwd()`
        */
@@ -26,7 +43,7 @@ export type NetlifyPluginCacheUtil = {
     depth?: number
   }): Promise<string[]>
 } & Record<
-  'restore' | 'remove' | 'has',
+  'remove' | 'has',
   (
     path: Many<string>,
     options?: {
