@@ -1,5 +1,5 @@
-export type IntegrationResponse = {
+export type ExtensionResponse = {
   slug: string
-  version: string
   has_build: boolean
+  version: string
 }

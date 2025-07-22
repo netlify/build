@@ -1,8 +1,8 @@
 import { createRequire } from 'module'
 import { join } from 'path'
 
-import { getIntegrations } from '../../api/site_info.js'
-import { type IntegrationResponse } from '../../types/api.js'
+import { getExtensions } from '../../api/site_info.js'
+import { type ExtensionResponse } from '../../types/api.js'
 import { type ModeOption } from '../../types/options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
@@ -23,7 +23,7 @@ interface AutoInstallOptions {
   accountId: string
   token: string
   buildDir: string
-  integrations: IntegrationResponse[]
+  extensions: ExtensionResponse[]
   offline: boolean
   testOpts: any
   mode: ModeOption
@@ -37,7 +37,7 @@ export async function handleAutoInstallExtensions({
   accountId,
   token,
   buildDir,
-  integrations,
+  extensions,
   offline,
   testOpts = {},
   mode,
@@ -45,7 +45,7 @@ export async function handleAutoInstallExtensions({
   debug = false,
 }: AutoInstallOptions) {
   if (!featureFlags?.auto_install_required_extensions_v2) {
-    return integrations
+    return extensions
   }
   if (!accountId || !siteId || !token || !buildDir || offline) {
     const reason = !accountId
@@ -67,7 +67,7 @@ export async function handleAutoInstallExtensions({
         mode,
       })
     }
-    return integrations
+    return extensions
   }
 
   try {
@@ -77,11 +77,11 @@ export async function handleAutoInstallExtensions({
       typeof packageJson?.dependencies !== 'object' ||
       Object.keys(packageJson?.dependencies)?.length === 0
     ) {
-      return integrations
+      return extensions
     }
 
     const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
-    const enabledExtensionSlugs = new Set((integrations ?? []).map(({ slug }) => slug))
+    const enabledExtensionSlugs = new Set((extensions ?? []).map(({ slug }) => slug))
     const extensionsToInstallCandidates = autoInstallableExtensions.filter(
       ({ slug }) => !enabledExtensionSlugs.has(slug),
     )
@@ -95,7 +95,7 @@ export async function handleAutoInstallExtensions({
     })
 
     if (extensionsToInstall.length === 0) {
-      return integrations
+      return extensions
     }
 
     const results = await Promise.all(
@@ -116,7 +116,7 @@ export async function handleAutoInstallExtensions({
     )
 
     if (results.length > 0 && results.some((result) => !result.error)) {
-      return getIntegrations({
+      return getExtensions({
         siteId,
         accountId,
         testOpts,
@@ -127,9 +127,9 @@ export async function handleAutoInstallExtensions({
         mode,
       })
     }
-    return integrations
+    return extensions
   } catch (error) {
     console.error(`Failed to auto install extension(s): ${error.message}`, error)
-    return integrations
+    return extensions
   }
 }

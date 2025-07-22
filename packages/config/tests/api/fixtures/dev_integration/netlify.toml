@@ -1,5 +1,0 @@
-[[integrations]]
-	name = "abc-integration"
-
-  [integrations.dev]
-    path = "local/path/to/abc-integration"
