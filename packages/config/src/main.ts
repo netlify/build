@@ -35,7 +35,17 @@ export type Config = {
   context: any
   env: any
   headersPath: any
-  integrations: any
+  integrations: {
+    slug: string
+    author?: string | undefined
+    has_build?: boolean | undefined
+    version?: string | undefined
+    dev?:
+      | {
+          path: string
+        }
+      | undefined
+  }[]
   logs: any
   redirectsPath: any
   repositoryRoot: any
