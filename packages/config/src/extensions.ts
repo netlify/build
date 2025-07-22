@@ -6,54 +6,51 @@ export const NETLIFY_API_BASE_URL = 'api.netlify.com'
 export const EXTENSION_API_BASE_URL = 'https://api.netlifysdk.com'
 export const EXTENSION_API_STAGING_BASE_URL = 'https://api-staging.netlifysdk.com'
 
-type MergeExtensionsOptions = {
+export type MergeExtensionsOptions = {
+  /**
+   * Extensions loaded via the Netlify API. These are extensions enabled
+   */
   apiExtensions: ExtensionResponse[]
+  /**
+   * Development extensions loaded via the build target's netlify.toml file. Only used when the
+   * build context is set to `dev` (e.g. when `netlify build` is run with `--context=dev`).
+   */
   configExtensions?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
+  /**
+   * The current build context, set e.g. via `netlify build --context=<context>`.
+   */
   context: string
 }
 
-export const mergeExtensions = function ({
+/**
+ * mergeExtensions accepts several lists of extensions configured for the current build target and
+ * stitches them together into a single list. It performs filtration depending on the current build
+ * context and merges development-time information set via the configuration file (netlify.toml)
+ * with canonical information retrieved from the Netlify API.
+ */
+export const mergeExtensions = ({
   configExtensions = [],
   apiExtensions,
   context,
-}: MergeExtensionsOptions): Extension[] {
-  // Include all API extensions, unless they have a `dev` property and we are in the `dev` context
-  const resolvedApiExtensions = apiExtensions.filter(
-    (extension) =>
-      !configExtensions.some(
-        (configExtension) =>
-          configExtension.name === extension.slug && typeof configExtension.dev !== 'undefined' && context === 'dev',
-      ),
+}: MergeExtensionsOptions): Extension[] => {
+  const apiExtensionsBySlug = new Map(apiExtensions.map((extension) => [extension.slug, extension]))
+  const configExtensionsBySlug = new Map(
+    // Only use configuration-file data in development mode
+    (context === 'dev' ? configExtensions : []).map((extension) => [extension.name, extension]),
   )
+  const extensionSlugs = new Set([...apiExtensionsBySlug.keys(), ...configExtensionsBySlug.keys()])
 
-  // For extensions loaded from the TOML, we will use the local reference in the `dev` context,
-  // otherwise we will fetch from the API and match the slug
-  const resolvedConfigExtensions = configExtensions
-    .filter(
-      (configExtension) =>
-        apiExtensions.every((apiExtension) => apiExtension.slug !== configExtension.name) ||
-        ('dev' in configExtension && context === 'dev'),
-    )
-    .map((configExtension) => {
-      const apiExtension = apiExtensions.find((apiExtension) => apiExtension.slug === configExtension.name)
-
-      if (configExtension.dev && context === 'dev') {
-        return {
-          slug: configExtension.name,
-          dev: configExtension.dev,
-          // TODO(kh): has_build should become irrelevant soon as we are only returning extensions that have a build event handler.
-          has_build: apiExtension?.has_build ?? configExtension.dev.force_run_in_build ?? false,
-          ...apiExtension,
-        }
-      }
-
-      if (!apiExtension) {
-        return undefined
-      }
-
-      return apiExtension
-    })
-    .filter((i): i is ExtensionResponse => i !== undefined)
-
-  return [...resolvedApiExtensions, ...resolvedConfigExtensions]
+  // Merge API and configuration file metadata together by merging development metadata onto API
+  // metadata.
+  //
+  // Explicitly allow the configuration file to reference an extension that doesn't yet exist in the
+  // API so users can test their build hooks without publishing the extension first.
+  return [...extensionSlugs]
+    .map((slug) => [slug, apiExtensionsBySlug.get(slug), configExtensionsBySlug.get(slug)] as const)
+    .map<Extension>(([slug, apiExtension, configExtension]) => ({
+      ...apiExtension,
+      dev: configExtension?.dev,
+      slug,
+      has_build: apiExtension?.has_build ?? configExtension?.dev?.force_run_in_build ?? false,
+    }))
 }
