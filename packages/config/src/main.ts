@@ -12,9 +12,9 @@ import { getInlineConfig } from './inline_config.js'
 import {
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
-  mergeIntegrations,
+  mergeExtensions,
   NETLIFY_API_STAGING_BASE_URL,
-} from './integrations.js'
+} from './extensions.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } from './merge_normalize.js'
@@ -99,14 +99,14 @@ export const resolveConfig = async function (opts): Promise<Config> {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  let { siteInfo, accounts, integrations } = parsedCachedConfig || {}
+  let { siteInfo, accounts, integrations: extensions } = parsedCachedConfig || {}
 
   // If we have cached site info, we don't need to fetch it again
-  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && integrations)
+  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && extensions)
 
   // I'm adding some debug logging to see if the logic is working as expected
   if (featureFlags?.use_cached_site_info_logging) {
-    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, integrations })
+    console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, extensions })
   }
 
   if (!useCachedSiteInfo) {
@@ -126,7 +126,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
 
     siteInfo = updatedSiteInfo.siteInfo
     accounts = updatedSiteInfo.accounts
-    integrations = updatedSiteInfo.integrations
+    extensions = updatedSiteInfo.extensions
   }
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
@@ -170,9 +170,9 @@ export const resolveConfig = async function (opts): Promise<Config> {
   // @todo Remove in the next major version.
   const configA = addLegacyFunctionsDirectory(config)
 
-  const updatedIntegrations = await handleAutoInstallExtensions({
+  const updatedExtensions = await handleAutoInstallExtensions({
     featureFlags,
-    integrations,
+    extensions,
     siteId,
     accountId,
     token,
@@ -184,15 +184,15 @@ export const resolveConfig = async function (opts): Promise<Config> {
     debug,
   })
 
-  const mergedIntegrations = await mergeIntegrations({
-    apiIntegrations: updatedIntegrations,
-    configIntegrations: configA.integrations,
+  const mergedExtensions = mergeExtensions({
+    apiExtensions: updatedExtensions,
+    configExtensions: configA.integrations,
     context: context,
   })
 
   const result = {
     siteInfo,
-    integrations: mergedIntegrations,
+    integrations: mergedExtensions,
     accounts,
     env,
     configPath,

@@ -1,0 +1,6 @@
+[[integrations]]
+name = "abc-extension"
+
+[integrations.dev]
+path = "local/path/to/abc-extension"
+force_run_in_build = true

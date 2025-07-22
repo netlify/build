@@ -7,9 +7,9 @@ import {
   EXTENSION_API_STAGING_BASE_URL,
   NETLIFY_API_BASE_URL,
   NETLIFY_API_STAGING_BASE_URL,
-} from '../integrations.js'
+} from '../extensions.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
-import { IntegrationResponse } from '../types/api.js'
+import { ExtensionResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
 
 type GetSiteInfoOpts = {
@@ -55,9 +55,9 @@ export const getSiteInfo = async function ({
     if (siteId !== undefined) siteInfo.id = siteId
     if (accountId !== undefined) siteInfo.account_id = accountId
 
-    const integrations =
+    const extensions =
       mode === 'buildbot' && !offline
-        ? await getIntegrations({
+        ? await getExtensions({
             siteId,
             testOpts,
             offline,
@@ -69,13 +69,13 @@ export const getSiteInfo = async function ({
           })
         : []
 
-    return { siteInfo, accounts: [], integrations }
+    return { siteInfo, accounts: [], extensions }
   }
 
-  const [siteInfo, accounts, integrations] = await Promise.all([
+  const [siteInfo, accounts, extensions] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
+    getExtensions({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ])
 
   if (siteInfo.use_envelope) {
@@ -84,7 +84,7 @@ export const getSiteInfo = async function ({
     siteInfo.build_settings.env = envelope
   }
 
-  return { siteInfo, accounts, integrations }
+  return { siteInfo, accounts, extensions }
 }
 
 const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
@@ -125,7 +125,7 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
   }
 }
 
-type GetIntegrationsOpts = {
+type GetExtensionsOptions = {
   siteId?: string
   accountId?: string
   testOpts: TestOptions
@@ -136,7 +136,7 @@ type GetIntegrationsOpts = {
   mode: ModeOption
 }
 
-export const getIntegrations = async function ({
+export const getExtensions = async function ({
   siteId,
   accountId,
   testOpts,
@@ -145,7 +145,7 @@ export const getIntegrations = async function ({
   featureFlags,
   extensionApiBaseUrl,
   mode,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
+}: GetExtensionsOptions): Promise<ExtensionResponse[]> {
   if (!siteId || offline) {
     return []
   }
@@ -156,7 +156,7 @@ export const getIntegrations = async function ({
   // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
   let host = originalHost
 
-  // If there is a host, we use it to fetch the integrations
+  // If there is a host, we use it to fetch the extensions
   // we check if the host is staging or production and set the host accordingly,
   // sadly necessary because of https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
   if (originalHost) {
@@ -203,8 +203,8 @@ export const getIntegrations = async function ({
       return []
     }
 
-    const integrations = await JSON.parse(bodyText)
-    return Array.isArray(integrations) ? integrations : []
+    const extensions = await JSON.parse(bodyText)
+    return Array.isArray(extensions) ? extensions : []
   } catch (error) {
     return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
