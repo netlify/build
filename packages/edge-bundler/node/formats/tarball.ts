@@ -159,7 +159,7 @@ export const bundle = async ({
 
       // If it does, the resolved import is the specifier we'll evaluate going
       // forward.
-      if (matched && resolvedImport.protocol === 'file:') {
+      if (matched && resolvedImport?.protocol === 'file:') {
         specifier = fileURLToPath(resolvedImport).replace(/\\/g, '/')
       }
 
