@@ -1,7 +1,8 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'path'
 
-import { findUp, findUpMultiple } from 'find-up'
+import { any as findUpAny, up as findUp } from 'empathic/find'
+import { up as walkUp } from 'empathic/walk'
 
 import { DirType, Environment, FileSystem, findUpOptions } from '../file-system.js'
 
@@ -68,12 +69,25 @@ export class NodeFS extends FileSystem {
   }
 
   /** Node implementation of finding a file or directory by walking up parent directories. */
-  findUp(name: string | readonly string[], options: findUpOptions = {}): Promise<string | undefined> {
-    return findUp(name, options)
+  findUp(name: string | string[], options: findUpOptions = {}): Promise<string | undefined> {
+    if (typeof name === 'string') {
+      return Promise.resolve(findUp(name, options))
+    }
+    return Promise.resolve(findUpAny(name, options))
   }
 
   /** Node implementation of finding files or directories by walking up parent directories. */
   findUpMultiple(name: string | readonly string[], options: findUpOptions = {}): Promise<string[]> {
-    return findUpMultiple(name, options)
+    const results: string[] = []
+    const normalisedNames = typeof name === 'string' ? [name] : name;
+    for (const dir of walkUp(options.cwd ?? '.', options)) {
+      for (const potentialName of normalisedNames) {
+        const filePath = join(dir, potentialName);
+        if (existsSync(filePath)) {
+          results.push(filePath);
+        }
+      }
+    }
+    return Promise.resolve(results)
   }
 }

@@ -47,7 +47,7 @@
     "@bugsnag/js": "^8.0.0",
     "@iarna/toml": "^2.2.5",
     "dot-prop": "^9.0.0",
-    "find-up": "^7.0.0",
+    "empathic": "^2.0.0",
     "minimatch": "^9.0.0",
     "read-pkg": "^9.0.0",
     "semver": "^7.3.8",
