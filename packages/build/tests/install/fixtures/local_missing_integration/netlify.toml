@@ -1,6 +1,5 @@
 [[integrations]]
-name = "test"
+name = "functions-injection"
 
 [integrations.dev]
-path = "./integration"
-force_run_in_build = true
+path = "./buildhooks.tgz"

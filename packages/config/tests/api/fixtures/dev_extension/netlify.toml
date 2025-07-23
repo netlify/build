@@ -1,6 +1,2 @@
 [[integrations]]
 name = "abc-extension"
-
-[integrations.dev]
-path = "local/path/to/abc-extension"
-

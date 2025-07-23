@@ -2,5 +2,4 @@
 name = "abc-extension"
 
 [integrations.dev]
-path = "local/path/to/abc-extension"
-force_run_in_build = true
+path = "./test-extension/.ntli/build/buildhooks.tgz"
