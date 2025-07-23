@@ -31,7 +31,7 @@ const SITE_EXTENSIONS_RESPONSE = {
       has_connector: false,
       name: '',
       slug: 'test',
-      version: 'so-cool-v1',
+      version: 'https://extension-test-1.netlify.app',
     },
   ],
 }
@@ -46,7 +46,7 @@ const TEAM_INSTALLATIONS_META_RESPONSE = {
       has_connector: false,
       name: '',
       slug: 'test',
-      version: 'so-cool-v2',
+      version: 'https://extension-test-2.netlify.app',
     },
   ],
 }
@@ -248,7 +248,7 @@ test('Extensions are returned from getSiteInfo from v1 safe API when there is no
   t.assert(config.integrations)
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool-v1')
+  t.assert(config.integrations[0].version === 'https://extension-test-1.netlify.app')
   t.assert(config.integrations[0].has_build === true)
 })
 
@@ -359,7 +359,7 @@ test('extensions and account id are returned if mode is buildbot', async (t) => 
   t.assert(config.integrations)
   t.is(config.integrations.length, 1)
   t.is(config.integrations[0].slug, 'test')
-  t.is(config.integrations[0].version, 'so-cool-v2')
+  t.is(config.integrations[0].version, 'https://extension-test-2.netlify.app')
   t.is(config.integrations[0].has_build, true)
 
   // account id is also available
@@ -382,7 +382,7 @@ test('extensions are returned if accountId is present and mode is dev', async (t
   t.assert(config.integrations)
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].version === 'https://extension-test-2.netlify.app')
   t.assert(config.integrations[0].has_build === true)
 })
 
@@ -408,7 +408,7 @@ test('extensions are returned and called with a netlify-sdk-build-bot-token head
   t.assert(config.integrations)
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].version === 'https://extension-test-2.netlify.app')
   t.assert(config.integrations[0].has_build === true)
 })
 
@@ -434,7 +434,7 @@ test('extensions are returned and called with a netlify-config-mode header', asy
   t.assert(config.integrations)
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'test')
-  t.assert(config.integrations[0].version === 'so-cool-v2')
+  t.assert(config.integrations[0].version === 'https://extension-test-2.netlify.app')
   t.assert(config.integrations[0].has_build === true)
 })
 

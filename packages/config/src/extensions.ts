@@ -1,4 +1,7 @@
+import path from 'node:path'
+
 import { type Extension } from './api/site_info.js'
+import { throwUserError } from './error.js'
 
 export const NETLIFY_API_STAGING_BASE_URL = 'api-staging.netlify.com'
 export const NETLIFY_API_BASE_URL = 'api.netlify.com'
@@ -16,13 +19,22 @@ export type MergeExtensionsOptions = {
    */
   configExtensions?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
   /**
+   * A path to the build target's build directory. We use this in dev mode to resolve non-absolute
+   * build plugin paths.
+   */
+  buildDir: string
+  /**
    * The current build context, set e.g. via `netlify build --context=<context>`.
    */
   context: string
 }
 
 export type ExtensionWithDev = Extension & {
-  dev?: { path: string; force_run_in_build?: boolean } | undefined
+  buildPlugin: {
+    origin: 'local' | 'remote'
+    packageURL: URL
+  } | null
+  dev?: { path: string; force_run_in_build?: boolean } | null
 }
 
 /**
@@ -32,32 +44,57 @@ export type ExtensionWithDev = Extension & {
  * with canonical information retrieved from the Netlify API.
  */
 export const mergeExtensions = ({
-  configExtensions = [],
   apiExtensions,
+  buildDir,
+  configExtensions = [],
   context,
 }: MergeExtensionsOptions): ExtensionWithDev[] => {
-  const apiExtensionsBySlug = new Map<string, Extension>(apiExtensions.map((extension) => [extension.slug, extension]))
-  const configExtensionsBySlug = new Map<
-    string,
-    Omit<Extension, 'author' | 'extension_token' | 'version'> &
-      Partial<Pick<Extension, 'author' | 'extension_token' | 'version'>> & {
-        dev?: { path: string; force_run_in_build?: boolean } | undefined
-      }
-  >(
-    // Only use configuration-file data in development mode
-    (context === 'dev' ? configExtensions : []).map((extension) => [
-      extension.name,
-      // Normalize dev extensions to a similar shape as an API extension
+  const apiExtensionsBySlug = new Map<string, ExtensionWithDev>(
+    apiExtensions.map((extension) => [
+      extension.slug,
       {
-        author: undefined,
-        dev: extension.dev,
-        extension_token: undefined,
-        has_build: extension.dev?.force_run_in_build ?? false,
-        name: extension.name,
-        slug: extension.name,
-        version: undefined,
+        ...extension,
+        buildPlugin: extension.has_build
+          ? { origin: 'remote', packageURL: new URL('/packages/buildhooks.tgz', extension.version) }
+          : null,
+        dev: null,
       },
     ]),
+  )
+  const configExtensionsBySlug = new Map<
+    string,
+    Omit<ExtensionWithDev, 'author' | 'extension_token' | 'version'> & {
+      author: Extension['author'] | undefined
+      extension_token: Extension['extension_token'] | undefined
+      version: Extension['version'] | undefined
+    }
+  >(
+    // Only use configuration-file data in development mode
+    (context === 'dev' ? configExtensions : []).map((extension) => {
+      let buildPluginPackageURL: URL | null = null
+      if (extension.dev?.path) {
+        if (path.isAbsolute(extension.dev.path)) {
+          buildPluginPackageURL = new URL(`file://${extension.dev.path}`)
+        } else {
+          buildPluginPackageURL = new URL(`file://${path.resolve(buildDir, extension.dev.path)}`)
+        }
+      }
+
+      return [
+        extension.name,
+        // Normalize dev extensions to a similar shape as an API extension
+        {
+          author: undefined,
+          dev: extension.dev,
+          extension_token: undefined,
+          has_build: buildPluginPackageURL !== null,
+          name: extension.name,
+          slug: extension.name,
+          version: undefined,
+          buildPlugin: buildPluginPackageURL !== null ? { origin: 'local', packageURL: buildPluginPackageURL } : null,
+        },
+      ]
+    }),
   )
 
   // Merge API and configuration file metadata together by merging development metadata onto API
@@ -65,15 +102,28 @@ export const mergeExtensions = ({
   //
   // Explicitly allow the configuration file to reference an extension that doesn't yet exist in the
   // API so users can test their build hooks without publishing the extension first.
-  return [...new Set([...apiExtensionsBySlug.keys(), ...configExtensionsBySlug.keys()])]
+  const mergedExtensions = [...new Set([...apiExtensionsBySlug.keys(), ...configExtensionsBySlug.keys()])]
     .map((slug) => [apiExtensionsBySlug.get(slug), configExtensionsBySlug.get(slug)] as const)
-    .map(([apiExtension, configExtension]) => ({
-      author: configExtension?.author ?? apiExtension?.author ?? '',
-      dev: configExtension?.dev,
-      extension_token: configExtension?.extension_token ?? apiExtension?.extension_token ?? '',
-      has_build: configExtension?.has_build ?? apiExtension?.has_build ?? false,
-      name: configExtension?.name ?? apiExtension?.name ?? '',
-      slug: configExtension?.slug ?? apiExtension?.slug ?? '',
-      version: configExtension?.version ?? apiExtension?.version ?? '',
-    }))
+    .map(([apiExtension, configExtension]) => {
+      return {
+        author: configExtension?.author ?? apiExtension?.author ?? '',
+        buildPlugin: configExtension?.buildPlugin ?? apiExtension?.buildPlugin ?? null,
+        dev: configExtension?.dev,
+        extension_token: configExtension?.extension_token ?? apiExtension?.extension_token ?? '',
+        has_build: configExtension?.has_build ?? apiExtension?.has_build ?? false,
+        name: configExtension?.name ?? apiExtension?.name ?? '',
+        slug: configExtension?.slug ?? apiExtension?.slug ?? '',
+        version: configExtension?.version ?? apiExtension?.version ?? '',
+      }
+    })
+
+  for (const extension of mergedExtensions) {
+    if (extension.buildPlugin !== null && !extension.buildPlugin.packageURL.toString().toLowerCase().endsWith('.tgz')) {
+      return throwUserError(
+        `Extension ${extension.slug} contains unexpected build plugin URL: '${extension.buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
+      )
+    }
+  }
+
+  return mergedExtensions
 }
