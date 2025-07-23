@@ -1,5 +1,7 @@
 import { NetlifyAPI } from '@netlify/api'
 
+import * as z from 'zod'
+
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
 import {
@@ -9,7 +11,6 @@ import {
   NETLIFY_API_STAGING_BASE_URL,
 } from '../extensions.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
-import { ExtensionResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
@@ -27,9 +28,18 @@ type GetSiteInfoOptions = {
   extensionApiBaseUrl: string
 }
 
+export type Extension = {
+  author: string | undefined
+  extension_token: string | undefined
+  has_build: boolean
+  name: string
+  slug: string
+  version: string
+}
+
 export type SiteInfo = {
   accounts: MinimalAccount[]
-  extensions: ExtensionResponse[]
+  extensions: Extension[]
   siteInfo: Awaited<ReturnType<NetlifyAPI['getSite']>> & {
     feature_flags?: Record<string, string | number | boolean>
     use_envelope?: boolean
@@ -149,6 +159,32 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
   }
 }
 
+const ExtensionResponseSchema = z.array(
+  z.object({
+    // ndhoule: The `author` and `extension_token` fields are not sent by the .../safe endpoint;
+    // we're normalizing them to empty values here to preserve...uh, whatever backward compatibility
+    // this is supposed to offer.
+    //
+    // At this point, I'm unsure if modern `@netlify/config` callers can end up in the .../safe
+    // codepath. This would be bad: extension-injected build hooks are far removed from this code
+    // path and have no way of knowing whether or not a specific consumer is in this legacy code
+    // path. They might call the Netlify API expecting to have an API token available to them when
+    // they really don't. For the time being, I've added instrumentation to Jigsaw to help us figure
+    // out if this is dead code or actually supports current users.
+    author: z.string().optional().default(undefined),
+    extension_token: z.string().optional().default(undefined),
+    has_build: z.boolean(),
+    name: z.string(),
+    slug: z.string(),
+    version: z.string(),
+
+    // Returned by API, but unused. Leaving this here for the sake of documentation.
+    // has_connector: z.boolean(),
+  }),
+)
+
+export type ExtensionResponse = z.output<typeof ExtensionResponseSchema>
+
 type GetExtensionsOptions = {
   siteId?: string
   accountId?: string
@@ -169,7 +205,7 @@ export const getExtensions = async function ({
   featureFlags,
   extensionApiBaseUrl,
   mode,
-}: GetExtensionsOptions): Promise<ExtensionResponse[]> {
+}: GetExtensionsOptions): Promise<Extension[]> {
   if (!siteId || offline) {
     return []
   }
@@ -202,27 +238,20 @@ export const getExtensions = async function ({
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
+  const headers = new Headers({
+    'Netlify-Config-Mode': mode,
+    'User-Agent': `Netlify Config (mode:${mode}) / ${ROOT_PACKAGE_JSON.version}`,
+  })
+  if (sendBuildBotTokenToJigsaw && token) {
+    headers.set('Netlify-SDK-Build-Bot-Token', token)
+  }
 
   try {
-    const headers = new Headers({
-      'Netlify-Config-Mode': mode,
-      'User-Agent': `Netlify Config (mode:${mode}) / ${ROOT_PACKAGE_JSON.version}`,
-    })
-    if (sendBuildBotTokenToJigsaw && token) {
-      headers.set('Netlify-SDK-Build-Bot-Token', token)
+    const res = await fetch(url, { headers })
+    if (res.status !== 200) {
+      throw new Error(`Unexpected status code ${res.status} from fetching extensions`)
     }
-    const response = await fetch(url, { headers })
-
-    if (!response.ok) {
-      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-    }
-    const bodyText = await response.text()
-    if (bodyText === '') {
-      return []
-    }
-
-    const extensions = await JSON.parse(bodyText)
-    return Array.isArray(extensions) ? extensions : []
+    return ExtensionResponseSchema.parse(await res.json())
   } catch (err: unknown) {
     return throwUserError(
       `Failed retrieving extensions for site ${siteId}: ${err instanceof Error ? err.message : 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,

@@ -10,10 +10,11 @@ import { resolveConfigPaths } from './files.js'
 import { getHeadersPath, addHeaders } from './headers.js'
 import { getInlineConfig } from './inline_config.js'
 import {
+  type ExtensionWithDev,
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
-  mergeExtensions,
   NETLIFY_API_STAGING_BASE_URL,
+  mergeExtensions,
 } from './extensions.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
@@ -35,17 +36,7 @@ export type Config = {
   context: any
   env: any
   headersPath: any
-  integrations: {
-    slug: string
-    author?: string | undefined
-    has_build?: boolean | undefined
-    version?: string | undefined
-    dev?:
-      | {
-          path: string
-        }
-      | undefined
-  }[]
+  integrations: ExtensionWithDev[]
   logs: any
   redirectsPath: any
   repositoryRoot: any

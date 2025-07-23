@@ -1,8 +1,7 @@
 import { createRequire } from 'module'
 import { join } from 'path'
 
-import { getExtensions } from '../../api/site_info.js'
-import { type ExtensionResponse } from '../../types/api.js'
+import { type Extension, getExtensions } from '../../api/site_info.js'
 import { type ModeOption } from '../../types/options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
@@ -23,7 +22,7 @@ interface AutoInstallOptions {
   accountId: string
   token: string
   buildDir: string
-  extensions: ExtensionResponse[]
+  extensions: Extension[]
   offline: boolean
   testOpts: any
   mode: ModeOption
