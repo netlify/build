@@ -25,9 +25,13 @@ const SITE_EXTENSIONS_RESPONSE = {
   path: '/site/test/integrations/safe',
   response: [
     {
+      author: '',
+      extension_token: '',
+      has_build: true,
+      has_connector: false,
+      name: '',
       slug: 'test',
       version: 'so-cool-v1',
-      has_build: true,
     },
   ],
 }
@@ -36,9 +40,13 @@ const TEAM_INSTALLATIONS_META_RESPONSE = {
   path: '/team/account1/integrations/installations/meta/test',
   response: [
     {
+      author: '',
+      extension_token: '',
+      has_build: true,
+      has_connector: false,
+      name: '',
       slug: 'test',
       version: 'so-cool-v2',
-      has_build: true,
     },
   ],
 }
@@ -145,14 +153,14 @@ test('NETLIFY_SITE_ID environment variable', async (t) => {
 test('Environment variable siteInfo success', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo API error', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_ERROR, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_ERROR, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
@@ -180,28 +188,28 @@ test('Environment variable siteInfo offline', async (t) => {
 test('Environment variable siteInfo CI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings can be null', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS_NULL, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS_NULL, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use build settings if a siteId and token are provided', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings have low merging priority', async (t) => {
   const { output } = await new Fixture('./fixtures/build_settings')
     .withFlags({ token: 'test', siteId: 'test', baseRelDir: true })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
@@ -222,7 +230,7 @@ test('Build settings are not used without a siteId', async (t) => {
 test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
 
   t.snapshot(normalizeOutput(output))
 })
@@ -261,7 +269,7 @@ test('In extension dev mode, extension specified in config is returned even if e
   t.assert(config.integrations[0].slug === 'test')
   t.assert(config.integrations[1].slug === 'abc-extension')
   t.assert(config.integrations[1].has_build === false)
-  t.assert(config.integrations[1].version === undefined)
+  t.assert(config.integrations[1].version === '')
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site', async (t) => {
@@ -280,7 +288,7 @@ test('In extension dev mode, extension specified in config is returned even if e
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'abc-extension')
   t.assert(config.integrations[0].has_build === false)
-  t.assert(config.integrations[0].version === undefined)
+  t.assert(config.integrations[0].version === '')
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site and accountId not present', async (t) => {
@@ -298,7 +306,7 @@ test('In extension dev mode, extension specified in config is returned even if e
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'abc-extension')
   t.assert(config.integrations[0].has_build === false)
-  t.assert(config.integrations[0].version === undefined)
+  t.assert(config.integrations[0].version === '')
 })
 
 test('In extension dev mode, extension specified in config is returned and build is forced by config', async (t) => {
@@ -317,7 +325,7 @@ test('In extension dev mode, extension specified in config is returned and build
   t.assert(config.integrations.length === 1)
   t.assert(config.integrations[0].slug === 'abc-extension')
   t.assert(config.integrations[0].has_build === true)
-  t.assert(config.integrations[0].version === undefined)
+  t.assert(config.integrations[0].version === '')
 })
 
 test('extensions are not returned if offline', async (t) => {
@@ -452,7 +460,7 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
 
   const { output } = await new Fixture('./fixtures/build_base_override')
     .withFlags({ cwd: `${fixturesDir}/build_base_override/subdir`, token: 'test', siteId: 'test' })
-    .runConfigServer([SITE_INFO_BASE_REL_DIR, FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_BASE_REL_DIR, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
