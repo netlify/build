@@ -11,6 +11,7 @@ import {
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { ExtensionResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 type GetSiteInfoOptions = {
   siteId: string
@@ -205,7 +206,7 @@ export const getExtensions = async function ({
   try {
     const headers = new Headers({
       'Netlify-Config-Mode': mode,
-      'User-Agent': `node (@netlify/build; mode:${mode})`,
+      'User-Agent': `Netlify Config (mode:${mode}) / ${ROOT_PACKAGE_JSON.version}`,
     })
     if (sendBuildBotTokenToJigsaw && token) {
       headers.set('Netlify-SDK-Build-Bot-Token', token)
