@@ -12,7 +12,7 @@ import tmp from 'tmp-promise'
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { pathsBetween } from './utils/fs.js'
-import { transpile, TYPESCRIPT_EXTENSIONS } from './utils/typescript.js'
+import { TYPESCRIPT_EXTENSIONS } from './utils/typescript.js'
 
 const slugifyFileName = (specifier: string) => {
   return specifier.replace(/\//g, '_')

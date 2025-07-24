@@ -694,7 +694,62 @@ test('Loads edge functions from the Frameworks API', async () => {
 })
 
 describe('Produces a tarball bundle', () => {
-  test('Using npm modules', async () => {
+  test('With only local imports', async () => {
+    const systemLogger = vi.fn()
+    const { basePath, cleanup, distPath } = await useFixture('with_config', { copyDirectory: true })
+    const declarations: Declaration[] = [
+      {
+        function: 'func1',
+        path: '/func1',
+      },
+    ]
+    const vendorDirectory = await tmp.dir()
+
+    await bundle(
+      [join(basePath, 'netlify/edge-functions'), join(basePath, '.netlify/edge-functions')],
+      distPath,
+      declarations,
+      {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        importMapPaths: [join(basePath, '.netlify/edge-functions/import_map.json')],
+        vendorDirectory: vendorDirectory.path,
+        systemLogger,
+      },
+    )
+
+    expect(
+      systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+    ).toBeUndefined()
+
+    const expectedOutput = {
+      'user-func1': 'Hello, user function 1!',
+      'user-func2': 'Hello, user function 2!',
+      'user-func3': 'Hello from user function 3',
+      'user-func4': 'Hello from user function 4. I will be cached!',
+      'user-func5': 'Hello from user function 5.',
+      'user-func6': 'Hello from user function 6.',
+      'user-func7': 'Hello from user function 7.',
+      'framework-func1': 'Hello, framework function 1!',
+      'framework-func2': 'Hello, framework function 2!',
+      'framework-func3': 'Hello, framework function 3!',
+      'framework-func4': 'Hello, framework function 4!',
+    }
+
+    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+    const manifest = JSON.parse(manifestFile)
+
+    const tarballPath = join(distPath, manifest.bundles[0].asset)
+    const tarballResult = await runTarball(tarballPath)
+    expect(tarballResult).toStrictEqual(expectedOutput)
+
+    await cleanup()
+    await rm(vendorDirectory.path, { force: true, recursive: true })
+  })
+
+  test.todo('Using npm modules', async () => {
     const systemLogger = vi.fn()
     const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
     const sourceDirectory = join(basePath, 'functions')

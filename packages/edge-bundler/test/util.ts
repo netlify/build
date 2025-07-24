@@ -158,10 +158,7 @@ const runTarball = async (tarballPath: string) => {
   })
 
   const evalCommand = execa('deno', ['eval', inspectTarballFunction()], {
-    cwd: join(tmpDir.path, 'src'),
-    env: {
-      DENO_DIR: '../deno_dir',
-    },
+    cwd: tmpDir.path,
   })
 
   evalCommand.stderr?.pipe(stderr)
