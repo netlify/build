@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
 import { parseSource } from '../../../../src/runtimes/node/in_source_config/index.js'
+import { REGIONS } from '../../../../src/runtimes/node/in_source_config/properties/region.js'
 import { getLogger } from '../../../../src/utils/logger.js'
 
 describe('`schedule` helper', () => {
@@ -836,6 +837,62 @@ describe('V2 API', () => {
       inputModuleFormat: 'esm',
       routes: [],
       runtimeAPIVersion: 2,
+    })
+  })
+
+  describe('`region` property', () => {
+    test('With no region', () => {
+      const source = `
+      export default async () => new Response("Hello!")
+      export const config = {}`
+
+      const isc = parseSource(source, options)
+      expect(isc).toEqual({
+        config: {},
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
+    })
+
+    test('With a supported region', () => {
+      const source = `
+      export default async () => new Response("Hello!")
+      export const config = { region: 'eu-west-1' }`
+
+      const isc = parseSource(source, options)
+      expect(isc).toEqual({
+        config: { region: 'eu-west-1' },
+        excludedRoutes: [],
+        inputModuleFormat: 'esm',
+        region: 'eu-west-1',
+        routes: [],
+        runtimeAPIVersion: 2,
+      })
+    })
+
+    test('With an unsupported region', () => {
+      expect.assertions(4)
+
+      const source = `
+      export default async () => new Response("Hello!")
+      export const config = { region: 'mars-west-1' }`
+
+      try {
+        parseSource(source, options)
+      } catch (error) {
+        const { customErrorInfo, message } = error
+
+        expect(message).toBe(
+          `Function func1 has a configuration error on 'region': Must be one of the supported regions (${REGIONS.join(
+            ', ',
+          )})`,
+        )
+        expect(customErrorInfo.type).toBe('functionsBundling')
+        expect(customErrorInfo.location.functionName).toBe('func1')
+        expect(customErrorInfo.location.runtime).toBe('js')
+      }
     })
   })
 })
