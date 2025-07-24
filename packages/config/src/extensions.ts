@@ -80,6 +80,7 @@ export const normalizeAndMergeExtensions = ({
         let resolvedPath = path.isAbsolute(extension.dev.path)
           ? extension.dev.path
           : path.resolve(buildDir, extension.dev.path)
+        const normalizedExtname = path.extname(resolvedPath).toLowerCase()
 
         // If the user has specified a path to an extension directory rather than to a tarball
         // package, interpret this as a shortcut for "the default Netlify Extension build plugin
@@ -87,7 +88,7 @@ export const normalizeAndMergeExtensions = ({
         //
         // This sort of emulates SDK v1/2/3 behavior, and is an effort at making extension dev mode
         // friendlier to use. We can feel free to revisit this chocie at a later date.
-        if (!resolvedPath.toLowerCase().endsWith('.tgz')) {
+        if (normalizedExtname === '') {
           resolvedPath = path.join(resolvedPath, '.ntli/site/static/packages/buildhooks.tgz')
         }
 
@@ -132,10 +133,13 @@ export const normalizeAndMergeExtensions = ({
     })
 
   for (const extension of mergedExtensions) {
-    if (extension.buildPlugin !== null && !extension.buildPlugin.packageURL.toString().toLowerCase().endsWith('.tgz')) {
-      return throwUserError(
-        `Extension ${extension.slug} contains unexpected build plugin URL: '${extension.buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
-      )
+    if (extension.buildPlugin !== null) {
+      const normalizedExtname = path.extname(extension.buildPlugin.packageURL.toString()).toLowerCase()
+      if (normalizedExtname !== '.tgz') {
+        return throwUserError(
+          `Extension ${extension.slug} contains unexpected build plugin URL: '${extension.buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
+        )
+      }
     }
   }
 
