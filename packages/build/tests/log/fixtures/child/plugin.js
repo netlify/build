@@ -1,5 +1,5 @@
-import chalk from 'chalk'
+import * as colors from 'ansis'
 
 export const onPreBuild = function () {
-  console.log(chalk.red('onPreBuild'))
+  console.log(colors.red('onPreBuild'))
 }
