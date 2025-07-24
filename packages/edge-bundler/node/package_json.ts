@@ -5,10 +5,7 @@ import { fileURLToPath } from 'url'
 import { file as findUp } from 'empathic/find'
 
 const getPackagePath = () => {
-  const packageJsonPath = findUp(
-    'package.json',
-    { cwd: dirname(fileURLToPath(import.meta.url)) },
-  )
+  const packageJsonPath = findUp('package.json', { cwd: dirname(fileURLToPath(import.meta.url)) })
   const packagePath = packageJsonPath ? dirname(packageJsonPath) : undefined
 
   // We should never get here, but let's show a somewhat useful error message.

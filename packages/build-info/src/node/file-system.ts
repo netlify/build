@@ -79,12 +79,12 @@ export class NodeFS extends FileSystem {
   /** Node implementation of finding files or directories by walking up parent directories. */
   findUpMultiple(name: string | readonly string[], options: findUpOptions = {}): Promise<string[]> {
     const results: string[] = []
-    const normalisedNames = typeof name === 'string' ? [name] : name;
+    const normalisedNames = typeof name === 'string' ? [name] : name
     for (const dir of walkUp(options.cwd ?? '.', options)) {
       for (const potentialName of normalisedNames) {
-        const filePath = join(dir, potentialName);
+        const filePath = join(dir, potentialName)
         if (existsSync(filePath)) {
-          results.push(filePath);
+          results.push(filePath)
         }
       }
     }

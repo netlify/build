@@ -22,6 +22,6 @@ export const createAliases = (
 }
 
 export const getPluginsModulesPath = (srcDir: string): Promise<string | undefined> => {
-  const result = findUp(`${AUTO_PLUGINS_DIR}node_modules`, { cwd: srcDir });
-  return Promise.resolve(result);
-};
+  const result = findUp(`${AUTO_PLUGINS_DIR}node_modules`, { cwd: srcDir })
+  return Promise.resolve(result)
+}

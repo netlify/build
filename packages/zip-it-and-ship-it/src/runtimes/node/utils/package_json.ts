@@ -29,7 +29,7 @@ export const getClosestPackageJson = async (resolveDir: string, boundary?: strin
     // We stop traversing if we're about to leave the boundaries of any
     // node_modules directory.
     if (basename(directory) === 'node_modules') {
-      break;
+      break
     }
 
     const path = join(directory, 'package.json')
