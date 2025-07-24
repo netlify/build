@@ -1,4 +1,4 @@
-import { locatePath } from 'locate-path'
+import fs from 'node:fs/promises'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -7,7 +7,13 @@ export const getManifestPath = async function ({ pluginDir, packageDir, packageN
   const dirs = [pluginDir, packageDir]
     .filter(Boolean)
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
-  const manifestPath = await locatePath(dirs)
+  let manifestPath
+  for (const dir of dirs) {
+    if (fs.exists(dir)) {
+      manifestPath = dir
+      break
+    }
+  }
   validateManifestExists(manifestPath, packageName)
   return manifestPath
 }
