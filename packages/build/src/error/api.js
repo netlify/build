@@ -1,5 +1,4 @@
 import isPlainObj from 'is-plain-obj'
-import mapObj from 'map-obj'
 
 import { addErrorInfo } from './info.js'
 
@@ -9,10 +8,10 @@ export const addApiErrorHandlers = function (api) {
     return
   }
 
-  return mapObj(api, addErrorHandler)
+  return Object.fromEntries(Object.entries(api).map(addErrorHandler))
 }
 
-const addErrorHandler = function (key, value) {
+const addErrorHandler = function ([key, value]) {
   if (typeof value !== 'function') {
     return [key, value]
   }
