@@ -38,12 +38,16 @@ export type ExtensionWithDev = Extension & {
 }
 
 /**
- * mergeExtensions accepts several lists of extensions configured for the current build target and
- * stitches them together into a single list. It performs filtration depending on the current build
- * context and merges development-time information set via the configuration file (netlify.toml)
- * with canonical information retrieved from the Netlify API.
+ * normalizeAndMergeExtensions accepts several lists of extensions configured for the current build
+ * target, normalizes them to compensate for some differences between the various APIs we load this
+ * data from (one of two API endpoints and the user's config file), and merges them into a single
+ * list.
+ *
+ * Note that it merges extension data provided by the config file (configExtensions) only when
+ * context=dev. When it does so, config file data will be merged into any available API data, giving
+ * a preference to config file data.
  */
-export const mergeExtensions = ({
+export const normalizeAndMergeExtensions = ({
   apiExtensions,
   buildDir,
   configExtensions = [],

@@ -14,7 +14,7 @@ import {
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
   NETLIFY_API_STAGING_BASE_URL,
-  mergeExtensions,
+  normalizeAndMergeExtensions,
 } from './extensions.js'
 import { logResult } from './log/main.js'
 import { mergeConfigs } from './merge.js'
@@ -185,7 +185,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     debug,
   })
 
-  const mergedExtensions = mergeExtensions({
+  const mergedExtensions = normalizeAndMergeExtensions({
     apiExtensions: updatedExtensions,
     configExtensions: configA.integrations,
     buildDir,
