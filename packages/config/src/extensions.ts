@@ -77,11 +77,21 @@ export const normalizeAndMergeExtensions = ({
     (context === 'dev' ? configExtensions : []).map((extension) => {
       let buildPluginPackageURL: URL | null = null
       if (extension.dev?.path) {
-        if (path.isAbsolute(extension.dev.path)) {
-          buildPluginPackageURL = new URL(`file://${extension.dev.path}`)
-        } else {
-          buildPluginPackageURL = new URL(`file://${path.resolve(buildDir, extension.dev.path)}`)
+        let resolvedPath = path.isAbsolute(extension.dev.path)
+          ? extension.dev.path
+          : path.resolve(buildDir, extension.dev.path)
+
+        // If the user has specified a path to an extension directory rather than to a tarball
+        // package, interpret this as a shortcut for "the default Netlify Extension build plugin
+        // artifact path, please."
+        //
+        // This sort of emulates SDK v1/2/3 behavior, and is an effort at making extension dev mode
+        // friendlier to use. We can feel free to revisit this chocie at a later date.
+        if (!resolvedPath.toLowerCase().endsWith('.tgz')) {
+          resolvedPath = path.join(resolvedPath, '.ntli/site/static/packages/buildhooks.tgz')
         }
+
+        buildPluginPackageURL = new URL(`file://${resolvedPath}`)
       }
 
       return [

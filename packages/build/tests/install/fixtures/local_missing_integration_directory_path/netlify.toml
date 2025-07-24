@@ -1,0 +1,5 @@
+[[integrations]]
+name = "functions-injection"
+
+[integrations.dev]
+path = "./integration"
