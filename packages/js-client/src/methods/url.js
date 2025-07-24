@@ -1,4 +1,4 @@
-import queryString from 'qs'
+import { stringify } from 'picoquery'
 
 import { getRequestParams } from './params.js'
 
@@ -27,5 +27,5 @@ const addQueryParams = function (url, parameters, requestParams) {
     return url
   }
 
-  return `${url}?${queryString.stringify(queryParams, { arrayFormat: 'brackets' })}`
+  return `${url}?${stringify(queryParams, { arrayRepeatSyntax: 'bracket', nestingSyntax: 'index' })}`
 }
