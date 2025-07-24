@@ -62,7 +62,6 @@ const getIntegrationPackage = async function ({ integration: { buildPlugin } }) 
     case 'http:':
     // fallthrough
     case 'https:':
-      // fallthrough
       return buildPlugin.packageURL.toString()
     case 'file:':
       return fileURLToPath(buildPlugin.packageURL)
