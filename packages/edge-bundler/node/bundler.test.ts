@@ -749,6 +749,7 @@ describe('Produces a tarball bundle', () => {
     await rm(vendorDirectory.path, { force: true, recursive: true })
   })
 
+  // TODO: https://github.com/denoland/deno/issues/30187
   test.todo('Using npm modules', async () => {
     const systemLogger = vi.fn()
     const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
