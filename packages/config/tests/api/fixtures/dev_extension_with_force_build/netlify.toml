@@ -1,0 +1,5 @@
+[[integrations]]
+name = "abc-extension"
+
+[integrations.dev]
+path = "./test-extension/.ntli/build/buildhooks.tgz"

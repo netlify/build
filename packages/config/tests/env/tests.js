@@ -104,6 +104,10 @@ const SITE_ENVELOPE_RESPONSE = {
     },
   ],
 }
+const SITE_EXTENSIONS_EMPTY_RESPONSE = {
+  path: '/site/test/integrations/safe',
+  response: [],
+}
 
 // List of authenticating-related CLI flags
 const AUTH_FLAGS = { token: 'test', siteId: 'test' }
@@ -268,7 +272,9 @@ test('Does not set SITE_ID environment variable if no flag is provided', async (
 test('Sets SITE_NAME environment variable', async (t) => {
   const {
     env: { SITE_NAME },
-  } = await new Fixture('./fixtures/empty').withFlags(AUTH_FLAGS).runConfigServerAsObject(SITE_INFO_RESPONSE_NAME)
+  } = await new Fixture('./fixtures/empty')
+    .withFlags(AUTH_FLAGS)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_NAME, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(SITE_NAME.sources, ['general'])
   t.is(SITE_NAME.value, 'test-name')
 })
@@ -285,7 +291,9 @@ test('Does not set SITE_NAME environment variable if offline', async (t) => {
 test('Sets URL environment variable', async (t) => {
   const {
     env: { URL },
-  } = await new Fixture('./fixtures/empty').withFlags(AUTH_FLAGS).runConfigServerAsObject(SITE_INFO_RESPONSE_URL)
+  } = await new Fixture('./fixtures/empty')
+    .withFlags(AUTH_FLAGS)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_URL, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(URL.sources, ['general'])
   t.is(URL.value, 'test')
 })
@@ -293,7 +301,12 @@ test('Sets URL environment variable', async (t) => {
 test('Sets environment variables when configured to use Envelope', async (t) => {
   const { env } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS)
-    .runConfigServerAsObject([SITE_INFO_WITH_ENVELOPE, SITE_ENVELOPE_RESPONSE, TEAM_ENVELOPE_RESPONSE])
+    .runConfigServerAsObject([
+      SITE_INFO_WITH_ENVELOPE,
+      SITE_ENVELOPE_RESPONSE,
+      TEAM_ENVELOPE_RESPONSE,
+      SITE_EXTENSIONS_EMPTY_RESPONSE,
+    ])
   t.deepEqual(env.URL.sources, ['general'])
   t.is(env.URL.value, 'test')
   t.is(env.SHARED_ENV_VAR.value, 'ENVELOPE_TEAM_ALL')
@@ -304,7 +317,9 @@ test('Sets environment variables when configured to use Envelope', async (t) => 
 test('Sets REPOSITORY_URL environment variable', async (t) => {
   const {
     env: { REPOSITORY_URL },
-  } = await new Fixture('./fixtures/empty').withFlags(AUTH_FLAGS).runConfigServerAsObject(SITE_INFO_RESPONSE_REPO_URL)
+  } = await new Fixture('./fixtures/empty')
+    .withFlags(AUTH_FLAGS)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_REPO_URL, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(REPOSITORY_URL.sources, ['general'])
   t.is(REPOSITORY_URL.value, 'test')
 })
@@ -314,7 +329,7 @@ test('Sets DEPLOY_URL environment variable', async (t) => {
     env: { DEPLOY_URL },
   } = await new Fixture('./fixtures/empty')
     .withFlags({ ...AUTH_FLAGS, deployId: 'test' })
-    .runConfigServerAsObject(SITE_INFO_RESPONSE_NAME)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_NAME, SITE_EXTENSIONS_EMPTY_RESPONSE])
 
   t.deepEqual(DEPLOY_URL.sources, ['general'])
   t.is(DEPLOY_URL.value, `https://test--test-name.netlify.app`)
@@ -325,7 +340,7 @@ test('Sets DEPLOY_PRIME_URL environment variable', async (t) => {
     env: { DEPLOY_PRIME_URL },
   } = await new Fixture('./fixtures/empty')
     .withFlags({ ...AUTH_FLAGS, branch: 'test' })
-    .runConfigServerAsObject(SITE_INFO_RESPONSE_NAME)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_NAME, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(DEPLOY_PRIME_URL.sources, ['general'])
   t.is(DEPLOY_PRIME_URL.value, `https://test--test-name.netlify.app`)
 })
@@ -379,7 +394,9 @@ test('Coerces environment variables to string', async (t) => {
 test('Merges all environment variables', async (t) => {
   const {
     env: { TEST, LANG },
-  } = await new Fixture('./fixtures/file_env').withFlags(AUTH_FLAGS).runConfigServerAsObject(SITE_INFO_RESPONSE_ENV)
+  } = await new Fixture('./fixtures/file_env')
+    .withFlags(AUTH_FLAGS)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_ENV, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(TEST.sources, ['configFile', 'ui'])
   t.is(TEST.value, 'testFile')
   t.deepEqual(LANG.sources, ['general'])
@@ -389,7 +406,9 @@ test('Merges all environment variables', async (t) => {
 test('Sets site environment variables', async (t) => {
   const {
     env: { TEST },
-  } = await new Fixture('./fixtures/empty').withFlags(AUTH_FLAGS).runConfigServerAsObject(SITE_INFO_RESPONSE_ENV)
+  } = await new Fixture('./fixtures/empty')
+    .withFlags(AUTH_FLAGS)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_ENV, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(TEST.sources, ['ui'])
   t.is(TEST.value, 'test')
 })
@@ -406,7 +425,7 @@ test('Does not set site environment variables in the buildbot', async (t) => {
     env: { TEST },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS_BUILDBOT)
-    .runConfigServerAsObject(SITE_INFO_RESPONSE_ENV)
+    .runConfigServerAsObject([SITE_INFO_RESPONSE_ENV, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.is(TEST, undefined)
 })
 
@@ -442,7 +461,7 @@ test('Sets accounts environment variables', async (t) => {
     env: { TEST },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS)
-    .runConfigServerAsObject(LIST_ACCOUNTS_RESPONSE_SUCCESS)
+    .runConfigServerAsObject([...LIST_ACCOUNTS_RESPONSE_SUCCESS, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.deepEqual(TEST.sources, ['account'])
   t.is(TEST.value, 'test')
 })
@@ -452,7 +471,7 @@ test('Does not set accounts environment variables if no matching account', async
     env: { TEST },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS)
-    .runConfigServerAsObject(LIST_ACCOUNTS_RESPONSE_MISMATCH)
+    .runConfigServerAsObject([LIST_ACCOUNTS_RESPONSE_MISMATCH, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.is(TEST, undefined)
 })
 
@@ -468,7 +487,7 @@ test('Does not set accounts environment variables on API wrong response shape', 
     env: { TEST },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS)
-    .runConfigServerAsObject(LIST_ACCOUNTS_RESPONSE_WRONG_SHAPE)
+    .runConfigServerAsObject([LIST_ACCOUNTS_RESPONSE_WRONG_SHAPE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.is(TEST, undefined)
 })
 
@@ -477,7 +496,7 @@ test('Does not set accounts environment variables in the buildbot', async (t) =>
     env: { TEST },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS_BUILDBOT)
-    .runConfigServerAsObject(LIST_ACCOUNTS_RESPONSE_SUCCESS)
+    .runConfigServerAsObject([LIST_ACCOUNTS_RESPONSE_SUCCESS, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.is(TEST, undefined)
 })
 

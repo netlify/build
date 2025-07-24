@@ -1,6 +1,0 @@
-[[integrations]]
-	name = "abc-integration"
-
-  [integrations.dev]
-    path = "local/path/to/abc-integration"
-    force_run_in_build = true

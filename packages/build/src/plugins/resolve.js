@@ -1,4 +1,4 @@
-import { join, resolve } from 'path'
+import { join } from 'node:path'
 
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
@@ -66,9 +66,7 @@ export const resolvePluginsPath = async function ({
     logs,
   })
 
-  let integrationPluginOptions = []
-
-  integrationPluginOptions = await handleIntegrations({
+  const integrationPluginOptions = await handleIntegrations({
     integrations,
     autoPluginsDir,
     mode,
@@ -175,9 +173,9 @@ const handleIntegrations = async function ({
   testOpts,
   pluginsEnv,
 }) {
-  const toInstall = integrations.filter((integration) => integration.has_build)
+  const integrationsWithBuildPlugins = integrations.filter((integration) => integration.has_build)
   await installIntegrationPlugins({
-    integrations: toInstall,
+    integrations: integrationsWithBuildPlugins,
     autoPluginsDir,
     mode,
     logs,
@@ -186,36 +184,27 @@ const handleIntegrations = async function ({
     buildDir,
     pluginsEnv,
   })
-
-  if (toInstall.length === 0) {
-    return []
-  }
-
   return Promise.all(
-    toInstall.map((integration) =>
-      resolveIntegration({
+    integrationsWithBuildPlugins.map(async (integration) => {
+      // TODO(ndhoule): When developing locally, the user can accidentally set an extension name in
+      // their netlify.toml that points to a build plugin package that has a mismatched name. This
+      // will result in a failed install here. The solution is non-obvious: make sure your
+      // `netlify.toml#integrations[].name` matches the extension that `netlify.toml#integrations[].dev.path`
+      // points at.
+      //
+      // (We could, for example, detect a mismatch by untarring the local build plugin package in
+      // memory and comparing its `package.json#name` to `integration.slug`, and throw a descriptive
+      // error if they don't match.)
+      const packageName = `${integration.slug}-buildhooks`
+      return {
         integration,
-        autoPluginsDir,
-        buildDir,
-        context,
-        testOpts,
-      }),
-    ),
+        isIntegration: true,
+        loadedFrom: integration.buildPlugin.origin === 'local' ? 'local' : undefined,
+        packageName,
+        pluginPath: await resolvePath(packageName, autoPluginsDir),
+      }
+    }),
   )
-}
-
-const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context, testOpts }) {
-  if (typeof integration.dev !== 'undefined' && context === 'dev') {
-    const { path } = integration.dev
-    const integrationDir = testOpts.cwd ? resolve(testOpts.cwd, path) : resolve(buildDir, path)
-    const pluginPath = await resolvePath(`${integrationDir}/.ntli/build`, buildDir)
-
-    return { pluginPath, packageName: `${integration.slug}`, isIntegration: true, integration, loadedFrom: 'local' }
-  }
-
-  const pluginPath = await resolvePath(`${integration.slug}-buildhooks`, autoPluginsDir)
-
-  return { pluginPath, packageName: `${integration.slug}-buildhooks`, isIntegration: true, integration }
 }
 
 // Resolve the plugins that just got automatically installed
