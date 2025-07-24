@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [34.3.1](https://github.com/netlify/build/compare/build-v34.3.0...build-v34.3.1) (2025-07-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.7 ([#6569](https://github.com/netlify/build/issues/6569)) ([22748d8](https://github.com/netlify/build/commit/22748d862f783231c3b1d7bf55470798f14b588b))
+
 ## [34.3.0](https://github.com/netlify/build/compare/build-v34.2.5...build-v34.3.0) (2025-07-18)
 
 
