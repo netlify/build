@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer'
 import crypto from 'node:crypto'
 import { createReadStream, promises as fs } from 'node:fs'
 import path from 'node:path'
@@ -52,30 +51,4 @@ export const getStringHash = (input: string) => {
   hash.update(input)
 
   return hash.digest('hex')
-}
-
-export const readFileAndHash = (path: string) => {
-  const file = createReadStream(path)
-  const hash = crypto.createHash('sha256')
-  const chunks: Uint8Array[] = []
-
-  hash.setEncoding('hex')
-
-  return new Promise<{ contents: string; hash: string }>((resolve, reject) => {
-    file
-      .on('data', (chunk) => {
-        chunks.push(Buffer.from(chunk))
-
-        hash.update(chunk.toString())
-      })
-      .on('error', reject)
-      .on('end', () => {
-        const contents = Buffer.concat(chunks).toString('utf8')
-
-        resolve({
-          contents,
-          hash: hash.digest('hex'),
-        })
-      })
-  })
 }
