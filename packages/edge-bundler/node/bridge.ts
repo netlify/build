@@ -16,7 +16,7 @@ const DENO_VERSION_FILE = 'version.txt'
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
-const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
+const DENO_VERSION_RANGE = '^2.4.2'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -37,6 +37,7 @@ interface ProcessRef {
 }
 
 interface RunOptions {
+  cwd?: string
   env?: NodeJS.ProcessEnv
   extendEnv?: boolean
   pipeOutput?: boolean
@@ -245,11 +246,11 @@ class DenoBridge {
   // process, awaiting its execution.
   async run(
     args: string[],
-    { env: inputEnv, extendEnv = true, rejectOnExitCode = true, stderr, stdout }: RunOptions = {},
+    { cwd, env: inputEnv, extendEnv = true, rejectOnExitCode = true, stderr, stdout }: RunOptions = {},
   ) {
     const { path: binaryPath } = await this.getBinaryPath()
     const env = this.getEnvironmentVariables(inputEnv)
-    const options: Options = { env, extendEnv, reject: rejectOnExitCode }
+    const options: Options = { cwd, env, extendEnv, reject: rejectOnExitCode }
 
     return DenoBridge.runWithBinary(binaryPath, args, { options, stderr, stdout })
   }
