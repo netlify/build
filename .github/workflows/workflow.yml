@@ -149,7 +149,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.2.4
+          deno-version: v2.4.2
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
