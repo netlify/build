@@ -89,6 +89,8 @@ export const bundle = async ({
     },
   )
 
+  console.log('-> Tarball bundle', { functions, distDirectory, entryPoints, commonPath })
+
   const manifestPath = path.join(sideFilesDir.path, 'manifest.json')
   const manifestContents = JSON.stringify(manifest)
   await fs.writeFile(manifestPath, manifestContents)
