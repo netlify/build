@@ -1,7 +1,7 @@
 import { createRequire } from 'module'
 import { version as nodeVersion } from 'process'
 
-import { findUp } from 'find-up'
+import { up as walkUp } from 'empathic/walk'
 import { pathExists } from 'path-exists'
 // @ts-expect-error doesnt export async
 import { async as asyncResolve } from 'resolve'
@@ -94,7 +94,12 @@ const resolvePathFollowSymlinks = function (path: string, baseDirs: string[]) {
 // unlikely, and we don't have any better alternative.
 const resolvePackageFallback = async function (moduleName: string, baseDirs: string[], error: Error) {
   const mainFilePath = resolvePathFollowSymlinks(moduleName, baseDirs)
-  const packagePath = await findUp(isPackageDir.bind(null, moduleName), { cwd: mainFilePath, type: 'directory' })
+  let packagePath
+  for (const dir of walkUp(mainFilePath)) {
+    if (await isPackageDir(moduleName, dir)) {
+      packagePath = dir
+    }
+  }
 
   if (packagePath === undefined) {
     throw error
