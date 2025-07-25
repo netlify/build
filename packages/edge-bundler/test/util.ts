@@ -157,6 +157,8 @@ const runTarball = async (tarballPath: string) => {
     file: tarballPath,
   })
 
+  console.log('-> Tarball contents:', await fs.readdir(tmpDir.path))
+
   const evalCommand = execa('deno', ['eval', inspectTarballFunction()], {
     cwd: tmpDir.path,
   })
