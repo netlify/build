@@ -1,7 +1,8 @@
-import { Buffer } from 'buffer'
-import { promises as fs } from 'fs'
-import { dirname, relative } from 'path'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { Buffer } from 'node:buffer'
+import { promises as fs } from 'node:fs'
+import { builtinModules } from 'node:module'
+import { dirname, relative } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { parse, ParsedImportMap } from '@import-maps/resolve'
 
@@ -277,6 +278,23 @@ export class ImportMap {
     const encodedImportMap = Buffer.from(data).toString('base64')
 
     return `data:application/json;base64,${encodedImportMap}`
+  }
+
+  // Adds an import map source mapping Node.js built-in modules to their prefixed
+  // version (e.g. "path" => "node:path").
+  withNodeBuiltins() {
+    const imports: Record<string, string> = {}
+
+    for (const name of builtinModules) {
+      imports[name] = `node:${name}`
+    }
+
+    this.sources.push({
+      baseURL: new URL(import.meta.url),
+      imports,
+    })
+
+    return this
   }
 
   async writeToFile(path: string) {

@@ -48,7 +48,6 @@ test('Produces an ESZIP bundle', async () => {
   expect(importMapURL).toBe(importMapSpecifier)
 
   const bundlePath = join(distPath, bundles[0].asset)
-
   const { func1, func2, func3 } = await runESZIP(bundlePath)
 
   expect(func1).toBe('HELLO, JANE DOE!')
@@ -696,7 +695,7 @@ test('Loads edge functions from the Frameworks API', async () => {
 describe('Produces a tarball bundle', () => {
   test('With only local imports', async () => {
     const systemLogger = vi.fn()
-    const { basePath, cleanup, distPath } = await useFixture('with_config', { copyDirectory: true })
+    const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
     const declarations: Declaration[] = [
       {
         function: 'func1',
@@ -705,37 +704,21 @@ describe('Produces a tarball bundle', () => {
     ]
     const vendorDirectory = await tmp.dir()
 
-    await bundle(
-      [join(basePath, 'netlify/edge-functions'), join(basePath, '.netlify/edge-functions')],
-      distPath,
-      declarations,
-      {
-        basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
-        importMapPaths: [join(basePath, '.netlify/edge-functions/import_map.json')],
-        vendorDirectory: vendorDirectory.path,
-        systemLogger,
+    await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+      basePath,
+      configPath: join(basePath, '.netlify/edge-functions/config.json'),
+      featureFlags: {
+        edge_bundler_generate_tarball: true,
       },
-    )
+      systemLogger,
+    })
 
     expect(
       systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
     ).toBeUndefined()
 
     const expectedOutput = {
-      'user-func1': 'Hello, user function 1!',
-      'user-func2': 'Hello, user function 2!',
-      'user-func3': 'Hello from user function 3',
-      'user-func4': 'Hello from user function 4. I will be cached!',
-      'user-func5': 'Hello from user function 5.',
-      'user-func6': 'Hello from user function 6.',
-      'user-func7': 'Hello from user function 7.',
-      'framework-func1': 'Hello, framework function 1!',
-      'framework-func2': 'Hello, framework function 2!',
-      'framework-func3': 'Hello, framework function 3!',
-      'framework-func4': 'Hello, framework function 4!',
+      func1: 'ok',
     }
 
     const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -744,6 +727,10 @@ describe('Produces a tarball bundle', () => {
     const tarballPath = join(distPath, manifest.bundles[0].asset)
     const tarballResult = await runTarball(tarballPath)
     expect(tarballResult).toStrictEqual(expectedOutput)
+
+    const eszipPath = join(distPath, manifest.bundles[1].asset)
+    const eszipResult = await runESZIP(eszipPath)
+    expect(eszipResult).toStrictEqual(expectedOutput)
 
     await cleanup()
     await rm(vendorDirectory.path, { force: true, recursive: true })
