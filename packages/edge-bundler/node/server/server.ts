@@ -317,7 +317,7 @@ export const serve = async ({
   // Downloading latest types if needed.
   await ensureLatestTypes(deno, logger)
 
-  const flags = ['--allow-all', '--no-config', '--no-lock']
+  const flags = ['--allow-all', '--no-config']
 
   if (certificatePath) {
     flags.push(`--cert=${certificatePath}`)

@@ -57,7 +57,7 @@ const bundleESZIP = async ({
     importMapData,
     vendorDirectory,
   }
-  const flags = ['--allow-all', '--no-config', '--no-lock', `--import-map=${bundlerImportMap}`]
+  const flags = ['--allow-all', '--no-config', `--import-map=${bundlerImportMap}`]
 
   if (!debug) {
     flags.push('--quiet')
