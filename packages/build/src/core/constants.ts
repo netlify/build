@@ -1,7 +1,6 @@
 import { relative, normalize, join } from 'path'
 
 import { getCacheDir } from '@netlify/cache-utils'
-import mapObj from 'map-obj'
 import { pathExists } from 'path-exists'
 
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
@@ -201,7 +200,9 @@ const addDefaultConstant = async function ({ constants, constantName, defaultPat
 }
 
 const normalizeConstantsPaths = function (constants: Partial<NetlifyPluginConstants>, buildDir: string) {
-  return mapObj(constants, (key, path: string) => [key, normalizePath(path, buildDir, key)])
+  return Object.fromEntries(
+    Object.entries(constants).map(([key, path]) => [key, normalizePath(String(path), buildDir, key)]),
+  )
 }
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.

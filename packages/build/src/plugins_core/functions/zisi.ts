@@ -1,7 +1,6 @@
 import { join, resolve } from 'path'
 
 import { type FunctionConfig, type ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
-import mapObject from 'map-obj'
 import semver from 'semver'
 
 import type { FeatureFlags } from '../../core/feature_flags.js'
@@ -55,10 +54,12 @@ export const getZisiParameters = ({
 }: GetZisiParametersType): ZipFunctionsOptions => {
   const nodeVersion = getLambdaNodeVersion(childEnv, userNodeVersion)
   const manifest = join(functionsDist, 'manifest.json')
-  const config = mapObject(functionsConfig, (expression, object) => [
-    expression,
-    normalizeFunctionConfig({ buildDir, functionConfig: object, isRunningLocally, nodeVersion }),
-  ])
+  const config = Object.fromEntries(
+    Object.entries(functionsConfig).map(([expression, object]) => [
+      expression,
+      normalizeFunctionConfig({ buildDir, functionConfig: object, isRunningLocally, nodeVersion }),
+    ]),
+  )
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
 
   // Only the legacy internal functions directory is allowed to have a JSON

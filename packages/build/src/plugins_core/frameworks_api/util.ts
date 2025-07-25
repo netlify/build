@@ -2,7 +2,6 @@ import { promises as fs } from 'fs'
 import { resolve } from 'path'
 
 import isPlainObject from 'is-plain-obj'
-import mapObject, { mapObjectSkip } from 'map-obj'
 
 import type { NetlifyConfig } from '../../index.js'
 import { FRAMEWORKS_API_CONFIG_ENDPOINT } from '../../utils/frameworks_api.js'
@@ -67,20 +66,24 @@ export const filterConfig = (
   allowedProperties: string[][],
   systemLog: SystemLogger,
 ): Record<string, unknown> =>
-  mapObject(obj, (key, value) => {
-    const keyPath = [...path, key]
+  Object.fromEntries(
+    Object.entries(obj)
+      .map(([key, value]): [string, unknown] | null => {
+        const keyPath = [...path, key]
 
-    if (!isAllowedProperty(keyPath, allowedProperties)) {
-      systemLog(`Discarding property that is not supported by the Deploy Configuration API: ${keyPath.join('.')}`)
+        if (!isAllowedProperty(keyPath, allowedProperties)) {
+          systemLog(`Discarding property that is not supported by the Deploy Configuration API: ${keyPath.join('.')}`)
 
-      return mapObjectSkip
-    }
+          return null
+        }
 
-    if (!isPlainObject(value)) {
-      systemLog(`Loading property from Deploy Configuration API: ${keyPath.join('.')}`)
+        if (!isPlainObject(value)) {
+          systemLog(`Loading property from Deploy Configuration API: ${keyPath.join('.')}`)
 
-      return [key, value]
-    }
+          return [key, value]
+        }
 
-    return [key, filterConfig(value, keyPath, allowedProperties, systemLog)]
-  })
+        return [key, filterConfig(value, keyPath, allowedProperties, systemLog)]
+      })
+      .filter((pair) => pair !== null),
+  )

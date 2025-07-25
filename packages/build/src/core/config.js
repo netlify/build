@@ -1,5 +1,4 @@
 import { resolveConfig, restoreConfig, updateConfig } from '@netlify/config'
-import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
@@ -95,7 +94,7 @@ const tLoadConfig = async function ({
   }
 
   const apiA = addApiErrorHandlers(api)
-  const envValues = mapObj(env, (key, { value }) => [key, value])
+  const envValues = Object.fromEntries(Object.entries(env).map(([key, { value }]) => [key, value]))
   const childEnv = getChildEnv({ envOpt, env: envValues })
   const [{ packageJson }, userNodeVersion] = await Promise.all([getPackageJson(buildDir), getUserNodeVersion(nodePath)])
   return {

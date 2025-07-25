@@ -1,7 +1,6 @@
 import { env } from 'process'
 
 import { includeKeys } from 'filter-obj'
-import mapObj from 'map-obj'
 
 // If plugins modify `process.env`, this is propagated in other plugins and in
 // `build.command`. Since those are different processes, we figure out when they
@@ -15,7 +14,7 @@ export const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfi
 const diffEnv = function (envBefore, envAfter) {
   const envChanges = includeKeys(envAfter, (name, value) => value !== envBefore[name])
   const deletedEnv = includeKeys(envBefore, (name) => envAfter[name] === undefined)
-  const deletedEnvA = mapObj(deletedEnv, setToNull)
+  const deletedEnvA = Object.fromEntries(Object.entries(deletedEnv).map(setToNull))
   return { ...envChanges, ...deletedEnvA }
 }
 
@@ -23,7 +22,7 @@ const diffEnv = function (envBefore, envAfter) {
 // convert it to `null`
 // Note: `process.env[name] = undefined` actually does
 // `process.env[name] = 'undefined'` in Node.js.
-const setToNull = function (name) {
+const setToNull = function ([name]) {
   return [name, null]
 }
 
