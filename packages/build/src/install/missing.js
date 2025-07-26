@@ -3,7 +3,6 @@ import { normalize, resolve } from 'path'
 
 import { execa } from 'execa'
 import { pathExists } from 'path-exists'
-import { isFile } from 'path-type'
 
 import { logArray, logSubHeader } from '../log/logger.js'
 import { logInstallMissingPlugins, logInstallIntegrations } from '../log/messages/install.js'
@@ -122,8 +121,13 @@ const ensureDir = async function (logs, autoPluginsDir) {
 
   // If `.netlify` exists but is not a directory, we remove it first
   const autoPluginsParent = normalize(`${autoPluginsDir}/..`)
-  if (await isFile(autoPluginsParent)) {
-    await fs.unlink(autoPluginsParent)
+  try {
+    const stat = await fs.stat(autoPluginsParent)
+    if (stat.isFile()) {
+      await fs.unlink(autoPluginsParent)
+    }
+  } catch {
+    // do nothing since it doesn't exist
   }
 
   await fs.mkdir(autoPluginsDir, { recursive: true })
