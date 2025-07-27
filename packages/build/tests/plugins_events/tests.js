@@ -1,6 +1,6 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import sinon from 'sinon'
+import { spy } from 'tinyspy'
 
 test('plugin.onSuccess is triggered on success', async (t) => {
   const output = await new Fixture('./fixtures/success_ok').runWithBuild()
@@ -103,7 +103,7 @@ test('Does not run `*Dev` events on the build timeline', async (t) => {
 })
 
 test('Runs the `*Dev` events and not the `*Build` events on the dev timeline', async (t) => {
-  const devCommand = sinon.stub().resolves()
+  const devCommand = spy(() => Promise.resolve())
 
   const output = await new Fixture('./fixtures/dev_and_build')
     .withFlags({ debug: false, timeline: 'dev' })
@@ -114,7 +114,7 @@ test('Runs the `*Dev` events and not the `*Build` events on the dev timeline', a
 })
 
 test('Keeps output to a minimum in the `startDev` entrypoint when `quiet: true`', async (t) => {
-  const devCommand = sinon.stub().resolves()
+  const devCommand = spy(() => Promise.resolve())
 
   const output = await new Fixture('./fixtures/dev_and_build')
     .withFlags({ debug: false, quiet: true, timeline: 'dev' })
@@ -125,7 +125,7 @@ test('Keeps output to a minimum in the `startDev` entrypoint when `quiet: true`'
 })
 
 test('Shows error information in the `startDev` entrypoint even when `quiet: true`', async (t) => {
-  const devCommand = sinon.stub().resolves()
+  const devCommand = spy(() => Promise.resolve())
 
   const output = await new Fixture('./fixtures/dev_with_error')
     .withFlags({ debug: false, quiet: true, timeline: 'dev' })
@@ -136,15 +136,15 @@ test('Shows error information in the `startDev` entrypoint even when `quiet: tru
 })
 
 test('Passes plugin options into dev command', async (t) => {
-  const devCommand = sinon.stub().resolves()
+  const devCommand = spy(() => Promise.resolve())
 
   await new Fixture('./fixtures/dev_and_build')
     .withFlags({ debug: false, quiet: true, timeline: 'dev' })
     .runDev(devCommand)
 
   t.is(devCommand.callCount, 1)
-  t.truthy(devCommand.lastCall.args[0])
-  t.truthy(devCommand.lastCall.args[0].netlifyConfig)
-  t.truthy(devCommand.lastCall.args[0].childEnv.TEST_ASSIGN)
-  console.log(devCommand.lastCall.args[0].childEnv)
+  t.truthy(devCommand.calls[devCommand.calls.length - 1][0])
+  t.truthy(devCommand.calls[devCommand.calls.length - 1][0].netlifyConfig)
+  t.truthy(devCommand.calls[devCommand.calls.length - 1][0].childEnv.TEST_ASSIGN)
+  console.log(devCommand.calls[devCommand.calls.length - 1][0].childEnv)
 })
