@@ -24,3 +24,5 @@ Netlify Build Plugins are simple Node.js packages. If you'd like to create one, 
 
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on how to set up and work on this repo itself. Thanks
 for contributing!
+
+xxx trigger tests xxx
