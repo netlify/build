@@ -1,9 +1,9 @@
-import chalk from 'chalk'
+import * as colors from 'ansis'
 
 export const onBuild = function ({
   utils: {
     status: { show },
   },
 }) {
-  show({ summary: chalk.red('summary') })
+  show({ summary: colors.red('summary') })
 }
