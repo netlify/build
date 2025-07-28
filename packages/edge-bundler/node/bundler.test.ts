@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+import { execSync } from 'node:child_process'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 import process from 'process'
@@ -11,7 +12,6 @@ import { test, expect, vi, describe } from 'vitest'
 import { importMapSpecifier } from '../shared/consts.js'
 import { runESZIP, runTarball, useFixture } from '../test/util.js'
 
-import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
 import { Declaration } from './declaration.js'
@@ -694,12 +694,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-// @ts-expect-error This is temporary, just so we can conditionally run this
-// suite of tests only if we're on the next version of Deno. TypeScript is
-// complaining about the fact that we're using a top-level await without
-// the right `module` format in the config, but this is just a test and the
-// format of the produced module has no effect here.
-const denoVersion = (await new DenoBridge({}).getBinaryVersion('deno')) ?? ''
+const denoVersion = execSync('deno eval "console.log(Deno.version.deno)"').toString()
 
 describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
