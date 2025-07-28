@@ -3,8 +3,8 @@ import path from 'node:path'
 import { type Extension } from './api/site_info.js'
 import { throwUserError } from './error.js'
 
-export const NETLIFY_API_STAGING_BASE_URL = 'api-staging.netlify.com'
-export const NETLIFY_API_BASE_URL = 'api.netlify.com'
+export const NETLIFY_API_STAGING_HOSTNAME = 'api-staging.netlify.com'
+export const NETLIFY_API_HOSTNAME = 'api.netlify.com'
 export const EXTENSION_API_BASE_URL = 'https://api.netlifysdk.com'
 export const EXTENSION_API_STAGING_BASE_URL = 'https://api-staging.netlifysdk.com'
 
@@ -136,7 +136,7 @@ export const normalizeAndMergeExtensions = ({
     if (extension.buildPlugin !== null) {
       const normalizedExtname = path.extname(extension.buildPlugin.packageURL.toString()).toLowerCase()
       if (normalizedExtname !== '.tgz') {
-        return throwUserError(
+        throwUserError(
           `Extension ${extension.slug} contains unexpected build plugin URL: '${extension.buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
         )
       }

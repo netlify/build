@@ -7,8 +7,8 @@ import { throwUserError } from '../error.js'
 import {
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
-  NETLIFY_API_BASE_URL,
-  NETLIFY_API_STAGING_BASE_URL,
+  NETLIFY_API_HOSTNAME,
+  NETLIFY_API_STAGING_HOSTNAME,
 } from '../extensions.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import { ModeOption, TestOptions } from '../types/options.js'
@@ -221,9 +221,9 @@ export const getExtensions = async function ({
   // we check if the host is staging or production and set the host accordingly,
   // sadly necessary because of https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
   if (originalHost) {
-    if (originalHost?.includes(NETLIFY_API_STAGING_BASE_URL)) {
+    if (originalHost?.includes(NETLIFY_API_STAGING_HOSTNAME)) {
       host = EXTENSION_API_STAGING_BASE_URL
-    } else if (originalHost?.includes(NETLIFY_API_BASE_URL)) {
+    } else if (originalHost?.includes(NETLIFY_API_HOSTNAME)) {
       host = EXTENSION_API_BASE_URL
     } else {
       host = `http://${originalHost}`

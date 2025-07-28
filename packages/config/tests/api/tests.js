@@ -6,7 +6,7 @@ import test from 'ava'
 
 import {
   EXTENSION_API_STAGING_BASE_URL,
-  NETLIFY_API_STAGING_BASE_URL,
+  NETLIFY_API_STAGING_HOSTNAME,
   EXTENSION_API_BASE_URL,
 } from '../../lib/extensions.js'
 
@@ -524,7 +524,7 @@ test('We call the staging extension API when the apiHost is not api.netlify.com'
       token: 'test',
       accountId: 'account1',
       testOpts: { host: undefined, setBaseUrl },
-      host: NETLIFY_API_STAGING_BASE_URL,
+      host: NETLIFY_API_STAGING_HOSTNAME,
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
