@@ -27,5 +27,5 @@ const addQueryParams = function (url, parameters, requestParams) {
     return url
   }
 
-  return `${url}?${stringify(queryParams, { arrayRepeatSyntax: 'bracket', nestingSyntax: 'index' })}`
+  return `${url}?${stringify(queryParams, { arrayRepeat: true, arrayRepeatSyntax: 'bracket', nestingSyntax: 'index' })}`
 }

@@ -180,7 +180,7 @@ test('Allow array query parameters', async () => {
   const siteId = uuidv4()
   const scope = nock(origin)
     .get(
-      `${pathPrefix}/sites/${siteId}/plugin_runs/latest?packages%5B0%5D=%40scope%2Fpackage&packages%5B1%5D=%40scope%2Fpackage-two`,
+      `${pathPrefix}/sites/${siteId}/plugin_runs/latest?packages%5B%5D=%40scope%2Fpackage&packages%5B%5D=%40scope%2Fpackage-two`,
     )
     .reply(200)
 
