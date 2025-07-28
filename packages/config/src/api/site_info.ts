@@ -119,21 +119,20 @@ const getSite = async function (
   siteId: string,
   siteFeatureFlagPrefix: string,
 ): Promise<SiteInfo['siteInfo']> {
-  if (siteId !== undefined) {
-    try {
-      const site = await api.getSite({
-        // @ts-expect-error: Internal parameter that instructs the API to include all the site's
-        // feature flags in the response.
-        feature_flags: siteFeatureFlagPrefix,
-        siteId,
-      })
-      return { ...site, id: siteId }
-    } catch (err) {
-      throwUserError(`Failed retrieving site data for site ${siteId}: ${err.message}. ${ERROR_CALL_TO_ACTION}`)
-    }
+  if (siteId === undefined) {
+    return {}
   }
-
-  return {}
+  try {
+    const site = await api.getSite({
+      // @ts-expect-error: Internal parameter that instructs the API to include all the site's
+      // feature flags in the response.
+      feature_flags: siteFeatureFlagPrefix,
+      siteId,
+    })
+    return { ...site, id: siteId }
+  } catch (err) {
+    return throwUserError(`Failed retrieving site data for site ${siteId}: ${err.message}. ${ERROR_CALL_TO_ACTION}`)
+  }
 }
 
 export type MinimalAccount = {
