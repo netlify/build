@@ -11,19 +11,19 @@ import tmp from 'tmp-promise'
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'
 
-const testLogger = getLogger(() => {
+export const testLogger = getLogger(() => {
   // no-op
 })
 
 const url = new URL(import.meta.url)
 const dirname = fileURLToPath(url)
-const fixturesDir = resolve(dirname, '..', 'fixtures')
+export const fixturesDir = resolve(dirname, '..', 'fixtures')
 
 interface UseFixtureOptions {
   copyDirectory?: boolean
 }
 
-const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOptions = {}) => {
+export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOptions = {}) => {
   const tmpDistDir = await tmp.dir({ unsafeCleanup: true })
   const fixtureDir = resolve(fixturesDir, fixtureName)
   const distPath = join(tmpDistDir.path, '.netlify', 'edge-functions-dist')
@@ -31,7 +31,7 @@ const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOpti
   if (copyDirectory) {
     const tmpFixtureDir = await tmp.dir({ unsafeCleanup: true })
 
-    // TODO: Replace with `fs.cp` once we drop support for Node 14.
+    // TODO: Replace with `fs.cp` once the Node.js version range allows.
     await cpy(`${fixtureDir}/**`, tmpFixtureDir.path)
 
     return {
@@ -82,7 +82,7 @@ for (const functionName in manifest.functions) {
 console.log(JSON.stringify(responses));
 `
 
-const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
+export const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
   manifest.routes.find((route) => {
     const regex = new RegExp(route.pattern)
 
@@ -100,7 +100,7 @@ const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
     return !isExcluded
   })
 
-const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
+export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
   // Extract ESZIP into temporary directory.
@@ -149,15 +149,13 @@ const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   return JSON.parse(result.stdout)
 }
 
-const runTarball = async (tarballPath: string) => {
+export const runTarball = async (tarballPath: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
   await tar.extract({
     cwd: tmpDir.path,
     file: tarballPath,
   })
-
-  console.log('-> Tarball contents:', await fs.readdir(tmpDir.path))
 
   const evalCommand = execa('deno', ['eval', inspectTarballFunction()], {
     cwd: tmpDir.path,
@@ -171,5 +169,3 @@ const runTarball = async (tarballPath: string) => {
 
   return JSON.parse(result.stdout)
 }
-
-export { fixturesDir, getRouteMatcher, testLogger, runESZIP, runTarball, useFixture }
