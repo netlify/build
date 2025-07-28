@@ -66,7 +66,7 @@ const getIntegrationPackage = async function ({ integration: { buildPlugin } }) 
     case 'file:':
       return fileURLToPath(buildPlugin.packageURL)
     default:
-      throw new Error(`unsupported buildhooks package URL: ${buildPlugin.packageURL.toString()}`)
+      throw new Error(`unsupported build plugin package URL: ${buildPlugin.packageURL.toString()}`)
   }
 }
 
