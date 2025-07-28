@@ -81,7 +81,8 @@
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^5.0.0",
     "yaml": "^2.8.0",
-    "yargs": "^17.6.0"
+    "yargs": "^17.6.0",
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "^18.19.111",
