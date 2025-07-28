@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import fsSync from 'node:fs'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -9,7 +9,7 @@ export const getManifestPath = async function ({ pluginDir, packageDir, packageN
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
   let manifestPath
   for (const dir of dirs) {
-    if (fs.exists(dir)) {
+    if (fsSync.existsSync(dir)) {
       manifestPath = dir
       break
     }
