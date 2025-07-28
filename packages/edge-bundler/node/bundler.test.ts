@@ -694,7 +694,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-const denoVersion = execSync('deno eval "console.log(Deno.version.deno)"').toString()
+const denoVersion = execSync('deno eval --no-lock "console.log(Deno.version.deno)"').toString()
 
 describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
