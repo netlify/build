@@ -72,16 +72,16 @@ export class NodeFS extends FileSystem {
     const walkOptions = {
       cwd: options.cwd,
       last: options.stopAt,
-    };
-    const names = typeof name === 'string' ? [name] : name;
+    }
+    const names = typeof name === 'string' ? [name] : name
     for (const dir of walkUp('.', walkOptions)) {
       for (const potentialName of names) {
         const filePath = join(dir, potentialName)
         try {
-          const stats = await fs.stat(filePath);
-          const type = stats.isFile() ? 'file' : 'directory';
+          const stats = await fs.stat(filePath)
+          const type = stats.isFile() ? 'file' : 'directory'
           if (options.type === type || !options.type) {
-            return filePath;
+            return filePath
           }
         } catch {
           // ignore
@@ -97,15 +97,15 @@ export class NodeFS extends FileSystem {
     const walkOptions = {
       cwd: options.cwd,
       last: options.stopAt,
-    };
+    }
     for (const dir of walkUp(options.cwd ?? '.', walkOptions)) {
       for (const potentialName of normalisedNames) {
         const filePath = join(dir, potentialName)
         try {
-          const stats = await fs.stat(filePath);
-          const type = stats.isFile() ? 'file' : 'directory';
+          const stats = await fs.stat(filePath)
+          const type = stats.isFile() ? 'file' : 'directory'
           if (options.type === type || !options.type) {
-            results.push(filePath);
+            results.push(filePath)
           }
         } catch {
           // ignore
