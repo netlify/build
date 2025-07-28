@@ -104,7 +104,7 @@ export const getSiteInfo = async function ({
   ])
 
   // TODO(ndhoule): Investigate, but at this point, I'm fairly sure this is the default for all
-  // sites. If so, we cand remove this conditional and always query for environment variables.
+  // sites. If so, we can remove this conditional and always query for environment variables.
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug!, siteId, context })
 
