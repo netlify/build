@@ -63,12 +63,18 @@ export const bundle = async ({
 
   // `deno bundle` does not return the paths of the files it emits, so we have
   // to infer them. When multiple entry points are supplied, it will find the
-  // common path prefix and use that as the base directory in `outdir`.
-  const commonPath = commonPathPrefix(entryPoints)
+  // common path prefix and use that as the base directory in `outdir`. When
+  // using a single entry point, `commonPathPrefix` returns an empty string,
+  // so we use the path of the first entry point's directory.
+  const commonPath = commonPathPrefix(entryPoints) || path.dirname(entryPoints[0])
 
   for (const func of functions) {
-    const filename = path.basename(func.path, path.extname(func.path))
-    const bundledPath = path.join(commonPath, `${filename}.js`)
+    const relativePath = path.relative(commonPath, func.path)
+    const bundledPath = path.format({
+      ...path.parse(relativePath),
+      base: undefined,
+      ext: '.js',
+    })
 
     manifest.functions[func.name] = getUnixPath(bundledPath)
   }
@@ -89,8 +95,6 @@ export const bundle = async ({
     },
   )
 
-  console.log('-> Tarball bundle', { functions, distDirectory, entryPoints, commonPath })
-
   const manifestPath = path.join(sideFilesDir.path, 'manifest.json')
   const manifestContents = JSON.stringify(manifest)
   await fs.writeFile(manifestPath, manifestContents)
@@ -105,26 +109,40 @@ export const bundle = async ({
 
   await fs.mkdir(path.dirname(tarballPath), { recursive: true })
 
+  // Adding all the bundled files.
   await tar.create(
     {
       cwd: distDirectory,
       file: tarballPath,
-      preservePaths: true,
       onWriteEntry(entry) {
-        if (entry.path === denoConfigPath) {
-          entry.path = `./deno.json`
-
-          return
-        }
-
-        if (entry.path === manifestPath) {
-          entry.path = `./___netlify-edge-functions.json`
-
-          return
-        }
+        entry.path = getUnixPath(`./${entry.path}`)
       },
     },
-    [...rootLevel, manifestPath, denoConfigPath],
+    rootLevel,
+  )
+
+  // Adding `deno.json`.
+  await tar.update(
+    {
+      cwd: distDirectory,
+      file: tarballPath,
+      onWriteEntry(entry) {
+        entry.path = './deno.json'
+      },
+    },
+    [denoConfigPath],
+  )
+
+  // Adding the manifest file.
+  await tar.update(
+    {
+      cwd: distDirectory,
+      file: tarballPath,
+      onWriteEntry(entry) {
+        entry.path = './___netlify-edge-functions.json'
+      },
+    },
+    [manifestPath],
   )
 
   await Promise.all(cleanup)
