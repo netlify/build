@@ -94,7 +94,7 @@ const resolvePathFollowSymlinks = function (path: string, baseDirs: string[]) {
 // unlikely, and we don't have any better alternative.
 const resolvePackageFallback = async function (moduleName: string, baseDirs: string[], error: Error) {
   const mainFilePath = resolvePathFollowSymlinks(moduleName, baseDirs)
-  let packagePath
+  let packagePath: string | undefined
   for (const dir of walkUp(mainFilePath)) {
     if (await isPackageDir(moduleName, dir)) {
       packagePath = dir
