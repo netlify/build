@@ -7,6 +7,7 @@ import pathKey from 'path-key'
 import semver from 'semver'
 
 import { download } from './downloader.js'
+import { FeatureFlags } from './feature_flags.js'
 import { getPathInHome } from './home_path.js'
 import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
@@ -16,15 +17,18 @@ const DENO_VERSION_FILE = 'version.txt'
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
-const DENO_VERSION_RANGE = '^2.4.2'
+export const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
 
-type OnBeforeDownloadHook = () => void | Promise<void>
-type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
+const NEXT_DENO_VERSION_RANGE = '^2.4.2'
 
-interface DenoOptions {
+export type OnBeforeDownloadHook = () => void | Promise<void>
+export type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
+
+export interface DenoOptions {
   cacheDirectory?: string
   debug?: boolean
   denoDir?: string
+  featureFlags?: FeatureFlags
   logger?: Logger
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
@@ -32,7 +36,7 @@ interface DenoOptions {
   versionRange?: string
 }
 
-interface ProcessRef {
+export interface ProcessRef {
   ps?: ExecaChildProcess<string>
 }
 
@@ -46,7 +50,7 @@ interface RunOptions {
   rejectOnExitCode?: boolean
 }
 
-class DenoBridge {
+export class DenoBridge {
   cacheDirectory: string
   currentDownload?: ReturnType<DenoBridge['downloadBinary']>
   debug: boolean
@@ -65,7 +69,7 @@ class DenoBridge {
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
-    this.versionRange = options.versionRange ?? DENO_VERSION_RANGE
+    this.versionRange = options.versionRange ?? (options.featureFlags ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
   }
 
   private async downloadBinary() {
@@ -272,6 +276,3 @@ class DenoBridge {
     }
   }
 }
-
-export { DENO_VERSION_RANGE, DenoBridge }
-export type { DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef }

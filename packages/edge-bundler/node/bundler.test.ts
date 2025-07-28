@@ -4,12 +4,14 @@ import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
+import { lt } from 'semver'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
 import { runESZIP, runTarball, useFixture } from '../test/util.js'
 
+import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
 import { Declaration } from './declaration.js'
@@ -692,91 +694,102 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe('Produces a tarball bundle', () => {
-  test('With only local imports', async () => {
-    const systemLogger = vi.fn()
-    const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
-    const declarations: Declaration[] = [
-      {
-        function: 'func1',
-        path: '/func1',
-      },
-    ]
-    const vendorDirectory = await tmp.dir()
+// @ts-expect-error This is temporary, just so we can conditionally run this
+// suite of tests only if we're on the next version of Deno. TypeScript is
+// complaining about the fact that we're using a top-level await without
+// the right `module` format in the config, but this is just a test and the
+// format of the produced module has no effect here.
+const denoVersion = (await new DenoBridge({}).getBinaryVersion('deno')) ?? ''
 
-    await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
-      basePath,
-      configPath: join(basePath, '.netlify/edge-functions/config.json'),
-      featureFlags: {
-        edge_bundler_generate_tarball: true,
-      },
-      systemLogger,
+describe.skipIf(lt(denoVersion, '2.4.2'))(
+  'Produces a tarball bundle',
+  () => {
+    test('With only local imports', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      const vendorDirectory = await tmp.dir()
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, '.netlify/edge-functions/config.json'),
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+      await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
-    expect(
-      systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
-    ).toBeUndefined()
+    // TODO: https://github.com/denoland/deno/issues/30187
+    test.todo('Using npm modules', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
+      const sourceDirectory = join(basePath, 'functions')
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      const vendorDirectory = await tmp.dir()
 
-    const expectedOutput = {
-      func1: 'ok',
-    }
+      await bundle([sourceDirectory], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        importMapPaths: [join(basePath, 'import_map.json')],
+        vendorDirectory: vendorDirectory.path,
+        systemLogger,
+      })
 
-    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-    const manifest = JSON.parse(manifestFile)
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
 
-    const tarballPath = join(distPath, manifest.bundles[0].asset)
-    const tarballResult = await runTarball(tarballPath)
-    expect(tarballResult).toStrictEqual(expectedOutput)
+      const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
 
-    const eszipPath = join(distPath, manifest.bundles[1].asset)
-    const eszipResult = await runESZIP(eszipPath)
-    expect(eszipResult).toStrictEqual(expectedOutput)
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
 
-    await cleanup()
-    await rm(vendorDirectory.path, { force: true, recursive: true })
-  })
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult.func1).toBe(expectedOutput)
 
-  // TODO: https://github.com/denoland/deno/issues/30187
-  test.todo('Using npm modules', async () => {
-    const systemLogger = vi.fn()
-    const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
-    const sourceDirectory = join(basePath, 'functions')
-    const declarations: Declaration[] = [
-      {
-        function: 'func1',
-        path: '/func1',
-      },
-    ]
-    const vendorDirectory = await tmp.dir()
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
+      expect(eszipResult.func1).toBe(expectedOutput)
 
-    await bundle([sourceDirectory], distPath, declarations, {
-      basePath,
-      featureFlags: {
-        edge_bundler_generate_tarball: true,
-      },
-      importMapPaths: [join(basePath, 'import_map.json')],
-      vendorDirectory: vendorDirectory.path,
-      systemLogger,
+      await cleanup()
+      await rm(vendorDirectory.path, { force: true, recursive: true })
     })
-
-    expect(
-      systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
-    ).toBeUndefined()
-
-    const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
-
-    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-    const manifest = JSON.parse(manifestFile)
-
-    const tarballPath = join(distPath, manifest.bundles[0].asset)
-    const tarballResult = await runTarball(tarballPath)
-    expect(tarballResult.func1).toBe(expectedOutput)
-
-    const eszipPath = join(distPath, manifest.bundles[1].asset)
-    const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
-    expect(eszipResult.func1).toBe(expectedOutput)
-
-    await cleanup()
-    await rm(vendorDirectory.path, { force: true, recursive: true })
-  })
-}, 10_000)
+  },
+  10_000,
+)

@@ -67,6 +67,7 @@ export const bundle = async (
   const options: DenoOptions = {
     debug,
     cacheDirectory,
+    featureFlags,
     logger,
     onAfterDownload,
     onBeforeDownload,

@@ -50,12 +50,14 @@ jobs:
         os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        deno-version: ['v2.4.2']
+        # We're adding v2.4.2 here because it's needed for the upcoming nimble release, so we can test
+        # those workflows ahead of time before we can update the base version across the board.
+        deno-version: ['v1.39.0', 'v2.2.4', 'v2.4.2']
         include:
           - os: ubuntu-24.04
             # Earliest supported version
             node-version: '18.14.0'
-            deno-version: 'v2.4.2'
+            deno-version: 'v2.2.4'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -149,7 +151,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.4.2
+          deno-version: v2.2.4
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
