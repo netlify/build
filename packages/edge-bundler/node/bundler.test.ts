@@ -500,7 +500,7 @@ test('Loads npm modules from bare specifiers', async () => {
   const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
   expect(func1).toBe(
-    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
+    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
   )
 
   await cleanup()
@@ -769,7 +769,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
       ).toBeUndefined()
 
-      const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<platform>${process.platform}</platform></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<platform>${process.platform}</platform></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
+      const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
 
       const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
       const manifest = JSON.parse(manifestFile)
