@@ -22,7 +22,7 @@ export const getDirectoryHash = async (dirPath: string): Promise<string> => {
 
   await walk(dirPath)
 
-  return getStringHash(entries.sort().join('\n'))
+  return getStringHash(entries.sort((a, b) => a.localeCompare(b)).join('\n'))
 }
 
 export const getFileHash = (path: string): Promise<string> => {
