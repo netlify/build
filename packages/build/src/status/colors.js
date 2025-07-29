@@ -1,4 +1,4 @@
-import stripAnsi from 'strip-ansi'
+import { stripVTControlCharacters } from 'node:util'
 
 // Remove colors from statuses
 export const removeStatusesColors = function (statuses) {
@@ -18,6 +18,6 @@ const removeAttrColor = function (status, attribute) {
     return {}
   }
 
-  const valueA = stripAnsi(value)
+  const valueA = stripVTControlCharacters(value)
   return { [attribute]: valueA }
 }
