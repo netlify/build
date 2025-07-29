@@ -146,5 +146,4 @@ test('Passes plugin options into dev command', async (t) => {
   t.truthy(devCommand.calls[devCommand.calls.length - 1][0])
   t.truthy(devCommand.calls[devCommand.calls.length - 1][0].netlifyConfig)
   t.truthy(devCommand.calls[devCommand.calls.length - 1][0].childEnv.TEST_ASSIGN)
-  console.log(devCommand.calls[devCommand.calls.length - 1][0].childEnv)
 })

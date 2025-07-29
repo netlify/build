@@ -650,7 +650,7 @@ test.serial('functions can have a config with different parameters passed to zip
 
   zipItAndShipItSpy.restore()
 
-  const { args: call1Args } = { args: zipItAndShipItSpy.calls[0] }
+  const call1Args = zipItAndShipItSpy.calls[0]
   const { functions: functions } = await importJsonFile(call1Args[2].manifest)
 
   t.is(functions[0].displayName, 'Function One')
@@ -665,7 +665,7 @@ test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill
 
   await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
   zipItAndShipItSpy.restore()
-  const { args: call1Args } = { args: zipItAndShipItSpy.calls[0] }
+  const call1Args = zipItAndShipItSpy.calls[0]
 
   const [paths, , options] = call1Args
 
