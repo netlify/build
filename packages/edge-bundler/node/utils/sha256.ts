@@ -13,7 +13,7 @@ export const getDirectoryHash = async (dirPath: string): Promise<string> => {
 
       if (dirent.isDirectory()) {
         await walk(fullPath)
-      } else if (dirent.isFile()) {
+      } else {
         const fileHash = await getFileHash(fullPath)
         entries.push(`${relativePath}:${fileHash}`)
       }
@@ -22,7 +22,7 @@ export const getDirectoryHash = async (dirPath: string): Promise<string> => {
 
   await walk(dirPath)
 
-  return getStringHash(entries.join('\n'))
+  return getStringHash(entries.sort().join('\n'))
 }
 
 export const getFileHash = (path: string): Promise<string> => {
