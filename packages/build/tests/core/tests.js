@@ -609,7 +609,7 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
 
   t.is(mockZipFunctions.callCount, runCount)
 
-  const [call1Args, call2Args, call3Args, call4Args] = mockZipFunctions.calls;
+  const [call1Args, call2Args, call3Args, call4Args] = mockZipFunctions.calls
 
   t.is(
     call1Args[2].config['*'].rustTargetDirectory,
@@ -633,7 +633,7 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
 
   t.is(mockZipFunctions.callCount, runCount)
 
-  const call1Args = mockZipFunctions.calls[0];
+  const call1Args = mockZipFunctions.calls[0]
 
   t.deepEqual(call1Args[2].configFileDirectories, [
     join(FIXTURES_DIR, 'functions_config_json/.netlify/functions-internal'),
