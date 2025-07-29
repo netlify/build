@@ -598,7 +598,7 @@ test('Loads npm modules in a monorepo setup', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
-test('Loads JSON modules', async () => {
+test('Loads JSON modules with `with` attribute', async () => {
   const { basePath, cleanup, distPath } = await useFixture('imports_json')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
@@ -611,6 +611,34 @@ test('Loads JSON modules', async () => {
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
+    vendorDirectory: vendorDirectory.path,
+  })
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+  expect(func1).toBe(`{"foo":"bar"}`)
+
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+})
+
+testnly('Loads JSON modules with `assert` attribute', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const vendorDirectory = await tmp.dir()
+
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+    debug: true,
     vendorDirectory: vendorDirectory.path,
   })
 
