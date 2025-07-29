@@ -13,7 +13,7 @@ export const getDirectoryHash = async (dirPath: string): Promise<string> => {
 
       if (dirent.isDirectory()) {
         await walk(fullPath)
-      } else {
+      } else if (dirent.isFile() || dirent.isSymbolicLink()) {
         const fileHash = await getFileHash(fullPath)
         entries.push(`${relativePath}:${fileHash}`)
       }
