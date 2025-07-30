@@ -3,6 +3,11 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import process from 'process'
 
+// @ts-expect-error TypeScript is complaining about the values for the `module`
+// and `moduleResolution` configuration properties, but changing those to more
+// modern values causes other packages to fail. Leaving this for now, but we
+// should have a proper fix for this.
+import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
 import tmp from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
@@ -22,7 +27,7 @@ test('Starts a server and serves requests for edge functions', async () => {
   const servePath = join(basePath, '.netlify', 'edge-functions-serve')
   const server = await serve({
     basePath,
-    bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
+    bootstrapURL: await getBootstrapURL(),
     port,
     servePath,
   })
@@ -119,7 +124,7 @@ test('Serves edge functions in a monorepo setup', async () => {
   const servePath = join(basePath, '.netlify', 'edge-functions-serve')
   const server = await serve({
     basePath,
-    bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
+    bootstrapURL: await getBootstrapURL(),
     port,
     rootPath,
     servePath,
