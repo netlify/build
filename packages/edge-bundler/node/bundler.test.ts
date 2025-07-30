@@ -4,7 +4,7 @@ import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import { lt } from 'semver'
+import { gte, lt } from 'semver'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
@@ -628,7 +628,7 @@ test('Loads JSON modules with `with` attribute', async () => {
 // We can't run this on versions above 2.0.0 because the bundling will fail
 // entirely, and what we're asserting here is that we emit a system log when
 // import assertions are detected on successful builds.
-test.skipIf(lt(denoVersion, '2.0.0'))('Emits a system log when import assertions are used', async () => {
+test.skipIf(gte(denoVersion, '2.0.0'))('Emits a system log when import assertions are used', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
