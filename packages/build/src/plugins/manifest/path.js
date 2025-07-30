@@ -7,13 +7,7 @@ export const getManifestPath = async function ({ pluginDir, packageDir, packageN
   const dirs = [pluginDir, packageDir]
     .filter(Boolean)
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
-  let manifestPath
-  for (const dir of dirs) {
-    if (fsSync.existsSync(dir)) {
-      manifestPath = dir
-      break
-    }
-  }
+  const manifestPath = dirs.find((dir) => fsSync.existsSync(dir))
   validateManifestExists(manifestPath, packageName)
   return manifestPath
 }
