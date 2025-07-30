@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer'
-import { execSync } from 'node:child_process'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 import process from 'process'
@@ -10,7 +9,7 @@ import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { runESZIP, runTarball, useFixture } from '../test/util.js'
+import { denoVersion, runESZIP, runTarball, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -626,7 +625,10 @@ test('Loads JSON modules with `with` attribute', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
-testnly('Loads JSON modules with `assert` attribute', async () => {
+// We can't run this on versions above 2.0.0 because the bundling will fail
+// entirely, and what we're asserting here is that we emit a system log when
+// import assertions are detected on successful builds.
+test.skipIf(lt(denoVersion, '2.0.0'))('Emits a system log when import assertions are used', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
@@ -636,10 +638,11 @@ testnly('Loads JSON modules with `assert` attribute', async () => {
     },
   ]
   const vendorDirectory = await tmp.dir()
+  const systemLogger = vi.fn()
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
-    debug: true,
+    systemLogger,
     vendorDirectory: vendorDirectory.path,
   })
 
@@ -649,6 +652,9 @@ testnly('Loads JSON modules with `assert` attribute', async () => {
   const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
   expect(func1).toBe(`{"foo":"bar"}`)
+  expect(systemLogger).toHaveBeenCalledWith(
+    `Edge function uses import assertions: ${join(sourceDirectory, 'func1.ts')}`,
+  )
 
   await cleanup()
   await rm(vendorDirectory.path, { force: true, recursive: true })
@@ -721,8 +727,6 @@ test('Loads edge functions from the Frameworks API', async () => {
 
   await cleanup()
 })
-
-const denoVersion = execSync('deno eval --no-lock "console.log(Deno.version.deno)"').toString()
 
 describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
