@@ -137,7 +137,7 @@
     "moize": "^6.0.0",
     "npm-run-all2": "^6.0.0",
     "process-exists": "^5.0.0",
-    "sinon": "^21.0.0",
+    "tinyspy": "^4.0.3",
     "tmp-promise": "^3.0.2",
     "tsd": "^0.32.0",
     "vitest": "^3.0.0",

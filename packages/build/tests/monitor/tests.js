@@ -3,7 +3,7 @@ import { platform } from 'process'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import hasAnsi from 'has-ansi'
-import sinon from 'sinon'
+import { spyOn } from 'tinyspy'
 
 import { CUSTOM_ERROR_KEY } from '../../lib/error/info.js'
 import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
@@ -205,7 +205,9 @@ test.serial('Normalizes error messages resulting from bundling TypeScript server
     type: 'functionsBundling',
   }
 
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+  const stub = spyOn(zipItAndShipIt, 'zipFunctions', () => {
+    throw customError
+  })
 
   const output = await new Fixture('./fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
@@ -239,7 +241,9 @@ error: expected one of \`!\` or \`::\`, found keyword \`use\`
     type: 'functionsBundling',
   }
 
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+  const stub = spyOn(zipItAndShipIt, 'zipFunctions', () => {
+    throw customError
+  })
 
   const output = await new Fixture('./fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
@@ -258,7 +262,9 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
     type: 'functionsBundling',
   }
 
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+  const stub = spyOn(zipItAndShipIt, 'zipFunctions', () => {
+    throw customError
+  })
 
   const output = await new Fixture('./fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
