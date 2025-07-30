@@ -1,4 +1,3 @@
-import _pEvery from 'p-every'
 import pLocate from 'p-locate'
 import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
@@ -8,9 +7,6 @@ import { SystemLogger } from '../plugins_core/types.js'
 
 import { PluginVersion } from './list.js'
 import { CONDITIONS } from './plugin_conditions.js'
-
-// the types of that package seem to be not correct and demand a `pEvery.default()` usage which is wrong
-const pEvery = _pEvery as unknown as typeof import('p-every').default
 
 /**
  *  Retrieve the `expectedVersion` of a plugin:
@@ -128,9 +124,13 @@ const getCompatibleEntry = async function ({
       return false
     }
 
-    return await pEvery(conditions, async ({ type, condition }) =>
-      CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
-    )
+    return (
+      await Promise.all(
+        conditions.map(async ({ type, condition }) =>
+          CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+        ),
+      )
+    ).every(Boolean)
   })
 
   if (compatibleEntry) {
@@ -192,9 +192,13 @@ const getFirstCompatibleEntry = async function ({
       return true
     }
 
-    return await pEvery(conditions, async ({ type, condition }) =>
-      CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
-    )
+    return (
+      await Promise.all(
+        conditions.map(async ({ type, condition }) =>
+          CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+        ),
+      )
+    ).every(Boolean)
   })
 
   if (compatibleEntry) {
