@@ -3,12 +3,14 @@ import dns from 'dns'
 import { intercept, cleanAll } from '@netlify/nock-udp'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
-import sinon from 'sinon'
+import { spyOn } from 'tinyspy'
+
+let dnsLookupSpy
 
 test.before(() => {
   const origLookup = dns.lookup
   // we have to stub dns lookup as hot-shots is caching dns and therefore calling dns.lookup directly
-  sinon.stub(dns, 'lookup').callsFake((host, options, cb = options) => {
+  dnsLookupSpy = spyOn(dns, 'lookup', (host, options, cb = options) => {
     if (options === cb) {
       options = {}
     }
@@ -21,7 +23,7 @@ test.before(() => {
 })
 
 test.after(() => {
-  dns.lookup.restore()
+  dnsLookupSpy.restore()
   cleanAll()
 })
 
