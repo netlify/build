@@ -3,6 +3,7 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import process from 'process'
 
+import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
 import tmp from 'tmp-promise'
 import { v4 as uuidv4 } from 'uuid'
@@ -22,7 +23,7 @@ test('Starts a server and serves requests for edge functions', async () => {
   const servePath = join(basePath, '.netlify', 'edge-functions-serve')
   const server = await serve({
     basePath,
-    bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
+    bootstrapURL: await getBootstrapURL(),
     port,
     servePath,
   })
@@ -119,7 +120,7 @@ test('Serves edge functions in a monorepo setup', async () => {
   const servePath = join(basePath, '.netlify', 'edge-functions-serve')
   const server = await serve({
     basePath,
-    bootstrapURL: 'https://edge.netlify.com/bootstrap/index-combined.ts',
+    bootstrapURL: await getBootstrapURL(),
     port,
     rootPath,
     servePath,
