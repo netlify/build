@@ -3,33 +3,52 @@ import { join, resolve } from 'path'
 import { stderr, stdout } from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 
+import cpy from 'cpy'
 import { execa } from 'execa'
+import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'
 
-const testLogger = getLogger(() => {
+export const testLogger = getLogger(() => {
   // no-op
 })
 
 const url = new URL(import.meta.url)
 const dirname = fileURLToPath(url)
-const fixturesDir = resolve(dirname, '..', 'fixtures')
+export const fixturesDir = resolve(dirname, '..', 'fixtures')
 
-const useFixture = async (fixtureName: string) => {
-  const tmpDir = await tmp.dir({ unsafeCleanup: true })
+interface UseFixtureOptions {
+  copyDirectory?: boolean
+}
+
+export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOptions = {}) => {
+  const tmpDistDir = await tmp.dir({ unsafeCleanup: true })
   const fixtureDir = resolve(fixturesDir, fixtureName)
-  const distPath = join(tmpDir.path, '.netlify', 'edge-functions-dist')
+  const distPath = join(tmpDistDir.path, '.netlify', 'edge-functions-dist')
+
+  if (copyDirectory) {
+    const tmpFixtureDir = await tmp.dir({ unsafeCleanup: true })
+
+    // TODO: Replace with `fs.cp` once the Node.js version range allows.
+    await cpy(`${fixtureDir}/**`, tmpFixtureDir.path)
+
+    return {
+      basePath: tmpFixtureDir.path,
+      cleanup: () => Promise.allSettled([tmpDistDir.cleanup, tmpFixtureDir.cleanup]),
+      distPath,
+    }
+  }
 
   return {
     basePath: fixtureDir,
-    cleanup: tmpDir.cleanup,
+    cleanup: tmpDistDir.cleanup,
     distPath,
   }
 }
 
-const inspectFunction = (path: string) => `
+const inspectESZIPFunction = (path: string) => `
   import { functions } from "${pathToFileURL(path)}.js";
 
   const responses = {};
@@ -44,7 +63,26 @@ const inspectFunction = (path: string) => `
   console.log(JSON.stringify(responses));
 `
 
-const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
+const inspectTarballFunction = () => `
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import manifest from "./___netlify-edge-functions.json" with { type: "json" };
+
+const responses = {};
+
+for (const functionName in manifest.functions) {
+  const req = new Request("https://test.netlify");
+  const entrypoint = path.resolve(manifest.functions[functionName]);
+  const func = await import(pathToFileURL(entrypoint))
+  const res = await func.default(req);
+
+  responses[functionName] = await res.text();
+}
+
+console.log(JSON.stringify(responses));
+`
+
+export const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
   manifest.routes.find((route) => {
     const regex = new RegExp(route.pattern)
 
@@ -62,13 +100,14 @@ const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
     return !isExcluded
   })
 
-const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
+export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
   // Extract ESZIP into temporary directory.
   const extractCommand = execa('deno', [
     'run',
     '--allow-all',
+    '--no-lock',
     'https://deno.land/x/eszip@v0.55.2/eszip.ts',
     'x',
     eszipPath,
@@ -99,7 +138,7 @@ const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   await fs.rename(stage2Path, `${stage2Path}.js`)
 
   // Run function that imports the extracted stage 2 and invokes each function.
-  const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectFunction(stage2Path)])
+  const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectESZIPFunction(stage2Path)])
 
   evalCommand.stderr?.pipe(stderr)
 
@@ -110,4 +149,23 @@ const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   return JSON.parse(result.stdout)
 }
 
-export { fixturesDir, getRouteMatcher, testLogger, runESZIP, useFixture }
+export const runTarball = async (tarballPath: string) => {
+  const tmpDir = await tmp.dir({ unsafeCleanup: true })
+
+  await tar.extract({
+    cwd: tmpDir.path,
+    file: tarballPath,
+  })
+
+  const evalCommand = execa('deno', ['eval', inspectTarballFunction()], {
+    cwd: tmpDir.path,
+  })
+
+  evalCommand.stderr?.pipe(stderr)
+
+  const result = await evalCommand
+
+  await tmpDir.cleanup()
+
+  return JSON.parse(result.stdout)
+}
