@@ -15,6 +15,7 @@ import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
+import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
 import { writeManifest } from './manifest.js'
@@ -66,6 +67,7 @@ export const bundle = async (
   const options: DenoOptions = {
     debug,
     cacheDirectory,
+    featureFlags,
     logger,
     onAfterDownload,
     onBeforeDownload,
@@ -114,27 +116,47 @@ export const bundle = async (
     vendorDirectory,
   })
 
+  const bundles: Bundle[] = []
+
+  if (featureFlags.edge_bundler_generate_tarball) {
+    bundles.push(
+      await bundleTarball({
+        basePath,
+        buildID,
+        debug,
+        deno,
+        distDirectory,
+        functions,
+        featureFlags,
+        importMap: importMap.clone(),
+        vendorDirectory: vendor?.directory,
+      }),
+    )
+  }
+
   if (vendor) {
     importMap.add(vendor.importMap)
   }
 
-  const functionBundle = await bundleESZIP({
-    basePath,
-    buildID,
-    debug,
-    deno,
-    distDirectory,
-    externals,
-    functions,
-    featureFlags,
-    importMap,
-    vendorDirectory: vendor?.directory,
-  })
+  bundles.push(
+    await bundleESZIP({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      externals,
+      functions,
+      featureFlags,
+      importMap,
+      vendorDirectory: vendor?.directory,
+    }),
+  )
 
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  await createFinalBundles([functionBundle], distDirectory, buildID)
+  await createFinalBundles(bundles, distDirectory, buildID)
 
   // Retrieving a configuration object for each function.
   // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
@@ -165,7 +187,7 @@ export const bundle = async (
   })
 
   const manifest = await writeManifest({
-    bundles: [functionBundle],
+    bundles,
     declarations,
     distDirectory,
     featureFlags,
