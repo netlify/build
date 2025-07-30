@@ -3,6 +3,10 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import process from 'process'
 
+// @ts-expect-error TypeScript is complaining about the values for the `module`
+// and `moduleResolution` configuration properties, but changing those to more
+// modern values causes other packages to fail. Leaving this for now, but we
+// should have a proper fix for this.
 import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
 import tmp from 'tmp-promise'
