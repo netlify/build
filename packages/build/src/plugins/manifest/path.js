@@ -1,4 +1,4 @@
-import { locatePath } from 'locate-path'
+import fsSync from 'node:fs'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -7,7 +7,7 @@ export const getManifestPath = async function ({ pluginDir, packageDir, packageN
   const dirs = [pluginDir, packageDir]
     .filter(Boolean)
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
-  const manifestPath = await locatePath(dirs)
+  const manifestPath = dirs.find((dir) => fsSync.existsSync(dir))
   validateManifestExists(manifestPath, packageName)
   return manifestPath
 }
