@@ -14,8 +14,9 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
   // This is a fake bootstrap that we'll create just for the purpose of logging
   // the functions and the metadata that are sent to the `boot` function.
   const printer = `
-    export const boot = async (functions, metadata) => {
+    export const boot = async (getFunctions, metadata) => {
       const responses = {}
+      const functions = await getFunctions()
 
       for (const name in functions) {
         responses[name] = await functions[name]()
