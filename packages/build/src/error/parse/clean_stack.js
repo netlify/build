@@ -1,7 +1,7 @@
+import { stripVTControlCharacters } from 'node:util'
 import { cwd } from 'process'
 
 import cleanStack from 'clean-stack'
-import stripAnsi from 'strip-ansi'
 
 // Clean stack traces:
 //  - remove our internal code, e.g. the logic spawning plugins
@@ -27,7 +27,7 @@ export const cleanStacks = function ({ stack, rawStack, debug }) {
 
 const cleanStackLine = function (lines, line) {
   const lineA = line.replace(getCwd(), '')
-  const lineB = stripAnsi(lineA)
+  const lineB = stripVTControlCharacters(lineA)
 
   if (!STACK_LINE_REGEXP.test(lineB)) {
     return `${lines}\n${lineA}`

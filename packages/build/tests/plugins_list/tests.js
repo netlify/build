@@ -335,6 +335,7 @@ const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sen
   const { scheme, host, stopServer } = await startServer([
     { path: UPDATE_PLUGIN_PATH, status },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
+    { path: '/site/test/integrations/safe', response: [] },
   ])
   try {
     const output = await new Fixture(`./fixtures/${fixture}`)
@@ -425,6 +426,7 @@ const runWithPluginRunsMock = async function (
   const { scheme, host, stopServer } = await startServer([
     { path: PLUGIN_RUNS_PATH, response: pluginRuns, status },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
+    { path: '/site/test/integrations/safe', response: [] },
   ])
   try {
     const output = await new Fixture(`./fixtures/${fixtureName}`)
