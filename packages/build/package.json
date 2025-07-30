@@ -101,7 +101,6 @@
     "p-reduce": "^3.0.0",
     "package-directory": "^8.0.0",
     "path-exists": "^5.0.0",
-    "path-type": "^6.0.0",
     "pretty-ms": "^9.0.0",
     "ps-list": "^8.0.0",
     "read-package-up": "^11.0.0",
