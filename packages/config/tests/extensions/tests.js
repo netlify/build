@@ -55,7 +55,7 @@ const TEAM_INSTALLATIONS_META_RESPONSE = {
   response: [],
 }
 
-const FETCH_INTEGRATIONS_EMPTY_RESPONSE = {
+const FETCH_EXTENSIONS_EMPTY_RESPONSE = {
   path: '/integrations',
   response: [],
 }
@@ -72,7 +72,7 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
   ],
 }
 
-test('Auto-install extensions: feature flag disabled returns integrations unchanged', async (t) => {
+test('Auto-install extensions: feature flag disabled returns extensions unchanged', async (t) => {
   const { output } = await new Fixture('./fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
@@ -83,7 +83,7 @@ test('Auto-install extensions: feature flag disabled returns integrations unchan
         auto_install_required_extensions_v2: false,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -104,7 +104,7 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
         auto_install_required_extensions_v2: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -126,7 +126,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
         auto_install_required_extensions_v2: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -164,7 +164,7 @@ test('Auto-install extensions: does not install when required packages are missi
         auto_install_required_extensions_v2: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 
@@ -190,7 +190,7 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
         auto_install_required_extensions_v2: true,
       },
     })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_INTEGRATIONS_EMPTY_RESPONSE])
+    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
   const config = JSON.parse(output)
 

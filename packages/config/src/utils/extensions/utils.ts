@@ -1,4 +1,4 @@
-import { EXTENSION_API_BASE_URL } from '../../integrations.js'
+import { EXTENSION_API_BASE_URL } from '../../extensions.js'
 import { ModeOption } from '../../types/options.js'
 import { ROOT_PACKAGE_JSON } from '../json.js'
 
