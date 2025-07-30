@@ -1,6 +1,5 @@
 {
   "imports": {
-    "alias:helper": "./helper.ts",
-    "html-rewriter": "https://ghuc.cc/worker-tools/html-rewriter/index.ts"
+    "alias:helper": "./helper.ts"
   }
 }
