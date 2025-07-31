@@ -1,14 +1,14 @@
 import { promises as fs } from 'fs'
 
 import { pathExists } from 'path-exists'
-import { SpyInstance, afterEach, beforeEach, expect, test, vi } from 'vitest'
+import { MockInstance, afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { restore, save } from '../src/main.js'
 
 import { createTmpDir, removeFiles } from './helpers/main.js'
 
 let cacheDir, srcDir: string
-let cwdSpy: SpyInstance<[], string>
+let cwdSpy: MockInstance<() => string>
 
 beforeEach(async () => {
   cacheDir = await createTmpDir()

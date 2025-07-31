@@ -1,18 +1,20 @@
 import { NetlifyAPI } from '@netlify/api'
 
+import * as z from 'zod'
+
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
 import {
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
-  NETLIFY_API_BASE_URL,
-  NETLIFY_API_STAGING_BASE_URL,
-} from '../integrations.js'
+  NETLIFY_API_HOSTNAME,
+  NETLIFY_API_STAGING_HOSTNAME,
+} from '../extensions.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
-import { IntegrationResponse } from '../types/api.js'
 import { ModeOption, TestOptions } from '../types/options.js'
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
-type GetSiteInfoOpts = {
+type GetSiteInfoOptions = {
   siteId: string
   accountId?: string
   mode: ModeOption
@@ -25,6 +27,25 @@ type GetSiteInfoOpts = {
   token: string
   extensionApiBaseUrl: string
 }
+
+export type Extension = {
+  author: string | undefined
+  extension_token: string | undefined
+  has_build: boolean
+  name: string
+  slug: string
+  version: string
+}
+
+export type SiteInfo = {
+  accounts: MinimalAccount[]
+  extensions: Extension[]
+  siteInfo: Awaited<ReturnType<NetlifyAPI['getSite']>> & {
+    feature_flags?: Record<string, string | number | boolean>
+    use_envelope?: boolean
+  }
+}
+
 /**
  * Retrieve Netlify Site information, if available.
  * Used to retrieve local build environment variables and UI build settings.
@@ -46,57 +67,71 @@ export const getSiteInfo = async function ({
   token,
   featureFlags = {},
   extensionApiBaseUrl,
-}: GetSiteInfoOpts) {
+}: GetSiteInfoOptions): Promise<SiteInfo> {
   const { env: testEnv = false } = testOpts
 
   if (api === undefined || mode === 'buildbot' || testEnv) {
-    const siteInfo: { id?: string; account_id?: string } = {}
+    const siteInfo: SiteInfo['siteInfo'] = {}
 
-    if (siteId !== undefined) siteInfo.id = siteId
-    if (accountId !== undefined) siteInfo.account_id = accountId
+    if (siteId !== undefined) {
+      siteInfo.id = siteId
+    }
+    if (accountId !== undefined) {
+      siteInfo.account_id = accountId
+    }
 
-    const integrations =
-      mode === 'buildbot' && !offline
-        ? await getIntegrations({
-            siteId,
-            testOpts,
-            offline,
-            accountId,
-            token,
-            featureFlags,
-            extensionApiBaseUrl,
-            mode,
-          })
-        : []
+    let extensions: SiteInfo['extensions'] = []
+    if (mode === 'buildbot' && !offline) {
+      extensions = await getExtensions({
+        siteId,
+        testOpts,
+        offline,
+        accountId,
+        token,
+        featureFlags,
+        extensionApiBaseUrl,
+        mode,
+      })
+    }
 
-    return { siteInfo, accounts: [], integrations }
+    return { accounts: [], extensions, siteInfo }
   }
 
-  const [siteInfo, accounts, integrations] = await Promise.all([
+  const [siteInfo, accounts, extensions] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
     getAccounts(api),
-    getIntegrations({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
+    getExtensions({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ])
 
+  // TODO(ndhoule): Investigate, but at this point, I'm fairly sure this is the default for all
+  // sites. If so, we can remove this conditional and always query for environment variables.
   if (siteInfo.use_envelope) {
-    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId, context })
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug!, siteId, context })
 
-    siteInfo.build_settings.env = envelope
+    siteInfo.build_settings!.env = envelope
   }
 
-  return { siteInfo, accounts, integrations }
+  return { siteInfo, accounts, extensions }
 }
 
-const getSite = async function (api: NetlifyAPI, siteId: string, siteFeatureFlagPrefix: string) {
+const getSite = async function (
+  api: NetlifyAPI,
+  siteId: string,
+  siteFeatureFlagPrefix: string,
+): Promise<SiteInfo['siteInfo']> {
   if (siteId === undefined) {
     return {}
   }
-
   try {
-    const site = await (api as any).getSite({ siteId, feature_flags: siteFeatureFlagPrefix })
+    const site = await api.getSite({
+      // @ts-expect-error: Internal parameter that instructs the API to include all the site's
+      // feature flags in the response.
+      feature_flags: siteFeatureFlagPrefix,
+      siteId,
+    })
     return { ...site, id: siteId }
-  } catch (error) {
-    throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  } catch (err) {
+    return throwUserError(`Failed retrieving site data for site ${siteId}: ${err.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 
@@ -125,7 +160,33 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
   }
 }
 
-type GetIntegrationsOpts = {
+const ExtensionResponseSchema = z.array(
+  z.object({
+    // ndhoule: The `author` and `extension_token` fields are not sent by the .../safe endpoint;
+    // we're normalizing them to empty values here to preserve...uh, whatever backward compatibility
+    // this is supposed to offer.
+    //
+    // At this point, I'm unsure if modern `@netlify/config` callers can end up in the .../safe
+    // codepath. This would be bad: extension-injected build hooks are far removed from this code
+    // path and have no way of knowing whether or not a specific consumer is in this legacy code
+    // path. They might call the Netlify API expecting to have an API token available to them when
+    // they really don't. For the time being, I've added instrumentation to Jigsaw to help us figure
+    // out if this is dead code or actually supports current users.
+    author: z.string().optional().default(undefined),
+    extension_token: z.string().optional().default(undefined),
+    has_build: z.boolean(),
+    name: z.string(),
+    slug: z.string(),
+    version: z.string(),
+
+    // Returned by API, but unused. Leaving this here for the sake of documentation.
+    // has_connector: z.boolean(),
+  }),
+)
+
+export type ExtensionResponse = z.output<typeof ExtensionResponseSchema>
+
+type GetExtensionsOptions = {
   siteId?: string
   accountId?: string
   testOpts: TestOptions
@@ -136,7 +197,7 @@ type GetIntegrationsOpts = {
   mode: ModeOption
 }
 
-export const getIntegrations = async function ({
+export const getExtensions = async function ({
   siteId,
   accountId,
   testOpts,
@@ -145,7 +206,7 @@ export const getIntegrations = async function ({
   featureFlags,
   extensionApiBaseUrl,
   mode,
-}: GetIntegrationsOpts): Promise<IntegrationResponse[]> {
+}: GetExtensionsOptions): Promise<Extension[]> {
   if (!siteId || offline) {
     return []
   }
@@ -156,13 +217,13 @@ export const getIntegrations = async function ({
   // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
   let host = originalHost
 
-  // If there is a host, we use it to fetch the integrations
+  // If there is a host, we use it to fetch the extensions
   // we check if the host is staging or production and set the host accordingly,
   // sadly necessary because of https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
   if (originalHost) {
-    if (originalHost?.includes(NETLIFY_API_STAGING_BASE_URL)) {
+    if (originalHost?.includes(NETLIFY_API_STAGING_HOSTNAME)) {
       host = EXTENSION_API_STAGING_BASE_URL
-    } else if (originalHost?.includes(NETLIFY_API_BASE_URL)) {
+    } else if (originalHost?.includes(NETLIFY_API_HOSTNAME)) {
       host = EXTENSION_API_BASE_URL
     } else {
       host = `http://${originalHost}`
@@ -178,34 +239,23 @@ export const getIntegrations = async function ({
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
     : `${baseUrl}site/${siteId}/integrations/safe`
+  const headers = new Headers({
+    'Netlify-Config-Mode': mode,
+    'User-Agent': `Netlify Config (mode:${mode}) / ${ROOT_PACKAGE_JSON.version}`,
+  })
+  if (sendBuildBotTokenToJigsaw && token) {
+    headers.set('Netlify-SDK-Build-Bot-Token', token)
+  }
 
   try {
-    const requestOptions = {} as RequestInit
-
-    // This is used to identify where the request is coming from
-    requestOptions.headers = {
-      'netlify-config-mode': mode,
+    const res = await fetch(url, { headers })
+    if (res.status !== 200) {
+      throw new Error(`Unexpected status code ${res.status} from fetching extensions`)
     }
-
-    if (sendBuildBotTokenToJigsaw && token) {
-      requestOptions.headers = {
-        ...requestOptions.headers,
-        'netlify-sdk-build-bot-token': token,
-      }
-    }
-
-    const response = await fetch(url, requestOptions)
-    if (!response.ok) {
-      throw new Error(`Unexpected status code ${response.status} from fetching extensions`)
-    }
-    const bodyText = await response.text()
-    if (bodyText === '') {
-      return []
-    }
-
-    const integrations = await JSON.parse(bodyText)
-    return Array.isArray(integrations) ? integrations : []
-  } catch (error) {
-    return throwUserError(`Failed retrieving extensions for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    return ExtensionResponseSchema.parse(await res.json())
+  } catch (err: unknown) {
+    return throwUserError(
+      `Failed retrieving extensions for site ${siteId}: ${err instanceof Error ? err.message : 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,
+    )
   }
 }
