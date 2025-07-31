@@ -1,7 +1,8 @@
-import { promises as fs } from 'fs'
-import { join, resolve } from 'path'
-import { stderr, stdout } from 'process'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { execSync } from 'node:child_process'
+import { promises as fs } from 'node:fs'
+import { join, resolve } from 'node:path'
+import { stderr, stdout } from 'node:process'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import cpy from 'cpy'
 import { execa } from 'execa'
@@ -169,3 +170,5 @@ export const runTarball = async (tarballPath: string) => {
 
   return JSON.parse(result.stdout)
 }
+
+export const denoVersion = execSync('deno eval --no-lock "console.log(Deno.version.deno)"').toString()
