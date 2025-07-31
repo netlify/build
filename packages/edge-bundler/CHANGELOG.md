@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.4.0](https://github.com/netlify/build/compare/edge-bundler-v14.3.0...edge-bundler-v14.4.0) (2025-07-31)
+
+
+### Features
+
+* emit system log on import assertions ([#6590](https://github.com/netlify/build/issues/6590)) ([1cd7909](https://github.com/netlify/build/commit/1cd790940e316ac2bf16ec5bf60620022a55272f))
+
 ## [14.3.0](https://github.com/netlify/build/compare/edge-bundler-v14.2.2...edge-bundler-v14.3.0) (2025-07-31)
 
 
