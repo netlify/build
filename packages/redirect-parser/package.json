@@ -1,6 +1,6 @@
 {
   "name": "@netlify/redirect-parser",
-  "version": "15.0.2",
+  "version": "15.0.3",
   "description": "Parses netlify redirects into a js object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -28,7 +28,6 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "fast-safe-stringify": "^2.1.1",
-    "filter-obj": "^6.0.0",
     "is-plain-obj": "^4.0.0",
     "path-exists": "^5.0.0"
   },
