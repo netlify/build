@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { mkdir, readFile, rm, symlink, writeFile, access } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
@@ -8,7 +8,6 @@ import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
 import glob from 'fast-glob'
 import isCI from 'is-ci'
-import { pathExists } from 'path-exists'
 import semver from 'semver'
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 import unixify from 'unixify'
@@ -565,7 +564,9 @@ describe('zip-it-and-ship-it', () => {
       const symlinkFile = `${symlinkDir}/file.js`
       const targetFile = `${symlinkDir}/target.js`
 
-      if (!(await pathExists(symlinkFile))) {
+      try {
+        await access(symlinkFile)
+      } catch {
         await symlink(targetFile, symlinkFile)
       }
 
