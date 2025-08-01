@@ -1,5 +1,4 @@
 import isPlainObj from 'is-plain-obj'
-import mapObj from 'map-obj'
 
 import { addErrorInfo } from '../../error/info.js'
 
@@ -62,10 +61,10 @@ const validateShowArgsExtraData = function (extraData) {
 }
 
 const removeEmptyStrings = function (showArgs) {
-  return mapObj(showArgs, removeEmptyString)
+  return Object.fromEntries(Object.entries(showArgs).map(removeEmptyString))
 }
 
-const removeEmptyString = function (key, value) {
+const removeEmptyString = function ([key, value]) {
   if (typeof value === 'string' && value.trim() === '') {
     return [key]
   }
