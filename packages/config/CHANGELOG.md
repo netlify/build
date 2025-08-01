@@ -76,6 +76,26 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.0.1](https://github.com/netlify/build/compare/config-v24.0.0...config-v24.0.1) (2025-07-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/redirect-parser bumped from ^15.0.2 to ^15.0.3
+
+## [24.0.0](https://github.com/netlify/build/compare/config-v23.2.0...config-v24.0.0) (2025-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571))
+
+### Features
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571)) ([b31aa6a](https://github.com/netlify/build/commit/b31aa6adc676530e80211d28901abc51591dba36))
+
 ## [23.2.0](https://github.com/netlify/build/compare/config-v23.1.0...config-v23.2.0) (2025-07-14)
 
 

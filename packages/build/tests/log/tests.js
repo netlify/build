@@ -1,6 +1,6 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
+import * as colors from 'ansis'
 import test from 'ava'
-import chalk from 'chalk'
 import hasAnsi from 'has-ansi'
 
 test('Colors in parent process', async (t) => {
@@ -13,7 +13,7 @@ test('Colors in parent process', async (t) => {
 
 test('Colors in child process', async (t) => {
   const { output } = await new Fixture('./fixtures/child').withEnv({ FORCE_COLOR: '1' }).runBuildBinary()
-  t.true(output.includes(chalk.red('onPreBuild')))
+  t.true(output.includes(colors.red('onPreBuild')))
 })
 
 test('Netlify CI', async (t) => {

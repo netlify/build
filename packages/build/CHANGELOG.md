@@ -105,6 +105,48 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.0.2](https://github.com/netlify/build/compare/build-v35.0.1...build-v35.0.2) (2025-07-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.3.0 to 14.4.0
+
+## [35.0.1](https://github.com/netlify/build/compare/build-v35.0.0...build-v35.0.1) (2025-07-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.0 to ^24.0.1
+    * @netlify/edge-bundler bumped from 14.2.2 to 14.3.0
+
+## [35.0.0](https://github.com/netlify/build/compare/build-v34.3.0...build-v35.0.0) (2025-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571))
+
+### Features
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571)) ([b31aa6a](https://github.com/netlify/build/commit/b31aa6adc676530e80211d28901abc51591dba36))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.7 ([#6569](https://github.com/netlify/build/issues/6569)) ([22748d8](https://github.com/netlify/build/commit/22748d862f783231c3b1d7bf55470798f14b588b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^23.2.0 to ^24.0.0
+
 ## [34.3.0](https://github.com/netlify/build/compare/build-v34.2.5...build-v34.3.0) (2025-07-18)
 
 

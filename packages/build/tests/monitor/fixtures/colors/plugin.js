@@ -1,5 +1,5 @@
-import chalk from 'chalk'
+import * as colors from 'ansis'
 
 export const onPreBuild = function () {
-  throw new Error(chalk.red('ColorTest'))
+  throw new Error(colors.red('ColorTest'))
 }

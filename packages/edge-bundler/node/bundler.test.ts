@@ -4,11 +4,12 @@ import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
+import { gte, lt } from 'semver'
 import tmp from 'tmp-promise'
-import { test, expect, vi } from 'vitest'
+import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { runESZIP, useFixture } from '../test/util.js'
+import { denoVersion, runESZIP, runTarball, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -48,7 +49,6 @@ test('Produces an ESZIP bundle', async () => {
   expect(importMapURL).toBe(importMapSpecifier)
 
   const bundlePath = join(distPath, bundles[0].asset)
-
   const { func1, func2, func3 } = await runESZIP(bundlePath)
 
   expect(func1).toBe('HELLO, JANE DOE!')
@@ -499,7 +499,7 @@ test('Loads npm modules from bare specifiers', async () => {
   const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
   expect(func1).toBe(
-    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
+    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
   )
 
   await cleanup()
@@ -598,7 +598,7 @@ test('Loads npm modules in a monorepo setup', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
-test('Loads JSON modules', async () => {
+test('Loads JSON modules with `with` attribute', async () => {
   const { basePath, cleanup, distPath } = await useFixture('imports_json')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
@@ -624,6 +624,45 @@ test('Loads JSON modules', async () => {
   await cleanup()
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
+
+// We can't run this on versions above 2.0.0 because the bundling will fail
+// entirely, and what we're asserting here is that we emit a system log when
+// import assertions are detected on successful builds. Also, running it on
+// earlier versions won't work either, since those won't even show a warning.
+test.skipIf(lt(denoVersion, '1.46.3') || gte(denoVersion, '2.0.0'))(
+  'Emits a system log when import assertions are used',
+  async () => {
+    const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
+    const sourceDirectory = join(basePath, 'functions')
+    const declarations: Declaration[] = [
+      {
+        function: 'func1',
+        path: '/func1',
+      },
+    ]
+    const vendorDirectory = await tmp.dir()
+    const systemLogger = vi.fn()
+
+    await bundle([sourceDirectory], distPath, declarations, {
+      basePath,
+      systemLogger,
+      vendorDirectory: vendorDirectory.path,
+    })
+
+    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+    const manifest = JSON.parse(manifestFile)
+    const bundlePath = join(distPath, manifest.bundles[0].asset)
+    const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+
+    expect(func1).toBe(`{"foo":"bar"}`)
+    expect(systemLogger).toHaveBeenCalledWith(
+      `Edge function uses import assertions: ${join(sourceDirectory, 'func1.ts')}`,
+    )
+
+    await cleanup()
+    await rm(vendorDirectory.path, { force: true, recursive: true })
+  },
+)
 
 test('Supports TSX and process.env', async () => {
   const { basePath, cleanup, distPath } = await useFixture('tsx')
@@ -692,3 +731,96 @@ test('Loads edge functions from the Frameworks API', async () => {
 
   await cleanup()
 })
+
+describe.skipIf(lt(denoVersion, '2.4.2'))(
+  'Produces a tarball bundle',
+  () => {
+    test('With only local imports', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      const vendorDirectory = await tmp.dir()
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, '.netlify/edge-functions/config.json'),
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+      await rm(vendorDirectory.path, { force: true, recursive: true })
+    })
+
+    // TODO: https://github.com/denoland/deno/issues/30187
+    test.todo('Using npm modules', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
+      const sourceDirectory = join(basePath, 'functions')
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      const vendorDirectory = await tmp.dir()
+
+      await bundle([sourceDirectory], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        importMapPaths: [join(basePath, 'import_map.json')],
+        vendorDirectory: vendorDirectory.path,
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult.func1).toBe(expectedOutput)
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
+      expect(eszipResult.func1).toBe(expectedOutput)
+
+      await cleanup()
+      await rm(vendorDirectory.path, { force: true, recursive: true })
+    })
+  },
+  10_000,
+)

@@ -1,3 +1,7 @@
 {
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "parent-1": "1.0.0",
+    "parent-3": "1.0.0"
+  }
 }

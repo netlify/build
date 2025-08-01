@@ -1,6 +1,6 @@
 {
   "name": "@netlify/edge-bundler",
-  "version": "14.2.2",
+  "version": "14.4.0",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
   "main": "./dist/node/index.js",
@@ -42,6 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
+    "@netlify/edge-functions-bootstrap": "^2.14.0",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
@@ -51,7 +52,6 @@
     "cpy": "^11.1.0",
     "nock": "^14.0.0",
     "npm-run-all2": "^6.0.0",
-    "tar": "^7.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"
   },
@@ -68,15 +68,14 @@
     "env-paths": "^3.0.0",
     "esbuild": "0.25.6",
     "execa": "^8.0.0",
-    "get-package-name": "^2.2.0",
     "get-port": "^7.0.0",
-    "is-path-inside": "^4.0.0",
     "node-stream-zip": "^1.15.0",
     "p-retry": "^6.0.0",
     "p-wait-for": "^5.0.0",
     "parse-imports": "^2.2.1",
     "path-key": "^4.0.0",
     "semver": "^7.3.8",
+    "tar": "^7.4.3",
     "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2",
     "uuid": "^11.0.0"
