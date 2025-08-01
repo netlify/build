@@ -68,14 +68,19 @@ export const filterConfig = (
 ): Record<string, unknown> =>
   Object.fromEntries(
     Object.entries(obj)
-      .map(([key, value]): [string, unknown] | null => {
+      .filter(([key]) => {
         const keyPath = [...path, key]
 
         if (!isAllowedProperty(keyPath, allowedProperties)) {
           systemLog(`Discarding property that is not supported by the Deploy Configuration API: ${keyPath.join('.')}`)
 
-          return null
+          return false
         }
+
+        return true
+      })
+      .map(([key, value]) => {
+        const keyPath = [...path, key]
 
         if (!isPlainObject(value)) {
           systemLog(`Loading property from Deploy Configuration API: ${keyPath.join('.')}`)
@@ -84,6 +89,5 @@ export const filterConfig = (
         }
 
         return [key, filterConfig(value, keyPath, allowedProperties, systemLog)]
-      })
-      .filter((pair) => pair !== null),
+      }),
   )
