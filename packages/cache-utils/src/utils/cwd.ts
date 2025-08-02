@@ -1,20 +1,19 @@
 import { normalize } from 'path'
+import { existsSync } from 'fs'
 import process from 'process'
 
-import { pathExists } from 'path-exists'
-
 // Like `process.cwd()` but safer when current directory is wrong
-export const safeGetCwd = async function (cwdOpt?: string) {
+export const safeGetCwd = function (cwdOpt?: string) {
   try {
     const cwd = getCwdValue(cwdOpt)
 
-    if (!(await pathExists(cwd))) {
-      return ''
+    if (!existsSync(cwd)) {
+      return Promise.resolve('')
     }
 
-    return cwd
+    return Promise.resolve(cwd)
   } catch {
-    return ''
+    return Promise.resolve('')
   }
 }
 

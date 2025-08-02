@@ -1,6 +1,5 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 
-import { pathExists } from 'path-exists'
 import { MockInstance, afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { restore, save } from '../src/main.js'
@@ -29,5 +28,5 @@ test('Should allow changing the cache directory', async () => {
   expect(cachedFiles.length).toBe(1)
   await removeFiles(srcFile)
   expect(await restore(srcFile, { cacheDir })).toBe(true)
-  expect(await pathExists(srcFile)).toBe(true)
+  expect(existsSync(srcFile)).toBe(true)
 })
