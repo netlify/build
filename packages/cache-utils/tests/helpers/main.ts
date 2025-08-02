@@ -1,12 +1,8 @@
 import { rm, writeFile } from 'fs/promises'
 import { join, basename } from 'path'
-import { promisify } from 'util'
 
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 const PREFIX = 'test-cache-utils-'
-
-// TODO: replace with `timers/promises` after dropping Node < 15.0.0
-export const pSetTimeout = promisify(setTimeout)
 
 export const createTmpDir = async function (opts = {}) {
   const { path } = await getTmpDir({ ...opts, prefix: PREFIX })
