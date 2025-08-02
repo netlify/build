@@ -1,4 +1,4 @@
-import { promisify } from 'util'
+import { setTimeout } from 'timers/promises'
 
 import type { ChildProcess } from '../plugins/spawn.js'
 
@@ -13,9 +13,6 @@ export type StandardStreams = {
 
 type LogsListener = (logs: string[], outputFlusher: OutputFlusher | undefined, chunk: Buffer) => void
 type LogsListeners = { stderrListener: LogsListener; stdoutListener: LogsListener }
-
-// TODO: replace with `timers/promises` after dropping Node < 15.0.0
-const pSetTimeout = promisify(setTimeout)
 
 // We try to use `stdio: inherit` because it keeps `stdout/stderr` as `TTY`,
 // which solves many problems. However we can only do it in build.command.
@@ -67,7 +64,7 @@ export const unpipePluginOutput = async function (
   standardStreams: StandardStreams,
 ) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
-  await pSetTimeout(0)
+  await setTimeout(0)
 
   if (!logsAreBuffered(logs)) {
     return unstreamOutput(childProcess, standardStreams)
