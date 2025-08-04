@@ -188,12 +188,12 @@ ENUM must be equal to one of the allowed values
 
 exports[`route headers > should throw on invalid pattern format 1`] = `
 [ManifestValidationError: Validation of Edge Functions manifest failed
-FORMAT must match format "regexPattern"
+TYPE must be string
 
   15 |         "x-custom-header": {
   16 |           "matcher": "regex",
-> 17 |           "pattern": "/^Bearer .+/"
-     |                      ^^^^^^^^^^^^^^ 👈🏽  format must match format "regexPattern"
+> 17 |           "pattern": {}
+     |                      ^^ 👈🏽  type must be string
   18 |         }
   19 |       }
   20 |     }]
