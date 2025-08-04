@@ -27,7 +27,6 @@ const headersSchema = {
       properties: {
         pattern: {
           type: 'string',
-          format: 'regexPattern',
         },
         matcher: {
           type: 'string',

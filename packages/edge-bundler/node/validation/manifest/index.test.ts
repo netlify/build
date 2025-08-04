@@ -209,7 +209,7 @@ describe('route headers', () => {
     manifest.routes[0].headers = {
       'x-custom-header': {
         matcher: 'regex',
-        pattern: '^Bearer .+$',
+        pattern: 'Bearer .+',
       },
     }
 
@@ -254,7 +254,7 @@ describe('route headers', () => {
     manifest.routes[0].headers = {
       'x-custom-header': {
         matcher: 'regex',
-        pattern: '/^Bearer .+/',
+        pattern: /^Bearer .+/,
       },
     }
 
