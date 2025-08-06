@@ -29,11 +29,11 @@ const BACKSLASH_REGEXP = /\\/g
 export const resolvePackage = async function (moduleName: string, baseDirs: string[]): Promise<string> {
   try {
     return await resolvePathPreserveSymlinks(`${moduleName}/package.json`, baseDirs)
-  } catch (_error) {
+  } catch {
     try {
       return resolvePathFollowSymlinks(`${moduleName}/package.json`, baseDirs)
-    } catch (error_) {
-      return await resolvePackageFallback(moduleName, baseDirs, error_)
+    } catch (error) {
+      return await resolvePackageFallback(moduleName, baseDirs, error)
     }
   }
 }
