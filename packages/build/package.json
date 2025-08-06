@@ -25,11 +25,11 @@
     "prebuild": "rm -rf lib",
     "postbuild": "npx cpy \"src/**/*.yml\" \"lib/\"",
     "build": "tsc",
-    "test:types": "tsd",
-    "test": "ava && tsd && vitest run",
+    "test:types": "vitest --typecheck",
+    "test": "ava && vitest --typecheck && vitest run",
     "test:dev": "ava -w",
     "test:ci": "run-p test:ci:*",
-    "test:ci:types": "tsd",
+    "test:ci:types": "vitest --typecheck",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
     "test:ci:vitest": "vitest run"
   },
@@ -135,7 +135,6 @@
     "process-exists": "^5.0.0",
     "tinyspy": "^4.0.3",
     "tmp-promise": "^3.0.2",
-    "tsd": "^0.32.0",
     "vitest": "^3.0.0",
     "yarn": "^1.22.22"
   },
