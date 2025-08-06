@@ -1,7 +1,6 @@
 import { mkdir, readFile, rm, writeFile } from 'fs/promises'
+import { existsSync } from 'fs'
 import { dirname } from 'path'
-
-import { pathExists } from 'path-exists'
 
 import { getExpires, checkExpires } from './expire.js'
 import { getHash } from './hash.js'
@@ -20,7 +19,7 @@ export const getManifestInfo = async function ({ cachePath, move, ttl, digests }
 
 // Whether the cache manifest has changed
 const isIdentical = async function ({ hash, manifestPath, manifestString }) {
-  if (hash === undefined || !(await pathExists(manifestPath))) {
+  if (hash === undefined || !existsSync(manifestPath)) {
     return false
   }
 
@@ -55,7 +54,7 @@ const CACHE_EXTENSION = '.netlify.cache.json'
 // Check whether a file/directory is expired by checking its cache manifest
 export const isExpired = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
-  if (!(await pathExists(manifestPath))) {
+  if (!existsSync(manifestPath)) {
     return false
   }
 

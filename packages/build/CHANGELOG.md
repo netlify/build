@@ -105,6 +105,31 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.0.4](https://github.com/netlify/build/compare/build-v35.0.3...build-v35.0.4) (2025-08-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.4.1 to 14.5.0
+
+## [35.0.3](https://github.com/netlify/build/compare/build-v35.0.2...build-v35.0.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* drop map-obj ([#6577](https://github.com/netlify/build/issues/6577)) ([7c44533](https://github.com/netlify/build/commit/7c44533ae078336cc722093859e47f8ef5cb7795))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.4.0 to 14.4.1
+    * @netlify/functions-utils bumped from ^6.2.0 to ^6.2.1
+    * @netlify/zip-it-and-ship-it bumped from 14.1.0 to 14.1.1
+
 ## [35.0.2](https://github.com/netlify/build/compare/build-v35.0.1...build-v35.0.2) (2025-07-31)
 
 

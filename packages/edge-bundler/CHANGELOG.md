@@ -1,5 +1,19 @@
 # Changelog
 
+## [14.5.0](https://github.com/netlify/build/compare/edge-bundler-v14.4.1...edge-bundler-v14.5.0) (2025-08-06)
+
+
+### Features
+
+* allow `tar` format in edge functions manifest ([#6603](https://github.com/netlify/build/issues/6603)) ([dbac547](https://github.com/netlify/build/commit/dbac547fa28a20f5b664d1b33345c2648f66ea22))
+
+## [14.4.1](https://github.com/netlify/build/compare/edge-bundler-v14.4.0...edge-bundler-v14.4.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* use correct type when validating EF header regex ([#6602](https://github.com/netlify/build/issues/6602)) ([e503dc9](https://github.com/netlify/build/commit/e503dc9dde319dd3bab17fbb63f51c63b7beb856))
+
 ## [14.4.0](https://github.com/netlify/build/compare/edge-bundler-v14.3.0...edge-bundler-v14.4.0) (2025-07-31)
 
 
