@@ -3,7 +3,7 @@ const bundlesSchema = {
   required: ['asset', 'format'],
   properties: {
     asset: { type: 'string' },
-    format: { type: 'string', enum: ['eszip2', 'js'] },
+    format: { type: 'string', enum: ['eszip2', 'js', 'tar'] },
   },
   additionalProperties: false,
 }
@@ -27,7 +27,6 @@ const headersSchema = {
       properties: {
         pattern: {
           type: 'string',
-          format: 'regexPattern',
         },
         matcher: {
           type: 'string',
