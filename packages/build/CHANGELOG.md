@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.0.5](https://github.com/netlify/build/compare/build-v35.0.4...build-v35.0.5) (2025-08-06)
+
+
+### Bug Fixes
+
+* remove code supporting versions of Node &lt; v15 ([#6599](https://github.com/netlify/build/issues/6599)) ([d9f55d3](https://github.com/netlify/build/commit/d9f55d35fbf4c1f37f2a6632a43566fb6d295ca1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.3 to ^6.0.4
+    * @netlify/config bumped from ^24.0.1 to ^24.0.2
+    * @netlify/functions-utils bumped from ^6.2.1 to ^6.2.2
+    * @netlify/zip-it-and-ship-it bumped from 14.1.1 to 14.1.2
+
 ## [35.0.4](https://github.com/netlify/build/compare/build-v35.0.3...build-v35.0.4) (2025-08-06)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.2](https://github.com/netlify/build/compare/headers-parser-v9.0.1...headers-parser-v9.0.2) (2025-08-06)
+
+
+### Bug Fixes
+
+* remove code supporting versions of Node &lt; v15 ([#6599](https://github.com/netlify/build/issues/6599)) ([d9f55d3](https://github.com/netlify/build/commit/d9f55d35fbf4c1f37f2a6632a43566fb6d295ca1))
+
 ## [9.0.1](https://github.com/netlify/build/compare/headers-parser-v9.0.0...headers-parser-v9.0.1) (2025-05-29)
 
 
