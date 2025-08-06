@@ -16,7 +16,7 @@ ADDTIONAL PROPERTY must NOT have additional properties
 exports[`bundle > should throw on invalid format 1`] = `
 [ManifestValidationError: Validation of Edge Functions manifest failed
 ENUM must be equal to one of the allowed values
-(eszip2, js)
+(eszip2, js, tar)
 
   3 |     {
   4 |       "asset": "f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js",
