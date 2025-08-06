@@ -78,11 +78,13 @@ export const getFunctionConfig = async ({
   func,
   importMap,
   deno,
+  bootstrapURL,
   log,
 }: {
   func: EdgeFunction
   importMap: ImportMap
   deno: DenoBridge
+  bootstrapURL: string
   log: Logger
 }) => {
   // The extractor is a Deno script that will import the function and run its
@@ -117,6 +119,7 @@ export const getFunctionConfig = async ({
       extractorPath,
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,
+      bootstrapURL,
       JSON.stringify(ConfigExitCode),
     ].filter(Boolean),
     { rejectOnExitCode: false },

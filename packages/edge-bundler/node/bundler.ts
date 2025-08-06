@@ -22,6 +22,7 @@ import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 
 export interface BundleOptions {
   basePath?: string
@@ -60,6 +61,7 @@ export const bundle = async (
     userLogger,
     systemLogger,
     vendorDirectory,
+    bootstrapURL = getBootstrapURL(),
   }: BundleOptions = {},
 ) => {
   const logger = getLogger(systemLogger, userLogger, debug)
@@ -161,10 +163,10 @@ export const bundle = async (
   // Retrieving a configuration object for each function.
   // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
   const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
+    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger, bootstrapURL })] as const,
   )
   const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
+    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger, bootstrapURL })] as const,
   )
 
   // Creating a hash of function names to configuration objects.
