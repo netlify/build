@@ -1,11 +1,9 @@
 import { createRequire } from 'module'
-import { version as nodeVersion } from 'process'
 
 import { findUp } from 'find-up'
 import { pathExists } from 'path-exists'
 // @ts-expect-error doesnt export async
 import { async as asyncResolve } from 'resolve'
-import semver from 'semver'
 
 // The types do not include the mjs api of resolve
 const resolveLib = asyncResolve as typeof import('resolve')
@@ -31,22 +29,14 @@ const BACKSLASH_REGEXP = /\\/g
 export const resolvePackage = async function (moduleName: string, baseDirs: string[]): Promise<string> {
   try {
     return await resolvePathPreserveSymlinks(`${moduleName}/package.json`, baseDirs)
-  } catch (error) {
-    if (semver.lt(nodeVersion, REQUEST_RESOLVE_MIN_VERSION)) {
-      throw error
-    }
-
+  } catch {
     try {
       return resolvePathFollowSymlinks(`${moduleName}/package.json`, baseDirs)
-    } catch (error_) {
-      return await resolvePackageFallback(moduleName, baseDirs, error_)
+    } catch (error) {
+      return await resolvePackageFallback(moduleName, baseDirs, error)
     }
   }
 }
-
-// TODO: remove after dropping support for Node <8.9.0
-// `require.resolve()` option `paths` was introduced in Node 8.9.0
-const REQUEST_RESOLVE_MIN_VERSION = '8.9.0'
 
 // We need to use `new Promise()` due to a bug with `utils.promisify()` on
 // `resolve`:
