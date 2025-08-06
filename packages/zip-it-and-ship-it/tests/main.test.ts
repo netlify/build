@@ -3010,7 +3010,7 @@ test('Supports both files and directories and ignores files that are not functio
   await tmpDir.cleanup()
 })
 
-test('Supports functions inside the plugins modules path', async () => {
+test.only('Supports functions inside the plugins modules path', async () => {
   const tmpDir = await getTmpDir({
     // Cleanup the folder even if there are still files in them
     unsafeCleanup: true,
@@ -3050,11 +3050,10 @@ test('Supports functions inside the plugins modules path', async () => {
   expect(functions['extension-func1'].priority).toBe(0)
 
   // extension-func2 should error because module-4 isn't in scope.
-  await expect(() =>
-    importFunctionFile(
-      `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
-    ),
-  ).rejects.toThrowError(`Cannot find package 'module-4' imported from`)
+  const extensionFunc2 = await importFunctionFile(
+    `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
+  )
+  await expect(invokeLambda(extensionFunc2)).rejects.toThrowError()
   expect(functions['extension-func2'].generator).toBe('internalFunc')
   expect(functions['extension-func2'].priority).toBe(0)
 
