@@ -1,6 +1,6 @@
 import type { NetlifyPluginConstants, NetlifyPluginOptions } from '@netlify/build'
 import { expectTypeOf, test } from 'vitest'
-import type { JSONValue } from '../lib/types/utils/json_value.js'
+import type { JSONValue } from '../src/types/utils/json_value.js'
 
 test('constants types', () => {
   expectTypeOf<NetlifyPluginConstants['CONFIG_PATH']>().toEqualTypeOf<string | undefined>()

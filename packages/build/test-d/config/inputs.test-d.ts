@@ -1,6 +1,6 @@
 import type { OnPreBuild } from '@netlify/build'
 import { expectTypeOf, test } from 'vitest'
-import type { JSONValue } from '../../lib/types/utils/json_value.js'
+import type { JSONValue } from '../../src/types/utils/json_value.js'
 
 test('generic inputs types', () => {
   type GenericInputs = Parameters<OnPreBuild>[0]['inputs']
