@@ -76,6 +76,15 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.0.2](https://github.com/netlify/build/compare/config-v24.0.1...config-v24.0.2) (2025-08-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^9.0.1 to ^9.0.2
+
 ## [24.0.1](https://github.com/netlify/build/compare/config-v24.0.0...config-v24.0.1) (2025-07-31)
 
 
