@@ -1,9 +1,10 @@
-import type { NetlifyPluginUtils } from '@netlify/build'
-import { expectTypeOf, test } from 'vitest'
+import type { OnPreBuild } from '@netlify/build'
+import { test, expectTypeOf } from 'vitest'
 
-test('utils status types', () => {
-  type StatusShow = NetlifyPluginUtils['status']['show']
-
-  expectTypeOf<StatusShow>().toBeCallableWith({ summary: 'summary' })
-  expectTypeOf<StatusShow>().toBeCallableWith({ summary: 'summary', title: 'title', text: 'text' })
+test('utils.status.show types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    utils.status.show({ summary: 'summary' })
+    utils.status.show({ summary: 'summary', title: 'title', text: 'text' })
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })

@@ -1,26 +1,29 @@
-import type { NetlifyPluginUtils } from '@netlify/build'
-import { expectTypeOf, test } from 'vitest'
+import type { OnPreBuild } from '@netlify/build'
+import { test, expectTypeOf } from 'vitest'
 
-test('utils build failBuild types', () => {
-  type BuildFailBuild = NetlifyPluginUtils['build']['failBuild']
-
-  expectTypeOf<BuildFailBuild>().toBeCallableWith('message')
-  expectTypeOf<BuildFailBuild>().toBeCallableWith('message', {})
-  expectTypeOf<BuildFailBuild>().toBeCallableWith('message', { error: new Error('message') })
+test('utils.build.failBuild types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    utils.build.failBuild('message')
+    utils.build.failBuild('message', {})
+    utils.build.failBuild('message', { error: new Error('message') })
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('utils build failPlugin types', () => {
-  type BuildFailPlugin = NetlifyPluginUtils['build']['failPlugin']
-
-  expectTypeOf<BuildFailPlugin>().toBeCallableWith('message')
-  expectTypeOf<BuildFailPlugin>().toBeCallableWith('message', {})
-  expectTypeOf<BuildFailPlugin>().toBeCallableWith('message', { error: new Error('message') })
+test('utils.build.failPlugin types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    utils.build.failPlugin('message')
+    utils.build.failPlugin('message', {})
+    utils.build.failPlugin('message', { error: new Error('message') })
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('utils build cancelBuild types', () => {
-  type BuildCancelBuild = NetlifyPluginUtils['build']['cancelBuild']
-
-  expectTypeOf<BuildCancelBuild>().toBeCallableWith('message')
-  expectTypeOf<BuildCancelBuild>().toBeCallableWith('message', {})
-  expectTypeOf<BuildCancelBuild>().toBeCallableWith('message', { error: new Error('message') })
+test('utils.build.cancelBuild types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    utils.build.cancelBuild('message')
+    utils.build.cancelBuild('message', {})
+    utils.build.cancelBuild('message', { error: new Error('message') })
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })

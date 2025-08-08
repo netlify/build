@@ -1,28 +1,31 @@
 import type { OnPreBuild } from '@netlify/build'
-import { expectTypeOf, test } from 'vitest'
+import { test, expectTypeOf } from 'vitest'
 import type { JSONValue } from '../../src/types/utils/json_value.js'
 
-test('generic inputs types', () => {
-  type GenericInputs = Parameters<OnPreBuild>[0]['inputs']
-  expectTypeOf<GenericInputs['testVar']>().toExtend<JSONValue | undefined>()
+test('inputs generic types', () => {
+  const handler: OnPreBuild = (ctx) => {
+    expectTypeOf(ctx.inputs.testVar).toExtend<JSONValue | undefined>()
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('specific inputs types', () => {
-  type SpecificInputs = Parameters<OnPreBuild<{ testVar: boolean }>>[0]['inputs']
-  expectTypeOf<SpecificInputs['testVar']>().toEqualTypeOf<boolean>()
-
-  // @ts-expect-error - non-existent property
-  expectTypeOf<SpecificInputs['otherTestVar']>().toBeNever()
+test('inputs specific types', () => {
+  const handler: OnPreBuild<{ testVar: boolean }> = (ctx) => {
+    expectTypeOf(ctx.inputs.testVar).toEqualTypeOf<boolean>()
+    expectTypeOf(ctx.inputs).not.toHaveProperty('otherTestVar')
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild<{ testVar: boolean }>>()
 })
 
-test('specific inputs interface types', () => {
+test('inputs interface types', () => {
   interface InputsInterface {
     testVar: string
   }
 
-  type InterfaceInputs = Parameters<OnPreBuild<InputsInterface>>[0]['inputs']
-  expectTypeOf<InterfaceInputs['testVar']>().toEqualTypeOf<string>()
+  const handler: OnPreBuild<InputsInterface> = (ctx) => {
+    expectTypeOf(ctx.inputs.testVar).toEqualTypeOf<string>()
+    expectTypeOf(ctx.inputs).not.toHaveProperty('otherTestVar')
+  }
 
-  // @ts-expect-error - non-existent property
-  expectTypeOf<InterfaceInputs['otherTestVar']>().toBeNever()
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild<InputsInterface>>()
 })

@@ -1,42 +1,65 @@
-import type { NetlifyConfig } from '@netlify/build'
-import { expectTypeOf, test } from 'vitest'
+import type { OnPreBuild } from '@netlify/build'
+import { test, expectTypeOf } from 'vitest'
 import type { JSONValue } from '../../src/types/utils/json_value.js'
 
-test('netlify config plugins types', () => {
-  type Plugin = NetlifyConfig['plugins'][number]
-  expectTypeOf<Plugin['package']>().toEqualTypeOf<string>()
-  expectTypeOf<Plugin['inputs']['testVar']>().toEqualTypeOf<JSONValue | undefined>()
+test('netlifyConfig.plugins types', () => {
+  const handler: OnPreBuild = (ctx) => {
+    const [plugin] = ctx.netlifyConfig.plugins
+
+    expectTypeOf(plugin.package).toEqualTypeOf<string>()
+    expectTypeOf(plugin.inputs.testVar).toEqualTypeOf<JSONValue | undefined>()
+  }
+
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('netlify config edge functions types', () => {
-  type EdgeFunction = NetlifyConfig['edge_functions'][number]
-  expectTypeOf<EdgeFunction['path']>().toExtend<string | undefined>()
-  expectTypeOf<EdgeFunction['function']>().toEqualTypeOf<string>()
+test('netlifyConfig.edge_functions types', () => {
+  const handler: OnPreBuild = (ctx) => {
+    const [edgeFunction] = ctx.netlifyConfig.edge_functions
+
+    expectTypeOf(edgeFunction.path).toExtend<string | undefined>()
+    expectTypeOf(edgeFunction.function).toEqualTypeOf<string>()
+  }
+
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('netlify config headers types', () => {
-  type Header = NetlifyConfig['headers'][number]
-  expectTypeOf<Header['for']>().toEqualTypeOf<string>()
-  expectTypeOf<Header['values']['testVar']>().toEqualTypeOf<string | string[] | undefined>()
+test('netlifyConfig.headers types', () => {
+  const handler: OnPreBuild = (ctx) => {
+    const [header] = ctx.netlifyConfig.headers
+
+    expectTypeOf(header.for).toEqualTypeOf<string>()
+    expectTypeOf(header.values.testVar).toEqualTypeOf<string | string[] | undefined>()
+  }
+
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('netlify config redirects types', () => {
-  type Redirect = NetlifyConfig['redirects'][number]
-  expectTypeOf<Redirect['from']>().toEqualTypeOf<string>()
-  expectTypeOf<Redirect['to']>().toEqualTypeOf<string | undefined>()
-  expectTypeOf<Redirect['status']>().toEqualTypeOf<number | undefined>()
-  expectTypeOf<Redirect['force']>().toEqualTypeOf<boolean | undefined>()
-  expectTypeOf<Redirect['signed']>().toEqualTypeOf<string | undefined>()
+test('netlifyConfig.redirects types', () => {
+  const handler: OnPreBuild = (ctx) => {
+    const [redirect] = ctx.netlifyConfig.redirects
 
-  type QueryTestVar = NonNullable<Redirect['query']>['testVar']
-  expectTypeOf<QueryTestVar>().toEqualTypeOf<string | undefined>()
+    expectTypeOf(redirect.from).toEqualTypeOf<string>()
+    expectTypeOf(redirect.to).toEqualTypeOf<string | undefined>()
+    expectTypeOf(redirect.status).toEqualTypeOf<number | undefined>()
+    expectTypeOf(redirect.force).toEqualTypeOf<boolean | undefined>()
+    expectTypeOf(redirect.signed).toEqualTypeOf<string | undefined>()
 
-  type HeadersTestVar = NonNullable<Redirect['headers']>['testVar']
-  expectTypeOf<HeadersTestVar>().toEqualTypeOf<string | undefined>()
+    if (redirect.query !== undefined) {
+      expectTypeOf(redirect.query.testVar).toEqualTypeOf<string | undefined>()
+    }
 
-  type Conditions = NonNullable<Redirect['conditions']>
-  expectTypeOf<Conditions['Language']>().toEqualTypeOf<readonly string[] | undefined>()
-  expectTypeOf<Conditions['Cookie']>().toEqualTypeOf<readonly string[] | undefined>()
-  expectTypeOf<Conditions['Country']>().toEqualTypeOf<readonly string[] | undefined>()
-  expectTypeOf<Conditions['Role']>().toEqualTypeOf<readonly string[] | undefined>()
+    if (redirect.headers !== undefined) {
+      expectTypeOf(redirect.headers.testVar).toEqualTypeOf<string | undefined>()
+    }
+
+    if (redirect.conditions !== undefined) {
+      expectTypeOf(redirect.conditions.Language).toEqualTypeOf<readonly string[] | undefined>()
+      expectTypeOf(redirect.conditions.Cookie).toEqualTypeOf<readonly string[] | undefined>()
+      expectTypeOf(redirect.conditions.Country).toEqualTypeOf<readonly string[] | undefined>()
+      expectTypeOf(redirect.conditions.Role).toEqualTypeOf<readonly string[] | undefined>()
+    }
+  }
+
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })

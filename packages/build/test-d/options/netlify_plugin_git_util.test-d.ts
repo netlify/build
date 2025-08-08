@@ -1,27 +1,34 @@
-import type { NetlifyPluginUtils } from '@netlify/build'
-import { expectTypeOf, test } from 'vitest'
+import type { OnPreBuild } from '@netlify/build'
+import { test, expectTypeOf } from 'vitest'
 
-test('utils git types', () => {
-  type Git = NetlifyPluginUtils['git']
+test('utils.git types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    const matched = utils.git.fileMatch('*')
+    expectTypeOf(matched).toEqualTypeOf<readonly string[]>()
 
-  expectTypeOf<ReturnType<Git['fileMatch']>>().toEqualTypeOf<readonly string[]>()
-  expectTypeOf<Git['modifiedFiles']>().toEqualTypeOf<readonly string[]>()
-  expectTypeOf<Git['createdFiles']>().toEqualTypeOf<readonly string[]>()
-  expectTypeOf<Git['deletedFiles']>().toEqualTypeOf<readonly string[]>()
-  expectTypeOf<ReturnType<Git['linesOfCode']>>().toEqualTypeOf<Promise<number>>()
+    expectTypeOf(utils.git.modifiedFiles).toEqualTypeOf<readonly string[]>()
+    expectTypeOf(utils.git.createdFiles).toEqualTypeOf<readonly string[]>()
+    expectTypeOf(utils.git.deletedFiles).toEqualTypeOf<readonly string[]>()
+
+    const loc = utils.git.linesOfCode()
+    expectTypeOf(loc).toEqualTypeOf<Promise<number>>()
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
 
-test('utils git commits types', () => {
-  type Git = NetlifyPluginUtils['git']
-  type Commit = Git['commits'][number]
+test('utils.git commits types', () => {
+  const handler: OnPreBuild = ({ utils }) => {
+    const [commit] = utils.git.commits
 
-  expectTypeOf<Commit['sha']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['parents']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['author']['name']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['author']['email']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['author']['date']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['committer']['name']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['committer']['email']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['committer']['date']>().toEqualTypeOf<string>()
-  expectTypeOf<Commit['message']>().toEqualTypeOf<string>()
+    expectTypeOf(commit.sha).toEqualTypeOf<string>()
+    expectTypeOf(commit.parents).toEqualTypeOf<string>()
+    expectTypeOf(commit.author.name).toEqualTypeOf<string>()
+    expectTypeOf(commit.author.email).toEqualTypeOf<string>()
+    expectTypeOf(commit.author.date).toEqualTypeOf<string>()
+    expectTypeOf(commit.committer.name).toEqualTypeOf<string>()
+    expectTypeOf(commit.committer.email).toEqualTypeOf<string>()
+    expectTypeOf(commit.committer.date).toEqualTypeOf<string>()
+    expectTypeOf(commit.message).toEqualTypeOf<string>()
+  }
+  expectTypeOf(handler).toEqualTypeOf<OnPreBuild>()
 })
