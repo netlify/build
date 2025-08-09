@@ -115,7 +115,8 @@
     "typescript": "^5.0.0",
     "uuid": "^11.0.0",
     "yaml": "^2.8.0",
-    "yargs": "^17.6.0"
+    "yargs": "^17.6.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@netlify/nock-udp": "^5.0.1",
