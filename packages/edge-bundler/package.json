@@ -42,7 +42,6 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@netlify/edge-functions-bootstrap": "^2.14.0",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
@@ -59,6 +58,7 @@
     "node": ">=18.14.0"
   },
   "dependencies": {
+    "@netlify/edge-functions-bootstrap": "^2.14.0",
     "@import-maps/resolve": "^2.0.0",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",

@@ -1,14 +1,11 @@
-// this needs to be updated whenever there's a change to globalThis.Netlify in bootstrap
-import { Netlify } from "https://64e8753eae24930008fac6d9--edge.netlify.app/bootstrap/index-combined.ts"
-
-const [functionURL, collectorURL, rawExitCodes] = Deno.args
+const [functionURL, collectorURL, bootstrapURL, rawExitCodes] = Deno.args
 const exitCodes = JSON.parse(rawExitCodes)
-
-globalThis.Netlify = Netlify
 
 let func
 
 try {
+  const {Netlify} = await import(new URL("/bootstrap/globals/implementation.ts", bootstrapURL).toString())
+  globalThis.Netlify = Netlify
   func = await import(functionURL)
 } catch (error) {
   console.error(error)
