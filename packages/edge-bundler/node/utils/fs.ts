@@ -19,7 +19,7 @@ export const listRecursively = async (dirPath: string): Promise<string[]> => {
 
   await walk(dirPath)
 
-  return entries
+  return entries.sort((a, b) => a.localeCompare(b))
 }
 
 /**

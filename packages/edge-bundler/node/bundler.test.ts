@@ -5,6 +5,7 @@ import process from 'process'
 import { pathToFileURL } from 'url'
 
 import { gte, lt } from 'semver'
+import * as tar from 'tar'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
@@ -769,6 +770,17 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toStrictEqual(['___netlify-edge-functions.json', 'deno.json', 'func1.js'])
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
