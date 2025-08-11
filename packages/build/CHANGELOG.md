@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.0.6](https://github.com/netlify/build/compare/build-v35.0.5...build-v35.0.6) (2025-08-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.8 ([#6584](https://github.com/netlify/build/issues/6584)) ([1e7332a](https://github.com/netlify/build/commit/1e7332ad332f8b35e5ce48cbfda389e22658b618))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.0 to 14.5.1
+
 ## [35.0.5](https://github.com/netlify/build/compare/build-v35.0.4...build-v35.0.5) (2025-08-08)
 
 
