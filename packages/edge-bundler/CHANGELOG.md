@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.5.1](https://github.com/netlify/build/compare/edge-bundler-v14.5.0...edge-bundler-v14.5.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* fix generation of EF tar file ([#6616](https://github.com/netlify/build/issues/6616)) ([bdfec9a](https://github.com/netlify/build/commit/bdfec9a8c223bc58598b3482e91468f863b93b72))
+
 ## [14.5.0](https://github.com/netlify/build/compare/edge-bundler-v14.4.1...edge-bundler-v14.5.0) (2025-08-06)
 
 
