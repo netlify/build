@@ -1,6 +1,6 @@
 {
   "name": "@netlify/edge-bundler",
-  "version": "14.5.1",
+  "version": "15.0.0",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
   "main": "./dist/node/index.js",

@@ -105,6 +105,119 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.0.0](https://github.com/netlify/build/compare/build-v35.0.6...build-v36.0.0) (2025-08-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571))
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524))
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193))
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104))
+
+### Features
+
+* accept mixed paths in `listFunctions` ([#6537](https://github.com/netlify/build/issues/6537)) ([2e264e3](https://github.com/netlify/build/commit/2e264e3caf37e96d8da4a589c8eb858a40baf43e))
+* add `functions.generate` util ([#6487](https://github.com/netlify/build/issues/6487)) ([dfb4a07](https://github.com/netlify/build/commit/dfb4a07a880dce50de806e4147d708d016747e9f))
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+* add `srcPath` property to output of `listFunctions` ([#6561](https://github.com/netlify/build/issues/6561)) ([b3c2d11](https://github.com/netlify/build/commit/b3c2d11e8113dc446ebc9175feb9b76bb8a07f8c))
+* add header to installing extension with the build mode so we know where the installation is coming from ([#6478](https://github.com/netlify/build/issues/6478)) ([ca66176](https://github.com/netlify/build/commit/ca661760594a24f979457fa001c2db98213d259f))
+* add node 22 to supported versions list ([#5917](https://github.com/netlify/build/issues/5917)) ([5455393](https://github.com/netlify/build/commit/545539369a3f1a0e9d2036df7d41a8bed1df8272))
+* allow enhanced scan to run without impacting builds ([#6376](https://github.com/netlify/build/issues/6376)) ([9f063f8](https://github.com/netlify/build/commit/9f063f8a409bbeb09b5b2849671daf91640508ac))
+* allow jigsaw to be called with the build bot token ([#6096](https://github.com/netlify/build/issues/6096)) ([7a2525f](https://github.com/netlify/build/commit/7a2525f99019af3476f55070d422eb776d9902b8))
+* allow to scan secrets without buffering whole lines ([#6318](https://github.com/netlify/build/issues/6318)) ([5b23ae7](https://github.com/netlify/build/commit/5b23ae7fbd631ead68d4ae5b33454638026cbd8c))
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571)) ([b31aa6a](https://github.com/netlify/build/commit/b31aa6adc676530e80211d28901abc51591dba36))
+* **build:** Add trace attribute to track builds failing from Netlify maintained extensions ([#5914](https://github.com/netlify/build/issues/5914)) ([7e99c26](https://github.com/netlify/build/commit/7e99c263f1f47d0982c0a6ee3053163d43980844))
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+* Enhanced secret scan no longer relies on env vars ([#6333](https://github.com/netlify/build/issues/6333)) ([86dead5](https://github.com/netlify/build/commit/86dead5ca2f78f27006bb44d22e72641b2f23940))
+* expand secret prefixes ([#6319](https://github.com/netlify/build/issues/6319)) ([6c23028](https://github.com/netlify/build/commit/6c230280d5cfe80885cfc6e78ee9e3ecc61b9d78))
+* expose `generatedFunctions` to consumers ([#6525](https://github.com/netlify/build/issues/6525)) ([536630e](https://github.com/netlify/build/commit/536630e0470a1f81a04ff82059a22c27786aec1b))
+* introduce enhanced secret scanning ([#6230](https://github.com/netlify/build/issues/6230)) ([cd41d3b](https://github.com/netlify/build/commit/cd41d3b1e50587c63d95380af85d43923a548214))
+* remove references to removed flag and always produce manfiest ([#6117](https://github.com/netlify/build/issues/6117)) ([0af493c](https://github.com/netlify/build/commit/0af493cd65c7d3a502620f18e3ac21747c8e5e1a))
+* rename enhanced secret scan env vars ([#6414](https://github.com/netlify/build/issues/6414)) ([bd2cf20](https://github.com/netlify/build/commit/bd2cf209f8033c02aa18e079bd80df5f9a233374))
+* restrict requirements for enhanced secret scan matches ([#6379](https://github.com/netlify/build/issues/6379)) ([a976d15](https://github.com/netlify/build/commit/a976d1517808ef9b98b5fe8a5c8045455b2cfb00))
+* safelist common string in react proptypes from secret detection ([#6375](https://github.com/netlify/build/issues/6375)) ([4fd7f7c](https://github.com/netlify/build/commit/4fd7f7c3f7a0b4fcd893928a83ef083b67f3e4db))
+* send deploy validations report on secret scan ([#6205](https://github.com/netlify/build/issues/6205)) ([5505efb](https://github.com/netlify/build/commit/5505efb8f655dd3f11a7f173e9bdab7a717ff1d9))
+* smart secret detection looks for high entropy level ([#6418](https://github.com/netlify/build/issues/6418)) ([c48e090](https://github.com/netlify/build/commit/c48e09048650601811c32f7a2e5d3640a8457f35))
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+* update signature of `zipFunctions` ([#6524](https://github.com/netlify/build/issues/6524)) ([f719b07](https://github.com/netlify/build/commit/f719b0719ad7b719211904f573d8f3539b58ecbb))
+
+
+### Bug Fixes
+
+* add extra types for extensionMetaData ([#6186](https://github.com/netlify/build/issues/6186)) ([c1c7aed](https://github.com/netlify/build/commit/c1c7aed096edc490ef8b6731c8c16eb877856df4))
+* add move to options type for cache util exposed to build plugins ([#6019](https://github.com/netlify/build/issues/6019)) ([c2843db](https://github.com/netlify/build/commit/c2843dbdf6e5d13ec1075142807567c3f9b857c5))
+* changing wording to extensions in more places ([#6185](https://github.com/netlify/build/issues/6185)) ([752f9a1](https://github.com/netlify/build/commit/752f9a1c3ccf67ac339c472a676838c6ceff9d64))
+* changing wording to extensions instead of integrations ([#6180](https://github.com/netlify/build/issues/6180)) ([95d03d9](https://github.com/netlify/build/commit/95d03d958d3a0ca6f7aaadda06d3ae38a7528794))
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+* **deps:** replace dependency read-pkg-up with read-package-up ^11.0.0 ([#6314](https://github.com/netlify/build/issues/6314)) ([16f548a](https://github.com/netlify/build/commit/16f548a99da7a864fb4057f30b3118c01b542bb7))
+* **deps:** update dependency @bugsnag/js to v8 ([#6362](https://github.com/netlify/build/issues/6362)) ([a455c1e](https://github.com/netlify/build/commit/a455c1eb2724eaf35e66c0f7c6e3c29701737dab))
+* **deps:** update dependency @netlify/blobs to ^10.0.1 ([#6480](https://github.com/netlify/build/issues/6480)) ([17e14e9](https://github.com/netlify/build/commit/17e14e97f83926de60a1ea191680be431bc08fee))
+* **deps:** update dependency @netlify/blobs to ^10.0.2 ([#6494](https://github.com/netlify/build/issues/6494)) ([2f99eba](https://github.com/netlify/build/commit/2f99ebaa40f22a113e8c73a3ebfc4825302c1efb))
+* **deps:** update dependency @netlify/blobs to ^10.0.3 ([#6526](https://github.com/netlify/build/issues/6526)) ([9d10c78](https://github.com/netlify/build/commit/9d10c782200be8b59737c05623068ecc59b199b7))
+* **deps:** update dependency @netlify/blobs to ^10.0.4 ([#6533](https://github.com/netlify/build/issues/6533)) ([e4ac362](https://github.com/netlify/build/commit/e4ac362ba2f1941ae29eab0ee22de8ce502828c9))
+* **deps:** update dependency @netlify/blobs to ^10.0.5 ([#6560](https://github.com/netlify/build/issues/6560)) ([0112802](https://github.com/netlify/build/commit/0112802f98ab8d469acdfedef1d3c7f86a5b7f9a))
+* **deps:** update dependency @netlify/blobs to ^10.0.6 ([#6562](https://github.com/netlify/build/issues/6562)) ([8f577f7](https://github.com/netlify/build/commit/8f577f77f1e6feb395aeb26a9f8b5056439a1dd9))
+* **deps:** update dependency @netlify/blobs to ^10.0.7 ([#6569](https://github.com/netlify/build/issues/6569)) ([22748d8](https://github.com/netlify/build/commit/22748d862f783231c3b1d7bf55470798f14b588b))
+* **deps:** update dependency @netlify/blobs to ^10.0.8 ([#6584](https://github.com/netlify/build/issues/6584)) ([1e7332a](https://github.com/netlify/build/commit/1e7332ad332f8b35e5ce48cbfda389e22658b618))
+* **deps:** update dependency @netlify/blobs to ^8.1.2 ([#6162](https://github.com/netlify/build/issues/6162)) ([8cbeae7](https://github.com/netlify/build/commit/8cbeae7a1c67ac70ffd928ac91cff31730b3becd))
+* **deps:** update dependency @netlify/blobs to ^8.2.0 ([#6203](https://github.com/netlify/build/issues/6203)) ([7ca6d21](https://github.com/netlify/build/commit/7ca6d21e20e041f7e1849707005740c23136ef48))
+* **deps:** update dependency @netlify/blobs to ^9.1.4 ([#6425](https://github.com/netlify/build/issues/6425)) ([c9b42d1](https://github.com/netlify/build/commit/c9b42d1e61e93bbe07b1ef7f9d26290d2a200ec5))
+* **deps:** update dependency @netlify/blobs to ^9.1.5 ([#6426](https://github.com/netlify/build/issues/6426)) ([7bbb47f](https://github.com/netlify/build/commit/7bbb47f96f6ab4f813e1eb07c555993786744b29))
+* **deps:** update dependency @netlify/blobs to ^9.1.6 ([#6437](https://github.com/netlify/build/issues/6437)) ([8a0a9d5](https://github.com/netlify/build/commit/8a0a9d549a7d16cec2d3b5ccb9d9cf8aabc1e17a))
+* **deps:** update dependency @netlify/blobs to v10 ([#6460](https://github.com/netlify/build/issues/6460)) ([047c7ad](https://github.com/netlify/build/commit/047c7ad500da5645e800d2226c0c54e99ad14226))
+* **deps:** update dependency @netlify/blobs to v8 ([#5756](https://github.com/netlify/build/issues/5756)) ([a71b6ce](https://github.com/netlify/build/commit/a71b6ce6f14f01dfb55ab34c7e1e1dd5d6df0a0b))
+* **deps:** update dependency @netlify/blobs to v9 ([#6412](https://github.com/netlify/build/issues/6412)) ([5263015](https://github.com/netlify/build/commit/5263015149d569f7cc7e854aadca1850cb1cf74a))
+* **deps:** update dependency ansi-escapes to v7 ([#6336](https://github.com/netlify/build/issues/6336)) ([bf11542](https://github.com/netlify/build/commit/bf11542cdc3d8873043637d384ea80f2830e2c15))
+* **deps:** update dependency clean-stack to v5 ([#6073](https://github.com/netlify/build/issues/6073)) ([51c8ebd](https://github.com/netlify/build/commit/51c8ebd46d96e0fa32537bea9f21d733829a9bf1))
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+* **deps:** update dependency figures to v6 ([#6339](https://github.com/netlify/build/issues/6339)) ([8936cee](https://github.com/netlify/build/commit/8936cee7a6c7619f2e8ea6e3e0bf9de52e5ded04))
+* **deps:** update dependency filter-obj to v6 ([#6340](https://github.com/netlify/build/issues/6340)) ([cad4c01](https://github.com/netlify/build/commit/cad4c01213811d8663e1b137da522a0380f01254))
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency got to v13 ([#6399](https://github.com/netlify/build/issues/6399)) ([c25de20](https://github.com/netlify/build/commit/c25de20999c75fca1a2b868ae73d3d53d85c5638))
+* **deps:** update dependency hot-shots to v11 ([#6511](https://github.com/netlify/build/issues/6511)) ([41d2890](https://github.com/netlify/build/commit/41d2890f93bd350c42b7eabc70575039dcdacfcf))
+* **deps:** update dependency keep-func-props to v6 ([#6441](https://github.com/netlify/build/issues/6441)) ([3f73828](https://github.com/netlify/build/commit/3f7382898cd868e54a7d16d8d2d468b965f3a06d))
+* **deps:** update dependency log-process-errors to v11 ([#6443](https://github.com/netlify/build/issues/6443)) ([ab8f6e8](https://github.com/netlify/build/commit/ab8f6e88c4f4711c881fa74df784383d1669cf1a))
+* **deps:** update dependency netlify-plugin-contextual-env to v0.3.0 ([#6515](https://github.com/netlify/build/issues/6515)) ([a5fb91e](https://github.com/netlify/build/commit/a5fb91e4deeaa37500edcbb15f7eac48b243953a))
+* **deps:** update dependency os-name to v6 ([#6342](https://github.com/netlify/build/issues/6342)) ([6aa984d](https://github.com/netlify/build/commit/6aa984d9a2049ccbec51f2b9db7c68b693037710))
+* **deps:** update dependency p-event to v6 ([#5966](https://github.com/netlify/build/issues/5966)) ([3774b9b](https://github.com/netlify/build/commit/3774b9b1328c94b539a503765575ac5ad5ffb058))
+* **deps:** update dependency p-filter to v4 ([#5967](https://github.com/netlify/build/issues/5967)) ([b5d9d86](https://github.com/netlify/build/commit/b5d9d86a86bf4f7bb8cb534b73cc156ed4ca52e0))
+* **deps:** update dependency p-map to v7 ([#5968](https://github.com/netlify/build/issues/5968)) ([bb1d58b](https://github.com/netlify/build/commit/bb1d58b3ee2e11888cf7b0151e1cacef7fc522cb))
+* **deps:** update dependency path-type to v6 ([#6358](https://github.com/netlify/build/issues/6358)) ([77557fe](https://github.com/netlify/build/commit/77557fe197c20d1d5597a8c70d92944f22515293))
+* **deps:** update dependency pkg-dir to v8 ([#6343](https://github.com/netlify/build/issues/6343)) ([d708907](https://github.com/netlify/build/commit/d708907106bdf80a46da99d06f269a2aa76971c8))
+* **deps:** update dependency pretty-ms to v9 ([#6359](https://github.com/netlify/build/issues/6359)) ([25ec5ef](https://github.com/netlify/build/commit/25ec5ef7e982ef93166ef2cb8a61871470210008))
+* **deps:** update dependency readdirp to v4 ([#6335](https://github.com/netlify/build/issues/6335)) ([bbc39d2](https://github.com/netlify/build/commit/bbc39d2c665b68dcbfaa4b32b783d38fa517c413))
+* **deps:** update dependency string-width to v7 ([#6316](https://github.com/netlify/build/issues/6316)) ([9a3ab1e](https://github.com/netlify/build/commit/9a3ab1e6796ed39ad634b46f2f1da499da4a1586))
+* **deps:** update dependency supports-color to v10 ([#6315](https://github.com/netlify/build/issues/6315)) ([77d7c1c](https://github.com/netlify/build/commit/77d7c1c463fdd47d76a982883edea81b3a56671f))
+* **deps:** update dependency terminal-link to v4 ([#6344](https://github.com/netlify/build/issues/6344)) ([ef1e151](https://github.com/netlify/build/commit/ef1e1510cf8a85082cca24c096e544094ff9f8c8))
+* **deps:** update dependency uuid to v11 ([#6309](https://github.com/netlify/build/issues/6309)) ([d6471d0](https://github.com/netlify/build/commit/d6471d0a05a9d3b49b8b5a0ee500279d72ab3c92))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+* drop map-obj ([#6577](https://github.com/netlify/build/issues/6577)) ([7c44533](https://github.com/netlify/build/commit/7c44533ae078336cc722093859e47f8ef5cb7795))
+* drop node-fetch from build package ([#6377](https://github.com/netlify/build/issues/6377)) ([3c28af0](https://github.com/netlify/build/commit/3c28af05d66997f257f650f3841981f16c104a44))
+* fix httperr snapshot ([#6116](https://github.com/netlify/build/issues/6116)) ([d4ece98](https://github.com/netlify/build/commit/d4ece98c4427bbf8c9d293f231340e98ac24ccf5))
+* multiple plugin versions in a monorepo setup ([#6105](https://github.com/netlify/build/issues/6105)) ([23c7ce7](https://github.com/netlify/build/commit/23c7ce71268d963ffdafb7fa1440d13a9cc99886))
+* no framework special case for ntl dev ([#6449](https://github.com/netlify/build/issues/6449)) ([b0ba6d9](https://github.com/netlify/build/commit/b0ba6d9d498fb9c5c5b912b393d9a39da01c179c))
+* omit duplicate functions from list of bundled files ([#6535](https://github.com/netlify/build/issues/6535)) ([ce34215](https://github.com/netlify/build/commit/ce34215b6d41ec5e924b8213ab65f6e293f6e3de))
+* pass config object to devCommand step handler ([#6095](https://github.com/netlify/build/issues/6095)) ([e234d01](https://github.com/netlify/build/commit/e234d01c8fb7a366af3876536ef0141907611638))
+* remove addons ([#6193](https://github.com/netlify/build/issues/6193)) ([c4f7caa](https://github.com/netlify/build/commit/c4f7caa2d21380f5d1f6cc8159aa0783dccd137a))
+* remove code supporting versions of Node &lt; v15 ([#6599](https://github.com/netlify/build/issues/6599)) ([d9f55d3](https://github.com/netlify/build/commit/d9f55d35fbf4c1f37f2a6632a43566fb6d295ca1))
+* remove got as a dependency, replace with fetch ([#6468](https://github.com/netlify/build/issues/6468)) ([fed9e58](https://github.com/netlify/build/commit/fed9e58c2a177796f0d14e606778d804a6111260))
+* remove references to fully rolled out netlify_build_frameworks_api feature flag ([#6053](https://github.com/netlify/build/issues/6053)) ([700c36b](https://github.com/netlify/build/commit/700c36bc9f81bfeaed76444aceb823111c995cbe))
+* replace js-yaml with yaml package ([#6469](https://github.com/netlify/build/issues/6469)) ([1628170](https://github.com/netlify/build/commit/1628170df6afa98352901c98f2e0a1587d24c9bc))
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+* **types:** fix `@netlify/headers-parser` types ([#6104](https://github.com/netlify/build/issues/6104)) ([bc5e35a](https://github.com/netlify/build/commit/bc5e35a661521e46711c4a1b166e698703849188))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.1 to 15.0.0
+
 ## [35.0.6](https://github.com/netlify/build/compare/build-v35.0.5...build-v35.0.6) (2025-08-11)
 
 
