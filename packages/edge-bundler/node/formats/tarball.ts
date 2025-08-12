@@ -13,7 +13,7 @@ import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
 
-const TARBALL_EXTENSION = '.tar'
+const TARBALL_EXTENSION = '.tar.gz'
 
 interface Manifest {
   functions: Record<string, string>
@@ -111,6 +111,7 @@ export const bundle = async ({
     {
       cwd: bundleDir.path,
       file: tarballPath,
+      gzip: true,
       noDirRecurse: true,
       onWriteEntry(entry) {
         const relativePath = path.relative(bundleDir.path, path.join('/', entry.path))
