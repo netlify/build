@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.5.2](https://github.com/netlify/build/compare/edge-bundler-v14.5.1...edge-bundler-v14.5.2) (2025-08-12)
+
+
+### Bug Fixes
+
+* use gzip compression for the tarball generation ([#6618](https://github.com/netlify/build/issues/6618)) ([c1afdd9](https://github.com/netlify/build/commit/c1afdd9e3b46124fc06687d3c4670710b65ac6a1))
+
 ## [14.5.1](https://github.com/netlify/build/compare/edge-bundler-v14.5.0...edge-bundler-v14.5.1) (2025-08-11)
 
 
