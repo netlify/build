@@ -1,7 +1,6 @@
 import type { ReadStream } from 'node:fs'
 
 import type { operations } from '@netlify/open-api'
-import type { RequestInit } from 'node-fetch'
 
 /**
  * Determines whether all keys in T are optional.
@@ -228,6 +227,6 @@ export type DynamicMethods = {
      * )
      * ```
      */
-    opts?: RequestInit | void | undefined,
+    opts?: Parameters<typeof fetch>[1] | void | undefined,
   ) => Promise<OperationResponse<K>>
 }

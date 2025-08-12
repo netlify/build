@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 import { getOperations } from '../operations.js'
 
 import { addBody } from './body.js'
