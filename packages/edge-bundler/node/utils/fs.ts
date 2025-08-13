@@ -1,4 +1,26 @@
-import path from 'path'
+import { promises as fs } from 'node:fs'
+import path from 'node:path'
+
+export const listRecursively = async (dirPath: string): Promise<string[]> => {
+  const entries: string[] = []
+
+  async function walk(currentPath: string): Promise<void> {
+    const dirents = await fs.readdir(currentPath, { withFileTypes: true })
+    for (const dirent of dirents) {
+      const fullPath = path.join(currentPath, dirent.name)
+
+      if (dirent.isDirectory()) {
+        await walk(fullPath)
+      } else if (dirent.isFile() || dirent.isSymbolicLink()) {
+        entries.push(fullPath)
+      }
+    }
+  }
+
+  await walk(dirPath)
+
+  return entries.sort((a, b) => a.localeCompare(b))
+}
 
 /**
  * Returns all the directories obtained by traversing `inner` and its parents
