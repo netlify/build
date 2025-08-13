@@ -99,6 +99,11 @@ export const getFunctionConfig = async ({
   // Retrieving the version of Deno.
   const version = new SemVer((await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)) || '')
 
+  // Ensure function contents are compatabile with Deno 2
+  const functionContents = await fs.readFile(func.path, 'utf8')
+  const replacedText = functionContents.replace(/assert\s*{\s*type:\s*['"]json['"]\s*}/g, 'with { type: "json" }')
+  await fs.writeFile(func.path, replacedText, 'utf-8')
+
   // The extractor will use its exit code to signal different error scenarios,
   // based on the list of exit codes we send as an argument. We then capture
   // the exit code to know exactly what happened and guide people accordingly.
@@ -121,10 +126,6 @@ export const getFunctionConfig = async ({
     ].filter(Boolean),
     { rejectOnExitCode: false },
   )
-
-  if (stderr.includes('Import assertions are deprecated')) {
-    log.system(`Edge function uses import assertions: ${func.path}`)
-  }
 
   if (exitCode !== ConfigExitCode.Success) {
     handleConfigError(func, exitCode, stderr, log)
