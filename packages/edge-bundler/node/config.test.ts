@@ -14,6 +14,11 @@ import { FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
 import { RateLimitAction, RateLimitAggregator } from './rate_limit.js'
+// @ts-expect-error TypeScript is complaining about the values for the `module`
+// and `moduleResolution` configuration properties, but changing those to more
+// modern values causes other packages to fail. Leaving this for now, but we
+// should have a proper fix for this.
+import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 
 const importMapFile = {
   baseURL: new URL('file:///some/path/import-map.json'),
@@ -193,6 +198,8 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
 
     await fs.writeFile(path, func.source)
 
+    const bootstrapURL = await getBootstrapURL()
+
     const funcCall = () =>
       getFunctionConfig({
         func: {
@@ -202,6 +209,7 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
         importMap: new ImportMap([importMapFile]),
         deno,
         log: logger,
+        bootstrapURL,
       })
 
     if (func.error) {
@@ -393,6 +401,7 @@ test('Passes validation if default export exists and is a function', async () =>
       importMap: new ImportMap([importMapFile]),
       deno,
       log: logger,
+      bootstrapURL: await getBootstrapURL(),
     }),
   ).resolves.not.toThrow()
 
@@ -429,6 +438,7 @@ test('Fails validation if default export is not function', async () => {
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,
+    bootstrapURL: await getBootstrapURL(),
   })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
@@ -465,6 +475,7 @@ test('Fails validation if default export is not present', async () => {
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,
+    bootstrapURL: await getBootstrapURL(),
   })
 
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
