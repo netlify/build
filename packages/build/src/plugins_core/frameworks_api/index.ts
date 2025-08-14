@@ -33,7 +33,7 @@ const OVERRIDE_PROPERTIES = new Set(['redirects!'])
 
 // Looks for a skew protection configuration file. If found, the file is loaded
 // and validated against the schema, throwing a build error if validation
-// fails. If valid, the contents are written to the edge redirects file.
+// fails. If valid, the contents are written to the deploy config file.
 const handleSkewProtection = async (buildDir: string, packagePath?: string) => {
   const inputPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_SKEW_PROTECTION_PATH)
   const outputPath = resolve(buildDir, packagePath ?? '', DEPLOY_CONFIG_DIST_PATH)
@@ -43,13 +43,13 @@ const handleSkewProtection = async (buildDir: string, packagePath?: string) => {
     return
   }
 
-  const edgeRedirects = {
+  const deployConfig = {
     skew_protection: skewProtectionConfig,
   }
 
   try {
     await fs.mkdir(dirname(outputPath), { recursive: true })
-    await fs.writeFile(outputPath, JSON.stringify(edgeRedirects))
+    await fs.writeFile(outputPath, JSON.stringify(deployConfig))
   } catch (error) {
     throw new Error('Failed to process skew protection configuration', { cause: error })
   }
