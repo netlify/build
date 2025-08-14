@@ -156,13 +156,23 @@ test('Throws an error if the skew protection configuration file is invalid', asy
   const { output, success } = await new Fixture('./fixtures/skew_protection_invalid').runWithBuildAndIntrospect()
   t.false(success)
   t.true(output.includes('Invalid skew protection configuration'))
+  t.true(
+    output.includes(
+      `sources.0.type: Invalid enum value. Expected 'cookie' | 'header' | 'query', received 'invalid_type'`,
+    ),
+  )
+})
+
+test('Throws an error if the skew protection configuration file is malformed', async (t) => {
+  const { output, success } = await new Fixture('./fixtures/skew_protection_malformed').runWithBuildAndIntrospect()
+  t.false(success)
+  t.true(output.includes('Invalid skew protection configuration'))
 })
 
 test('Does not create dist file when skew protection file is missing', async (t) => {
   const fixture = new Fixture('./fixtures/skew_protection_missing')
   const { success } = await fixture.runWithBuildAndIntrospect()
   const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/deploy-config.json')
-
   t.true(success)
 
   try {

@@ -18,28 +18,37 @@ export type SkewProtectionConfig = z.infer<typeof skewProtectionConfigSchema>
 export type DeployIDSource = z.infer<typeof deployIDSourceSchema>
 export type DeployIDSourceType = z.infer<typeof deployIDSourceTypeSchema>
 
-const validateSkewProtectionConfig = (data: unknown): SkewProtectionConfig => {
-  try {
-    return skewProtectionConfigSchema.parse(data)
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      throw new Error(`Invalid skew protection configuration: ${error.message}`)
-    }
+const validateSkewProtectionConfig = (input: unknown): SkewProtectionConfig => {
+  const { data, error, success } = skewProtectionConfigSchema.safeParse(input)
 
-    throw error
+  if (success) {
+    return data
   }
+
+  throw new Error(`Invalid skew protection configuration:\n\n${formatSchemaError(error)}`)
 }
 
 export const loadSkewProtectionConfig = async (configPath: string) => {
+  let parsedData: unknown
+
   try {
     const data = await fs.readFile(configPath, 'utf8')
-    const config = validateSkewProtectionConfig(JSON.parse(data))
 
-    return config
-  } catch (err) {
+    parsedData = JSON.parse(data)
+  } catch (error) {
     // If the file doesn't exist, this is a non-error.
-    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
-      throw err
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return
     }
+
+    throw new Error('Invalid skew protection configuration', { cause: error })
   }
+
+  return validateSkewProtectionConfig(parsedData)
+}
+
+const formatSchemaError = (error: z.ZodError) => {
+  const lines = error.issues.map((issue) => `- ${issue.path.join('.')}: ${issue.message}`)
+
+  return lines.join('\n')
 }
