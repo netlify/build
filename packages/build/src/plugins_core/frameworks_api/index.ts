@@ -5,7 +5,7 @@ import { mergeConfigs } from '@netlify/config'
 
 import type { NetlifyConfig } from '../../index.js'
 import { getConfigMutations } from '../../plugins/child/diff.js'
-import { DEPLOY_CONFIG_DIST_PATH, FRAMEWORKS_API_SKEW_PROTECTION_ENDPOINT } from '../../utils/frameworks_api.js'
+import { DEPLOY_CONFIG_DIST_PATH, FRAMEWORKS_API_SKEW_PROTECTION_PATH } from '../../utils/frameworks_api.js'
 import { CoreStep, CoreStepFunction } from '../types.js'
 
 import { loadSkewProtectionConfig } from './skew_protection.js'
@@ -35,7 +35,7 @@ const OVERRIDE_PROPERTIES = new Set(['redirects!'])
 // and validated against the schema, throwing a build error if validation
 // fails. If valid, the contents are written to the edge redirects file.
 const handleSkewProtection = async (buildDir: string, packagePath?: string) => {
-  const inputPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_SKEW_PROTECTION_ENDPOINT)
+  const inputPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_SKEW_PROTECTION_PATH)
   const outputPath = resolve(buildDir, packagePath ?? '', DEPLOY_CONFIG_DIST_PATH)
 
   const skewProtectionConfig = await loadSkewProtectionConfig(inputPath)

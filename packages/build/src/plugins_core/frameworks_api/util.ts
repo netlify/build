@@ -4,11 +4,11 @@ import { resolve } from 'path'
 import isPlainObject from 'is-plain-obj'
 
 import type { NetlifyConfig } from '../../index.js'
-import { FRAMEWORKS_API_CONFIG_ENDPOINT } from '../../utils/frameworks_api.js'
+import { FRAMEWORKS_API_CONFIG_PATH } from '../../utils/frameworks_api.js'
 import { SystemLogger } from '../types.js'
 
 export const loadConfigFile = async (buildDir: string, packagePath?: string) => {
-  const configPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_CONFIG_ENDPOINT)
+  const configPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_CONFIG_PATH)
 
   try {
     const data = await fs.readFile(configPath, 'utf8')
