@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.0](https://github.com/netlify/build/compare/build-v35.0.7...build-v35.1.0) (2025-08-14)
+
+
+### Features
+
+* add skew protection to Frameworks API ([#6601](https://github.com/netlify/build/issues/6601)) ([6cf3065](https://github.com/netlify/build/commit/6cf306535d8083797a140ecaa05b0778c33e1052))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.2 to ^24.0.3
+
 ## [35.0.7](https://github.com/netlify/build/compare/build-v35.0.6...build-v35.0.7) (2025-08-12)
 
 
