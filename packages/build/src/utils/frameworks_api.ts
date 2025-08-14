@@ -2,12 +2,15 @@ import { basename, dirname, resolve, sep } from 'node:path'
 
 import { fdir } from 'fdir'
 
-export const FRAMEWORKS_API_ENDPOINT = '.netlify/v1'
-export const FRAMEWORKS_API_BLOBS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/blobs`
-export const FRAMEWORKS_API_CONFIG_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/config.json`
-export const FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/edge-functions`
+export const FRAMEWORKS_API_PATH = '.netlify/v1'
+export const FRAMEWORKS_API_BLOBS_PATH = `${FRAMEWORKS_API_PATH}/blobs`
+export const FRAMEWORKS_API_CONFIG_PATH = `${FRAMEWORKS_API_PATH}/config.json`
+export const FRAMEWORKS_API_EDGE_FUNCTIONS_PATH = `${FRAMEWORKS_API_PATH}/edge-functions`
 export const FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP = 'import_map.json'
-export const FRAMEWORKS_API_FUNCTIONS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/functions`
+export const FRAMEWORKS_API_FUNCTIONS_PATH = `${FRAMEWORKS_API_PATH}/functions`
+export const FRAMEWORKS_API_SKEW_PROTECTION_PATH = `${FRAMEWORKS_API_PATH}/skew-protection.json`
+
+export const DEPLOY_CONFIG_DIST_PATH = '.netlify/deploy-config/deploy-config.json'
 
 type DirectoryTreeFiles = Map<string, string[]>
 

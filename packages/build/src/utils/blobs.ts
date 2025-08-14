@@ -5,7 +5,7 @@ import { fdir } from 'fdir'
 
 import { DEFAULT_API_HOST } from '../core/normalize_flags.js'
 
-import { FRAMEWORKS_API_BLOBS_ENDPOINT } from './frameworks_api.js'
+import { FRAMEWORKS_API_BLOBS_PATH } from './frameworks_api.js'
 
 const LEGACY_BLOBS_PATH = '.netlify/blobs/deploy'
 const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
@@ -60,7 +60,7 @@ export const getBlobsEnvironmentContext = ({
  */
 export const scanForBlobs = async function (buildDir: string, packagePath?: string) {
   // We start by looking for files using the Frameworks API.
-  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_API_BLOBS_ENDPOINT, 'deploy')
+  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_API_BLOBS_PATH, 'deploy')
   const frameworkBlobsDirScan = await new fdir().onlyCounts().crawl(frameworkBlobsDir).withPromise()
 
   if (frameworkBlobsDirScan.files > 0) {

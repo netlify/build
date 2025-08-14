@@ -8,7 +8,7 @@ import { Metric } from '../../core/report_metrics.js'
 import { log, reduceLogLines } from '../../log/logger.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import {
-  FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+  FRAMEWORKS_API_EDGE_FUNCTIONS_PATH,
   FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
 } from '../../utils/frameworks_api.js'
 
@@ -52,7 +52,7 @@ const coreStep = async function ({
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+  const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
   const generatedFunctionPaths = [internalSrcPath]
 
   if (await pathExists(frameworksAPISrcPath)) {
@@ -62,7 +62,7 @@ const coreStep = async function ({
   const frameworkImportMap = resolve(
     buildDir,
     packagePath || '',
-    FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT,
+    FRAMEWORKS_API_EDGE_FUNCTIONS_PATH,
     FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
   )
 
@@ -170,7 +170,7 @@ const hasEdgeFunctionsDirectories = async function ({
     return true
   }
 
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
 
   return await pathExists(frameworkFunctionsSrc)
 }

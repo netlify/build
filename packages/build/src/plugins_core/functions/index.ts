@@ -7,7 +7,7 @@ import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
-import { FRAMEWORKS_API_FUNCTIONS_ENDPOINT } from '../../utils/frameworks_api.js'
+import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 
 import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
@@ -147,7 +147,7 @@ const coreStep = async function ({
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_PATH)
   const frameworkFunctionsSrcExists = await pathExists(frameworkFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = [], frameworkFunctions = []] = await getUserAndInternalFunctions({
@@ -240,7 +240,7 @@ const hasFunctionsDirectories = async function ({
     return true
   }
 
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_ENDPOINT)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_PATH)
 
   if (await pathExists(frameworkFunctionsSrc)) {
     return true
