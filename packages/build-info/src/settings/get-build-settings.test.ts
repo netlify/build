@@ -149,6 +149,33 @@ test('get dev command from npm scripts if defined inside a workspace setup', asy
   )
 })
 
+test('get settings for a project on the monorepo root', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({
+      workspaces: ['packages/*'],
+    }),
+    'packages/astro/package.json': JSON.stringify({
+      name: 'astro',
+      dependencies: { astro: '*' },
+    }),
+    'svelte.config.js': '',
+  })
+  fs.cwd = cwd
+  const project = new Project(fs, cwd)
+  // using '' to get the settings for the project root
+  const settings = await project.getBuildSettings('')
+
+  expect(settings).toHaveLength(1)
+  expect(settings[0].name).toBe('Svelte')
+
+  const project2 = new Project(fs, cwd)
+  // not using a base directory to get the settings for all projects
+  const settings2 = await project2.getBuildSettings()
+  expect(settings2).toHaveLength(2)
+  expect(settings2[0].name).toBe('Svelte')
+  expect(settings2[1].name).toBe('NPM + Astro packages/astro')
+})
+
 describe.each([
   {
     describeName: 'WebFS',
