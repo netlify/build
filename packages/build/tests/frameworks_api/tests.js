@@ -161,7 +161,7 @@ test('Throws an error if the skew protection configuration file is invalid', asy
 test('Does not create dist file when skew protection file is missing', async (t) => {
   const fixture = new Fixture('./fixtures/skew_protection_missing')
   const { success } = await fixture.runWithBuildAndIntrospect()
-  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/edge-redirects.json')
+  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/deploy-config.json')
 
   t.true(success)
 
@@ -176,7 +176,7 @@ test('Does not create dist file when skew protection file is missing', async (t)
 test('Creates dist file when valid skew protection configuration is provided', async (t) => {
   const fixture = new Fixture('./fixtures/skew_protection_valid')
   const { success } = await fixture.runWithBuildAndIntrospect()
-  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/edge-redirects.json')
+  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/deploy-config.json')
 
   t.true(success)
 

@@ -10,7 +10,7 @@ export const FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP = 'import_map.json'
 export const FRAMEWORKS_API_FUNCTIONS_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/functions`
 export const FRAMEWORKS_API_SKEW_PROTECTION_ENDPOINT = `${FRAMEWORKS_API_ENDPOINT}/skew-protection.json`
 
-export const EDGE_REDIRECTS_DIST_PATH = '.netlify/deploy-config/edge-redirects.json'
+export const DEPLOY_CONFIG_DIST_PATH = '.netlify/deploy-config/deploy-config.json'
 
 type DirectoryTreeFiles = Map<string, string[]>
 
