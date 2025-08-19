@@ -45,26 +45,15 @@ export const kebabCase = (input: string): string =>
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
-  featureFlags: FeatureFlags,
+  _featureFlags: FeatureFlags,
   runtimeAPIVersion: number,
 ) => {
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
   if (runtimeAPIVersion === 2) {
-    if (featureFlags.zisi_dynamic_import_function_handler_entry_point) {
-      return [
-        `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
-        `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
-      ].join(';')
-    }
     return [
       `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
-      `import * as func from '${importPath}'`,
-
-      // See https://esbuild.github.io/content-types/#default-interop.
-      'const funcModule = typeof func.default === "function" ? func : func.default',
-
-      `export const handler = bootstrap.getLambdaHandler(funcModule)`,
+      `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
     ].join(';')
   }
 
