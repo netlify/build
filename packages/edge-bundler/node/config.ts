@@ -12,6 +12,11 @@ import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
 import { RateLimit } from './rate_limit.js'
+// @ts-expect-error TypeScript is complaining about the values for the `module`
+// and `moduleResolution` configuration properties, but changing those to more
+// modern values causes other packages to fail. Leaving this for now, but we
+// should have a proper fix for this.
+import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 
 enum ConfigExitCode {
   Success = 0,
@@ -78,13 +83,17 @@ export const getFunctionConfig = async ({
   func,
   importMap,
   deno,
+  bootstrapURL,
   log,
 }: {
   func: EdgeFunction
   importMap: ImportMap
   deno: DenoBridge
+  bootstrapURL?: string
   log: Logger
 }) => {
+  const concreteBootstrapURL = bootstrapURL || (await getBootstrapURL())
+
   // The extractor is a Deno script that will import the function and run its
   // `config` export, if one exists.
   const extractorPath = getConfigExtractor()
@@ -117,6 +126,7 @@ export const getFunctionConfig = async ({
       extractorPath,
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,
+      concreteBootstrapURL,
       JSON.stringify(ConfigExitCode),
     ].filter(Boolean),
     { rejectOnExitCode: false },
