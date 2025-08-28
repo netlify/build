@@ -107,20 +107,26 @@ export const bundle = async ({
   const tarballPath = path.join(distDirectory, buildID + TARBALL_EXTENSION)
   await fs.mkdir(path.dirname(tarballPath), { recursive: true })
 
+  // List files to include in the tarball as paths relative to the bundle dir.
+  // Using absolute paths here leads to platform-specific quirks (notably on Windows),
+  // where entries can include drive letters and break extraction/imports.
+  const files = (await listRecursively(bundleDir.path))
+    .map((p) => path.relative(bundleDir.path, p))
+    .map((p) => getUnixPath(p))
+    .sort()
+
   await tar.create(
     {
       cwd: bundleDir.path,
       file: tarballPath,
       gzip: true,
       noDirRecurse: true,
+      // Ensure forward slashes inside the tarball for cross-platform consistency.
       onWriteEntry(entry) {
-        const relativePath = path.relative(bundleDir.path, path.join('/', entry.path))
-        const normalizedPath = getUnixPath(relativePath)
-
-        entry.path = normalizedPath
+        entry.path = getUnixPath(entry.path)
       },
     },
-    await listRecursively(bundleDir.path),
+    files,
   )
 
   const hash = await getFileHash(tarballPath)

@@ -1,8 +1,22 @@
-// this needs to be updated whenever there's a change to globalThis.Netlify in bootstrap
-import { Netlify } from "https://64e8753eae24930008fac6d9--edge.netlify.app/bootstrap/index-combined.ts"
+import { type NetlifyGlobal } from 'https://edge.netlify.com/bootstrap/globals/types.ts'
 
 const [functionURL, collectorURL, rawExitCodes] = Deno.args
 const exitCodes = JSON.parse(rawExitCodes)
+
+const env = {
+  delete: Deno.env.delete,
+  get: Deno.env.get,
+  has: Deno.env.has,
+  set: Deno.env.set,
+  toObject: Deno.env.toObject,
+};
+
+const Netlify: NetlifyGlobal = {
+  get context() {
+    return null;
+  },
+  env,
+};
 
 globalThis.Netlify = Netlify
 
