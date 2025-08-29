@@ -27,6 +27,10 @@ jobs:
         with:
           node-version: 22
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: Install dependencies
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -78,6 +82,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -159,10 +167,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: corepack update
         # corepack version distributed with Node.js has a problem with new package manager releases,
         # so forcing fixed version of corepack here
         run: npm i -g corepack --force
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: setup pnpm/yarn
         run: corepack enable
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}

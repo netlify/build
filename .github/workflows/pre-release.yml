@@ -16,6 +16,9 @@ jobs:
           node-version: '22'
           check-latest: true
           registry-url: 'https://registry.npmjs.org'
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
       - name: Extract tag, version and package
         id: extract
         run: |-
