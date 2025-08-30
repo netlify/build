@@ -1,7 +1,6 @@
 import type { Stats } from 'fs'
+import { stat } from 'fs/promises'
 import { join, dirname, basename, extname } from 'path'
-
-import { locatePath } from 'locate-path'
 
 import { SourceFile } from '../../function.js'
 import { cachedLstat } from '../../utils/fs.js'
@@ -72,32 +71,42 @@ export const findFunctionInPath: FindFunctionInPathFunction = async function ({ 
 // the same filename as its directory.
 const getMainFile = async function (srcPath: string, filename: string, stat: Stats): Promise<string | undefined> {
   if (stat.isDirectory()) {
-    return await locatePath(
-      [
-        // The order of these declarations is important, so that we always bundle the same way
-        // even if multiple files are found
-        join(srcPath, `${filename}.js`),
-        join(srcPath, 'index.js'),
-        join(srcPath, `${filename}.ts`),
-        join(srcPath, 'index.ts'),
-        join(srcPath, `${filename}.mjs`),
-        join(srcPath, 'index.mjs'),
-        join(srcPath, `${filename}.cjs`),
-        join(srcPath, 'index.cjs'),
-        join(srcPath, `${filename}.tsx`),
-        join(srcPath, 'index.tsx'),
-        join(srcPath, `${filename}.mts`),
-        join(srcPath, 'index.mts'),
-        join(srcPath, `${filename}.cts`),
-        join(srcPath, 'index.cts'),
-      ],
-      { type: 'file' },
-    )
+    return await locateFile([
+      // The order of these declarations is important, so that we always bundle the same way
+      // even if multiple files are found
+      join(srcPath, `${filename}.js`),
+      join(srcPath, 'index.js'),
+      join(srcPath, `${filename}.ts`),
+      join(srcPath, 'index.ts'),
+      join(srcPath, `${filename}.mjs`),
+      join(srcPath, 'index.mjs'),
+      join(srcPath, `${filename}.cjs`),
+      join(srcPath, 'index.cjs'),
+      join(srcPath, `${filename}.tsx`),
+      join(srcPath, 'index.tsx'),
+      join(srcPath, `${filename}.mts`),
+      join(srcPath, 'index.mts'),
+      join(srcPath, `${filename}.cts`),
+      join(srcPath, 'index.cts'),
+    ])
   }
 
   const extension = extname(srcPath)
 
   if (allowedExtensions.includes(extension)) {
     return srcPath
+  }
+}
+
+const locateFile = async (paths: string[]): Promise<string | undefined> => {
+  for (const path of paths) {
+    try {
+      const fileStat = await stat(path)
+      if (fileStat.isFile()) {
+        return path
+      }
+    } catch {
+      // File doesn't exist, continue
+    }
   }
 }
