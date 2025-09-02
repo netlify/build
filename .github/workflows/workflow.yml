@@ -19,7 +19,7 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -72,7 +72,7 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -152,7 +152,7 @@ jobs:
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
       - name: Git checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
