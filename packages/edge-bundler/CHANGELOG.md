@@ -1,5 +1,52 @@
 # Changelog
 
+## [15.0.0](https://github.com/netlify/build/compare/edge-bundler-v14.5.4...edge-bundler-v15.0.0) (2025-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167))
+
+### Features
+
+* add `headers` to edge functions manifest validation ([#6542](https://github.com/netlify/build/issues/6542)) ([f0004f3](https://github.com/netlify/build/commit/f0004f329ba2e82e14462b29b9267383fecb058b))
+* allow `tar` format in edge functions manifest ([#6603](https://github.com/netlify/build/issues/6603)) ([dbac547](https://github.com/netlify/build/commit/dbac547fa28a20f5b664d1b33345c2648f66ea22))
+* emit system log on import assertions ([#6590](https://github.com/netlify/build/issues/6590)) ([1cd7909](https://github.com/netlify/build/commit/1cd790940e316ac2bf16ec5bf60620022a55272f))
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+* generate edge function tarballs ([#6568](https://github.com/netlify/build/issues/6568)) ([a5e2746](https://github.com/netlify/build/commit/a5e27466736430e9f997d5bc42d2105d478c618f))
+* match edge functions on headers ([#6501](https://github.com/netlify/build/issues/6501)) ([23d5dce](https://github.com/netlify/build/commit/23d5dce31d85b4618dc496c53577fd43fb64d317))
+* support package.json.exports field for npm dependencies used within Netlify Edge Functions ([#6167](https://github.com/netlify/build/issues/6167)) ([aab5b2d](https://github.com/netlify/build/commit/aab5b2da187f5eff5198ab61b72bc8e818a45e97))
+* update deno version range to include v2 ([#6118](https://github.com/netlify/build/issues/6118)) ([297177f](https://github.com/netlify/build/commit/297177f56ac64c27ac3393f12d1129ce73d8177c))
+
+
+### Bug Fixes
+
+* **deps:** remove 2 unused deps and 20 unused dev deps ([#6097](https://github.com/netlify/build/issues/6097)) ([99ec56a](https://github.com/netlify/build/commit/99ec56a5bdc8f57d27dfe0f2739381961b382a87))
+* **deps:** update dependency @import-maps/resolve to v2 ([#6365](https://github.com/netlify/build/issues/6365)) ([5c0da95](https://github.com/netlify/build/commit/5c0da95c3a3d1aa84214da347c7e51f2ce4764e8))
+* **deps:** update dependency archiver to v7 ([#6273](https://github.com/netlify/build/issues/6273)) ([a14b9d5](https://github.com/netlify/build/commit/a14b9d5334f82bcea3b2504c43ff371015b3164d))
+* **deps:** update dependency esbuild to v0.25.3 ([#6216](https://github.com/netlify/build/issues/6216)) ([ddd27b7](https://github.com/netlify/build/commit/ddd27b7f895acb8874efcc78d507048fb8bf2fbf))
+* **deps:** update dependency esbuild to v0.25.4 ([#6282](https://github.com/netlify/build/issues/6282)) ([6099258](https://github.com/netlify/build/commit/6099258ec3d085a7e1e33042d435edf5880c8fdb))
+* **deps:** update dependency esbuild to v0.25.5 ([#6431](https://github.com/netlify/build/issues/6431)) ([d87fcb5](https://github.com/netlify/build/commit/d87fcb5faa2b1d21b8d72dc33bf6f8934c921042))
+* **deps:** update dependency esbuild to v0.25.6 ([#6531](https://github.com/netlify/build/issues/6531)) ([c4dfe7c](https://github.com/netlify/build/commit/c4dfe7c754cfd761e35025cad01820add4bc42c9))
+* **deps:** update dependency esbuild to v0.25.9 ([#6631](https://github.com/netlify/build/issues/6631)) ([b26f7b6](https://github.com/netlify/build/commit/b26f7b6c1474f6c5e79849d6c9e22ef16615db10))
+* **deps:** update dependency find-up to v7 ([#6341](https://github.com/netlify/build/issues/6341)) ([49aca1a](https://github.com/netlify/build/commit/49aca1a6917aba7d7bed963a8c7f313d5dd39838))
+* **deps:** update dependency get-port to v7 ([#6329](https://github.com/netlify/build/issues/6329)) ([2f1e255](https://github.com/netlify/build/commit/2f1e255db68a2d1fa0435759b203bfbe3b51f4a2))
+* **deps:** update dependency p-retry to v6 ([#6321](https://github.com/netlify/build/issues/6321)) ([a0ba9d6](https://github.com/netlify/build/commit/a0ba9d68b3d2d4caaa2652fbccb4265b51fa6126))
+* **deps:** update dependency p-wait-for to v5 ([#5970](https://github.com/netlify/build/issues/5970)) ([58635be](https://github.com/netlify/build/commit/58635bee5bcf2074d770f9836faa419e22eb2569))
+* **deps:** update dependency uuid to v11 ([#6309](https://github.com/netlify/build/issues/6309)) ([d6471d0](https://github.com/netlify/build/commit/d6471d0a05a9d3b49b8b5a0ee500279d72ab3c92))
+* **deps:** upgrade execa to v8 ([#6301](https://github.com/netlify/build/issues/6301)) ([1f93c17](https://github.com/netlify/build/commit/1f93c179b7f48c5141456f1645156cd6b3909e3b))
+* **edge-bundler:** only parse a file once for it's npm specifiers ([#6196](https://github.com/netlify/build/issues/6196)) ([bbe9313](https://github.com/netlify/build/commit/bbe93132d12b11afd98dfca25b8339004d99a2b2))
+* fix generation of EF tar file ([#6616](https://github.com/netlify/build/issues/6616)) ([bdfec9a](https://github.com/netlify/build/commit/bdfec9a8c223bc58598b3482e91468f863b93b72))
+* remove node-fetch from edge-bundler package ([#6381](https://github.com/netlify/build/issues/6381)) ([354f1b1](https://github.com/netlify/build/commit/354f1b1ff104299214eb5d2a010f5430ca2581df))
+* rename edge functions manifest property ([#6544](https://github.com/netlify/build/issues/6544)) ([0a9271d](https://github.com/netlify/build/commit/0a9271d517476f3426cac8e79403bb0d87dda49d))
+* stop adding start/end chars to header patterns ([#6547](https://github.com/netlify/build/issues/6547)) ([de51c14](https://github.com/netlify/build/commit/de51c14c8b4ff120c47ab873ebe034c81609bb0c))
+* swap from read-package-up to read-pkg-up ([#6189](https://github.com/netlify/build/issues/6189)) ([b6fa012](https://github.com/netlify/build/commit/b6fa0125695cd2b240690039610dc39f4bcc48e4))
+* upgrade @types/node to v18 ([#6400](https://github.com/netlify/build/issues/6400)) ([efcc052](https://github.com/netlify/build/commit/efcc052daf4eeb57392e76f1e971422158ec5fab))
+* use correct type when validating EF header regex ([#6602](https://github.com/netlify/build/issues/6602)) ([e503dc9](https://github.com/netlify/build/commit/e503dc9dde319dd3bab17fbb63f51c63b7beb856))
+* use gzip compression for the tarball generation ([#6618](https://github.com/netlify/build/issues/6618)) ([c1afdd9](https://github.com/netlify/build/commit/c1afdd9e3b46124fc06687d3c4670710b65ac6a1))
+* use stable edge functions bootstrap package for globalThis.Netlify ([#6609](https://github.com/netlify/build/issues/6609)) ([78582a2](https://github.com/netlify/build/commit/78582a22db98c3c26307c816ff8ff70ca2d3e6a2))
+
 ## [14.5.4](https://github.com/netlify/build/compare/edge-bundler-v14.5.3...edge-bundler-v14.5.4) (2025-09-02)
 
 

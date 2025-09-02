@@ -1,5 +1,30 @@
 # Changelog
 
+## [7.0.0](https://github.com/netlify/build/compare/functions-utils-v6.2.6...functions-utils-v7.0.0) (2025-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223))
+
+### Features
+
+* add `srcDir` to output of `listFunctions` ([#6539](https://github.com/netlify/build/issues/6539)) ([a699f35](https://github.com/netlify/build/commit/a699f355ebcfd3f918eda8bb59a51b663450dca5))
+* add `srcPath` property to output of `listFunctions` ([#6561](https://github.com/netlify/build/issues/6561)) ([b3c2d11](https://github.com/netlify/build/commit/b3c2d11e8113dc446ebc9175feb9b76bb8a07f8c))
+* end of support for v14 and v16 ([#6223](https://github.com/netlify/build/issues/6223)) ([9917ef4](https://github.com/netlify/build/commit/9917ef4eb0bd47162e33aa432be7c9fa3fa462c4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency cpy to v11 ([#6324](https://github.com/netlify/build/issues/6324)) ([9b106e6](https://github.com/netlify/build/commit/9b106e60ca50250c61c3f1a052c37902f0371e88))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.1.6 to 15.0.0
+
 ## [6.2.6](https://github.com/netlify/build/compare/functions-utils-v6.2.5...functions-utils-v6.2.6) (2025-09-02)
 
 
