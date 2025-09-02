@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.5.4](https://github.com/netlify/build/compare/edge-bundler-v14.5.3...edge-bundler-v14.5.4) (2025-09-02)
+
+
+### Bug Fixes
+
+* use stable edge functions bootstrap package for globalThis.Netlify ([#6609](https://github.com/netlify/build/issues/6609)) ([78582a2](https://github.com/netlify/build/commit/78582a22db98c3c26307c816ff8ff70ca2d3e6a2))
+
 ## [14.5.3](https://github.com/netlify/build/compare/edge-bundler-v14.5.2...edge-bundler-v14.5.3) (2025-08-27)
 
 
