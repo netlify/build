@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.5](https://github.com/netlify/build/compare/build-v35.1.4...build-v35.1.5) (2025-09-04)
+
+
+### Bug Fixes
+
+* resolve site dependency version from packagePath if defined ([#6650](https://github.com/netlify/build/issues/6650)) ([5fde543](https://github.com/netlify/build/commit/5fde5439c44b35f8b9a3c0c896f1b7d00bcf7e56))
+
 ## [35.1.4](https://github.com/netlify/build/compare/build-v35.1.3...build-v35.1.4) (2025-09-02)
 
 
