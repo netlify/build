@@ -83,10 +83,7 @@ const siteDependencyTest = async function ({
 
   try {
     // if this is a range we need to get the exact version
-    const packageJsonPath = await resolvePath(
-      `${dependencyName}/package.json`,
-      packagePath ? join(buildDir, packagePath) : buildDir,
-    )
+    const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, join(buildDir, packagePath ?? ''))
     const { version } = await importJsonFile(packageJsonPath)
     if (!version) {
       return false
