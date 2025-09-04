@@ -19,11 +19,9 @@ const runWithApiMockAndGetNormalizedOutput = async function (
     status,
   })
   try {
-    const fixture = new Fixture(`./fixtures/${fixtureName}`)
-    const output = await fixture
+    const output = await new Fixture(`./fixtures/${fixtureName}`)
       .withFlags({
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
-        // cwd: fixture.repositoryRoot,
         ...flags,
       })
       .runWithBuild()
