@@ -1,11 +1,10 @@
-import { readFile } from 'fs/promises'
+import { readFile, access } from 'fs/promises'
 import { join, resolve } from 'path'
 import { platform } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
 import glob from 'fast-glob'
-import { pathExists } from 'path-exists'
 import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
@@ -15,6 +14,7 @@ import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
 import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
 import { testMany } from './helpers/test_many.js'
+import { PathLike } from 'fs'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
 
@@ -672,6 +672,15 @@ describe('V2 functions API', () => {
       resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post1.md'),
       resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post2.md'),
     ])
+
+    const pathExists = async (path: PathLike) => {
+      try {
+        await access(path)
+        return true
+      } catch {
+        return false
+      }
+    }
 
     for (const path of includedFiles as string[]) {
       expect(await pathExists(path)).toBeTruthy()
