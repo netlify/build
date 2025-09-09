@@ -35,7 +35,7 @@ test('Produces an ESZIP bundle', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(3)
+  expect(result.functions?.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -74,7 +74,7 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -182,7 +182,7 @@ test('Uses the cache directory as the `DENO_DIR` value', async () => {
   const result = await bundle([sourceDirectory], distPath, declarations, options)
   const outFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(outFiles.length).toBe(2)
 
   const denoDir = await readdir(join(cacheDir.path, 'deno_dir'))
@@ -207,7 +207,7 @@ test('Supports import maps with relative paths', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -293,7 +293,7 @@ test('Processes a function that imports a custom layer', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -325,7 +325,7 @@ test('Loads declarations and import maps from the deploy configuration and in-so
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(3)
+  expect(result.functions?.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -391,7 +391,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
   )
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(2)
+  expect(result.functions?.length).toBe(2)
   expect(generatedFiles.length).toBe(2)
   expect(systemLogger).toHaveBeenCalledWith(`Did not find an import map file at '${nonExistingImportMapPath}'.`)
 
@@ -408,7 +408,7 @@ test('Handles imports with the `node:` prefix', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -444,7 +444,7 @@ test('Handles Node builtin imports without the `node:` prefix', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions?.length).toBe(1)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -706,7 +706,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   })
   const generatedFiles = await readdir(distPath)
 
-  expect(result.functions.length).toBe(3)
+  expect(result.functions?.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')

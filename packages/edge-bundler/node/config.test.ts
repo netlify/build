@@ -240,7 +240,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   })
   const generatedFiles = await fs.readdir(distPath)
 
-  expect(result.functions.length).toBe(11)
+  expect(result.functions?.length).toBe(11)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
