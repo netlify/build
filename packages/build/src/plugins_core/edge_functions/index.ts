@@ -116,6 +116,10 @@ const coreStep = async function ({
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
+
+    // There were no functions to bundle, can exit this step early
+    if (!manifest) return {}
+
     const metrics = getMetrics(manifest)
 
     systemLog('Edge Functions manifest:', manifest)

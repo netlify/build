@@ -106,6 +106,10 @@ export const bundle = async (
   const userFunctions = userSourceDirectories.length === 0 ? [] : await findFunctions(userSourceDirectories)
   const internalFunctions = internalSrcFolder ? await findFunctions(internalSrcFolders) : []
   const functions = [...internalFunctions, ...userFunctions]
+
+  // Early exit when there are no functions to bundle
+  if (functions.length === 0) return {}
+
   const vendor = await safelyVendorNPMSpecifiers({
     basePath,
     featureFlags,
