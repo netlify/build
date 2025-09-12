@@ -72,7 +72,24 @@ const coreStep = async function ({
 
   const sourcePaths = [...generatedFunctionPaths, srcPath].filter(Boolean) as string[]
 
-  logFunctions({ frameworksAPISrcPath, internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
+  const [userFunctionsSrcExists, userFunctions, internalFunctions, frameworkFunctions] = await Promise.all([
+    srcPath ? pathExists(srcPath) : Promise.resolve(false),
+    srcPath ? find([srcPath]) : Promise.resolve([]),
+    find([internalSrcPath]),
+    frameworksAPISrcPath ? find([frameworksAPISrcPath]) : Promise.resolve([]),
+  ])
+
+  logFunctionsToBundle({
+    logs,
+    userFunctions: userFunctions.map(({ name }) => name),
+    userFunctionsSrc: srcDirectory,
+    userFunctionsSrcExists,
+    internalFunctions: internalFunctions.map(({ name }) => name),
+    internalFunctionsSrc: internalSrcDirectory,
+    frameworkFunctions: frameworkFunctions.map(({ name }) => name),
+    type: 'Edge Functions',
+    generatedFunctions: {},
+  })
 
   // If we're running in buildbot, we set the Deno cache dir to a directory
   // that is persisted between builds.
@@ -84,6 +101,10 @@ const coreStep = async function ({
     await fs.rm(distPath, { recursive: true })
   } catch {
     // no-op
+  }
+
+  if (userFunctions.length === 0 && internalFunctions.length === 0 && frameworkFunctions.length === 0) {
+    return {}
   }
 
   let vendorDirectory: string | undefined
@@ -173,41 +194,6 @@ const hasEdgeFunctionsDirectories = async function ({
   const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
 
   return await pathExists(frameworkFunctionsSrc)
-}
-
-const logFunctions = async ({
-  frameworksAPISrcPath,
-  internalSrcDirectory,
-  internalSrcPath,
-  logs,
-  srcDirectory: userFunctionsSrc,
-  srcPath,
-}: {
-  frameworksAPISrcPath?: string
-  internalSrcDirectory: string
-  internalSrcPath: string
-  logs: any
-  srcDirectory?: string
-  srcPath?: string
-}): Promise<void> => {
-  const [userFunctionsSrcExists, userFunctions, internalFunctions, frameworkFunctions] = await Promise.all([
-    srcPath ? pathExists(srcPath) : Promise.resolve(false),
-    srcPath ? find([srcPath]) : Promise.resolve([]),
-    find([internalSrcPath]),
-    frameworksAPISrcPath ? find([frameworksAPISrcPath]) : Promise.resolve([]),
-  ])
-
-  logFunctionsToBundle({
-    logs,
-    userFunctions: userFunctions.map(({ name }) => name),
-    userFunctionsSrc,
-    userFunctionsSrcExists,
-    internalFunctions: internalFunctions.map(({ name }) => name),
-    internalFunctionsSrc: internalSrcDirectory,
-    frameworkFunctions: frameworkFunctions.map(({ name }) => name),
-    type: 'Edge Functions',
-    generatedFunctions: {},
-  })
 }
 
 export const bundleEdgeFunctions = {
