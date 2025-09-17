@@ -289,3 +289,31 @@ test.serial(
     ])
   },
 )
+
+test('skip bundling when edge function directories exist, contain no functions', async (t) => {
+  await new Fixture('./fixtures/functions_empty_directory').runWithBuild()
+
+  const manifestPath = join(
+    FIXTURES_DIR,
+    'functions_empty_directory',
+    '.netlify',
+    'edge-functions-dist',
+    'manifest.json',
+  )
+
+  t.false(await pathExists(manifestPath))
+})
+
+test('skip bundling when edge function directories exist, contain no functions, contain empty manifest', async (t) => {
+  await new Fixture('./fixtures/functions_empty_manifest').runWithBuild()
+
+  const manifestPath = join(
+    FIXTURES_DIR,
+    'functions_empty_manifest',
+    '.netlify',
+    'edge-functions-dist',
+    'manifest.json',
+  )
+
+  t.false(await pathExists(manifestPath))
+})
