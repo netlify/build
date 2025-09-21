@@ -26,7 +26,7 @@ describe('Nuxt (modern config)', () => {
     const project = new Project(fs, cwd)
     const detected = await project.detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].name).toBe('Nuxt 3')
+    expect(detected?.[0].name).toBe('Nuxt')
     expect(detected?.[0].build.command).toBe('nuxt build')
     expect(detected?.[0].build?.directory).toBe('dist')
     expect(detected?.[0].dev?.command).toBe('nuxt dev')

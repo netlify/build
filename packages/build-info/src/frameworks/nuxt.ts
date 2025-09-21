@@ -7,14 +7,14 @@ export class Nuxt extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'nuxt',
+    command: 'nuxt dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
     clearPublishDirectory: true,
   }
 
   build = {
-    command: 'nuxt generate',
+    command: 'nuxt build',
     directory: 'dist',
   }
 
@@ -28,14 +28,10 @@ export class Nuxt extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      // Override with modern config for major version >= 3 or nuxt3 package
-      if (
-        this.detected.package?.name === 'nuxt3' ||
-        (this.detected.package?.version?.major !== undefined && this.detected.package.version.major >= 3)
-      ) {
-        this.name = 'Nuxt 3'
-        this.build.command = 'nuxt build'
-        this.dev.command = 'nuxt dev'
+      // Override with legacy config only for major version < 3
+      if (this.detected.package?.version?.major !== undefined && this.detected.package.version.major < 3) {
+        this.build.command = 'nuxt generate'
+        this.dev.command = 'nuxt'
       }
       return this as DetectedFramework
     }
