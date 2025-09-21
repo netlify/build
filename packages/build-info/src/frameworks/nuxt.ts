@@ -28,15 +28,8 @@ export class Nuxt extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      // Only use modern config for nuxt3 package or nuxt/nuxt-edge with explicit version >= 3
-      // Default to legacy for nuxt/nuxt-edge without version info
-      if (
-        this.detected.package?.name === 'nuxt3' ||
-        (this.detected.package?.version?.major !== undefined && this.detected.package.version.major >= 3)
-      ) {
-        // Modern Nuxt 3+ config is already set as default
-      } else {
-        // Legacy Nuxt < 3 config for nuxt/nuxt-edge without version or with version < 3
+      // Override with legacy config only for major version < 3
+      if (this.detected.package?.version?.major !== undefined && this.detected.package.version.major < 3) {
         this.name = 'Nuxt'
         this.build.command = 'nuxt generate'
         this.dev.command = 'nuxt'
