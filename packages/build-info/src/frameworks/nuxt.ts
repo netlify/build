@@ -2,19 +2,19 @@ import { BaseFramework, Category, DetectedFramework, Framework } from './framewo
 
 export class Nuxt extends BaseFramework implements Framework {
   readonly id = 'nuxt'
-  name = 'Nuxt'
+  name = 'Nuxt 3'
   npmDependencies = ['nuxt', 'nuxt-edge', 'nuxt3']
   category = Category.SSG
 
   dev = {
-    command: 'nuxt',
+    command: 'nuxt dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
     clearPublishDirectory: true,
   }
 
   build = {
-    command: 'nuxt generate',
+    command: 'nuxt build',
     directory: 'dist',
   }
 
@@ -28,15 +28,19 @@ export class Nuxt extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      // Use Nuxt 3+ config as default, only apply legacy config for versions < 3
-      if (this.detected.package?.name === 'nuxt3' || (this.detected.package?.version?.major !== undefined && this.detected.package.version.major >= 3)) {
-        // Nuxt 3+ config (including v4 and future versions)
-        this.name = 'Nuxt 3'
-        this.build.command = `nuxt build`
-        this.build.directory = `dist`
-        this.dev.command = `nuxt dev`
+      // Only use modern config for nuxt3 package or nuxt/nuxt-edge with explicit version >= 3
+      // Default to legacy for nuxt/nuxt-edge without version info
+      if (
+        this.detected.package?.name === 'nuxt3' ||
+        (this.detected.package?.version?.major !== undefined && this.detected.package.version.major >= 3)
+      ) {
+        // Modern Nuxt 3+ config is already set as default
+      } else {
+        // Legacy Nuxt < 3 config for nuxt/nuxt-edge without version or with version < 3
+        this.name = 'Nuxt'
+        this.build.command = 'nuxt generate'
+        this.dev.command = 'nuxt'
       }
-      // Legacy Nuxt < 3 config uses the default config already set in the class
       return this as DetectedFramework
     }
   }
