@@ -78,15 +78,7 @@ const getLocalEntryPoint = (
       }
       `
   })
-  const bootCall = `
-// Check if boot function expects new API (v2.15.0+) by checking parameter count
-if (boot.length === 1) {
-  // New API: boot expects single parameter (functions loader function)
-  boot(() => Promise.resolve(functions));
-} else {
-  // Old API: boot expects two parameters (functions object, metadata)
-  boot(functions, metadata);
-}`
+  const bootCall = `boot(() => Promise.resolve(functions));`
 
   return [bootImport, declaration, ...imports, bootCall].join('\n\n')
 }
