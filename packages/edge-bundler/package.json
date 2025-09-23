@@ -42,7 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@netlify/edge-functions-bootstrap": "^2.14.0",
+    "@netlify/edge-functions-bootstrap": "^2.17.1",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
