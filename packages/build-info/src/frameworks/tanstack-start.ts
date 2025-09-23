@@ -41,7 +41,6 @@ export class TanStackStart extends BaseFramework implements Framework {
       }
 
       // TanStack Start changed build directory from 'dist' to 'dist/client' in v1.132.0
-      // XXX(serhalp) This is a made-up placeholder version! Replace when released.
       if (this.version && lt(this.version, '1.132.0')) {
         this.build.directory = 'dist'
       }
