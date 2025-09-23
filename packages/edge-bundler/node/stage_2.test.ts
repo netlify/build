@@ -69,4 +69,3 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
 
   await rm(tmpDir, { force: true, recursive: true })
 })
-
