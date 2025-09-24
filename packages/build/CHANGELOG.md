@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.8](https://github.com/netlify/build/compare/build-v35.1.7...build-v35.1.8) (2025-09-24)
+
+
+### Bug Fixes
+
+* handle empty cases in edge bundling ([#6659](https://github.com/netlify/build/issues/6659)) ([d78700c](https://github.com/netlify/build/commit/d78700cba71659d6fef09aa80d5b5a9d0e4cc6ad))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.5 to 14.5.6
+
 ## [35.1.7](https://github.com/netlify/build/compare/build-v35.1.6...build-v35.1.7) (2025-09-24)
 
 
