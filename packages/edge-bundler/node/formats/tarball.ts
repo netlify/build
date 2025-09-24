@@ -87,6 +87,7 @@ export const bundle = async ({
       importMap.withNodeBuiltins().toDataURL(),
       '--quiet',
       '--code-splitting',
+      '--allow-import',
       '--outdir',
       bundleDir.path,
       ...functions.map((func) => func.path),
