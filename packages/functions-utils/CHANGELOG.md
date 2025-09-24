@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.2.8](https://github.com/netlify/build/compare/functions-utils-v6.2.7...functions-utils-v6.2.8) (2025-09-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.1.7 to 14.1.8
+
 ## [6.2.7](https://github.com/netlify/build/compare/functions-utils-v6.2.6...functions-utils-v6.2.7) (2025-09-05)
 
 
