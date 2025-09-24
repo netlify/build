@@ -12,13 +12,13 @@ jobs:
   Nudge-to-convert-to-TypeScript-if-JavaScript-found:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: 🔎 Get changed JavaScript files
         id: changed-javascript-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           base_sha: ${{ github.event.pull_request.base.sha }}
           files: |

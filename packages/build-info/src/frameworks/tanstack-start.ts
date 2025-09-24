@@ -21,7 +21,7 @@ export class TanStackStart extends BaseFramework implements Framework {
 
   build = {
     command: 'vite build',
-    directory: 'dist',
+    directory: 'dist/client',
   }
 
   logo = {
@@ -39,6 +39,12 @@ export class TanStackStart extends BaseFramework implements Framework {
         this.dev.command = 'vinxi dev'
         this.build.command = 'vinxi build'
       }
+
+      // TanStack Start changed build directory from 'dist' to 'dist/client' in v1.132.0
+      if (this.version && lt(this.version, '1.132.0')) {
+        this.build.directory = 'dist'
+      }
+
       return this as DetectedFramework
     }
   }
