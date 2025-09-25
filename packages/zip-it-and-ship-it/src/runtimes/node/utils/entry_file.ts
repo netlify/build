@@ -60,6 +60,7 @@ const getEntryFileContents = (
     return [
       `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
       `import * as func from '${importPath}'`,
+      'try { const dotenv = await import("dotenv"); dotenv.config() } catch {}',
 
       // See https://esbuild.github.io/content-types/#default-interop.
       'const funcModule = typeof func.default === "function" ? func : func.default',
