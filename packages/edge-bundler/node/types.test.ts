@@ -30,7 +30,7 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   expect(latestVersionMock.isDone()).toBe(true)
   expect(mock).toHaveBeenCalledTimes(1)
-  expect(mock).toHaveBeenCalledWith(['cache', '-r', mockURL])
+  expect(mock).toHaveBeenCalledWith(['cache', '--no-lock', '-r', mockURL])
   expect(versionFile).toBe(mockVersion)
 
   mock.mockRestore()
