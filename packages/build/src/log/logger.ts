@@ -33,16 +33,16 @@ const EMPTY_LINE = '\u{200B}'
  */
 export const getBufferLogs = (config: {
   buffer?: boolean
-  logs?: { logFunction?: (message: string) => void }
+  logger?: (message: string) => void
 }): Logs | undefined => {
-  const { buffer = false, logs } = config
+  const { buffer = false, logger } = config
+
+  if (logger) {
+    return { logFunction: logger }
+  }
 
   if (buffer) {
     return { stdout: [], stderr: [] }
-  }
-
-  if (logs?.logFunction) {
-    return { logFunction: logs.logFunction }
   }
 }
 
