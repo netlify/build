@@ -3,7 +3,7 @@ import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
-import { getSystemLogger } from '../log/logger.js'
+import { getLogsOutput, getSystemLogger } from '../log/logger.js'
 import type { Logs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { getGeneratedFunctions } from '../steps/return_values.js'
@@ -123,7 +123,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         success,
         severityCode,
         netlifyConfig: netlifyConfigA,
-        logs,
+        logs: getLogsOutput(logs),
         configMutations,
         generatedFunctions: getGeneratedFunctions(returnValues),
       }

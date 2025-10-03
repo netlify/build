@@ -31,10 +31,7 @@ const EMPTY_LINE = '\u{200B}'
  * When the `buffer` option is true, we return logs instead of printing them
  * on the console. The logs are accumulated in a `logs` array variable.
  */
-export const getBufferLogs = (config: {
-  buffer?: boolean
-  logger?: (message: string) => void
-}): Logs | undefined => {
+export const getBufferLogs = (config: { buffer?: boolean; logger?: (message: string) => void }): Logs | undefined => {
   const { buffer = false, logger } = config
 
   if (logger) {
@@ -77,6 +74,17 @@ export const log = function (
   }
 
   console.log(stringC)
+}
+
+// Returns a `logs` object to be returned in the public interface,
+// always containing a `stderr` and `stdout` arrays, regardless of
+// whether the `buffer` input property was used.
+export const getLogsOutput = (logs: Logs | undefined): BufferedLogs | undefined => {
+  if (!logs || logsAreBuffered(logs)) {
+    return logs
+  }
+
+  return { stdout: [], stderr: [] }
 }
 
 const serializeIndentedArray = function (array) {

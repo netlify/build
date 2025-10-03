@@ -64,11 +64,17 @@ test('Accepts a custom log function', async (t) => {
   const logger = (message) => {
     logs.push(message)
   }
-  await new Fixture('./fixtures/verbose')
-    .withFlags({ logger, verbose: true })
-    .runBuildProgrammatic()
+  const result = await new Fixture('./fixtures/verbose').withFlags({ logger, verbose: true }).runBuildProgrammatic()
 
+  t.deepEqual(result.logs.stdout, [])
+  t.deepEqual(result.logs.stderr, [])
   t.true(logs.length > 0, 'logger should have been called with messages')
-  t.true(logs.some(log => log.includes('Netlify Build')), 'logs should contain build header')
-  t.true(logs.some(log => log.includes('onPreBuild')), 'logs should contain plugin event')
+  t.true(
+    logs.some((log) => log.includes('Netlify Build')),
+    'logs should contain build header',
+  )
+  t.true(
+    logs.some((log) => log.includes('onPreBuild')),
+    'logs should contain plugin event',
+  )
 })
