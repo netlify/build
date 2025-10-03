@@ -37,15 +37,13 @@ export const getBufferLogs = (config: {
 }): Logs | undefined => {
   const { buffer = false, logs } = config
 
+  if (buffer) {
+    return { stdout: [], stderr: [] }
+  }
+
   if (logs?.logFunction) {
     return { logFunction: logs.logFunction }
   }
-
-  if (!buffer) {
-    return
-  }
-
-  return { stdout: [], stderr: [] }
 }
 
 // Core logging utility, used by the other methods.
