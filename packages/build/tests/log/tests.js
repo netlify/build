@@ -58,3 +58,13 @@ test('Does not truncate long redirects in logs', async (t) => {
   const output = await new Fixture('./fixtures/truncate_redirects').runWithBuild()
   t.false(output.includes('999'))
 })
+
+test('Accepts a custom log function', async (t) => {
+  const logs = []
+  const logFunction = (message) => {
+    logs.push(message)
+  }
+  await new Fixture('./fixtures/verbose').withFlags({ logs: { logFunction }, verbose: true }).runBuildProgrammatic()
+
+  t.snapshot(normalizeOutput(logs.join('')))
+})

@@ -12,7 +12,7 @@ import { THEME } from './theme.js'
 
 export type Logs = BufferedLogs | StreamedLogs
 export type BufferedLogs = { stdout: string[]; stderr: string[]; outputFlusher?: OutputFlusher }
-export type StreamedLogs = { outputFlusher?: OutputFlusher }
+export type StreamedLogs = { outputFlusher?: OutputFlusher; logFunction?: (message: string) => void }
 
 export const logsAreBuffered = (logs: Logs | undefined): logs is BufferedLogs => {
   return logs !== undefined && 'stdout' in logs
@@ -31,8 +31,16 @@ const EMPTY_LINE = '\u{200B}'
  * When the `buffer` option is true, we return logs instead of printing them
  * on the console. The logs are accumulated in a `logs` array variable.
  */
-export const getBufferLogs = (config: { buffer?: boolean }): BufferedLogs | undefined => {
-  const { buffer = false } = config
+export const getBufferLogs = (config: {
+  buffer?: boolean
+  logs?: { logFunction?: (message: string) => void }
+}): Logs | undefined => {
+  const { buffer = false, logs } = config
+
+  if (logs?.logFunction) {
+    return { logFunction: logs.logFunction }
+  }
+
   if (!buffer) {
     return
   }
@@ -64,6 +72,12 @@ export const log = function (
     return
   }
 
+  if (typeof logs?.logFunction === 'function') {
+    logs.logFunction(stringC)
+
+    return
+  }
+
   console.log(stringC)
 }
 
@@ -75,61 +89,61 @@ const serializeIndentedItem = function (item) {
   return indentString(item, INDENT_SIZE + 1).trimStart()
 }
 
-export const logError = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logError = function (logs: Logs | undefined, string: string, opts = {}) {
   log(logs, string, { color: THEME.errorLine, ...opts })
 }
 
-export const logWarning = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logWarning = function (logs: Logs | undefined, string: string, opts = {}) {
   log(logs, string, { color: THEME.warningLine, ...opts })
 }
 
 // Print a message that is under a header/subheader, i.e. indented
-export const logMessage = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logMessage = function (logs: Logs | undefined, string: string, opts = {}) {
   log(logs, string, { indent: true, ...opts })
 }
 
 // Print an object
-export const logObject = function (logs: BufferedLogs | undefined, object, opts) {
+export const logObject = function (logs: Logs | undefined, object, opts) {
   logMessage(logs, serializeObject(object), opts)
 }
 
 // Print an array
-export const logArray = function (logs: BufferedLogs | undefined, array, opts = {}) {
+export const logArray = function (logs: Logs | undefined, array, opts = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.none, ...opts })
 }
 
 // Print an array of errors
-export const logErrorArray = function (logs: BufferedLogs | undefined, array, opts = {}) {
+export const logErrorArray = function (logs: Logs | undefined, array, opts = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.errorLine, ...opts })
 }
 
 // Print an array of warnings
-export const logWarningArray = function (logs: BufferedLogs | undefined, array, opts = {}) {
+export const logWarningArray = function (logs: Logs | undefined, array, opts = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.warningLine, ...opts })
 }
 
 // Print a main section header
-export const logHeader = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logHeader = function (logs: Logs | undefined, string: string, opts = {}) {
   log(logs, `\n${getHeader(string)}`, { color: THEME.header, ...opts })
 }
 
 // Print a main section header, when an error happened
-export const logErrorHeader = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logErrorHeader = function (logs: Logs | undefined, string: string, opts = {}) {
   logHeader(logs, string, { color: THEME.errorHeader, ...opts })
 }
 
 // Print a sub-section header
-export const logSubHeader = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
   log(logs, `\n${figures.pointer} ${string}`, { color: THEME.subHeader, ...opts })
 }
 
 // Print a sub-section header, when an error happened
-export const logErrorSubHeader = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logErrorSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
   logSubHeader(logs, string, { color: THEME.errorSubHeader, ...opts })
 }
 
 // Print a sub-section header, when a warning happened
-export const logWarningSubHeader = function (logs: BufferedLogs | undefined, string: string, opts = {}) {
+export const logWarningSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
   logSubHeader(logs, string, { color: THEME.warningSubHeader, ...opts })
 }
 
@@ -162,7 +176,7 @@ export const reduceLogLines = function (lines) {
  * the user-facing build logs)
  */
 export const getSystemLogger = function (
-  logs: BufferedLogs | undefined,
+  logs: Logs | undefined,
   debug: boolean,
   /** A system log file descriptor, if non is provided it will be a noop logger */
   systemLogFile?: number,
