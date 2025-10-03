@@ -6,13 +6,13 @@ import { serializeLogError } from '../../error/parse/serialize_log.js'
 import { roundTimerToMillisecs } from '../../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
-import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, BufferedLogs } from '../logger.js'
+import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, Logs } from '../logger.js'
 import { OutputFlusher } from '../output_flusher.js'
 import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
 
-export const logBuildStart = function (logs?: BufferedLogs) {
+export const logBuildStart = function (logs?: Logs) {
   logHeader(logs, 'Netlify Build')
   logSubHeader(logs, 'Version')
   logMessage(logs, `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`)

@@ -3,8 +3,8 @@ import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
-import { getSystemLogger } from '../log/logger.js'
-import type { BufferedLogs } from '../log/logger.js'
+import { getLogsOutput, getSystemLogger } from '../log/logger.js'
+import type { Logs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { getGeneratedFunctions } from '../steps/return_values.js'
 import { trackBuildComplete } from '../telemetry/main.js'
@@ -27,7 +27,7 @@ const tracer = trace.getTracer('core')
 export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   success: boolean
   severityCode: number
-  logs: BufferedLogs | undefined
+  logs: Logs | undefined
   netlifyConfig?: any
   configMutations?: any
 }> {
@@ -123,7 +123,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         success,
         severityCode,
         netlifyConfig: netlifyConfigA,
-        logs,
+        logs: getLogsOutput(logs),
         configMutations,
         generatedFunctions: getGeneratedFunctions(returnValues),
       }

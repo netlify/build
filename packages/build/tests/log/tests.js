@@ -58,3 +58,23 @@ test('Does not truncate long redirects in logs', async (t) => {
   const output = await new Fixture('./fixtures/truncate_redirects').runWithBuild()
   t.false(output.includes('999'))
 })
+
+test('Accepts a custom log function', async (t) => {
+  const logs = []
+  const logger = (message) => {
+    logs.push(message)
+  }
+  const result = await new Fixture('./fixtures/verbose').withFlags({ logger, verbose: true }).runBuildProgrammatic()
+
+  t.deepEqual(result.logs.stdout, [])
+  t.deepEqual(result.logs.stderr, [])
+  t.true(logs.length > 0, 'logger should have been called with messages')
+  t.true(
+    logs.some((log) => log.includes('Netlify Build')),
+    'logs should contain build header',
+  )
+  t.true(
+    logs.some((log) => log.includes('onPreBuild')),
+    'logs should contain plugin event',
+  )
+})
