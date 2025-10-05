@@ -1,29 +1,5 @@
 import crypto from 'node:crypto'
-import { createReadStream, promises as fs } from 'node:fs'
-import path from 'node:path'
-
-export const getDirectoryHash = async (dirPath: string): Promise<string> => {
-  const entries: string[] = []
-
-  async function walk(currentPath: string): Promise<void> {
-    const dirents = await fs.readdir(currentPath, { withFileTypes: true })
-    for (const dirent of dirents) {
-      const fullPath = path.join(currentPath, dirent.name)
-      const relativePath = path.relative(dirPath, fullPath)
-
-      if (dirent.isDirectory()) {
-        await walk(fullPath)
-      } else if (dirent.isFile() || dirent.isSymbolicLink()) {
-        const fileHash = await getFileHash(fullPath)
-        entries.push(`${relativePath}:${fileHash}`)
-      }
-    }
-  }
-
-  await walk(dirPath)
-
-  return getStringHash(entries.sort((a, b) => a.localeCompare(b)).join('\n'))
-}
+import { createReadStream } from 'node:fs'
 
 export const getFileHash = (path: string): Promise<string> => {
   const hash = crypto.createHash('sha256')

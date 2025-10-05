@@ -8,8 +8,7 @@ import cpy from 'cpy'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
-const runWithApiMock = async function (
-  t,
+const runWithApiMockAndGetNormalizedOutput = async function (
   fixtureName,
   { testPlugin, response = getPluginsList(testPlugin), ...flags } = {},
   status = 200,
@@ -26,10 +25,19 @@ const runWithApiMock = async function (
         ...flags,
       })
       .runWithBuild()
-    await t.snapshot(normalizeOutput(output))
+    return normalizeOutput(output)
   } finally {
     await stopServer()
   }
+}
+
+const runWithApiMock = async function (
+  t,
+  fixtureName,
+  { testPlugin, response = getPluginsList(testPlugin), ...flags } = {},
+  status = 200,
+) {
+  await t.snapshot(await runWithApiMockAndGetNormalizedOutput(fixtureName, { testPlugin, response, ...flags }, status))
 }
 
 // We use a specific plugin in tests. We hardcode its version to keep the tests
@@ -288,6 +296,66 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
     },
   })
 })
+
+test.serial(
+  'Plugins can specify matching compatibility.siteDependencies range in monorepo with hoisted node_modules',
+  async (t) => {
+    await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range_monorepo_hoisted/apps/web/.netlify`)
+    const normalizedOutput = await runWithApiMockAndGetNormalizedOutput(
+      'plugins_compat_site_dependencies_range_monorepo_hoisted',
+      {
+        testPlugin: {
+          compatibility: [
+            { version: '0.3.0' },
+            {
+              version: '0.2.0',
+              siteDependencies: {
+                // this is satisfied, so this version should be selected
+                '@netlify/dependency-with-range': '<10',
+              },
+            },
+          ],
+        },
+        packagePath: 'apps/web',
+      },
+    )
+    t.true(
+      normalizedOutput.includes(
+        'netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)',
+      ),
+    )
+  },
+)
+
+test.serial(
+  'Plugins can specify matching compatibility.siteDependencies range in monorepo without hoisted node_modules',
+  async (t) => {
+    await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range_monorepo_not_hoisted/apps/web/.netlify`)
+    const normalizedOutput = await runWithApiMockAndGetNormalizedOutput(
+      'plugins_compat_site_dependencies_range_monorepo_not_hoisted',
+      {
+        testPlugin: {
+          compatibility: [
+            { version: '0.3.0' },
+            {
+              version: '0.2.0',
+              siteDependencies: {
+                // this is satisfied, so this version should be selected
+                '@netlify/dependency-with-range': '<10',
+              },
+            },
+          ],
+        },
+        packagePath: 'apps/web',
+      },
+    )
+    t.true(
+      normalizedOutput.includes(
+        'netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)',
+      ),
+    )
+  },
+)
 
 test.serial('Plugin versions can be feature flagged', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)

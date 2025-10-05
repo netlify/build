@@ -1,5 +1,62 @@
 # Changelog
 
+## [14.5.6](https://github.com/netlify/build/compare/edge-bundler-v14.5.5...edge-bundler-v14.5.6) (2025-09-24)
+
+
+### Bug Fixes
+
+* add missing --allow-import flag to deno run command in bundle function ([#6684](https://github.com/netlify/build/issues/6684)) ([8f0799b](https://github.com/netlify/build/commit/8f0799b97377689fba6567b98d2b31f6c08cffa8))
+* **edge-bundler:** update bootstrap API call for v2.15.0+ compatibility ([#6682](https://github.com/netlify/build/issues/6682)) ([165067e](https://github.com/netlify/build/commit/165067e265c790916e25f2b34c6f2eec688956dd))
+
+## [14.5.5](https://github.com/netlify/build/compare/edge-bundler-v14.5.4...edge-bundler-v14.5.5) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.10 ([#6674](https://github.com/netlify/build/issues/6674)) ([45cb6eb](https://github.com/netlify/build/commit/45cb6eb8050f99727d6c8963a88e240cf566635c))
+
+## [14.5.4](https://github.com/netlify/build/compare/edge-bundler-v14.5.3...edge-bundler-v14.5.4) (2025-09-02)
+
+
+### Bug Fixes
+
+* use stable edge functions bootstrap package for globalThis.Netlify ([#6609](https://github.com/netlify/build/issues/6609)) ([78582a2](https://github.com/netlify/build/commit/78582a22db98c3c26307c816ff8ff70ca2d3e6a2))
+
+## [14.5.3](https://github.com/netlify/build/compare/edge-bundler-v14.5.2...edge-bundler-v14.5.3) (2025-08-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.9 ([#6631](https://github.com/netlify/build/issues/6631)) ([b26f7b6](https://github.com/netlify/build/commit/b26f7b6c1474f6c5e79849d6c9e22ef16615db10))
+
+## [14.5.2](https://github.com/netlify/build/compare/edge-bundler-v14.5.1...edge-bundler-v14.5.2) (2025-08-12)
+
+
+### Bug Fixes
+
+* use gzip compression for the tarball generation ([#6618](https://github.com/netlify/build/issues/6618)) ([c1afdd9](https://github.com/netlify/build/commit/c1afdd9e3b46124fc06687d3c4670710b65ac6a1))
+
+## [14.5.1](https://github.com/netlify/build/compare/edge-bundler-v14.5.0...edge-bundler-v14.5.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* fix generation of EF tar file ([#6616](https://github.com/netlify/build/issues/6616)) ([bdfec9a](https://github.com/netlify/build/commit/bdfec9a8c223bc58598b3482e91468f863b93b72))
+
+## [14.5.0](https://github.com/netlify/build/compare/edge-bundler-v14.4.1...edge-bundler-v14.5.0) (2025-08-06)
+
+
+### Features
+
+* allow `tar` format in edge functions manifest ([#6603](https://github.com/netlify/build/issues/6603)) ([dbac547](https://github.com/netlify/build/commit/dbac547fa28a20f5b664d1b33345c2648f66ea22))
+
+## [14.4.1](https://github.com/netlify/build/compare/edge-bundler-v14.4.0...edge-bundler-v14.4.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* use correct type when validating EF header regex ([#6602](https://github.com/netlify/build/issues/6602)) ([e503dc9](https://github.com/netlify/build/commit/e503dc9dde319dd3bab17fbb63f51c63b7beb856))
+
 ## [14.4.0](https://github.com/netlify/build/compare/edge-bundler-v14.3.0...edge-bundler-v14.4.0) (2025-07-31)
 
 

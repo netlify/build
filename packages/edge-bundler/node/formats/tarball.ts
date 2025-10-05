@@ -9,10 +9,11 @@ import { DenoBridge } from '../bridge.js'
 import { Bundle, BundleFormat } from '../bundle.js'
 import { EdgeFunction } from '../edge_function.js'
 import { FeatureFlags } from '../feature_flags.js'
+import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
-import { getDirectoryHash, getStringHash } from '../utils/sha256.js'
+import { getFileHash } from '../utils/sha256.js'
 
-const TARBALL_EXTENSION = '.tar'
+const TARBALL_EXTENSION = '.tar.gz'
 
 interface Manifest {
   functions: Record<string, string>
@@ -42,8 +43,8 @@ export const bundle = async ({
   importMap,
   vendorDirectory,
 }: BundleTarballOptions): Promise<Bundle> => {
-  const sideFilesDir = await tmp.dir({ unsafeCleanup: true })
-  const cleanup = [sideFilesDir.cleanup]
+  const bundleDir = await tmp.dir({ unsafeCleanup: true })
+  const cleanup = [bundleDir.cleanup]
 
   let denoDir = vendorDirectory ? path.join(vendorDirectory, 'deno_dir') : undefined
 
@@ -86,8 +87,9 @@ export const bundle = async ({
       importMap.withNodeBuiltins().toDataURL(),
       '--quiet',
       '--code-splitting',
+      '--allow-import',
       '--outdir',
-      distDirectory,
+      bundleDir.path,
       ...functions.map((func) => func.path),
     ],
     {
@@ -95,63 +97,46 @@ export const bundle = async ({
     },
   )
 
-  const manifestPath = path.join(sideFilesDir.path, 'manifest.json')
+  const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
   await fs.writeFile(manifestPath, manifestContents)
 
-  const denoConfigPath = path.join(sideFilesDir.path, 'deno.json')
+  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
   const denoConfigContents = JSON.stringify(importMap.getContentsWithRelativePaths())
   await fs.writeFile(denoConfigPath, denoConfigContents)
 
-  const rootLevel = await fs.readdir(distDirectory)
-  const hash = await getDirectoryHash(distDirectory)
   const tarballPath = path.join(distDirectory, buildID + TARBALL_EXTENSION)
-
   await fs.mkdir(path.dirname(tarballPath), { recursive: true })
 
-  // Adding all the bundled files.
+  // List files to include in the tarball as paths relative to the bundle dir.
+  // Using absolute paths here leads to platform-specific quirks (notably on Windows),
+  // where entries can include drive letters and break extraction/imports.
+  const files = (await listRecursively(bundleDir.path))
+    .map((p) => path.relative(bundleDir.path, p))
+    .map((p) => getUnixPath(p))
+    .sort()
+
   await tar.create(
     {
-      cwd: distDirectory,
+      cwd: bundleDir.path,
       file: tarballPath,
+      gzip: true,
+      noDirRecurse: true,
+      // Ensure forward slashes inside the tarball for cross-platform consistency.
       onWriteEntry(entry) {
-        entry.path = getUnixPath(`./${entry.path}`)
+        entry.path = getUnixPath(entry.path)
       },
     },
-    rootLevel,
+    files,
   )
 
-  // Adding `deno.json`.
-  await tar.update(
-    {
-      cwd: distDirectory,
-      file: tarballPath,
-      onWriteEntry(entry) {
-        entry.path = './deno.json'
-      },
-    },
-    [denoConfigPath],
-  )
+  const hash = await getFileHash(tarballPath)
 
-  // Adding the manifest file.
-  await tar.update(
-    {
-      cwd: distDirectory,
-      file: tarballPath,
-      onWriteEntry(entry) {
-        entry.path = './___netlify-edge-functions.json'
-      },
-    },
-    [manifestPath],
-  )
-
-  await Promise.all(cleanup)
-
-  const finalHash = [hash, getStringHash(manifestContents), getStringHash(denoConfigContents)].join('')
+  await Promise.allSettled(cleanup)
 
   return {
     extension: TARBALL_EXTENSION,
     format: BundleFormat.TARBALL,
-    hash: finalHash,
+    hash,
   }
 }

@@ -1,0 +1,12 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['github>netlify/renovate-config:esm'],
+  automerge: true,
+  dependencyDashboard: true,
+  ignorePresets: [':prHourlyLimit2'],
+  ignorePaths: ['**/fixtures/**', '**/fixtures-esm/**', '**/node_modules/**'],
+  semanticCommits: 'enabled',
+  constraints: {
+    npm: '^10.0.0',
+  },
+}

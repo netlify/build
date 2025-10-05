@@ -13,14 +13,18 @@ jobs:
   benchmark:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
           check-latest: true
+
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
 
       - name: Install dependencies
         run: npm ci

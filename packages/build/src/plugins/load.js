@@ -1,4 +1,4 @@
-import { promisify } from 'util'
+import { setTimeout } from 'timers/promises'
 
 import { addErrorInfo } from '../error/info.js'
 import { addPluginLoadErrorStatus } from '../status/load_error.js'
@@ -6,8 +6,6 @@ import { measureDuration } from '../time/main.js'
 
 import { callChild } from './ipc.js'
 import { captureStandardError } from './system_log.js'
-
-const pSetTimeout = promisify(setTimeout)
 
 // Retrieve all plugins steps
 // Can use either a module name or a file path to the plugin.
@@ -112,7 +110,7 @@ const loadPlugin = async function (
   } catch (error) {
     if (featureFlags.netlify_build_plugin_system_log) {
       // Wait for stderr to be flushed.
-      await pSetTimeout(0)
+      await setTimeout(0)
     }
 
     addErrorInfo(error, {

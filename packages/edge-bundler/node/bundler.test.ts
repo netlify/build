@@ -5,6 +5,7 @@ import process from 'process'
 import { pathToFileURL } from 'url'
 
 import { gte, lt } from 'semver'
+import * as tar from 'tar'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
@@ -732,7 +733,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe.skipIf(lt(denoVersion, '2.4.2'))(
+describe.skipIf(lt(denoVersion, '2.4.3'))(
   'Produces a tarball bundle',
   () => {
     test('With only local imports', async () => {
@@ -770,6 +771,17 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toStrictEqual(['___netlify-edge-functions.json', 'deno.json', 'func1.js'])
+
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
       expect(eszipResult).toStrictEqual(expectedOutput)
@@ -778,8 +790,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
-    // TODO: https://github.com/denoland/deno/issues/30187
-    test.todo('Using npm modules', async () => {
+    test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
       const sourceDirectory = join(basePath, 'functions')

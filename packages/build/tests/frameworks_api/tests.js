@@ -151,3 +151,56 @@ test('Removes any leftover files from a previous build', async (t) => {
     remote_images: ['domain1.from-toml.netlify', 'domain2.from-toml.netlify'],
   })
 })
+
+test('Throws an error if the skew protection configuration file is invalid', async (t) => {
+  const { output, success } = await new Fixture('./fixtures/skew_protection_invalid').runWithBuildAndIntrospect()
+  t.false(success)
+  t.true(output.includes('Invalid skew protection configuration'))
+  t.true(
+    output.includes(
+      `sources.0.type: Invalid enum value. Expected 'cookie' | 'header' | 'query', received 'invalid_type'`,
+    ),
+  )
+})
+
+test('Throws an error if the skew protection configuration file is malformed', async (t) => {
+  const { output, success } = await new Fixture('./fixtures/skew_protection_malformed').runWithBuildAndIntrospect()
+  t.false(success)
+  t.true(output.includes('Invalid skew protection configuration'))
+})
+
+test('Does not create dist file when skew protection file is missing', async (t) => {
+  const fixture = new Fixture('./fixtures/skew_protection_missing')
+  const { success } = await fixture.runWithBuildAndIntrospect()
+  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/deploy-config.json')
+  t.true(success)
+
+  try {
+    await fs.access(distPath)
+    t.fail('Dist file should not exist when skew protection file is missing')
+  } catch (error) {
+    t.is(error.code, 'ENOENT')
+  }
+})
+
+test('Creates dist file when valid skew protection configuration is provided', async (t) => {
+  const fixture = new Fixture('./fixtures/skew_protection_valid')
+  const { success } = await fixture.runWithBuildAndIntrospect()
+  const distPath = resolve(fixture.repositoryRoot, '.netlify/deploy-config/deploy-config.json')
+
+  t.true(success)
+
+  const distContent = await fs.readFile(distPath, 'utf8')
+  const config = JSON.parse(distContent)
+
+  t.deepEqual(config, {
+    skew_protection: {
+      patterns: ['/api/*', '/dashboard/*'],
+      sources: [
+        { type: 'cookie', name: 'nf_deploy_id' },
+        { type: 'header', name: 'x-nf-deploy-id' },
+        { type: 'query', name: 'deploy_id' },
+      ],
+    },
+  })
+})

@@ -25,12 +25,8 @@ const getPartRegExp = function (part: string): string {
 
   // Non-standalone catch-all wildcard like `/segment/hello*world/test`
   if (part.includes('*')) {
-    // @todo use `part.replaceAll('*', ...)` after dropping support for
-    // Node <15.0.0
-    return part.replace(CATCH_ALL_CHAR_REGEXP, '(.*)')
+    return part.replaceAll('*', '(.*)')
   }
 
   return escapeStringRegExp(part)
 }
-
-const CATCH_ALL_CHAR_REGEXP = /\*/g

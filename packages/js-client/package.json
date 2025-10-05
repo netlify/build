@@ -1,7 +1,7 @@
 {
   "name": "@netlify/api",
   "description": "Netlify Node.js API client",
-  "version": "14.0.3",
+  "version": "14.0.6",
   "type": "module",
   "exports": "./lib/index.js",
   "main": "./lib/index.js",
@@ -41,14 +41,12 @@
     "node client"
   ],
   "dependencies": {
-    "@netlify/open-api": "^2.37.0",
-    "lodash-es": "^4.17.21",
+    "@netlify/open-api": "^2.39.0",
     "node-fetch": "^3.0.0",
     "picoquery": "^2.5.0",
     "p-wait-for": "^5.0.0"
   },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.19.111",
     "from2-string": "^1.1.0",
     "nock": "^13.0.0",

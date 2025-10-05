@@ -105,6 +105,194 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.9](https://github.com/netlify/build/compare/build-v35.1.8...build-v35.1.9) (2025-10-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency hot-shots to v11.2.0 ([#6690](https://github.com/netlify/build/issues/6690)) ([ef2dc4a](https://github.com/netlify/build/commit/ef2dc4ae3520332ad07d32adcac68e907e4b003f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.4 to ^24.0.5
+
+## [35.1.8](https://github.com/netlify/build/compare/build-v35.1.7...build-v35.1.8) (2025-09-24)
+
+
+### Bug Fixes
+
+* handle empty cases in edge bundling ([#6659](https://github.com/netlify/build/issues/6659)) ([d78700c](https://github.com/netlify/build/commit/d78700cba71659d6fef09aa80d5b5a9d0e4cc6ad))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.5 to 14.5.6
+
+## [35.1.7](https://github.com/netlify/build/compare/build-v35.1.6...build-v35.1.7) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.11 ([#6681](https://github.com/netlify/build/issues/6681)) ([aef9f7d](https://github.com/netlify/build/commit/aef9f7de3b2f8790e53aac4f912329b54314fbf3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.3 to ^24.0.4
+    * @netlify/edge-bundler bumped from 14.5.4 to 14.5.5
+    * @netlify/functions-utils bumped from ^6.2.7 to ^6.2.8
+    * @netlify/zip-it-and-ship-it bumped from 14.1.7 to 14.1.8
+
+## [35.1.6](https://github.com/netlify/build/compare/build-v35.1.5...build-v35.1.6) (2025-09-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.6 to ^6.2.7
+    * @netlify/zip-it-and-ship-it bumped from 14.1.6 to 14.1.7
+
+## [35.1.5](https://github.com/netlify/build/compare/build-v35.1.4...build-v35.1.5) (2025-09-04)
+
+
+### Bug Fixes
+
+* resolve site dependency version from packagePath if defined ([#6650](https://github.com/netlify/build/issues/6650)) ([5fde543](https://github.com/netlify/build/commit/5fde5439c44b35f8b9a3c0c896f1b7d00bcf7e56))
+
+## [35.1.4](https://github.com/netlify/build/compare/build-v35.1.3...build-v35.1.4) (2025-09-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.10 ([#6636](https://github.com/netlify/build/issues/6636)) ([8ce8653](https://github.com/netlify/build/commit/8ce86538b4a829df3f18ff23c502cbfb1e7ba0ea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.3 to 14.5.4
+    * @netlify/functions-utils bumped from ^6.2.5 to ^6.2.6
+    * @netlify/zip-it-and-ship-it bumped from 14.1.5 to 14.1.6
+
+## [35.1.3](https://github.com/netlify/build/compare/build-v35.1.2...build-v35.1.3) (2025-08-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.2 to 14.5.3
+    * @netlify/functions-utils bumped from ^6.2.4 to ^6.2.5
+    * @netlify/zip-it-and-ship-it bumped from 14.1.4 to 14.1.5
+
+## [35.1.2](https://github.com/netlify/build/compare/build-v35.1.1...build-v35.1.2) (2025-08-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.3 to ^6.2.4
+    * @netlify/zip-it-and-ship-it bumped from 14.1.3 to 14.1.4
+
+## [35.1.1](https://github.com/netlify/build/compare/build-v35.1.0...build-v35.1.1) (2025-08-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.2 to ^6.2.3
+    * @netlify/zip-it-and-ship-it bumped from 14.1.2 to 14.1.3
+
+## [35.1.0](https://github.com/netlify/build/compare/build-v35.0.7...build-v35.1.0) (2025-08-14)
+
+
+### Features
+
+* add skew protection to Frameworks API ([#6601](https://github.com/netlify/build/issues/6601)) ([6cf3065](https://github.com/netlify/build/commit/6cf306535d8083797a140ecaa05b0778c33e1052))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.2 to ^24.0.3
+
+## [35.0.7](https://github.com/netlify/build/compare/build-v35.0.6...build-v35.0.7) (2025-08-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.1 to 14.5.2
+
+## [35.0.6](https://github.com/netlify/build/compare/build-v35.0.5...build-v35.0.6) (2025-08-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.8 ([#6584](https://github.com/netlify/build/issues/6584)) ([1e7332a](https://github.com/netlify/build/commit/1e7332ad332f8b35e5ce48cbfda389e22658b618))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.0 to 14.5.1
+
+## [35.0.5](https://github.com/netlify/build/compare/build-v35.0.4...build-v35.0.5) (2025-08-08)
+
+
+### Bug Fixes
+
+* remove code supporting versions of Node &lt; v15 ([#6599](https://github.com/netlify/build/issues/6599)) ([d9f55d3](https://github.com/netlify/build/commit/d9f55d35fbf4c1f37f2a6632a43566fb6d295ca1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.3 to ^6.0.4
+    * @netlify/config bumped from ^24.0.1 to ^24.0.2
+    * @netlify/functions-utils bumped from ^6.2.1 to ^6.2.2
+    * @netlify/zip-it-and-ship-it bumped from 14.1.1 to 14.1.2
+
+## [35.0.4](https://github.com/netlify/build/compare/build-v35.0.3...build-v35.0.4) (2025-08-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.4.1 to 14.5.0
+
+## [35.0.3](https://github.com/netlify/build/compare/build-v35.0.2...build-v35.0.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* drop map-obj ([#6577](https://github.com/netlify/build/issues/6577)) ([7c44533](https://github.com/netlify/build/commit/7c44533ae078336cc722093859e47f8ef5cb7795))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.4.0 to 14.4.1
+    * @netlify/functions-utils bumped from ^6.2.0 to ^6.2.1
+    * @netlify/zip-it-and-ship-it bumped from 14.1.0 to 14.1.1
+
 ## [35.0.2](https://github.com/netlify/build/compare/build-v35.0.1...build-v35.0.2) (2025-07-31)
 
 
