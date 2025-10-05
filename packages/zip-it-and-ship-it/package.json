@@ -44,7 +44,7 @@
     "@babel/parser": "^7.22.5",
     "@babel/types": "7.28.4",
     "@netlify/binary-info": "^1.0.0",
-    "@netlify/serverless-functions-api": "^2.5.0",
+    "@netlify/serverless-functions-api": "^2.6.0",
     "@vercel/nft": "0.29.4",
     "archiver": "^7.0.0",
     "common-path-prefix": "^3.0.0",

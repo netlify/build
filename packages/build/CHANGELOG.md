@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.9](https://github.com/netlify/build/compare/build-v35.1.8...build-v35.1.9) (2025-10-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency hot-shots to v11.2.0 ([#6690](https://github.com/netlify/build/issues/6690)) ([ef2dc4a](https://github.com/netlify/build/commit/ef2dc4ae3520332ad07d32adcac68e907e4b003f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.4 to ^24.0.5
+
 ## [35.1.8](https://github.com/netlify/build/compare/build-v35.1.7...build-v35.1.8) (2025-09-24)
 
 
