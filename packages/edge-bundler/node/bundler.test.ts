@@ -733,7 +733,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe.skipIf(lt(denoVersion, '2.4.2'))(
+describe.skipIf(lt(denoVersion, '2.4.3'))(
   'Produces a tarball bundle',
   () => {
     test('With only local imports', async () => {
@@ -790,8 +790,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
-    // TODO: https://github.com/denoland/deno/issues/30187
-    test.todo('Using npm modules', async () => {
+    test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
       const sourceDirectory = join(basePath, 'functions')

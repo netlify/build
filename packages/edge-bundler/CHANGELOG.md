@@ -1,5 +1,20 @@
 # Changelog
 
+## [14.5.6](https://github.com/netlify/build/compare/edge-bundler-v14.5.5...edge-bundler-v14.5.6) (2025-09-24)
+
+
+### Bug Fixes
+
+* add missing --allow-import flag to deno run command in bundle function ([#6684](https://github.com/netlify/build/issues/6684)) ([8f0799b](https://github.com/netlify/build/commit/8f0799b97377689fba6567b98d2b31f6c08cffa8))
+* **edge-bundler:** update bootstrap API call for v2.15.0+ compatibility ([#6682](https://github.com/netlify/build/issues/6682)) ([165067e](https://github.com/netlify/build/commit/165067e265c790916e25f2b34c6f2eec688956dd))
+
+## [14.5.5](https://github.com/netlify/build/compare/edge-bundler-v14.5.4...edge-bundler-v14.5.5) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.10 ([#6674](https://github.com/netlify/build/issues/6674)) ([45cb6eb](https://github.com/netlify/build/commit/45cb6eb8050f99727d6c8963a88e240cf566635c))
+
 ## [14.5.4](https://github.com/netlify/build/compare/edge-bundler-v14.5.3...edge-bundler-v14.5.4) (2025-09-02)
 
 

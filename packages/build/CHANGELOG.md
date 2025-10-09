@@ -105,6 +105,51 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.1.9](https://github.com/netlify/build/compare/build-v35.1.8...build-v35.1.9) (2025-10-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency hot-shots to v11.2.0 ([#6690](https://github.com/netlify/build/issues/6690)) ([ef2dc4a](https://github.com/netlify/build/commit/ef2dc4ae3520332ad07d32adcac68e907e4b003f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.4 to ^24.0.5
+
+## [35.1.8](https://github.com/netlify/build/compare/build-v35.1.7...build-v35.1.8) (2025-09-24)
+
+
+### Bug Fixes
+
+* handle empty cases in edge bundling ([#6659](https://github.com/netlify/build/issues/6659)) ([d78700c](https://github.com/netlify/build/commit/d78700cba71659d6fef09aa80d5b5a9d0e4cc6ad))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.5 to 14.5.6
+
+## [35.1.7](https://github.com/netlify/build/compare/build-v35.1.6...build-v35.1.7) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.0.11 ([#6681](https://github.com/netlify/build/issues/6681)) ([aef9f7d](https://github.com/netlify/build/commit/aef9f7de3b2f8790e53aac4f912329b54314fbf3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.3 to ^24.0.4
+    * @netlify/edge-bundler bumped from 14.5.4 to 14.5.5
+    * @netlify/functions-utils bumped from ^6.2.7 to ^6.2.8
+    * @netlify/zip-it-and-ship-it bumped from 14.1.7 to 14.1.8
+
 ## [35.1.6](https://github.com/netlify/build/compare/build-v35.1.5...build-v35.1.6) (2025-09-05)
 
 
