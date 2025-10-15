@@ -76,15 +76,17 @@ export const log = function (
   console.log(stringC)
 }
 
+export type LogOutput = Pick<BufferedLogs, 'stderr' | 'stdout'>
+
 // Returns a `logs` object to be returned in the public interface,
 // always containing a `stderr` and `stdout` arrays, regardless of
 // whether the `buffer` input property was used.
-export const getLogsOutput = (logs: Logs | undefined): BufferedLogs | undefined => {
-  if (!logs || logsAreBuffered(logs)) {
-    return logs
+export const getLogsOutput = (logs: Logs | undefined): LogOutput => {
+  if (!logs || !logsAreBuffered(logs)) {
+    return { stdout: [], stderr: [] }
   }
 
-  return { stdout: [], stderr: [] }
+  return { stdout: logs.stdout, stderr: logs.stderr }
 }
 
 const serializeIndentedArray = function (array) {
