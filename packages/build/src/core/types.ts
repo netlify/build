@@ -44,6 +44,8 @@ export type BuildCLIFlags = {
 export type BuildFlags = BuildCLIFlags & {
   env?: Record<string, unknown>
   eventHandlers?: EventHandlers
+  /** Custom logger function to capture build output */
+  logger?: (message: string) => void
 }
 
 type EventHandlers = {

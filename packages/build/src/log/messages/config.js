@@ -59,9 +59,10 @@ const INTERNAL_FLAGS = [
   'enhancedSecretScan',
   'edgeFunctionsBootstrapURL',
   'eventHandlers',
+  'logger',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
-const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, 'eventHandlers']
+const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, 'eventHandlers', 'logger']
 
 export const logBuildDir = function (logs, buildDir) {
   logSubHeader(logs, 'Current directory')
