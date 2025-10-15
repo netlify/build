@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.9](https://github.com/netlify/build/compare/build-info-v10.0.8...build-info-v10.0.9) (2025-10-13)
+
+
+### Bug Fixes
+
+* don't set nuxt 2 legacy config for nuxt 4+ ([#6670](https://github.com/netlify/build/issues/6670)) ([4896f59](https://github.com/netlify/build/commit/4896f59a1ce486553a390413170878efe6e6ad7f))
+
 ## [10.0.8](https://github.com/netlify/build/compare/build-info-v10.0.7...build-info-v10.0.8) (2025-09-24)
 
 
