@@ -59,7 +59,7 @@ test('Does not truncate long redirects in logs', async (t) => {
   t.false(output.includes('999'))
 })
 
-test.only('Accepts a custom log function', async (t) => {
+test('Accepts a custom log function', async (t) => {
   const logs = []
   const logger = (message) => {
     logs.push(message)
