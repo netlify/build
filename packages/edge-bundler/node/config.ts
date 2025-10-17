@@ -97,7 +97,8 @@ export const getFunctionConfig = async ({
   const collector = await tmp.file()
 
   // Retrieving the version of Deno.
-  const version = new SemVer((await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)) || '')
+  const result = await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)
+  const version = new SemVer(result.version || '')
 
   // The extractor will use its exit code to signal different error scenarios,
   // based on the list of exit codes we send as an argument. We then capture
