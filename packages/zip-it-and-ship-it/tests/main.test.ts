@@ -3010,7 +3010,7 @@ test('Supports both files and directories and ignores files that are not functio
   await tmpDir.cleanup()
 })
 
-test.only('Supports functions inside the plugins modules path', async () => {
+test('Supports functions inside the plugins modules path', async () => {
   const tmpDir = await getTmpDir({
     // Cleanup the folder even if there are still files in them
     unsafeCleanup: true,
