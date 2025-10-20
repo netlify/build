@@ -1,4 +1,4 @@
-import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Nuxt extends BaseFramework implements Framework {
   readonly id = 'nuxt'
@@ -7,14 +7,14 @@ export class Nuxt extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'nuxt',
+    command: 'nuxt dev',
     port: 3000,
     pollingStrategies: [{ name: 'TCP' }],
     clearPublishDirectory: true,
   }
 
   build = {
-    command: 'nuxt generate',
+    command: 'nuxt build',
     directory: 'dist',
   }
 
@@ -28,18 +28,12 @@ export class Nuxt extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      if (this.isV3(this.detected)) {
-        this.name = 'Nuxt 3'
-
-        this.build.command = `nuxt build`
-        this.build.directory = `dist`
-        this.dev.command = `nuxt dev`
+      // Override with legacy config only for major version < 3
+      if (this.detected.package?.version?.major !== undefined && this.detected.package.version.major < 3) {
+        this.build.command = 'nuxt generate'
+        this.dev.command = 'nuxt'
       }
       return this as DetectedFramework
     }
-  }
-
-  isV3(detected: Detection) {
-    return detected.package?.name === 'nuxt3' || detected.package?.version?.major === 3
   }
 }

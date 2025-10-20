@@ -105,6 +105,31 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.2.0](https://github.com/netlify/build/compare/build-v35.1.10...build-v35.2.0) (2025-10-17)
+
+
+### Features
+
+* support custom logger ([#6698](https://github.com/netlify/build/issues/6698)) ([49f3730](https://github.com/netlify/build/commit/49f37300e669026dd8ab41fa70c95f7c0b41077c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.9 to ^6.2.10
+    * @netlify/zip-it-and-ship-it bumped from 14.1.9 to 14.1.10
+
+## [35.1.10](https://github.com/netlify/build/compare/build-v35.1.9...build-v35.1.10) (2025-10-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.8 to ^6.2.9
+    * @netlify/zip-it-and-ship-it bumped from 14.1.8 to 14.1.9
+
 ## [35.1.9](https://github.com/netlify/build/compare/build-v35.1.8...build-v35.1.9) (2025-10-01)
 
 

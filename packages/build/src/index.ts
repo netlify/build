@@ -1,6 +1,7 @@
 import { buildSite } from './core/main.js'
 export { NetlifyPluginConstants } from './core/constants.js'
 
+export type { LogOutput as Logs } from './log/logger.js'
 export type { GeneratedFunction } from './steps/return_values.js'
 // export the legacy types
 export type { NetlifyPlugin } from './types/netlify_plugin.js'
