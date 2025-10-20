@@ -103,8 +103,7 @@ test('Should overwrite dist file if it already exists', async () => {
 test('Should allow "fail" option to customize failures', async () => {
   const fail = vi.fn() as any
   await add(undefined, undefined, { fail })
-  expect(fail).toHaveBeenCalledOnce()
-  expect(fail).toHaveBeenCalledWith('No function source directory was specified')
+  expect(fail).toHaveBeenCalledExactlyOnceWith('No function source directory was specified')
 })
 
 const normalizeFiles = function (
