@@ -164,6 +164,7 @@ export const bundle = async (
       basePath,
       deno,
       eszipPath,
+      featureFlags,
       importMap,
       internalFunctions,
       log: logger,
@@ -210,6 +211,7 @@ interface GetFunctionConfigsOptions {
   basePath: string
   deno: DenoBridge
   eszipPath?: string
+  featureFlags?: FeatureFlags
   importMap: ImportMap
   internalFunctions: EdgeFunction[]
   log: Logger
@@ -220,6 +222,7 @@ const getFunctionConfigs = async ({
   basePath,
   deno,
   eszipPath,
+  featureFlags,
   importMap,
   log,
   internalFunctions,
@@ -242,7 +245,7 @@ const getFunctionConfigs = async ({
       userFunctions: userFunctionsWithConfig,
     }
   } catch (err) {
-    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath) {
+    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath || !featureFlags?.edge_bundler_deno_v2) {
       throw err
     }
 
