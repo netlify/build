@@ -17,9 +17,7 @@ const DENO_VERSION_FILE = 'version.txt'
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
-export const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
-
-const NEXT_DENO_VERSION_RANGE = '^2.4.2'
+export const DENO_VERSION_RANGE = '^2.4.2'
 
 export type OnBeforeDownloadHook = () => void | Promise<void>
 export type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -69,9 +67,7 @@ export class DenoBridge {
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
-    this.versionRange =
-      options.versionRange ??
-      (options.featureFlags?.edge_bundler_generate_tarball ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
+    this.versionRange = options.versionRange ?? DENO_VERSION_RANGE
   }
 
   private async downloadBinary() {
