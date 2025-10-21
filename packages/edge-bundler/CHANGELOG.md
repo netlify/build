@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.7.1](https://github.com/netlify/build/compare/edge-bundler-v14.7.0...edge-bundler-v14.7.1) (2025-10-21)
+
+
+### Bug Fixes
+
+* throw precise, actionable error when downloaded deno cli is unusable ([#6708](https://github.com/netlify/build/issues/6708)) ([27c4d71](https://github.com/netlify/build/commit/27c4d715c5d6af2b86eda549514ea3b6061daae7))
+
 ## [14.7.0](https://github.com/netlify/build/compare/edge-bundler-v14.6.0...edge-bundler-v14.7.0) (2025-10-21)
 
 
