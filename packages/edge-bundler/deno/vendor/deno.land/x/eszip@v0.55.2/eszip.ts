@@ -1,7 +1,18 @@
 // CLI utility to build/list/extract/run ESZIPs
 
 import { build, Parser } from "./mod.ts";
-import { dirname, join } from "https://deno.land/std@0.177.0/path/mod.ts";
+import { dirname, extname, join } from "https://deno.land/std@0.177.0/path/mod.ts";
+
+const extensions = new Set([
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".mts",
+  ".json",
+  ".wasm"
+]);
 
 function hasV2Header(bytes: Uint8Array) {
   const magicV2 = new TextDecoder().decode(bytes.slice(0, 8));
@@ -109,9 +120,13 @@ export async function loadESZIP(filename: string): Promise<ESZIP> {
 
 function url2path(urlString: string) {
   const url = new URL(urlString);
-  const tail = url.pathname.split("/").filter(Boolean);
-  const relativePath = tail.length === 0 ? [".root"] : tail;
-  return join(url.hostname, ...relativePath);
+  let path = join(url.hostname, ...url.pathname.split("/").filter(Boolean));
+
+  if (!extensions.has(extname(path))) {
+    path = join(path, ".index.ts");
+  }
+
+  return path;
 }
 
 async function write(path: string, content: string) {
