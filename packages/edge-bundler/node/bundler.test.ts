@@ -626,44 +626,37 @@ test('Loads JSON modules with `with` attribute', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
-// We can't run this on versions above 2.0.0 because the bundling will fail
-// entirely, and what we're asserting here is that we emit a system log when
-// import assertions are detected on successful builds. Also, running it on
-// earlier versions won't work either, since those won't even show a warning.
-test.skipIf(lt(denoVersion, '1.46.3') || gte(denoVersion, '2.0.0'))(
-  'Emits a system log when import assertions are used',
-  async () => {
-    const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
-    const sourceDirectory = join(basePath, 'functions')
-    const declarations: Declaration[] = [
-      {
-        function: 'func1',
-        path: '/func1',
-      },
-    ]
-    const vendorDirectory = await tmp.dir()
-    const systemLogger = vi.fn()
+test('Emits a system log when import assertions are used', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
+  const sourceDirectory = join(basePath, 'functions')
+  const vendorDirectory = await tmp.dir()
+  const systemLogger = vi.fn()
 
-    await bundle([sourceDirectory], distPath, declarations, {
-      basePath,
-      systemLogger,
-      vendorDirectory: vendorDirectory.path,
-    })
+  await bundle([sourceDirectory], distPath, [], {
+    basePath,
+    systemLogger,
+    vendorDirectory: vendorDirectory.path,
+  })
 
-    const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-    const manifest = JSON.parse(manifestFile)
-    const bundlePath = join(distPath, manifest.bundles[0].asset)
-    const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
-    expect(func1).toBe(`{"foo":"bar"}`)
-    expect(systemLogger).toHaveBeenCalledWith(
-      `Edge function uses import assertions: ${join(sourceDirectory, 'func1.ts')}`,
-    )
+  expect(func1).toBe(`{"foo":"bar"}`)
+  expect(systemLogger).toHaveBeenCalledWith(
+    `Edge function uses import assertions: ${join(sourceDirectory, 'func1.ts')}`,
+  )
+  expect(manifest.routes[0]).toEqual({
+    function: 'func1',
+    pattern: '^/with-import-assert/?$',
+    excluded_patterns: [],
+    path: '/with-import-assert',
+  })
 
-    await cleanup()
-    await rm(vendorDirectory.path, { force: true, recursive: true })
-  },
-)
+  await cleanup()
+  await rm(vendorDirectory.path, { force: true, recursive: true })
+})
 
 test('Supports TSX and process.env', async () => {
   const { basePath, cleanup, distPath } = await useFixture('tsx')

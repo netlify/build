@@ -1,0 +1,447 @@
+{
+  "version": "5",
+  "redirects": {
+    "https://ghuc.cc/worker-tools/html-rewriter/index.ts": "https://raw.githubusercontent.com/worker-tools/html-rewriter/master/index.ts",
+    "https://ghuc.cc/worker-tools/resolvable-promise/index.ts": "https://raw.githubusercontent.com/worker-tools/resolvable-promise/master/index.ts"
+  },
+  "remote": {
+    "https://deno.land/std@0.134.0/fmt/colors.ts": "30455035d6d728394781c10755351742dd731e3db6771b1843f9b9e490104d37",
+    "https://deno.land/std@0.134.0/testing/_diff.ts": "9d849cd6877694152e01775b2d93f9d6b7aef7e24bfe3bfafc4d7a1ac8e9f392",
+    "https://deno.land/std@0.134.0/testing/asserts.ts": "b0ef969032882b1f7eb1c7571e313214baa1485f7b61cf35807b2434e254365c",
+    "https://deno.land/std@0.194.0/encoding/base64.ts": "144ae6234c1fbe5b68666c711dc15b1e9ee2aef6d42b3b4345bf9a6c91d70d0d",
+    "https://edge.netlify.com/": "fd941d61d88673d5f28aab283fb86fcc50f08a3bc80ee5470498fcfa88c65cfb",
+    "https://edge.netlify.com/bootstrap/config.ts": "6a2ce0e544e15e8f8883a5c18da5948e37fd0f2619f68cb31f3af53c51817025",
+    "https://edge.netlify.com/bootstrap/context.ts": "72496497b40d9e808f419efc764ecb438952a32f61ed94cd54952fc59f17f69d",
+    "https://edge.netlify.com/bootstrap/cookie.ts": "8b0baae708989ca183c6f3b4ab3d029e6abcbc2e43f93edeb0ff447b3bbc3a05",
+    "https://edge.netlify.com/bootstrap/edge_function.ts": "b8253e86aa83c67341f5cfedeba5049d77fbf84dcab7eceff7566b7728ae9b39",
+    "https://edge.netlify.com/bootstrap/globals/types.ts": "eaa6148ded3121d8dee62dd91c86e7fe76601df0f3ca8d7962243a30f4c8935f",
+    "https://raw.githubusercontent.com/worker-tools/html-rewriter/master/index.ts": "4e287b8929fbe8dba02de604f9d01b07323c81d1c62fef4094ccd10452493b11",
+    "https://raw.githubusercontent.com/worker-tools/html-rewriter/master/vendor/asyncify.js": "a70e36d0143de2de2e813917d740259ee71bcf1df75ceeaac0c1bc0ef7cc9a29",
+    "https://raw.githubusercontent.com/worker-tools/html-rewriter/master/vendor/html_rewriter.js": "32338151908217b07edd036ec81374df79b5aefd3b4069f04220ec330332cc2c",
+    "https://raw.githubusercontent.com/worker-tools/resolvable-promise/master/index.ts": "67d11f839d8e831074668e29e22c582d0ec0bbfcbf49d639ed33d9baffefed36"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@commitlint/cli@19",
+        "npm:@commitlint/config-conventional@19",
+        "npm:@eslint/compat@^1.2.9",
+        "npm:@eslint/js@^9.28.0",
+        "npm:@typescript-eslint/eslint-plugin@^8.34.0",
+        "npm:@vitest/eslint-plugin@^1.2.1",
+        "npm:eslint-config-prettier@^10.1.5",
+        "npm:eslint-plugin-ava@^15.0.1",
+        "npm:eslint-plugin-import@^2.31.0",
+        "npm:eslint-plugin-n@^17.19.0",
+        "npm:eslint@^9.28.0",
+        "npm:execa@^8.0.1",
+        "npm:lerna@^8.2.2",
+        "npm:prettier@3",
+        "npm:typescript-eslint@^8.34.0"
+      ]
+    },
+    "members": {
+      "packages/build": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@bugsnag/js@8",
+            "npm:@netlify/blobs@^10.1.0",
+            "npm:@netlify/cache-utils@^6.0.4",
+            "npm:@netlify/config@^24.0.6",
+            "npm:@netlify/edge-bundler@14.5.6",
+            "npm:@netlify/functions-utils@^6.2.11",
+            "npm:@netlify/git-utils@^6.0.2",
+            "npm:@netlify/nock-udp@^5.0.1",
+            "npm:@netlify/opentelemetry-utils@^2.0.1",
+            "npm:@netlify/plugins-list@^6.80.0",
+            "npm:@netlify/run-utils@^6.0.2",
+            "npm:@netlify/zip-it-and-ship-it@14.1.11",
+            "npm:@opentelemetry/api@1.8",
+            "npm:@opentelemetry/sdk-trace-base@1.24",
+            "npm:@sindresorhus/slugify@2",
+            "npm:@types/node@^18.19.111",
+            "npm:ansi-escapes@7",
+            "npm:ansis@^4.1.0",
+            "npm:atob@^2.1.2",
+            "npm:ava@5",
+            "npm:c8@10",
+            "npm:clean-stack@5",
+            "npm:cpy-cli@5",
+            "npm:cpy@11",
+            "npm:execa@8",
+            "npm:fdir@^6.0.1",
+            "npm:figures@6",
+            "npm:filter-obj@6",
+            "npm:get-node@^14.2.1",
+            "npm:get-port@7",
+            "npm:has-ansi@6",
+            "npm:hot-shots@11.2.0",
+            "npm:indent-string@5",
+            "npm:is-plain-obj@4",
+            "npm:keep-func-props@6",
+            "npm:log-process-errors@11",
+            "npm:memoize-one@6",
+            "npm:minimatch@^9.0.4",
+            "npm:moize@6",
+            "npm:npm-run-all2@6",
+            "npm:os-name@6",
+            "npm:p-event@6",
+            "npm:p-filter@4",
+            "npm:p-locate@6",
+            "npm:p-map@7",
+            "npm:p-reduce@3",
+            "npm:package-directory@8",
+            "npm:path-exists@5",
+            "npm:pretty-ms@9",
+            "npm:process-exists@5",
+            "npm:ps-list@8",
+            "npm:read-package-up@11",
+            "npm:readdirp@4",
+            "npm:resolve@^2.0.0-next.5",
+            "npm:rfdc@^1.3.0",
+            "npm:safe-json-stringify@^1.2.0",
+            "npm:semver@^7.3.8",
+            "npm:string-width@7",
+            "npm:supports-color@10",
+            "npm:terminal-link@4",
+            "npm:tinyspy@^4.0.3",
+            "npm:tmp-promise@^3.0.2",
+            "npm:ts-node@^10.9.1",
+            "npm:tsd@0.33",
+            "npm:typescript@5",
+            "npm:uuid@11",
+            "npm:vitest@3",
+            "npm:yaml@^2.8.0",
+            "npm:yargs@^17.6.0",
+            "npm:yarn@^1.22.22",
+            "npm:zod@^3.25.76"
+          ]
+        }
+      },
+      "packages/build-info": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@bugsnag/js@8",
+            "npm:@iarna/toml@^2.2.5",
+            "npm:@playwright/test@^1.53.1",
+            "npm:@types/node@^18.19.111",
+            "npm:@types/semver@^7.3.13",
+            "npm:@vitest/ui@3",
+            "npm:dot-prop@9",
+            "npm:execa@8",
+            "npm:find-up@7",
+            "npm:memfs@4",
+            "npm:minimatch@9",
+            "npm:read-pkg@9",
+            "npm:semver@^7.3.8",
+            "npm:typescript@5",
+            "npm:unionfs@^4.4.0",
+            "npm:vitest@3",
+            "npm:yaml@^2.8.0",
+            "npm:yargs@^17.6.0"
+          ]
+        }
+      },
+      "packages/cache-utils": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@types/node@^18.19.111",
+            "npm:cpy@11",
+            "npm:get-stream@9",
+            "npm:globby@14",
+            "npm:junk@4",
+            "npm:locate-path@7",
+            "npm:move-file@3",
+            "npm:readdirp@4",
+            "npm:tmp-promise@3",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/config": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@iarna/toml@^2.2.5",
+            "npm:@netlify/api@^14.0.7",
+            "npm:@netlify/headers-parser@^9.0.2",
+            "npm:@netlify/redirect-parser@^15.0.3",
+            "npm:@types/node@^18.19.111",
+            "npm:ava@5",
+            "npm:c8@10",
+            "npm:chalk@5",
+            "npm:cron-parser@^4.1.0",
+            "npm:deepmerge@^4.2.2",
+            "npm:dot-prop@9",
+            "npm:execa@8",
+            "npm:fast-safe-stringify@^2.0.7",
+            "npm:figures@6",
+            "npm:filter-obj@6",
+            "npm:find-up@7",
+            "npm:has-ansi@6",
+            "npm:indent-string@5",
+            "npm:is-ci@4",
+            "npm:is-plain-obj@4",
+            "npm:map-obj@5",
+            "npm:omit.js@^2.0.2",
+            "npm:p-locate@6",
+            "npm:path-type@6",
+            "npm:read-package-up@11",
+            "npm:tmp-promise@^3.0.2",
+            "npm:tomlify-j0.4@3",
+            "npm:typescript@5",
+            "npm:validate-npm-package-name@5",
+            "npm:yaml@^2.8.0",
+            "npm:yargs@^17.6.0",
+            "npm:zod@^4.0.5"
+          ]
+        }
+      },
+      "packages/edge-bundler": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@import-maps/resolve@2",
+            "npm:@netlify/edge-functions-bootstrap@^2.17.1",
+            "npm:@types/node@^18.19.111",
+            "npm:@types/semver@^7.3.9",
+            "npm:@types/uuid@10",
+            "npm:@vitest/coverage-v8@3",
+            "npm:ajv-errors@3",
+            "npm:ajv@^8.11.2",
+            "npm:archiver@7",
+            "npm:better-ajv-errors@^1.2.0",
+            "npm:chalk@^5.4.0",
+            "npm:common-path-prefix@3",
+            "npm:cpy@^11.1.0",
+            "npm:env-paths@3",
+            "npm:esbuild@0.25.10",
+            "npm:execa@8",
+            "npm:find-up@7",
+            "npm:get-port@7",
+            "npm:nock@14",
+            "npm:node-stream-zip@^1.15.0",
+            "npm:npm-run-all2@6",
+            "npm:p-retry@6",
+            "npm:p-wait-for@5",
+            "npm:parse-imports@^2.2.1",
+            "npm:path-key@4",
+            "npm:semver@^7.3.8",
+            "npm:tar@^7.4.3",
+            "npm:tmp-promise@^3.0.3",
+            "npm:typescript@5",
+            "npm:urlpattern-polyfill@8.0.2",
+            "npm:uuid@11",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/functions-utils": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@netlify/zip-it-and-ship-it@14.1.11",
+            "npm:@types/node@^18.19.111",
+            "npm:cpy@11",
+            "npm:path-exists@5",
+            "npm:sort-on@6",
+            "npm:tmp-promise@3",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/git-utils": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@types/node@^18.19.111",
+            "npm:execa@8",
+            "npm:map-obj@5",
+            "npm:micromatch@^4.0.2",
+            "npm:moize@^6.1.3",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/headers-parser": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@iarna/toml@^2.2.5",
+            "npm:@types/node@^18.19.111",
+            "npm:escape-string-regexp@5",
+            "npm:fast-safe-stringify@^2.0.7",
+            "npm:is-plain-obj@4",
+            "npm:map-obj@5",
+            "npm:path-exists@5",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/js-client": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@netlify/open-api@^2.40.0",
+            "npm:@types/node@^18.19.111",
+            "npm:from2-string@^1.1.0",
+            "npm:nock@13",
+            "npm:node-fetch@3",
+            "npm:p-wait-for@5",
+            "npm:picoquery@^2.5.0",
+            "npm:ts-node@^10.9.1",
+            "npm:typescript@5",
+            "npm:uuid@11",
+            "npm:vitest@^3.2.3"
+          ]
+        }
+      },
+      "packages/nock-udp": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@types/node@^18.19.111",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/opentelemetry-sdk-setup": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@honeycombio/opentelemetry-node@~0.7.1",
+            "npm:@netlify/opentelemetry-utils@~2.0.1",
+            "npm:@opentelemetry/api@1.8",
+            "npm:@opentelemetry/core@1.24",
+            "npm:@opentelemetry/resources@1.24",
+            "npm:@opentelemetry/sdk-trace-base@1.24",
+            "npm:@opentelemetry/semantic-conventions@1.24",
+            "npm:@types/node@^18.19.111",
+            "npm:@vitest/ui@3",
+            "npm:read-package-up@11",
+            "npm:typescript@5",
+            "npm:vitest@3",
+            "npm:yargs-parser@^21.1.1"
+          ]
+        }
+      },
+      "packages/opentelemetry-utils": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@opentelemetry/api@1.8",
+            "npm:@opentelemetry/sdk-trace-base@1.24",
+            "npm:@opentelemetry/sdk-trace-node@1.24",
+            "npm:@types/node@^18.19.111",
+            "npm:@vitest/ui@3",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/redirect-parser": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@iarna/toml@^2.2.5",
+            "npm:@types/node@^18.19.111",
+            "npm:fast-safe-stringify@^2.1.1",
+            "npm:is-plain-obj@4",
+            "npm:path-exists@5",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/run-utils": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@types/node@^18.19.111",
+            "npm:execa@8",
+            "npm:semver@^7.3.8",
+            "npm:typescript@5",
+            "npm:vitest@3"
+          ]
+        }
+      },
+      "packages/testing": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@netlify/build@*",
+            "npm:@netlify/config@*",
+            "npm:@types/lodash-es@^4.17.6",
+            "npm:@types/node@^18.19.111",
+            "npm:ava@5",
+            "npm:c8@10",
+            "npm:cpy@11",
+            "npm:execa@8",
+            "npm:fast-safe-stringify@^2.0.7",
+            "npm:figures@6",
+            "npm:get-bin-path@11",
+            "npm:get-port@7",
+            "npm:get-stream@9",
+            "npm:is-plain-obj@4",
+            "npm:lodash-es@^4.17.21",
+            "npm:path-key@4",
+            "npm:strip-ansi@7",
+            "npm:tmp-promise@^3.0.2",
+            "npm:typescript@5"
+          ]
+        }
+      },
+      "packages/zip-it-and-ship-it": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@babel/parser@^7.22.5",
+            "npm:@babel/types@7.28.4",
+            "npm:@netlify/binary-info@1",
+            "npm:@netlify/serverless-functions-api@^2.7.1",
+            "npm:@types/archiver@6.0.3",
+            "npm:@types/is-ci@3.0.4",
+            "npm:@types/node@20.19.19",
+            "npm:@types/normalize-path@3.0.2",
+            "npm:@types/resolve@1.20.6",
+            "npm:@types/semver@7.7.1",
+            "npm:@types/unixify@1.0.2",
+            "npm:@types/yargs@17.0.33",
+            "npm:@vercel/nft@0.29.4",
+            "npm:@vitest/coverage-v8@3",
+            "npm:archiver@7",
+            "npm:browserslist@4.26.2",
+            "npm:cardinal@2.1.1",
+            "npm:common-path-prefix@3",
+            "npm:copy-file@11",
+            "npm:cpy@11.1.0",
+            "npm:decompress@4.2.1",
+            "npm:deepmerge@^4.3.1",
+            "npm:es-module-lexer@1",
+            "npm:esbuild@0.25.10",
+            "npm:execa@8",
+            "npm:fast-glob@^3.3.3",
+            "npm:filter-obj@6",
+            "npm:find-up@7",
+            "npm:get-stream@9.0.1",
+            "npm:is-ci@4.1.0",
+            "npm:is-path-inside@4",
+            "npm:junk@4",
+            "npm:lambda-local@2.2.0",
+            "npm:locate-path@7",
+            "npm:merge-options@^3.0.4",
+            "npm:minimatch@9",
+            "npm:normalize-path@3",
+            "npm:p-map@7",
+            "npm:path-exists@5",
+            "npm:precinct@12",
+            "npm:require-package-name@^2.0.1",
+            "npm:resolve@^2.0.0-next.1",
+            "npm:semver@^7.3.8",
+            "npm:source-map-support@0.5.21",
+            "npm:tmp-promise@^3.0.2",
+            "npm:toml@3",
+            "npm:typescript@5.9.3",
+            "npm:unixify@1",
+            "npm:urlpattern-polyfill@8.0.2",
+            "npm:vitest@3",
+            "npm:yargs@17",
+            "npm:zod@^3.23.8"
+          ]
+        }
+      }
+    }
+  }
+}
