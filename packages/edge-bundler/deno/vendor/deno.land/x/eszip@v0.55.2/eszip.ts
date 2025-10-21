@@ -107,8 +107,11 @@ export async function loadESZIP(filename: string): Promise<ESZIP> {
   return await V1.load(bytes);
 }
 
-function url2path(url: string) {
-  return join(...(new URL(url).pathname.split("/").filter(Boolean)));
+function url2path(urlString: string) {
+  const url = new URL(urlString);
+  const tail = url.pathname.split("/").filter(Boolean);
+  const relativePath = tail.length === 0 ? [".root"] : tail;
+  return join(url.hostname, ...relativePath);
 }
 
 async function write(path: string, content: string) {
