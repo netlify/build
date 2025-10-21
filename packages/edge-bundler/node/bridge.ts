@@ -69,9 +69,16 @@ export class DenoBridge {
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
-    this.versionRange =
-      options.versionRange ??
-      (options.featureFlags?.edge_bundler_generate_tarball ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
+    if (options.versionRange) {
+      this.versionRange = options.versionRange
+    } else if (
+      options.featureFlags?.edge_bundler_dry_run_generate_tarball ||
+      options.featureFlags?.edge_bundler_generate_tarball
+    ) {
+      this.versionRange = NEXT_DENO_VERSION_RANGE
+    } else {
+      this.versionRange = DENO_VERSION_RANGE
+    }
   }
 
   private async downloadBinary() {
