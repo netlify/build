@@ -1,7 +1,8 @@
 import type { ExecaError } from 'execa'
 
 interface BundleErrorOptions {
-  format: string
+  cause?: unknown
+  format?: string
 }
 
 const getCustomErrorInfo = (options?: BundleErrorOptions) => ({
@@ -12,11 +13,11 @@ const getCustomErrorInfo = (options?: BundleErrorOptions) => ({
   type: 'functionsBundling',
 })
 
-class BundleError extends Error {
+export class BundleError extends Error {
   customErrorInfo: ReturnType<typeof getCustomErrorInfo>
 
   constructor(originalError: Error, options?: BundleErrorOptions) {
-    super(originalError.message)
+    super(originalError.message, { cause: options?.cause })
 
     this.customErrorInfo = getCustomErrorInfo(options)
     this.name = 'BundleError'
@@ -30,7 +31,7 @@ class BundleError extends Error {
 /**
  * BundleErrors are treated as user-error, so Netlify Team is not alerted about them.
  */
-const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
+export const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
   if (input instanceof Error) {
     if (input.message.includes("The module's source code could not be parsed")) {
       input.message = (input as ExecaError).stderr
@@ -41,5 +42,3 @@ const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
 
   return input
 }
-
-export { BundleError, wrapBundleError }
