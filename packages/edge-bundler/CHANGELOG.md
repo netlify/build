@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.6.0](https://github.com/netlify/build/compare/edge-bundler-v14.5.6...edge-bundler-v14.6.0) (2025-10-21)
+
+
+### Features
+
+* update edge functions bundling to Deno 2.x ([#6716](https://github.com/netlify/build/issues/6716)) ([4816b70](https://github.com/netlify/build/commit/4816b703d77a73ac643ed758ba831862f81d6036))
+
 ## [14.5.6](https://github.com/netlify/build/compare/edge-bundler-v14.5.5...edge-bundler-v14.5.6) (2025-09-24)
 
 
