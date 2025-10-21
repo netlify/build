@@ -1,18 +1,7 @@
 // CLI utility to build/list/extract/run ESZIPs
 
 import { build, Parser } from "./mod.ts";
-import { dirname, extname, join } from "https://deno.land/std@0.177.0/path/mod.ts";
-
-const extensions = new Set([
-  ".ts",
-  ".tsx",
-  ".js",
-  ".jsx",
-  ".mjs",
-  ".mts",
-  ".json",
-  ".wasm"
-]);
+import { dirname, join } from "https://deno.land/std@0.177.0/path/mod.ts";
 
 function hasV2Header(bytes: Uint8Array) {
   const magicV2 = new TextDecoder().decode(bytes.slice(0, 8));
@@ -92,6 +81,7 @@ class V2 {
     const imports: Record<string, string> = {};
 
     for (const specifier of this.specifiers) {
+      if (new URL(specifier).protocol !== "file:") continue
       const module = await this.parser.getModuleSource(specifier);
       await write(join(dest, "source", url2path(specifier)), module);
       // Track import
@@ -118,15 +108,8 @@ export async function loadESZIP(filename: string): Promise<ESZIP> {
   return await V1.load(bytes);
 }
 
-function url2path(urlString: string) {
-  const url = new URL(urlString);
-  let path = join(url.hostname, ...url.pathname.split("/").filter(Boolean));
-
-  if (!extensions.has(extname(path))) {
-    path = join(path, ".index.ts");
-  }
-
-  return path;
+function url2path(url: string) {
+  return join(...(new URL(url).pathname.split("/").filter(Boolean)));
 }
 
 async function write(path: string, content: string) {
