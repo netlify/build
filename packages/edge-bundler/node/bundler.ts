@@ -261,6 +261,8 @@ const getFunctionConfigs = async ({
       }),
     )
 
+    await extractedESZIP.cleanup()
+
     return {
       internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
       userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),

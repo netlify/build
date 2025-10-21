@@ -4,7 +4,7 @@ import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import { gte, lt } from 'semver'
+import { lt } from 'semver'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
