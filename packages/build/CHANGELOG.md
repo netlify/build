@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.2.7](https://github.com/netlify/build/compare/build-v35.2.6...build-v35.2.7) (2025-10-22)
+
+
+### Bug Fixes
+
+* make secret scanning omitvalue case insensitive ([#6719](https://github.com/netlify/build/issues/6719)) ([f63e7c2](https://github.com/netlify/build/commit/f63e7c26e7a79939622b614b6e31a7bd6105aada))
+
 ## [35.2.6](https://github.com/netlify/build/compare/build-v35.2.5...build-v35.2.6) (2025-10-22)
 
 
