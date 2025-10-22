@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.8.0](https://github.com/netlify/build/compare/edge-bundler-v14.7.2...edge-bundler-v14.8.0) (2025-10-22)
+
+
+### Features
+
+* log warning for import assertion ([#6724](https://github.com/netlify/build/issues/6724)) ([0378894](https://github.com/netlify/build/commit/037889486b389fba70c3eded95740a0705e64b6c))
+
 ## [14.7.2](https://github.com/netlify/build/compare/edge-bundler-v14.7.1...edge-bundler-v14.7.2) (2025-10-22)
 
 
