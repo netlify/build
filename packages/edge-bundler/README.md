@@ -38,12 +38,11 @@ Intelligently prepare Netlify Edge Functions for deployment.
 To avoid pulling in additional dependencies at runtime, this package vendors some Deno modules in the `deno/vendor`
 directory.
 
-You can recreate this directory by running `npm run vendor`.
+This will go away soon as we move away from the ESZIP format.
 
 > [!WARNING]  
-> At the time of writing, the underlying Deno CLI command doesn't correctly pull the WASM binary required by the ESZIP
-> module. If you run the command to update the list of vendores modules, please ensure you're not deleting
-> `eszip_wasm_bg.wasm`.
+> The `eszip` module contains a set of custom changes that diverge from the upstream. If you need to update this module,
+> make sure to backport them.
 
 ## Contributors
 
