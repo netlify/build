@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.2.8](https://github.com/netlify/build/compare/build-v35.2.7...build-v35.2.8) (2025-10-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.2.0 ([#6728](https://github.com/netlify/build/issues/6728)) ([9c817dc](https://github.com/netlify/build/commit/9c817dcf2cd67763137c674c7cc596d189b39723))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.6 to ^24.0.7
+
 ## [35.2.7](https://github.com/netlify/build/compare/build-v35.2.6...build-v35.2.7) (2025-10-22)
 
 
