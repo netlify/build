@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "35.2.6",
+  "version": "35.2.7",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -67,7 +67,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^8.0.0",
-    "@netlify/blobs": "^10.1.0",
+    "@netlify/blobs": "^10.2.0",
     "@netlify/cache-utils": "^6.0.4",
     "@netlify/config": "^24.0.6",
     "@netlify/edge-bundler": "14.8.0",
