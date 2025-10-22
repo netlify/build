@@ -251,7 +251,7 @@ const getFunctionConfigs = async ({
     }
 
     log.user(
-      'WARNING: Support for import assertions has been deprecated and will be fully removed. Refer to https://ntl.fyi/import-assert for more information.',
+      'WARNING: Import assertions are deprecated and will be removed soon. Refer to https://ntl.fyi/import-assert for more information.',
     )
 
     try {
