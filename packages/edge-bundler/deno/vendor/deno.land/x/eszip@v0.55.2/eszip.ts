@@ -81,6 +81,7 @@ class V2 {
     const imports: Record<string, string> = {};
 
     for (const specifier of this.specifiers) {
+      if (new URL(specifier).protocol !== "file:") continue
       const module = await this.parser.getModuleSource(specifier);
       await write(join(dest, "source", url2path(specifier)), module);
       // Track import
@@ -107,11 +108,8 @@ export async function loadESZIP(filename: string): Promise<ESZIP> {
   return await V1.load(bytes);
 }
 
-function url2path(urlString: string) {
-  const url = new URL(urlString);
-  const tail = url.pathname.split("/").filter(Boolean);
-  const relativePath = tail.length === 0 ? [".root"] : tail;
-  return join(url.hostname, ...relativePath);
+function url2path(url: string) {
+  return join(...(new URL(url).pathname.split("/").filter(Boolean)));
 }
 
 async function write(path: string, content: string) {
