@@ -81,6 +81,11 @@ class V2 {
     const imports: Record<string, string> = {};
 
     for (const specifier of this.specifiers) {
+      // NOTE: This is specific to Netlify, to address the fact that we can't
+      // unpack remote URL specifiers to paths on disk.
+      // https://github.com/netlify/build/pull/6716
+      // https://github.com/netlify/build/pull/6720
+      // https://github.com/netlify/build/pull/6722
       if (new URL(specifier).protocol !== "file:") continue
       const module = await this.parser.getModuleSource(specifier);
       await write(join(dest, "source", url2path(specifier)), module);

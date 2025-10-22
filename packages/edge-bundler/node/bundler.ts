@@ -250,6 +250,10 @@ const getFunctionConfigs = async ({
       throw err
     }
 
+    log.user(
+      'WARNING: Support for import assertions has been deprecated and will be fully removed. Refer to https://ntl.fyi/import-assert for more information.',
+    )
+
     try {
       // We failed to extract the configuration because there is an import assert
       // in the function code, a deprecated feature that we used to support with
