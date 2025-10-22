@@ -41,7 +41,7 @@
     "node client"
   ],
   "dependencies": {
-    "@netlify/open-api": "^2.40.0",
+    "@netlify/open-api": "^2.41.0",
     "node-fetch": "^3.0.0",
     "picoquery": "^2.5.0",
     "p-wait-for": "^5.0.0"
