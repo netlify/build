@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.7.2](https://github.com/netlify/build/compare/edge-bundler-v14.7.1...edge-bundler-v14.7.2) (2025-10-22)
+
+
+### Bug Fixes
+
+* only target `file:` specifiers when extracting ESZIP ([#6722](https://github.com/netlify/build/issues/6722)) ([3f342bd](https://github.com/netlify/build/commit/3f342bdb9844e1691cd90fd3626c642ccf6f391a))
+
 ## [14.7.1](https://github.com/netlify/build/compare/edge-bundler-v14.7.0...edge-bundler-v14.7.1) (2025-10-21)
 
 
