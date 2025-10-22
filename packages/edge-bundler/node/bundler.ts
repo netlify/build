@@ -22,6 +22,7 @@ import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { BundleError } from './bundle_error.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -164,6 +165,7 @@ export const bundle = async (
       basePath,
       deno,
       eszipPath,
+      featureFlags,
       importMap,
       internalFunctions,
       log: logger,
@@ -210,6 +212,7 @@ interface GetFunctionConfigsOptions {
   basePath: string
   deno: DenoBridge
   eszipPath?: string
+  featureFlags?: FeatureFlags
   importMap: ImportMap
   internalFunctions: EdgeFunction[]
   log: Logger
@@ -220,6 +223,7 @@ const getFunctionConfigs = async ({
   basePath,
   deno,
   eszipPath,
+  featureFlags,
   importMap,
   log,
   internalFunctions,
@@ -242,30 +246,43 @@ const getFunctionConfigs = async ({
       userFunctions: userFunctionsWithConfig,
     }
   } catch (err) {
-    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath) {
+    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath || !featureFlags?.edge_bundler_deno_v2) {
       throw err
     }
 
-    // We failed to extract the configuration because there is an import assert
-    // in the function code, a deprecated feature that we used to support with
-    // Deno 1.x. To avoid a breaking change, we treat this error as a special
-    // case, using the generated ESZIP to extract the configuration. This works
-    // because import asserts are transpiled to import attributes.
-    const extractedESZIP = await extractESZIP(deno, eszipPath)
-    const configs = await Promise.all(
-      [...internalFunctions, ...userFunctions].map(async (func) => {
-        const relativePath = relative(basePath, func.path)
-        const functionPath = join(extractedESZIP.path, relativePath)
-
-        return [func.name, await getFunctionConfig({ functionPath, importMap, deno, log })] as const
-      }),
+    log.user(
+      'WARNING: Import assertions are deprecated and will be removed soon. Refer to https://ntl.fyi/import-assert for more information.',
     )
 
-    await extractedESZIP.cleanup()
+    try {
+      // We failed to extract the configuration because there is an import assert
+      // in the function code, a deprecated feature that we used to support with
+      // Deno 1.x. To avoid a breaking change, we treat this error as a special
+      // case, using the generated ESZIP to extract the configuration. This works
+      // because import asserts are transpiled to import attributes.
+      const extractedESZIP = await extractESZIP(deno, eszipPath)
+      const configs = await Promise.all(
+        [...internalFunctions, ...userFunctions].map(async (func) => {
+          const relativePath = relative(basePath, func.path)
+          const functionPath = join(extractedESZIP.path, relativePath)
 
-    return {
-      internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
-      userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+          return [func.name, await getFunctionConfig({ functionPath, importMap, deno, log })] as const
+        }),
+      )
+
+      await extractedESZIP.cleanup()
+
+      return {
+        internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
+        userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+      }
+    } catch (err) {
+      throw new BundleError(
+        new Error(
+          'An error occurred while building an edge function that uses an import assertion. Refer to https://ntl.fyi/import-assert for more information.',
+        ),
+        { cause: err },
+      )
     }
   }
 }

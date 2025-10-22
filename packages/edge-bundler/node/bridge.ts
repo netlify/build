@@ -17,7 +17,9 @@ const DENO_VERSION_FILE = 'version.txt'
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
-export const DENO_VERSION_RANGE = '^2.4.2'
+export const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
+
+const NEXT_DENO_VERSION_RANGE = '^2.4.2'
 
 export type OnBeforeDownloadHook = () => void | Promise<void>
 export type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -67,7 +69,11 @@ export class DenoBridge {
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
-    this.versionRange = options.versionRange ?? DENO_VERSION_RANGE
+
+    const useNextDeno =
+      options.featureFlags?.edge_bundler_generate_tarball || options.featureFlags?.edge_bundler_deno_v2
+
+    this.versionRange = options.versionRange ?? (useNextDeno ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
   }
 
   private async downloadBinary() {
@@ -78,14 +84,24 @@ export class DenoBridge {
     this.logger.system(`Downloading Deno CLI to ${this.cacheDirectory}`)
 
     const binaryPath = await download(this.cacheDirectory, this.versionRange, this.logger)
-    const downloadedVersion = await this.getBinaryVersion(binaryPath)
+    const result = await this.getBinaryVersion(binaryPath)
 
-    // We should never get here, because it means that `DENO_VERSION_RANGE` is
-    // a malformed semver range. If this does happen, let's throw an error so
-    // that the tests catch it.
-    if (downloadedVersion === undefined) {
+    // If we can't execute the downloaded binary, provide actionable info to diagnose and self-heal if possible
+    if (result.error) {
       const error = new Error(
-        'There was a problem setting up the Edge Functions environment. To try a manual installation, visit https://ntl.fyi/install-deno.',
+        `Failed to set up Deno for Edge Functions.
+Error: ${result.error.message}
+Downloaded to: ${binaryPath}
+Platform: ${process.platform}/${process.arch}
+
+This may be caused by permissions, antivirus software, or platform incompatibility.
+
+Try clearing the Deno cache directory and retrying:
+  ${this.cacheDirectory}
+
+Supported Deno versions: ${this.versionRange}
+
+To install Deno manually: https://ntl.fyi/install-deno`,
       )
 
       await this.onAfterDownload?.(error)
@@ -95,26 +111,29 @@ export class DenoBridge {
       throw error
     }
 
-    await this.writeVersionFile(downloadedVersion)
+    await this.writeVersionFile(result.version)
 
     await this.onAfterDownload?.()
 
     return binaryPath
   }
 
-  async getBinaryVersion(binaryPath: string) {
+  async getBinaryVersion(
+    binaryPath: string,
+  ): Promise<{ version: string; error?: undefined } | { version?: undefined; error: Error }> {
     try {
       const { stdout } = await execa(binaryPath, ['--version'])
       const version = stdout.match(/^deno ([\d.]+)/)
 
       if (!version) {
         this.logger.system(`getBinaryVersion no version found. binaryPath ${binaryPath}`)
-        return
+        return { error: new Error('Could not parse Deno version from output') }
       }
 
-      return version[1]
+      return { version: version[1] }
     } catch (error) {
       this.logger.system('getBinaryVersion failed', error)
+      return { error: error instanceof Error ? error : new Error(String(error)) }
     }
   }
 
@@ -146,11 +165,11 @@ export class DenoBridge {
     }
 
     const globalBinaryName = 'deno'
-    const globalVersion = await this.getBinaryVersion(globalBinaryName)
+    const result = await this.getBinaryVersion(globalBinaryName)
 
-    if (globalVersion === undefined || !semver.satisfies(globalVersion, this.versionRange)) {
+    if (result.error || !semver.satisfies(result.version, this.versionRange)) {
       this.logger.system(
-        `No globalVersion or semver not satisfied. globalVersion: ${globalVersion}, versionRange: ${this.versionRange}`,
+        `No globalVersion or semver not satisfied. globalVersion: ${result.version}, versionRange: ${this.versionRange}`,
       )
       return
     }

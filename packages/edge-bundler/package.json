@@ -1,6 +1,6 @@
 {
   "name": "@netlify/edge-bundler",
-  "version": "14.6.0",
+  "version": "14.8.0",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
   "main": "./dist/node/index.js",
@@ -24,8 +24,7 @@
     "test:dev:deno": "deno test --allow-all deno",
     "test:ci:vitest": "vitest run --coverage",
     "test:ci:deno": "deno test --allow-all deno",
-    "test:integration": "node --experimental-modules test/integration/test.js",
-    "vendor": "deno vendor --force --output deno/vendor https://deno.land/x/eszip@v0.55.2/mod.ts https://deno.land/x/retry@v2.0.0/mod.ts https://deno.land/x/std@0.177.0/path/mod.ts"
+    "test:integration": "node --experimental-modules test/integration/test.js"
   },
   "keywords": [],
   "license": "MIT",
