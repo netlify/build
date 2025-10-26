@@ -1,5 +1,40 @@
 # Changelog
 
+## [14.8.0](https://github.com/netlify/build/compare/edge-bundler-v14.7.2...edge-bundler-v14.8.0) (2025-10-22)
+
+
+### Features
+
+* log warning for import assertion ([#6724](https://github.com/netlify/build/issues/6724)) ([0378894](https://github.com/netlify/build/commit/037889486b389fba70c3eded95740a0705e64b6c))
+
+## [14.7.2](https://github.com/netlify/build/compare/edge-bundler-v14.7.1...edge-bundler-v14.7.2) (2025-10-22)
+
+
+### Bug Fixes
+
+* only target `file:` specifiers when extracting ESZIP ([#6722](https://github.com/netlify/build/issues/6722)) ([3f342bd](https://github.com/netlify/build/commit/3f342bdb9844e1691cd90fd3626c642ccf6f391a))
+
+## [14.7.1](https://github.com/netlify/build/compare/edge-bundler-v14.7.0...edge-bundler-v14.7.1) (2025-10-21)
+
+
+### Bug Fixes
+
+* throw precise, actionable error when downloaded deno cli is unusable ([#6708](https://github.com/netlify/build/issues/6708)) ([27c4d71](https://github.com/netlify/build/commit/27c4d715c5d6af2b86eda549514ea3b6061daae7))
+
+## [14.7.0](https://github.com/netlify/build/compare/edge-bundler-v14.6.0...edge-bundler-v14.7.0) (2025-10-21)
+
+
+### Features
+
+* add feature flag for Deno 2.x update ([#6720](https://github.com/netlify/build/issues/6720)) ([99236bd](https://github.com/netlify/build/commit/99236bd0daddf85f4de6f3e11ed3b057afe7738b))
+
+## [14.6.0](https://github.com/netlify/build/compare/edge-bundler-v14.5.6...edge-bundler-v14.6.0) (2025-10-21)
+
+
+### Features
+
+* update edge functions bundling to Deno 2.x ([#6716](https://github.com/netlify/build/issues/6716)) ([4816b70](https://github.com/netlify/build/commit/4816b703d77a73ac643ed758ba831862f81d6036))
+
 ## [14.5.6](https://github.com/netlify/build/compare/edge-bundler-v14.5.5...edge-bundler-v14.5.6) (2025-09-24)
 
 
