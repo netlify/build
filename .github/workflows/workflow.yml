@@ -95,7 +95,7 @@ jobs:
         run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -180,7 +180,7 @@ jobs:
         run: corepack enable
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
