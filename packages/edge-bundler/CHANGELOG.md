@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.8.1](https://github.com/netlify/build/compare/edge-bundler-v14.8.0...edge-bundler-v14.8.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* add dry-run feature flag for edge-function tarball generation ([#6712](https://github.com/netlify/build/issues/6712)) ([ac48c83](https://github.com/netlify/build/commit/ac48c838bd88a7898b4282837a9e7513d7200e37))
+
 ## [14.8.0](https://github.com/netlify/build/compare/edge-bundler-v14.7.2...edge-bundler-v14.8.0) (2025-10-22)
 
 
