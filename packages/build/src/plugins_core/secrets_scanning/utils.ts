@@ -206,7 +206,13 @@ export function findLikelySecrets({
   while ((match = likelySecretRegex.exec(text)) !== null) {
     const token = match.groups?.token
     const prefix = match.groups?.prefix
-    if (!token || !prefix || allOmittedValues.includes(token)) {
+    if (
+      !token ||
+      !prefix ||
+      allOmittedValues.some(
+        (omittedValue) => typeof omittedValue === 'string' && omittedValue.toLowerCase() === token.toLowerCase(),
+      )
+    ) {
       continue
     }
     // Despite the prefix, the string does not look random enough to be convinced it's a secret

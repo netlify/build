@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { join } from 'path'
+import { join, relative } from 'path'
 
 import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
@@ -14,7 +14,7 @@ import { load as loadDeployConfig } from './deploy_config.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
-import { bundle as bundleESZIP } from './formats/eszip.js'
+import { bundle as bundleESZIP, extension as eszipExtension, extract as extractESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
@@ -22,6 +22,7 @@ import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { BundleError } from './bundle_error.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -171,20 +172,20 @@ export const bundle = async (
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  await createFinalBundles(bundles, distDirectory, buildID)
+  const bundlePaths = await createFinalBundles(bundles, distDirectory, buildID)
+  const eszipPath = bundlePaths.find((path) => path.endsWith(eszipExtension))
 
-  // Retrieving a configuration object for each function.
-  // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
-  const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-  const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-
-  // Creating a hash of function names to configuration objects.
-  const internalFunctionsWithConfig = Object.fromEntries(await Promise.all(internalConfigPromises))
-  const userFunctionsWithConfig = Object.fromEntries(await Promise.all(userConfigPromises))
+  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
+    await getFunctionConfigs({
+      basePath,
+      deno,
+      eszipPath,
+      featureFlags,
+      importMap,
+      internalFunctions,
+      log: logger,
+      userFunctions,
+    })
 
   // Creating a final declarations array by combining the TOML file with the
   // deploy configuration API and the in-source configuration.
@@ -222,15 +223,96 @@ export const bundle = async (
   return { functions, manifest }
 }
 
+interface GetFunctionConfigsOptions {
+  basePath: string
+  deno: DenoBridge
+  eszipPath?: string
+  featureFlags?: FeatureFlags
+  importMap: ImportMap
+  internalFunctions: EdgeFunction[]
+  log: Logger
+  userFunctions: EdgeFunction[]
+}
+
+const getFunctionConfigs = async ({
+  basePath,
+  deno,
+  eszipPath,
+  featureFlags,
+  importMap,
+  log,
+  internalFunctions,
+  userFunctions,
+}: GetFunctionConfigsOptions) => {
+  try {
+    const internalConfigPromises = internalFunctions.map(
+      async (func) => [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const,
+    )
+    const userConfigPromises = userFunctions.map(
+      async (func) => [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const,
+    )
+
+    // Creating a hash of function names to configuration objects.
+    const internalFunctionsWithConfig = Object.fromEntries(await Promise.all(internalConfigPromises))
+    const userFunctionsWithConfig = Object.fromEntries(await Promise.all(userConfigPromises))
+
+    return {
+      internalFunctions: internalFunctionsWithConfig,
+      userFunctions: userFunctionsWithConfig,
+    }
+  } catch (err) {
+    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath || !featureFlags?.edge_bundler_deno_v2) {
+      throw err
+    }
+
+    log.user(
+      'WARNING: Import assertions are deprecated and will be removed soon. Refer to https://ntl.fyi/import-assert for more information.',
+    )
+
+    try {
+      // We failed to extract the configuration because there is an import assert
+      // in the function code, a deprecated feature that we used to support with
+      // Deno 1.x. To avoid a breaking change, we treat this error as a special
+      // case, using the generated ESZIP to extract the configuration. This works
+      // because import asserts are transpiled to import attributes.
+      const extractedESZIP = await extractESZIP(deno, eszipPath)
+      const configs = await Promise.all(
+        [...internalFunctions, ...userFunctions].map(async (func) => {
+          const relativePath = relative(basePath, func.path)
+          const functionPath = join(extractedESZIP.path, relativePath)
+
+          return [func.name, await getFunctionConfig({ functionPath, importMap, deno, log })] as const
+        }),
+      )
+
+      await extractedESZIP.cleanup()
+
+      return {
+        internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
+        userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+      }
+    } catch (err) {
+      throw new BundleError(
+        new Error(
+          'An error occurred while building an edge function that uses an import assertion. Refer to https://ntl.fyi/import-assert for more information.',
+        ),
+        { cause: err },
+      )
+    }
+  }
+}
+
 const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buildID: string) => {
   const renamingOps = bundles.map(async ({ extension, hash }) => {
     const tempBundlePath = join(distDirectory, `${buildID}${extension}`)
     const finalBundlePath = join(distDirectory, `${hash}${extension}`)
 
     await fs.rename(tempBundlePath, finalBundlePath)
+
+    return finalBundlePath
   })
 
-  await Promise.all(renamingOps)
+  return await Promise.all(renamingOps)
 }
 
 const getBasePath = (sourceDirectories: string[], inputBasePath?: string) => {

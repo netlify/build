@@ -105,6 +105,75 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.2.7](https://github.com/netlify/build/compare/build-v35.2.6...build-v35.2.7) (2025-10-22)
+
+
+### Bug Fixes
+
+* make secret scanning omitvalue case insensitive ([#6719](https://github.com/netlify/build/issues/6719)) ([f63e7c2](https://github.com/netlify/build/commit/f63e7c26e7a79939622b614b6e31a7bd6105aada))
+
+## [35.2.6](https://github.com/netlify/build/compare/build-v35.2.5...build-v35.2.6) (2025-10-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.7.2 to 14.8.0
+
+## [35.2.5](https://github.com/netlify/build/compare/build-v35.2.4...build-v35.2.5) (2025-10-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.7.1 to 14.7.2
+
+## [35.2.4](https://github.com/netlify/build/compare/build-v35.2.3...build-v35.2.4) (2025-10-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.7.0 to 14.7.1
+
+## [35.2.3](https://github.com/netlify/build/compare/build-v35.2.2...build-v35.2.3) (2025-10-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.6.0 to 14.7.0
+
+## [35.2.2](https://github.com/netlify/build/compare/build-v35.2.1...build-v35.2.2) (2025-10-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.5.6 to 14.6.0
+
+## [35.2.1](https://github.com/netlify/build/compare/build-v35.2.0...build-v35.2.1) (2025-10-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.1.0 ([#6703](https://github.com/netlify/build/issues/6703)) ([261899e](https://github.com/netlify/build/commit/261899ed0ef18af3d374258da35a28769511517c))
+* unbreak logs type for buildSite return value ([#6711](https://github.com/netlify/build/issues/6711)) ([654775b](https://github.com/netlify/build/commit/654775b6fc0b300983c15f76a0a224de223b1db5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.5 to ^24.0.6
+    * @netlify/functions-utils bumped from ^6.2.10 to ^6.2.11
+    * @netlify/zip-it-and-ship-it bumped from 14.1.10 to 14.1.11
+
 ## [35.2.0](https://github.com/netlify/build/compare/build-v35.1.10...build-v35.2.0) (2025-10-17)
 
 

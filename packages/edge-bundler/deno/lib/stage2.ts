@@ -105,7 +105,7 @@ const stage2Loader = (
   }
 }
 
-const writeStage2 = async ({
+export const writeStage2 = async ({
   basePath,
   destPath,
   externals,
@@ -122,5 +122,3 @@ const writeStage2 = async ({
 
   return await Deno.writeFile(destPath, bytes)
 }
-
-export { writeStage2 }
