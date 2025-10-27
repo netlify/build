@@ -75,7 +75,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/archiver": "6.0.3",
+    "@types/archiver": "6.0.4",
     "@types/is-ci": "3.0.4",
     "@types/node": "20.19.23",
     "@types/normalize-path": "3.0.2",
