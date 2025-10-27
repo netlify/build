@@ -828,6 +828,82 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       await cleanup()
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
+
+    describe('Dry-run tarball generation flag enabled', () => {
+      test('Logs success message when tarball generation succeeded', async () => {
+        const systemLogger = vi.fn()
+        const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+        const declarations: Declaration[] = [
+          {
+            function: 'func1',
+            path: '/func1',
+          },
+        ]
+
+        await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+          basePath,
+          configPath: join(basePath, '.netlify/edge-functions/config.json'),
+          featureFlags: {
+            edge_bundler_dry_run_generate_tarball: true,
+            edge_bundler_generate_tarball: false,
+          },
+          systemLogger,
+        })
+
+        expect(systemLogger).toHaveBeenCalledWith('Dry run: Tarball bundle generated successfully.')
+
+        const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+        const manifest = JSON.parse(manifestFile)
+
+        expect(manifest.bundles.length).toBe(1)
+        expect(manifest.bundles[0].format).toBe('eszip2')
+
+        await cleanup()
+      })
+
+      test('Logs error message when tarball generation failed and does not fail the overall build', async () => {
+        const systemLogger = vi.fn()
+        vi.resetModules()
+        vi.doMock('./formats/tarball.js', () => ({
+          bundle: vi.fn().mockRejectedValue(new Error('Simulated tarball bundling failure')),
+        }))
+
+        const { bundle: bundleUnderTest } = await import('./bundler.js')
+
+        const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+        const sourceDirectory = join(basePath, 'functions')
+        const declarations: Declaration[] = [
+          {
+            function: 'func1',
+            path: '/func1',
+          },
+        ]
+
+        await expect(
+          bundleUnderTest([sourceDirectory], distPath, declarations, {
+            basePath,
+            configPath: join(sourceDirectory, 'config.json'),
+            featureFlags: {
+              edge_bundler_dry_run_generate_tarball: true,
+              edge_bundler_generate_tarball: false,
+            },
+            systemLogger,
+          }),
+        ).resolves.toBeDefined()
+
+        expect(systemLogger).toHaveBeenCalledWith(
+          `Dry run: Tarball bundle generation failed: Simulated tarball bundling failure`,
+        )
+
+        const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+        const manifest = JSON.parse(manifestFile)
+        expect(manifest.bundles.length).toBe(1)
+        expect(manifest.bundles[0].format).toBe('eszip2')
+
+        await cleanup()
+        vi.resetModules()
+      })
+    })
   },
   10_000,
 )

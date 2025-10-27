@@ -71,7 +71,9 @@ export class DenoBridge {
     this.useGlobal = options.useGlobal ?? true
 
     const useNextDeno =
-      options.featureFlags?.edge_bundler_generate_tarball || options.featureFlags?.edge_bundler_deno_v2
+      options.featureFlags?.edge_bundler_dry_run_generate_tarball ||
+      options.featureFlags?.edge_bundler_generate_tarball ||
+      options.featureFlags?.edge_bundler_deno_v2
 
     this.versionRange = options.versionRange ?? (useNextDeno ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
   }

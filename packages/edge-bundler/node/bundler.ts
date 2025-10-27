@@ -119,20 +119,35 @@ export const bundle = async (
 
   const bundles: Bundle[] = []
 
-  if (featureFlags.edge_bundler_generate_tarball) {
-    bundles.push(
-      await bundleTarball({
-        basePath,
-        buildID,
-        debug,
-        deno,
-        distDirectory,
-        functions,
-        featureFlags,
-        importMap: importMap.clone(),
-        vendorDirectory: vendor?.directory,
-      }),
-    )
+  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
+    const tarballPromise = bundleTarball({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      functions,
+      featureFlags,
+      importMap: importMap.clone(),
+      vendorDirectory: vendor?.directory,
+    })
+
+    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+      try {
+        await tarballPromise
+        logger.system('Dry run: Tarball bundle generated successfully.')
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          logger.system(`Dry run: Tarball bundle generation failed: ${error.message}`)
+        } else {
+          logger.system(`Dry run: Tarball bundle generation failed: ${String(error)}`)
+        }
+      }
+    }
+
+    if (featureFlags.edge_bundler_generate_tarball) {
+      bundles.push(await tarballPromise)
+    }
   }
 
   if (vendor) {
