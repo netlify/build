@@ -32,6 +32,8 @@ interface TestFunctions {
   source: string
   testName: string
   userLog?: string
+  systemLog?: string
+  extension?: string
 }
 
 const functions: TestFunctions[] = [
@@ -177,6 +179,29 @@ const functions: TestFunctions[] = [
         }
       `,
   },
+  {
+    testName: 'import assertion in TypeScript (deprecated syntax)',
+    name: 'func10',
+    extension: 'ts',
+    source: `
+      import data from './data.json' assert { type: 'json' };
+      export default async () => new Response(JSON.stringify(data))
+    `,
+    error:
+      /^Could not load edge function at '(.*)'\. More on the Edge Functions API at https:\/\/ntl\.fyi\/edge-api\.$/,
+    systemLog: 'Edge function uses import assertions',
+  },
+  {
+    testName: 'import assertion in JavaScript (deprecated syntax)',
+    name: 'func11',
+    source: `
+      import data from './data.json' assert { type: 'json' };
+      export default async () => new Response(JSON.stringify(data))
+    `,
+    error:
+      /^Could not load edge function at '(.*)'\. More on the Edge Functions API at https:\/\/ntl\.fyi\/edge-api\.$/,
+    systemLog: 'Edge function uses import assertions',
+  },
 ]
 describe('`getFunctionConfig` extracts configuration properties from function file', () => {
   test.each(functions)('$testName', async (func) => {
@@ -189,7 +214,8 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
       user: vi.fn().mockResolvedValue(null),
       system: vi.fn().mockResolvedValue(null),
     }
-    const path = join(tmpDir, `${func.name}.js`)
+    const extension = func.extension || 'js'
+    const path = join(tmpDir, `${func.name}.${extension}`)
 
     await fs.writeFile(path, func.source)
 
@@ -203,6 +229,9 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
 
     if (func.error) {
       await expect(funcCall()).rejects.toThrowError(func.error)
+      if (func.systemLog) {
+        expect(logger.system).toHaveBeenCalledWith(expect.stringMatching(func.systemLog))
+      }
     } else if (func.userLog) {
       await expect(funcCall()).resolves.not.toThrowError()
       expect(logger.user).toHaveBeenCalledWith(expect.stringMatching(func.userLog))
