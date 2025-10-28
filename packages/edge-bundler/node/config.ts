@@ -159,7 +159,11 @@ const handleConfigError = (functionPath: string, exitCode: number, stderr: strin
 
   if (stderr.includes('Import assertions are deprecated')) {
     log.system(`Edge function uses import assertions: ${functionPath}`)
+    cause = 'IMPORT_ASSERT'
+  }
 
+  if (stderr.includes("SyntaxError: Unexpected identifier 'assert'")) {
+    log.system(`Edge function uses import assertions: ${functionPath}`)
     cause = 'IMPORT_ASSERT'
   }
 
