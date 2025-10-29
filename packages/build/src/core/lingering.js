@@ -83,4 +83,12 @@ const IGNORED_COMMANDS = [
   'gatsby-telemetry',
   'jest-worker',
   'broccoli-babel-transpiler',
+
+  // Ignore internal processes wrapped in square brackets
+  /\[.*\]/,
+
+  // Phoenix processes
+  '/sbin/init-supervisor',
+  '/usr/local/bin/sandbox',
+  'bpfilter_umh',
 ]
