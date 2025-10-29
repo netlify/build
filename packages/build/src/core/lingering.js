@@ -85,7 +85,7 @@ const IGNORED_COMMANDS = [
   'broccoli-babel-transpiler',
 
   // Ignore internal processes wrapped in square brackets
-  /\[.*\]/,
+  /^\[[^\]]+\]$/,
 
   // Phoenix processes
   '/sbin/init-supervisor',
