@@ -1,12 +1,18 @@
 import { promises as fs } from 'fs'
-import { join, relative } from 'path'
+import { join } from 'path'
 
 import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
 
 import { importMapSpecifier } from '../shared/consts.js'
 
-import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
+import {
+  DenoBridge,
+  DenoOptions,
+  OnAfterDownloadHook,
+  OnBeforeDownloadHook,
+  LEGACY_DENO_VERSION_RANGE,
+} from './bridge.js'
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations } from './declaration.js'
@@ -14,7 +20,7 @@ import { load as loadDeployConfig } from './deploy_config.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
-import { bundle as bundleESZIP, extension as eszipExtension, extract as extractESZIP } from './formats/eszip.js'
+import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
@@ -22,7 +28,7 @@ import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
-import { BundleError } from './bundle_error.js'
+import { getPathInHome } from './home_path.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -172,15 +178,11 @@ export const bundle = async (
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  const bundlePaths = await createFinalBundles(bundles, distDirectory, buildID)
-  const eszipPath = bundlePaths.find((path) => path.endsWith(eszipExtension))
+  await createFinalBundles(bundles, distDirectory, buildID)
 
   const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
     await getFunctionConfigs({
-      basePath,
       deno,
-      eszipPath,
-      featureFlags,
       importMap,
       internalFunctions,
       log: logger,
@@ -224,10 +226,7 @@ export const bundle = async (
 }
 
 interface GetFunctionConfigsOptions {
-  basePath: string
   deno: DenoBridge
-  eszipPath?: string
-  featureFlags?: FeatureFlags
   importMap: ImportMap
   internalFunctions: EdgeFunction[]
   log: Logger
@@ -235,70 +234,57 @@ interface GetFunctionConfigsOptions {
 }
 
 const getFunctionConfigs = async ({
-  basePath,
   deno,
-  eszipPath,
-  featureFlags,
   importMap,
   log,
   internalFunctions,
   userFunctions,
 }: GetFunctionConfigsOptions) => {
-  try {
-    const internalConfigPromises = internalFunctions.map(
-      async (func) => [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const,
-    )
-    const userConfigPromises = userFunctions.map(
-      async (func) => [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const,
-    )
+  const functions = [...internalFunctions, ...userFunctions]
+  const results = await Promise.allSettled(
+    functions.map(async (func) => {
+      return [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const
+    }),
+  )
+  const legacyDeno = new DenoBridge({
+    cacheDirectory: getPathInHome('deno-cli-v1'),
+    useGlobal: false,
+    versionRange: LEGACY_DENO_VERSION_RANGE,
+  })
 
-    // Creating a hash of function names to configuration objects.
-    const internalFunctionsWithConfig = Object.fromEntries(await Promise.all(internalConfigPromises))
-    const userFunctionsWithConfig = Object.fromEntries(await Promise.all(userConfigPromises))
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    const func = functions[i]
 
-    return {
-      internalFunctions: internalFunctionsWithConfig,
-      userFunctions: userFunctionsWithConfig,
-    }
-  } catch (err) {
-    if (!(err instanceof Error && err.cause === 'IMPORT_ASSERT') || !eszipPath || !featureFlags?.edge_bundler_deno_v2) {
-      throw err
-    }
+    // We offer support for some features of Deno 1.x that have been removed
+    // from 2.x, such as import assertions and the `window` global. When we
+    // see that we failed to extract a config due to those edge cases, re-run
+    // the script with Deno 1.x so we can extract the config.
+    if (
+      result.status === 'rejected' &&
+      result.reason instanceof Error &&
+      (result.reason.cause === 'IMPORT_ASSERT' || result.reason.cause === 'WINDOW_GLOBAL')
+    ) {
+      try {
+        const fallbackConfig = await getFunctionConfig({ functionPath: func.path, importMap, deno: legacyDeno, log })
 
-    log.user(
-      'WARNING: Import assertions are deprecated and will be removed soon. Refer to https://ntl.fyi/import-assert for more information.',
-    )
-
-    try {
-      // We failed to extract the configuration because there is an import assert
-      // in the function code, a deprecated feature that we used to support with
-      // Deno 1.x. To avoid a breaking change, we treat this error as a special
-      // case, using the generated ESZIP to extract the configuration. This works
-      // because import asserts are transpiled to import attributes.
-      const extractedESZIP = await extractESZIP(deno, eszipPath)
-      const configs = await Promise.all(
-        [...internalFunctions, ...userFunctions].map(async (func) => {
-          const relativePath = relative(basePath, func.path)
-          const functionPath = join(extractedESZIP.path, relativePath)
-
-          return [func.name, await getFunctionConfig({ functionPath, importMap, deno, log })] as const
-        }),
-      )
-
-      await extractedESZIP.cleanup()
-
-      return {
-        internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
-        userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+        results[i] = { status: 'fulfilled', value: [func.name, fallbackConfig] }
+      } catch {
+        throw result.reason
       }
-    } catch (err) {
-      throw new BundleError(
-        new Error(
-          'An error occurred while building an edge function that uses an import assertion. Refer to https://ntl.fyi/import-assert for more information.',
-        ),
-        { cause: err },
-      )
     }
+  }
+
+  const failure = results.find((result) => result.status === 'rejected')
+  if (failure) {
+    throw failure.reason
+  }
+
+  const configs = results.map((config) => (config as PromiseFulfilledResult<[string, FunctionConfig]>).value)
+
+  return {
+    internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
+    userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
   }
 }
 

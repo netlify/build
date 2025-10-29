@@ -9,6 +9,7 @@
     "deno/**",
     "!deno/**/*.test.ts",
     "dist/**/*.js",
+    "!dist/**/*.test.js",
     "dist/**/*.d.ts",
     "shared/**"
   ],
