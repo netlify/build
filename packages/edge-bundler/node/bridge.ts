@@ -14,12 +14,12 @@ import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
 
+export const LEGACY_DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
+
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
-export const DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
-
-const NEXT_DENO_VERSION_RANGE = '^2.4.2'
+const DENO_VERSION_RANGE = '^2.4.2'
 
 export type OnBeforeDownloadHook = () => void | Promise<void>
 export type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -75,7 +75,7 @@ export class DenoBridge {
       options.featureFlags?.edge_bundler_generate_tarball ||
       options.featureFlags?.edge_bundler_deno_v2
 
-    this.versionRange = options.versionRange ?? (useNextDeno ? NEXT_DENO_VERSION_RANGE : DENO_VERSION_RANGE)
+    this.versionRange = options.versionRange ?? (useNextDeno ? DENO_VERSION_RANGE : LEGACY_DENO_VERSION_RANGE)
   }
 
   private async downloadBinary() {

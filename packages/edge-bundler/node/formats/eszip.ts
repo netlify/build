@@ -1,8 +1,6 @@
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
-import tmp from 'tmp-promise'
-
 import { virtualRoot, virtualVendorRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
 import { DenoBridge } from '../bridge.js'
@@ -86,18 +84,5 @@ const getESZIPPaths = () => {
     bundler: join(denoPath, 'bundle.ts'),
     extractor: join(denoPath, 'extract.ts'),
     importMap: join(denoPath, 'vendor', 'import_map.json'),
-  }
-}
-
-export const extract = async (deno: DenoBridge, functionPath: string) => {
-  const tmpDir = await tmp.dir({ unsafeCleanup: true })
-  const { extractor, importMap } = getESZIPPaths()
-  const flags = ['--allow-all', '--no-config', '--no-lock', `--import-map=${importMap}`, '--quiet']
-
-  await deno.run(['run', ...flags, extractor, functionPath, tmpDir.path], { pipeOutput: true })
-
-  return {
-    cleanup: tmpDir.cleanup,
-    path: join(tmpDir.path, 'source', 'root'),
   }
 }
