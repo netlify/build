@@ -626,8 +626,8 @@ test('Loads JSON modules with `with` attribute', async () => {
   await rm(vendorDirectory.path, { force: true, recursive: true })
 })
 
-test('Emits a system log when import assertions are used', async () => {
-  const { basePath, cleanup, distPath } = await useFixture('with_import_assert')
+test('Is backwards compatible with Deno 1.x', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_deno_1x_features')
   const sourceDirectory = join(basePath, 'functions')
   const vendorDirectory = await tmp.dir()
   const systemLogger = vi.fn()
@@ -643,18 +643,45 @@ test('Emits a system log when import assertions are used', async () => {
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
 
-  expect(func1).toBe(`{"foo":"bar"}`)
   expect(systemLogger).toHaveBeenCalledWith(
     `Edge function uses import assertions: ${join(sourceDirectory, 'func1.ts')}`,
   )
   expect(manifest.routes[0]).toEqual({
     function: 'func1',
-    pattern: '^/with-import-assert/?$',
+    pattern: '^/with-import-assert-ts/?$',
     excluded_patterns: [],
-    path: '/with-import-assert',
+    path: '/with-import-assert-ts',
+  })
+
+  expect(systemLogger).toHaveBeenCalledWith(
+    `Edge function uses import assertions: ${join(sourceDirectory, 'func2.js')}`,
+  )
+  expect(manifest.routes[1]).toEqual({
+    function: 'func2',
+    pattern: '^/with-import-assert-js/?$',
+    excluded_patterns: [],
+    path: '/with-import-assert-js',
+  })
+
+  expect(systemLogger).toHaveBeenCalledWith(
+    `Edge function uses the window global: ${join(sourceDirectory, 'func3.ts')}`,
+  )
+  expect(manifest.routes[2]).toEqual({
+    function: 'func3',
+    pattern: '^/with-window-global-ts/?$',
+    excluded_patterns: [],
+    path: '/with-window-global-ts',
+  })
+
+  expect(systemLogger).toHaveBeenCalledWith(
+    `Edge function uses the window global: ${join(sourceDirectory, 'func4.js')}`,
+  )
+  expect(manifest.routes[3]).toEqual({
+    function: 'func4',
+    pattern: '^/with-window-global-js/?$',
+    excluded_patterns: [],
+    path: '/with-window-global-js',
   })
 
   await cleanup()

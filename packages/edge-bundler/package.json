@@ -9,6 +9,7 @@
     "deno/**",
     "!deno/**/*.test.ts",
     "dist/**/*.js",
+    "!dist/**/*.test.js",
     "dist/**/*.d.ts",
     "shared/**"
   ],
@@ -64,7 +65,7 @@
     "better-ajv-errors": "^1.2.0",
     "common-path-prefix": "^3.0.0",
     "env-paths": "^3.0.0",
-    "esbuild": "0.25.10",
+    "esbuild": "0.25.11",
     "execa": "^8.0.0",
     "find-up": "^7.0.0",
     "get-port": "^7.0.0",

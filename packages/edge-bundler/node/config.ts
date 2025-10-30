@@ -157,10 +157,19 @@ export const getFunctionConfig = async ({
 const handleConfigError = (functionPath: string, exitCode: number, stderr: string, log: Logger) => {
   let cause: string | Error | undefined
 
-  if (stderr.includes('Import assertions are deprecated')) {
+  if (
+    stderr.includes('Import assertions are deprecated') ||
+    stderr.includes(`SyntaxError: Unexpected identifier 'assert'`)
+  ) {
     log.system(`Edge function uses import assertions: ${functionPath}`)
 
     cause = 'IMPORT_ASSERT'
+  }
+
+  if (stderr.includes('ReferenceError: window is not defined')) {
+    log.system(`Edge function uses the window global: ${functionPath}`)
+
+    cause = 'WINDOW_GLOBAL'
   }
 
   switch (exitCode) {
