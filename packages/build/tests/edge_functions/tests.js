@@ -3,9 +3,11 @@ import { join } from 'path'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
+import { DenoBridge } from '@netlify/edge-bundler'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import semver from 'semver'
 import tmp from 'tmp-promise'
 
 import { importJsonFile } from '../../lib/utils/json.js'
@@ -32,14 +34,6 @@ const assertManifest = async (t, fixtureName) => {
   return manifest
 }
 
-const FLAG_VARIANTS = [
-  { id: 'default', flags: { debug: false } },
-  {
-    id: 'tarball',
-    flags: { debug: false, featureFlags: { edge_bundler_generate_tarball: true } },
-  },
-]
-
 const assertBundlesExist = (t, manifest, variant) => {
   const hasTarball = manifest.bundles.some(({ format }) => format === 'tar')
   const hasEszip = manifest.bundles.some(({ format }) => format === 'eszip2')
@@ -50,6 +44,32 @@ const assertBundlesExist = (t, manifest, variant) => {
     t.true(hasTarball)
   }
 }
+
+const getDenoVersion = async () => {
+  try {
+    const bridge = new DenoBridge({ useGlobal: true })
+    const result = await bridge.getBinaryVersion('deno')
+    return result.version
+  } catch {
+    return null
+  }
+}
+
+const isDenoVersionSupported = (version) => {
+  if (!version) return false
+  return semver.satisfies(version, '>=2.4.2')
+}
+
+const denoVersion = await getDenoVersion()
+const FLAG_VARIANTS = isDenoVersionSupported(denoVersion)
+  ? [
+      { id: 'default', flags: { debug: false } },
+      {
+        id: 'tarball',
+        flags: { debug: false, featureFlags: { edge_bundler_generate_tarball: true } },
+      },
+    ]
+  : [{ id: 'default', flags: { debug: false } }]
 
 for (const variant of FLAG_VARIANTS) {
   test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
