@@ -174,7 +174,7 @@ for (const variant of FLAG_VARIANTS) {
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - bundles Edge Functions via runCoreSteps function', async (t) => {
+  test.serial(variant.id + ' - bundles Edge Functions via runCoreSteps function', async (t) => {
     const output = await new Fixture('./fixtures/functions_user')
       .withFlags({ ...variant.flags, buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
       .runWithBuild()
