@@ -21,7 +21,7 @@ const OTHER_COMMON_PREFIXES = [
   'access_',
   'twilio_',
   '-----begin',
-  'LS0tLS1CRUdJTiB',
+  'ls0tls1crudjtib',
 ]
 
 export const LIKELY_SECRET_PREFIXES = [
