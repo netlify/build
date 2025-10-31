@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.8.4](https://github.com/netlify/build/compare/edge-bundler-v14.8.3...edge-bundler-v14.8.4) (2025-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.11 ([#6748](https://github.com/netlify/build/issues/6748)) ([e3dee38](https://github.com/netlify/build/commit/e3dee38dd509e9bf7cd025bfbd710ad91a7161e7))
+* offer backwards compatibility for Deno 1.x features ([#6751](https://github.com/netlify/build/issues/6751)) ([0c166f6](https://github.com/netlify/build/commit/0c166f686b757be94343ab7a671509d314f762c5))
+
 ## [14.8.3](https://github.com/netlify/build/compare/edge-bundler-v14.8.2...edge-bundler-v14.8.3) (2025-10-29)
 
 
