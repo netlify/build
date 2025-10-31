@@ -1,6 +1,6 @@
 import { join, relative } from 'path'
 
-import { findUp } from 'find-up'
+import { dir as findUp } from 'empathic/find'
 
 const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
@@ -21,5 +21,7 @@ export const createAliases = (
   })
 }
 
-export const getPluginsModulesPath = (srcDir: string): Promise<string | undefined> =>
-  findUp(`${AUTO_PLUGINS_DIR}node_modules`, { cwd: srcDir, type: 'directory' })
+export const getPluginsModulesPath = (srcDir: string): Promise<string | undefined> => {
+  const result = findUp(`${AUTO_PLUGINS_DIR}node_modules`, { cwd: srcDir })
+  return Promise.resolve(result)
+}
