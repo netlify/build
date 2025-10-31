@@ -1,5 +1,15 @@
-import { pathExists } from 'path-exists'
+import { PathLike } from 'fs'
+import { access } from 'fs/promises'
 import { expect } from 'vitest'
+
+const pathExists = async (path: PathLike) => {
+  try {
+    await access(path)
+    return true
+  } catch {
+    return false
+  }
+}
 
 expect.extend({
   async toPathExist(received) {
