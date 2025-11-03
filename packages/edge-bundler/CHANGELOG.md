@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.8.5](https://github.com/netlify/build/compare/edge-bundler-v14.8.4...edge-bundler-v14.8.5) (2025-11-03)
+
+
+### Bug Fixes
+
+* update edge_bundler_deno_v2 default value ([#6753](https://github.com/netlify/build/issues/6753)) ([30cd508](https://github.com/netlify/build/commit/30cd508fae3f8a38df5196f9cda1f6fd3ca9d253))
+
 ## [14.8.4](https://github.com/netlify/build/compare/edge-bundler-v14.8.3...edge-bundler-v14.8.4) (2025-10-30)
 
 
