@@ -195,10 +195,7 @@ describe('`getFunctionConfig` extracts configuration properties from function fi
 
     const funcCall = () =>
       getFunctionConfig({
-        func: {
-          name: func.name,
-          path,
-        },
+        functionPath: path,
         importMap: new ImportMap([importMapFile]),
         deno,
         log: logger,
@@ -291,6 +288,18 @@ test('Loads function paths from the in-source `config` function', async () => {
     pattern: '^/user-func1/?$',
     excluded_patterns: [],
     path: '/user-func1',
+    headers: {
+      'x-must-be-there': {
+        matcher: 'exists',
+      },
+      'x-must-match': {
+        pattern: '^(foo|bar)$',
+        matcher: 'regex',
+      },
+      'x-must-not-be-there': {
+        matcher: 'missing',
+      },
+    },
   })
   expect(routes[7]).toEqual({
     function: 'user-func3',
@@ -374,10 +383,7 @@ test('Passes validation if default export exists and is a function', async () =>
 
   await expect(
     getFunctionConfig({
-      func: {
-        name: func.name,
-        path,
-      },
+      functionPath: path,
       importMap: new ImportMap([importMapFile]),
       deno,
       log: logger,
@@ -410,10 +416,7 @@ test('Fails validation if default export is not function', async () => {
   await fs.writeFile(path, func.source)
 
   const config = getFunctionConfig({
-    func: {
-      name: func.name,
-      path,
-    },
+    functionPath: path,
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,
@@ -446,10 +449,7 @@ test('Fails validation if default export is not present', async () => {
   await fs.writeFile(path, func.source)
 
   const config = getFunctionConfig({
-    func: {
-      name: func.name,
-      path,
-    },
+    functionPath: path,
     importMap: new ImportMap([importMapFile]),
     deno,
     log: logger,

@@ -3,6 +3,7 @@ import { extname } from 'path'
 import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
+import { type MixedPaths, getFunctionsBag } from './paths.js'
 import { getFunctionFromPath, getFunctionsFromPaths } from './runtimes/index.js'
 import { parseFile, StaticAnalysisResult } from './runtimes/node/in_source_config/index.js'
 import { ModuleFormat } from './runtimes/node/utils/module_format.js'
@@ -13,6 +14,7 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 
 export { Config, FunctionConfig } from './config.js'
 export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
+export type { FunctionsBag } from './paths.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export type { TrafficRules } from './rate_limit.js'
@@ -36,6 +38,8 @@ export interface ListedFunction {
   inputModuleFormat?: ModuleFormat
   excludedRoutes?: Route[]
   routes?: ExtendedRoute[]
+  srcDir?: string
+  srcPath: string
 }
 
 type ListedFunctionFile = ListedFunction & {
@@ -68,14 +72,20 @@ interface ListFunctionsOptions {
 
 // List all Netlify Functions main entry files for a specific directory.
 export const listFunctions = async function (
-  relativeSrcFolders: string | string[],
+  input: MixedPaths,
   { featureFlags: inputFeatureFlags, config, configFileDirectories, parseISC = false }: ListFunctionsOptions = {},
 ) {
   const featureFlags = getFlags(inputFeatureFlags)
-  const srcFolders = resolveFunctionsDirectories(relativeSrcFolders)
+  const bag = getFunctionsBag(input)
+  const srcFolders = resolveFunctionsDirectories([...bag.generated.directories, ...bag.user.directories])
   const paths = await listFunctionsDirectories(srcFolders)
   const cache = new RuntimeCache()
-  const functionsMap = await getFunctionsFromPaths(paths, { cache, config, configFileDirectories, featureFlags })
+  const functionsMap = await getFunctionsFromPaths([...paths, ...bag.generated.functions, ...bag.user.functions], {
+    cache,
+    config,
+    configFileDirectories,
+    featureFlags,
+  })
   const functions = [...functionsMap.values()]
   const augmentedFunctions = parseISC
     ? await Promise.all(functions.map((func) => augmentWithStaticAnalysis(func)))
@@ -144,6 +154,8 @@ const getListedFunction = function ({
   mainFile,
   name,
   runtime,
+  srcDir,
+  srcPath,
 }: AugmentedFunctionSource): ListedFunction {
   return {
     displayName: config.name,
@@ -158,6 +170,8 @@ const getListedFunction = function ({
     runtimeAPIVersion: staticAnalysisResult ? (staticAnalysisResult?.runtimeAPIVersion ?? 1) : undefined,
     schedule: staticAnalysisResult?.config?.schedule ?? config.schedule,
     inputModuleFormat: staticAnalysisResult?.inputModuleFormat,
+    srcDir,
+    srcPath,
   }
 }
 

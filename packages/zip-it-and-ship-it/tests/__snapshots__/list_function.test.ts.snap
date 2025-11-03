@@ -13,7 +13,9 @@ exports[`listFunction > V2 API > listFunction includes metadata properties when 
   "runtime": "js",
   "runtimeAPIVersion": 2,
   "schedule": undefined,
+  "srcDir": "v2-api-esm-ts-aliases",
   "srcFile": undefined,
+  "srcPath": "v2-api-esm-ts-aliases/function.ts",
   "timeout": undefined,
 }
 `;

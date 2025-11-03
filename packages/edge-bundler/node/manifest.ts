@@ -4,17 +4,18 @@ import { join } from 'path'
 import type { Bundle } from './bundle.js'
 import { wrapBundleError } from './bundle_error.js'
 import { Cache, FunctionConfig, FunctionConfigWithAllPossibleFields, Path } from './config.js'
-import { Declaration, normalizePattern } from './declaration.js'
+import { Declaration, type HeaderMatch, getHeaderMatchers, normalizePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags } from './feature_flags.js'
 import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { RateLimit, RateLimitAction, RateLimitAlgorithm, RateLimitAggregator } from './rate_limit.js'
 import { nonNullable } from './utils/non_nullable.js'
-import { ExtendedURLPattern } from './utils/urlpattern.js'
+import { getRegexpFromURLPatternPath } from './utils/urlpattern.js'
 
 interface Route {
   function: string
+  headers?: Record<string, HeaderMatch>
   pattern: string
   excluded_patterns: string[]
   path?: string
@@ -232,6 +233,10 @@ const generateManifest = ({
       route.methods = normalizeMethods(declaration.method, func.name)
     }
 
+    if ('header' in declaration) {
+      route.headers = getHeaderMatchers(declaration.header)
+    }
+
     if ('path' in declaration) {
       route.path = declaration.path
     }
@@ -292,11 +297,9 @@ const pathToRegularExpression = (path: string) => {
   }
 
   try {
-    const pattern = new ExtendedURLPattern({ pathname: path })
-
     // Removing the `^` and `$` delimiters because we'll need to modify what's
     // between them.
-    const source = pattern.regexp.pathname.source.slice(1, -1)
+    const source = getRegexpFromURLPatternPath(path).slice(1, -1)
 
     // Wrapping the expression source with `^` and `$`. Also, adding an optional
     // trailing slash, so that a declaration of `path: "/foo"` matches requests

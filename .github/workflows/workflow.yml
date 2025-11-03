@@ -19,14 +19,18 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: Install dependencies
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -36,7 +40,7 @@ jobs:
       - name: test
         run: npx nx run-many --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: playwright-report
@@ -50,12 +54,12 @@ jobs:
         os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        deno-version: ['v1.39.0', 'v2.2.4']
+        deno-version: ['v2.4.2']
         include:
           - os: ubuntu-24.04
             # Earliest supported version
             node-version: '18.14.0'
-            deno-version: 'v2.2.4'
+            deno-version: 'v2.4.2'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -66,16 +70,20 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -85,7 +93,7 @@ jobs:
         run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -142,30 +150,35 @@ jobs:
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
       - name: Git checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.2.4
+          deno-version: v2.4.2
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      - name: Setup npm version
+        run: npm install -g npm@10
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: corepack update
         # corepack version distributed with Node.js has a problem with new package manager releases,
         # so forcing fixed version of corepack here
         run: npm i -g corepack --force
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: setup pnpm/yarn
         run: corepack enable
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}

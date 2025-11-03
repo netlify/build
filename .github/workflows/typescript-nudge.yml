@@ -12,13 +12,13 @@ jobs:
   Nudge-to-convert-to-TypeScript-if-JavaScript-found:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: 🔎 Get changed JavaScript files
         id: changed-javascript-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           base_sha: ${{ github.event.pull_request.base.sha }}
           files: |
@@ -46,8 +46,8 @@ jobs:
           message: |
             This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files.
             Consider converting them to TypeScript.
-          comment_tag: tsnudge
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: tsnudge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Add a label to the PR to help track how many pull requests adds or modifies JavaScript files
         if:
@@ -67,8 +67,8 @@ jobs:
           message: |
             ~This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files. Consider converting them to TypeScript.~
             Thank you for converting JavaScript files to TypeScript 🎉"
-          comment_tag: tsnudge
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: tsnudge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Remove the label if JavaScript was converted
         if:

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "10.0.7",
+  "version": "10.0.9",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -27,7 +27,6 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "build:logos": "vite build",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
@@ -64,7 +63,6 @@
     "memfs": "^4.0.0",
     "typescript": "^5.0.0",
     "unionfs": "^4.4.0",
-    "vite": "^6.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {

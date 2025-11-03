@@ -1,4 +1,4 @@
-import { join, resolve } from 'path'
+import { join, normalize, resolve } from 'path'
 
 import { describe, expect, test } from 'vitest'
 
@@ -27,38 +27,37 @@ describe('listFunction', () => {
     })
 
     test('listFunction includes in-source config declarations', async () => {
-      const mainFile = join(FIXTURES_DIR, 'in-source-config/functions/cron_cjs.js')
+      const dir = join(FIXTURES_DIR, 'in-source-config/functions')
+      const mainFile = join(dir, 'cron_cjs.js')
       const func = await listFunction(mainFile, {
         parseISC: true,
       })
 
-      expect(func).toEqual({
-        extension: '.js',
-        inputModuleFormat: 'cjs',
-        mainFile,
-        name: 'cron_cjs',
-        runtime: 'js',
-        runtimeAPIVersion: 1,
-        schedule: '@daily',
-      })
+      expect(func?.extension).toBe('.js')
+      expect(func?.inputModuleFormat).toBe('cjs')
+      expect(func?.mainFile).toBe(mainFile)
+      expect(func?.name).toBe('cron_cjs')
+      expect(func?.runtime).toBe('js')
+      expect(func?.runtimeAPIVersion).toBe(1)
+      expect(func?.schedule).toBe('@daily')
+      expect(normalize(func!.srcDir!)).toBe(normalize(dir))
     })
 
     test('listFunction includes json configured functions with configured properties', async () => {
-      const dir = join(FIXTURES_DIR, 'json-config/.netlify/functions-internal/')
+      const dir = join(FIXTURES_DIR, 'json-config/.netlify/functions-internal')
       const mainFile = join(dir, 'simple.js')
       const func = await listFunction(mainFile, {
         configFileDirectories: [dir],
       })
 
-      expect(func).toEqual({
-        displayName: 'A Display Name',
-        extension: '.js',
-        generator: '@netlify/mock-plugin@1.0.0',
-        mainFile,
-        name: 'simple',
-        runtime: 'js',
-        runtimeAPIVersion: undefined,
-      })
+      expect(func?.displayName).toBe('A Display Name')
+      expect(func?.extension).toBe('.js')
+      expect(func?.generator).toBe('@netlify/mock-plugin@1.0.0')
+      expect(func?.mainFile).toBe(mainFile)
+      expect(func?.name).toBe('simple')
+      expect(func?.runtime).toBe('js')
+      expect(func?.runtimeAPIVersion).toBeUndefined()
+      expect(normalize(func!.srcDir!)).toBe(normalize(dir))
     })
   })
   describe('V2 API', () => {

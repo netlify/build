@@ -1,0 +1,7 @@
+[[edge_functions]]
+function = "function2"
+path = "/function2"
+
+[edge_functions.header]
+x-bar = "some-value"
+x-foo = true

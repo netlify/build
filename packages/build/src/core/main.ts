@@ -3,9 +3,10 @@ import { trace, context } from '@opentelemetry/api'
 
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
-import { getSystemLogger } from '../log/logger.js'
+import { getLogsOutput, getSystemLogger } from '../log/logger.js'
 import type { BufferedLogs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
+import { getGeneratedFunctions } from '../steps/return_values.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
 import { RootExecutionAttributes } from '../tracing/main.js'
@@ -72,6 +73,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         durationNs,
         configMutations,
         metrics,
+        returnValues,
       } = await execBuild({
         ...flagsA,
         buildId,
@@ -117,7 +119,14 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         testOpts,
         errorParams,
       })
-      return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
+      return {
+        success,
+        severityCode,
+        netlifyConfig: netlifyConfigA,
+        logs: getLogsOutput(logs),
+        configMutations,
+        generatedFunctions: getGeneratedFunctions(returnValues),
+      }
     } catch (error) {
       const { severity } = await handleBuildError(error, errorParams as any)
       const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams

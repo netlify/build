@@ -6,7 +6,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { importMapSpecifier } from '../shared/consts.js'
 
-import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
+import {
+  DenoBridge,
+  DenoOptions,
+  OnAfterDownloadHook,
+  OnBeforeDownloadHook,
+  LEGACY_DENO_VERSION_RANGE,
+} from './bridge.js'
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations } from './declaration.js'
@@ -15,12 +21,14 @@ import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
+import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { getPathInHome } from './home_path.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -66,6 +74,7 @@ export const bundle = async (
   const options: DenoOptions = {
     debug,
     cacheDirectory,
+    featureFlags,
     logger,
     onAfterDownload,
     onBeforeDownload,
@@ -114,40 +123,71 @@ export const bundle = async (
     vendorDirectory,
   })
 
+  const bundles: Bundle[] = []
+
+  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
+    const tarballPromise = bundleTarball({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      functions,
+      featureFlags,
+      importMap: importMap.clone(),
+      vendorDirectory: vendor?.directory,
+    })
+
+    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+      try {
+        await tarballPromise
+        logger.system('Dry run: Tarball bundle generated successfully.')
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          logger.system(`Dry run: Tarball bundle generation failed: ${error.message}`)
+        } else {
+          logger.system(`Dry run: Tarball bundle generation failed: ${String(error)}`)
+        }
+      }
+    }
+
+    if (featureFlags.edge_bundler_generate_tarball) {
+      bundles.push(await tarballPromise)
+    }
+  }
+
   if (vendor) {
     importMap.add(vendor.importMap)
   }
 
-  const functionBundle = await bundleESZIP({
-    basePath,
-    buildID,
-    debug,
-    deno,
-    distDirectory,
-    externals,
-    functions,
-    featureFlags,
-    importMap,
-    vendorDirectory: vendor?.directory,
-  })
+  bundles.push(
+    await bundleESZIP({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      externals,
+      functions,
+      featureFlags,
+      importMap,
+      vendorDirectory: vendor?.directory,
+    }),
+  )
 
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  await createFinalBundles([functionBundle], distDirectory, buildID)
+  await createFinalBundles(bundles, distDirectory, buildID)
 
-  // Retrieving a configuration object for each function.
-  // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
-  const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-  const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-
-  // Creating a hash of function names to configuration objects.
-  const internalFunctionsWithConfig = Object.fromEntries(await Promise.all(internalConfigPromises))
-  const userFunctionsWithConfig = Object.fromEntries(await Promise.all(userConfigPromises))
+  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
+    await getFunctionConfigs({
+      deno,
+      importMap,
+      internalFunctions,
+      log: logger,
+      userFunctions,
+    })
 
   // Creating a final declarations array by combining the TOML file with the
   // deploy configuration API and the in-source configuration.
@@ -165,7 +205,7 @@ export const bundle = async (
   })
 
   const manifest = await writeManifest({
-    bundles: [functionBundle],
+    bundles,
     declarations,
     distDirectory,
     featureFlags,
@@ -185,15 +225,80 @@ export const bundle = async (
   return { functions, manifest }
 }
 
+interface GetFunctionConfigsOptions {
+  deno: DenoBridge
+  importMap: ImportMap
+  internalFunctions: EdgeFunction[]
+  log: Logger
+  userFunctions: EdgeFunction[]
+}
+
+const getFunctionConfigs = async ({
+  deno,
+  importMap,
+  log,
+  internalFunctions,
+  userFunctions,
+}: GetFunctionConfigsOptions) => {
+  const functions = [...internalFunctions, ...userFunctions]
+  const results = await Promise.allSettled(
+    functions.map(async (func) => {
+      return [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const
+    }),
+  )
+  const legacyDeno = new DenoBridge({
+    cacheDirectory: getPathInHome('deno-cli-v1'),
+    useGlobal: false,
+    versionRange: LEGACY_DENO_VERSION_RANGE,
+  })
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    const func = functions[i]
+
+    // We offer support for some features of Deno 1.x that have been removed
+    // from 2.x, such as import assertions and the `window` global. When we
+    // see that we failed to extract a config due to those edge cases, re-run
+    // the script with Deno 1.x so we can extract the config.
+    if (
+      result.status === 'rejected' &&
+      result.reason instanceof Error &&
+      (result.reason.cause === 'IMPORT_ASSERT' || result.reason.cause === 'WINDOW_GLOBAL')
+    ) {
+      try {
+        const fallbackConfig = await getFunctionConfig({ functionPath: func.path, importMap, deno: legacyDeno, log })
+
+        results[i] = { status: 'fulfilled', value: [func.name, fallbackConfig] }
+      } catch {
+        throw result.reason
+      }
+    }
+  }
+
+  const failure = results.find((result) => result.status === 'rejected')
+  if (failure) {
+    throw failure.reason
+  }
+
+  const configs = results.map((config) => (config as PromiseFulfilledResult<[string, FunctionConfig]>).value)
+
+  return {
+    internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
+    userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+  }
+}
+
 const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buildID: string) => {
   const renamingOps = bundles.map(async ({ extension, hash }) => {
     const tempBundlePath = join(distDirectory, `${buildID}${extension}`)
     const finalBundlePath = join(distDirectory, `${hash}${extension}`)
 
     await fs.rename(tempBundlePath, finalBundlePath)
+
+    return finalBundlePath
   })
 
-  await Promise.all(renamingOps)
+  return await Promise.all(renamingOps)
 }
 
 const getBasePath = (sourceDirectories: string[], inputBasePath?: string) => {

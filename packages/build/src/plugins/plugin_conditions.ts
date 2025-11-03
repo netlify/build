@@ -1,6 +1,5 @@
 import { join } from 'path'
 
-import _pEvery from 'p-every'
 import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
 
@@ -8,9 +7,6 @@ import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'
 
 import { type PluginVersion } from './list.js'
-
-// the types of that package seem to be not correct and demand a `pEvery.default()` usage which is wrong
-const pEvery = _pEvery as unknown as typeof import('p-every').default
 
 type ConditionContext = {
   nodeVersion: string
@@ -53,9 +49,13 @@ const siteDependenciesTest = async function (
     }
   }
 
-  return await pEvery(Object.entries(allowedSiteDependencies), ([dependencyName, allowedVersion]) =>
-    siteDependencyTest({ dependencyName, allowedVersion, siteDependencies, buildDir }),
-  )
+  return (
+    await Promise.all(
+      Object.entries(allowedSiteDependencies).map(async ([dependencyName, allowedVersion]) =>
+        siteDependencyTest({ dependencyName, allowedVersion, siteDependencies, buildDir, packagePath }),
+      ),
+    )
+  ).every(Boolean)
 }
 
 const siteDependencyTest = async function ({
@@ -63,10 +63,12 @@ const siteDependencyTest = async function ({
   allowedVersion,
   siteDependencies,
   buildDir,
+  packagePath,
 }: {
   dependencyName: string
   allowedVersion: string
   buildDir: string
+  packagePath?: string
   siteDependencies: Record<string, string | undefined>
 }): Promise<boolean> {
   const siteDependency = siteDependencies[dependencyName]
@@ -81,7 +83,7 @@ const siteDependencyTest = async function ({
 
   try {
     // if this is a range we need to get the exact version
-    const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, buildDir)
+    const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, join(buildDir, packagePath ?? ''))
     const { version } = await importJsonFile(packageJsonPath)
     if (!version) {
       return false

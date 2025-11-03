@@ -4,13 +4,13 @@ import Bugsnag from '@bugsnag/js'
 import memoizeOne from 'memoize-one'
 
 import type { ResolvedFlags } from '../../core/normalize_flags.js'
-import { BufferedLogs, log } from '../../log/logger.js'
+import { Logs, log } from '../../log/logger.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 
 const projectRoot = fileURLToPath(new URL('../../..', import.meta.url))
 
 // Start a client to monitor errors
-export const startErrorMonitor = function (config: { flags: ResolvedFlags; logs?: BufferedLogs; bugsnagKey?: string }) {
+export const startErrorMonitor = function (config: { flags: ResolvedFlags; logs?: Logs; bugsnagKey?: string }) {
   const {
     flags: { mode },
     logs,

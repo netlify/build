@@ -9,14 +9,14 @@ import semver from 'semver'
 import tmp, { DirectoryResult } from 'tmp-promise'
 import { test, expect } from 'vitest'
 
-import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
+import { DenoBridge, LEGACY_DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
 const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
-  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
+  const latestVersion = semver.minVersion(LEGACY_DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })
 
@@ -133,6 +133,51 @@ test('Does inherit environment variables if `extendEnv` is not set', async () =>
   const environmentVariables = output.trim().replace(/\n+/g, '\n').split('\n').sort()
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
+
+  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+})
+
+test('Provides actionable error message when downloaded binary cannot be executed', async () => {
+  const tmpDir = await tmp.dir()
+  const latestVersion = semver.minVersion(LEGACY_DENO_VERSION_RANGE)?.version ?? ''
+  const data = new PassThrough()
+  const archive = archiver('zip', { zlib: { level: 9 } })
+
+  archive.pipe(data)
+  // Create a binary that will fail to execute (invalid content)
+  archive.append(Buffer.from('invalid binary content'), {
+    name: platform === 'win32' ? 'deno.exe' : 'deno',
+  })
+  archive.finalize()
+
+  const target = getPlatformTarget()
+
+  nock('https://dl.deno.land').get('/release-latest.txt').reply(200, `v${latestVersion}`)
+  nock('https://dl.deno.land')
+    .get(`/release/v${latestVersion}/deno-${target}.zip`)
+    .reply(200, () => data)
+
+  const deno = new DenoBridge({
+    cacheDirectory: tmpDir.path,
+    useGlobal: false,
+  })
+
+  try {
+    await deno.getBinaryPath()
+    expect.fail('Should have thrown an error')
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+    const errorMessage = (error as Error).message
+
+    expect(errorMessage).toContain('Failed to set up Deno for Edge Functions')
+    expect(errorMessage).toMatch(/Error:/)
+    expect(errorMessage).toMatch(/Downloaded to: .+deno(\.exe)?/)
+    expect(errorMessage).toContain(tmpDir.path)
+    expect(errorMessage).toMatch(/Platform: (darwin|linux|win32)\/(x64|arm64|ia32)/)
+    expect(errorMessage).toContain('This may be caused by permissions, antivirus software, or platform incompatibility')
+    expect(errorMessage).toContain('Try clearing the Deno cache directory and retrying')
+    expect(errorMessage).toContain('https://ntl.fyi/install-deno')
+  }
 
   await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
 })

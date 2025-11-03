@@ -1,7 +1,10 @@
 import { URLPattern } from 'urlpattern-polyfill'
 
-export class ExtendedURLPattern extends URLPattern {
-  // @ts-expect-error Internal property that the underlying class is using but
-  // not exposing.
-  regexp: Record<string, RegExp>
+// Exposing internal property that the `URLPattern` polyfill class is using.
+type ExtendedURLPattern = URLPattern & { regexp: Record<string, RegExp> }
+
+export const getRegexpFromURLPatternPath = (path: string) => {
+  const pattern = new URLPattern({ pathname: path }) as ExtendedURLPattern
+
+  return pattern.regexp.pathname.source
 }

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/edge-bundler",
-  "version": "14.0.6",
+  "version": "14.8.4",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
   "main": "./dist/node/index.js",
@@ -9,6 +9,7 @@
     "deno/**",
     "!deno/**/*.test.ts",
     "dist/**/*.js",
+    "!dist/**/*.test.js",
     "dist/**/*.d.ts",
     "shared/**"
   ],
@@ -24,8 +25,7 @@
     "test:dev:deno": "deno test --allow-all deno",
     "test:ci:vitest": "vitest run --coverage",
     "test:ci:deno": "deno test --allow-all deno",
-    "test:integration": "node --experimental-modules test/integration/test.js",
-    "vendor": "deno vendor --force --output deno/vendor https://deno.land/x/eszip@v0.55.2/mod.ts https://deno.land/x/retry@v2.0.0/mod.ts https://deno.land/x/std@0.177.0/path/mod.ts"
+    "test:integration": "node --experimental-modules test/integration/test.js"
   },
   "keywords": [],
   "license": "MIT",
@@ -42,6 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
+    "@netlify/edge-functions-bootstrap": "^2.17.1",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
     "@types/uuid": "^10.0.0",
@@ -51,7 +52,6 @@
     "cpy": "^11.1.0",
     "nock": "^14.0.0",
     "npm-run-all2": "^6.0.0",
-    "tar": "^7.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"
   },
@@ -65,18 +65,17 @@
     "better-ajv-errors": "^1.2.0",
     "common-path-prefix": "^3.0.0",
     "env-paths": "^3.0.0",
-    "esbuild": "0.25.5",
+    "esbuild": "0.25.11",
     "execa": "^8.0.0",
     "find-up": "^7.0.0",
-    "get-package-name": "^2.2.0",
     "get-port": "^7.0.0",
-    "is-path-inside": "^4.0.0",
     "node-stream-zip": "^1.15.0",
     "p-retry": "^6.0.0",
     "p-wait-for": "^5.0.0",
     "parse-imports": "^2.2.1",
     "path-key": "^4.0.0",
     "semver": "^7.3.8",
+    "tar": "^7.4.3",
     "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2",
     "uuid": "^11.0.0"

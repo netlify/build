@@ -7,7 +7,6 @@ import tmp from 'tmp-promise'
 
 import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'
-import { EdgeFunction } from './edge_function.js'
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
@@ -40,8 +39,11 @@ export const isValidOnError = (value: unknown): value is OnError => {
   return value === 'fail' || value === 'bypass' || value.startsWith('/')
 }
 
+export type HeadersConfig = Record<string, boolean | string>
+
 interface BaseFunctionConfig {
   cache?: Cache
+  header?: HeadersConfig
   onError?: OnError
   name?: string
   generator?: string
@@ -72,14 +74,14 @@ const getConfigExtractor = () => {
 }
 
 export const getFunctionConfig = async ({
-  func,
-  importMap,
   deno,
+  functionPath,
+  importMap,
   log,
 }: {
-  func: EdgeFunction
-  importMap: ImportMap
   deno: DenoBridge
+  functionPath: string
+  importMap: ImportMap
   log: Logger
 }) => {
   // The extractor is a Deno script that will import the function and run its
@@ -93,11 +95,13 @@ export const getFunctionConfig = async ({
   // with the extractor.
   const collector = await tmp.file()
 
+  // Retrieving the version of Deno.
+  const result = await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)
+  const version = new SemVer(result.version || '')
+
   // The extractor will use its exit code to signal different error scenarios,
   // based on the list of exit codes we send as an argument. We then capture
   // the exit code to know exactly what happened and guide people accordingly.
-  const version = new SemVer((await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)) || '')
-
   const { exitCode, stderr, stdout } = await deno.run(
     [
       'run',
@@ -111,7 +115,7 @@ export const getFunctionConfig = async ({
       '--node-modules-dir=false',
       '--quiet',
       extractorPath,
-      pathToFileURL(func.path).href,
+      pathToFileURL(functionPath).href,
       pathToFileURL(collector.path).href,
       JSON.stringify(ConfigExitCode),
     ].filter(Boolean),
@@ -119,7 +123,7 @@ export const getFunctionConfig = async ({
   )
 
   if (exitCode !== ConfigExitCode.Success) {
-    handleConfigError(func, exitCode, stderr, log)
+    handleConfigError(functionPath, exitCode, stderr, log)
 
     return {}
   }
@@ -134,7 +138,7 @@ export const getFunctionConfig = async ({
     const collectorDataJSON = await fs.readFile(collector.path, 'utf8')
     collectorData = JSON.parse(collectorDataJSON) as FunctionConfig
   } catch {
-    handleConfigError(func, ConfigExitCode.UnhandledError, stderr, log)
+    handleConfigError(functionPath, ConfigExitCode.UnhandledError, stderr, log)
   } finally {
     await collector.cleanup()
   }
@@ -142,7 +146,7 @@ export const getFunctionConfig = async ({
   if (!isValidOnError(collectorData.onError)) {
     throw new BundleError(
       new Error(
-        `The 'onError' configuration property in edge function at '${func.path}' must be one of 'fail', 'bypass', or a path starting with '/'. Got '${collectorData.onError}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+        `The 'onError' configuration property in edge function at '${functionPath}' must be one of 'fail', 'bypass', or a path starting with '/'. Got '${collectorData.onError}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
       ),
     )
   }
@@ -150,36 +154,51 @@ export const getFunctionConfig = async ({
   return collectorData
 }
 
-const handleConfigError = (func: EdgeFunction, exitCode: number, stderr: string, log: Logger) => {
+const handleConfigError = (functionPath: string, exitCode: number, stderr: string, log: Logger) => {
+  let cause: string | Error | undefined
+
+  if (
+    stderr.includes('Import assertions are deprecated') ||
+    stderr.includes(`SyntaxError: Unexpected identifier 'assert'`)
+  ) {
+    log.system(`Edge function uses import assertions: ${functionPath}`)
+
+    cause = 'IMPORT_ASSERT'
+  }
+
+  if (stderr.includes('ReferenceError: window is not defined')) {
+    log.system(`Edge function uses the window global: ${functionPath}`)
+
+    cause = 'WINDOW_GLOBAL'
+  }
+
   switch (exitCode) {
     case ConfigExitCode.ImportError:
       log.user(stderr)
+
       throw new BundleError(
         new Error(
-          `Could not load edge function at '${func.path}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+          `Could not load edge function at '${functionPath}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
         ),
+        { cause },
       )
 
-      break
-
     case ConfigExitCode.NoConfig:
-      log.system(`No in-source config found for edge function at '${func.path}'`)
+      log.system(`No in-source config found for edge function at '${functionPath}'`)
 
       break
 
     case ConfigExitCode.InvalidExport:
       throw new BundleError(
         new Error(
-          `The 'config' export in edge function at '${func.path}' must be an object. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+          `The 'config' export in edge function at '${functionPath}' must be an object. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
         ),
       )
-
-      break
 
     case ConfigExitCode.SerializationError:
       throw new BundleError(
         new Error(
-          `The 'config' object in the edge function at '${func.path}' must contain primitive values only. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+          `The 'config' object in the edge function at '${functionPath}' must contain primitive values only. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
         ),
       )
       break
@@ -187,12 +206,12 @@ const handleConfigError = (func: EdgeFunction, exitCode: number, stderr: string,
     case ConfigExitCode.InvalidDefaultExport:
       throw new BundleError(
         new Error(
-          `Default export in '${func.path}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+          `Default export in '${functionPath}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
         ),
       )
 
     default:
-      log.user(`Could not load configuration for edge function at '${func.path}'`)
+      log.user(`Could not load configuration for edge function at '${functionPath}'`)
       log.user(stderr)
   }
 }

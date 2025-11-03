@@ -64,6 +64,20 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.9](https://github.com/netlify/build/compare/build-info-v10.0.8...build-info-v10.0.9) (2025-10-13)
+
+
+### Bug Fixes
+
+* don't set nuxt 2 legacy config for nuxt 4+ ([#6670](https://github.com/netlify/build/issues/6670)) ([4896f59](https://github.com/netlify/build/commit/4896f59a1ce486553a390413170878efe6e6ad7f))
+
+## [10.0.8](https://github.com/netlify/build/compare/build-info-v10.0.7...build-info-v10.0.8) (2025-09-24)
+
+
+### Bug Fixes
+
+* support post-nitro TanStack Start versions ([#6669](https://github.com/netlify/build/issues/6669)) ([66e3ef9](https://github.com/netlify/build/commit/66e3ef9e11caeca3e7d0aa8232a752b6a15a01ab))
+
 ## [10.0.7](https://github.com/netlify/build/compare/build-info-v10.0.6...build-info-v10.0.7) (2025-06-27)
 
 

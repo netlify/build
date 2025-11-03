@@ -79,6 +79,7 @@ test.skipIf(platform() === 'win32')(
     const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: fixture.cwd })
 
     info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+    info.settings = info.settings.sort((a, b) => (a.dist < b.dist ? -1 : 1))
     expect(info).toMatchSnapshot()
   },
 )
@@ -90,6 +91,7 @@ test.skipIf(platform() === 'win32')(
     const info = await getBuildInfo({ rootDir: fixture.cwd, projectDir: join(fixture.cwd, 'packages/blog') })
 
     info.jsWorkspaces!.rootDir = '/cleaned-for-snapshot'
+    info.settings = info.settings.sort((a, b) => (a.dist < b.dist ? -1 : 1))
     expect(info).toMatchSnapshot()
   },
 )

@@ -78,7 +78,7 @@ const getLocalEntryPoint = (
       }
       `
   })
-  const bootCall = `boot(functions, metadata);`
+  const bootCall = `boot(() => Promise.resolve(functions));`
 
   return [bootImport, declaration, ...imports, bootCall].join('\n\n')
 }

@@ -1,28 +1,28 @@
-import chalk from 'chalk'
+import * as colors from 'ansis'
 
 /**
- * Color theme. Please use this instead of requiring chalk directly,
+ * Color theme. Please use this instead of requiring ansis directly,
  * to ensure consistent colors.
  */
 export const THEME = {
   // Main headers
-  header: chalk.cyanBright.bold,
+  header: colors.cyanBright.bold,
   // Single lines used as sub-headers
-  subHeader: chalk.cyan.bold,
+  subHeader: colors.cyan.bold,
   // One of several words that should be highlighted inside a line
-  highlightWords: chalk.cyan,
+  highlightWords: colors.cyan,
   // Same for errors
-  errorHeader: chalk.redBright.bold,
-  errorSubHeader: chalk.red.bold,
-  errorLine: chalk.redBright,
-  errorHighlightWords: chalk.redBright.bold,
+  errorHeader: colors.redBright.bold,
+  errorSubHeader: colors.red.bold,
+  errorLine: colors.redBright,
+  errorHighlightWords: colors.redBright.bold,
   // Same for warnings
-  warningHeader: chalk.yellowBright.bold,
-  warningSubHeader: chalk.yellow.bold,
-  warningLine: chalk.yellowBright,
-  warningHighlightWords: chalk.yellowBright.bold,
+  warningHeader: colors.yellowBright.bold,
+  warningSubHeader: colors.yellow.bold,
+  warningLine: colors.yellowBright,
+  warningHighlightWords: colors.yellowBright.bold,
   // One of several words that should be dimmed inside a line
-  dimWords: chalk.gray,
+  dimWords: colors.gray,
   // No colors
   none: (string) => string,
 }

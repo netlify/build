@@ -9,14 +9,14 @@ import semver from 'semver'
 import tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
-import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
+import { DenoBridge, LEGACY_DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async () => {
-  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
+  const latestVersion = semver.minVersion(LEGACY_DENO_VERSION_RANGE)?.version ?? ''
   const mockBinaryOutput = `#!/usr/bin/env sh\n\necho "deno ${latestVersion}"`
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })

@@ -3,7 +3,7 @@ const bundlesSchema = {
   required: ['asset', 'format'],
   properties: {
     asset: { type: 'string' },
-    format: { type: 'string', enum: ['eszip2', 'js'] },
+    format: { type: 'string', enum: ['eszip2', 'js', 'tar'] },
   },
   additionalProperties: false,
 }
@@ -16,6 +16,35 @@ const excludedPatternsSchema = {
     errorMessage:
       'excluded_patterns must be an array of regex that starts with ^ and ends with $ (e.g. ^/blog/[d]{4}$)',
   },
+}
+
+const headersSchema = {
+  type: 'object',
+  patternProperties: {
+    '.*': {
+      type: 'object',
+      required: ['matcher'],
+      properties: {
+        pattern: {
+          type: 'string',
+        },
+        matcher: {
+          type: 'string',
+          enum: ['exists', 'missing', 'regex'],
+        },
+      },
+      additionalProperties: false,
+      if: {
+        properties: {
+          matcher: { const: 'regex' },
+        },
+      },
+      then: {
+        required: ['pattern'],
+      },
+    },
+  },
+  additionalProperties: false,
 }
 
 const routesSchema = {
@@ -36,6 +65,7 @@ const routesSchema = {
       type: 'array',
       items: { type: 'string', enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] },
     },
+    headers: headersSchema,
   },
   additionalProperties: false,
 }

@@ -76,6 +76,108 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.0.8](https://github.com/netlify/build/compare/config-v24.0.7...config-v24.0.8) (2025-10-30)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.8 to ^14.0.9
+
+## [24.0.7](https://github.com/netlify/build/compare/config-v24.0.6...config-v24.0.7) (2025-10-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.7 to ^14.0.8
+
+## [24.0.6](https://github.com/netlify/build/compare/config-v24.0.5...config-v24.0.6) (2025-10-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.6 to ^14.0.7
+
+## [24.0.5](https://github.com/netlify/build/compare/config-v24.0.4...config-v24.0.5) (2025-10-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.5 to ^14.0.6
+
+## [24.0.4](https://github.com/netlify/build/compare/config-v24.0.3...config-v24.0.4) (2025-09-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.4 to ^14.0.5
+
+## [24.0.3](https://github.com/netlify/build/compare/config-v24.0.2...config-v24.0.3) (2025-08-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.3 to ^14.0.4
+
+## [24.0.2](https://github.com/netlify/build/compare/config-v24.0.1...config-v24.0.2) (2025-08-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^9.0.1 to ^9.0.2
+
+## [24.0.1](https://github.com/netlify/build/compare/config-v24.0.0...config-v24.0.1) (2025-07-31)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/redirect-parser bumped from ^15.0.2 to ^15.0.3
+
+## [24.0.0](https://github.com/netlify/build/compare/config-v23.2.0...config-v24.0.0) (2025-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571))
+
+### Features
+
+* **build,config:** rework extension development workflow ([#6571](https://github.com/netlify/build/issues/6571)) ([b31aa6a](https://github.com/netlify/build/commit/b31aa6adc676530e80211d28901abc51591dba36))
+
+## [23.2.0](https://github.com/netlify/build/compare/config-v23.1.0...config-v23.2.0) (2025-07-14)
+
+
+### Features
+
+* add support for EF `header` property in `netlify.toml` ([#6558](https://github.com/netlify/build/issues/6558)) ([55857bb](https://github.com/netlify/build/commit/55857bbd7665555519ddb2b09340f1fbeb9453b4))
+
+## [23.1.0](https://github.com/netlify/build/compare/config-v23.0.11...config-v23.1.0) (2025-07-07)
+
+
+### Features
+
+* add header to installing extension with the build mode so we know where the installation is coming from ([#6478](https://github.com/netlify/build/issues/6478)) ([ca66176](https://github.com/netlify/build/commit/ca661760594a24f979457fa001c2db98213d259f))
+
+
+### Bug Fixes
+
+* put exports back to normal for config ([#6528](https://github.com/netlify/build/issues/6528)) ([db1435c](https://github.com/netlify/build/commit/db1435c471b7fcc26b07a1de7c485f30866a1fc9))
+
 ## [23.0.11](https://github.com/netlify/build/compare/config-v23.0.10...config-v23.0.11) (2025-06-25)
 
 

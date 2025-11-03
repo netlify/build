@@ -1,4 +1,9 @@
-import { camelCase } from 'lodash-es'
+function camelCase(str) {
+  return str
+    .toLowerCase()
+    .replace(/[-_\s]+(.)?/g, (_, chr) => (chr ? chr.toUpperCase() : ''))
+    .replace(/^[A-Z]/, (match) => match.toLowerCase())
+}
 
 export const getRequestParams = function (params, requestParams, name) {
   const entries = Object.values(params).map((param) => getRequestParam(param, requestParams, name))

@@ -53,8 +53,7 @@
     "execa": "^8.0.0",
     "map-obj": "^5.0.0",
     "micromatch": "^4.0.2",
-    "moize": "^6.1.3",
-    "path-exists": "^5.0.0"
+    "moize": "^6.1.3"
   },
   "devDependencies": {
     "@types/node": "^18.19.111",

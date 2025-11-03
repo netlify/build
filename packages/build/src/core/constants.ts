@@ -1,7 +1,6 @@
 import { relative, normalize, join } from 'path'
 
 import { getCacheDir } from '@netlify/cache-utils'
-import mapObj from 'map-obj'
 import { pathExists } from 'path-exists'
 
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
@@ -201,14 +200,14 @@ const addDefaultConstant = async function ({ constants, constantName, defaultPat
 }
 
 const normalizeConstantsPaths = function (constants: Partial<NetlifyPluginConstants>, buildDir: string) {
-  return mapObj(constants, (key, path: string) => [key, normalizePath(path, buildDir, key)])
+  return Object.fromEntries(Object.entries(constants).map(([key, path]) => [key, normalizePath(path, buildDir, key)]))
 }
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
-const normalizePath = function (path: string | undefined, buildDir: string, key: string) {
-  if (path === undefined || path === '' || !CONSTANT_PATHS.has(key)) {
+const normalizePath = function (path: string | undefined | boolean, buildDir: string, key: string) {
+  if (typeof path !== 'string' || path === '' || !CONSTANT_PATHS.has(key)) {
     return path
   }
 

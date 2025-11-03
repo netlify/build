@@ -1,7 +1,7 @@
 import { createRequire } from 'module'
 import { platform } from 'os'
+import { setTimeout } from 'timers/promises'
 import { fileURLToPath, pathToFileURL } from 'url'
-import { promisify } from 'util'
 
 import { trace } from '@opentelemetry/api'
 import { type ExecaChildProcess, execaNode } from 'execa'
@@ -30,7 +30,6 @@ import { captureStandardError } from './system_log.js'
 export type ChildProcess = ExecaChildProcess<string>
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
-const pSetTimeout = promisify(setTimeout)
 const require = createRequire(import.meta.url)
 
 // Start child processes used by all plugins
@@ -155,7 +154,7 @@ const startPlugin = async function ({
   } catch (error) {
     if (featureFlags.netlify_build_plugin_system_log) {
       // Wait for stderr to be flushed.
-      await pSetTimeout(0)
+      await setTimeout(0)
     }
 
     const spawnInfo = getSpawnInfo()

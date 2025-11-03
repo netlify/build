@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.4](https://github.com/netlify/build/compare/cache-utils-v6.0.3...cache-utils-v6.0.4) (2025-08-08)
+
+
+### Bug Fixes
+
+* remove `path-exists` (cache-utils) ([#6600](https://github.com/netlify/build/issues/6600)) ([2ea5a35](https://github.com/netlify/build/commit/2ea5a3508c9e6b8ed6e2175321e60deeb2692981))
+* remove code supporting versions of Node &lt; v15 ([#6599](https://github.com/netlify/build/issues/6599)) ([d9f55d3](https://github.com/netlify/build/commit/d9f55d35fbf4c1f37f2a6632a43566fb6d295ca1))
+
 ## [6.0.3](https://github.com/netlify/build/compare/cache-utils-v6.0.2...cache-utils-v6.0.3) (2025-05-29)
 
 

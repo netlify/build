@@ -95,19 +95,16 @@ matches one of the expressions, it inherits the configuration properties.
 The following properties are accepted:
 
 - `externalNodeModules`
-
   - _Type_: `array<string>`
 
   List of Node modules to include separately inside a node_modules directory.
 
 - `ignoredNodeModules`
-
   - _Type_: `array<string>`
 
   List of Node modules to keep out of the bundle.
 
 - `nodeBundler`
-
   - _Type_: `string`
   - _Default value_: `zisi`
 
@@ -116,7 +113,6 @@ The following properties are accepted:
   When the value is `esbuild_zisi`, `esbuild` will be used with a fallback to `zisi` in case of an error.
 
 - `nodeSourcemap`
-
   - _Type_: `boolean`
   - _Default value_: `false`
 
@@ -126,20 +122,17 @@ The following properties are accepted:
   Available only when `nodeBundler` is set to `esbuild` or `esbuild_zisi`.
 
 - `nodeVersion`
-
   - _Type_: `string`\
   - _Default value_: `18`
 
   The version of Node.js to use as the compilation target for bundlers. This is also used to determine the runtime
   reported in the manifest. Any valid and supported Node.js version is accepted. Examples:
-
   - `14.x`
   - `16.1.0`
   - `v18`
   - `nodejs18.x` (for backwards compatibility)
 
 - `rustTargetDirectory`
-
   - _Type_: `string`
   - _Default value_: Path to a temporary directory
 
@@ -150,7 +143,6 @@ The following properties are accepted:
   the target directory.
 
 - `name`
-
   - _Type_: `string`
   - _Default value_: undefined
 
@@ -158,7 +150,6 @@ The following properties are accepted:
   manifest for the specified function.
 
 - `generator`
-
   - _Type_: `string`
   - _Default value_: undefined
 
