@@ -105,6 +105,25 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.3.0](https://github.com/netlify/build/compare/build-v35.2.11...build-v35.3.0) (2025-11-03)
+
+
+### Features
+
+* make Ls0t secret scan more restrictive ([#6756](https://github.com/netlify/build/issues/6756)) ([867c2d4](https://github.com/netlify/build/commit/867c2d44f24c5ed91347233b4c379132eed378ad))
+
+
+### Bug Fixes
+
+* update edge_bundler_deno_v2 default value ([#6753](https://github.com/netlify/build/issues/6753)) ([30cd508](https://github.com/netlify/build/commit/30cd508fae3f8a38df5196f9cda1f6fd3ca9d253))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.8.4 to 14.8.5
+
 ## [35.2.11](https://github.com/netlify/build/compare/build-v35.2.10...build-v35.2.11) (2025-10-30)
 
 
