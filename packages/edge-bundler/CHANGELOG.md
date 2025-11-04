@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.8.6](https://github.com/netlify/build/compare/edge-bundler-v14.8.5...edge-bundler-v14.8.6) (2025-11-04)
+
+
+### Bug Fixes
+
+* remove references to `edge_bundler_deno_v2` feature flag ([#6764](https://github.com/netlify/build/issues/6764)) ([1420b86](https://github.com/netlify/build/commit/1420b86f956fab19711231f1116f95abf2d054d5))
+
 ## [14.8.5](https://github.com/netlify/build/compare/edge-bundler-v14.8.4...edge-bundler-v14.8.5) (2025-11-03)
 
 
