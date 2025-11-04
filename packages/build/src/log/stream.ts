@@ -50,7 +50,11 @@ const pushBuildCommandOutput = function (output: string, logsArray: string[]) {
 const pipedPluginProcesses = new WeakMap<ChildProcess, ReturnType<typeof pipePluginOutput>>()
 
 // Start plugin step output
-export const pipePluginOutput = function (childProcess: ChildProcess, logs: Logs, standardStreams: StandardStreams) {
+export const pipePluginOutput = function (
+  childProcess: ChildProcess,
+  logs: Logs,
+  standardStreams: StandardStreams,
+): LogsListeners | undefined {
   if (pipedPluginProcesses.has(childProcess)) {
     return pipedPluginProcesses.get(childProcess)
   }
@@ -84,7 +88,7 @@ export const unpipePluginOutput = async function (
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
+const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams): undefined {
   childProcess.stdout?.pipe(standardStreams.stdout)
   childProcess.stderr?.pipe(standardStreams.stderr)
 }
