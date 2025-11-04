@@ -9,14 +9,14 @@ import semver from 'semver'
 import tmp, { DirectoryResult } from 'tmp-promise'
 import { test, expect } from 'vitest'
 
-import { DenoBridge, LEGACY_DENO_VERSION_RANGE } from './bridge.js'
+import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
 const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
-  const latestVersion = semver.minVersion(LEGACY_DENO_VERSION_RANGE)?.version ?? ''
+  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })
 
@@ -139,7 +139,7 @@ test('Does inherit environment variables if `extendEnv` is not set', async () =>
 
 test('Provides actionable error message when downloaded binary cannot be executed', async () => {
   const tmpDir = await tmp.dir()
-  const latestVersion = semver.minVersion(LEGACY_DENO_VERSION_RANGE)?.version ?? ''
+  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })
 

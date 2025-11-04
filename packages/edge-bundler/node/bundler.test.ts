@@ -634,9 +634,6 @@ test('Is backwards compatible with Deno 1.x', async () => {
 
   await bundle([sourceDirectory], distPath, [], {
     basePath,
-    featureFlags: {
-      edge_bundler_deno_v2: true,
-    },
     systemLogger,
     vendorDirectory: vendorDirectory.path,
   })
