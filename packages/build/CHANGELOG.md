@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.3.2](https://github.com/netlify/build/compare/build-v35.3.1...build-v35.3.2) (2025-11-05)
+
+
+### Bug Fixes
+
+* don't pipe plugin output more than once at the time ([#6765](https://github.com/netlify/build/issues/6765)) ([08dad8d](https://github.com/netlify/build/commit/08dad8dad97d4748b4f83f2027181fa5b6456f80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.8 to ^24.0.9
+
 ## [35.3.1](https://github.com/netlify/build/compare/build-v35.3.0...build-v35.3.1) (2025-11-04)
 
 
