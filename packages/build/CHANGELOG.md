@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.3.3](https://github.com/netlify/build/compare/build-v35.3.2...build-v35.3.3) (2025-11-06)
+
+
+### Bug Fixes
+
+* revert "fix: don't pipe plugin output more than once at the time ([#6765](https://github.com/netlify/build/issues/6765))" ([#6769](https://github.com/netlify/build/issues/6769)) ([be6b5eb](https://github.com/netlify/build/commit/be6b5eb26c0402f7fef29fea4e5ed0a22439fe5b))
+
 ## [35.3.2](https://github.com/netlify/build/compare/build-v35.3.1...build-v35.3.2) (2025-11-05)
 
 
