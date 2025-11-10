@@ -1,3 +1,4 @@
+import { env } from 'node:process'
 import { gte } from 'semver'
 
 import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
@@ -29,10 +30,13 @@ export class Angular extends BaseFramework implements Framework {
 
   async detect(): Promise<DetectedFramework | undefined> {
     await super.detect()
-
+    const skipRuntime = env['NETLIFY_ANGULAR_RUNTIME_SKIP']
+    
     if (this.detected) {
       if (this.version && gte(this.version, '17.0.0-rc')) {
-        this.plugins.push('@netlify/angular-runtime')
+        if (skipRuntime !== '1' && skipRuntime !== 'true' {
+          this.plugins.push('@netlify/angular-runtime')
+        } 
         const angularJson = await this.project.fs.gracefullyReadFile('angular.json')
         if (angularJson) {
           const { projects, defaultProject } = JSON.parse(angularJson)
