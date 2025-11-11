@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.8.7](https://github.com/netlify/build/compare/edge-bundler-v14.8.6...edge-bundler-v14.8.7) (2025-11-11)
+
+
+### Bug Fixes
+
+* update deno run commands to set node-modules-dir to manual ([#6771](https://github.com/netlify/build/issues/6771)) ([64ce870](https://github.com/netlify/build/commit/64ce8700d93a48702e7cd6932a0fea03b0aac58a))
+
 ## [14.8.6](https://github.com/netlify/build/compare/edge-bundler-v14.8.5...edge-bundler-v14.8.6) (2025-11-04)
 
 
