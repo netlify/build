@@ -88,6 +88,7 @@ export const bundle = async ({
       '--quiet',
       '--code-splitting',
       '--allow-import',
+      '--node-modules-dir=manual',
       '--outdir',
       bundleDir.path,
       ...functions.map((func) => func.path),

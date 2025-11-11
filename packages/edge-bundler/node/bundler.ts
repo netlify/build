@@ -123,6 +123,10 @@ export const bundle = async (
     vendorDirectory,
   })
 
+  if (vendor) {
+    importMap.add(vendor.importMap)
+  }
+
   const bundles: Bundle[] = []
 
   if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
@@ -154,10 +158,6 @@ export const bundle = async (
     if (featureFlags.edge_bundler_generate_tarball) {
       bundles.push(await tarballPromise)
     }
-  }
-
-  if (vendor) {
-    importMap.add(vendor.importMap)
   }
 
   bundles.push(
