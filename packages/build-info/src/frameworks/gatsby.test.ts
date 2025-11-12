@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
@@ -6,6 +6,10 @@ import { Project } from '../project.js'
 
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
+})
+
+afterEach(() => {
+  vi.unstubAllEnvs()
 })
 
 test('should not add the plugin if the node version is below 12.13.0', async ({ fs }) => {
@@ -88,4 +92,16 @@ test('should detect a simple Gatsby 5 project', async ({ fs }) => {
       NODE_VERSION: '18',
     }),
   )
+})
+
+test('should not add the plugin if NETLIFY_SKIP_GATSBY_BUILD_PLUGIN is set', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
+    'gatsby-config.js': '',
+  })
+  fs.cwd = cwd
+  vi.stubEnv('NETLIFY_SKIP_GATSBY_BUILD_PLUGIN', 'true')
+  const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
+  expect(detected?.[0].id).toBe('gatsby')
+  expect(detected?.[0].plugins).toHaveLength(0)
 })
