@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.3.4](https://github.com/netlify/build/compare/build-v35.3.3...build-v35.3.4) (2025-11-11)
+
+
+### Bug Fixes
+
+* update deno run commands to set node-modules-dir to manual ([#6771](https://github.com/netlify/build/issues/6771)) ([64ce870](https://github.com/netlify/build/commit/64ce8700d93a48702e7cd6932a0fea03b0aac58a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.8.6 to 14.8.7
+
 ## [35.3.3](https://github.com/netlify/build/compare/build-v35.3.2...build-v35.3.3) (2025-11-06)
 
 
