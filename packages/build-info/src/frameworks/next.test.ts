@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { beforeEach, describe, expect, test } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../../tests/helpers.js'
 import { mockFileSystem } from '../../tests/mock-file-system.js'
@@ -34,6 +34,10 @@ describe('Next.js Plugin', () => {
     })
   })
 
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
     const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
     const frameworks = await project.detectFrameworks()
@@ -43,6 +47,14 @@ describe('Next.js Plugin', () => {
 
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
     const project = new Project(fs, cwd).setNodeVersion('v8.3.1')
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toHaveLength(0)
+  })
+
+  test('Should not install plugin when NETLIFY_NEXT_PLUGIN_SKIP is set', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
+    vi.stubEnv('NETLIFY_NEXT_PLUGIN_SKIP', 'true')
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
     expect(frameworks?.[0].plugins).toHaveLength(0)
