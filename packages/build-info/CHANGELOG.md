@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.10](https://github.com/netlify/build/compare/build-info-v10.0.9...build-info-v10.0.10) (2025-11-17)
+
+
+### Bug Fixes
+
+* centralize build plugin auto-enable escape hatches ([#6777](https://github.com/netlify/build/issues/6777)) ([09463eb](https://github.com/netlify/build/commit/09463ebca55312d6e2bfe0328a81a261aa249588))
+
 ## [10.0.9](https://github.com/netlify/build/compare/build-info-v10.0.8...build-info-v10.0.9) (2025-10-13)
 
 
