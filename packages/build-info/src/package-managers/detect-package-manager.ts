@@ -17,6 +17,10 @@ export type PkgManagerFields = {
   installCommand: string
   /** The package managers run command prefix */
   runCommand: string
+  /** The package managers command prefix for running a command in a locally installed package */
+  localPackageCommand: string
+  /** The package managers command prefix(s) for running a command in a non-installed package. This is sometimes the same as `localPackageCommand` */
+  remotePackageCommand: string[]
   /** The lock files a package manager is using */
   lockFiles: string[]
   /** Environment variable that can be used to force the usage of a package manager even though there is no lock file or a different lock file */
@@ -34,6 +38,8 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     name: PkgManager.YARN,
     installCommand: 'yarn install',
     runCommand: 'yarn run',
+    localPackageCommand: 'yarn',
+    remotePackageCommand: ['yarn', 'dlx'],
     lockFiles: ['yarn.lock'],
     forceEnvironment: 'NETLIFY_USE_YARN',
   },
@@ -41,6 +47,8 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     name: PkgManager.PNPM,
     installCommand: 'pnpm install',
     runCommand: 'pnpm run',
+    localPackageCommand: 'pnpm',
+    remotePackageCommand: ['pnpm', 'dlx'],
     lockFiles: ['pnpm-lock.yaml'],
     forceEnvironment: 'NETLIFY_USE_PNPM',
   },
@@ -48,14 +56,53 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     name: PkgManager.NPM,
     installCommand: 'npm install',
     runCommand: 'npm run',
+    localPackageCommand: 'npx',
+    remotePackageCommand: ['npx'],
     lockFiles: ['package-lock.json'],
   },
   [PkgManager.BUN]: {
     name: PkgManager.BUN,
     installCommand: 'bun install',
     runCommand: 'bun run',
+    localPackageCommand: 'bunx',
+    remotePackageCommand: ['bunx'],
     lockFiles: ['bun.lockb', 'bun.lock'],
   },
+}
+
+/**
+ * The environment variable `npm_config_user_agent` can be used to
+ * guess the package manager that was used to execute wrangler.
+ * It's imperfect (just like regular user agent sniffing!)
+ * but the package managers we support all set this property:
+ *
+ * - [npm](https://github.com/npm/cli/blob/1415b4bdeeaabb6e0ba12b6b1b0cc56502bd64ab/lib/utils/config/definitions.js#L1945-L1979)
+ * - [pnpm](https://github.com/pnpm/pnpm/blob/cd4f9341e966eb8b411462b48ff0c0612e0a51a7/packages/plugin-commands-script-runners/src/makeEnv.ts#L14)
+ * - [yarn](https://yarnpkg.com/advanced/lifecycle-scripts#environment-variables)
+ * - [bun](https://github.com/oven-sh/bun/blob/550522e99b303d8172b7b16c5750d458cb056434/src/Global.zig#L205)
+ */
+export function sniffUserAgent(): PkgManager | undefined {
+  const userAgent = process.env.npm_config_user_agent
+  if (userAgent === undefined) {
+    return undefined
+  }
+
+  if (userAgent.includes('yarn')) {
+    return PkgManager.YARN
+  }
+
+  if (userAgent.includes('pnpm')) {
+    return PkgManager.PNPM
+  }
+
+  if (userAgent.includes('bun')) {
+    return PkgManager.BUN
+  }
+
+  // npm should come last as it is included in the user agent strings of other package managers
+  if (userAgent.includes('npm')) {
+    return PkgManager.NPM
+  }
 }
 
 /**
@@ -74,6 +121,8 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * 3. a lock file that is present in this directory or up in the tree for workspaces
  */
 export const detectPackageManager = async (project: Project): Promise<PkgManagerFields | null> => {
+  const sniffedPkgManager = sniffUserAgent()
+
   try {
     const pkgPaths = await project.fs.findUpMultiple('package.json', {
       cwd: project.baseDirectory,
@@ -82,7 +131,7 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
 
     // if there is no package json than there is no package manager to detect
     if (!pkgPaths.length) {
-      return null
+      return sniffedPkgManager ? AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager] : null
     }
 
     for (const pkgPath of pkgPaths) {
@@ -122,7 +171,10 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
   } catch (error) {
     project.report(error)
   }
-  // always default to npm
-  // TODO: add some reporting here to log that we fall backed
+  if (sniffedPkgManager) {
+    return AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager]
+  }
+
+  // TODO: add some reporting here to log that we fall backe to NPM
   return AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM]
 }
