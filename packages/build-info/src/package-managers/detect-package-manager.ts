@@ -72,7 +72,7 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
 
 /**
  * The environment variable `npm_config_user_agent` can be used to
- * guess the package manager that was used to execute wrangler.
+ * guess the package manager that was used to execute a script.
  * It's imperfect (just like regular user agent sniffing!)
  * but the package managers we support all set this property:
  *
