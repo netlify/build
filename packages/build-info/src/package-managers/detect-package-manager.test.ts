@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
@@ -79,6 +79,19 @@ test('should fallback to npm if just a package.json is present there', async ({ 
   const pkgManager = await detectPackageManager(project)
   expect(pkgManager?.name).toBe('npm')
 })
+
+describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }])(
+  'should fallback to user agent if present',
+  ({ pm }) => {
+    test(`fallback ${pm}`, async ({ fs }) => {
+      vi.stubEnv('npm_config_user_agent', pm)
+      const cwd = mockFileSystem({})
+      const project = new Project(fs, cwd)
+      const pkgManager = await detectPackageManager(project)
+      expect(pkgManager?.name).toBe(pm)
+    })
+  },
+)
 
 test('should use yarn if there is a yarn.lock in the root', async ({ fs }) => {
   const cwd = mockFileSystem({
