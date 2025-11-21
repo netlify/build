@@ -128,19 +128,28 @@ export const bundle = async (
   }
 
   const bundles: Bundle[] = []
+  let tarballBundleDurationMs: number | undefined
 
   if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
-    const tarballPromise = bundleTarball({
-      basePath,
-      buildID,
-      debug,
-      deno,
-      distDirectory,
-      functions,
-      featureFlags,
-      importMap: importMap.clone(),
-      vendorDirectory: vendor?.directory,
-    })
+    const tarballPromise = (async () => {
+      const start = Date.now()
+
+      try {
+        return await bundleTarball({
+          basePath,
+          buildID,
+          debug,
+          deno,
+          distDirectory,
+          functions,
+          featureFlags,
+          importMap: importMap.clone(),
+          vendorDirectory: vendor?.directory,
+        })
+      } finally {
+        tarballBundleDurationMs = Date.now() - start
+      }
+    })()
 
     if (featureFlags.edge_bundler_dry_run_generate_tarball) {
       try {
@@ -214,6 +223,7 @@ export const bundle = async (
     internalFunctionConfig,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
+    bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },
   })
 
   await vendor?.cleanup()
