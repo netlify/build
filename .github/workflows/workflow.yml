@@ -25,12 +25,12 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: '24'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -52,7 +52,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
-        node-version: ['22']
+        node-version: ['24']
         # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
         deno-version: ['v2.4.2']
         include:
@@ -83,7 +83,7 @@ jobs:
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version != '18.14.0' }}
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -113,7 +113,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
-        node-version: ['22']
+        node-version: ['24']
         install-command: ['npm ci']
         machine: ['0', '1', '2', '3', '4']
         include:
@@ -168,7 +168,7 @@ jobs:
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version != '18.14.0' }}
       - name: corepack update
         # corepack version distributed with Node.js has a problem with new package manager releases,
         # so forcing fixed version of corepack here
