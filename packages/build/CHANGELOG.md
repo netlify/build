@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.4.0](https://github.com/netlify/build/compare/build-v35.3.5...build-v35.4.0) (2025-11-21)
+
+
+### Features
+
+* add tarball bundling timing metric for Edge Functions and expose it via manifest/schema ([#6786](https://github.com/netlify/build/issues/6786)) ([e1c7e95](https://github.com/netlify/build/commit/e1c7e95a451b06d983fa3b9ac96eb41c39b6866f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.8.7 to 14.9.0
+
 ## [35.3.5](https://github.com/netlify/build/compare/build-v35.3.4...build-v35.3.5) (2025-11-17)
 
 
