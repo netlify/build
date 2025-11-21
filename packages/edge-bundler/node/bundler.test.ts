@@ -787,6 +787,8 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
       const manifest = JSON.parse(manifestFile)
 
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
       const tarballPath = join(distPath, manifest.bundles[0].asset)
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
@@ -879,6 +881,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
         const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
         const manifest = JSON.parse(manifestFile)
 
+        expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
         expect(manifest.bundles.length).toBe(1)
         expect(manifest.bundles[0].format).toBe('eszip2')
 
