@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.0](https://github.com/netlify/build/compare/build-v35.4.0...build-v35.5.0) (2025-11-24)
+
+
+### Features
+
+* populate `NETLIFY_SKEW_PROTECTION_TOKEN` ([#6792](https://github.com/netlify/build/issues/6792)) ([1bfdd27](https://github.com/netlify/build/commit/1bfdd2726beb4443535bb44e8d60ff794d005548))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.9 to ^24.1.0
+
 ## [35.4.0](https://github.com/netlify/build/compare/build-v35.3.5...build-v35.4.0) (2025-11-21)
 
 
