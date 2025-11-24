@@ -21,6 +21,7 @@ export const getEnv = async function ({
   buildDir,
   branch,
   deployId,
+  skewProtectionToken,
   buildId,
   context,
   cachedEnv,
@@ -30,7 +31,7 @@ export const getEnv = async function ({
   }
 
   const internalEnv = getInternalEnv(cachedEnv)
-  const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
+  const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, skewProtectionToken, buildId, context })
   const [accountEnv, uiEnv, configFileEnv] = await getUserEnv({
     api,
     config,
@@ -95,6 +96,7 @@ const getGeneralEnv = async function ({
   buildDir,
   branch,
   deployId,
+  skewProtectionToken,
   buildId,
   context,
 }) {
@@ -104,6 +106,7 @@ const getGeneralEnv = async function ({
     SITE_ID: id,
     SITE_NAME: name,
     DEPLOY_ID: deployId,
+    NETLIFY_SKEW_PROTECTION_TOKEN: skewProtectionToken,
     BUILD_ID: buildId,
     ACCOUNT_ID: accountId,
     ...deployUrls,
