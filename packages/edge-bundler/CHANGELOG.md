@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.0](https://github.com/netlify/build/compare/edge-bundler-v14.8.7...edge-bundler-v14.9.0) (2025-11-21)
+
+
+### Features
+
+* add tarball bundling timing metric for Edge Functions and expose it via manifest/schema ([#6786](https://github.com/netlify/build/issues/6786)) ([e1c7e95](https://github.com/netlify/build/commit/e1c7e95a451b06d983fa3b9ac96eb41c39b6866f))
+
 ## [14.8.7](https://github.com/netlify/build/compare/edge-bundler-v14.8.6...edge-bundler-v14.8.7) (2025-11-11)
 
 

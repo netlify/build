@@ -49,9 +49,14 @@ export interface EdgeFunctionConfig {
   traffic_rules?: TrafficRules
 }
 
+interface BundlingTiming {
+  tarball_ms?: number
+}
+
 interface Manifest {
   bundler_version: string
   bundles: { asset: string; format: string }[]
+  bundling_timing?: BundlingTiming
   import_map?: string
   layers: { name: string; flag: string }[]
   routes: Route[]
@@ -68,6 +73,7 @@ interface GenerateManifestOptions {
   internalFunctionConfig?: Record<string, FunctionConfig>
   layers?: Layer[]
   userFunctionConfig?: Record<string, FunctionConfig>
+  bundlingTiming?: BundlingTiming
 }
 
 const removeEmptyConfigValues = (functionConfig: EdgeFunctionConfig) =>
@@ -149,6 +155,7 @@ const generateManifest = ({
   internalFunctionConfig = {},
   importMap,
   layers = [],
+  bundlingTiming,
 }: GenerateManifestOptions) => {
   const preCacheRoutes: Route[] = []
   const postCacheRoutes: Route[] = []
@@ -259,6 +266,9 @@ const generateManifest = ({
     layers,
     import_map: importMap,
     function_config: sanitizeEdgeFunctionConfig(manifestFunctionConfig),
+    ...(bundlingTiming && Object.values(bundlingTiming).some((value) => value !== undefined)
+      ? { bundling_timing: bundlingTiming }
+      : {}),
   }
   const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
 
