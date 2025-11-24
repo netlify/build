@@ -76,6 +76,11 @@ Default: automatically guessed`,
     describe: `Netlify Build ID.
 Default: automatically guessed`,
   },
+  skewProtectionToken: {
+    string: true,
+    describe: `Netlify Skew Protection token.`,
+    hidden: true,
+  },
   context: {
     string: true,
     describe: `Build context.
