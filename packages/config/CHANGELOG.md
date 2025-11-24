@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.1.0](https://github.com/netlify/build/compare/config-v24.0.9...config-v24.1.0) (2025-11-24)
+
+
+### Features
+
+* populate `NETLIFY_SKEW_PROTECTION_TOKEN` ([#6792](https://github.com/netlify/build/issues/6792)) ([1bfdd27](https://github.com/netlify/build/commit/1bfdd2726beb4443535bb44e8d60ff794d005548))
+
 ## [24.0.9](https://github.com/netlify/build/compare/config-v24.0.8...config-v24.0.9) (2025-11-05)
 
 
