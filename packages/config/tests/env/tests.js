@@ -257,9 +257,7 @@ test('Sets default BUILD_ID environment variable', async (t) => {
 test('Sets NETLIFY_SKEW_PROTECTION_TOKEN environment variable', async (t) => {
   const {
     env: { NETLIFY_SKEW_PROTECTION_TOKEN },
-  } = await new Fixture('./fixtures/empty')
-    .withFlags({ skewProtectionToken: 'test-token' })
-    .runWithConfigAsObject()
+  } = await new Fixture('./fixtures/empty').withFlags({ skewProtectionToken: 'test-token' }).runWithConfigAsObject()
   t.deepEqual(NETLIFY_SKEW_PROTECTION_TOKEN.sources, ['general'])
   t.is(NETLIFY_SKEW_PROTECTION_TOKEN.value, 'test-token')
 })

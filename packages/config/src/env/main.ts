@@ -31,7 +31,15 @@ export const getEnv = async function ({
   }
 
   const internalEnv = getInternalEnv(cachedEnv)
-  const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, skewProtectionToken, buildId, context })
+  const generalEnv = await getGeneralEnv({
+    siteInfo,
+    buildDir,
+    branch,
+    deployId,
+    skewProtectionToken,
+    buildId,
+    context,
+  })
   const [accountEnv, uiEnv, configFileEnv] = await getUserEnv({
     api,
     config,
