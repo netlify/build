@@ -356,6 +356,14 @@ test('--node-path is not used by core plugins', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('--skew-protection-token', async (t) => {
+  const output = await new Fixture('./fixtures/plugin_echo_env')
+    .withFlags({ skewProtectionToken: 'foobar' })
+    .runWithBuild()
+
+  t.true(output.includes(`"NETLIFY_SKEW_PROTECTION_TOKEN":"foobar"`))
+})
+
 test('featureFlags can be used programmatically', async (t) => {
   const output = await new Fixture('./fixtures/empty')
     .withFlags({ featureFlags: { test: true, testTwo: false } })

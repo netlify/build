@@ -86,6 +86,7 @@ const tExecBuild = async function ({
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
+  skewProtectionToken,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -107,6 +108,7 @@ const tExecBuild = async function ({
     buildId,
     testOpts,
     featureFlags,
+    skewProtectionToken,
   })
 
   const {

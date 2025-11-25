@@ -60,6 +60,7 @@ const INTERNAL_FLAGS = [
   'edgeFunctionsBootstrapURL',
   'eventHandlers',
   'logger',
+  'skewProtectionToken',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, 'eventHandlers', 'logger']
