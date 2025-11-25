@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.2](https://github.com/netlify/build/compare/build-v35.5.1...build-v35.5.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* pass skew protection token down to config ([#6797](https://github.com/netlify/build/issues/6797)) ([6ef4f12](https://github.com/netlify/build/commit/6ef4f12ba005d0c8bc33bce66b271a5280afc3ec))
+
 ## [35.5.1](https://github.com/netlify/build/compare/build-v35.5.0...build-v35.5.1) (2025-11-25)
 
 
