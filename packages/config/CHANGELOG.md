@@ -76,6 +76,15 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.1.1](https://github.com/netlify/build/compare/config-v24.1.0...config-v24.1.1) (2025-11-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.10 to ^14.0.11
+
 ## [24.1.0](https://github.com/netlify/build/compare/config-v24.0.9...config-v24.1.0) (2025-11-24)
 
 
