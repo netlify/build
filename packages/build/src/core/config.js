@@ -37,6 +37,7 @@ export const getConfigOpts = function ({
   buildId,
   testOpts,
   featureFlags,
+  skewProtectionToken,
 }) {
   return {
     config,
@@ -58,6 +59,7 @@ export const getConfigOpts = function ({
     env: envOpt,
     testOpts,
     featureFlags,
+    skewProtectionToken,
   }
 }
 
