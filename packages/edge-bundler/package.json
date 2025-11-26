@@ -45,7 +45,7 @@
     "@netlify/edge-functions-bootstrap": "^2.17.1",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
-    "@types/uuid": "^10.0.0",
+    "@types/uuid": "^11.0.0",
     "@vitest/coverage-v8": "^3.0.0",
     "archiver": "^7.0.0",
     "chalk": "^5.4.0",
