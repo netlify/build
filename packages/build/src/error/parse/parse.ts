@@ -97,6 +97,8 @@ export const parseErrorInfo = function (error: Error): BasicErrorInfo {
 
 // Retrieve title to print in logs
 const getTitle = function (title: TitleFunction | string, errorInfo: ErrorInfo) {
+  console.log('title function: ', title.toString())
+  console.log('errorInfo: ', errorInfo)
   if (typeof title !== 'function') {
     return title
   }
