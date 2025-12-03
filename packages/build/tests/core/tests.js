@@ -323,7 +323,7 @@ test('--dry with build.command but no netlify.toml', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('--node-path is used by build.command', async (t) => {
+test.serial('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
   const output = await new Fixture('./fixtures/build_command')
     .withFlags({ nodePath: path })

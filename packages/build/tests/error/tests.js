@@ -85,7 +85,7 @@ test('Unhandled promises', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Exits in plugins', async (t) => {
+test.serial('Exits in plugins', async (t) => {
   const output = await new Fixture('./fixtures/plugin_exit').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })

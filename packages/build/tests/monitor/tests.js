@@ -66,7 +66,7 @@ test('Report utils.build.cancelBuild()', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Report IPC error', async (t) => {
+test.serial('Report IPC error', async (t) => {
   const output = await new Fixture('./fixtures/ipc')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()

@@ -338,7 +338,7 @@ test('Plugin events that do not emit to stderr/stdout are hidden from the logs',
   t.snapshot(normalizeOutput(output))
 })
 
-test('Plugin errors that occur during the loading phase are piped to system logs', async (t) => {
+test.serial('Plugin errors that occur during the loading phase are piped to system logs', async (t) => {
   const systemLogFile = await tmp.file()
   const output = await new Fixture('./fixtures/syntax_error')
     .withFlags({

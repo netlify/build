@@ -7,7 +7,7 @@ const getStackLinesCount = function (returnValue) {
   return returnValue.split('\n').filter((line) => line.trim().startsWith('at ')).length
 }
 
-test('Clean stack traces of build.command', async (t) => {
+test.serial('Clean stack traces of build.command', async (t) => {
   const output = await new Fixture('./fixtures/build_command').withFlags({ debug: false }).runWithBuild()
   t.is(getStackLinesCount(output), 0)
 })
