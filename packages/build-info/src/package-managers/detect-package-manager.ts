@@ -120,8 +120,11 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * 2. environment variable that forces the usage
  * 3. a lock file that is present in this directory or up in the tree for workspaces
  */
-export const detectPackageManager = async (project: Project): Promise<PkgManagerFields | null> => {
-  const sniffedPkgManager = sniffUserAgent()
+export const detectPackageManager = async (
+  project: Project,
+  enableSniffing = false,
+): Promise<PkgManagerFields | null> => {
+  const sniffedPkgManager = enableSniffing ? sniffUserAgent() : undefined
 
   try {
     const pkgPaths = await project.fs.findUpMultiple('package.json', {

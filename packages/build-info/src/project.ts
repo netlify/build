@@ -209,7 +209,7 @@ export class Project {
   }
 
   /** Detects the used package Manager */
-  async detectPackageManager() {
+  async detectPackageManager(enableSniffing = false) {
     this.logger.debug('[project.ts]: detectPackageManager')
     // if the packageManager is undefined, the detection was not run.
     // if it is an object or null it has already run
@@ -217,7 +217,7 @@ export class Project {
       return this.packageManager
     }
     try {
-      this.packageManager = await detectPackageManager(this)
+      this.packageManager = await detectPackageManager(this, enableSniffing)
       await this.events.emit('detectPackageManager', this.packageManager)
       return this.packageManager
     } catch {

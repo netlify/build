@@ -87,8 +87,11 @@ describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }])(
       vi.stubEnv('npm_config_user_agent', pm)
       const cwd = mockFileSystem({})
       const project = new Project(fs, cwd)
-      const pkgManager = await detectPackageManager(project)
+      const pkgManager = await detectPackageManager(project, true)
       expect(pkgManager?.name).toBe(pm)
+
+      const pkgManagerNoSniff = await detectPackageManager(project)
+      expect(pkgManagerNoSniff?.name).toBeUndefined()
     })
   },
 )
