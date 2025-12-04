@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.0.11](https://github.com/netlify/build/compare/build-info-v10.0.10...build-info-v10.0.11) (2025-12-04)
+
+
+### Bug Fixes
+
+* exclude React Router from Vite detection ([#6806](https://github.com/netlify/build/issues/6806)) ([ddc4a4a](https://github.com/netlify/build/commit/ddc4a4a13b05e68fe508bc833528dfd1971249dd))
+
 ## [10.0.10](https://github.com/netlify/build/compare/build-info-v10.0.9...build-info-v10.0.10) (2025-11-17)
 
 
