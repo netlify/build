@@ -67,7 +67,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^8.0.0",
-    "@netlify/blobs": "^10.4.1",
+    "@netlify/blobs": "^10.4.2",
     "@netlify/cache-utils": "^6.0.4",
     "@netlify/config": "^24.1.1",
     "@netlify/edge-bundler": "14.9.0",
@@ -85,7 +85,7 @@
     "fdir": "^6.0.1",
     "figures": "^6.0.0",
     "filter-obj": "^6.0.0",
-    "hot-shots": "11.2.0",
+    "hot-shots": "11.3.0",
     "indent-string": "^5.0.0",
     "is-plain-obj": "^4.0.0",
     "keep-func-props": "^6.0.0",
