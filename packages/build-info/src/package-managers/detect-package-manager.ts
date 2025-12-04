@@ -2,6 +2,11 @@ import { SemVer, parse } from 'semver'
 
 import type { Project } from '../project.js'
 
+export type DetectPackageManagerOptions = {
+  /** Enable sniffing the `npm_config_user_agent` environment variable to detect the package manager */
+  enableUserAgentSniffing?: boolean
+}
+
 // the value of the enum should match the values that can be specified inside the `packageManager` field of a `package.json`
 export const enum PkgManager {
   YARN = 'yarn',
@@ -122,9 +127,9 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  */
 export const detectPackageManager = async (
   project: Project,
-  enableSniffing = false,
+  options?: DetectPackageManagerOptions,
 ): Promise<PkgManagerFields | null> => {
-  const sniffedPkgManager = enableSniffing ? sniffUserAgent(project) : undefined
+  const sniffedPkgManager = options?.enableUserAgentSniffing ? sniffUserAgent(project) : undefined
 
   try {
     const pkgPaths = await project.fs.findUpMultiple('package.json', {
