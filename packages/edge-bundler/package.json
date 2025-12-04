@@ -42,7 +42,7 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@netlify/edge-functions-bootstrap": "^3.0.0",
+    "@netlify/edge-functions-bootstrap": "^3.1.0",
     "@types/node": "^18.19.111",
     "@types/semver": "^7.3.9",
     "@vitest/coverage-v8": "^3.0.0",
