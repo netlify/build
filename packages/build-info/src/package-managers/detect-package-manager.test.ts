@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
@@ -84,9 +84,8 @@ describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }])(
   'should fallback to user agent if present',
   ({ pm }) => {
     test(`fallback ${pm}`, async ({ fs }) => {
-      vi.stubEnv('npm_config_user_agent', pm)
       const cwd = mockFileSystem({})
-      const project = new Project(fs, cwd)
+      const project = new Project(fs, cwd).setEnvironment({ npm_config_user_agent: pm })
       const pkgManager = await detectPackageManager(project, true)
       expect(pkgManager?.name).toBe(pm)
 

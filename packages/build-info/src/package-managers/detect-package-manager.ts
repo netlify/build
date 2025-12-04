@@ -81,8 +81,8 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
  * - [yarn](https://yarnpkg.com/advanced/lifecycle-scripts#environment-variables)
  * - [bun](https://github.com/oven-sh/bun/blob/550522e99b303d8172b7b16c5750d458cb056434/src/Global.zig#L205)
  */
-export function sniffUserAgent(): PkgManager | undefined {
-  const userAgent = process.env.npm_config_user_agent
+export function sniffUserAgent(project: Project): PkgManager | undefined {
+  const userAgent = project.getEnv('npm_config_user_agent')
   if (userAgent === undefined) {
     return undefined
   }
@@ -124,7 +124,7 @@ export const detectPackageManager = async (
   project: Project,
   enableSniffing = false,
 ): Promise<PkgManagerFields | null> => {
-  const sniffedPkgManager = enableSniffing ? sniffUserAgent() : undefined
+  const sniffedPkgManager = enableSniffing ? sniffUserAgent(project) : undefined
 
   try {
     const pkgPaths = await project.fs.findUpMultiple('package.json', {

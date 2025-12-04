@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { afterEach, beforeEach, vi } from 'vitest'
+import { afterEach, vi } from 'vitest'
 
 vi.mock('fs', async () => {
   const unionFs: any = (await import('unionfs')).default
@@ -11,10 +11,6 @@ vi.mock('fs', async () => {
 
   const united = unionFs.use(fs)
   return { default: united, ...united }
-})
-
-beforeEach(() => {
-  vi.stubEnv('npm_config_user_agent', undefined)
 })
 
 // cleanup after each test as a fallback if someone forgot to call it
