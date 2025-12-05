@@ -182,6 +182,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { functions: 'functions' } }),
   },
   {
+    property: 'build.ignore',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ build: { ignore: 'ignore' } }),
+  },
+  {
     property: 'build.edge_functions',
     check: isString,
     message: 'must be a string.',
