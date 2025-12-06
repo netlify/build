@@ -42,6 +42,7 @@ import { SvelteKit } from './svelte-kit.js'
 import { Svelte } from './svelte.js'
 import { TanStackRouter } from './tanstack-router.js'
 import { TanStackStart } from './tanstack-start.js'
+import { Vike } from './vike.js'
 import { Vite } from './vite.js'
 import { Vue } from './vue.js'
 import { VuePress } from './vuepress.js'
@@ -86,6 +87,7 @@ export const frameworks = [
   Zola,
   Observable,
   Analog,
+  Vike,
 
   // Front-end frameworks
   Angular,
