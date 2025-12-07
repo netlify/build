@@ -73,6 +73,11 @@ test('build: object', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('build.ignore: string', async (t) => {
+  const output = await new Fixture('./fixtures/build_ignore_string').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('build.publish: string', async (t) => {
   const output = await new Fixture('./fixtures/build_publish_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
