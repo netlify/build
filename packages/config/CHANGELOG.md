@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.2.0](https://github.com/netlify/build/compare/config-v24.1.2...config-v24.2.0) (2025-12-07)
+
+
+### Features
+
+* `build.ignore` validation ([#6813](https://github.com/netlify/build/issues/6813)) ([4988fe9](https://github.com/netlify/build/commit/4988fe960a257873899d3b16b66aa83c225b1e6f))
+
 ## [24.1.2](https://github.com/netlify/build/compare/config-v24.1.1...config-v24.1.2) (2025-12-04)
 
 
