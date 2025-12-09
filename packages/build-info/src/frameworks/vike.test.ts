@@ -37,7 +37,7 @@ test('detects a Vike site', async ({ fs }) => {
 
   expect(detected?.[0]?.id).toBe('vike')
   expect(detected?.[0]?.build?.command).toBe('vike build')
-  expect(detected?.[0]?.build?.directory).toBe('dist')
+  expect(detected?.[0]?.build?.directory).toBe('dist/client')
   expect(detected?.[0]?.dev?.command).toBe('vike dev')
   expect(detected?.[0]?.dev?.port).toBe(3000)
 })

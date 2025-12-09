@@ -13,7 +13,7 @@ export class Vike extends BaseFramework implements Framework {
 
   build = {
     command: 'vike build',
-    directory: 'dist',
+    directory: 'dist/client',
   }
 
   logo = {
