@@ -16,6 +16,7 @@ import { Grunt } from './grunt.js'
 import { Gulp } from './gulp.js'
 import { Harp } from './harp.js'
 import { Hexo } from './hexo.js'
+import { Hono } from './hono.js'
 import { Hugo } from './hugo.js'
 import { Hydrogen } from './hydrogen.js'
 import { Jekyll } from './jekyll.js'
@@ -86,6 +87,9 @@ export const frameworks = [
   Zola,
   Observable,
   Analog,
+
+  // Back-end frameworks
+  Hono,
 
   // Front-end frameworks
   Angular,
