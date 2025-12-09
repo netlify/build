@@ -4,7 +4,7 @@ export class Waku extends BaseFramework implements Framework {
   readonly id = 'waku'
   name = 'Waku'
   npmDependencies = ['waku']
-  configFiles = ['waku.config.ts', 'waku.config.ts']
+  configFiles = ['waku.config.ts', 'waku.config.js']
   category = Category.SSG
 
   dev = {
