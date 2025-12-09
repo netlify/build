@@ -40,7 +40,7 @@ describe('waku', () => {
     const detected = await new Project(fs, cwd).detectFrameworks()
     expect(detected?.[0].id).toBe('waku')
     expect(detected?.[0].build.command).toBe('waku build')
-    expect(detected?.[0].build.directory).toBe('dist')
+    expect(detected?.[0].build.directory).toBe('dist/public')
     expect(detected?.[0].dev?.command).toBe('waku dev')
   })
 

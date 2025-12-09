@@ -14,7 +14,7 @@ export class Waku extends BaseFramework implements Framework {
 
   build = {
     command: 'waku build',
-    directory: 'dist',
+    directory: 'dist/public',
   }
 
   logo = {
