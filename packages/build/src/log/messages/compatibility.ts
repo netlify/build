@@ -140,10 +140,10 @@ const getUpgradeInstruction = function (loadedFrom, origin) {
   }
 
   if (origin === 'ui') {
-    return 'To upgrade this plugin, please uninstall and re-install it from the Netlify plugins directory (https://app.netlify.com/plugins)'
+    return 'To upgrade this plugin, go to Project Configuration > Build & deploy > Build settings in your site dashboard'
   }
 
-  return 'To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)'
+  return 'To upgrade this plugin, please remove it from "netlify.toml" and install it from Project Configuration > Build & deploy > Build settings in your site dashboard instead'
 }
 
 // Print a warning message when plugins are using a version that is too recent
