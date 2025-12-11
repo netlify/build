@@ -34,10 +34,15 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],
@@ -167,10 +172,15 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],
@@ -243,10 +253,15 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],
