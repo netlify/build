@@ -6,6 +6,7 @@ import { getBuildCommands, getDevCommands } from '../get-commands.js'
 import { Project } from '../project.js'
 
 export enum Category {
+  BackendFramework = 'backend_framework',
   FrontendFramework = 'frontend_framework',
   SSG = 'static_site_generator',
   BuildTool = 'build_tool',
@@ -136,7 +137,7 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
 
   // Secondary sorting on Category
   if (sort === 0) {
-    const categoryRanking = [Category.FrontendFramework, Category.BuildTool, Category.SSG]
+    const categoryRanking = [Category.BackendFramework, Category.FrontendFramework, Category.BuildTool, Category.SSG]
     return categoryRanking.indexOf(b.category) - categoryRanking.indexOf(a.category)
   }
 
