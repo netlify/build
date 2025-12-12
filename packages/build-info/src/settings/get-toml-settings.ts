@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/js'
-import { parse } from '@iarna/toml'
+import { parse } from 'smol-toml'
 
 import { FileSystem } from '../file-system.js'
 import { Project } from '../project.js'
