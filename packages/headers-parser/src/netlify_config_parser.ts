@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import { parse as loadToml } from '@iarna/toml'
+import { parse as loadToml } from 'smol-toml'
 import { pathExists } from 'path-exists'
 
 import { splitResults } from './results.js'
