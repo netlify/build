@@ -20,4 +20,5 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   netlify_build_updated_plugin_compatibility: false,
   netlify_build_plugin_system_log: false,
   edge_bundler_generate_tarball: false,
+  netlify_build_structured_buildbot_logs: false,
 }

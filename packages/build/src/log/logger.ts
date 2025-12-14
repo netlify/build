@@ -218,3 +218,34 @@ export const addOutputFlusher = (logs: Logs, outputFlusher: OutputFlusher): Logs
   ...logs,
   outputFlusher,
 })
+
+// Prefix used for structured logs that can be parsed by the buildbot
+const STRUCTURED_LOG_PREFIX = '___nfslog'
+
+/**
+ * Emits a structured log that can be parsed by the buildbot.
+ * Only logs when running in buildbot mode (not locally) and when the
+ * `netlify_build_structured_buildbot_logs` feature flag is enabled.
+ *
+ * Format: `___nfslog {type} {JSON.stringify(payload)}`
+ */
+export const structuredLog = function ({
+  logs,
+  type,
+  payload,
+  isRunningLocally,
+  featureFlags,
+}: {
+  logs: Logs | undefined
+  type: string
+  payload: Record<string, unknown>
+  isRunningLocally: boolean
+  featureFlags: Record<string, boolean>
+}): void {
+  if (isRunningLocally || !featureFlags.netlify_build_structured_buildbot_logs) {
+    return
+  }
+
+  const message = `${STRUCTURED_LOG_PREFIX} ${type} ${JSON.stringify(payload)}`
+  log(logs, message)
+}
