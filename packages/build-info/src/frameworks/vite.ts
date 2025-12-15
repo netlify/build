@@ -20,6 +20,7 @@ export class Vite extends BaseFramework implements Framework {
     '@sveltejs/kit',
     '@analogjs/platform',
     '@react-router/dev',
+    'vike',
   ]
   category = Category.BuildTool
 
