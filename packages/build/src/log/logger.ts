@@ -239,7 +239,7 @@ export const structuredLog = function ({
   logs: Logs | undefined
   type: string
   payload: Record<string, unknown>
-  isRunningLocally: boolean
+  isRunningLocally: boolean | string
   featureFlags: Record<string, boolean>
 }): void {
   if (isRunningLocally || !featureFlags.netlify_build_structured_buildbot_logs) {

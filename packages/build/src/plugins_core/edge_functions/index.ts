@@ -37,7 +37,7 @@ const coreStep = async function ({
 }: {
   buildDir: string
   packagePath: string
-  constants: Record<string, string | boolean>
+  constants: Record<string, string>
   debug: boolean
   systemLog(...args: any[]): void
   featureFlags: Record<string, any>
@@ -154,7 +154,7 @@ const coreStep = async function ({
         routes: manifest.routes,
         postCacheRoutes: manifest.post_cache_routes,
       },
-      isRunningLocally: Boolean(isRunningLocally),
+      isRunningLocally,
       featureFlags,
     })
 
