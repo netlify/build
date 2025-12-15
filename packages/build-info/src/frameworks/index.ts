@@ -88,7 +88,7 @@ export const frameworks = [
   Zola,
   Observable,
   Analog,
-  Vite,
+  Vike,
   Waku,
 
   // Front-end frameworks
