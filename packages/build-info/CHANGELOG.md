@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.2.0](https://github.com/netlify/build/compare/build-info-v10.1.0...build-info-v10.2.0) (2025-12-16)
+
+
+### Features
+
+* include user agent sniffing ([#6783](https://github.com/netlify/build/issues/6783)) ([7d97824](https://github.com/netlify/build/commit/7d97824eb9eed5cd14dfce4cca7f3d67ec0dd9eb))
+
 ## [10.1.0](https://github.com/netlify/build/compare/build-info-v10.0.11...build-info-v10.1.0) (2025-12-15)
 
 
