@@ -105,6 +105,49 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.5](https://github.com/netlify/build/compare/build-v35.5.4...build-v35.5.5) (2025-12-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.3 ([#6830](https://github.com/netlify/build/issues/6830)) ([e39ec24](https://github.com/netlify/build/commit/e39ec2420cbdc0acb146e47d11024bf895c840b6))
+* **deps:** update dependency hot-shots to v11.4.0 ([#6827](https://github.com/netlify/build/issues/6827)) ([23a90f1](https://github.com/netlify/build/commit/23a90f115f0196b840441c6bcb41f7a7ce2762a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.15 to ^6.2.16
+    * @netlify/zip-it-and-ship-it bumped from 14.1.15 to 14.1.16
+
+## [35.5.4](https://github.com/netlify/build/compare/build-v35.5.3...build-v35.5.4) (2025-12-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.1.2 to ^24.2.0
+
+## [35.5.3](https://github.com/netlify/build/compare/build-v35.5.2...build-v35.5.3) (2025-12-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.2 ([#6810](https://github.com/netlify/build/issues/6810)) ([8cdd046](https://github.com/netlify/build/commit/8cdd04690677e0fbb967a7eb0e64571b8021f46a))
+* **deps:** update dependency hot-shots to v11.3.0 ([#6805](https://github.com/netlify/build/issues/6805)) ([2830c89](https://github.com/netlify/build/commit/2830c8956dab59022eb89a1bb88b7dcf52fe6038))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.1.1 to ^24.1.2
+    * @netlify/edge-bundler bumped from 14.9.0 to 14.9.1
+    * @netlify/functions-utils bumped from ^6.2.14 to ^6.2.15
+    * @netlify/zip-it-and-ship-it bumped from 14.1.14 to 14.1.15
+
 ## [35.5.2](https://github.com/netlify/build/compare/build-v35.5.1...build-v35.5.2) (2025-11-25)
 
 
