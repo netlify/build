@@ -1,5 +1,7 @@
 import { access } from 'node:fs/promises'
-import { version as nodeVersion } from 'node:process'
+import { AsyncLocalStorage } from 'node:async_hooks'
+import { promises as fs } from 'fs'
+import { platform, version as nodeVersion } from 'node:process'
 import { join } from 'path'
 
 import { getDeployStore } from '@netlify/blobs'
@@ -8,9 +10,31 @@ import { Fixture } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
 import semver from 'semver'
+import { spyOn } from 'tinyspy'
 import tmp from 'tmp-promise'
 
 const TOKEN = 'test'
+
+let fetchSpy
+
+const fetchCustomImplementationStore = new AsyncLocalStorage()
+
+test.before(() => {
+  const origFetch = globalThis.fetch.bind(globalThis)
+  fetchSpy = spyOn(globalThis, 'fetch', (...args) => {
+    const customFetchImpl = fetchCustomImplementationStore.getStore()?.fetchImplementation
+    if (customFetchImpl) {
+      // we pass origFetch as first argument to allow custom implementation to still use it
+      return customFetchImpl(origFetch, ...args)
+    }
+
+    return origFetch(...args)
+  })
+})
+
+test.after(() => {
+  fetchSpy.restore()
+})
 
 test.beforeEach(async (t) => {
   const port = await getPort()
@@ -222,3 +246,56 @@ if (semver.gte(nodeVersion, '18.19.0')) {
     t.deepEqual(blob3.metadata, { some: 'metadata' })
   })
 }
+
+test.serial('Blobs upload failure print full error stack and cause to systemlog', async (t) => {
+  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+
+  const systemLogFile = await tmp.file()
+
+  const {
+    success,
+    logs: { stdout, stderr },
+  } = await fetchCustomImplementationStore.run(
+    {
+      fetchImplementation: (origFetch, ...args) => {
+        if (
+          typeof args[0] === 'string' &&
+          args[0].includes('api/v1/blobs') &&
+          typeof args[1] === 'object' &&
+          args[1].method === 'put'
+        ) {
+          throw new Error('Simulated upload error with cause', {
+            cause: new Error('Outer internal error', { cause: new Error('Nested internal error') }),
+          })
+        }
+        console.log('fetch called', ...args)
+        return origFetch(...args)
+      },
+    },
+    () =>
+      fixture
+        .withFlags({
+          deployId: 'abc123',
+          siteId: 'test',
+          token: TOKEN,
+          offline: true,
+          cwd: fixture.repositoryRoot,
+          debug: false,
+          systemLogFile: systemLogFile.fd,
+        })
+        .runBuildProgrammatic(),
+  )
+
+  t.false(success)
+
+  // No file descriptors on Windows, so system logging doesn't work.
+  if (platform !== 'win32') {
+    const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+    // nested internal error visible in system log
+    t.true(systemLog.includes('Nested internal error'))
+  }
+
+  // internals don't leak to regular output
+  t.false(stdout.join('\n').includes('Nested internal error'))
+  t.false(stderr.join('\n').includes('Nested internal error'))
+})
