@@ -105,6 +105,29 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.7](https://github.com/netlify/build/compare/build-v35.5.6...build-v35.5.7) (2025-12-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.4 ([#6845](https://github.com/netlify/build/issues/6845)) ([8b4e2d3](https://github.com/netlify/build/commit/8b4e2d30695b3280dadc6bec7bf618e60e7a0eb5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.1 to 14.9.2
+    * @netlify/functions-utils bumped from ^6.2.16 to ^6.2.17
+    * @netlify/zip-it-and-ship-it bumped from 14.1.16 to 14.1.17
+
+## [35.5.6](https://github.com/netlify/build/compare/build-v35.5.5...build-v35.5.6) (2025-12-17)
+
+
+### Bug Fixes
+
+* print full error to system logs on blob upload failures ([#6843](https://github.com/netlify/build/issues/6843)) ([00d4501](https://github.com/netlify/build/commit/00d450114a4b00f13031f3fb5de661afbbc6bc99))
+
 ## [35.5.5](https://github.com/netlify/build/compare/build-v35.5.4...build-v35.5.5) (2025-12-08)
 
 

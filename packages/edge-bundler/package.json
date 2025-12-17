@@ -1,6 +1,6 @@
 {
   "name": "@netlify/edge-bundler",
-  "version": "14.9.1",
+  "version": "14.9.2",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
   "main": "./dist/node/index.js",
@@ -64,7 +64,7 @@
     "better-ajv-errors": "^1.2.0",
     "common-path-prefix": "^3.0.0",
     "env-paths": "^3.0.0",
-    "esbuild": "0.27.1",
+    "esbuild": "0.27.2",
     "execa": "^8.0.0",
     "find-up": "^7.0.0",
     "get-port": "^7.0.0",
