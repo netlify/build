@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.6](https://github.com/netlify/build/compare/build-v35.5.5...build-v35.5.6) (2025-12-17)
+
+
+### Bug Fixes
+
+* print full error to system logs on blob upload failures ([#6843](https://github.com/netlify/build/issues/6843)) ([00d4501](https://github.com/netlify/build/commit/00d450114a4b00f13031f3fb5de661afbbc6bc99))
+
 ## [35.5.5](https://github.com/netlify/build/compare/build-v35.5.4...build-v35.5.5) (2025-12-08)
 
 
