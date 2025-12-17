@@ -268,7 +268,6 @@ test.serial('Blobs upload failure print full error stack and cause to systemlog'
             cause: new Error('Outer internal error', { cause: new Error('Nested internal error') }),
           })
         }
-        console.log('fetch called', ...args)
         return origFetch(...args)
       },
     },
