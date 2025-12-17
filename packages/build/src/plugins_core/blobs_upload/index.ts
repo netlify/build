@@ -1,4 +1,5 @@
 import { getDeployStore } from '@netlify/blobs'
+import { inspect } from 'node:util'
 import pMap from 'p-map'
 
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
@@ -69,6 +70,14 @@ const coreStep: CoreStepFunction = async function ({
     )
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
+
+    try {
+      systemLog(
+        `Error uploading blobs to deploy store full error: ${inspect(err, { colors: false, compact: true, maxStringLength: Infinity, maxArrayLength: Infinity, depth: Infinity, breakLength: Infinity })}`,
+      )
+    } catch {
+      // systemLog is meant for debugging purposes, we should not ever throw if it fails
+    }
 
     throw new Error(`Failed while uploading blobs to deploy store`)
   }
