@@ -1,6 +1,5 @@
-import { access } from 'node:fs/promises'
 import { AsyncLocalStorage } from 'node:async_hooks'
-import { promises as fs } from 'fs'
+import { access, readFile } from 'node:fs/promises'
 import { platform, version as nodeVersion } from 'node:process'
 import { join } from 'path'
 
@@ -289,7 +288,7 @@ test.serial('Blobs upload failure print full error stack and cause to systemlog'
 
   // No file descriptors on Windows, so system logging doesn't work.
   if (platform !== 'win32') {
-    const systemLog = await fs.readFile(systemLogFile.path, { encoding: 'utf8' })
+    const systemLog = await readFile(systemLogFile.path, { encoding: 'utf8' })
     // nested internal error visible in system log
     t.true(systemLog.includes('Nested internal error'))
   }
