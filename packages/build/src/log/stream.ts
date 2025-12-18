@@ -78,11 +78,11 @@ export const unpipePluginOutput = async function (
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await setTimeout(0)
 
-  if (!logsAreBuffered(logs)) {
-    return unstreamOutput(childProcess, standardStreams)
+  if (logsAreBuffered(logs)) {
+    unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
+  } else {
+    unstreamOutput(childProcess, standardStreams)
   }
-
-  unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
 
   pipedPluginProcesses.delete(childProcess)
 }
