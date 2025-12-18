@@ -21,8 +21,9 @@ export enum Accuracy {
 }
 
 export enum VersionAccuracy {
-  NodeModules = 2, // High accuracy: read from installed package in node_modules
-  PackageJSON = 1, // Low accuracy: parsed from package.json dependency specifier
+  NodeModules = 'node_modules', // High accuracy: read from installed package in node_modules
+  PackageJSONPinned = 'package_json_pinned', // Medium accuracy: exact pinned version from package.json (e.g., "1.2.3")
+  PackageJSON = 'package_json', // Low accuracy: parsed from package.json dependency range (e.g., "^1.2.3")
 }
 
 export type PollingStrategy = {
@@ -277,13 +278,24 @@ export abstract class BaseFramework implements Framework {
         }
       }
 
-      // coerce to parse syntax like ~0.1.2 or ^1.2.3
       const matchedDepVersion = allDeps[matchedDepName]
-      const versionFromPackageJSON = parse(coerce(matchedDepVersion)) || undefined
-      if (versionFromPackageJSON) {
+
+      // Try to parse without coercing first to detect pinned versions (e.g., "1.2.3")
+      const pinnedVersion = parse(matchedDepVersion)
+      if (pinnedVersion) {
         return {
           name: matchedDepName,
-          version: versionFromPackageJSON,
+          version: pinnedVersion,
+          versionAccuracy: VersionAccuracy.PackageJSONPinned,
+        }
+      }
+
+      // Coerce to parse syntax like ~0.1.2 or ^1.2.3
+      const coercedVersion = parse(coerce(matchedDepVersion)) || undefined
+      if (coercedVersion) {
+        return {
+          name: matchedDepName,
+          version: coercedVersion,
           versionAccuracy: VersionAccuracy.PackageJSON,
         }
       }

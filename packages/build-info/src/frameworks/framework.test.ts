@@ -187,7 +187,22 @@ describe('detect framework version', () => {
 })
 
 describe('detected framework version accuracy', () => {
-  test('should mark version from package.json with low accuracy', async ({ fs }) => {
+  test('should mark pinned version from package.json with medium accuracy', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '2.0.0' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBe(VersionAccuracy.PackageJSONPinned)
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      name: '@11ty/eleventy',
+      version: '2.0.0',
+      versionAccuracy: VersionAccuracy.PackageJSONPinned,
+    })
+  })
+
+  test('should mark range version from package.json with low accuracy', async ({ fs }) => {
     const cwd = mockFileSystem({
       'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
     })
