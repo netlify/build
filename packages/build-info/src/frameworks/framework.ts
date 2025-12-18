@@ -20,6 +20,11 @@ export enum Accuracy {
   NPMHoisted = 1, // Matched the npm dependency but in a folder up the provided path
 }
 
+export enum VersionAccuracy {
+  NodeModules = 2, // High accuracy: read from installed package in node_modules
+  PackageJSON = 1, // Low accuracy: parsed from package.json dependency specifier
+}
+
 export type PollingStrategy = {
   // TODO(serhalp) Define an enum
   name: string
@@ -33,7 +38,11 @@ export type Detection = {
    */
   accuracy: Accuracy
   /** The NPM package that was able to detect it (high accuracy) */
-  package?: { name: string; version?: SemVer }
+  package?: {
+    name: string
+    version?: SemVer
+    versionAccuracy?: VersionAccuracy
+  }
   packageJSON?: Partial<PackageJson>
   /** The absolute path to config file that is associated with the framework */
   config?: string
@@ -93,6 +102,7 @@ export interface Framework {
     package: {
       name?: string // if detected via config file the name can be empty
       version: string | 'unknown'
+      versionAccuracy?: VersionAccuracy
     }
     dev: {
       commands: string[]
@@ -249,19 +259,39 @@ export abstract class BaseFramework implements Framework {
   /** check if the npmDependencies are used inside the provided package.json */
   private async npmDependenciesUsed(
     pkgJSON: Partial<PackageJson>,
-  ): Promise<{ name: string; version?: SemVer } | undefined> {
-    const allDeps = [...Object.entries(pkgJSON.dependencies || {}), ...Object.entries(pkgJSON.devDependencies || {})]
+  ): Promise<{ name: string; version?: SemVer; versionAccuracy?: VersionAccuracy } | undefined> {
+    const allDeps = {
+      ...(pkgJSON.dependencies ?? {}),
+      ...(pkgJSON.devDependencies ?? {}),
+    }
+    const matchedDepName = Object.keys(allDeps).find((depName) => this.npmDependencies.includes(depName))
+    const hasExcludedDeps = Object.keys(allDeps).some((depName) => this.excludedNpmDependencies.includes(depName))
 
-    const found = allDeps.find(([depName]) => this.npmDependencies.includes(depName))
-    // check for excluded dependencies
-    const excluded = allDeps.some(([depName]) => this.excludedNpmDependencies.includes(depName))
+    if (!hasExcludedDeps && matchedDepName != null) {
+      const versionFromNodeModules = await this.getVersionFromNodeModules(matchedDepName)
+      if (versionFromNodeModules) {
+        return {
+          name: matchedDepName,
+          version: versionFromNodeModules,
+          versionAccuracy: VersionAccuracy.NodeModules,
+        }
+      }
 
-    if (!excluded && found?.[0]) {
-      const version = await this.getVersionFromNodeModules(found[0])
+      // coerce to parse syntax like ~0.1.2 or ^1.2.3
+      const matchedDepVersion = allDeps[matchedDepName]
+      const versionFromPackageJSON = parse(coerce(matchedDepVersion)) || undefined
+      if (versionFromPackageJSON) {
+        return {
+          name: matchedDepName,
+          version: versionFromPackageJSON,
+          versionAccuracy: VersionAccuracy.PackageJSON,
+        }
+      }
+
       return {
-        name: found[0],
-        // coerce to parse syntax like ~0.1.2 or ^1.2.3
-        version: version || parse(coerce(found[1])) || undefined,
+        name: matchedDepName,
+        version: undefined,
+        versionAccuracy: undefined,
       }
     }
   }
@@ -367,6 +397,7 @@ export abstract class BaseFramework implements Framework {
       package: {
         name: this.detected?.package?.name || this.npmDependencies?.[0],
         version: this.detected?.package?.version?.raw || 'unknown',
+        versionAccuracy: this.detected?.package?.versionAccuracy,
       },
       category: this.category,
       dev: {

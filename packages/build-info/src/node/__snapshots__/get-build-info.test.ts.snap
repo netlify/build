@@ -144,6 +144,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "package": {
         "name": "astro",
         "version": "1.5.1",
+        "versionAccuracy": 1,
       },
       "plugins": [],
       "staticAssetsDirectory": "public",
