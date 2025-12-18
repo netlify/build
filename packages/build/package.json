@@ -131,7 +131,7 @@
     "get-node": "^14.2.1",
     "get-port": "^7.0.0",
     "has-ansi": "^6.0.0",
-    "moize": "^6.0.0",
+    "micro-memoize": "^5.1.1",
     "npm-run-all2": "^6.0.0",
     "process-exists": "^5.0.0",
     "tinyspy": "^4.0.3",
