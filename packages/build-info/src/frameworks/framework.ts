@@ -6,6 +6,7 @@ import { getBuildCommands, getDevCommands } from '../get-commands.js'
 import { Project } from '../project.js'
 
 export enum Category {
+  BackendFramework = 'backend_framework',
   FrontendFramework = 'frontend_framework',
   SSG = 'static_site_generator',
   BuildTool = 'build_tool',
@@ -17,6 +18,12 @@ export enum Accuracy {
   ConfigOnly = 3, // Only a config file was specified and matched
   Config = 2, // Has npm dependencies specified as well but there it did not match (least resort)
   NPMHoisted = 1, // Matched the npm dependency but in a folder up the provided path
+}
+
+export enum VersionAccuracy {
+  NodeModules = 'node_modules', // High accuracy: read from installed package in node_modules
+  PackageJSONPinned = 'package_json_pinned', // Medium accuracy: exact pinned version from package.json (e.g., "1.2.3")
+  PackageJSON = 'package_json', // Low accuracy: parsed from package.json dependency range (e.g., "^1.2.3")
 }
 
 export type PollingStrategy = {
@@ -32,7 +39,11 @@ export type Detection = {
    */
   accuracy: Accuracy
   /** The NPM package that was able to detect it (high accuracy) */
-  package?: { name: string; version?: SemVer }
+  package?: {
+    name: string
+    version?: SemVer
+    versionAccuracy?: VersionAccuracy
+  }
   packageJSON?: Partial<PackageJson>
   /** The absolute path to config file that is associated with the framework */
   config?: string
@@ -92,6 +103,7 @@ export interface Framework {
     package: {
       name?: string // if detected via config file the name can be empty
       version: string | 'unknown'
+      versionAccuracy?: VersionAccuracy
     }
     dev: {
       commands: string[]
@@ -136,7 +148,7 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
 
   // Secondary sorting on Category
   if (sort === 0) {
-    const categoryRanking = [Category.FrontendFramework, Category.BuildTool, Category.SSG]
+    const categoryRanking = [Category.BackendFramework, Category.FrontendFramework, Category.BuildTool, Category.SSG]
     return categoryRanking.indexOf(b.category) - categoryRanking.indexOf(a.category)
   }
 
@@ -248,19 +260,50 @@ export abstract class BaseFramework implements Framework {
   /** check if the npmDependencies are used inside the provided package.json */
   private async npmDependenciesUsed(
     pkgJSON: Partial<PackageJson>,
-  ): Promise<{ name: string; version?: SemVer } | undefined> {
-    const allDeps = [...Object.entries(pkgJSON.dependencies || {}), ...Object.entries(pkgJSON.devDependencies || {})]
+  ): Promise<{ name: string; version?: SemVer; versionAccuracy?: VersionAccuracy } | undefined> {
+    const allDeps = {
+      ...(pkgJSON.dependencies ?? {}),
+      ...(pkgJSON.devDependencies ?? {}),
+    }
+    const matchedDepName = Object.keys(allDeps).find((depName) => this.npmDependencies.includes(depName))
+    const hasExcludedDeps = Object.keys(allDeps).some((depName) => this.excludedNpmDependencies.includes(depName))
 
-    const found = allDeps.find(([depName]) => this.npmDependencies.includes(depName))
-    // check for excluded dependencies
-    const excluded = allDeps.some(([depName]) => this.excludedNpmDependencies.includes(depName))
+    if (!hasExcludedDeps && matchedDepName != null) {
+      const versionFromNodeModules = await this.getVersionFromNodeModules(matchedDepName)
+      if (versionFromNodeModules) {
+        return {
+          name: matchedDepName,
+          version: versionFromNodeModules,
+          versionAccuracy: VersionAccuracy.NodeModules,
+        }
+      }
 
-    if (!excluded && found?.[0]) {
-      const version = await this.getVersionFromNodeModules(found[0])
+      const matchedDepVersion = allDeps[matchedDepName]
+
+      // Try to parse without coercing first to detect pinned versions (e.g., "1.2.3")
+      const pinnedVersion = parse(matchedDepVersion)
+      if (pinnedVersion) {
+        return {
+          name: matchedDepName,
+          version: pinnedVersion,
+          versionAccuracy: VersionAccuracy.PackageJSONPinned,
+        }
+      }
+
+      // Coerce to parse syntax like ~0.1.2 or ^1.2.3
+      const coercedVersion = parse(coerce(matchedDepVersion)) || undefined
+      if (coercedVersion) {
+        return {
+          name: matchedDepName,
+          version: coercedVersion,
+          versionAccuracy: VersionAccuracy.PackageJSON,
+        }
+      }
+
       return {
-        name: found[0],
-        // coerce to parse syntax like ~0.1.2 or ^1.2.3
-        version: version || parse(coerce(found[1])) || undefined,
+        name: matchedDepName,
+        version: undefined,
+        versionAccuracy: undefined,
       }
     }
   }
@@ -366,6 +409,7 @@ export abstract class BaseFramework implements Framework {
       package: {
         name: this.detected?.package?.name || this.npmDependencies?.[0],
         version: this.detected?.package?.version?.raw || 'unknown',
+        versionAccuracy: this.detected?.package?.versionAccuracy,
       },
       category: this.category,
       dev: {

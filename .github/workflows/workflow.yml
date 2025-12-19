@@ -40,7 +40,7 @@ jobs:
       - name: test
         run: npx nx run-many --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: playwright-report
