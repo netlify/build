@@ -54,7 +54,7 @@
     "execa": "^8.0.0",
     "fast-glob": "^3.3.3",
     "filter-obj": "^6.0.0",
-    "find-up": "^7.0.0",
+    "find-up": "^8.0.0",
     "is-path-inside": "^4.0.0",
     "junk": "^4.0.0",
     "locate-path": "^7.0.0",
