@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.8](https://github.com/netlify/build/compare/build-v35.5.7...build-v35.5.8) (2025-12-19)
+
+
+### Bug Fixes
+
+* replace moize with micro-memoize ([#6836](https://github.com/netlify/build/issues/6836)) ([40f4bc6](https://github.com/netlify/build/commit/40f4bc6bf2821515a4293bc08f3f414a77b21dbc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/git-utils bumped from ^6.0.2 to ^6.0.3
+
 ## [35.5.7](https://github.com/netlify/build/compare/build-v35.5.6...build-v35.5.7) (2025-12-17)
 
 
