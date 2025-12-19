@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.3.0](https://github.com/netlify/build/compare/build-info-v10.2.0...build-info-v10.3.0) (2025-12-19)
+
+
+### Features
+
+* return detected framework version accuracy ([#6852](https://github.com/netlify/build/issues/6852)) ([66891ca](https://github.com/netlify/build/commit/66891ca2cb6b1b0cc15df41b64ee84207e8ea6bc))
+
 ## [10.2.0](https://github.com/netlify/build/compare/build-info-v10.1.0...build-info-v10.2.0) (2025-12-16)
 
 
