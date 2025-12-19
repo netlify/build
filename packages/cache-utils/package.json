@@ -56,7 +56,7 @@
     "junk": "^4.0.0",
     "locate-path": "^7.0.0",
     "move-file": "^3.0.0",
-    "readdirp": "^4.0.0"
+    "readdirp": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.19.111",
