@@ -45,13 +45,12 @@ export const kebabCase = (input: string): string =>
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
-  featureFlags: FeatureFlags,
   runtimeAPIVersion: number,
-  mainFile: string,
+  addBootstrap: boolean,
 ) => {
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
-  if (featureFlags.zisi_netlify_play && isNetlifyPlay(mainFile)) {
+  if (!addBootstrap) {
     return `export * from '${importPath}'`
   }
 
@@ -198,6 +197,7 @@ ${readFileSync(filePath, 'utf8')}
 }
 
 export const getEntryFile = ({
+  addBootstrap,
   commonPrefix,
   featureFlags,
   filename,
@@ -206,6 +206,7 @@ export const getEntryFile = ({
   userNamespace,
   runtimeAPIVersion,
 }: {
+  addBootstrap: boolean
   commonPrefix: string
   featureFlags: FeatureFlags
   filename: string
@@ -217,7 +218,7 @@ export const getEntryFile = ({
   const mainPath = normalizeFilePath({ commonPrefix, path: mainFile, userNamespace })
   const extension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
   const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
-  const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion, mainFile)
+  const contents = getEntryFileContents(mainPath, moduleFormat, runtimeAPIVersion, addBootstrap)
 
   return {
     contents,
@@ -225,9 +226,3 @@ export const getEntryFile = ({
   }
 }
 
-const isNetlifyPlay = (filePath: string): boolean => {
-  const ext = extname(filePath)
-  const nameWithoutExt = basename(filePath, ext)
-
-  return nameWithoutExt.endsWith('-netlify-play')
-}
