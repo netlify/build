@@ -45,10 +45,15 @@ export const kebabCase = (input: string): string =>
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
-  _featureFlags: FeatureFlags,
+  featureFlags: FeatureFlags,
   runtimeAPIVersion: number,
+  mainFile: string,
 ) => {
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
+
+  if (featureFlags.zisi_netlify_play && isNetlifyPlay(mainFile)) {
+    return `export * from '${importPath}'`
+  }
 
   if (runtimeAPIVersion === 2) {
     return [
@@ -212,10 +217,17 @@ export const getEntryFile = ({
   const mainPath = normalizeFilePath({ commonPrefix, path: mainFile, userNamespace })
   const extension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
   const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
-  const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion)
+  const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion, mainFile)
 
   return {
     contents,
     filename: entryFilename,
   }
+}
+
+const isNetlifyPlay = (filePath: string): boolean => {
+  const ext = extname(filePath)
+  const nameWithoutExt = basename(filePath, ext)
+
+  return nameWithoutExt.endsWith('-netlify-play')
 }
