@@ -2,7 +2,7 @@ import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
-import { getBufferLogs, getSystemLogger } from '../log/logger.js'
+import { getBufferLogs, getSystemLogger, structuredLog } from '../log/logger.js'
 import { logBuildStart } from '../log/messages/core.js'
 import { loadPlugins } from '../plugins/load.js'
 import { getPluginsOptions } from '../plugins/options.js'
@@ -87,6 +87,7 @@ const tExecBuild = async function ({
   edgeFunctionsBootstrapURL,
   eventHandlers,
   skewProtectionToken,
+  framework,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -157,6 +158,15 @@ const tExecBuild = async function ({
     testOpts,
   } as any)
   const systemLog = getSystemLogger(logs, debug, systemLogFile)
+
+  // Log framework information
+  structuredLog({
+    logs,
+    type: 'framework-info',
+    payload: { framework },
+    isRunningLocally: constants.IS_LOCAL,
+    featureFlags,
+  })
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants })
   // `errorParams` is purposely stateful
   Object.assign(errorParams, { netlifyConfig, pluginsOptions, siteInfo, childEnv, userNodeVersion })

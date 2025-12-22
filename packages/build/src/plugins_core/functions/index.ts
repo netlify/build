@@ -4,7 +4,7 @@ import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
-import { log } from '../../log/logger.js'
+import { log, structuredLog } from '../../log/logger.js'
 import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
@@ -116,7 +116,7 @@ const zipFunctionsAndLogResults = async ({
 
     logBundleResults({ logs, results })
 
-    return { bundlers }
+    return { bundlers, results }
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
@@ -190,7 +190,7 @@ const coreStep = async function ({
     return {}
   }
 
-  const { bundlers } = await zipFunctionsAndLogResults({
+  const { bundlers, results } = await zipFunctionsAndLogResults({
     branch,
     buildDir,
     childEnv,
@@ -206,6 +206,27 @@ const coreStep = async function ({
     userNodeVersion,
     systemLog,
     generatedFunctions: generatedFunctions.map((func) => func.path),
+  })
+
+  // Log bundled functions and their configuration
+  structuredLog({
+    logs,
+    type: 'functions-bundling',
+    payload: {
+      functions: results.map((result) => ({
+        name: result.name,
+        runtime: result.runtime,
+        bundler: result.bundler,
+        routes: result.routes,
+        schedule: result.schedule,
+        displayName: result.displayName,
+        generator: result.generator,
+        invocationMode: result.invocationMode,
+        runtimeVersion: result.runtimeVersion,
+      })),
+    },
+    isRunningLocally,
+    featureFlags,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)
