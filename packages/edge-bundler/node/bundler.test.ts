@@ -855,6 +855,26 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
+    test('Tarball bundling succeeds when edge functions use import assertions', async () => {
+      const fixtures = ['with_deno_1x_features', 'with_import_assertions'] as const
+
+      for (const fixtureName of fixtures) {
+        const { basePath, cleanup, distPath } = await useFixture(fixtureName, { copyDirectory: true })
+        const sourceDirectory = join(basePath, 'functions')
+
+        await expect(
+          bundle([sourceDirectory], distPath, [], {
+            basePath,
+            featureFlags: {
+              edge_bundler_generate_tarball: true,
+            },
+          }),
+        ).resolves.toBeDefined()
+
+        await cleanup()
+      }
+    })
+
     describe('Dry-run tarball generation flag enabled', () => {
       test('Logs success message when tarball generation succeeded', async () => {
         const systemLogger = vi.fn()

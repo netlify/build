@@ -1,6 +1,8 @@
 import { promises as fs } from 'fs'
 import path from 'path'
+import { transformImportAssertionsToAttributes } from './import-assertions-to-attributes.js'
 
+import cpy from 'cpy'
 import commonPathPrefix from 'common-path-prefix'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -43,7 +45,7 @@ export const bundle = async ({
   importMap,
   vendorDirectory,
 }: BundleTarballOptions): Promise<Bundle> => {
-  const bundleDir = await tmp.dir({ unsafeCleanup: true })
+  let bundleDir = await tmp.dir({ unsafeCleanup: true })
   const cleanup = [bundleDir.cleanup]
 
   let denoDir = vendorDirectory ? path.join(vendorDirectory, 'deno_dir') : undefined
@@ -80,23 +82,46 @@ export const bundle = async ({
     manifest.functions[func.name] = getUnixPath(bundledPath)
   }
 
-  await deno.run(
-    [
-      'bundle',
-      '--import-map',
-      importMap.withNodeBuiltins().toDataURL(),
-      '--quiet',
-      '--code-splitting',
-      '--allow-import',
-      '--node-modules-dir=manual',
-      '--outdir',
-      bundleDir.path,
-      ...functions.map((func) => func.path),
-    ],
-    {
-      cwd: basePath,
-    },
-  )
+  const runBundle = async (entryPaths: string[]) => {
+    await deno.run(
+      [
+        'bundle',
+        '--import-map',
+        importMap.withNodeBuiltins().toDataURL(),
+        '--quiet',
+        '--code-splitting',
+        '--allow-import',
+        '--node-modules-dir=manual',
+        '--outdir',
+        bundleDir.path,
+        ...entryPaths,
+      ],
+      {
+        cwd: basePath,
+      },
+    )
+  }
+
+  try {
+    await runBundle(entryPoints)
+  } catch (error) {
+    if (!isImportAssertionError(error)) {
+      throw error
+    }
+
+    // Deno 2.x errors on import assertions, so retry with a temporary copy that rewrites them to `with`.
+    const compatSourceDir = await createCompatSourceCopy(commonPath)
+    cleanup.push(compatSourceDir.cleanup)
+
+    bundleDir = await tmp.dir({ unsafeCleanup: true })
+    cleanup.push(bundleDir.cleanup)
+
+    const compatEntryPoints = entryPoints.map((entryPoint) =>
+      path.join(compatSourceDir.path, path.relative(commonPath, entryPoint)),
+    )
+
+    await runBundle(compatEntryPoints)
+  }
 
   const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
@@ -140,4 +165,46 @@ export const bundle = async ({
     format: BundleFormat.TARBALL,
     hash,
   }
+}
+
+const IMPORT_ASSERTION_ERROR_MESSAGES = ['Import assertions are deprecated', `Unexpected identifier 'assert'`]
+
+const isImportAssertionError = (error: unknown) => {
+  if (!(error instanceof Error)) {
+    return false
+  }
+
+  const stderr =
+    typeof (error as { stderr?: unknown }).stderr === 'string' ? (error as { stderr?: unknown }).stderr : ''
+  const shortMessage =
+    typeof (error as { shortMessage?: unknown }).shortMessage === 'string'
+      ? (error as { shortMessage?: string }).shortMessage
+      : ''
+  const combinedMessage = [error.message, shortMessage, stderr].join('\n')
+
+  return IMPORT_ASSERTION_ERROR_MESSAGES.some((message) => combinedMessage.includes(message))
+}
+
+async function* walk(dir: string): AsyncGenerator<string> {
+  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) yield* walk(full)
+    else if (/\.(mjs|cjs|js|ts|tsx|jsx)$/.test(entry.name)) yield full
+  }
+}
+
+const createCompatSourceCopy = async (commonPath: string) => {
+  const compatSourceDir = await tmp.dir({ unsafeCleanup: true })
+  await cpy(path.join(commonPath, '**'), compatSourceDir.path, {
+    dot: true,
+  })
+
+  for await (const file of walk(compatSourceDir.path)) {
+    const code = await fs.readFile(file, 'utf8')
+    const next = transformImportAssertionsToAttributes(code)
+    if (next !== code) {
+      await fs.writeFile(file, next, 'utf8')
+    }
+  }
+  return compatSourceDir
 }
