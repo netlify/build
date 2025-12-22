@@ -105,6 +105,116 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.8](https://github.com/netlify/build/compare/build-v35.5.7...build-v35.5.8) (2025-12-19)
+
+
+### Bug Fixes
+
+* replace moize with micro-memoize ([#6836](https://github.com/netlify/build/issues/6836)) ([40f4bc6](https://github.com/netlify/build/commit/40f4bc6bf2821515a4293bc08f3f414a77b21dbc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/git-utils bumped from ^6.0.2 to ^6.0.3
+
+## [35.5.7](https://github.com/netlify/build/compare/build-v35.5.6...build-v35.5.7) (2025-12-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.4 ([#6845](https://github.com/netlify/build/issues/6845)) ([8b4e2d3](https://github.com/netlify/build/commit/8b4e2d30695b3280dadc6bec7bf618e60e7a0eb5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.1 to 14.9.2
+    * @netlify/functions-utils bumped from ^6.2.16 to ^6.2.17
+    * @netlify/zip-it-and-ship-it bumped from 14.1.16 to 14.1.17
+
+## [35.5.6](https://github.com/netlify/build/compare/build-v35.5.5...build-v35.5.6) (2025-12-17)
+
+
+### Bug Fixes
+
+* print full error to system logs on blob upload failures ([#6843](https://github.com/netlify/build/issues/6843)) ([00d4501](https://github.com/netlify/build/commit/00d450114a4b00f13031f3fb5de661afbbc6bc99))
+
+## [35.5.5](https://github.com/netlify/build/compare/build-v35.5.4...build-v35.5.5) (2025-12-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.3 ([#6830](https://github.com/netlify/build/issues/6830)) ([e39ec24](https://github.com/netlify/build/commit/e39ec2420cbdc0acb146e47d11024bf895c840b6))
+* **deps:** update dependency hot-shots to v11.4.0 ([#6827](https://github.com/netlify/build/issues/6827)) ([23a90f1](https://github.com/netlify/build/commit/23a90f115f0196b840441c6bcb41f7a7ce2762a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.15 to ^6.2.16
+    * @netlify/zip-it-and-ship-it bumped from 14.1.15 to 14.1.16
+
+## [35.5.4](https://github.com/netlify/build/compare/build-v35.5.3...build-v35.5.4) (2025-12-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.1.2 to ^24.2.0
+
+## [35.5.3](https://github.com/netlify/build/compare/build-v35.5.2...build-v35.5.3) (2025-12-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.4.2 ([#6810](https://github.com/netlify/build/issues/6810)) ([8cdd046](https://github.com/netlify/build/commit/8cdd04690677e0fbb967a7eb0e64571b8021f46a))
+* **deps:** update dependency hot-shots to v11.3.0 ([#6805](https://github.com/netlify/build/issues/6805)) ([2830c89](https://github.com/netlify/build/commit/2830c8956dab59022eb89a1bb88b7dcf52fe6038))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.1.1 to ^24.1.2
+    * @netlify/edge-bundler bumped from 14.9.0 to 14.9.1
+    * @netlify/functions-utils bumped from ^6.2.14 to ^6.2.15
+    * @netlify/zip-it-and-ship-it bumped from 14.1.14 to 14.1.15
+
+## [35.5.2](https://github.com/netlify/build/compare/build-v35.5.1...build-v35.5.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* pass skew protection token down to config ([#6797](https://github.com/netlify/build/issues/6797)) ([6ef4f12](https://github.com/netlify/build/commit/6ef4f12ba005d0c8bc33bce66b271a5280afc3ec))
+
+## [35.5.1](https://github.com/netlify/build/compare/build-v35.5.0...build-v35.5.1) (2025-11-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.1.0 to ^24.1.1
+
+## [35.5.0](https://github.com/netlify/build/compare/build-v35.4.0...build-v35.5.0) (2025-11-24)
+
+
+### Features
+
+* populate `NETLIFY_SKEW_PROTECTION_TOKEN` ([#6792](https://github.com/netlify/build/issues/6792)) ([1bfdd27](https://github.com/netlify/build/commit/1bfdd2726beb4443535bb44e8d60ff794d005548))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.0.9 to ^24.1.0
+
 ## [35.4.0](https://github.com/netlify/build/compare/build-v35.3.5...build-v35.4.0) (2025-11-21)
 
 

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testing'
 import test from 'ava'
 import getNode from 'get-node'
-import moize from 'moize'
+import { memoize } from 'micro-memoize'
 import { pathExists } from 'path-exists'
 import semver from 'semver'
 import { spy, spyOn } from 'tinyspy'
@@ -37,7 +37,7 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
   }
 }
 
-const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
+const mGetNode = memoize(getNodeBinary, { async: true, maxSize: 1e3 })
 
 test('--help', async (t) => {
   const { output } = await new Fixture().withFlags({ help: true }).runBuildBinary()
@@ -354,6 +354,14 @@ test('--node-path is not used by core plugins', async (t) => {
   const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
   const output = await new Fixture('./fixtures/core').withFlags({ nodePath: path }).runWithBuild()
   t.snapshot(normalizeOutput(output))
+})
+
+test('--skew-protection-token', async (t) => {
+  const output = await new Fixture('./fixtures/plugin_echo_env')
+    .withFlags({ skewProtectionToken: 'foobar' })
+    .runWithBuild()
+
+  t.true(output.includes(`"NETLIFY_SKEW_PROTECTION_TOKEN":"foobar"`))
 })
 
 test('featureFlags can be used programmatically', async (t) => {

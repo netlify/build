@@ -34,10 +34,15 @@ exports[`should retrieve the build info for providing a rootDir 1`] = `
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],
@@ -139,6 +144,7 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
       "package": {
         "name": "astro",
         "version": "1.5.1",
+        "versionAccuracy": "package_json",
       },
       "plugins": [],
       "staticAssetsDirectory": "public",
@@ -167,10 +173,15 @@ exports[`should retrieve the build info for providing a rootDir and a nested pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],
@@ -243,10 +254,15 @@ exports[`should retrieve the build info for providing a rootDir and the same pro
   "packageManager": {
     "forceEnvironment": "NETLIFY_USE_PNPM",
     "installCommand": "pnpm install",
+    "localPackageCommand": "pnpm",
     "lockFiles": [
       "pnpm-lock.yaml",
     ],
     "name": "pnpm",
+    "remotePackageCommand": [
+      "pnpm",
+      "dlx",
+    ],
     "runCommand": "pnpm run",
     "version": SemVer {
       "build": [],

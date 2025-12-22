@@ -64,6 +64,36 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.3.0](https://github.com/netlify/build/compare/build-info-v10.2.0...build-info-v10.3.0) (2025-12-19)
+
+
+### Features
+
+* return detected framework version accuracy ([#6852](https://github.com/netlify/build/issues/6852)) ([66891ca](https://github.com/netlify/build/commit/66891ca2cb6b1b0cc15df41b64ee84207e8ea6bc))
+
+## [10.2.0](https://github.com/netlify/build/compare/build-info-v10.1.0...build-info-v10.2.0) (2025-12-16)
+
+
+### Features
+
+* include user agent sniffing ([#6783](https://github.com/netlify/build/issues/6783)) ([7d97824](https://github.com/netlify/build/commit/7d97824eb9eed5cd14dfce4cca7f3d67ec0dd9eb))
+
+## [10.1.0](https://github.com/netlify/build/compare/build-info-v10.0.11...build-info-v10.1.0) (2025-12-15)
+
+
+### Features
+
+* add Hono framework detection ([da2c9b2](https://github.com/netlify/build/commit/da2c9b270cede6ded8081784d233f7787e014181))
+* add Vike framework detection ([955d7e4](https://github.com/netlify/build/commit/955d7e4f2b0dc21e4d7746aae962fb6efec350e1))
+* add Waku framework detection ([bc0e398](https://github.com/netlify/build/commit/bc0e398b6d4e6d531eb4790942bea558248f1222))
+
+## [10.0.11](https://github.com/netlify/build/compare/build-info-v10.0.10...build-info-v10.0.11) (2025-12-04)
+
+
+### Bug Fixes
+
+* exclude React Router from Vite detection ([#6806](https://github.com/netlify/build/issues/6806)) ([ddc4a4a](https://github.com/netlify/build/commit/ddc4a4a13b05e68fe508bc833528dfd1971249dd))
+
 ## [10.0.10](https://github.com/netlify/build/compare/build-info-v10.0.9...build-info-v10.0.10) (2025-11-17)
 
 

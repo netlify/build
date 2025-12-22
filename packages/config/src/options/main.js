@@ -45,6 +45,7 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     siteId: combinedEnv.NETLIFY_SITE_ID,
     deployId: combinedEnv.DEPLOY_ID || DEFAULT_DEPLOY_ID,
+    skewProtectionToken: combinedEnv.NETLIFY_SKEW_PROTECTION_TOKEN,
     buildId: combinedEnv.BUILD_ID || DEFAULT_BUILD_ID,
     mode: 'require',
     offline: false,
