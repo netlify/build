@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.3](https://github.com/netlify/build/compare/git-utils-v6.0.2...git-utils-v6.0.3) (2025-12-19)
+
+
+### Bug Fixes
+
+* replace moize with micro-memoize ([#6836](https://github.com/netlify/build/issues/6836)) ([40f4bc6](https://github.com/netlify/build/commit/40f4bc6bf2821515a4293bc08f3f414a77b21dbc))
+
 ## [6.0.2](https://github.com/netlify/build/compare/git-utils-v6.0.1...git-utils-v6.0.2) (2025-05-29)
 
 
