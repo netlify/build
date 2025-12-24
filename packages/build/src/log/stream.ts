@@ -47,13 +47,25 @@ const pushBuildCommandOutput = function (output: string, logsArray: string[]) {
   logsArray.push(output)
 }
 
+const pipedPluginProcesses = new WeakMap<ChildProcess, ReturnType<typeof pipePluginOutput>>()
+
 // Start plugin step output
-export const pipePluginOutput = function (childProcess: ChildProcess, logs: Logs, standardStreams: StandardStreams) {
-  if (!logsAreBuffered(logs)) {
-    return streamOutput(childProcess, standardStreams)
+export const pipePluginOutput = function (
+  childProcess: ChildProcess,
+  logs: Logs,
+  standardStreams: StandardStreams,
+): LogsListeners | undefined {
+  if (pipedPluginProcesses.has(childProcess)) {
+    return pipedPluginProcesses.get(childProcess)
   }
 
-  return pushOutputToLogs(childProcess, logs, standardStreams.outputFlusher)
+  const listeners = !logsAreBuffered(logs)
+    ? streamOutput(childProcess, standardStreams)
+    : pushOutputToLogs(childProcess, logs, standardStreams.outputFlusher)
+
+  pipedPluginProcesses.set(childProcess, listeners)
+
+  return listeners
 }
 
 // Stop streaming/buffering plugin step output
@@ -66,15 +78,17 @@ export const unpipePluginOutput = async function (
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await setTimeout(0)
 
-  if (!logsAreBuffered(logs)) {
-    return unstreamOutput(childProcess, standardStreams)
+  if (logsAreBuffered(logs)) {
+    unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
+  } else {
+    unstreamOutput(childProcess, standardStreams)
   }
 
-  unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
+  pipedPluginProcesses.delete(childProcess)
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
+const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams): undefined {
   childProcess.stdout?.pipe(standardStreams.stdout)
   childProcess.stderr?.pipe(standardStreams.stderr)
 }
