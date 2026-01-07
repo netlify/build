@@ -6,6 +6,7 @@ const validRuntimeMap = {
   18: 'nodejs18.x',
   20: 'nodejs20.x',
   22: 'nodejs22.x',
+  24: 'nodejs24.x',
 } as const
 
 const minimumV2Version = 18
