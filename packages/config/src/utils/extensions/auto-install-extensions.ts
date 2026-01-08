@@ -1,10 +1,12 @@
 import { createRequire } from 'module'
 import { join } from 'path'
 
-import { type Extension, getExtensions } from '../../api/site_info.js'
+import { getExtensions } from '../../api/site_info.js'
+import { type Integrations } from '../../types/config.js'
 import { type ModeOption } from '../../types/options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
+import { mapToExtensionWithDev } from './map-to-extension-with-dev.js'
 
 function getPackageJSON(directory: string) {
   try {
@@ -22,7 +24,7 @@ interface AutoInstallOptions {
   accountId: string
   token: string
   buildDir: string
-  extensions: Extension[]
+  extensions: Integrations
   offline: boolean
   testOpts: any
   mode: ModeOption
@@ -42,7 +44,7 @@ export async function handleAutoInstallExtensions({
   mode,
   extensionApiBaseUrl,
   debug = false,
-}: AutoInstallOptions) {
+}: AutoInstallOptions): Promise<Integrations> {
   if (!featureFlags?.auto_install_required_extensions_v2) {
     return extensions
   }
@@ -115,7 +117,7 @@ export async function handleAutoInstallExtensions({
     )
 
     if (results.length > 0 && results.some((result) => !result.error)) {
-      return getExtensions({
+      const extensions = await getExtensions({
         siteId,
         accountId,
         testOpts,
@@ -125,6 +127,8 @@ export async function handleAutoInstallExtensions({
         extensionApiBaseUrl,
         mode,
       })
+
+      return mapToExtensionWithDev(extensions)
     }
     return extensions
   } catch (error) {

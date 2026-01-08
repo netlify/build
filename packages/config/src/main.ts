@@ -1,5 +1,5 @@
 import { getApiClient } from './api/client.js'
-import { getSiteInfo, type MinimalAccount } from './api/site_info.js'
+import { getSiteInfo } from './api/site_info.js'
 import { getInitialBase, getBase, addBase } from './base.js'
 import { getBuildDir } from './build_dir.js'
 import { getCachedConfig } from './cached_config.js'
@@ -10,7 +10,6 @@ import { resolveConfigPaths } from './files.js'
 import { getHeadersPath, addHeaders } from './headers.js'
 import { getInlineConfig } from './inline_config.js'
 import {
-  type ExtensionWithDev,
   EXTENSION_API_BASE_URL,
   EXTENSION_API_STAGING_BASE_URL,
   NETLIFY_API_STAGING_HOSTNAME,
@@ -24,32 +23,16 @@ import { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } from './origin.js'
 import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
+import { type Config, type Integrations } from './types/config.js'
 import { handleAutoInstallExtensions } from './utils/extensions/auto-install-extensions.js'
-
-export type Config = {
-  accounts: MinimalAccount[] | undefined
-  api: any
-  branch: any
-  buildDir: any
-  config: any
-  configPath: any
-  context: any
-  env: any
-  headersPath: any
-  integrations: ExtensionWithDev[]
-  logs: any
-  redirectsPath: any
-  repositoryRoot: any
-  siteInfo: any
-  token: any
-}
+import { mapToExtensionWithDev } from './utils/extensions/map-to-extension-with-dev.js'
 
 /**
  * Load the configuration file.
  * Takes an optional configuration file path as input and return the resolved
  * `config` together with related properties such as the `configPath`.
  */
-export const resolveConfig = async function (opts): Promise<Config> {
+export const resolveConfig = async function (opts): Promise<Partial<Config>> {
   const {
     cachedConfig,
     cachedConfigPath,
@@ -128,7 +111,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
 
     siteInfo = updatedSiteInfo.siteInfo
     accounts = updatedSiteInfo.accounts
-    extensions = updatedSiteInfo.extensions
+    extensions = mapToExtensionWithDev(updatedSiteInfo.extensions)
   }
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
@@ -175,7 +158,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
 
   const updatedExtensions = await handleAutoInstallExtensions({
     featureFlags,
-    extensions,
+    extensions: extensions ?? [],
     siteId,
     accountId,
     token,
