@@ -10,6 +10,7 @@ import { Docusaurus } from './docusaurus.js'
 import { Eleventy } from './eleventy.js'
 import { Ember } from './ember.js'
 import { Expo } from './expo.js'
+import { FrameworkId } from './framework.js'
 import { Gatsby } from './gatsby.js'
 import { Gridsome } from './gridsome.js'
 import { Grunt } from './grunt.js'
@@ -115,7 +116,6 @@ export const frameworks = [
   WMR,
 ]
 
-type Frameworks = typeof frameworks
-// To get a list of the names it's required that ALL Frameworks have the id property as `readonly`
-export type FrameworkName = InstanceType<Frameworks[number]>['id']
+// TODO: see if the FrameworkName type can be removed
+export type FrameworkName = FrameworkId
 export type { FrameworkInfo, PollingStrategy } from './framework.js'
