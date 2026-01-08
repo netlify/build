@@ -1,4 +1,8 @@
 import type { NetlifyAPI } from '@netlify/api'
+import type { operations } from '@netlify/open-api'
+
+type Context = operations['getEnvVars']['parameters']['query']['context_name']
+type EnvVar = operations['getEnvVars']['responses'][200]['content']['application/json'][number]
 
 export const getEnvelope = async function ({
   api,
@@ -15,19 +19,24 @@ export const getEnvelope = async function ({
     return {}
   }
   try {
-    // TODO(ndhoule): The api client now has types; remove this type assertion to any and fix errors
-    const environmentVariables = await (api as any).getEnvVars({ accountId, siteId, context_name: context })
+    const environmentVariables = await api.getEnvVars({
+      accountId,
+      site_id: siteId,
+      context_name: context as Context,
+    })
 
     const sortedEnvVarsFromContext = environmentVariables
+      .filter((envVar): envVar is EnvVar & { key: string; values: NonNullable<EnvVar['values']> } =>
+        Boolean(envVar.key && envVar.values),
+      )
       .sort((left, right) => (left.key.toLowerCase() < right.key.toLowerCase() ? -1 : 1))
-      .reduce((acc, cur) => {
-        const envVar = cur.values.find((val) => ['all', context].includes(val.context))
-        if (envVar && envVar.value) {
-          return {
-            ...acc,
-            [cur.key]: envVar.value,
-          }
+      .reduce<Record<string, string>>((acc, { key, values }) => {
+        const envVar = values.find(({ context: valueContext }) => ['all', context].includes(valueContext))
+
+        if (envVar?.value) {
+          acc[key] = envVar.value
         }
+
         return acc
       }, {})
     return sortedEnvVarsFromContext
