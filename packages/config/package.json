@@ -58,7 +58,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
+    "smol-toml": "^1.5.2",
     "@netlify/api": "^14.0.12",
     "@netlify/headers-parser": "^9.0.2",
     "@netlify/redirect-parser": "^15.0.3",
