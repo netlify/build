@@ -151,10 +151,13 @@ export const bundle = async (
       }
     })()
 
+    let tarballPromiseResolved = false
+
     if (featureFlags.edge_bundler_dry_run_generate_tarball) {
       try {
         await tarballPromise
         logger.system('Dry run: Tarball bundle generated successfully.')
+        tarballPromiseResolved = true
       } catch (error: unknown) {
         if (error instanceof Error) {
           logger.system(`Dry run: Tarball bundle generation failed: ${error.message}`)
@@ -164,7 +167,7 @@ export const bundle = async (
       }
     }
 
-    if (featureFlags.edge_bundler_generate_tarball) {
+    if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
       bundles.push(await tarballPromise)
     }
   }

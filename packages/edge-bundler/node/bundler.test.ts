@@ -856,7 +856,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
     })
 
     describe('Dry-run tarball generation flag enabled', () => {
-      test('Logs success message when tarball generation succeeded', async () => {
+      test('Includes tarball in bundles when generation succeeds', async () => {
         const systemLogger = vi.fn()
         const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
         const declarations: Declaration[] = [
@@ -882,8 +882,14 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
         const manifest = JSON.parse(manifestFile)
 
         expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
-        expect(manifest.bundles.length).toBe(1)
-        expect(manifest.bundles[0].format).toBe('eszip2')
+        expect(manifest.bundles.length).toBe(2)
+        expect(manifest.bundles[0].format).toBe('tarball')
+        expect(manifest.bundles[1].format).toBe('eszip2')
+
+        // Verify the tarball is functional
+        const tarballPath = join(distPath, manifest.bundles[0].asset)
+        const tarballResult = await runTarball(tarballPath)
+        expect(tarballResult).toStrictEqual({ func1: 'ok' })
 
         await cleanup()
       })
