@@ -7,7 +7,7 @@ const NETLIFY_PLAY_SUFFIX = '-netlify-play'
 export const NETLIFY_PLAY_BOOTSTRAP_VERSION = 'play0.0'
 
 export const useNetlifyPlay = (featureFlags: FeatureFlags, mainFile: string): boolean => {
-  if (featureFlags.zisi_netlify_play !== true) {
+  if (!featureFlags.zisi_netlify_play) {
     return false
   }
 
