@@ -45,10 +45,14 @@ export const kebabCase = (input: string): string =>
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
-  _featureFlags: FeatureFlags,
   runtimeAPIVersion: number,
+  addBootstrap: boolean,
 ) => {
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
+
+  if (!addBootstrap) {
+    return `export * from '${importPath}'`
+  }
 
   if (runtimeAPIVersion === 2) {
     return [
@@ -193,6 +197,7 @@ ${readFileSync(filePath, 'utf8')}
 }
 
 export const getEntryFile = ({
+  addBootstrap,
   commonPrefix,
   featureFlags,
   filename,
@@ -201,6 +206,7 @@ export const getEntryFile = ({
   userNamespace,
   runtimeAPIVersion,
 }: {
+  addBootstrap: boolean
   commonPrefix: string
   featureFlags: FeatureFlags
   filename: string
@@ -212,7 +218,7 @@ export const getEntryFile = ({
   const mainPath = normalizeFilePath({ commonPrefix, path: mainFile, userNamespace })
   const extension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
   const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
-  const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion)
+  const contents = getEntryFileContents(mainPath, moduleFormat, runtimeAPIVersion, addBootstrap)
 
   return {
     contents,
