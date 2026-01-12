@@ -31,7 +31,7 @@ import {
   getTelemetryFile,
   isNamedLikeEntryFile,
 } from './entry_file.js'
-import { useNetlifyPlay } from './play.js'
+import { NETLIFY_PLAY_BOOTSTRAP_VERSION, useNetlifyPlay } from './play.js'
 import { getMetadataFile } from './metadata_file.js'
 import { ModuleFormat } from './module_format.js'
 import { normalizeFilePath } from './normalize_path.js'
@@ -232,7 +232,7 @@ const createZipArchive = async function ({
   const userNamespace = hasEntryFileConflict ? DEFAULT_USER_SUBDIRECTORY : ''
 
   let entryFilename = `${basename(filename, extname(filename))}.js`
-  let bootstrapVersion: string | undefined
+  let bootstrapVersion: string | undefined = isPlay ? NETLIFY_PLAY_BOOTSTRAP_VERSION : undefined
 
   if (needsEntryFile) {
     const entryFile = getEntryFile({
@@ -256,7 +256,7 @@ const createZipArchive = async function ({
     addEntryFileToZip(archive, telemetryFile)
   }
 
-  if (runtimeAPIVersion === 2) {
+  if (runtimeAPIVersion === 2 && !isPlay) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
     const { version } = await getPackageJsonIfAvailable(bootstrapPath)

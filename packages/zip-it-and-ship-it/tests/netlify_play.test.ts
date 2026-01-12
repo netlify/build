@@ -6,11 +6,12 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
 import { zipFunction } from '../src/main.js'
+import { NETLIFY_PLAY_BOOTSTRAP_VERSION } from '../src/runtimes/node/utils/play.js'
 
 import { FIXTURES_DIR, FIXTURES_ESM_DIR } from './helpers/main.js'
 
 describe('Netlify Play', () => {
-  test('Creates tar.gz archive without bootstrap', async () => {
+  test('Creates tar.gz archive without bootstrap and with play bootstrapVersion', async () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
     const mainFile = join(FIXTURES_ESM_DIR, 'netlify-play', 'function-netlify-play.mjs')
 
@@ -21,6 +22,7 @@ describe('Netlify Play', () => {
     })
 
     expect(result).not.toBeUndefined()
+    expect(result!.bootstrapVersion).toBe(NETLIFY_PLAY_BOOTSTRAP_VERSION)
 
     const extractDir = join(tmpDir, 'extracted')
     await mkdir(extractDir, { recursive: true })
