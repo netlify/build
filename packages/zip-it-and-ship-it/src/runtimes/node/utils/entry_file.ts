@@ -51,7 +51,7 @@ const getEntryFileContents = (
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
   if (!addBootstrap) {
-    return `export * from '${importPath}'`
+    return `export * as func from '${importPath}'`
   }
 
   if (runtimeAPIVersion === 2) {
