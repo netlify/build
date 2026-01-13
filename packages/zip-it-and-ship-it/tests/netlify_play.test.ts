@@ -29,7 +29,7 @@ describe('Netlify Play', () => {
     await execa('tar', ['-xzf', result!.path, '-C', extractDir])
 
     const entryFileContent = await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf8')
-    expect(entryFileContent).toMatch(/export \* from ['"]\.\//)
+    expect(entryFileContent).toMatch(/export \* as func from ['"]\.\//)
     expect(entryFileContent).not.toContain('bootstrap')
   })
 
