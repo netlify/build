@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.3](https://github.com/netlify/build/compare/edge-bundler-v14.9.2...edge-bundler-v14.9.3) (2026-01-14)
+
+
+### Bug Fixes
+
+* **edge-bundler:** include tarball in bundles when dry-run succeeds ([#6872](https://github.com/netlify/build/issues/6872)) ([edebe2f](https://github.com/netlify/build/commit/edebe2f12d4a3b01f9caad88f9588308858a6f01))
+
 ## [14.9.2](https://github.com/netlify/build/compare/edge-bundler-v14.9.1...edge-bundler-v14.9.2) (2025-12-17)
 
 
