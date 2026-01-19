@@ -4,8 +4,5 @@
     "outDir": "lib" /* Specify an output folder for all emitted files. */
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
-  "exclude": ["src/**/*.test.js", "src/**/*.test.ts"],
-  "ts-node": {
-    "transpileOnly": true
-  }
+  "exclude": ["src/**/*.test.js", "src/**/*.test.ts"]
 }

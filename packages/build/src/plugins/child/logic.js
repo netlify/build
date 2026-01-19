@@ -1,30 +1,18 @@
-import { createRequire } from 'module'
 import { pathToFileURL } from 'url'
 
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { DEV_EVENTS, EVENTS } from '../events.js'
 
-import { addTsErrorInfo } from './typescript.js'
-
-const require = createRequire(import.meta.url)
-
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-export const getLogic = async function ({ pluginPath, inputs, tsNodeService, netlifyConfig }) {
-  const logic = await importLogic(pluginPath, tsNodeService)
+export const getLogic = async function ({ pluginPath, inputs, netlifyConfig }) {
+  const logic = await importLogic(pluginPath)
   const logicA = loadLogic({ logic, inputs, netlifyConfig })
   return logicA
 }
 
-const importLogic = async function (pluginPath, tsNodeService) {
+const importLogic = async function (pluginPath) {
   try {
-    // `ts-node` is not available programmatically for pure ES modules yet,
-    // which is currently making it impossible for local plugins to use both
-    // pure ES modules and TypeScript.
-    if (tsNodeService !== undefined) {
-      return require(pluginPath)
-    }
-
     // `pluginPath` is an absolute file path but `import()` needs URLs.
     // Converting those with `pathToFileURL()` is needed especially on Windows
     // where the drive letter would not work with `import()`.
@@ -33,7 +21,6 @@ const importLogic = async function (pluginPath, tsNodeService) {
     // for backward compatibility with CommonJS
     return returnValue.default === undefined ? returnValue : returnValue.default
   } catch (error) {
-    addTsErrorInfo(error, tsNodeService)
     // We must change `error.stack` instead of `error.message` because some
     // errors thrown from `import()` access `error.stack` before throwing.
     // `error.stack` is lazily instantiated by Node.js, so changing
