@@ -87,6 +87,7 @@ test.serial('Report API error', async (t) => {
 
 // ts-node prints error messages differently on Windows and does so in a way
 // that is hard to normalize in test snapshots.
+// TODO(serhalp): Verify if this is still true now that we switched to `tsx`.
 if (platform !== 'win32') {
   test('Report TypeScript error', async (t) => {
     const output = await new Fixture('./fixtures/typescript')
