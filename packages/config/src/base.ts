@@ -1,13 +1,22 @@
 import { resolvePath } from './files.js'
 
+type Config = {
+  build: {
+    base?: string
+  }
+}
+
 /**
  * Retrieve the first `base` directory used to load the first config file.
  */
 export const getInitialBase = function ({
   repositoryRoot,
-  // @ts-expect-error TODO: enhance the types later on, just moved the file to .ts
   defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
+}: {
+  repositoryRoot: string
+  defaultConfig: Config
+  inlineConfig: Config
 }) {
   return resolveBase(repositoryRoot, initialBase)
 }
@@ -25,7 +34,7 @@ export const getInitialBase = function ({
  * If the second file has a `base` property, it is ignored, i.e. it is not
  * recursive.
  */
-export const getBase = function (base: string | undefined, repositoryRoot: string, config: $TSFixMe) {
+export const getBase = function (base: string | undefined, repositoryRoot: string, config: Config) {
   return base === undefined ? resolveBase(repositoryRoot, config.build.base) : base
 }
 
@@ -36,6 +45,6 @@ const resolveBase = function (repositoryRoot: string, base: string) {
 /**
  * Also `config.build.base`.
  */
-export const addBase = function (config, base) {
+export const addBase = function (config: Config, base: string) {
   return { ...config, build: { ...config.build, base } }
 }
