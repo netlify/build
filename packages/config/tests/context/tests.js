@@ -76,7 +76,9 @@ test('Can use context properties for edge_functions', async (t) => {
 })
 
 test('Context with branch wildcard pattern', async (t) => {
-  const output = await new Fixture('./fixtures/branch_wildcard').withFlags({ branch: 'feat/test-wildcard' }).runWithConfig()
+  const output = await new Fixture('./fixtures/branch_wildcard')
+    .withFlags({ branch: 'feat/test-wildcard' })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
