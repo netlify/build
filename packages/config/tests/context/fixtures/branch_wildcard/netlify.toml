@@ -1,0 +1,8 @@
+[build]
+command = "echo default"
+
+[context."feat/*"]
+command = "echo wildcard"
+
+[context."feat/special"]
+command = "echo exact"
