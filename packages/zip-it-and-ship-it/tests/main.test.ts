@@ -2793,7 +2793,7 @@ describe('zip-it-and-ship-it', () => {
       basePath: join(FIXTURES_DIR, fixtureName),
       config: {
         '*': {
-          nodeVersion: 'nodejs16.x',
+          nodeVersion: 'nodejs18.x',
         },
       },
     })
