@@ -14,6 +14,7 @@ import {
   ARCHIVE_FORMAT,
   ArchiveFormat,
   endZip,
+  startTar,
   startZip,
   ZipArchive,
 } from '../../../archive.js'
@@ -30,6 +31,7 @@ import {
   getTelemetryFile,
   isNamedLikeEntryFile,
 } from './entry_file.js'
+import { NETLIFY_PLAY_BOOTSTRAP_VERSION, useNetlifyPlay } from './play.js'
 import { getMetadataFile } from './metadata_file.js'
 import { ModuleFormat } from './module_format.js'
 import { normalizeFilePath } from './normalize_path.js'
@@ -103,6 +105,7 @@ const createDirectory = async function ({
   const userNamespace = hasEntryFileConflict ? DEFAULT_USER_SUBDIRECTORY : ''
 
   const { contents: entryContents, filename: entryFilename } = getEntryFile({
+    addBootstrap: true,
     commonPrefix: basePath,
     featureFlags,
     filename,
@@ -200,8 +203,11 @@ const createZipArchive = async function ({
   srcFiles,
   generator,
 }: ZipNodeParameters) {
-  const destPath = join(destFolder, `${basename(filename, extension)}.zip`)
-  const { archive, output } = startZip(destPath)
+  const isPlay = useNetlifyPlay(featureFlags, mainFile)
+  const format = isPlay ? ARCHIVE_FORMAT.TAR : ARCHIVE_FORMAT.ZIP
+  const archiveExtension = format === ARCHIVE_FORMAT.TAR ? '.tar.gz' : '.zip'
+  const destPath = join(destFolder, `${basename(filename, extension)}${archiveExtension}`)
+  const { archive, output } = format === ARCHIVE_FORMAT.TAR ? startTar(destPath) : startZip(destPath)
 
   // There is a naming conflict with the entry file if one of the supporting
   // files (i.e. not the main file) has the path that the entry file needs to
@@ -226,10 +232,11 @@ const createZipArchive = async function ({
   const userNamespace = hasEntryFileConflict ? DEFAULT_USER_SUBDIRECTORY : ''
 
   let entryFilename = `${basename(filename, extname(filename))}.js`
-  let bootstrapVersion: string | undefined
+  let bootstrapVersion: string | undefined = isPlay ? NETLIFY_PLAY_BOOTSTRAP_VERSION : undefined
 
   if (needsEntryFile) {
     const entryFile = getEntryFile({
+      addBootstrap: !isPlay,
       commonPrefix: basePath,
       filename,
       mainFile,
@@ -249,7 +256,7 @@ const createZipArchive = async function ({
     addEntryFileToZip(archive, telemetryFile)
   }
 
-  if (runtimeAPIVersion === 2) {
+  if (runtimeAPIVersion === 2 && !isPlay) {
     const bootstrapPath = addBootstrapFile(srcFiles, aliases)
 
     const { version } = await getPackageJsonIfAvailable(bootstrapPath)
