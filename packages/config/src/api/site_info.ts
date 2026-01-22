@@ -1,5 +1,5 @@
 import { NetlifyAPI } from '@netlify/api'
-
+import type { operations } from '@netlify/open-api'
 import * as z from 'zod'
 
 import { getEnvelope } from '../env/envelope.js'
@@ -114,6 +114,10 @@ export const getSiteInfo = async function ({
   return { siteInfo, accounts, extensions }
 }
 
+type GetSiteOpts = operations['getSite']['parameters']['query'] & {
+  feature_flags?: string
+}
+
 const getSite = async function (
   api: NetlifyAPI,
   siteId: string,
@@ -124,11 +128,9 @@ const getSite = async function (
   }
   try {
     const site = await api.getSite({
-      // @ts-expect-error: Internal parameter that instructs the API to include all the site's
-      // feature flags in the response.
       feature_flags: siteFeatureFlagPrefix,
-      siteId,
-    })
+      site_id: siteId,
+    } as GetSiteOpts)
     return { ...site, id: siteId }
   } catch (err) {
     return throwUserError(`Failed retrieving site data for site ${siteId}: ${err.message}. ${ERROR_CALL_TO_ACTION}`)
@@ -148,12 +150,15 @@ export type MinimalAccount = {
   members_count: number
 }
 
+type ListAccountsForUserOpts = operations['listAccountsForUser']['parameters']['query'] & {
+  minimal?: string
+}
+
 const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
   try {
-    const accounts = (await api.listAccountsForUser(
-      // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
-      { minimal: 'true' },
-    )) as MinimalAccount[] | null
+    const accounts = (await api.listAccountsForUser({
+      minimal: 'true',
+    } as ListAccountsForUserOpts)) as MinimalAccount[] | null
     return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
   } catch (error) {
     return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
