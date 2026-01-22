@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.3.0](https://github.com/netlify/build/compare/config-v24.2.1...config-v24.3.0) (2026-01-22)
+
+
+### Features
+
+* add wildcard branch matching for context configuration ([#6886](https://github.com/netlify/build/issues/6886)) ([aa65667](https://github.com/netlify/build/commit/aa65667d6678a4ba19cf301899ee22428f9cf57a))
+
 ## [24.2.1](https://github.com/netlify/build/compare/config-v24.2.0...config-v24.2.1) (2026-01-21)
 
 
