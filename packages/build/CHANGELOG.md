@@ -105,6 +105,27 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.12](https://github.com/netlify/build/compare/build-v35.5.11...build-v35.5.12) (2026-01-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.2.1 to ^24.3.0
+
+## [35.5.11](https://github.com/netlify/build/compare/build-v35.5.10...build-v35.5.11) (2026-01-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.2.0 to ^24.2.1
+    * @netlify/edge-bundler bumped from 14.9.3 to 14.9.4
+    * @netlify/functions-utils bumped from ^6.2.19 to ^6.2.20
+    * @netlify/zip-it-and-ship-it bumped from 14.2.0 to 14.3.0
+
 ## [35.5.10](https://github.com/netlify/build/compare/build-v35.5.9...build-v35.5.10) (2026-01-14)
 
 
