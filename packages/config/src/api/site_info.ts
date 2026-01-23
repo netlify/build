@@ -247,15 +247,34 @@ export const getExtensions = async function ({
     headers.set('Netlify-SDK-Build-Bot-Token', token)
   }
 
-  try {
-    const res = await fetch(url, { headers })
-    if (res.status !== 200) {
-      throw new Error(`Unexpected status code ${res.status} from fetching extensions`)
+  // Retry with exponential backoff for transient network issues
+  const maxRetries = 3
+  let lastError: Error | undefined
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const res = await fetch(url, { headers })
+      if (res.status === 200) {
+        return ExtensionResponseSchema.parse(await res.json())
+      }
+      // Dont do retry on 4xx errors
+      if (res.status >= 400 && res.status < 500) {
+        throw new Error(`Unexpected status code ${res.status} from fetching extensions`)
+      }
+      lastError = new Error(`Unexpected status code ${res.status} from fetching extensions`)
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error('unknown error')
+      // Dont do retry on 4xx errors
+      if (lastError.message.includes('4')) {
+        break
+      }
     }
-    return ExtensionResponseSchema.parse(await res.json())
-  } catch (err: unknown) {
+    if (attempt < maxRetries - 1) {
+      await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, attempt)))
+    }
+  }
+  {
     return throwUserError(
-      `Failed retrieving extensions for site ${siteId}: ${err instanceof Error ? err.message : 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,
+      `Failed retrieving extensions for site ${siteId}: ${lastError?.message ?? 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,
     )
   }
 }
