@@ -1,77 +1,95 @@
-import { createRequire } from 'module'
-
 import { findUp } from 'find-up'
+import { ResolverFactory } from 'oxc-resolver'
 import { pathExists } from 'path-exists'
-// @ts-expect-error doesnt export async
-import { async as asyncResolve } from 'resolve'
-
-// The types do not include the mjs api of resolve
-const resolveLib = asyncResolve as typeof import('resolve')
-
-const require = createRequire(import.meta.url)
 
 const BACKSLASH_REGEXP = /\\/g
 
+// Create a resolver that preserves symlinks (symlinks: false means don't resolve symlinks to their real paths)
+const preserveSymlinksResolver = new ResolverFactory({
+  symlinks: false,
+  mainFields: ['main'],
+  conditionNames: ['node', 'require'],
+})
+
+// Create a resolver that follows symlinks (default behavior)
+const followSymlinksResolver = new ResolverFactory({
+  symlinks: true,
+  mainFields: ['main'],
+  conditionNames: ['node', 'require'],
+})
+
 // Find the path to a module's `package.json`
-// We need to use `resolve` instead of `require.resolve()` because:
-//  - it is async
-//  - it preserves symlinks:
-//     - this is important because if a file does a `require('./symlink')`, we
-//       need to bundle the symlink and its target, not only the target
-//     - `path.resolve()` cannot be used for relative|absolute file paths
-//       because it does not resolve omitted file extension,
-//       e.g. `require('./file')` instead of `require('./file.js')`
-//     - the CLI flag `--preserve-symlinks` can be used with Node.js, but it
-//       cannot be set runtime
-// However it does not give helpful error messages.
-//   https://github.com/browserify/resolve/issues/223
-// So, on errors, we fallback to `require.resolve()`
+// We need to use a resolver that preserves symlinks:
+//  - this is important because if a file does a `require('./symlink')`, we
+//    need to bundle the symlink and its target, not only the target
+//  - `path.resolve()` cannot be used for relative|absolute file paths
+//    because it does not resolve omitted file extension,
+//    e.g. `require('./file')` instead of `require('./file.js')`
+//  - the CLI flag `--preserve-symlinks` can be used with Node.js, but it
+//    cannot be set runtime
 export const resolvePackage = async function (moduleName: string, baseDirs: string[]): Promise<string> {
   try {
     return await resolvePathPreserveSymlinks(`${moduleName}/package.json`, baseDirs)
   } catch {
     try {
-      return resolvePathFollowSymlinks(`${moduleName}/package.json`, baseDirs)
+      return await resolvePathFollowSymlinks(`${moduleName}/package.json`, baseDirs)
     } catch (error) {
-      return await resolvePackageFallback(moduleName, baseDirs, error)
+      return await resolvePackageFallback(moduleName, baseDirs, error as Error)
     }
   }
 }
 
-// We need to use `new Promise()` due to a bug with `utils.promisify()` on
-// `resolve`:
-//   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
-const resolvePathPreserveSymlinksForDir = function (path: string, basedir: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    resolveLib(path, { basedir, preserveSymlinks: true }, (error, resolvedLocation) => {
-      if (error || resolvedLocation === undefined) {
-        return reject(error)
-      }
+const resolvePathPreserveSymlinksForDir = async function (path: string, basedir: string): Promise<string> {
+  const result = await preserveSymlinksResolver.async(basedir, path)
 
-      resolve(resolvedLocation)
-    })
-  })
+  if (result.error || !result.path) {
+    const error = new Error(result.error ?? `Cannot find module '${path}' from '${basedir}'`)
+    ;(error as NodeJS.ErrnoException).code = 'MODULE_NOT_FOUND'
+    throw error
+  }
+
+  return result.path
 }
 
-// the resolve library has a `paths` option but it's not the same as multiple basedirs
-// see https://github.com/browserify/resolve/issues/188#issuecomment-679010477
-// we return the first resolved location or the first error if all failed
+// We return the first resolved location or the first error if all failed
 export const resolvePathPreserveSymlinks = async function (path: string, baseDirs: string[]): Promise<string> {
-  let firstError
+  let firstError: Error | undefined
 
   for (const basedir of baseDirs) {
     try {
       return await resolvePathPreserveSymlinksForDir(path, basedir)
     } catch (error) {
-      firstError = firstError || error
+      firstError = firstError || (error as Error)
     }
   }
 
-  throw firstError
+  throw firstError!
 }
 
-const resolvePathFollowSymlinks = function (path: string, baseDirs: string[]) {
-  return require.resolve(path, { paths: baseDirs })
+const resolvePathFollowSymlinksForDir = async function (path: string, basedir: string): Promise<string> {
+  const result = await followSymlinksResolver.async(basedir, path)
+
+  if (result.error || !result.path) {
+    const error = new Error(result.error ?? `Cannot find module '${path}' from '${basedir}'`)
+    ;(error as NodeJS.ErrnoException).code = 'MODULE_NOT_FOUND'
+    throw error
+  }
+
+  return result.path
+}
+
+const resolvePathFollowSymlinks = async function (path: string, baseDirs: string[]): Promise<string> {
+  let firstError: Error | undefined
+
+  for (const basedir of baseDirs) {
+    try {
+      return await resolvePathFollowSymlinksForDir(path, basedir)
+    } catch (error) {
+      firstError = firstError || (error as Error)
+    }
+  }
+
+  throw firstError!
 }
 
 // `require.resolve()` on a module's specific file (like `package.json`)
@@ -83,7 +101,7 @@ const resolvePathFollowSymlinks = function (path: string, baseDirs: string[]) {
 // Theoretically, this might not the root `package.json`, but this is very
 // unlikely, and we don't have any better alternative.
 const resolvePackageFallback = async function (moduleName: string, baseDirs: string[], error: Error) {
-  const mainFilePath = resolvePathFollowSymlinks(moduleName, baseDirs)
+  const mainFilePath = await resolvePathFollowSymlinks(moduleName, baseDirs)
   const packagePath = await findUp(isPackageDir.bind(null, moduleName), { cwd: mainFilePath, type: 'directory' })
 
   if (packagePath === undefined) {
