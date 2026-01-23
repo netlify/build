@@ -228,7 +228,7 @@ for (const variant of FLAG_VARIANTS) {
     }
   })
 
-  test(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+  test.serial(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
     const output = await new Fixture('./fixtures/functions_plugin_mutations').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
     const manifest = await assertManifest(t, 'functions_plugin_mutations')
