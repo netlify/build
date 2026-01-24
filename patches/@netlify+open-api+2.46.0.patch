@@ -1,0 +1,26 @@
+diff --git a/node_modules/@netlify/open-api/dist/index.d.ts b/node_modules/@netlify/open-api/dist/index.d.ts
+index acb5567..00b7463 100644
+--- a/node_modules/@netlify/open-api/dist/index.d.ts
++++ b/node_modules/@netlify/open-api/dist/index.d.ts
+@@ -1867,6 +1867,9 @@ export interface operations {
+       path: {
+         site_id: string;
+       };
++      query: {
++        feature_flags?: string;
++      };
+     };
+     responses: {
+       /** OK */
+@@ -3681,6 +3684,11 @@ export interface operations {
+   };
+   /** API Reference: {@link https://open-api.netlify.com/#tag/accountMembership/operation/listAccountsForUser | `listAccountsForUser`} */
+   listAccountsForUser: {
++    parameters: {
++      query: {
++        minimal?: "true";
++      };
++    };
+     responses: {
+       /** OK */
+       200: {

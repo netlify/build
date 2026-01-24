@@ -1,3 +1,4 @@
+import { isGitRepo } from 'is-git-repo'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
 
@@ -181,13 +182,15 @@ test('Sets COMMIT_REF environment variable', async (t) => {
   t.true(isDefinedString(COMMIT_REF.value))
 })
 
-test('Sets CACHED_COMMIT_REF environment variable', async (t) => {
-  const {
-    env: { CACHED_COMMIT_REF },
-  } = await new Fixture('./fixtures/empty').runWithConfigAsObject()
-  t.deepEqual(CACHED_COMMIT_REF.sources, ['general'])
-  t.true(isDefinedString(CACHED_COMMIT_REF.value))
-})
+if (isGitRepo()) {
+  test('Sets CACHED_COMMIT_REF environment variable', async (t) => {
+    const {
+      env: { CACHED_COMMIT_REF },
+    } = await new Fixture('./fixtures/empty').runWithConfigAsObject()
+    t.deepEqual(CACHED_COMMIT_REF.sources, ['general'])
+    t.true(isDefinedString(CACHED_COMMIT_REF.value))
+  })
+}
 
 test('Sets HEAD environment variable', async (t) => {
   const {
@@ -207,11 +210,12 @@ test('Sets BRANCH environment variable', async (t) => {
 
 test('Does not set some git-related environment variables if no repository', async (t) => {
   const {
-    env: { COMMIT_REF },
+    env: { COMMIT_REF, CACHED_COMMIT_REF },
   } = await new Fixture('./fixtures/empty')
     .withCopyRoot({ git: false })
     .then((fixture) => fixture.runWithConfigAsObject())
   t.is(COMMIT_REF, undefined)
+  t.is(CACHED_COMMIT_REF, undefined)
 })
 
 test('Sets CONTEXT environment variable', async (t) => {
