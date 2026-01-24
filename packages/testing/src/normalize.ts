@@ -144,6 +144,8 @@ const NORMALIZE_REGEXPS = [
   ],
   // Transient network errors when loading edge function config
   [/Could not load configuration for edge function[^\n]*\n(.*error:.*\n)*(.*STACK TRACE\n)?/g, ''],
+  // Transient network errors with numbered error format (e.g., "1: client error (SendRequest)")
+  [/(\d+: .*(error|reset|refused|timeout).*\n)+STACK TRACE\n/gi, ''],
   // Base64-encoded string
   [/data:.*;base64,([a-zA-Z\d=])+/g, 'BASE64_STRING'],
 ]
