@@ -137,6 +137,13 @@ const NORMALIZE_REGEXPS = [
   [/(Available plugins)[^>]*/m, '$1\n\n'],
   // esbuild error messages
   [/(Could not resolve "[^"]+") \([^)]+\)/g, '$1'],
+  // Transient network errors in edge function type checking
+  [
+    /Could not check latest version of types:.*\n.*STACK TRACE\n/g,
+    'Local version of types is up-to-date: HEXADECIMAL_ID\n',
+  ],
+  // Transient network errors when loading edge function config
+  [/Could not load configuration for edge function[^\n]*\n(.*error:.*\n)*(.*STACK TRACE\n)?/g, ''],
   // Base64-encoded string
   [/data:.*;base64,([a-zA-Z\d=])+/g, 'BASE64_STRING'],
 ]
