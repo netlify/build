@@ -89,6 +89,14 @@ jobs:
         with:
           deno-version: ${{ matrix.deno-version }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Cache Deno binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.netlify/deno-cli
+            ~/.netlify/deno-cli-v1
+          key: deno-binaries-${{ runner.os }}-${{ hashFiles('packages/edge-bundler/node/bridge.ts') }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno dependencies
         run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -158,6 +166,14 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: 2.5.6
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Cache Deno binaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.netlify/deno-cli
+            ~/.netlify/deno-cli-v1
+          key: deno-binaries-${{ runner.os }}-${{ hashFiles('packages/edge-bundler/node/bridge.ts') }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
