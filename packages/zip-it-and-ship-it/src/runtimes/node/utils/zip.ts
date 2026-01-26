@@ -205,7 +205,7 @@ const createZipArchive = async function ({
 }: ZipNodeParameters) {
   const isPlay = useNetlifyPlay(featureFlags, mainFile)
   const format = isPlay ? ARCHIVE_FORMAT.TAR : ARCHIVE_FORMAT.ZIP
-  const archiveExtension = format === ARCHIVE_FORMAT.TAR ? '.tar.gz' : '.zip'
+  const archiveExtension = format === ARCHIVE_FORMAT.TAR ? '.tgz' : '.zip'
   const destPath = join(destFolder, `${basename(filename, extension)}${archiveExtension}`)
   const { archive, output } = format === ARCHIVE_FORMAT.TAR ? startTar(destPath) : startZip(destPath)
 
