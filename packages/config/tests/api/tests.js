@@ -550,3 +550,21 @@ test('We call the production extension API when the apiHost is api.netlify.com',
 
   t.assert(baseUrl === EXTENSION_API_BASE_URL)
 })
+
+const ACCOUNTS_DATA = {
+  path: '/api/v1/accounts',
+  response: [{ id: 'account1', slug: 'test-account', capabilities: { ai_gateway_disabled: { included: true } } }],
+}
+
+test('includeAccountCapabilities fetches full account data with capabilities', async (t) => {
+  const { output, requests } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', siteId: 'test', includeAccountCapabilities: true })
+    .runConfigServer([SITE_INFO_DATA, ACCOUNTS_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
+
+  const accountsRequest = requests.find((req) => req.url === '/api/v1/accounts')
+  t.truthy(accountsRequest, 'should make request to accounts endpoint')
+  t.false(accountsRequest.url.includes('minimal'), 'should not include minimal parameter')
+
+  const config = JSON.parse(output)
+  t.truthy(config.accounts[0].capabilities, 'accounts should include capabilities')
+})
