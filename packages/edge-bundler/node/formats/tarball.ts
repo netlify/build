@@ -84,6 +84,7 @@ export const bundle = async ({
       importMap.withNodeBuiltins().toDataURL(),
       '--quiet',
       '--allow-import',
+      '--no-npm',
       '--node-modules-dir=manual',
       '--vendor',
       '--entrypoint',
