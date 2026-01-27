@@ -1,0 +1,2 @@
+[build]
+  not_found_mode = "invalid_value"
