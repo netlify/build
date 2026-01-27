@@ -124,6 +124,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
       testOpts,
       token,
       extensionApiBaseUrl,
+      includeAccountCapabilities: opts.includeAccountCapabilities,
     })
 
     siteInfo = updatedSiteInfo.siteInfo

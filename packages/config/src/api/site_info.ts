@@ -26,6 +26,7 @@ type GetSiteInfoOptions = {
   siteFeatureFlagPrefix: string
   token: string
   extensionApiBaseUrl: string
+  includeAccountCapabilities?: boolean
 }
 
 export type Extension = {
@@ -67,6 +68,7 @@ export const getSiteInfo = async function ({
   token,
   featureFlags = {},
   extensionApiBaseUrl,
+  includeAccountCapabilities = false,
 }: GetSiteInfoOptions): Promise<SiteInfo> {
   const { env: testEnv = false } = testOpts
 
@@ -99,7 +101,7 @@ export const getSiteInfo = async function ({
 
   const [siteInfo, accounts, extensions] = await Promise.all([
     getSite(api, siteId, siteFeatureFlagPrefix),
-    getAccounts(api),
+    getAccounts(api, includeAccountCapabilities),
     getExtensions({ siteId, testOpts, offline, accountId, token, featureFlags, extensionApiBaseUrl, mode }),
   ])
 
@@ -146,14 +148,17 @@ export type MinimalAccount = {
   type_name: string
   type_slug: string
   members_count: number
+  capabilities?: Record<string, { included?: boolean } | undefined>
 }
 
-const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
+const getAccounts = async function (api: NetlifyAPI, includeCapabilities = false): Promise<MinimalAccount[]> {
   try {
-    const accounts = (await api.listAccountsForUser(
-      // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
-      { minimal: 'true' },
-    )) as MinimalAccount[] | null
+    const accounts = includeCapabilities
+      ? ((await api.listAccountsForUser()) as MinimalAccount[] | null)
+      : ((await api.listAccountsForUser(
+          // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
+          { minimal: 'true' },
+        )) as MinimalAccount[] | null)
     return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
   } catch (error) {
     return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
