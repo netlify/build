@@ -228,16 +228,23 @@ for (const variant of FLAG_VARIANTS) {
     }
   })
 
-  test.serial(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
-    const output = await new Fixture('./fixtures/functions_plugin_mutations').withFlags(variant.flags).runWithBuild()
+  test(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+    const fixture = await new Fixture('./fixtures/functions_plugin_mutations')
+      .withFlags(variant.flags)
+      .withCopyRoot({ git: false })
+
+    const output = await fixture.runWithBuild()
     t.snapshot(normalizeOutput(output))
-    const manifest = await assertManifest(t, 'functions_plugin_mutations')
+
+    const distPath = join(fixture.repositoryRoot, '.netlify', 'edge-functions-dist')
+    const manifestPath = join(distPath, 'manifest.json')
+
+    t.true(await pathExists(manifestPath))
+
+    const manifest = await importJsonFile(manifestPath)
     assertBundlesExist(t, manifest, variant)
-    const manifestPath = join(FIXTURES_DIR, 'functions_plugin_mutations/.netlify/edge-functions-dist/manifest.json')
 
-    const { routes } = await importJsonFile(manifestPath)
-
-    t.deepEqual(routes, [
+    t.deepEqual(manifest.routes, [
       { function: 'mutated-function', pattern: '^/test-test/?$', excluded_patterns: [], path: '/test-test' },
     ])
   })
