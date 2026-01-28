@@ -88,6 +88,7 @@ export const bundle = async ({
       '--quiet',
       '--code-splitting',
       '--allow-import',
+      '--inline-imports=false',
       '--node-modules-dir=manual',
       '--outdir',
       bundleDir.path,
