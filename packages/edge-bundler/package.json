@@ -76,7 +76,7 @@
     "semver": "^7.3.8",
     "tar": "^7.5.3",
     "tmp-promise": "^3.0.3",
-    "urlpattern-polyfill": "8.0.2",
+    "urlpattern-polyfill": "10.1.0",
     "uuid": "^11.0.0"
   }
 }
