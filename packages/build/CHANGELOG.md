@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.5.14](https://github.com/netlify/build/compare/build-v35.5.13...build-v35.5.14) (2026-01-30)
+
+
+### Bug Fixes
+
+* do not bundle Edge Functions - vendor dependencies in the tarball instead ([#6907](https://github.com/netlify/build/issues/6907)) ([c91b37c](https://github.com/netlify/build/commit/c91b37c61db0f20254da48ba3ce7f6fd18193b4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.4 to 14.9.5
+
 ## [35.5.13](https://github.com/netlify/build/compare/build-v35.5.12...build-v35.5.13) (2026-01-26)
 
 
