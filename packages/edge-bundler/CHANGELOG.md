@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.5](https://github.com/netlify/build/compare/edge-bundler-v14.9.4...edge-bundler-v14.9.5) (2026-01-30)
+
+
+### Bug Fixes
+
+* do not bundle Edge Functions - vendor dependencies in the tarball instead ([#6907](https://github.com/netlify/build/issues/6907)) ([c91b37c](https://github.com/netlify/build/commit/c91b37c61db0f20254da48ba3ce7f6fd18193b4c))
+
 ## [14.9.4](https://github.com/netlify/build/compare/edge-bundler-v14.9.3...edge-bundler-v14.9.4) (2026-01-21)
 
 
