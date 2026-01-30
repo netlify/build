@@ -111,7 +111,7 @@
     "string-width": "^7.0.0",
     "supports-color": "^10.0.0",
     "terminal-link": "^4.0.0",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0",
     "uuid": "^11.0.0",
     "yaml": "^2.8.0",

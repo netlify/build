@@ -239,7 +239,7 @@ The parent process then
   to
   [`import()` the plugin's main file](https://github.com/netlify/build/blob/509efdfe5fd41bdbeb3b9e930b07ac984531b785/packages/build/src/plugins/child/logic.js#L10).
 - If the plugin uses TypeScript and does not run `tsc` before `npm publish`,
-  [`ts-node` is registered first](https://github.com/netlify/build/blob/509efdfe5fd41bdbeb3b9e930b07ac984531b785/packages/build/src/plugins/child/typescript.js#L11)
+  [`tsx` is registered first](https://github.com/netlify/build/blob/509efdfe5fd41bdbeb3b9e930b07ac984531b785/packages/build/src/plugins/child/typescript.js#L11)
   to transpile it on-the-fly. This is useful for TypeScript plugin authors to test their plugins in production.
 - The plugin's shape
   [is also validated](https://github.com/netlify/build/blob/509efdfe5fd41bdbeb3b9e930b07ac984531b785/packages/build/src/plugins/child/validate.js#L6).
