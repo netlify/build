@@ -1,5 +1,5 @@
 import { NetlifyAPI } from '@netlify/api'
-
+import pRetry, { AbortError } from 'p-retry'
 import * as z from 'zod'
 
 import { getEnvelope } from '../env/envelope.js'
@@ -248,12 +248,22 @@ export const getExtensions = async function ({
   }
 
   try {
-    const res = await fetch(url, { headers })
-    if (res.status !== 200) {
-      throw new Error(`Unexpected status code ${res.status} from fetching extensions`)
-    }
-    return ExtensionResponseSchema.parse(await res.json())
-  } catch (err: unknown) {
+    return await pRetry(
+      async () => {
+        const res = await fetch(url, { headers })
+        if (res.status === 200) {
+          return ExtensionResponseSchema.parse(await res.json())
+        }
+        const errorMsg = `Unexpected status code ${res.status} from fetching extensions`
+        // Don't retry on 4xx errors (client errors)
+        if (res.status >= 400 && res.status < 500) {
+          throw new AbortError(errorMsg)
+        }
+        throw new Error(errorMsg)
+      },
+      { retries: 3 },
+    )
+  } catch (err) {
     return throwUserError(
       `Failed retrieving extensions for site ${siteId}: ${err instanceof Error ? err.message : 'unknown error'}. ${ERROR_CALL_TO_ACTION}`,
     )
