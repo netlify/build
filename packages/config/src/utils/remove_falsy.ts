@@ -3,8 +3,8 @@ import { includeKeys } from 'filter-obj'
 /**
  * Remove falsy values from object
  */
-export const removeFalsy = <T extends object>(obj: T): Partial<T> => {
-  return includeKeys(obj, (_key, value) => isTruthy(value)) as Partial<T>
+export const removeFalsy = function (obj) {
+  return includeKeys(obj, (_key, value) => isTruthy(value))
 }
 
 type NoUndefinedField<T> = { [P in keyof T]: Exclude<T[P], null | undefined> }
