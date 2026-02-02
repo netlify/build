@@ -36,9 +36,7 @@ test('Does not run the db_setup core step when @netlify/db is not in dependencie
   const {
     success,
     logs: { stdout },
-  } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
 
   t.true(success)
   t.false(stdout.join('\n').includes('Netlify DB setup completed'))
@@ -50,18 +48,14 @@ test('Does not run the db_setup core step when the feature flag is off', async (
   const {
     success,
     logs: { stdout },
-  } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot })
-    .runBuildProgrammatic()
+  } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   t.true(success)
   t.false(stdout.join('\n').includes('Netlify DB setup completed'))
 })
 
 test('monorepo > Runs the db_setup core step when @netlify/db is in workspace devDependencies', async (t) => {
-  const output = await runWithMockServer(
-    new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }),
-  )
+  const output = await runWithMockServer(new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }))
 
   t.true(output.includes('Netlify DB setup completed'))
   t.true(output.includes('foobar'))
