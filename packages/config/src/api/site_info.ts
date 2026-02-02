@@ -252,7 +252,15 @@ export const getExtensions = async function ({
       async () => {
         const res = await fetch(url, { headers })
         if (res.status === 200) {
-          return ExtensionResponseSchema.parse(await res.json())
+          const data = await res.json()
+          try {
+            return ExtensionResponseSchema.parse(data)
+          } catch (parseErr) {
+            // Schema validation errors are permanent and shouldn't be retried
+            throw new AbortError(
+              `Invalid extension response: ${parseErr instanceof Error ? parseErr.message : 'unknown error'}`,
+            )
+          }
         }
         const errorMsg = `Unexpected status code ${res.status} from fetching extensions`
         // Don't retry on 4xx errors (client errors)
@@ -261,7 +269,15 @@ export const getExtensions = async function ({
         }
         throw new Error(errorMsg)
       },
-      { retries: 3 },
+      {
+        retries: 3,
+        onFailedAttempt: (error) => {
+          // Log retry attempts for observability
+          console.warn(
+            `Extension fetch attempt ${error.attemptNumber} failed. ${error.retriesLeft} retries left. Error: ${error.message}`,
+          )
+        },
+      },
     )
   } catch (err) {
     return throwUserError(
