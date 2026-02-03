@@ -90,7 +90,9 @@ test('Does not run the db_setup core step when the feature flag is off', async (
 })
 
 test('monorepo > Runs the db_setup core step when @netlify/db is in workspace devDependencies', async (t) => {
-  const { output } = await runWithMockServer(new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }))
+  const { output } = await runWithMockServer(
+    new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }),
+  )
 
   t.true(output.includes('Netlify DB setup completed'))
   t.true(output.includes(MAIN_CONNECTION_STRING))
