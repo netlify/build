@@ -18,6 +18,10 @@ export type CoreStepFunctionArgs = {
    */
   packagePath?: string
   deployId: string
+  /**
+   * The deploy context (e.g. 'production', 'deploy-preview', 'branch-deploy')
+   */
+  context: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
   quiet?: boolean

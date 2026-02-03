@@ -27,12 +27,34 @@ const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlag
   return false
 }
 
-const coreStep: CoreStepFunction = async ({ api, constants }) => {
-  await api.getSite({ siteId: constants.SITE_ID })
+// TODO: Remove once database methods are made public.
+interface TemporaryDatabaseResponse {
+  connection_string: string
+}
 
-  process.env.NETLIFY_DB_URL = 'foobar'
+const coreStep: CoreStepFunction = async ({ api, constants, context, deployId }) => {
+  const siteId = constants.SITE_ID
 
-  return { newEnvChanges: { NETLIFY_DB_URL: 'foobar' } }
+  // @ts-expect-error This is an internal method for now so it isn't typed yet.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const database = (await api.createSiteDatabase({ site_id: siteId })) as TemporaryDatabaseResponse
+
+  let connectionString: string = database.connection_string
+
+  if (context !== 'production') {
+    // @ts-expect-error This is an internal method for now so it isn't typed yet.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const databaseBranch = (await api.createSiteDatabaseBranch({
+      site_id: siteId,
+      body: { deploy_id: deployId },
+    })) as TemporaryDatabaseResponse
+
+    connectionString = databaseBranch.connection_string
+  }
+
+  process.env.NETLIFY_DB_URL = connectionString
+
+  return { newEnvChanges: { NETLIFY_DB_URL: connectionString } }
 }
 
 const hasDBPackage = (packageJSON: PackageJson): boolean => {
