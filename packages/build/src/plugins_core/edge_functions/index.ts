@@ -5,7 +5,7 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { Metric } from '../../core/report_metrics.js'
-import { log, reduceLogLines } from '../../log/logger.js'
+import { log, reduceLogLines, structuredLog } from '../../log/logger.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import {
   FRAMEWORKS_API_EDGE_FUNCTIONS_PATH,
@@ -140,6 +140,23 @@ const coreStep = async function ({
     const metrics = getMetrics(manifest)
 
     systemLog('Edge Functions manifest:', manifest)
+
+    // Log bundled edge functions and their configuration
+    structuredLog({
+      logs,
+      type: 'edge-functions-bundling',
+      payload: {
+        functions: Object.entries(manifest.function_config).map(([name, config]: [string, any]) => ({
+          name,
+          generator: config.generator,
+          path: config.path,
+        })),
+        routes: manifest.routes,
+        postCacheRoutes: manifest.post_cache_routes,
+      },
+      isRunningLocally,
+      featureFlags,
+    })
 
     await validateEdgeFunctionsManifest(manifest, featureFlags)
     return { metrics }
