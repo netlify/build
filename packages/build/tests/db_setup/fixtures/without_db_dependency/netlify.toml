@@ -1,3 +1,5 @@
 [build]
-command = "echo $NETLIFY_DB_URL"
 publish = "."
+
+[[plugins]]
+package = "./plugin.js"
