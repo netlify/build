@@ -30,3 +30,5 @@ export const getPackageJson = async function (cwd: string, options: Omit<Options
   }
   return result
 }
+
+export type { PackageJson }
