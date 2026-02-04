@@ -868,6 +868,58 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
+    test('With imports from sibling directories', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_sibling_directory', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: '{"appName":"test-app","itemCount":2}',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // Verify that sibling directory files are included in the tarball
+      expect(entries).toContain('___netlify-edge-functions.json')
+      expect(entries).toContain('deno.json')
+      expect(entries).toContain('netlify/edge-functions/func1.ts')
+      expect(entries).toContain('data/config.json')
+      expect(entries).toContain('data/items.json')
+
+      await cleanup()
+    })
+
     describe('Dry-run tarball generation flag enabled', () => {
       test('Includes tarball in bundles when generation succeeds', async () => {
         const systemLogger = vi.fn()
