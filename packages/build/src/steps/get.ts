@@ -7,6 +7,7 @@ import { devUploadBlobs } from '../plugins_core/dev_blobs_upload/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { applyDeployConfig } from '../plugins_core/frameworks_api/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
+import { dbSetup } from '../plugins_core/db_setup/index.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
@@ -77,6 +78,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
 const addCoreSteps = function (steps): CoreStep[] {
   return [
     preCleanup,
+    dbSetup,
     buildCommandCore,
     applyDeployConfig,
     ...steps,
