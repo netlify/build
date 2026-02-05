@@ -1,6 +1,6 @@
-import * as fs from 'fs/promises'
-import { platform } from 'process'
-import { fileURLToPath } from 'url'
+import * as fs from 'node:fs/promises'
+import { platform } from 'node:process'
+import { fileURLToPath } from 'node:url'
 
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
@@ -87,7 +87,7 @@ test('Resolution is relative to the build directory', async (t) => {
 })
 
 test('Resolution respects monorepo node module resolution rules', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo')
+  const fixture = new Fixture('./fixtures/monorepo')
   const output = await fixture.withFlags({ packagePath: 'apps/unpinned' }).runWithBuild()
   // fixture has 2 versions of the same build plugin used by different workspaces
   // this ensures version used by apps/unpinned is used instead of version that

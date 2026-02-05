@@ -7,6 +7,7 @@ import { pEvent } from 'p-event'
 import { addErrorInfo } from '../../error/info.js'
 import { runsAfterDeploy } from '../../plugins/events.js'
 import { addAsyncErrorMessage } from '../../utils/errors.js'
+import type { NetlifyPluginConstants } from '../../core/constants.js'
 
 /**
  * Error types the Buildbot server sends, see:
@@ -103,12 +104,29 @@ const getNextParsedResponsePromise = addAsyncErrorMessage<BuildbotResponse>(asyn
 /**
  * Initates the deploy with the given buildbot client
  */
-export const deploySiteWithBuildbotClient = async function ({ client, events, buildDir, repositoryRoot, constants }) {
-  const action = shouldWaitForPostProcessing(events) ? Action.DeploySiteAndWait : Action.DeploySite
-  const deployDir = getDeployDir({ buildDir, repositoryRoot, constants })
-  const payload = { action, deployDir }
-
-  const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
+export const deploySiteWithBuildbotClient = async function ({
+  client,
+  environment,
+  events,
+  buildDir,
+  repositoryRoot,
+  constants,
+}: {
+  client: net.Socket
+  environment: { key: string; value: string; isSecret: boolean }[]
+  events: string[]
+  buildDir: string
+  repositoryRoot: string
+  constants: NetlifyPluginConstants
+}) {
+  const [response] = await Promise.all([
+    getNextParsedResponsePromise(client),
+    writePayload(client, {
+      action: shouldWaitForPostProcessing(events) ? Action.DeploySiteAndWait : Action.DeploySite,
+      deployDir: getDeployDir({ buildDir, repositoryRoot, constants }),
+      environment,
+    }),
+  ])
 
   if (!response.succeeded) {
     const { error, code, error_type } = response?.values || {}

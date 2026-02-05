@@ -4,37 +4,47 @@ import { logFailPluginWarning } from '../log/messages/plugins.js'
 // Stop build.
 // As opposed to throwing an error directly or to uncaught exceptions, this is
 // displayed as a user error, not an implementation error.
-export const failBuild = function (message, opts) {
+export const failBuild = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
   throw normalizeError('failBuild', failBuild, message, opts)
 }
 
 // Stop plugin. Same as `failBuild` but only stops plugin not whole build
-export const failPlugin = function (message, opts) {
+export const failPlugin = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
   throw normalizeError('failPlugin', failPlugin, message, opts)
 }
 
 // Cancel build. Same as `failBuild` except it marks the build as "canceled".
-export const cancelBuild = function (message, opts) {
+export const cancelBuild = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
   throw normalizeError('cancelBuild', cancelBuild, message, opts)
 }
 
 // `onSuccess`, `onEnd` and `onError` cannot cancel the build since they are run
 // or might be run after deployment. When calling `failBuild()` or
 // `cancelBuild()`, `failPlugin()` is run instead and a warning is printed.
-export const failPluginWithWarning = function (methodName, event, message, opts) {
+export const failPluginWithWarning = function (
+  methodName: string,
+  event: string,
+  message: string,
+  opts: { error: Error; errorMetadata: string[] },
+) {
   logFailPluginWarning(methodName, event)
   failPlugin(message, opts)
 }
 
 // An `error` option can be passed to keep the original error message and
 // stack trace. An additional `message` string is always required.
-const normalizeError = function (type, func, message, { error, errorMetadata } = {}) {
+const normalizeError = function (
+  type: string,
+  func: (...args: unknown[]) => unknown,
+  message: string,
+  { error, errorMetadata }: { error?: Error; errorMetadata?: string[] } = {},
+) {
   const errorA = getError(error, message, func)
   addErrorInfo(errorA, { type, errorMetadata })
   return errorA
 }
 
-const getError = function (error, message, func) {
+const getError = function (error: unknown, message: string, func: (...args: unknown[]) => unknown) {
   if (error instanceof Error) {
     // This might fail if `name` is a getter or is non-writable.
     try {
