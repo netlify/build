@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.6](https://github.com/netlify/build/compare/edge-bundler-v14.9.5...edge-bundler-v14.9.6) (2026-02-05)
+
+
+### Bug Fixes
+
+* **edge-bundler:** include sibling directory imports in tarball bundle ([#6915](https://github.com/netlify/build/issues/6915)) ([f279145](https://github.com/netlify/build/commit/f279145671b0607f9d586d8c459e21e6b3ec024c))
+
 ## [14.9.5](https://github.com/netlify/build/compare/edge-bundler-v14.9.4...edge-bundler-v14.9.5) (2026-01-30)
 
 
