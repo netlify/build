@@ -53,10 +53,16 @@ export const bundle = async ({
   }
   const entryPoints = functions.map((func) => func.path)
 
-  // Find the common path prefix for all entry points. When using a single
-  // entry point, `commonPathPrefix` returns an empty string, so we use
+  // Use deno info to get the module graph and identify which local files are actually needed.
+  // This avoids copying unnecessary files (like node_modules) that happen to be under commonPath.
+  // If module graph analysis fails, fall back to copying files from entry point directories.
+  const sourceFiles = await getRequiredSourceFiles(deno, entryPoints, importMap)
+
+  // Find the common path prefix for all source files (entry points + their local imports).
+  // This ensures imports to sibling directories (e.g., ../internal/) are included.
+  // When using a single file, `commonPathPrefix` returns an empty string, so we use
   // the path of the first entry point's directory.
-  const commonPath = commonPathPrefix(entryPoints) || path.dirname(entryPoints[0])
+  const commonPath = commonPathPrefix(sourceFiles) || path.dirname(entryPoints[0])
 
   // Build the manifest mapping function names to their relative paths
   for (const func of functions) {
@@ -64,10 +70,6 @@ export const bundle = async ({
     manifest.functions[func.name] = getUnixPath(relativePath)
   }
 
-  // Use deno info to get the module graph and identify which local files are actually needed.
-  // This avoids copying unnecessary files (like node_modules) that happen to be under commonPath.
-  // If module graph analysis fails, fall back to copying files from entry point directories.
-  const sourceFiles = await getRequiredSourceFiles(deno, entryPoints, importMap, commonPath)
   for (const sourceFile of sourceFiles) {
     const relativePath = path.relative(commonPath, sourceFile)
     const destPath = path.join(bundleDir.path, relativePath)
@@ -179,9 +181,7 @@ async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
-  commonPath: string,
 ): Promise<string[]> {
-  const commonPathUrl = pathToFileURL(commonPath + path.sep).href
   const localFiles = new Set<string>()
   const importMapDataUrl = importMap.withNodeBuiltins().toDataURL()
 
@@ -198,10 +198,9 @@ async function getRequiredSourceFiles(
 
       const graph = JSON.parse(stdout) as ModuleGraphJson
 
-      // Extract local files from the module graph
+      // Extract all local files from the module graph
       for (const module of graph.modules) {
-        // Only include local file:// URLs that are under the common path
-        if (module.specifier.startsWith('file://') && module.specifier.startsWith(commonPathUrl)) {
+        if (module.specifier.startsWith('file://')) {
           const filePath = fileURLToPath(module.specifier)
           localFiles.add(filePath)
         }
@@ -210,11 +209,9 @@ async function getRequiredSourceFiles(
       // If deno info fails for this entry point, fall back to copying files
       // from its directory
       const dir = path.dirname(entryPoint)
-      if (dir.startsWith(commonPath)) {
-        const files = await listRecursively(dir)
-        for (const file of files) {
-          localFiles.add(file)
-        }
+      const files = await listRecursively(dir)
+      for (const file of files) {
+        localFiles.add(file)
       }
     }
   }
