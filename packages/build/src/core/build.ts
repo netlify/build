@@ -660,6 +660,7 @@ const runBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   } = await runSteps({
     steps,
     buildbotServerSocket,
@@ -708,5 +709,6 @@ const runBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   }
 }
