@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -77,6 +78,13 @@ export const bundle = async ({
     await fs.mkdir(path.dirname(destPath), { recursive: true })
     await fs.copyFile(sourceFile, destPath)
   }
+
+  // Rewrite bare specifier imports to their resolved URLs so they can be
+  // resolved by Deno's --vendor flag at runtime without needing the customer's import map.
+  // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
+  // point), not /function/deno.json, so the customer's import map is unreachable.
+  // This is because we boot Deno before we've mounted the customer's edge-functions directory, so it can't be used to resolve imports during the initial bundle phase.
+  await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap)
 
   // Vendor all dependencies in the bundle directory
   await deno.run(
@@ -166,6 +174,92 @@ export const bundle = async ({
     extension: TARBALL_EXTENSION,
     format: BundleFormat.TARBALL,
     hash,
+  }
+}
+
+// Specifiers provided by the platform deno.json at runtime - no need to rewrite these.
+const PLATFORM_SPECIFIERS = new Set(['@netlify/edge-functions', 'netlify:edge'])
+
+// Source file extensions that may contain import statements.
+const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
+
+/**
+ * Rewrites bare specifier imports in copied source files to their resolved URLs
+ * from the import map. This allows Deno's --vendor flag to resolve these imports
+ * at runtime without needing the customer's import map (which is unreachable
+ * because Deno discovers config from the platform bootstrap directory, not the
+ * function directory).
+ *
+ * Only rewrites specifiers that:
+ * - Are bare package specifiers (not relative, absolute, or URL imports)
+ * - Resolve to http/https or npm: URLs in the import map
+ * - Are NOT node builtins or platform-provided imports
+ */
+async function rewriteBareSpecifiers(
+  bundleDirPath: string,
+  sourceFiles: string[],
+  commonPath: string,
+  importMap: ImportMap,
+): Promise<void> {
+  const contents = importMap.getContents()
+  const builtinSet = new Set(builtinModules)
+
+  // Collect bare specifiers that should be rewritten to URLs
+  const specifierEntries = Object.entries(contents.imports)
+    .filter(([specifier, url]) => {
+      // Skip node builtins
+      if (specifier.startsWith('node:') || builtinSet.has(specifier)) return false
+      // Skip platform-provided specifiers (handled by platform deno.json)
+      if (PLATFORM_SPECIFIERS.has(specifier)) return false
+      // Skip relative/absolute path specifiers
+      if (specifier.startsWith('.') || specifier.startsWith('/')) return false
+      // Only rewrite to http/https or npm: URLs
+      if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('npm:')) return false
+      return true
+    })
+    // Sort longest first so prefix mappings like "lodash/" match before "lodash"
+    .sort((a, b) => b[0].length - a[0].length)
+
+  for (const sourceFile of sourceFiles) {
+    if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
+
+    const relativePath = path.relative(commonPath, sourceFile)
+    const destPath = path.join(bundleDirPath, relativePath)
+
+    let source: string
+    try {
+      source = await fs.readFile(destPath, 'utf-8')
+    } catch {
+      continue
+    }
+
+    let modified = source
+
+    for (const [specifier, url] of specifierEntries) {
+      const escaped = specifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      // Escape $ in URL for use in replacement string
+      const safeUrl = url.replace(/\$/g, '$$$$')
+
+      for (const quote of ['"', "'"]) {
+        if (specifier.endsWith('/')) {
+          // Prefix mapping: "specifier/subpath" -> "url/subpath"
+          modified = modified.replace(
+            new RegExp(`(\\bfrom\\s+|\\bimport\\s+|\\bimport\\s*\\(\\s*)${quote}${escaped}([^${quote}]*)${quote}`, 'g'),
+            `$1${quote}${safeUrl}$2${quote}`,
+          )
+        } else {
+          // Exact mapping: "specifier" -> "url"
+          modified = modified.replace(
+            new RegExp(`(\\bfrom\\s+|\\bimport\\s+|\\bimport\\s*\\(\\s*)${quote}${escaped}${quote}`, 'g'),
+            `$1${quote}${safeUrl}${quote}`,
+          )
+        }
+      }
+    }
+
+    if (modified !== source) {
+      await fs.writeFile(destPath, modified)
+    }
   }
 }
 
