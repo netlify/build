@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.7](https://github.com/netlify/build/compare/edge-bundler-v14.9.6...edge-bundler-v14.9.7) (2026-02-05)
+
+
+### Bug Fixes
+
+* **edge-bundler:** rewrite bare specifier imports to resolved URLs in tarball bundles ([#6916](https://github.com/netlify/build/issues/6916)) ([db6c0c1](https://github.com/netlify/build/commit/db6c0c12b3a70c24e9b69ded684fe42e19aacfcd))
+
 ## [14.9.6](https://github.com/netlify/build/compare/edge-bundler-v14.9.5...edge-bundler-v14.9.6) (2026-02-05)
 
 
