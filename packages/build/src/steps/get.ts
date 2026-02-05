@@ -3,6 +3,7 @@ import { DEV_EVENTS, EVENTS } from '../plugins/events.js'
 import { uploadBlobs } from '../plugins_core/blobs_upload/index.js'
 import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
+import { deployMetadata } from '../plugins_core/deploy_metadata/index.js'
 import { devUploadBlobs } from '../plugins_core/dev_blobs_upload/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { applyDeployConfig } from '../plugins_core/frameworks_api/index.js'
@@ -25,13 +26,12 @@ export const getSteps = function (steps, eventHandlers?: any[]) {
   return { steps: stepsC, events }
 }
 
-// Get all dev steps
-export const getDevSteps = function (command, steps, eventHandlers?: any[]) {
+export const getDevSteps = function (command, steps, eventHandlers: any[]) {
   const devCommandStep = {
     event: 'onDev',
     coreStep: async (args) => {
       const { constants, event } = args
-      const utils = getUtils({ event, constants, runState: {} })
+      const utils = getUtils({ event, constants, runState: {}, deployEnvVars: args.deployEnvVars })
       await command({ utils, ...args })
 
       return {}
@@ -63,7 +63,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
       event: event as Event,
       coreStep: (args) => {
         const { constants, event } = args
-        const utils = getUtils({ event, constants, runState: {} })
+        const utils = getUtils({ event, constants, runState: {}, deployEnvVars: args.deployEnvVars })
 
         return handler({ utils, ...args })
       },
@@ -86,6 +86,7 @@ const addCoreSteps = function (steps): CoreStep[] {
     bundleEdgeFunctions,
     scanForSecrets,
     uploadBlobs,
+    deployMetadata,
     deploySite,
     saveArtifacts,
   ]

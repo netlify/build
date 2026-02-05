@@ -34,6 +34,7 @@ export type CoreStepFunctionArgs = {
   netlifyConfig: NetlifyConfig
   explicitSecretKeys: $TSFixme
   enhancedSecretScan: boolean
+  deployEnvVars: { key: string; value: string; isSecret: boolean }[]
 
   buildbotServerSocket: $TSFixme
   api: DynamicMethods

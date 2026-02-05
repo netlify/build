@@ -17,6 +17,7 @@ const tracer = trace.getTracer('steps')
 
 // Run a step (core, build command or plugin)
 export const runStep = async function ({
+  deployEnvVars,
   event,
   childProcess,
   packageName,
@@ -132,6 +133,7 @@ export const runStep = async function ({
 
     const fireStep = getFireStep(packageName, coreStepId, event)
     const {
+      deployEnvVars: newDeployEnvVars,
       newEnvChanges,
       netlifyConfig: netlifyConfigA = netlifyConfig,
       configMutations: configMutationsA = configMutations,
@@ -192,9 +194,11 @@ export const runStep = async function ({
       deployId,
       api,
       returnValues,
+      deployEnvVars,
     })
 
     const newValues = await getStepReturn({
+      deployEnvVars: newDeployEnvVars,
       event,
       packageName,
       newError,
@@ -315,6 +319,7 @@ const getFireStep = function (packageName: string, coreStepId?: string, event?: 
 }
 
 const tFireStep = function ({
+  deployEnvVars,
   defaultConfig,
   event,
   childProcess,
@@ -365,6 +370,7 @@ const tFireStep = function ({
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
+      deployEnvVars,
       coreStep,
       coreStepId,
       coreStepName,

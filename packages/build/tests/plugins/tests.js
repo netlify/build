@@ -1,6 +1,7 @@
-import * as fs from 'fs/promises'
-import { platform } from 'process'
-import { fileURLToPath } from 'url'
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
+import { platform } from 'node:process'
+import { fileURLToPath } from 'node:url'
 
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
@@ -394,4 +395,17 @@ test.serial('Plugins have a pre-populated Blobs context', async (t) => {
 test('Plugins can respond anything to parent process', async (t) => {
   const build = await new Fixture('./fixtures/process_send_object').runBuildBinary()
   t.true(build.exitCode === 0)
+})
+
+test('Plugin-injected deploy environment variables are written to disk', async (t) => {
+  const deployMetadataFilepath = path.join(FIXTURES_DIR, '/deploy_environment_variables/.netlify/deploy-metadata.json')
+  const output = await new Fixture('./fixtures/deploy_environment_variables').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+  try {
+    await fs.access(deployMetadataFilepath, fs.constants.R_OK)
+  } catch {
+    t.fail(`expected deploy metadata file to exist at: ${deployMetadataFilepath}`)
+  }
+  const contents = await fs.readFile(deployMetadataFilepath, { encoding: 'utf8' })
+  t.snapshot(contents)
 })
