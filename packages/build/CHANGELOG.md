@@ -105,6 +105,26 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.6.0](https://github.com/netlify/build/compare/build-v35.5.14...build-v35.6.0) (2026-02-05)
+
+
+### Features
+
+* add DB scaffolding ([#6911](https://github.com/netlify/build/issues/6911)) ([8318585](https://github.com/netlify/build/commit/83185858c26a2ba490110b141e15708704e4e757))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.2 ([#6912](https://github.com/netlify/build/issues/6912)) ([729e48a](https://github.com/netlify/build/commit/729e48ade82ecbc371029f08a416877b62f8da41))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.3.0 to ^24.3.1
+    * @netlify/edge-bundler bumped from 14.9.5 to 14.9.6
+
 ## [35.5.14](https://github.com/netlify/build/compare/build-v35.5.13...build-v35.5.14) (2026-01-30)
 
 
