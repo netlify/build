@@ -61,6 +61,7 @@
     "@vitest/ui": "^3.0.0",
     "execa": "^8.0.0",
     "memfs": "^4.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0",
     "unionfs": "^4.4.0",
     "vitest": "^3.0.0"

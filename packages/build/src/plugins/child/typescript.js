@@ -1,41 +1,18 @@
 import { extname } from 'path'
 
-import { register } from 'ts-node'
-
-import { addErrorInfo } from '../../error/info.js'
+import { register as registerCJS } from 'tsx/cjs/api'
+import { register as registerESM } from 'tsx/esm/api'
 
 // Allow local plugins to be written with TypeScript.
 // Local plugins cannot be transpiled by the build command since they can be run
-// before it. Therefore, we type-check and transpile them automatically using
-// `ts-node`.
+// before it. Therefore, we transpile them automatically using `tsx`.
 export const registerTypeScript = function (pluginPath) {
   if (!isTypeScriptPlugin(pluginPath)) {
     return
   }
 
-  return register()
-}
-
-// On TypeScript errors, adds information about the `ts-node` configuration,
-// which includes the resolved `tsconfig.json`.
-export const addTsErrorInfo = function (error, tsNodeService) {
-  if (tsNodeService === undefined) {
-    return
-  }
-
-  const {
-    config: {
-      raw: { compilerOptions },
-    },
-    options: realTsNodeOptions,
-  } = tsNodeService
-
-  // filter out functions as they cannot be serialized
-  const tsNodeOptions = Object.fromEntries(
-    Object.entries(realTsNodeOptions).filter(([, val]) => typeof val !== 'function'),
-  )
-
-  addErrorInfo(error, { tsConfig: { compilerOptions, tsNodeOptions } })
+  registerESM()
+  registerCJS()
 }
 
 const isTypeScriptPlugin = function (pluginPath) {

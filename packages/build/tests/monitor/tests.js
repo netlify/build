@@ -85,24 +85,6 @@ test.serial('Report API error', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-// ts-node prints error messages differently on Windows and does so in a way
-// that is hard to normalize in test snapshots.
-if (platform !== 'win32') {
-  test('Report TypeScript error', async (t) => {
-    const output = await new Fixture('./fixtures/typescript')
-      .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
-      .withCopyRoot({ git: false })
-      .then((fixture) => fixture.runWithBuild())
-
-    t.true(
-      output.includes(`Could not import plugin:
-  TSError: ⨯ Unable to compile TypeScript:
-  plugin.ts(1,28): error TS2307: Cannot find module '@netlify/build' or its corresponding type declarations.
-  plugin.ts(3,51): error TS7031: Binding element 'constants' implicitly has an 'any' type.`),
-    )
-  })
-}
-
 test('Report dependencies error', async (t) => {
   const output = await new Fixture('./fixtures/dependencies')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })

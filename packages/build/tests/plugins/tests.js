@@ -313,16 +313,6 @@ test('Transpile TypeScript local plugins', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('Type-checks TypeScript local plugins', async (t) => {
-  const output = await new Fixture('./fixtures/ts_type_check').runWithBuild()
-  t.snapshot(normalizeOutput(output))
-})
-
-test('Type-checks TypeScript local plugins using tsconfig.json', async (t) => {
-  const output = await new Fixture('./fixtures/ts_type_check_tsconfig').runWithBuild()
-  t.snapshot(normalizeOutput(output))
-})
-
 test('Does not transpile already transpiled local plugins', async (t) => {
   const output = await new Fixture('./fixtures/ts_transpile_already').runWithBuild()
   t.snapshot(normalizeOutput(output))
