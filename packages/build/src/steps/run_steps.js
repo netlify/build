@@ -62,6 +62,7 @@ export const runSteps = async function ({
     steps,
     async (
       {
+        deployEnvVars,
         index,
         error,
         failedPlugins,
@@ -94,6 +95,7 @@ export const runSteps = async function ({
       const {
         newIndex = index,
         newError = error,
+        deployEnvVars: newDeployEnvVars = [],
         failedPlugin = [],
         newEnvChanges = {},
         netlifyConfig: netlifyConfigB = netlifyConfigA,
@@ -105,6 +107,7 @@ export const runSteps = async function ({
         metrics: metricsB = [],
         returnValue,
       } = await runStep({
+        deployEnvVars,
         event,
         childProcess,
         packageName,
@@ -176,6 +179,7 @@ export const runSteps = async function ({
       return {
         index: newIndex,
         error: newError,
+        deployEnvVars: [...deployEnvVars, ...newDeployEnvVars],
         failedPlugins: [...failedPlugins, ...failedPlugin],
         envChanges: { ...envChanges, ...newEnvChanges },
         netlifyConfig: netlifyConfigB,
@@ -190,6 +194,7 @@ export const runSteps = async function ({
     },
     {
       index: 0,
+      deployEnvVars: [],
       failedPlugins: [],
       envChanges: {},
       netlifyConfig,
