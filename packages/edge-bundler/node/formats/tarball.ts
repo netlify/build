@@ -79,13 +79,6 @@ export const bundle = async ({
     await fs.copyFile(sourceFile, destPath)
   }
 
-  // Rewrite bare specifier imports to their resolved URLs so they can be
-  // resolved by Deno's --vendor flag at runtime without needing the customer's import map.
-  // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
-  // point), not /function/deno.json, so the customer's import map is unreachable.
-  // This is because we boot Deno before we've mounted the customer's edge-functions directory, so it can't be used to resolve imports during the initial bundle phase.
-  await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap)
-
   // Vendor all dependencies in the bundle directory
   await deno.run(
     [
@@ -128,6 +121,12 @@ export const bundle = async ({
 
   // Map common path to relative paths
   prefixes[pathToFileURL(commonPath + path.sep).href] = './'
+
+  // Rewrite bare specifier imports to their resolved URLs so they can be
+  // resolved by Deno's --vendor flag at runtime without needing the customer's import map.
+  // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
+  // point), not /function/deno.json, so the customer's import map is unreachable.
+  await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
@@ -200,22 +199,30 @@ async function rewriteBareSpecifiers(
   sourceFiles: string[],
   commonPath: string,
   importMap: ImportMap,
+  prefixes: Record<string, string>,
 ): Promise<void> {
-  const contents = importMap.getContents()
+  const contents = importMap.getContents(prefixes)
   const builtinSet = new Set(builtinModules)
 
-  // Collect bare specifiers that should be rewritten to URLs
+  // Collect bare specifiers that should be rewritten to URLs or relative paths
   const specifierEntries = Object.entries(contents.imports)
     .filter(([specifier, url]) => {
       // Skip node builtins
       if (specifier.startsWith('node:') || builtinSet.has(specifier)) return false
       // Skip platform-provided specifiers (handled by platform deno.json)
       if (PLATFORM_SPECIFIERS.has(specifier)) return false
-      // Skip relative/absolute path specifiers
+      // Skip relative/absolute path specifiers in the specifier itself
       if (specifier.startsWith('.') || specifier.startsWith('/')) return false
-      // Only rewrite to http/https or npm: URLs
-      if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('npm:')) return false
-      return true
+      // Rewrite http/https, npm:, or vendored npm modules (relative paths with .netlify-npm-vendor)
+      if (
+        url.startsWith('http://') ||
+        url.startsWith('https://') ||
+        url.startsWith('npm:') ||
+        url.includes('.netlify-npm-vendor')
+      ) {
+        return true
+      }
+      return false
     })
     // Sort longest first so prefix mappings like "lodash/" match before "lodash"
     .sort((a, b) => b[0].length - a[0].length)
@@ -237,8 +244,21 @@ async function rewriteBareSpecifiers(
 
     for (const [specifier, url] of specifierEntries) {
       const escaped = specifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+      // Convert bundle-root-relative paths to source-file-relative paths
+      let targetUrl = url
+      if (url.startsWith('./') || url.startsWith('../')) {
+        // URL is relative to bundle root (e.g., "./.netlify-npm-vendor/bundled-parent-1.js")
+        // Convert to absolute path in bundle, then to relative from source file
+        const targetAbsolutePath = path.resolve(bundleDirPath, url)
+        const relativeImport = path.relative(path.dirname(destPath), targetAbsolutePath)
+        // Ensure forward slashes and ./ prefix for clarity
+        targetUrl = relativeImport.startsWith('.') ? relativeImport : `./${relativeImport}`
+        targetUrl = targetUrl.replace(/\\/g, '/')
+      }
+
       // Escape $ in URL for use in replacement string
-      const safeUrl = url.replace(/\$/g, '$$$$')
+      const safeUrl = targetUrl.replace(/\$/g, '$$$$')
 
       for (const quote of ['"', "'"]) {
         if (specifier.endsWith('/')) {
