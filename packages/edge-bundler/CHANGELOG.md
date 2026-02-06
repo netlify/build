@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.8](https://github.com/netlify/build/compare/edge-bundler-v14.9.7...edge-bundler-v14.9.8) (2026-02-06)
+
+
+### Bug Fixes
+
+* **edge-bundler:** rewrite vendored npm bare specifiers in tarball bundles ([#6919](https://github.com/netlify/build/issues/6919)) ([3ed5378](https://github.com/netlify/build/commit/3ed537885a14ef786155eb90dfa7226e9ca26ed4))
+
 ## [14.9.7](https://github.com/netlify/build/compare/edge-bundler-v14.9.6...edge-bundler-v14.9.7) (2026-02-05)
 
 
