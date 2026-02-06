@@ -1,4 +1,5 @@
 import type { Client, NotifiableError } from '@bugsnag/js'
+import { isEqual } from 'lodash-es'
 import type { PackageJson } from 'read-pkg'
 import { SemVer, coerce, parse } from 'semver'
 
@@ -11,6 +12,7 @@ import { frameworks } from './frameworks/index.js'
 import { getFramework } from './get-framework.js'
 import { Logger } from './logger.js'
 import { Severity, report } from './metrics.js'
+import { Mutex } from './mutex.js'
 import {
   AVAILABLE_PACKAGE_MANAGERS,
   DetectPackageManagerOptions,
@@ -297,8 +299,17 @@ export class Project {
       // This needs to be run first
       await this.detectBuildSystem()
       this.frameworks = new Map()
+      // A monorepo can have something on the repository root as well.
+      const rootFrameworks = await this.detectFrameworksInPath()
+      // Nx build system installs all dependencies on the root which would lead to double detection for root projects
+      const isNx = this.buildSystems.some(({ id }) => id === 'nx')
 
+      const rootFrameworkMutex = new Mutex()
       if (this.workspace) {
+        if (rootFrameworks.length > 0 && !isNx) {
+          this.workspace.packages.push({ path: '', name: 'root' })
+          this.frameworks.set('', rootFrameworks)
+        }
         // if we have a workspace parallelize in all workspaces
         await Promise.all(
           this.workspace.packages.map(async ({ path: pkg, forcedFramework }) => {
@@ -310,15 +321,24 @@ export class Project {
                 // noop framework not found
               }
             } else if (this.workspace) {
-              const result = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
-              this.frameworks.set(pkg, result)
+              const results = await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg))
+              // if we detect a framework (with the same detection result in a path, instead of the root we need to remove it in the root)
+              for (const result of results) {
+                for (let i = 0, max = rootFrameworks.length; i < max; i++) {
+                  if (isEqual(result.detected, rootFrameworks[i].detected)) {
+                    rootFrameworkMutex.runExclusive(async () => {
+                      this.frameworks.set(pkg, rootFrameworks.splice(i, 1))
+                    })
+                  }
+                }
+              }
+              this.frameworks.set(pkg, results)
             }
           }),
         )
       } else {
-        this.frameworks.set('', await this.detectFrameworksInPath())
+        this.frameworks.set('', rootFrameworks)
       }
-
       await this.events.emit('detectFrameworks', this.frameworks)
       return [...this.frameworks.values()].flat()
     } catch (error) {
