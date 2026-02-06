@@ -852,6 +852,24 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const manifest = JSON.parse(manifestFile)
 
       const tarballPath = join(distPath, manifest.bundles[0].asset)
+
+      // Extract tarball and verify vendored npm imports were rewritten
+      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      await tar.extract({ cwd: tmpDir.path, file: tarballPath })
+
+      // Get the function path from the manifest
+      const manifestContent = await readFile(join(tmpDir.path, '___netlify-edge-functions.json'), 'utf8')
+      const tarballManifest = JSON.parse(manifestContent)
+      const funcPath = tarballManifest.functions.func1
+
+      const sourceContent = await readFile(join(tmpDir.path, funcPath), 'utf8')
+
+      // Bare specifier "parent-1" should be rewritten to a relative path to the vendored file
+      expect(sourceContent).not.toContain("from 'parent-1'")
+      expect(sourceContent).toMatch(/from ['"]\.\.?\/.*\.netlify-npm-vendor.*bundled-parent-1\.js['"]/)
+
+      await tmpDir.cleanup()
+
       const tarballResult = await runTarball(tarballPath)
       // Tarball runs in a temp directory, so cwd will be different
       expect(tarballResult.func1).toContain(expectedOutputPattern)
