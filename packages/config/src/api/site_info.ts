@@ -1,5 +1,4 @@
 import { NetlifyAPI } from '@netlify/api'
-
 import * as z from 'zod'
 
 import { getEnvelope } from '../env/envelope.js'
@@ -124,8 +123,6 @@ const getSite = async function (
   }
   try {
     const site = await api.getSite({
-      // @ts-expect-error: Internal parameter that instructs the API to include all the site's
-      // feature flags in the response.
       feature_flags: siteFeatureFlagPrefix,
       siteId,
     })
@@ -150,10 +147,9 @@ export type MinimalAccount = {
 
 const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
   try {
-    const accounts = (await api.listAccountsForUser(
-      // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
-      { minimal: 'true' },
-    )) as MinimalAccount[] | null
+    const accounts = (await api.listAccountsForUser({
+      minimal: 'true',
+    })) as MinimalAccount[] | null
     return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
   } catch (error) {
     return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
