@@ -105,6 +105,15 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.6.2](https://github.com/netlify/build/compare/build-v35.6.1...build-v35.6.2) (2026-02-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.7 to 14.9.8
+
 ## [35.6.1](https://github.com/netlify/build/compare/build-v35.6.0...build-v35.6.1) (2026-02-05)
 
 
