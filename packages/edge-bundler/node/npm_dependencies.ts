@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 
 import { resolve, ParsedImportMap } from '@import-maps/resolve'
 import { build } from 'esbuild'
-import { findUp } from 'find-up'
+import { up as findUp } from 'empathic/find'
 import { parseImports } from 'parse-imports'
 import tmp from 'tmp-promise'
 
@@ -39,7 +39,7 @@ const getTypePathFromTypesPackage = async (
   packageName: string,
   packageJsonPath: string,
 ): Promise<string | undefined> => {
-  const typesPackagePath = await findUp(`node_modules/${getTypesPackageName(packageName)}/package.json`, {
+  const typesPackagePath = findUp(`node_modules/${getTypesPackageName(packageName)}/package.json`, {
     cwd: packageJsonPath,
   })
   if (!typesPackagePath) {
@@ -80,7 +80,7 @@ function packageName(specifier: string) {
 
 const safelyDetectTypes = async (pkg: string, basePath: string): Promise<string | undefined> => {
   try {
-    const json = await findUp(`node_modules/${packageName(pkg)}/package.json`, {
+    const json = findUp(`node_modules/${packageName(pkg)}/package.json`, {
       cwd: basePath,
     })
     if (json) {
