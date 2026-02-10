@@ -1,0 +1,5 @@
+[build]
+publish = "."
+
+[db.migrations]
+path = "custom-migrations"
