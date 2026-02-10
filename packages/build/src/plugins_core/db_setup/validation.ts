@@ -45,7 +45,10 @@ export const formatValidationErrors = (errors: ValidationError[]): string => {
     if (error.type === 'invalid_dir_name') {
       return `  - "${error.dirName}" does not match the required pattern "<Unix-timestamp>_<slug>" (e.g. "1700000000_create-users"). Slugs must be lowercase alphanumeric with hyphens.`
     }
-    return `  - "${error.dirName}/migration.sql" is missing.`
+    if (error.type === 'missing_sql_file') {
+      return `  - "${error.dirName}/migration.sql" is missing.`
+    }
+    return `  - "${error.dirName}": unknown validation error.`
   })
 
   return `Database migration validation failed:\n${lines.join('\n')}`
