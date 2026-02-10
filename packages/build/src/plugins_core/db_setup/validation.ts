@@ -43,7 +43,7 @@ export const validateMigrationDirs = (
 export const formatValidationErrors = (errors: ValidationError[]): string => {
   const lines = errors.map((error) => {
     if (error.type === 'invalid_dir_name') {
-      return `  - "${error.dirName}" does not match the required pattern "<10-digit-timestamp>_<slug>" (e.g. "1700000000_create-users"). Slugs must be lowercase alphanumeric with hyphens.`
+      return `  - "${error.dirName}" does not match the required pattern "<Unix-timestamp>_<slug>" (e.g. "1700000000_create-users"). Slugs must be lowercase alphanumeric with hyphens.`
     }
     return `  - "${error.dirName}/migration.sql" is missing.`
   })
