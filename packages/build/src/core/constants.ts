@@ -46,6 +46,10 @@ export interface NetlifyPluginConstants {
    */
   EDGE_FUNCTIONS_DIST: string
   /**
+   * the directory where database migrations are placed before deployment.
+   */
+  DB_MIGRATIONS_DIST?: string
+  /**
    * the directory where Edge Functions source code lives.
    * `undefined` if no `netlify/edge-functions` directory exists.
    */
@@ -55,10 +59,6 @@ export interface NetlifyPluginConstants {
    * `undefined` if no `netlify/db/migrations` directory exists and if not specified by the user.
    */
   DB_MIGRATIONS_SRC?: string
-  /**
-   * the directory where internal database migrations are placed before deployment.
-   */
-  INTERNAL_DB_MIGRATIONS_SRC?: string
   /**
    * boolean indicating whether the build was [run locally](https://docs.netlify.com/cli/get-started/#run-builds-locally) or on Netlify
    */
@@ -142,15 +142,15 @@ export const getConstants = async function ({
     // The directory where internal Edge Functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_EDGE_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_EDGE_FUNCTIONS_SRC),
-    // The directory where internal database migrations are placed before deployment
-    INTERNAL_DB_MIGRATIONS_SRC: join(buildDir, packagePath || '', INTERNAL_DB_MIGRATIONS_SRC),
+    // The directory where database migrations are placed before deployment
+    DB_MIGRATIONS_DIST: join(buildDir, packagePath || '', DB_MIGRATIONS_DIST),
   } as const
   return (await addMutableConstants({ constants, buildDir, netlifyConfig })) as unknown as NetlifyPluginConstants
 }
 
 const INTERNAL_EDGE_FUNCTIONS_SRC = '.netlify/edge-functions'
 const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
-const INTERNAL_DB_MIGRATIONS_SRC = '.netlify/internal/db/migrations'
+const DB_MIGRATIONS_DIST = '.netlify/internal/db/migrations'
 
 // Retrieve constants which might change during the build if a plugin modifies
 // `netlifyConfig` or creates some default directories.
@@ -251,7 +251,7 @@ const CONSTANT_PATHS = new Set([
   'FUNCTIONS_DIST',
   'INTERNAL_EDGE_FUNCTIONS_SRC',
   'INTERNAL_FUNCTIONS_SRC',
-  'INTERNAL_DB_MIGRATIONS_SRC',
+  'DB_MIGRATIONS_DIST',
   'EDGE_FUNCTIONS_DIST',
   'EDGE_FUNCTIONS_SRC',
   'DB_MIGRATIONS_SRC',

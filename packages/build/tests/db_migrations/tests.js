@@ -21,7 +21,7 @@ test('Copies valid migrations to internal directory', async (t) => {
   t.true(existsSync(join(internalDir, '1700000001_add-posts/migration.sql')))
 
   const output = stdout.join('\n')
-  t.true(output.includes('DB Migrations copy'))
+  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Copies migrations from a custom path', async (t) => {
@@ -38,7 +38,7 @@ test('Copies migrations from a custom path', async (t) => {
   t.true(existsSync(join(internalDir, '1700000000_create-users/migration.sql')))
 
   const output = stdout.join('\n')
-  t.true(output.includes('DB Migrations copy'))
+  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Fails build for invalid directory name', async (t) => {
@@ -82,7 +82,7 @@ test('Skips step when migrations directory does not exist', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('DB Migrations copy'))
+  t.false(output.includes('Netlify DB migrations'))
 })
 
 test('Skips step when feature flag is off', async (t) => {
@@ -96,5 +96,5 @@ test('Skips step when feature flag is off', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('DB Migrations copy'))
+  t.false(output.includes('Netlify DB migrations'))
 })

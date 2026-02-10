@@ -21,7 +21,7 @@ const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir 
 
 const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) => {
   const srcDir = resolve(buildDir, constants.DB_MIGRATIONS_SRC!)
-  const destDir = resolve(buildDir, constants.INTERNAL_DB_MIGRATIONS_SRC!)
+  const destDir = resolve(buildDir, constants.DB_MIGRATIONS_DIST!)
 
   const entries = await readdir(srcDir)
 
