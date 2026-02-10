@@ -101,7 +101,7 @@ describe('formatValidationErrors', () => {
 
     expect(message).toContain('Database migration validation failed')
     expect(message).toContain('"bad-name"')
-    expect(message).toContain('<10-digit-timestamp>_<slug>')
+    expect(message).toContain('<Unix-timestamp>_<slug>')
   })
 
   test('formats missing_sql_file errors', () => {
