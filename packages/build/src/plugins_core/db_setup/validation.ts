@@ -45,6 +45,7 @@ export const formatValidationErrors = (errors: ValidationError[]): string => {
     if (error.type === 'invalid_dir_name') {
       return `  - "${error.dirName}" does not match the required pattern "<Unix-timestamp>_<slug>" (e.g. "1700000000_create-users"). Slugs must be lowercase alphanumeric with hyphens.`
     }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (error.type === 'missing_sql_file') {
       return `  - "${error.dirName}/migration.sql" is missing.`
     }
