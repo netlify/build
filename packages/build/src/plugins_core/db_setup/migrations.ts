@@ -53,28 +53,15 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
     throw new Error(message)
   }
 
-  await copyDirRecursive(srcDir, destDir)
+  for (const dirName of result.dirs) {
+    const migrationDestDir = join(destDir, dirName)
+    await mkdir(migrationDestDir, { recursive: true })
+    await copyFile(join(srcDir, dirName, 'migration.sql'), join(migrationDestDir, 'migration.sql'))
+  }
 
   systemLog(`Copied ${String(result.dirs.length)} migration(s) to ${destDir}`)
 
   return {}
-}
-
-const copyDirRecursive = async (src: string, dest: string): Promise<void> => {
-  const entries = await readdir(src, { withFileTypes: true })
-
-  await mkdir(dest, { recursive: true })
-
-  for (const entry of entries) {
-    const srcPath = join(src, entry.name)
-    const destPath = join(dest, entry.name)
-
-    if (entry.isDirectory()) {
-      await copyDirRecursive(srcPath, destPath)
-    } else {
-      await copyFile(srcPath, destPath)
-    }
-  }
 }
 
 export const copyDbMigrations: CoreStep = {
