@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.4.0](https://github.com/netlify/build/compare/config-v24.3.1...config-v24.4.0) (2026-02-11)
+
+
+### Features
+
+* add and validate db migrations ([#6921](https://github.com/netlify/build/issues/6921)) ([85aae73](https://github.com/netlify/build/commit/85aae73cc21fb5bf678745a103aa15837c2bea45))
+
 ## [24.3.1](https://github.com/netlify/build/compare/config-v24.3.0...config-v24.3.1) (2026-02-05)
 
 
