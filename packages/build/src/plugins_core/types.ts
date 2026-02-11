@@ -22,6 +22,10 @@ export type CoreStepFunctionArgs = {
    * The deploy context (e.g. 'production', 'deploy-preview', 'branch-deploy')
    */
   context: string
+  /**
+   * The branch being built (e.g. 'main', 'my-feature-123')
+   */
+  branch: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
   quiet?: boolean
