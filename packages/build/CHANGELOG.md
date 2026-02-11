@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.7.0](https://github.com/netlify/build/compare/build-v35.6.2...build-v35.7.0) (2026-02-11)
+
+
+### Features
+
+* add and validate db migrations ([#6921](https://github.com/netlify/build/issues/6921)) ([85aae73](https://github.com/netlify/build/commit/85aae73cc21fb5bf678745a103aa15837c2bea45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.3.1 to ^24.4.0
+
 ## [35.6.2](https://github.com/netlify/build/compare/build-v35.6.1...build-v35.6.2) (2026-02-06)
 
 
