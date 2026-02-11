@@ -22,6 +22,7 @@ const FILE_PATH_CONFIG_PROPS = [
   'functions.*.deno_import_map',
   'build.publish',
   'build.edge_functions',
+  'db.migrations.path',
 ]
 
 /**
@@ -138,6 +139,11 @@ const DEFAULT_PATHS = [
     getConfig: (directory) => ({ build: { edge_functions: directory } }),
     defaultPath: 'netlify/edge-functions',
     propName: 'build.edge_functions',
+  },
+  {
+    getConfig: (directory) => ({ db: { migrations: { path: directory } } }),
+    defaultPath: 'netlify/db/migrations',
+    propName: 'db.migrations.path',
   },
 ] as const
 

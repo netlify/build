@@ -112,6 +112,18 @@ export const PRE_NORMALIZE_VALIDATIONS = [
       ],
     }),
   },
+  {
+    property: 'db',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
+  },
+  {
+    property: 'db.migrations',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
+  },
 ]
 
 const EXAMPLE_PORT = 80
@@ -265,6 +277,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({
       functions: { directory: 'my-functions' },
     }),
+  },
+  {
+    property: 'db.migrations.path',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
   },
   ...edgeFunctionValidations,
 ]

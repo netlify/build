@@ -46,10 +46,19 @@ export interface NetlifyPluginConstants {
    */
   EDGE_FUNCTIONS_DIST: string
   /**
+   * the directory where database migrations are placed before deployment.
+   */
+  DB_MIGRATIONS_DIST?: string
+  /**
    * the directory where Edge Functions source code lives.
    * `undefined` if no `netlify/edge-functions` directory exists.
    */
   EDGE_FUNCTIONS_SRC?: string
+  /**
+   * the directory where database migration source files live.
+   * `undefined` if no `netlify/db/migrations` directory exists and if not specified by the user.
+   */
+  DB_MIGRATIONS_SRC?: string
   /**
    * boolean indicating whether the build was [run locally](https://docs.netlify.com/cli/get-started/#run-builds-locally) or on Netlify
    */
@@ -133,12 +142,15 @@ export const getConstants = async function ({
     // The directory where internal Edge Functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_EDGE_FUNCTIONS_SRC: join(buildDir, packagePath || '', INTERNAL_EDGE_FUNCTIONS_SRC),
+    // The directory where database migrations are placed before deployment
+    DB_MIGRATIONS_DIST: join(buildDir, packagePath || '', DB_MIGRATIONS_DIST),
   } as const
   return (await addMutableConstants({ constants, buildDir, netlifyConfig })) as unknown as NetlifyPluginConstants
 }
 
 const INTERNAL_EDGE_FUNCTIONS_SRC = '.netlify/edge-functions'
 const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
+const DB_MIGRATIONS_DIST = '.netlify/internal/db/migrations'
 
 // Retrieve constants which might change during the build if a plugin modifies
 // `netlifyConfig` or creates some default directories.
@@ -149,6 +161,7 @@ export const addMutableConstants = async function ({
   netlifyConfig: {
     build: { publish, edge_functions: edgeFunctions },
     functionsDirectory,
+    db,
   },
 }) {
   const constantsA = {
@@ -159,6 +172,8 @@ export const addMutableConstants = async function ({
     FUNCTIONS_SRC: functionsDirectory,
     // The directory where Edge Functions source code lives
     EDGE_FUNCTIONS_SRC: edgeFunctions,
+    // The directory where database migration source files live
+    DB_MIGRATIONS_SRC: db?.migrations?.path,
   }
   const constantsB = await addDefaultConstants(constantsA, buildDir)
   const constantsC = normalizeConstantsPaths(constantsB, buildDir)
@@ -186,6 +201,7 @@ const DEFAULT_PATHS = [
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify-automatic-functions' },
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify/functions' },
   { constantName: 'EDGE_FUNCTIONS_SRC', defaultPath: 'netlify/edge-functions' },
+  { constantName: 'DB_MIGRATIONS_SRC', defaultPath: 'netlify/db/migrations' },
 ]
 
 const addDefaultConstant = async function ({ constants, constantName, defaultPath, buildDir }) {
@@ -235,7 +251,9 @@ const CONSTANT_PATHS = new Set([
   'FUNCTIONS_DIST',
   'INTERNAL_EDGE_FUNCTIONS_SRC',
   'INTERNAL_FUNCTIONS_SRC',
+  'DB_MIGRATIONS_DIST',
   'EDGE_FUNCTIONS_DIST',
   'EDGE_FUNCTIONS_SRC',
+  'DB_MIGRATIONS_SRC',
   'CACHE_DIR',
 ])
