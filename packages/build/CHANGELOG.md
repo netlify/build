@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.7.1](https://github.com/netlify/build/compare/build-v35.7.0...build-v35.7.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* create DB branch based on deploy branch ([#6924](https://github.com/netlify/build/issues/6924)) ([714f05f](https://github.com/netlify/build/commit/714f05f79d3e40237c2a1f7f9c2d8b163857092d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.21 to ^6.2.22
+    * @netlify/zip-it-and-ship-it bumped from 14.3.1 to 14.3.2
+
 ## [35.7.0](https://github.com/netlify/build/compare/build-v35.6.2...build-v35.7.0) (2026-02-11)
 
 
