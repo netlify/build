@@ -32,7 +32,7 @@ interface TemporaryDatabaseResponse {
   connection_string: string
 }
 
-const coreStep: CoreStepFunction = async ({ api, constants, context, deployId }) => {
+const coreStep: CoreStepFunction = async ({ api, branch, constants, context }) => {
   const siteId = constants.SITE_ID
 
   // @ts-expect-error This is an internal method for now so it isn't typed yet.
@@ -46,7 +46,7 @@ const coreStep: CoreStepFunction = async ({ api, constants, context, deployId })
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const databaseBranch = (await api.createSiteDatabaseBranch({
       site_id: siteId,
-      body: { deploy_id: deployId },
+      body: { branch_id: branch },
     })) as TemporaryDatabaseResponse
 
     connectionString = databaseBranch.connection_string

@@ -48,7 +48,7 @@ test('Runs the db_setup core step and makes NETLIFY_DB_URL available to the buil
 
 test('Runs the db_setup core step and creates a database branch for non-production context', async (t) => {
   const { output, requests } = await runWithMockServer(
-    new Fixture('./fixtures/with_db_dependency').withFlags({ deployId: 'test-deploy-id' }),
+    new Fixture('./fixtures/with_db_dependency').withFlags({ branch: 'feat/my-feature' }),
     { context: 'deploy-preview' },
   )
 
@@ -61,8 +61,8 @@ test('Runs the db_setup core step and creates a database branch for non-producti
   t.is(databaseRequests.length, 1)
   t.is(branchRequests.length, 1)
 
-  // Verify the branch request includes the deploy_id
-  t.deepEqual(branchRequests[0].body, { deploy_id: 'test-deploy-id' })
+  // Verify the branch request includes the branch_id
+  t.deepEqual(branchRequests[0].body, { branch_id: 'feat/my-feature' })
 })
 
 test('Does not run the db_setup core step when @netlify/db is not in dependencies', async (t) => {
