@@ -18,7 +18,7 @@ type BuildEvent = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onError' | 'onSucc
 
 type RunState = Record<string, unknown>
 
-type DeployEnvVarsData = { key: string; value: string; isSecret: boolean }[]
+type DeployEnvVarsData = { key: string; value: string; isSecret: boolean; scopes: string[] }[]
 
 // Retrieve the `utils` argument.
 export const getUtils = function ({
@@ -72,9 +72,9 @@ const getDeployUtils = ({ deployEnvVars }: { deployEnvVars: DeployEnvVarsData })
 
       const existingDeployEnvVarIdx = deployEnvVars.findIndex((env) => env.key === key)
       if (existingDeployEnvVarIdx !== -1) {
-        deployEnvVars[existingDeployEnvVarIdx] = { key, value, isSecret }
+        deployEnvVars[existingDeployEnvVarIdx] = { key, value, isSecret, scopes: Array.from(normalizedScopes) }
       } else {
-        deployEnvVars.push({ key, value, isSecret })
+        deployEnvVars.push({ key, value, isSecret, scopes: Array.from(normalizedScopes) })
       }
 
       return env
