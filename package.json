@@ -12,7 +12,8 @@
     "test": "lerna run test",
     "test:ci": "lerna run test:ci",
     "format": "prettier --write .",
-    "format:ci": "prettier --check ."
+    "format:ci": "prettier --check .",
+    "postinstall": "patch-package"
   },
   "workspaces": [
     "packages/*"
@@ -59,6 +60,7 @@
     "eslint-plugin-n": "^17.19.0",
     "execa": "^8.0.1",
     "lerna": "^8.2.2",
+    "patch-package": "^8.0.0",
     "prettier": "^3.0.0",
     "typescript-eslint": "^8.34.0"
   },
