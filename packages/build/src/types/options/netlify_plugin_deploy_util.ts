@@ -2,7 +2,7 @@ export interface NetlifyPluginDeployUtilEnv {
   add(
     key: string,
     value: string,
-    options?: { isSecret?: boolean; scopes?: ['builds' | 'functions' | 'post_processing' | 'runtime'][] },
+    options?: { isSecret?: boolean; scopes?: ('builds' | 'functions' | 'post_processing' | 'runtime')[] },
   ): this
 }
 
