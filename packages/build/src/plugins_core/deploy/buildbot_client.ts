@@ -51,6 +51,7 @@ enum Action {
 type BuildRequest = {
   action: Action
   deployDir?: string
+  environment: { key: string; value: string; isSecret: boolean }[]
 }
 
 /**
