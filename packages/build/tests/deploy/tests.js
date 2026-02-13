@@ -147,16 +147,19 @@ test('Deploy plugin specifies deploy-specific variables in deploy event', async 
       isSecret: false,
       key: 'DATABASE_URI',
       value: '',
+      scopes: ['builds', 'functions', 'post_processing', 'runtime'],
     },
     {
       isSecret: true,
       key: 'DATABASE_PASSWORD',
       value: 'collision',
+      scopes: ['builds', 'functions', 'runtime'],
     },
     {
       isSecret: false,
       key: 'DATABASE_MOOD',
       value: 'feisty',
+      scopes: ['builds', 'functions', 'post_processing', 'runtime'],
     },
   ])
 })
