@@ -58,7 +58,7 @@ const getDeployUtils = ({ deployEnvVars }: { deployEnvVars: DeployEnvVarsData })
         )
       }
 
-      let normalizedScopes = new Set(...scopes)
+      let normalizedScopes = new Set(scopes)
       if (normalizedScopes.size === 0) {
         normalizedScopes = new Set(
           // If the user did not specify scopes, we assume they mean all valid scopes. Secrets are
