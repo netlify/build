@@ -144,19 +144,19 @@ test('Deploy plugin specifies deploy-specific variables in deploy event', async 
   t.true(requests.length === 1)
   t.deepEqual(requests[0].environment, [
     {
-      isSecret: false,
+      is_secret: false,
       key: 'DATABASE_URI',
       value: '',
       scopes: ['builds', 'functions', 'post_processing', 'runtime'],
     },
     {
-      isSecret: true,
+      is_secret: true,
       key: 'DATABASE_PASSWORD',
       value: 'collision',
       scopes: ['builds', 'functions', 'runtime'],
     },
     {
-      isSecret: false,
+      is_secret: false,
       key: 'DATABASE_MOOD',
       value: 'feisty',
       scopes: ['builds', 'functions', 'post_processing', 'runtime'],
