@@ -27,18 +27,24 @@ export const startErrorMonitor = function (config: { flags: ResolvedFlags; logs?
   const logger = getLogger(getSystemLogger(logs, debug, systemLogFile), isTest)
   try {
     const errorMonitor = startBugsnag({
-      apiKey: bugsnagKey,
+      apiKey: 'aabbccddaabbccddaabbccddaabbccdd',
       appVersion: `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`,
       appType: ROOT_PACKAGE_JSON.name,
       releaseStage,
       logger,
       projectRoot,
+      endpoints: {
+        notify: 'http://dry-run:9999/notify', // nothing listening → fast failure
+        sessions: 'http://dry-run:9999/sessions',
+      },
     })
 
     // Allows knowing the percentage of failed builds per release
     if (!isTest) {
       errorMonitor.startSession()
     }
+
+    errorMonitor.notify(new Error('just testing stuff'))
 
     return errorMonitor
     // Failsafe
