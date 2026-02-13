@@ -51,7 +51,7 @@ enum Action {
 type BuildRequest = {
   action: Action
   deployDir?: string
-  environment: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
+  environment: { key: string; value: string; is_secret: boolean; scopes: string[] }[]
 }
 
 /**
@@ -125,7 +125,7 @@ export const deploySiteWithBuildbotClient = async function ({
     writePayload(client, {
       action: shouldWaitForPostProcessing(events) ? Action.DeploySiteAndWait : Action.DeploySite,
       deployDir: getDeployDir({ buildDir, repositoryRoot, constants }),
-      environment,
+      environment: environment.map(({ isSecret, ...rest }) => ({ ...rest, is_secret: isSecret })),
     }),
   ])
 
