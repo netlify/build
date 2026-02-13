@@ -51,7 +51,7 @@ enum Action {
 type BuildRequest = {
   action: Action
   deployDir?: string
-  environment: { key: string; value: string; isSecret: boolean }[]
+  environment: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
 }
 
 /**
@@ -114,7 +114,7 @@ export const deploySiteWithBuildbotClient = async function ({
   constants,
 }: {
   client: net.Socket
-  environment: { key: string; value: string; isSecret: boolean }[]
+  environment: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
   events: string[]
   buildDir: string
   repositoryRoot: string
