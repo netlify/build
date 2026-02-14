@@ -4,6 +4,23 @@ import { platform } from 'process'
 import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
 
+const startDeployServer = function (opts = {}) {
+  const useUnixSocket = platform !== 'win32'
+  return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
+}
+
+const isValidDeployReponse = function ({ action, deployDir }) {
+  return ['deploySite', 'deploySiteAndAwaitLive'].includes(action) && typeof deployDir === 'string' && deployDir !== ''
+}
+
+const doesNotWaitForPostProcessing = function (request) {
+  return request.action === 'deploySite'
+}
+
+const waitsForPostProcessing = function (request) {
+  return request.action === 'deploySiteAndAwaitLive'
+}
+
 test('Deploy plugin succeeds', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
@@ -114,6 +131,39 @@ test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
   t.true(requests.every(waitsForPostProcessing))
 })
 
+test('Deploy plugin specifies deploy-specific variables in deploy event', async (t) => {
+  const { address, requests, stopServer } = await startDeployServer()
+  try {
+    await new Fixture('./fixtures/deploy_environment_variables')
+      .withFlags({ buildbotServerSocket: address })
+      .runWithBuild()
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.length === 1)
+  t.deepEqual(requests[0].environment, [
+    {
+      is_secret: false,
+      key: 'DATABASE_URI',
+      value: '',
+      scopes: ['builds', 'functions', 'post_processing', 'runtime'],
+    },
+    {
+      is_secret: true,
+      key: 'DATABASE_PASSWORD',
+      value: 'collision',
+      scopes: ['builds', 'functions', 'runtime'],
+    },
+    {
+      is_secret: false,
+      key: 'DATABASE_MOOD',
+      value: 'feisty',
+      scopes: ['builds', 'functions', 'post_processing', 'runtime'],
+    },
+  ])
+})
+
 test('Deploy plugin returns an internal deploy error if the server responds with a 500', async (t) => {
   const { address, stopServer } = await startDeployServer({
     response: { succeeded: false, values: { error: 'test', error_type: 'user', code: '500' } },
@@ -155,20 +205,3 @@ test('Deploy plugin returns a  deploy error if the server responds with a 4xx', 
     await stopServer()
   }
 })
-
-const startDeployServer = function (opts = {}) {
-  const useUnixSocket = platform !== 'win32'
-  return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
-}
-
-const isValidDeployReponse = function ({ action, deployDir }) {
-  return ['deploySite', 'deploySiteAndAwaitLive'].includes(action) && typeof deployDir === 'string' && deployDir !== ''
-}
-
-const doesNotWaitForPostProcessing = function (request) {
-  return request.action === 'deploySite'
-}
-
-const waitsForPostProcessing = function (request) {
-  return request.action === 'deploySiteAndAwaitLive'
-}

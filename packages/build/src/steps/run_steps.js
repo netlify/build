@@ -58,10 +58,12 @@ export const runSteps = async function ({
     configMutations: configMutationsB,
     metrics: metricsC,
     returnValues,
+    deployEnvVars,
   } = await pReduce(
     steps,
     async (
       {
+        deployEnvVars,
         index,
         error,
         failedPlugins,
@@ -94,6 +96,7 @@ export const runSteps = async function ({
       const {
         newIndex = index,
         newError = error,
+        deployEnvVars: newDeployEnvVars = [],
         failedPlugin = [],
         newEnvChanges = {},
         netlifyConfig: netlifyConfigB = netlifyConfigA,
@@ -105,6 +108,7 @@ export const runSteps = async function ({
         metrics: metricsB = [],
         returnValue,
       } = await runStep({
+        deployEnvVars,
         event,
         childProcess,
         packageName,
@@ -176,6 +180,9 @@ export const runSteps = async function ({
       return {
         index: newIndex,
         error: newError,
+        deployEnvVars: Array.from(
+          [...deployEnvVars, ...newDeployEnvVars].reduce((acc, env) => acc.set(env.key, env), new Map()).values(),
+        ),
         failedPlugins: [...failedPlugins, ...failedPlugin],
         envChanges: { ...envChanges, ...newEnvChanges },
         netlifyConfig: netlifyConfigB,
@@ -190,6 +197,7 @@ export const runSteps = async function ({
     },
     {
       index: 0,
+      deployEnvVars: [],
       failedPlugins: [],
       envChanges: {},
       netlifyConfig,
@@ -219,5 +227,6 @@ export const runSteps = async function ({
     configMutations: configMutationsB,
     metrics: metricsC,
     returnValues,
+    deployEnvVars,
   }
 }

@@ -13,6 +13,7 @@ export const startDev = async (devCommand, flags = {}) => {
       netlifyConfig: netlifyConfigA,
       configMutations,
       returnValues,
+      deployEnvVars,
     } = await execBuild({
       ...normalizedFlags,
       errorMonitor,
@@ -33,11 +34,12 @@ export const startDev = async (devCommand, flags = {}) => {
       logs,
       configMutations,
       generatedFunctions: getGeneratedFunctions(returnValues),
+      deployEnvVars,
     }
   } catch (error) {
     const { severity, message, stack } = await handleBuildError(error, errorParams)
     const { success, severityCode } = getSeverity(severity)
 
-    return { success, severityCode, logs, error: { message, stack } }
+    return { success, severityCode, logs, error: { message, stack }, deployEnvVars: [] }
   }
 }

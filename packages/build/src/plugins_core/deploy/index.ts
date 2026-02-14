@@ -1,5 +1,7 @@
+// eslint-disable-next-line n/no-missing-import
 import { saveUpdatedConfig, restoreUpdatedConfig } from '../../core/config.js'
 import { logDeploySuccess } from '../../log/messages/plugins.js'
+import type { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 
 import {
   createBuildbotClient,
@@ -8,11 +10,11 @@ import {
   deploySiteWithBuildbotClient,
 } from './buildbot_client.js'
 
-const coreStep = async function ({
+const coreStep: CoreStepFunction = async function ({
   buildDir,
   configPath,
+  deployEnvVars,
   repositoryRoot,
-  packagePath,
   constants,
   buildbotServerSocket,
   events,
@@ -26,7 +28,7 @@ const coreStep = async function ({
   debug,
   saveConfig,
 }) {
-  const client = createBuildbotClient(buildbotServerSocket)
+  const client = createBuildbotClient(buildbotServerSocket!)
   try {
     // buildbot will emit logs. Flush the output to preserve the right order.
     logs?.outputFlusher?.flush()
@@ -35,7 +37,6 @@ const coreStep = async function ({
     await saveUpdatedConfig({
       configMutations,
       buildDir,
-      packagePath,
       repositoryRoot,
       configPath,
       headersPath,
@@ -47,7 +48,14 @@ const coreStep = async function ({
       debug,
       saveConfig,
     })
-    await deploySiteWithBuildbotClient({ client, events, buildDir, repositoryRoot, constants })
+    await deploySiteWithBuildbotClient({
+      client,
+      environment: deployEnvVars,
+      events,
+      buildDir,
+      repositoryRoot,
+      constants,
+    })
     await restoreUpdatedConfig({
       configMutations,
       buildDir,
@@ -64,11 +72,11 @@ const coreStep = async function ({
   }
 }
 
-export const shouldDeploy = function ({ buildbotServerSocket }) {
+export const shouldDeploy: CoreStepCondition = function ({ buildbotServerSocket }) {
   return buildbotServerSocket !== undefined
 }
 
-export const deploySite = {
+export const deploySite: CoreStep = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'deploy_site',

@@ -6,6 +6,7 @@ import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
 // Fire a core step
 export const fireCoreStep = async function ({
+  deployEnvVars,
   coreStep,
   coreStepId,
   coreStepName,
@@ -55,6 +56,7 @@ export const fireCoreStep = async function ({
       tags,
       metrics,
     } = await coreStep({
+      deployEnvVars,
       api,
       configPath,
       outputConfigPath,
