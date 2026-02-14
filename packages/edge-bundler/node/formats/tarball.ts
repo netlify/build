@@ -365,7 +365,7 @@ async function rewriteImportAssertions(
     let modified = source
 
     const parsedAST = acorn.parse(source, {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       sourceType: 'module',
     })
 
