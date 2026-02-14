@@ -3,6 +3,8 @@ import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
+import { Parser } from 'acorn'
+import { importAttributesOrAssertions } from 'acorn-import-attributes'
 import commonPathPrefix from 'common-path-prefix'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -127,6 +129,9 @@ export const bundle = async ({
   // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
   // point), not /function/deno.json, so the customer's import map is unreachable.
   await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
+
+  // Deno 2.x dropped support for import for import assertions
+  await rewriteImportAssertions(bundleDir.path, sourceFiles, commonPath)
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
@@ -331,4 +336,54 @@ async function getRequiredSourceFiles(
   }
 
   return Array.from(localFiles).sort()
+}
+
+/**
+ * Rewrites import assert into import with
+ */
+async function rewriteImportAssertions(
+  bundleDirPath: string,
+  sourceFiles: string[],
+  commonPath: string,
+): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const acorn = Parser.extend(importAttributesOrAssertions)
+
+  for (const sourceFile of sourceFiles) {
+    if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
+
+    const relativePath = path.relative(commonPath, sourceFile)
+    const destPath = path.join(bundleDirPath, relativePath)
+
+    let source: string
+    try {
+      source = await fs.readFile(destPath, 'utf-8')
+    } catch {
+      continue
+    }
+
+    let modified = source
+
+    const parsedAST = acorn.parse(source, {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    })
+
+    parsedAST.body
+      .filter((node) => {
+        return (
+          (node.type === 'ImportDeclaration' && node.assertions !== undefined) ||
+          (node.type === 'ExportNamedDeclaration' && node.assertions !== undefined)
+        )
+      })
+      .forEach((node) => {
+        const statement = source.slice(node.source.end, node.end)
+        const newStatement = statement.replace('assert', 'with')
+        modified = modified.replace(statement, newStatement)
+      })
+
+    if (modified !== source) {
+      await fs.writeFile(destPath, modified)
+    }
+  }
 }
