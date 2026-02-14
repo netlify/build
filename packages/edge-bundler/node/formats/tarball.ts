@@ -370,7 +370,12 @@ async function rewriteImportAssertions(
     })
 
     parsedAST.body
-      .filter((node) => node.type === 'ImportDeclaration' && node.assertions !== undefined)
+      .filter((node) => {
+        return (
+          (node.type === 'ImportDeclaration' && node.assertions !== undefined) ||
+          (node.type === 'ExportNamedDeclaration' && node.assertions !== undefined)
+        )
+      })
       .forEach((node) => {
         const statement = source.slice(node.source.end, node.end)
         const newStatement = statement.replace('assert', 'with')
