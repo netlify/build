@@ -3,6 +3,8 @@ import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
+import { Parser } from 'acorn'
+import { importAttributesOrAssertions } from 'acorn-import-attributes'
 import commonPathPrefix from 'common-path-prefix'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -127,6 +129,9 @@ export const bundle = async ({
   // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
   // point), not /function/deno.json, so the customer's import map is unreachable.
   await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
+
+  // Deno 2.x dropped support for import for import assertions
+  await rewriteImportAssertions(bundleDir.path, sourceFiles, commonPath)
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
@@ -331,4 +336,57 @@ async function getRequiredSourceFiles(
   }
 
   return Array.from(localFiles).sort()
+}
+
+/**
+ * Rewrites bare specifier imports in copied source files to their resolved URLs
+ * from the import map. This allows Deno's --vendor flag to resolve these imports
+ * at runtime without needing the customer's import map (which is unreachable
+ * because Deno discovers config from the platform bootstrap directory, not the
+ * function directory).
+ *
+ * Only rewrites specifiers that:
+ * - Are bare package specifiers (not relative, absolute, or URL imports)
+ * - Resolve to http/https or npm: URLs in the import map
+ * - Are NOT node builtins or platform-provided imports
+ */
+async function rewriteImportAssertions(
+  bundleDirPath: string,
+  sourceFiles: string[],
+  commonPath: string,
+): Promise<void> {
+  const acorn = Parser.extend(importAttributesOrAssertions)
+
+  for (const sourceFile of sourceFiles) {
+    if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
+
+    const relativePath = path.relative(commonPath, sourceFile)
+    const destPath = path.join(bundleDirPath, relativePath)
+
+    let source: string
+    try {
+      source = await fs.readFile(destPath, 'utf-8')
+    } catch {
+      continue
+    }
+
+    let modified = source
+
+    const parsedAST = acorn.parse(source, {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+    })
+
+    parsedAST.body
+      .filter((node) => node.type === 'ImportDeclaration' && node.assertions !== undefined)
+      .forEach((node) => {
+        const statement = source.slice(node.source.end, node.end)
+        const newStatement = statement.replace('assert', 'with')
+        modified = modified.replace(statement, newStatement)
+      })
+
+    if (modified !== source) {
+      await fs.writeFile(destPath, modified)
+    }
+  }
 }
