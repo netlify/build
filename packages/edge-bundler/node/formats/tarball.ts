@@ -339,22 +339,14 @@ async function getRequiredSourceFiles(
 }
 
 /**
- * Rewrites bare specifier imports in copied source files to their resolved URLs
- * from the import map. This allows Deno's --vendor flag to resolve these imports
- * at runtime without needing the customer's import map (which is unreachable
- * because Deno discovers config from the platform bootstrap directory, not the
- * function directory).
- *
- * Only rewrites specifiers that:
- * - Are bare package specifiers (not relative, absolute, or URL imports)
- * - Resolve to http/https or npm: URLs in the import map
- * - Are NOT node builtins or platform-provided imports
+ * Rewrites import assert into import with
  */
 async function rewriteImportAssertions(
   bundleDirPath: string,
   sourceFiles: string[],
   commonPath: string,
 ): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const acorn = Parser.extend(importAttributesOrAssertions)
 
   for (const sourceFile of sourceFiles) {
