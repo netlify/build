@@ -97,9 +97,11 @@ export const config: Config = {
     expect(result).toEqual(source)
   })
 
-  test('handles jsx/tsx syntax', () => {
+  test('handles errors on jsx/tsx syntax and returns no change', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
+
+console.assert(true, 'should be true');
 
 const Hello = (props) => (
   <div class={tw\`bg-white flex h-screen\`}>
