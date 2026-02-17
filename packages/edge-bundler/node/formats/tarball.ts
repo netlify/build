@@ -118,7 +118,9 @@ export const bundle = async ({
       const destPath = path.join(bundleDir.path, npmVendorDir, relativePath)
 
       await fs.mkdir(path.dirname(destPath), { recursive: true })
-      await fs.copyFile(vendorFile, destPath)
+
+      // Rewrite import assertions in vendored files as well
+      await rewriteImportAssertions(vendorFile, destPath)
     }
   }
 
