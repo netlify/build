@@ -1,4 +1,5 @@
 import { Parser } from 'acorn'
+// @ts-expect-error no declaration file for 'acorn-import-attributes'
 import { importAttributesOrAssertions } from 'acorn-import-attributes'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -18,12 +19,15 @@ export function rewriteSourceImportAssertions(source: string): string {
   parsedAST.body
     .filter((node) => {
       return (
-        (node.type === 'ImportDeclaration' && node.assertions !== undefined) ||
-        (node.type === 'ExportNamedDeclaration' && node.assertions !== undefined)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (node.type === 'ImportDeclaration' && (node as any).assertions !== undefined) ||
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (node.type === 'ExportNamedDeclaration' && (node as any).assertions !== undefined)
       )
     })
     .forEach((node) => {
-      const statement = source.slice(node.source.end, node.end)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      const statement = source.slice((node as any).source.end, node.end)
       const newStatement = statement.replace('assert', 'with')
       modified = modified.replace(statement, newStatement)
     })
