@@ -20,8 +20,9 @@ export const run = async function (
     const method = methods[event]
     const runState = {}
     const generatedFunctions = []
+    const deployEnvVars = []
     const systemLog = getSystemLog()
-    const utils = getUtils({ event, constants, generatedFunctions, runState })
+    const utils = getUtils({ event, constants, deployEnvVars, generatedFunctions, runState })
     const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
     const runOptions = {
       utils,
@@ -45,6 +46,6 @@ export const run = async function (
 
     const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
     const returnValue = generatedFunctions.length ? { generatedFunctions } : undefined
-    return { ...runState, newEnvChanges, configMutations, returnValue }
+    return { ...runState, deployEnvVars, newEnvChanges, configMutations, returnValue }
   })
 }
