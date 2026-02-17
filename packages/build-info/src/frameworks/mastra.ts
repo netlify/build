@@ -8,12 +8,12 @@ export class Mastra extends BaseFramework implements Framework {
 
   dev = {
     command: 'mastra dev',
-    port: 4111
+    port: 4111,
   }
 
   build = {
     command: 'mastra build',
-    directory: '.mastra'
+    directory: '.mastra',
   }
 
   logo = {
