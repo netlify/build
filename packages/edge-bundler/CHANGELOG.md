@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.9](https://github.com/netlify/build/compare/edge-bundler-v14.9.8...edge-bundler-v14.9.9) (2026-02-17)
+
+
+### Bug Fixes
+
+* tarball bundling - import assertion replacement ([#6928](https://github.com/netlify/build/issues/6928)) ([7a5a649](https://github.com/netlify/build/commit/7a5a649d7045aa2c075b51cc097a28420e38d7b1))
+
 ## [14.9.8](https://github.com/netlify/build/compare/edge-bundler-v14.9.7...edge-bundler-v14.9.8) (2026-02-06)
 
 
