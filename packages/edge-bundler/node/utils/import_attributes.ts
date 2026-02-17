@@ -1,4 +1,5 @@
 import { Parser } from 'acorn'
+import * as walk from 'acorn-walk'
 import { tsPlugin } from '@sveltejs/acorn-typescript'
 import jsx from 'acorn-jsx'
 
@@ -19,14 +20,29 @@ export function rewriteSourceImportAssertions(source: string): string {
     sourceType: 'module',
   })
 
-  parsedAST.body.forEach((node) => {
-    if ((node.type === 'ImportDeclaration' || node.type === 'ExportNamedDeclaration') && node.source) {
+  walk.simple(parsedAST, {
+    ImportDeclaration(node) {
       const statement = source.slice(node.source.end, node.end)
       if (statement.includes('assert')) {
         const newStatement = statement.replace('assert', 'with')
         modified = modified.replace(statement, newStatement)
       }
-    }
+    },
+    ImportExpression(node) {
+      const statement = source.slice(node.source.end, node.end)
+      if (statement.includes('assert')) {
+        const newStatement = statement.replace('assert', 'with')
+        modified = modified.replace(statement, newStatement)
+      }
+    },
+    ExportNamedDeclaration(node) {
+      if (!node.source) return
+      const statement = source.slice(node.source.end, node.end)
+      if (statement.includes('assert')) {
+        const newStatement = statement.replace('assert', 'with')
+        modified = modified.replace(statement, newStatement)
+      }
+    },
   })
 
   return modified

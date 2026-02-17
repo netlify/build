@@ -57,7 +57,7 @@ import f from './c.js';
     expect(result).toEqual(source)
   })
 
-  test('ignores handles static export assertions', () => {
+  test('handles static export assertions', () => {
     const source = `export { default } from './data.json' assert { type: 'json' };`
     const expectedResult = `export { default } from './data.json' with { type: 'json' };`
 
@@ -118,5 +118,30 @@ export const config = {
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(source)
+  })
+
+  describe('dynamic imports', () => {
+    test('ignores handles static export assertions', () => {
+      const source = `
+      export async function test(source) {
+        const data1 = await import('./data.json', { assert: { type: 'json' } });
+        const data2 = await import('./data.json', { assert: { type: 'json' } });
+        const data3 = await import('./data.json');
+        const data4 = await import('./data.json', { assert: { type: 'json' } });
+      }`
+
+      const expectedResult = `
+      export async function test(source) {
+        const data1 = await import('./data.json', { with: { type: 'json' } });
+        const data2 = await import('./data.json', { with: { type: 'json' } });
+        const data3 = await import('./data.json');
+        const data4 = await import('./data.json', { with: { type: 'json' } });
+      }`
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+      const result = rewriteSourceImportAssertions(source)
+
+      expect(result).toEqual(expectedResult)
+    })
   })
 })
