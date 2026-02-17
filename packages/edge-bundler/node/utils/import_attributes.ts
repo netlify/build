@@ -1,14 +1,17 @@
 import { Parser } from 'acorn'
-// @ts-expect-error no declaration file for 'acorn-import-attributes'
-import { importAttributesOrAssertions } from 'acorn-import-attributes'
+import { tsPlugin } from '@sveltejs/acorn-typescript'
+import jsx from 'acorn-jsx'
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-const acorn = Parser.extend(importAttributesOrAssertions)
+const acorn = Parser.extend(tsPlugin()).extend(jsx())
 
 /**
  * Given source code rewrites import assert into import with
  */
 export function rewriteSourceImportAssertions(source: string): string {
+  if (!source.includes('assert')) {
+    return source
+  }
+
   let modified = source
 
   const parsedAST = acorn.parse(source, {
@@ -16,21 +19,15 @@ export function rewriteSourceImportAssertions(source: string): string {
     sourceType: 'module',
   })
 
-  parsedAST.body
-    .filter((node) => {
-      return (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        (node.type === 'ImportDeclaration' && (node as any).assertions !== undefined) ||
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        (node.type === 'ExportNamedDeclaration' && (node as any).assertions !== undefined)
-      )
-    })
-    .forEach((node) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      const statement = source.slice((node as any).source.end, node.end)
-      const newStatement = statement.replace('assert', 'with')
-      modified = modified.replace(statement, newStatement)
-    })
+  parsedAST.body.forEach((node) => {
+    if ((node.type === 'ImportDeclaration' || node.type === 'ExportNamedDeclaration') && node.source) {
+      const statement = source.slice(node.source.end, node.end)
+      if (statement.includes('assert')) {
+        const newStatement = statement.replace('assert', 'with')
+        modified = modified.replace(statement, newStatement)
+      }
+    }
+  })
 
   return modified
 }
