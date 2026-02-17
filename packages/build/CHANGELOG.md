@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.0](https://github.com/netlify/build/compare/build-v35.7.2...build-v35.8.0) (2026-02-17)
+
+
+### Features
+
+* **build:** add `utils.deploy.env.add` build plugin API ([#6918](https://github.com/netlify/build/issues/6918)) ([7675b85](https://github.com/netlify/build/commit/7675b858ec55e82ff65c19356998cfc82b67451d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.22 to ^6.2.23
+    * @netlify/zip-it-and-ship-it bumped from 14.3.2 to 14.4.0
+
 ## [35.7.2](https://github.com/netlify/build/compare/build-v35.7.1...build-v35.7.2) (2026-02-17)
 
 
