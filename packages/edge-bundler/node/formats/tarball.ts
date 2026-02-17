@@ -77,7 +77,9 @@ export const bundle = async ({
     const destPath = path.join(bundleDir.path, relativePath)
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
-    await fs.copyFile(sourceFile, destPath)
+
+    // Deno 2.x dropped support for import for import assertions
+    await rewriteImportAssertions(sourceFile, destPath)
   }
 
   // Vendor all dependencies in the bundle directory
@@ -128,9 +130,6 @@ export const bundle = async ({
   // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
   // point), not /function/deno.json, so the customer's import map is unreachable.
   await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
-
-  // Deno 2.x dropped support for import for import assertions
-  await rewriteImportAssertions(bundleDir.path, sourceFiles, commonPath)
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
@@ -339,30 +338,24 @@ async function getRequiredSourceFiles(
 
 /**
  * Rewrites import assert into import with in the bundle directory
+ * Defaults to copying the file in its current form
  */
-export async function rewriteImportAssertions(
-  bundleDirPath: string,
-  sourceFiles: string[],
-  commonPath: string,
-): Promise<void> {
-  for (const sourceFile of sourceFiles) {
-    if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
-
-    const relativePath = path.relative(commonPath, sourceFile)
-    const destPath = path.join(bundleDirPath, relativePath)
-
-    let source: string
-
-    try {
-      source = await fs.readFile(destPath, 'utf-8')
-    } catch {
-      continue
-    }
-
-    const modified = rewriteSourceImportAssertions(source)
-
-    if (modified !== source) {
-      await fs.writeFile(destPath, modified)
-    }
+export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
+  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+    await fs.copyFile(sourceFile, destPath)
+    return
   }
+
+  let source: string
+
+  try {
+    source = await fs.readFile(sourceFile, 'utf-8')
+  } catch {
+    await fs.copyFile(sourceFile, destPath)
+    return
+  }
+
+  const modified = rewriteSourceImportAssertions(source)
+
+  await fs.writeFile(destPath, modified)
 }
