@@ -14,6 +14,7 @@ import { FeatureFlags } from '../feature_flags.js'
 import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
+import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 
 const TARBALL_EXTENSION = '.tar.gz'
@@ -76,7 +77,9 @@ export const bundle = async ({
     const destPath = path.join(bundleDir.path, relativePath)
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
-    await fs.copyFile(sourceFile, destPath)
+
+    // Deno 2.x dropped support for import for import assertions
+    await rewriteImportAssertions(sourceFile, destPath)
   }
 
   // Vendor all dependencies in the bundle directory
@@ -115,7 +118,9 @@ export const bundle = async ({
       const destPath = path.join(bundleDir.path, npmVendorDir, relativePath)
 
       await fs.mkdir(path.dirname(destPath), { recursive: true })
-      await fs.copyFile(vendorFile, destPath)
+
+      // Rewrite import assertions in vendored files as well
+      await rewriteImportAssertions(vendorFile, destPath)
     }
   }
 
@@ -331,4 +336,23 @@ async function getRequiredSourceFiles(
   }
 
   return Array.from(localFiles).sort()
+}
+
+/**
+ * Rewrites import assert into import with in the bundle directory
+ * Defaults to copying the file in its current form
+ */
+export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
+  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+    await fs.copyFile(sourceFile, destPath)
+    return
+  }
+
+  try {
+    const source = await fs.readFile(sourceFile, 'utf-8')
+    const modified = rewriteSourceImportAssertions(source)
+    await fs.writeFile(destPath, modified)
+  } catch {
+    await fs.copyFile(sourceFile, destPath)
+  }
 }
