@@ -346,16 +346,11 @@ export async function rewriteImportAssertions(sourceFile: string, destPath: stri
     return
   }
 
-  let source: string
-
   try {
-    source = await fs.readFile(sourceFile, 'utf-8')
+    const source = await fs.readFile(sourceFile, 'utf-8')
+    const modified = rewriteSourceImportAssertions(source)
+    await fs.writeFile(destPath, modified)
   } catch {
     await fs.copyFile(sourceFile, destPath)
-    return
   }
-
-  const modified = rewriteSourceImportAssertions(source)
-
-  await fs.writeFile(destPath, modified)
 }
