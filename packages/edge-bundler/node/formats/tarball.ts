@@ -3,8 +3,6 @@ import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
-import { Parser } from 'acorn'
-import { importAttributesOrAssertions } from 'acorn-import-attributes'
 import commonPathPrefix from 'common-path-prefix'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -16,6 +14,7 @@ import { FeatureFlags } from '../feature_flags.js'
 import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
+import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 
 const TARBALL_EXTENSION = '.tar.gz'
@@ -339,16 +338,13 @@ async function getRequiredSourceFiles(
 }
 
 /**
- * Rewrites import assert into import with
+ * Rewrites import assert into import with in the bundle directory
  */
-async function rewriteImportAssertions(
+export async function rewriteImportAssertions(
   bundleDirPath: string,
   sourceFiles: string[],
   commonPath: string,
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const acorn = Parser.extend(importAttributesOrAssertions)
-
   for (const sourceFile of sourceFiles) {
     if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
 
@@ -356,31 +352,14 @@ async function rewriteImportAssertions(
     const destPath = path.join(bundleDirPath, relativePath)
 
     let source: string
+
     try {
       source = await fs.readFile(destPath, 'utf-8')
     } catch {
       continue
     }
 
-    let modified = source
-
-    const parsedAST = acorn.parse(source, {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-    })
-
-    parsedAST.body
-      .filter((node) => {
-        return (
-          (node.type === 'ImportDeclaration' && node.assertions !== undefined) ||
-          (node.type === 'ExportNamedDeclaration' && node.assertions !== undefined)
-        )
-      })
-      .forEach((node) => {
-        const statement = source.slice(node.source.end, node.end)
-        const newStatement = statement.replace('assert', 'with')
-        modified = modified.replace(statement, newStatement)
-      })
+    const modified = rewriteSourceImportAssertions(source)
 
     if (modified !== source) {
       await fs.writeFile(destPath, modified)
