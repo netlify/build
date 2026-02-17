@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
+// eslint-disable-next-line n/no-missing-import
 import { rewriteSourceImportAssertions } from './import_attributes'
 
 describe('rewriteSourceImportAssertions', () => {
@@ -38,6 +39,7 @@ import e from './b.css' with { type: 'css' };
 import f from './c.js';
 `
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -49,6 +51,7 @@ import f from './c.js';
     console.assert(true, 'should be true');
 `
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(source)
@@ -58,6 +61,7 @@ import f from './c.js';
     const source = `export { default } from './data.json' assert { type: 'json' };`
     const expectedResult = `export { default } from './data.json' with { type: 'json' };`
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
