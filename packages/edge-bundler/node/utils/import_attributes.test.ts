@@ -97,10 +97,22 @@ export const config: Config = {
     expect(result).toEqual(source)
   })
 
-  test('handles errors on jsx/tsx syntax and returns no change', () => {
+  test('Partially replaces in the case of unsupported syntax', () => {
+    const source = `
+import data3 from './data.json' assert { type: 'json' };
+const params = inputs as Params;
+`
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toContain(`import data3 from './data.json' with { type: 'json' };`)
+  })
+
+  test('Gracefully fails on jsx/tsx syntax and returns no change', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
 
+import data5 from './data.json' assert { type: 'json' };
 console.assert(true, 'should be true');
 
 const Hello = (props) => (
