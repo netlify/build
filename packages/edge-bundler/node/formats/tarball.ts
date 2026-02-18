@@ -93,7 +93,7 @@ export const bundle = async ({
       '--node-modules-dir=manual',
       '--vendor',
       '--entrypoint',
-      ...functions.map((func) => path.relative(commonPath, func.path)),
+      ...Object.values(manifest.functions),
     ],
     {
       cwd: bundleDir.path,
