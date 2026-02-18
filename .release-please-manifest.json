@@ -1,7 +1,7 @@
 {
   "packages/build-info": "10.3.0",
-  "packages/build": "35.8.0",
-  "packages/edge-bundler": "14.9.9",
+  "packages/build": "35.8.1",
+  "packages/edge-bundler": "14.9.10",
   "packages/cache-utils": "6.0.4",
   "packages/config": "24.4.0",
   "packages/functions-utils": "6.2.23",

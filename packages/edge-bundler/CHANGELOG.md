@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.10](https://github.com/netlify/build/compare/edge-bundler-v14.9.9...edge-bundler-v14.9.10) (2026-02-18)
+
+
+### Bug Fixes
+
+* partially replace files with import assertions in the case of a parsing error ([#6934](https://github.com/netlify/build/issues/6934)) ([8db5782](https://github.com/netlify/build/commit/8db57829c479222865c8bd82b81b99945c01bf1a))
+
 ## [14.9.9](https://github.com/netlify/build/compare/edge-bundler-v14.9.8...edge-bundler-v14.9.9) (2026-02-17)
 
 
