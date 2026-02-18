@@ -47,6 +47,7 @@ export function rewriteSourceImportAssertions(source: string): string {
 
     return modified
   } catch {
-    return source
+    // Gracefully fail and still replace where possible
+    return modified
   }
 }
