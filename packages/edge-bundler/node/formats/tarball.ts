@@ -131,7 +131,8 @@ export const bundle = async ({
   // resolved by Deno's --vendor flag at runtime without needing the customer's import map.
   // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
   // point), not /function/deno.json, so the customer's import map is unreachable.
-  await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
+  console.log(`NOT rewriting imports`)
+  // await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
@@ -155,6 +156,15 @@ export const bundle = async ({
     .map((p) => path.relative(bundleDir.path, p))
     .map((p) => getUnixPath(p))
     .sort()
+
+  console.log('Creating tarball with files:', files)
+
+  const denoVendorFilesNotNpmBundleVendor = files.filter((file) => file.startsWith('vendor/'))
+  for (const file of denoVendorFilesNotNpmBundleVendor) {
+    console.log('Deno vendor file not in npm bundle vendor:', file)
+    const absolutePath = path.join(bundleDir.path, file)
+    await rewriteImportAssertions(absolutePath, absolutePath)
+  }
 
   await tar.create(
     {
@@ -344,7 +354,10 @@ async function getRequiredSourceFiles(
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
   if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
-    await fs.copyFile(sourceFile, destPath)
+    if (sourceFile !== destPath) {
+      console.log('skipping import assert rewrite for non-code file', sourceFile)
+      await fs.copyFile(sourceFile, destPath)
+    }
     return
   }
 
@@ -352,7 +365,11 @@ export async function rewriteImportAssertions(sourceFile: string, destPath: stri
     const source = await fs.readFile(sourceFile, 'utf-8')
     const modified = rewriteSourceImportAssertions(source)
     await fs.writeFile(destPath, modified)
+    console.log('rewritten import assertions', sourceFile)
   } catch {
-    await fs.copyFile(sourceFile, destPath)
+    if (sourceFile !== destPath) {
+      await fs.copyFile(sourceFile, destPath)
+      console.log('failed to rewrite import assertions', sourceFile)
+    }
   }
 }
