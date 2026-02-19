@@ -3,7 +3,7 @@ import { BaseFramework, Category, Framework } from './framework.js'
 export class Mastra extends BaseFramework implements Framework {
   readonly id = 'mastra'
   name = 'Mastra'
-  npmDependencies = ['mastra']
+  npmDependencies = ['@mastra/deployer-netlify']
   category = Category.BackendFramework
 
   dev = {
