@@ -13,7 +13,7 @@ export class Mastra extends BaseFramework implements Framework {
 
   build = {
     command: 'mastra build',
-    directory: '.mastra',
+    directory: 'dist', // not used, set to default
   }
 
   logo = {
