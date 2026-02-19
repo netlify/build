@@ -17,6 +17,7 @@ export type CoreStepFunctionArgs = {
    * `undefined` if none is set.
    */
   packagePath?: string
+  repositoryRoot: string
   deployId: string
   /**
    * The deploy context (e.g. 'production', 'deploy-preview', 'branch-deploy')
@@ -30,16 +31,22 @@ export type CoreStepFunctionArgs = {
   constants: NetlifyPluginConstants
   quiet?: boolean
   debug?: boolean
+  events: string[]
   logs?: BufferedLogs
   systemLog: SystemLogger
   edgeFunctionsBootstrapURL?: string
   featureFlags?: Record<string, any>
 
+  headersPath?: string
+  redirectsPath?: string
+  configMutations: unknown[] // FIXME
+  configPath: string
   netlifyConfig: NetlifyConfig
   explicitSecretKeys: $TSFixme
   enhancedSecretScan: boolean
+  deployEnvVars: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
 
-  buildbotServerSocket: $TSFixme
+  buildbotServerSocket?: string
   api: DynamicMethods
 }
 

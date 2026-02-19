@@ -979,6 +979,46 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       await cleanup()
     })
 
+    test('Rewrites import assertions', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('with_import_assertions')
+      const systemLogger = vi.fn()
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        importMapPaths: [join(basePath, 'import_map.json')],
+        systemLogger,
+      })
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+
+      // Extract tarball and verify source file has been rewritten
+      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      await tar.extract({ cwd: tmpDir.path, file: tarballPath })
+
+      const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
+
+      // The bare specifier "my-encoding" should be rewritten to the resolved URL
+      expect(sourceContent).toContain(`import dict from './dict.json' with { type: "json" }`)
+
+      // The tarball should still execute correctly
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult.func1).toBe('{"foo":"bar"}')
+
+      await tmpDir.cleanup()
+      await cleanup()
+    })
+
     describe('Dry-run tarball generation flag enabled', () => {
       test('Includes tarball in bundles when generation succeeds', async () => {
         const systemLogger = vi.fn()

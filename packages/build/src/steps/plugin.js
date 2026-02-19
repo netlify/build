@@ -52,8 +52,9 @@ export const firePluginStep = async function ({
   try {
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
-      newEnvChanges,
       configMutations: newConfigMutations,
+      deployEnvVars,
+      newEnvChanges,
       returnValue,
       status,
     } = await callChild({
@@ -95,6 +96,7 @@ export const firePluginStep = async function ({
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
+      deployEnvVars,
       newEnvChanges,
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
