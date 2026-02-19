@@ -30,6 +30,6 @@ describe('mastra', () => {
     expect(detected?.[0].id).toBe('mastra')
     expect(detected?.[0].build.command).toBe('mastra build')
     expect(detected?.[0].dev?.command).toBe('mastra dev')
-    expect(detected?.[0].build.directory).toBe('.mastra')
+    expect(detected?.[0].build.directory).toBe('dist')
   })
 })
