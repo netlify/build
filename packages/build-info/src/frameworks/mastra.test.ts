@@ -19,6 +19,7 @@ describe('mastra', () => {
         },
         dependencies: {
           '@mastra/core': '^1.0.0',
+          '@mastra/deployer-netlify': '^1.0.0',
         },
         devDependencies: {
           mastra: '^1.0.0',
