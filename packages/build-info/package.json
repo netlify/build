@@ -48,7 +48,7 @@
     "@iarna/toml": "^2.2.5",
     "dot-prop": "^9.0.0",
     "find-up": "^7.0.0",
-    "minimatch": "^9.0.0",
+    "minimatch": "^10.2.1",
     "read-pkg": "^9.0.0",
     "semver": "^7.3.8",
     "yaml": "^2.8.0",
