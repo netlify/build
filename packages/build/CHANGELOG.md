@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.2](https://github.com/netlify/build/compare/build-v35.8.1...build-v35.8.2) (2026-02-20)
+
+
+### Bug Fixes
+
+* **build:** remove `builds` scope from deploy env vars ([#6940](https://github.com/netlify/build/issues/6940)) ([e1f6c94](https://github.com/netlify/build/commit/e1f6c94af2c8a2e63b03e98c2a0a032d54aa2a81))
+
 ## [35.8.1](https://github.com/netlify/build/compare/build-v35.8.0...build-v35.8.1) (2026-02-18)
 
 
