@@ -91,7 +91,7 @@
     "keep-func-props": "^6.0.0",
     "log-process-errors": "^11.0.0",
     "memoize-one": "^6.0.0",
-    "minimatch": "^9.0.4",
+    "minimatch": "^10.2.1",
     "os-name": "^6.0.0",
     "p-event": "^6.0.0",
     "p-filter": "^4.0.0",
