@@ -20,6 +20,7 @@ import { Hono } from './hono.js'
 import { Hugo } from './hugo.js'
 import { Hydrogen } from './hydrogen.js'
 import { Jekyll } from './jekyll.js'
+import { Mastra } from './mastra.js'
 import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
 import { Next } from './next.js'
@@ -94,6 +95,7 @@ export const frameworks = [
 
   // Back-end frameworks
   Hono,
+  Mastra,
 
   // Front-end frameworks
   Angular,
