@@ -105,6 +105,15 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.3](https://github.com/netlify/build/compare/build-v35.8.2...build-v35.8.3) (2026-02-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.4.0 to ^24.4.1
+
 ## [35.8.2](https://github.com/netlify/build/compare/build-v35.8.1...build-v35.8.2) (2026-02-20)
 
 
