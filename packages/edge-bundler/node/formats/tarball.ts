@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -81,24 +81,6 @@ export const bundle = async ({
     await rewriteImportAssertions(sourceFile, destPath)
   }
 
-  // Vendor all dependencies in the bundle directory
-  await deno.run(
-    [
-      'install',
-      '--import-map',
-      importMap.withNodeBuiltins().toDataURL(),
-      '--quiet',
-      '--allow-import',
-      '--node-modules-dir=manual',
-      '--vendor',
-      '--entrypoint',
-      ...Object.values(manifest.functions),
-    ],
-    {
-      cwd: bundleDir.path,
-    },
-  )
-
   // Build prefix mappings to transform file:// URLs to relative paths
   const npmVendorDir = '.netlify-npm-vendor'
   const prefixes: Record<string, string> = {}
@@ -118,8 +100,36 @@ export const bundle = async ({
 
       await fs.mkdir(path.dirname(destPath), { recursive: true })
 
-      // Rewrite import assertions in vendored files as well
+      // Rewrite import assertions in npm vendor directory
       await rewriteImportAssertions(vendorFile, destPath)
+    }
+  }
+
+  // Vendor all dependencies in the bundle directory
+  await deno.run(
+    [
+      'install',
+      '--import-map',
+      importMap.withNodeBuiltins().toDataURL(),
+      '--quiet',
+      '--allow-import',
+      '--node-modules-dir=manual',
+      '--vendor',
+      '--entrypoint',
+      ...Object.values(manifest.functions),
+    ],
+    {
+      cwd: bundleDir.path,
+    },
+  )
+
+  // Rewrite import assertions in files outputted by deno vendor
+  const denoVendorOutput = path.join(bundleDir.path, 'vendor')
+  if (existsSync(denoVendorOutput)) {
+    const denoVendorFiles = await listRecursively(denoVendorOutput)
+    for (const denoVendorFile of denoVendorFiles) {
+      // Rewrite import assertions in npm vendor directory
+      await rewriteImportAssertions(denoVendorFile, denoVendorFile)
     }
   }
 
@@ -233,15 +243,13 @@ async function getRequiredSourceFiles(
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
   if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
-    await fs.copyFile(sourceFile, destPath)
+    if (sourceFile !== destPath) {
+      await fs.copyFile(sourceFile, destPath)
+    }
     return
   }
 
-  try {
-    const source = await fs.readFile(sourceFile, 'utf-8')
-    const modified = rewriteSourceImportAssertions(source)
-    await fs.writeFile(destPath, modified)
-  } catch {
-    await fs.copyFile(sourceFile, destPath)
-  }
+  const source = await fs.readFile(sourceFile, 'utf-8')
+  const modified = rewriteSourceImportAssertions(source)
+  await fs.writeFile(destPath, modified)
 }
