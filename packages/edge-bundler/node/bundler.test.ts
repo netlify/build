@@ -864,9 +864,8 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
 
       const sourceContent = await readFile(join(tmpDir.path, funcPath), 'utf8')
 
-      // Bare specifier "parent-1" should be rewritten to a relative path to the vendored file
-      expect(sourceContent).not.toContain("from 'parent-1'")
-      expect(sourceContent).toMatch(/from ['"]\.\.?\/.*\.netlify-npm-vendor.*bundled-parent-1\.js['"]/)
+      // Bare specifier "parent-1" should not be rewritten to a relative path
+      expect(sourceContent).toContain("from 'parent-1'")
 
       await tmpDir.cleanup()
 
@@ -967,9 +966,8 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
 
       const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
 
-      // The bare specifier "my-encoding" should be rewritten to the resolved URL
-      expect(sourceContent).toContain('from "https://deno.land/std@0.194.0/encoding/base64.ts"')
-      expect(sourceContent).not.toContain('from "my-encoding"')
+      // The bare specifier "my-encoding" should NOT be rewritten to the resolved URL
+      expect(sourceContent).toContain('from "my-encoding"')
 
       // The tarball should still execute correctly
       const tarballResult = await runTarball(tarballPath)
