@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.9.11](https://github.com/netlify/build/compare/edge-bundler-v14.9.10...edge-bundler-v14.9.11) (2026-02-24)
+
+
+### Bug Fixes
+
+* do not rewrite bare specifiers during tarball bundling ([#6947](https://github.com/netlify/build/issues/6947)) ([e8f65ab](https://github.com/netlify/build/commit/e8f65ab6430bcaa9772258a7edae7257630e8dfb))
+* edge bundling - tarball - replace import assertions after deno vendoring ([#6948](https://github.com/netlify/build/issues/6948)) ([c94eb51](https://github.com/netlify/build/commit/c94eb51315858b3a80761d59e86d6e7ea5e0c7ea))
+
 ## [14.9.10](https://github.com/netlify/build/compare/edge-bundler-v14.9.9...edge-bundler-v14.9.10) (2026-02-18)
 
 
