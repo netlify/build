@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "package-with-import-assertions": "1.0.0"
+  }
+}
