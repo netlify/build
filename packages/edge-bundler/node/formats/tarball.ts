@@ -105,12 +105,23 @@ export const bundle = async ({
     }
   }
 
+  // Map common path to relative paths
+  prefixes[pathToFileURL(commonPath + path.sep).href] = './'
+
+  // Get import map contents with file:// URLs transformed to relative paths
+  const importMapContents = importMap.getContents(prefixes)
+
+  // Create deno.json with import map contents for runtime resolution
+  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
+  const denoConfigContents = JSON.stringify(importMapContents, null, 2)
+  await fs.writeFile(denoConfigPath, denoConfigContents)
+
   // Vendor all dependencies in the bundle directory
   await deno.run(
     [
       'install',
       '--import-map',
-      importMap.withNodeBuiltins().toDataURL(),
+      denoConfigPath,
       '--quiet',
       '--allow-import',
       '--node-modules-dir=manual',
@@ -131,17 +142,6 @@ export const bundle = async ({
       await rewriteImportAssertions(denoVendorFile, denoVendorFile)
     }
   }
-
-  // Map common path to relative paths
-  prefixes[pathToFileURL(commonPath + path.sep).href] = './'
-
-  // Get import map contents with file:// URLs transformed to relative paths
-  const importMapContents = importMap.getContents(prefixes)
-
-  // Create deno.json with import map contents for runtime resolution
-  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
-  const denoConfigContents = JSON.stringify(importMapContents)
-  await fs.writeFile(denoConfigPath, denoConfigContents)
 
   const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
