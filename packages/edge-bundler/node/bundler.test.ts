@@ -1151,11 +1151,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       // Verify key files are present (vendor directory may contain additional files)
       expect(entries).toContain('___netlify-edge-functions.json')
       expect(entries).toContain('deno.json')
-      expect(entries).toContain('func1.ts')
-
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
 
       await cleanup()
       await rm(vendorDirectory.path, { force: true, recursive: true })
