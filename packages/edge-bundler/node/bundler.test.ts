@@ -765,7 +765,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
           path: '/func1',
         },
       ]
-      const vendorDirectory = await tmp.dir()
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
@@ -812,7 +811,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       expect(eszipResult).toStrictEqual(expectedOutput)
 
       await cleanup()
-      await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
     test('Using npm and remote modules', async () => {
@@ -1111,7 +1109,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
           path: '/func1',
         },
       ]
-      const vendorDirectory = await tmp.dir()
 
       await bundle([join(basePath, 'functions')], distPath, declarations, {
         basePath,
@@ -1153,7 +1150,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       expect(entries).toContain('deno.json')
 
       await cleanup()
-      await rm(vendorDirectory.path, { force: true, recursive: true })
     })
   },
   10_000,
