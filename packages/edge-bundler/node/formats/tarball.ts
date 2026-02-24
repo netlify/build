@@ -105,7 +105,7 @@ export const bundle = async ({
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
 
-    / Rewrite import assertions in user files
+    // Rewrite import assertions in user files
     await rewriteImportAssertions(sourceFile, destPath)
   }
 
