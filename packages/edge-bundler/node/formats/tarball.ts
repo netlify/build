@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs'
-import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -127,12 +126,6 @@ export const bundle = async ({
   // Map common path to relative paths
   prefixes[pathToFileURL(commonPath + path.sep).href] = './'
 
-  // Rewrite bare specifier imports to their resolved URLs so they can be
-  // resolved by Deno's --vendor flag at runtime without needing the customer's import map.
-  // At runtime, Deno discovers config from /platform/deno.json (the bootstrap entry
-  // point), not /function/deno.json, so the customer's import map is unreachable.
-  await rewriteBareSpecifiers(bundleDir.path, sourceFiles, commonPath, importMap, prefixes)
-
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes)
 
@@ -181,112 +174,8 @@ export const bundle = async ({
   }
 }
 
-// Specifiers provided by the platform deno.json at runtime - no need to rewrite these.
-const PLATFORM_SPECIFIERS = new Set(['@netlify/edge-functions', 'netlify:edge'])
-
 // Source file extensions that may contain import statements.
 const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
-
-/**
- * Rewrites bare specifier imports in copied source files to their resolved URLs
- * from the import map. This allows Deno's --vendor flag to resolve these imports
- * at runtime without needing the customer's import map (which is unreachable
- * because Deno discovers config from the platform bootstrap directory, not the
- * function directory).
- *
- * Only rewrites specifiers that:
- * - Are bare package specifiers (not relative, absolute, or URL imports)
- * - Resolve to http/https or npm: URLs in the import map
- * - Are NOT node builtins or platform-provided imports
- */
-async function rewriteBareSpecifiers(
-  bundleDirPath: string,
-  sourceFiles: string[],
-  commonPath: string,
-  importMap: ImportMap,
-  prefixes: Record<string, string>,
-): Promise<void> {
-  const contents = importMap.getContents(prefixes)
-  const builtinSet = new Set(builtinModules)
-
-  // Collect bare specifiers that should be rewritten to URLs or relative paths
-  const specifierEntries = Object.entries(contents.imports)
-    .filter(([specifier, url]) => {
-      // Skip node builtins
-      if (specifier.startsWith('node:') || builtinSet.has(specifier)) return false
-      // Skip platform-provided specifiers (handled by platform deno.json)
-      if (PLATFORM_SPECIFIERS.has(specifier)) return false
-      // Skip relative/absolute path specifiers in the specifier itself
-      if (specifier.startsWith('.') || specifier.startsWith('/')) return false
-      // Rewrite http/https, npm:, or vendored npm modules (relative paths with .netlify-npm-vendor)
-      if (
-        url.startsWith('http://') ||
-        url.startsWith('https://') ||
-        url.startsWith('npm:') ||
-        url.includes('.netlify-npm-vendor')
-      ) {
-        return true
-      }
-      return false
-    })
-    // Sort longest first so prefix mappings like "lodash/" match before "lodash"
-    .sort((a, b) => b[0].length - a[0].length)
-
-  for (const sourceFile of sourceFiles) {
-    if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) continue
-
-    const relativePath = path.relative(commonPath, sourceFile)
-    const destPath = path.join(bundleDirPath, relativePath)
-
-    let source: string
-    try {
-      source = await fs.readFile(destPath, 'utf-8')
-    } catch {
-      continue
-    }
-
-    let modified = source
-
-    for (const [specifier, url] of specifierEntries) {
-      const escaped = specifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-      // Convert bundle-root-relative paths to source-file-relative paths
-      let targetUrl = url
-      if (url.startsWith('./') || url.startsWith('../')) {
-        // URL is relative to bundle root (e.g., "./.netlify-npm-vendor/bundled-parent-1.js")
-        // Convert to absolute path in bundle, then to relative from source file
-        const targetAbsolutePath = path.resolve(bundleDirPath, url)
-        const relativeImport = path.relative(path.dirname(destPath), targetAbsolutePath)
-        // Ensure forward slashes and ./ prefix for clarity
-        targetUrl = relativeImport.startsWith('.') ? relativeImport : `./${relativeImport}`
-        targetUrl = targetUrl.replace(/\\/g, '/')
-      }
-
-      // Escape $ in URL for use in replacement string
-      const safeUrl = targetUrl.replace(/\$/g, '$$$$')
-
-      for (const quote of ['"', "'"]) {
-        if (specifier.endsWith('/')) {
-          // Prefix mapping: "specifier/subpath" -> "url/subpath"
-          modified = modified.replace(
-            new RegExp(`(\\bfrom\\s+|\\bimport\\s+|\\bimport\\s*\\(\\s*)${quote}${escaped}([^${quote}]*)${quote}`, 'g'),
-            `$1${quote}${safeUrl}$2${quote}`,
-          )
-        } else {
-          // Exact mapping: "specifier" -> "url"
-          modified = modified.replace(
-            new RegExp(`(\\bfrom\\s+|\\bimport\\s+|\\bimport\\s*\\(\\s*)${quote}${escaped}${quote}`, 'g'),
-            `$1${quote}${safeUrl}${quote}`,
-          )
-        }
-      }
-    }
-
-    if (modified !== source) {
-      await fs.writeFile(destPath, modified)
-    }
-  }
-}
 
 /**
  * Uses deno info to get the module graph and extract only the local source files
