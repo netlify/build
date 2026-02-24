@@ -128,7 +128,6 @@ export const bundle = async ({
   if (existsSync(denoVendorOutput)) {
     const denoVendorFiles = await listRecursively(denoVendorOutput)
     for (const denoVendorFile of denoVendorFiles) {
-      // Rewrite import assertions in npm vendor directory
       await rewriteImportAssertions(denoVendorFile, denoVendorFile)
     }
   }
