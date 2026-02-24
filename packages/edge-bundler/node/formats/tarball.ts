@@ -57,29 +57,7 @@ export const bundle = async ({
   // Use deno info to get the module graph and identify which local files are actually needed.
   // This avoids copying unnecessary files (like node_modules) that happen to be under commonPath.
   // If module graph analysis fails, fall back to copying files from entry point directories.
-  const sourceFiles = await getRequiredSourceFiles(deno, entryPoints, importMap)
-
-  // Find the common path prefix for all source files (entry points + their local imports).
-  // This ensures imports to sibling directories (e.g., ../internal/) are included.
-  // When using a single file, `commonPathPrefix` returns an empty string, so we use
-  // the path of the first entry point's directory.
-  const commonPath = commonPathPrefix(sourceFiles) || path.dirname(entryPoints[0])
-
-  // Build the manifest mapping function names to their relative paths
-  for (const func of functions) {
-    const relativePath = path.relative(commonPath, func.path)
-    manifest.functions[func.name] = getUnixPath(relativePath)
-  }
-
-  for (const sourceFile of sourceFiles) {
-    const relativePath = path.relative(commonPath, sourceFile)
-    const destPath = path.join(bundleDir.path, relativePath)
-
-    await fs.mkdir(path.dirname(destPath), { recursive: true })
-
-    // Deno 2.x dropped support for import for import assertions
-    await rewriteImportAssertions(sourceFile, destPath)
-  }
+  const sourceFilesSet = await getRequiredSourceFiles(deno, entryPoints, importMap)
 
   // Build prefix mappings to transform file:// URLs to relative paths
   const npmVendorDir = '.netlify-npm-vendor'
@@ -102,15 +80,52 @@ export const bundle = async ({
 
       // Rewrite import assertions in npm vendor directory
       await rewriteImportAssertions(vendorFile, destPath)
+
+      // Remove original bundled npm from source files,
+      // rewritten ones will be included in tarball because they will be under bundleDir
+      sourceFilesSet.delete(vendorFile)
     }
   }
+
+  // Find the common path prefix for all source files (entry points + their local imports).
+  // This ensures imports to sibling directories (e.g., ../internal/) are included.
+  // When using a single file, `commonPathPrefix` returns an empty string, so we use
+  // the path of the first entry point's directory.
+  const commonPath = commonPathPrefix(Array.from(sourceFilesSet).sort()) || path.dirname(entryPoints[0])
+
+  // Build the manifest mapping function names to their relative paths
+  for (const func of functions) {
+    const relativePath = path.relative(commonPath, func.path)
+    manifest.functions[func.name] = getUnixPath(relativePath)
+  }
+
+  for (const sourceFile of sourceFilesSet) {
+    const relativePath = path.relative(commonPath, sourceFile)
+    const destPath = path.join(bundleDir.path, relativePath)
+
+    await fs.mkdir(path.dirname(destPath), { recursive: true })
+
+    // Rewrite import assertions in user files
+    await rewriteImportAssertions(sourceFile, destPath)
+  }
+
+  // Map common path to relative paths
+  prefixes[pathToFileURL(commonPath + path.sep).href] = './'
+
+  // Get import map contents with file:// URLs transformed to relative paths
+  const importMapContents = importMap.getContents(prefixes)
+
+  // Create deno.json with import map contents for runtime resolution
+  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
+  const denoConfigContents = JSON.stringify(importMapContents, null, 2)
+  await fs.writeFile(denoConfigPath, denoConfigContents)
 
   // Vendor all dependencies in the bundle directory
   await deno.run(
     [
       'install',
       '--import-map',
-      importMap.withNodeBuiltins().toDataURL(),
+      denoConfigPath,
       '--quiet',
       '--allow-import',
       '--node-modules-dir=manual',
@@ -131,17 +146,6 @@ export const bundle = async ({
       await rewriteImportAssertions(denoVendorFile, denoVendorFile)
     }
   }
-
-  // Map common path to relative paths
-  prefixes[pathToFileURL(commonPath + path.sep).href] = './'
-
-  // Get import map contents with file:// URLs transformed to relative paths
-  const importMapContents = importMap.getContents(prefixes)
-
-  // Create deno.json with import map contents for runtime resolution
-  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
-  const denoConfigContents = JSON.stringify(importMapContents)
-  await fs.writeFile(denoConfigPath, denoConfigContents)
 
   const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
@@ -198,7 +202,7 @@ async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
-): Promise<string[]> {
+): Promise<Set<string>> {
   const localFiles = new Set<string>()
   const importMapDataUrl = importMap.withNodeBuiltins().toDataURL()
 
@@ -233,7 +237,7 @@ async function getRequiredSourceFiles(
     }
   }
 
-  return Array.from(localFiles).sort()
+  return localFiles
 }
 
 /**
