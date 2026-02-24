@@ -109,6 +109,17 @@ export const bundle = async ({
     await rewriteImportAssertions(sourceFile, destPath)
   }
 
+  // Map common path to relative paths
+  prefixes[pathToFileURL(commonPath + path.sep).href] = './'
+
+  // Get import map contents with file:// URLs transformed to relative paths
+  const importMapContents = importMap.getContents(prefixes)
+
+  // Create deno.json with import map contents for runtime resolution
+  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
+  const denoConfigContents = JSON.stringify(importMapContents, null, 2)
+  await fs.writeFile(denoConfigPath, denoConfigContents)
+
   // Vendor all dependencies in the bundle directory
   await deno.run(
     [
