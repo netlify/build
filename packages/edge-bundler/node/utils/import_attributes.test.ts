@@ -97,10 +97,10 @@ export const config: Config = {
     expect(result).toEqual(source)
   })
 
-  test('Partially replaces in the case of unsupported syntax', () => {
+  test('Partially replace files in the case where unsupported syntax happens after all conversions have been made', () => {
     const source = `
 import data3 from './data.json' assert { type: 'json' };
-const params = inputs as Params;
+const params = inputs as Params; // this line will fail
 `
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
@@ -108,7 +108,17 @@ const params = inputs as Params;
     expect(result).toContain(`import data3 from './data.json' with { type: 'json' };`)
   })
 
-  test('Gracefully fails on jsx/tsx syntax and returns no change', () => {
+  test('Fail loudly if the whole file cannot be converted to supported syntax', () => {
+    const source = `
+import data3 from './data.json' assert { type: 'json' };
+const params = inputs as Params; // this line will fail
+import data2 from './data.json' assert { type: 'json' };
+`
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    expect(() => rewriteSourceImportAssertions(source)).toThrowError()
+  })
+
+  test('Fails loudly on jsx/tsx syntax', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
 
@@ -128,10 +138,9 @@ export default function handler(req: Request) {
 export const config = {
   path: "/generated-with-http-import",
 };`
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    const result = rewriteSourceImportAssertions(source)
 
-    expect(result).toEqual(source)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    expect(() => rewriteSourceImportAssertions(source)).toThrowError()
   })
 
   describe('dynamic imports', () => {

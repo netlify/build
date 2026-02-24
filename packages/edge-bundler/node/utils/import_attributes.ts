@@ -46,8 +46,10 @@ export function rewriteSourceImportAssertions(source: string): string {
     })
 
     return modified
-  } catch {
-    // Gracefully fail and still replace where possible
-    return modified
+  } catch (error) {
+    if (!modified.includes('assert')) {
+      return modified
+    }
+    throw error
   }
 }

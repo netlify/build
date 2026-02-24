@@ -765,7 +765,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
           path: '/func1',
         },
       ]
-      const vendorDirectory = await tmp.dir()
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
@@ -812,7 +811,6 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       expect(eszipResult).toStrictEqual(expectedOutput)
 
       await cleanup()
-      await rm(vendorDirectory.path, { force: true, recursive: true })
     })
 
     test('Using npm and remote modules', async () => {
@@ -854,7 +852,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify vendored npm imports were rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       // Get the function path from the manifest
@@ -961,7 +959,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
@@ -1001,7 +999,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
@@ -1098,6 +1096,60 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
         await cleanup()
         vi.resetModules()
       })
+    })
+
+    test('npm + http modules with import assertions', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('npm_and_http_import_with_import_assertions', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, 'functions/config.json'),
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // Verify key files are present (vendor directory may contain additional files)
+      expect(entries).toContain('___netlify-edge-functions.json')
+      expect(entries).toContain('deno.json')
+
+      await cleanup()
     })
   },
   10_000,

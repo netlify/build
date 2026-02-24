@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -57,47 +57,7 @@ export const bundle = async ({
   // Use deno info to get the module graph and identify which local files are actually needed.
   // This avoids copying unnecessary files (like node_modules) that happen to be under commonPath.
   // If module graph analysis fails, fall back to copying files from entry point directories.
-  const sourceFiles = await getRequiredSourceFiles(deno, entryPoints, importMap)
-
-  // Find the common path prefix for all source files (entry points + their local imports).
-  // This ensures imports to sibling directories (e.g., ../internal/) are included.
-  // When using a single file, `commonPathPrefix` returns an empty string, so we use
-  // the path of the first entry point's directory.
-  const commonPath = commonPathPrefix(sourceFiles) || path.dirname(entryPoints[0])
-
-  // Build the manifest mapping function names to their relative paths
-  for (const func of functions) {
-    const relativePath = path.relative(commonPath, func.path)
-    manifest.functions[func.name] = getUnixPath(relativePath)
-  }
-
-  for (const sourceFile of sourceFiles) {
-    const relativePath = path.relative(commonPath, sourceFile)
-    const destPath = path.join(bundleDir.path, relativePath)
-
-    await fs.mkdir(path.dirname(destPath), { recursive: true })
-
-    // Deno 2.x dropped support for import for import assertions
-    await rewriteImportAssertions(sourceFile, destPath)
-  }
-
-  // Vendor all dependencies in the bundle directory
-  await deno.run(
-    [
-      'install',
-      '--import-map',
-      importMap.withNodeBuiltins().toDataURL(),
-      '--quiet',
-      '--allow-import',
-      '--node-modules-dir=manual',
-      '--vendor',
-      '--entrypoint',
-      ...Object.values(manifest.functions),
-    ],
-    {
-      cwd: bundleDir.path,
-    },
-  )
+  const sourceFilesSet = await getRequiredSourceFiles(deno, entryPoints, importMap)
 
   // Build prefix mappings to transform file:// URLs to relative paths
   const npmVendorDir = '.netlify-npm-vendor'
@@ -118,9 +78,35 @@ export const bundle = async ({
 
       await fs.mkdir(path.dirname(destPath), { recursive: true })
 
-      // Rewrite import assertions in vendored files as well
+      // Rewrite import assertions in npm vendor directory
       await rewriteImportAssertions(vendorFile, destPath)
+
+      // Remove original bundled npm from source files,
+      // rewritten ones will be included in tarball because they will be under bundleDir
+      sourceFilesSet.delete(vendorFile)
     }
+  }
+
+  // Find the common path prefix for all source files (entry points + their local imports).
+  // This ensures imports to sibling directories (e.g., ../internal/) are included.
+  // When using a single file, `commonPathPrefix` returns an empty string, so we use
+  // the path of the first entry point's directory.
+  const commonPath = commonPathPrefix(Array.from(sourceFilesSet).sort()) || path.dirname(entryPoints[0])
+
+  // Build the manifest mapping function names to their relative paths
+  for (const func of functions) {
+    const relativePath = path.relative(commonPath, func.path)
+    manifest.functions[func.name] = getUnixPath(relativePath)
+  }
+
+  for (const sourceFile of sourceFilesSet) {
+    const relativePath = path.relative(commonPath, sourceFile)
+    const destPath = path.join(bundleDir.path, relativePath)
+
+    await fs.mkdir(path.dirname(destPath), { recursive: true })
+
+    // Rewrite import assertions in user files
+    await rewriteImportAssertions(sourceFile, destPath)
   }
 
   // Map common path to relative paths
@@ -131,8 +117,35 @@ export const bundle = async ({
 
   // Create deno.json with import map contents for runtime resolution
   const denoConfigPath = path.join(bundleDir.path, 'deno.json')
-  const denoConfigContents = JSON.stringify(importMapContents)
+  const denoConfigContents = JSON.stringify(importMapContents, null, 2)
   await fs.writeFile(denoConfigPath, denoConfigContents)
+
+  // Vendor all dependencies in the bundle directory
+  await deno.run(
+    [
+      'install',
+      '--import-map',
+      denoConfigPath,
+      '--quiet',
+      '--allow-import',
+      '--node-modules-dir=manual',
+      '--vendor',
+      '--entrypoint',
+      ...Object.values(manifest.functions),
+    ],
+    {
+      cwd: bundleDir.path,
+    },
+  )
+
+  // Rewrite import assertions in files outputted by deno vendor
+  const denoVendorOutput = path.join(bundleDir.path, 'vendor')
+  if (existsSync(denoVendorOutput)) {
+    const denoVendorFiles = await listRecursively(denoVendorOutput)
+    for (const denoVendorFile of denoVendorFiles) {
+      await rewriteImportAssertions(denoVendorFile, denoVendorFile)
+    }
+  }
 
   const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
@@ -189,7 +202,7 @@ async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
-): Promise<string[]> {
+): Promise<Set<string>> {
   const localFiles = new Set<string>()
   const importMapDataUrl = importMap.withNodeBuiltins().toDataURL()
 
@@ -224,7 +237,7 @@ async function getRequiredSourceFiles(
     }
   }
 
-  return Array.from(localFiles).sort()
+  return localFiles
 }
 
 /**
@@ -233,15 +246,13 @@ async function getRequiredSourceFiles(
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
   if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
-    await fs.copyFile(sourceFile, destPath)
+    if (sourceFile !== destPath) {
+      await fs.copyFile(sourceFile, destPath)
+    }
     return
   }
 
-  try {
-    const source = await fs.readFile(sourceFile, 'utf-8')
-    const modified = rewriteSourceImportAssertions(source)
-    await fs.writeFile(destPath, modified)
-  } catch {
-    await fs.copyFile(sourceFile, destPath)
-  }
+  const source = await fs.readFile(sourceFile, 'utf-8')
+  const modified = rewriteSourceImportAssertions(source)
+  await fs.writeFile(destPath, modified)
 }
