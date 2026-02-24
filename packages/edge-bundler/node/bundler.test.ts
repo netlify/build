@@ -852,7 +852,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify vendored npm imports were rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       // Get the function path from the manifest
@@ -959,7 +959,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
@@ -999,7 +999,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true })
+      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
       await tar.extract({ cwd: tmpDir.path, file: tarballPath })
 
       const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
