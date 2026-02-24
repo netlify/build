@@ -1099,6 +1099,67 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
         vi.resetModules()
       })
     })
+
+    test('npm + http modules with import assertions', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('npm_and_http_import_with_import_assertions', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      const vendorDirectory = await tmp.dir()
+
+      await bundle([join(basePath, 'functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, 'functions/config.json'),
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // Verify key files are present (vendor directory may contain additional files)
+      expect(entries).toContain('___netlify-edge-functions.json')
+      expect(entries).toContain('deno.json')
+      expect(entries).toContain('func1.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+      await rm(vendorDirectory.path, { force: true, recursive: true })
+    })
   },
   10_000,
 )
