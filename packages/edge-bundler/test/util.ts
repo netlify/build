@@ -158,7 +158,7 @@ export const runTarball = async (tarballPath: string) => {
     file: tarballPath,
   })
 
-  const evalCommand = execa('deno', ['eval', inspectTarballFunction()], {
+  const evalCommand = execa('deno', ['eval', '--vendor', inspectTarballFunction()], {
     cwd: tmpDir.path,
   })
 
