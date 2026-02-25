@@ -49,7 +49,7 @@
     "archiver": "^7.0.0",
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
-    "es-module-lexer": "^1.0.0",
+    "es-module-lexer": "^2.0.0",
     "esbuild": "0.27.2",
     "execa": "^8.0.0",
     "fast-glob": "^3.3.3",
