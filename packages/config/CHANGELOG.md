@@ -76,6 +76,22 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.4.2](https://github.com/netlify/build/compare/config-v24.4.1...config-v24.4.2) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.15 to ^14.0.16
+    * @netlify/headers-parser bumped from ^9.0.2 to ^9.0.3
+    * @netlify/redirect-parser bumped from ^15.0.3 to ^15.0.4
+
 ## [24.4.1](https://github.com/netlify/build/compare/config-v24.4.0...config-v24.4.1) (2026-02-24)
 
 

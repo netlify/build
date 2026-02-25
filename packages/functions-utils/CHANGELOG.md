@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.2.24](https://github.com/netlify/build/compare/functions-utils-v6.2.23...functions-utils-v6.2.24) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.4.0 to 14.4.1
+
 ## [6.2.23](https://github.com/netlify/build/compare/functions-utils-v6.2.22...functions-utils-v6.2.23) (2026-02-17)
 
 
