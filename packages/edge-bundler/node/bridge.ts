@@ -256,6 +256,25 @@ To install Deno manually: https://ntl.fyi/install-deno`,
     // Ensure PATH is always set as otherwise we are not able to find the global deno binary
     env[pathKey()] = inputEnv[pathKey({ env: inputEnv })] || process.env[pathKey()]
 
+    // Inject placeholder AI Gateway env vars for bundling to prevent SDK initialization errors
+    // These allow SDKs to be initialized at top-level during bundling without throwing
+    // Real AI Gateway credentials will be injected at runtime by the platform
+    const aiGatewayProviders = [
+      { key: 'OPENAI_API_KEY', url: 'OPENAI_BASE_URL' },
+      { key: 'ANTHROPIC_API_KEY', url: 'ANTHROPIC_BASE_URL' },
+      { key: 'GEMINI_API_KEY', url: 'GOOGLE_GEMINI_BASE_URL' },
+    ]
+
+    for (const { key, url } of aiGatewayProviders) {
+      // Only inject if user hasn't set their own values
+      if (!env[key]) {
+        env[key] = 'placeholder-for-bundling'
+      }
+      if (!env[url]) {
+        env[url] = 'http://localhost/.netlify/ai'
+      }
+    }
+
     return env
   }
 
