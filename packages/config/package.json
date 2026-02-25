@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "24.4.1",
+  "version": "24.4.2",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -59,9 +59,9 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "@netlify/api": "^14.0.15",
-    "@netlify/headers-parser": "^9.0.2",
-    "@netlify/redirect-parser": "^15.0.3",
+    "@netlify/api": "^14.0.16",
+    "@netlify/headers-parser": "^9.0.3",
+    "@netlify/redirect-parser": "^15.0.4",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",

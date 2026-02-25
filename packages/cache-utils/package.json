@@ -1,6 +1,6 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "description": "Utility for caching files in Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",

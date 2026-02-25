@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.12](https://github.com/netlify/build/compare/edge-bundler-v14.9.11...edge-bundler-v14.9.12) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
 ## [14.9.11](https://github.com/netlify/build/compare/edge-bundler-v14.9.10...edge-bundler-v14.9.11) (2026-02-24)
 
 

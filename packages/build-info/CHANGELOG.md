@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.3.1](https://github.com/netlify/build/compare/build-info-v10.3.0...build-info-v10.3.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
 ## [10.3.0](https://github.com/netlify/build/compare/build-info-v10.2.0...build-info-v10.3.0) (2025-12-19)
 
 
