@@ -63,7 +63,7 @@ const getDeployUtils = ({ deployEnvVars }: { deployEnvVars: DeployEnvVarsData })
         normalizedScopes = new Set(
           // If the user did not specify scopes, we assume they mean all valid scopes. Secrets are
           // not permitted in the post-processing scope.
-          isSecret ? ['builds', 'functions', 'runtime'] : ['builds', 'functions', 'post_processing', 'runtime'],
+          isSecret ? ['functions', 'runtime'] : ['functions', 'post_processing', 'runtime'],
         )
       }
       if (isSecret && normalizedScopes.has('post_processing')) {

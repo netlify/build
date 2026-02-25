@@ -105,6 +105,29 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.3](https://github.com/netlify/build/compare/build-v35.8.2...build-v35.8.3) (2026-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.3 ([#6944](https://github.com/netlify/build/issues/6944)) ([58d91f6](https://github.com/netlify/build/commit/58d91f6e42d7a7f4a130165a6d7aafbc18eef8dd))
+* edge bundling - tarball - replace import assertions after deno vendoring ([#6948](https://github.com/netlify/build/issues/6948)) ([c94eb51](https://github.com/netlify/build/commit/c94eb51315858b3a80761d59e86d6e7ea5e0c7ea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.4.0 to ^24.4.1
+    * @netlify/edge-bundler bumped from 14.9.10 to 14.9.11
+
+## [35.8.2](https://github.com/netlify/build/compare/build-v35.8.1...build-v35.8.2) (2026-02-20)
+
+
+### Bug Fixes
+
+* **build:** remove `builds` scope from deploy env vars ([#6940](https://github.com/netlify/build/issues/6940)) ([e1f6c94](https://github.com/netlify/build/commit/e1f6c94af2c8a2e63b03e98c2a0a032d54aa2a81))
+
 ## [35.8.1](https://github.com/netlify/build/compare/build-v35.8.0...build-v35.8.1) (2026-02-18)
 
 
