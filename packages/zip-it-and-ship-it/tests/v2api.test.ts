@@ -769,4 +769,35 @@ describe('V2 functions API', () => {
     expect(manifest.functions[0].name).toBe('function')
     expect(manifest.functions[0].buildData).toEqual({ bootstrapVersion, runtimeAPIVersion: 2 })
   })
+
+  test('Adds the selected region to the manifest file', async () => {
+    const bootstrapPath = getBootstrapPath()
+    const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
+    const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
+
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const manifestPath = join(tmpDir, 'manifest.json')
+
+    const { files } = await zipFixture('v2-region', {
+      fixtureDir: FIXTURES_ESM_DIR,
+      opts: {
+        featureFlags: {
+          zisi_add_metadata_file: true,
+        },
+        manifest: manifestPath,
+      },
+    })
+
+    expect(files.length).toBe(1)
+    expect(files[0].name).toBe('function')
+    expect(files[0].bootstrapVersion).toBe(bootstrapVersion)
+    expect(files[0].runtimeAPIVersion).toBe(2)
+
+    const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
+    const manifest = JSON.parse(manifestString)
+
+    expect(manifest.functions.length).toBe(1)
+    expect(manifest.functions[0].name).toBe('function')
+    expect(manifest.functions[0].buildData).toEqual({ bootstrapVersion, runtimeAPIVersion: 2 })
+  })
 })

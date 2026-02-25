@@ -18,6 +18,7 @@ interface ManifestFunction {
   name: string
   path: string
   priority?: number
+  region?: string
   routes?: ExtendedRoute[]
   runtime: string
   runtimeVersion?: string
@@ -62,6 +63,7 @@ const formatFunctionForManifest = ({
   path,
   priority,
   trafficRules,
+  region,
   routes,
   runtime,
   runtimeVersion,
@@ -79,6 +81,7 @@ const formatFunctionForManifest = ({
     mainFile,
     name,
     priority,
+    region,
     trafficRules,
     runtimeVersion,
     path: resolve(path),
