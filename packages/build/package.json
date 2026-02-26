@@ -120,8 +120,8 @@
   },
   "devDependencies": {
     "@netlify/nock-udp": "^5.0.2",
-    "@opentelemetry/api": "~1.8.0",
-    "@opentelemetry/sdk-trace-base": "~1.24.0",
+    "@opentelemetry/api": "~1.9.0",
+    "@opentelemetry/sdk-trace-base": "~1.30.0",
     "@types/node": "^18.19.111",
     "atob": "^2.1.2",
     "ava": "^5.0.0",
@@ -142,7 +142,7 @@
   },
   "peerDependencies": {
     "@netlify/opentelemetry-sdk-setup": "^2.0.0",
-    "@opentelemetry/api": "~1.8.0"
+    "@opentelemetry/api": "~1.9.0"
   },
   "peerDependenciesMeta": {
     "@netlify/opentelemetry-sdk-setup": {
