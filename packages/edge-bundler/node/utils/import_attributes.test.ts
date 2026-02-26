@@ -118,7 +118,7 @@ import data2 from './data.json' assert { type: 'json' };
     expect(() => rewriteSourceImportAssertions(source)).toThrowError()
   })
 
-  test('Fails loudly on jsx/tsx syntax', () => {
+  test('Handles jsx/tsx syntax', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
 
@@ -139,8 +139,30 @@ export const config = {
   path: "/generated-with-http-import",
 };`
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    expect(() => rewriteSourceImportAssertions(source)).toThrowError()
+    const expectedResult = `/** @jsx h */
+import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
+
+import data5 from './data.json' with { type: 'json' };
+console.assert(true, 'should be true');
+
+const Hello = (props) => (
+  <div class={tw\`bg-white flex h-screen\`}>
+    <h1 class={tw\`text-5xl text-gray-600 m-auto mt-20\`}>Hello {props.name}!</h1>
+  </div>
+);
+
+export default function handler(req: Request) {
+  return ssr(() => <Hello name={"hello nanossr from http import"} />);
+}
+
+export const config = {
+  path: "/generated-with-http-import",
+};`
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
   })
 
   describe('dynamic imports', () => {
