@@ -1,8 +1,14 @@
 import { Parser } from 'acorn'
-import * as walk from 'acorn-walk'
 import { tsPlugin } from '@sveltejs/acorn-typescript'
+import jsx from 'acorn-jsx'
 
-const acorn = Parser.extend(tsPlugin())
+import * as walk from 'acorn-walk'
+// @ts-expect-error no corresponding types package for acorn-jsx-walk TS(7016)
+import { extend } from 'acorn-jsx-walk'
+
+const acorn = Parser.extend(tsPlugin()).extend(jsx())
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+extend(walk.base)
 
 /**
  * Given source code rewrites import assert into import with
