@@ -8,7 +8,7 @@ const acorn = Parser.extend(tsPlugin())
  * Given source code rewrites import assert into import with
  */
 export function rewriteSourceImportAssertions(source: string): string {
-  const assertionRegex = new RegExp('assert\\s*:?\\s*{')
+  const assertionRegex = /assert\s*:?\s*{/
   if (!assertionRegex.exec(source)) {
     return source
   }
