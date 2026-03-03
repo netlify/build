@@ -47,6 +47,13 @@ export function rewriteSourceImportAssertions(source: string): string {
             modified = modified.replace(statement, newStatement)
           }
         },
+        ExportAllDeclaration(node) {
+          const statement = source.slice(node.source.end, node.end)
+          if (statement.includes('assert')) {
+            const newStatement = statement.replace('assert', 'with')
+            modified = modified.replace(statement, newStatement)
+          }
+        },
       },
       acornWalkBaseExtended,
     )

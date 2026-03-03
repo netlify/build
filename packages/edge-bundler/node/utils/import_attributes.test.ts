@@ -58,8 +58,12 @@ import f from './c.js';
   })
 
   test('handles static export assertions', () => {
-    const source = `export { default } from './data.json' assert { type: 'json' };`
-    const expectedResult = `export { default } from './data.json' with { type: 'json' };`
+    const source = `
+    export { default } from './data.json' assert { type: 'json' };
+    export * from './x.json' assert { type: 'json' };`
+    const expectedResult = `
+    export { default } from './data.json' with { type: 'json' };
+    export * from './x.json' with { type: 'json' };`
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
