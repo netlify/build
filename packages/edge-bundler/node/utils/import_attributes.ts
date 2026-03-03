@@ -62,11 +62,68 @@ export function rewriteSourceImportAssertions(source: string): string {
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-for-of */
 
+const TS_NODE_TYPES = [
+  'TSAnyKeyword',
+  'TSArrayType',
+  'TSAsExpression',
+  'TSBigIntKeyword',
+  'TSBooleanKeyword',
+  'TSConstructSignatureDeclaration',
+  'TSDeclareFunction',
+  'TSDeclareMethod',
+  'TSEnumDeclaration',
+  'TSEnumMember',
+  'TSExpressionWithTypeArguments',
+  'TSFunctionType',
+  'TSIndexedAccessType',
+  'TSInterfaceBody',
+  'TSInterfaceDeclaration',
+  'TSIntersectionType',
+  'TSLiteralType',
+  'TSMappedType',
+  'TSModuleBlock',
+  'TSModuleDeclaration',
+  'TSNamedTupleMember',
+  'TSNeverKeyword',
+  'TSNonNullExpression',
+  'TSNullKeyword',
+  'TSNumberKeyword',
+  'TSObjectKeyword',
+  'TSParameterProperty',
+  'TSParenthesizedType',
+  'TSPropertySignature',
+  'TSQualifiedName',
+  'TSRestType',
+  'TSSatisfiesExpression',
+  'TSStringKeyword',
+  'TSSymbolKeyword',
+  'TSTupleType',
+  'TSTypeAliasDeclaration',
+  'TSTypeAnnotation',
+  'TSTypeAssertion',
+  'TSTypeLiteral',
+  'TSTypeOperator',
+  'TSTypeParameter',
+  'TSTypeParameterDeclaration',
+  'TSTypeParameterInstantiation',
+  'TSTypeQuery',
+  'TSTypeReference',
+  'TSUndefinedKeyword',
+  'TSUnionType',
+  'TSUnknownKeyword',
+  'TSVoidKeyword',
+]
+
 // A base visitor that ignores node types unknown to acorn-walk (JSX, TypeScript, etc.)
 const acornWalkBaseExtended: walk.RecursiveVisitors<unknown> = new Proxy(walk.base, {
   get(target: Record<string, unknown>, prop: string): any {
     if (prop in target) {
       return target[prop]
+    }
+
+    // Skip all TS nodes
+    if (TS_NODE_TYPES.includes(prop)) {
+      return () => {}
     }
 
     switch (prop) {
@@ -133,10 +190,6 @@ const acornWalkBaseExtended: walk.RecursiveVisitors<unknown> = new Proxy(walk.ba
           }
           callback(node.closingFragment, state)
         }
-
-      // Definitions for elements we are skipping
-      case 'TSAsExpression':
-        return () => {}
 
       default:
         throw new Error(`Acorn walk has no handling for node of type ${prop}`)
