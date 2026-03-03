@@ -207,6 +207,63 @@ export const config = {
     expect(result).toEqual(expectedResult)
   })
 
+  test(`Complex case - preserves formatting`, () => {
+    const source = `
+import { createRequire } from 'node:module';
+import data from './data.json' assert { type: 'json' };
+import systemOfADown from './system;of;a;down.json' assert { type: 'json' };
+import { default as config } from './config.json'assert{type: 'json'};
+import { thing } from "./data.json"assert{type: 'json'};
+const require = createRequire(import.meta.url);
+const foo = require('./foo.ts');
+
+const data2 = await import('./data2.json', {
+	assert: { type: 'json' },
+});
+
+await import('foo-bis');
+
+// This is a comment
+import data3 from './data.json' assert {
+  type: 'json'
+};
+
+// Another import
+import css from './styles.css' assert {
+  type: 'css'
+};`
+
+    const expectedResult = `
+import { createRequire } from 'node:module';
+import data from './data.json' with { type: 'json' };
+import systemOfADown from './system;of;a;down.json' with { type: 'json' };
+import { default as config } from './config.json'with{type: 'json'};
+import { thing } from "./data.json"with{type: 'json'};
+const require = createRequire(import.meta.url);
+const foo = require('./foo.ts');
+
+const data2 = await import('./data2.json', {
+	with: { type: 'json' },
+});
+
+await import('foo-bis');
+
+// This is a comment
+import data3 from './data.json' with {
+  type: 'json'
+};
+
+// Another import
+import css from './styles.css' with {
+  type: 'css'
+};`
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
   describe('dynamic imports', () => {
     test('ignores handles static export assertions', () => {
       const source = `
