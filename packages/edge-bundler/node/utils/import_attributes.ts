@@ -15,6 +15,18 @@ export function rewriteSourceImportAssertions(source: string): string {
 
   let modified = source
 
+  const edits: { start: number; end: number; text: string }[] = []
+  const queueRewrite = (start: number, end: number) => {
+    const statement = source.slice(start, end)
+    if (statement.includes('assert')) {
+      edits.push({
+        start,
+        end,
+        text: statement.replace('assert', 'with'),
+      })
+    }
+  }
+
   try {
     const parsedAST = acorn.parse(source, {
       ecmaVersion: 'latest',
@@ -26,37 +38,26 @@ export function rewriteSourceImportAssertions(source: string): string {
       parsedAST,
       {
         ImportDeclaration(node) {
-          const statement = source.slice(node.source.end, node.end)
-          if (statement.includes('assert')) {
-            const newStatement = statement.replace('assert', 'with')
-            modified = modified.replace(statement, newStatement)
-          }
+          queueRewrite(node.source.end, node.end)
         },
         ImportExpression(node) {
-          const statement = source.slice(node.source.end, node.end)
-          if (statement.includes('assert')) {
-            const newStatement = statement.replace('assert', 'with')
-            modified = modified.replace(statement, newStatement)
-          }
+          queueRewrite(node.source.end, node.end)
         },
         ExportNamedDeclaration(node) {
           if (!node.source) return
-          const statement = source.slice(node.source.end, node.end)
-          if (statement.includes('assert')) {
-            const newStatement = statement.replace('assert', 'with')
-            modified = modified.replace(statement, newStatement)
-          }
+          queueRewrite(node.source.end, node.end)
         },
         ExportAllDeclaration(node) {
-          const statement = source.slice(node.source.end, node.end)
-          if (statement.includes('assert')) {
-            const newStatement = statement.replace('assert', 'with')
-            modified = modified.replace(statement, newStatement)
-          }
+          queueRewrite(node.source.end, node.end)
         },
       },
       acornWalkBaseExtended,
     )
+
+    // Bulk replacement of import assertions
+    for (const edit of edits.sort((a, b) => b.start - a.start)) {
+      modified = `${modified.slice(0, edit.start)}${edit.text}${modified.slice(edit.end)}`
+    }
 
     return modified
   } catch (error) {
