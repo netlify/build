@@ -13,6 +13,7 @@ import data4 from './data.json';
 import data5 from './data.json' assert { type: 'json' };
 import data6 from './data.json' assert { type: 'json' };
 
+import * as utils from './utils' assert { type: 'json' };
 import a from './a.json' assert { type: 'json' };
 import b from './b.css' assert { type: 'css' };
 import c from './c.js';
@@ -30,6 +31,7 @@ import data4 from './data.json';
 import data5 from './data.json' with { type: 'json' };
 import data6 from './data.json' with { type: 'json' };
 
+import * as utils from './utils' with { type: 'json' };
 import a from './a.json' with { type: 'json' };
 import b from './b.css' with { type: 'css' };
 import c from './c.js';
