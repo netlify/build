@@ -83,7 +83,7 @@ import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
 
 export default async function handler(req: Request, context: Context): Response {
-  const data1 = await import('./data.json', { assert: { type: 'json' } });
+  // const data1 = (await import('./x.json', { assert: { type: 'json' } })) as Config
   const stream = await renderToReadableStream(
     <html>
       <title>Hello</title>
@@ -102,12 +102,13 @@ export default async function handler(req: Request, context: Context): Response 
 export const config: Config = {
   path: "/hello",
 };`
+
     const expectedResult = `import React from "https://esm.sh/react";
 import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
 
 export default async function handler(req: Request, context: Context): Response {
-  const data1 = await import('./data.json', { with: { type: 'json' } });
+  // const data1 = (await import('./x.json', { assert: { type: 'json' } })) as Config
   const stream = await renderToReadableStream(
     <html>
       <title>Hello</title>

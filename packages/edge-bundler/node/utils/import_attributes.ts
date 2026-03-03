@@ -1,7 +1,6 @@
-import { Parser } from 'acorn'
+import { Parser, Node } from 'acorn'
+import type { ExportAllDeclaration, ExportNamedDeclaration, ImportDeclaration, ImportExpression } from 'acorn'
 import { tsPlugin } from '@sveltejs/acorn-typescript'
-
-import * as walk from 'acorn-walk'
 
 const acorn = Parser.extend(tsPlugin({ jsx: true }))
 
@@ -15,192 +14,88 @@ export function rewriteSourceImportAssertions(source: string): string {
 
   let modified = source
 
-  const edits: { start: number; end: number; text: string }[] = []
-  const queueRewrite = (start: number, end: number) => {
-    const statement = source.slice(start, end)
-    if (statement.includes('assert')) {
-      edits.push({
-        start,
-        end,
-        text: statement.replace('assert', 'with'),
-      })
-    }
+  // try {
+  const parsedAST = acorn.parse(source, {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    locations: true,
+  })
+
+  const statements = collectImportAssertions(source, parsedAST)
+  console.log('statements', statements)
+
+  // Bulk replacement of import assertions
+  for (const statement of statements.sort((a, b) => b.start - a.start)) {
+    modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
   }
 
-  try {
-    const parsedAST = acorn.parse(source, {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      locations: true,
-    })
-
-    walk.simple(
-      parsedAST,
-      {
-        ImportDeclaration(node) {
-          queueRewrite(node.source.end, node.end)
-        },
-        ImportExpression(node) {
-          queueRewrite(node.source.end, node.end)
-        },
-        ExportNamedDeclaration(node) {
-          if (!node.source) return
-          queueRewrite(node.source.end, node.end)
-        },
-        ExportAllDeclaration(node) {
-          queueRewrite(node.source.end, node.end)
-        },
-      },
-      acornWalkBaseExtended,
-    )
-
-    // Bulk replacement of import assertions
-    for (const edit of edits.sort((a, b) => b.start - a.start)) {
-      modified = `${modified.slice(0, edit.start)}${edit.text}${modified.slice(edit.end)}`
-    }
-
-    return modified
-  } catch (error) {
-    if (!modified.includes('assert')) {
-      return modified
-    }
-    throw error
-  }
+  return modified
+  // } catch (error) {
+  //   if (!modified.includes('assert')) {
+  //     return modified
+  //   }
+  //   throw error
+  // }
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-for-of */
+type StatementsWithAssertions = ImportDeclaration | ImportExpression | ExportAllDeclaration | ExportNamedDeclaration
+type ImportReplacement = { start: number; end: number; text: string }
 
-const TS_NODE_TYPES = [
-  'TSAnyKeyword',
-  'TSArrayType',
-  'TSAsExpression',
-  'TSBigIntKeyword',
-  'TSBooleanKeyword',
-  'TSConstructSignatureDeclaration',
-  'TSDeclareFunction',
-  'TSDeclareMethod',
-  'TSEnumDeclaration',
-  'TSEnumMember',
-  'TSExpressionWithTypeArguments',
-  'TSFunctionType',
-  'TSIndexedAccessType',
-  'TSInterfaceBody',
-  'TSInterfaceDeclaration',
-  'TSIntersectionType',
-  'TSLiteralType',
-  'TSMappedType',
-  'TSModuleBlock',
-  'TSModuleDeclaration',
-  'TSNamedTupleMember',
-  'TSNeverKeyword',
-  'TSNonNullExpression',
-  'TSNullKeyword',
-  'TSNumberKeyword',
-  'TSObjectKeyword',
-  'TSParameterProperty',
-  'TSParenthesizedType',
-  'TSPropertySignature',
-  'TSQualifiedName',
-  'TSRestType',
-  'TSSatisfiesExpression',
-  'TSStringKeyword',
-  'TSSymbolKeyword',
-  'TSTupleType',
-  'TSTypeAliasDeclaration',
-  'TSTypeAnnotation',
-  'TSTypeAssertion',
-  'TSTypeLiteral',
-  'TSTypeOperator',
-  'TSTypeParameter',
-  'TSTypeParameterDeclaration',
-  'TSTypeParameterInstantiation',
-  'TSTypeQuery',
-  'TSTypeReference',
-  'TSUndefinedKeyword',
-  'TSUnionType',
-  'TSUnknownKeyword',
-  'TSVoidKeyword',
-]
+function collectImportAssertions(source: string, node: Node): ImportReplacement[] {
+  let collectedNodes: ImportReplacement[] = []
 
-// A base visitor that ignores node types unknown to acorn-walk (JSX, TypeScript, etc.)
-const acornWalkBaseExtended: walk.RecursiveVisitors<unknown> = new Proxy(walk.base, {
-  get(target: Record<string, unknown>, prop: string): any {
-    if (prop in target) {
-      return target[prop]
+  // console.log(node.type)
+  // console.log(Object.keys(node))
+
+  const assertionNodeTypes = ['ImportDeclaration', 'ImportExpression', 'ExportAllDeclaration', 'ExportNamedDeclaration']
+  if (assertionNodeTypes.includes(node.type)) {
+    const parsedImportNode = parseImportAssertion(source, node as StatementsWithAssertions)
+    if (parsedImportNode !== undefined) {
+      collectedNodes.push(parsedImportNode)
     }
 
-    // Skip all TS nodes
-    if (TS_NODE_TYPES.includes(prop)) {
-      return () => {}
-    }
+    // console.log(node)
+  }
 
-    switch (prop) {
-      // Definitions for elements with an acorn-walk equivalent
-      case 'JSXExpressionContainer':
-      case 'JSXSpreadChild':
-        return walk.base.ExpressionStatement
-      case 'JSXClosingFragment':
-      case 'JSXEmptyExpression':
-      case 'JSXIdentifier':
-      case 'JSXOpeningFragment':
-      case 'JSXText':
-        return walk.base.Identifier
-      case 'JSXSpreadAttribute':
-        return walk.base.SpreadElement
+  // const dynamicAssertionNodeTypes = ['VariableDeclaration']
+  // if (dynamicAssertionNodeTypes.includes(node.type)) {
+  //   console.log(node)
+  //   // const parsedImportNode = parseImportAssertion(source, node as StatementsWithAssertions)
+  //   // if (parsedImportNode !== undefined) {
+  //   //   collectedNodes.push(parsedImportNode)
+  //   // }
 
-      // Definitions for elements with custom handling
-      case 'JSXAttribute':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.name, state)
-          if (node.value) callback(node.value, state)
-        }
-      case 'JSXMemberExpression':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.object, state)
-          callback(node.property, state)
-        }
-      case 'JSXNamespacedName':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.namespace, state)
-          callback(node.name, state)
-        }
-      case 'JSXOpeningElement':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.name, state)
-          for (let i = 0; i < node.attributes.length; ++i) {
-            callback(node.attributes[i], state)
-          }
-        }
-      case 'JSXClosingElement':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.name, state)
-        }
-      case 'JSXElement':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.openingElement, state)
-          for (let i = 0; i < node.children.length; ++i) {
-            callback(node.children[i], state)
-          }
-          if (node.closingElement) callback(node.closingElement, state)
-        }
-      case 'JSXFragment':
-        // @ts-expect-error node, state, callback have implicit any type TS(7006)
-        return (node, state, callback) => {
-          callback(node.openingFragment, state)
-          for (let i = 0; i < node.children.length; ++i) {
-            callback(node.children[i], state)
-          }
-          callback(node.closingFragment, state)
-        }
+  //   // @ts-expect-error node.body + node.declarations are not defined for all node types
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //   for (const child of [...(node.body ?? []), ...(node.declarations ?? [])] as Node[]) {
+  //     const childNodes = collectImportAssertions(source, child)
+  //     collectedNodes.concat(childNodes)
+  //   }
+  // }
 
-      default:
-        throw new Error(`Acorn walk has no handling for node of type ${prop}`)
-    }
-  },
-})
+  // @ts-expect-error node.body + node.declarations are not defined for all node types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  for (const child of [...(node.body ?? [])] as Node[]) {
+    // for (const child of [...(node.body ?? []), ...(node.declarations ?? [])] as Node[]) {
+    const childNodes = collectImportAssertions(source, child)
+    collectedNodes = collectedNodes.concat(childNodes)
+  }
+
+  return collectedNodes
+}
+
+function parseImportAssertion(
+  source: string,
+  node: ImportDeclaration | ImportExpression | ExportAllDeclaration | ExportNamedDeclaration,
+): ImportReplacement | undefined {
+  if (!node.source) return undefined
+
+  const statement = source.slice(node.source.end, node.end)
+  if (!statement.includes('assert')) return undefined
+
+  return {
+    start: node.source.end,
+    end: node.end,
+    text: statement.replace('assert', 'with'),
+  }
+}
