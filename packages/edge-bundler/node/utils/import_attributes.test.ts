@@ -67,12 +67,37 @@ import f from './c.js';
     expect(result).toEqual(expectedResult)
   })
 
-  test('handles typescript syntax', () => {
+  test('Handles TS/TSX syntax', () => {
     const source = `import React from "https://esm.sh/react";
 import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
 
-export default async function handler(req: Request, context: Context) {
+export default async function handler(req: Request, context: Context): Response {
+  const data1 = await import('./data.json', { assert: { type: 'json' } });
+  const stream = await renderToReadableStream(
+    <html>
+      <title>Hello</title>
+      <body>
+        <h1>Hello {context.geo.country?.name}</h1>
+      </body>
+    </html>
+  );
+
+  return new Response(stream, {
+    status: 200,
+    headers: { "Content-Type": "text/html" },
+  });
+}
+
+export const config: Config = {
+  path: "/hello",
+};`
+    const expectedResult = `import React from "https://esm.sh/react";
+import { renderToReadableStream } from "https://esm.sh/react-dom/server";
+import type { Config, Context } from "@netlify/edge-functions";
+
+export default async function handler(req: Request, context: Context): Response {
+  const data1 = await import('./data.json', { with: { type: 'json' } });
   const stream = await renderToReadableStream(
     <html>
       <title>Hello</title>
@@ -94,31 +119,38 @@ export const config: Config = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
-    expect(result).toEqual(source)
+    expect(result).toEqual(expectedResult)
   })
 
-  test('Partially replace files in the case where unsupported syntax happens after all conversions have been made', () => {
+  test('Handles TSAsExpression despite no support in acorn-walk', () => {
     const source = `
 import data3 from './data.json' assert { type: 'json' };
-const params = inputs as Params; // this line will fail
+const params = inputs as Params;
+import data2 from './data.json' assert { type: 'json' };
 `
+    const expectedResult = `
+import data3 from './data.json' with { type: 'json' };
+const params = inputs as Params;
+import data2 from './data.json' with { type: 'json' };
+`
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
-    expect(result).toContain(`import data3 from './data.json' with { type: 'json' };`)
+    expect(result).toEqual(expectedResult)
   })
 
-  test('Fail loudly if the whole file cannot be converted to supported syntax', () => {
-    const source = `
-import data3 from './data.json' assert { type: 'json' };
-const params = inputs as Params; // this line will fail
-import data2 from './data.json' assert { type: 'json' };
-`
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    expect(() => rewriteSourceImportAssertions(source)).toThrowError()
+  test('Handles JSXElement despite no support in acorn-walk', () => {
+    const source = `<Component prop={() => import('./foo.json', { assert: { type: 'json' } })} />`
+    const expectedResult = `<Component prop={() => import('./foo.json', { with: { type: 'json' } })} />`
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
   })
 
-  test('Handles jsx/tsx syntax', () => {
+  test('Handles JSX/TSX syntax', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
 
