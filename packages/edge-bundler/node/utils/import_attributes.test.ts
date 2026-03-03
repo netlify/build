@@ -21,6 +21,8 @@ import c from './c.js';
 import d from './a.json' with { type: 'json' };
 import e from './b.css' with { type: 'css' };
 import f from './c.js';
+
+import * as abc from './data.json' assert { type: 'json' }; import { def } from './data.json' assert { type: 'json' };
 `
 
     const expectedResult = `import data1 from './data.json' with { type: 'json' };
@@ -39,6 +41,8 @@ import c from './c.js';
 import d from './a.json' with { type: 'json' };
 import e from './b.css' with { type: 'css' };
 import f from './c.js';
+
+import * as abc from './data.json' with { type: 'json' }; import { def } from './data.json' with { type: 'json' };
 `
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
