@@ -67,7 +67,7 @@ import f from './c.js';
     expect(result).toEqual(expectedResult)
   })
 
-  test('Handles TS/TSX syntax', () => {
+  test('handles TS/TSX syntax', () => {
     const source = `import React from "https://esm.sh/react";
 import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
@@ -122,7 +122,7 @@ export const config: Config = {
     expect(result).toEqual(expectedResult)
   })
 
-  test('Handles TSAsExpression despite no support in acorn-walk', () => {
+  test('handles TSAsExpression despite no support in acorn-walk', () => {
     const source = `
 import data3 from './data.json' assert { type: 'json' };
 const params = inputs as Params;
@@ -140,7 +140,7 @@ import data2 from './data.json' with { type: 'json' };
     expect(result).toEqual(expectedResult)
   })
 
-  test('Handles JSXElement despite no support in acorn-walk', () => {
+  test('handles JSXElement despite no support in acorn-walk', () => {
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
 
@@ -150,7 +150,7 @@ import data2 from './data.json' with { type: 'json' };
     expect(result).toEqual(expectedResult)
   })
 
-  test('Handles JSX/TSX syntax', () => {
+  test('handles JSX/TSX syntax', () => {
     const source = `/** @jsx h */
 import { h, ssr, tw } from "https://crux.land/nanossr@0.0.1";
 
