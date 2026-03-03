@@ -1,12 +1,11 @@
 import { Parser } from 'acorn'
 import { tsPlugin } from '@sveltejs/acorn-typescript'
-import jsx from 'acorn-jsx'
 
 import * as walk from 'acorn-walk'
 // @ts-expect-error no corresponding types package for acorn-jsx-walk TS(7016)
 import { extend } from 'acorn-jsx-walk'
 
-const acorn = Parser.extend(tsPlugin()).extend(jsx())
+const acorn = Parser.extend(tsPlugin({ jsx: true }))
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 extend(walk.base)
 
@@ -24,6 +23,7 @@ export function rewriteSourceImportAssertions(source: string): string {
     const parsedAST = acorn.parse(source, {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      locations: true,
     })
 
     walk.simple(parsedAST, {
