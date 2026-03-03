@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.5](https://github.com/netlify/build/compare/build-v35.8.4...build-v35.8.5) (2026-03-02)
+
+
+### Bug Fixes
+
+* drop blob upload log line ([#6956](https://github.com/netlify/build/issues/6956)) ([6544f99](https://github.com/netlify/build/commit/6544f990a5432b74400f78152895816e8aaf01e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.4.2 to ^24.4.3
+
 ## [35.8.4](https://github.com/netlify/build/compare/build-v35.8.3...build-v35.8.4) (2026-02-25)
 
 
