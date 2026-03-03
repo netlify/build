@@ -141,8 +141,8 @@ import data2 from './data.json' with { type: 'json' };
   })
 
   test('Handles JSXElement despite no support in acorn-walk', () => {
-    const source = `<Component prop={() => import('./foo.json', { assert: { type: 'json' } })} />`
-    const expectedResult = `<Component prop={() => import('./foo.json', { with: { type: 'json' } })} />`
+    const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
+    const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
