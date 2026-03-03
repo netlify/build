@@ -90,21 +90,18 @@ const acornWalkBaseExtended: walk.RecursiveVisitors<unknown> = new Proxy(walk.ba
           callback(node.name, state)
           if (node.value) callback(node.value, state)
         }
-
       case 'JSXMemberExpression':
         // @ts-expect-error node, state, callback have implicit any type TS(7006)
         return (node, state, callback) => {
           callback(node.object, state)
           callback(node.property, state)
         }
-
       case 'JSXNamespacedName':
         // @ts-expect-error node, state, callback have implicit any type TS(7006)
         return (node, state, callback) => {
           callback(node.namespace, state)
           callback(node.name, state)
         }
-
       case 'JSXOpeningElement':
         // @ts-expect-error node, state, callback have implicit any type TS(7006)
         return (node, state, callback) => {
