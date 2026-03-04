@@ -12,29 +12,37 @@ export function rewriteSourceImportAssertions(source: string): string {
     return source
   }
 
-  const parsedAST = acorn.parse(source, {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    locations: true,
-  })
-
-  const statements = collectImportAssertions(source, parsedAST.body)
-
-  // Bulk replacement of import assertions
   let modified = source
 
-  for (const statement of statements.sort((a, b) => b.start - a.start)) {
-    modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
-  }
+  try {
+    const parsedAST = acorn.parse(source, {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      locations: true,
+    })
 
-  return modified
+    const statements = collectImportAssertions(source, parsedAST.body)
+
+    // Bulk replacement of import assertions
+    for (const statement of statements.sort((a, b) => b.start - a.start)) {
+      modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
+    }
+
+    return modified
+  } catch (error) {
+    if (!modified.includes('assert')) {
+      return modified
+    }
+
+    throw error
+  }
 }
 
 type StatementsWithAssertions = ImportDeclaration | ImportExpression | ExportAllDeclaration | ExportNamedDeclaration
 type ImportReplacement = { start: number; end: number; text: string }
 
 function collectImportAssertions(source: string, node: Node | Node[]): ImportReplacement[] {
-  let collectedNodes: ImportReplacement[] = []
+  const collectedNodes: ImportReplacement[] = []
 
   if (Array.isArray(node)) {
     return node.flatMap((n) => collectImportAssertions(source, n))
@@ -55,7 +63,7 @@ function collectImportAssertions(source: string, node: Node | Node[]): ImportRep
     if (value === null) continue
     if (typeof value === 'object') {
       const childNodes = collectImportAssertions(source, value as Node | Node[])
-      collectedNodes = collectedNodes.concat(childNodes)
+      collectedNodes.push(...childNodes)
     }
   }
 
