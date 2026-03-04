@@ -12,73 +12,51 @@ export function rewriteSourceImportAssertions(source: string): string {
     return source
   }
 
-  let modified = source
-
-  // try {
   const parsedAST = acorn.parse(source, {
     ecmaVersion: 'latest',
     sourceType: 'module',
     locations: true,
   })
 
-  const statements = collectImportAssertions(source, parsedAST)
-  console.log('statements', statements)
+  const statements = collectImportAssertions(source, parsedAST.body)
 
   // Bulk replacement of import assertions
+  let modified = source
+
   for (const statement of statements.sort((a, b) => b.start - a.start)) {
     modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
   }
 
   return modified
-  // } catch (error) {
-  //   if (!modified.includes('assert')) {
-  //     return modified
-  //   }
-  //   throw error
-  // }
 }
 
 type StatementsWithAssertions = ImportDeclaration | ImportExpression | ExportAllDeclaration | ExportNamedDeclaration
 type ImportReplacement = { start: number; end: number; text: string }
 
-function collectImportAssertions(source: string, node: Node): ImportReplacement[] {
+function collectImportAssertions(source: string, node: Node | Node[]): ImportReplacement[] {
   let collectedNodes: ImportReplacement[] = []
 
-  // console.log(node.type)
-  // console.log(Object.keys(node))
+  if (Array.isArray(node)) {
+    return node.flatMap((n) => collectImportAssertions(source, n))
+  }
 
+  // Capture all import assertion statements
   const assertionNodeTypes = ['ImportDeclaration', 'ImportExpression', 'ExportAllDeclaration', 'ExportNamedDeclaration']
   if (assertionNodeTypes.includes(node.type)) {
     const parsedImportNode = parseImportAssertion(source, node as StatementsWithAssertions)
     if (parsedImportNode !== undefined) {
-      collectedNodes.push(parsedImportNode)
+      return [parsedImportNode]
     }
-
-    // console.log(node)
   }
 
-  // const dynamicAssertionNodeTypes = ['VariableDeclaration']
-  // if (dynamicAssertionNodeTypes.includes(node.type)) {
-  //   console.log(node)
-  //   // const parsedImportNode = parseImportAssertion(source, node as StatementsWithAssertions)
-  //   // if (parsedImportNode !== undefined) {
-  //   //   collectedNodes.push(parsedImportNode)
-  //   // }
-
-  //   // @ts-expect-error node.body + node.declarations are not defined for all node types
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  //   for (const child of [...(node.body ?? []), ...(node.declarations ?? [])] as Node[]) {
-  //     const childNodes = collectImportAssertions(source, child)
-  //     collectedNodes.concat(childNodes)
-  //   }
-  // }
-
-  // @ts-expect-error node.body + node.declarations are not defined for all node types
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  for (const child of [...(node.body ?? [])] as Node[]) {
-    // for (const child of [...(node.body ?? []), ...(node.declarations ?? [])] as Node[]) {
-    const childNodes = collectImportAssertions(source, child)
-    collectedNodes = collectedNodes.concat(childNodes)
+  // Fallthrough tree traversal + support for dynamic imports and JSX syntax
+  for (const [key, value] of Object.entries(node)) {
+    if (['loc', 'typeName'].includes(key)) continue
+    if (value === null) continue
+    if (typeof value === 'object') {
+      const childNodes = collectImportAssertions(source, value as Node | Node[])
+      collectedNodes = collectedNodes.concat(childNodes)
+    }
   }
 
   return collectedNodes

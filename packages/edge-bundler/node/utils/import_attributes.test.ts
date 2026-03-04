@@ -83,7 +83,7 @@ import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
 
 export default async function handler(req: Request, context: Context): Response {
-  // const data1 = (await import('./x.json', { assert: { type: 'json' } })) as Config
+  const data1 = (await import('./x.json', { assert: { type: 'json' } })) as Config
   const stream = await renderToReadableStream(
     <html>
       <title>Hello</title>
@@ -108,7 +108,7 @@ import { renderToReadableStream } from "https://esm.sh/react-dom/server";
 import type { Config, Context } from "@netlify/edge-functions";
 
 export default async function handler(req: Request, context: Context): Response {
-  // const data1 = (await import('./x.json', { assert: { type: 'json' } })) as Config
+  const data1 = (await import('./x.json', { with: { type: 'json' } })) as Config
   const stream = await renderToReadableStream(
     <html>
       <title>Hello</title>
@@ -151,7 +151,7 @@ import data2 from './data.json' with { type: 'json' };
     expect(result).toEqual(expectedResult)
   })
 
-  test('handles JSXElement despite no support in acorn-walk', () => {
+  test('complex JSX import assertion case', () => {
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
 
