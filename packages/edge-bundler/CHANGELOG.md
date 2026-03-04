@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.13](https://github.com/netlify/build/compare/edge-bundler-v14.9.12...edge-bundler-v14.9.13) (2026-03-04)
+
+
+### Bug Fixes
+
+* handle jsx parsing in acorn ([#6960](https://github.com/netlify/build/issues/6960)) ([a7f56dc](https://github.com/netlify/build/commit/a7f56dc97a32c4a7941637df64a144949c70b5e0))
+
 ## [14.9.12](https://github.com/netlify/build/compare/edge-bundler-v14.9.11...edge-bundler-v14.9.12) (2026-02-25)
 
 
