@@ -58,7 +58,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.19.0",
     "execa": "^8.0.1",
-    "lerna": "^8.2.2",
+    "lerna": "^9.0.5",
     "prettier": "^3.0.0",
     "typescript-eslint": "^8.34.0"
   },
