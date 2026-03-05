@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.3](https://github.com/netlify/build/compare/headers-parser-v9.0.2...headers-parser-v9.0.3) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
 ## [9.0.2](https://github.com/netlify/build/compare/headers-parser-v9.0.1...headers-parser-v9.0.2) (2025-08-08)
 
 

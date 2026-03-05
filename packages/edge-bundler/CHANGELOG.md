@@ -1,5 +1,26 @@
 # Changelog
 
+## [14.9.14](https://github.com/netlify/build/compare/edge-bundler-v14.9.13...edge-bundler-v14.9.14) (2026-03-05)
+
+
+### Bug Fixes
+
+* skip AST traversal on non-nodes ([#6965](https://github.com/netlify/build/issues/6965)) ([bf5b717](https://github.com/netlify/build/commit/bf5b71794a9e0c75b52d1951fc2ace795ef8e61e))
+
+## [14.9.13](https://github.com/netlify/build/compare/edge-bundler-v14.9.12...edge-bundler-v14.9.13) (2026-03-04)
+
+
+### Bug Fixes
+
+* handle jsx parsing in acorn ([#6960](https://github.com/netlify/build/issues/6960)) ([a7f56dc](https://github.com/netlify/build/commit/a7f56dc97a32c4a7941637df64a144949c70b5e0))
+
+## [14.9.12](https://github.com/netlify/build/compare/edge-bundler-v14.9.11...edge-bundler-v14.9.12) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
 ## [14.9.11](https://github.com/netlify/build/compare/edge-bundler-v14.9.10...edge-bundler-v14.9.11) (2026-02-24)
 
 
