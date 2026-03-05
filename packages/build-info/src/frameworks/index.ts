@@ -45,6 +45,7 @@ import { TanStackRouter } from './tanstack-router.js'
 import { TanStackStart } from './tanstack-start.js'
 import { Vike } from './vike.js'
 import { Vite } from './vite.js'
+import { VitePress } from './vitepress.js'
 import { Vue } from './vue.js'
 import { VuePress } from './vuepress.js'
 import { Waku } from './waku.js'
@@ -91,6 +92,7 @@ export const frameworks = [
   Analog,
   Vike,
   Waku,
+  VitePress,
 
   // Back-end frameworks
   Hono,
