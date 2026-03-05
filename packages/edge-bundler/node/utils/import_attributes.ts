@@ -45,12 +45,7 @@ function collectImportAssertions(source: string, node: Node | Node[]): ImportRep
   const collectedNodes: ImportReplacement[] = []
 
   if (Array.isArray(node)) {
-    return node.flatMap((n) => collectImportAssertions(source, n))
-  }
-
-  // Ensure we are viewing a Node and not a plain object
-  if (!node.type) {
-    return collectedNodes
+    return node.filter(isNode).flatMap((n) => collectImportAssertions(source, n))
   }
 
   // Capture all import assertion statements
@@ -89,4 +84,8 @@ function parseImportAssertion(
     end: node.end,
     text: statement.replace('assert', 'with'),
   }
+}
+
+function isNode(arg: unknown) {
+  return typeof arg === 'object' && arg !== null && 'type' in arg
 }
