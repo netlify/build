@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.8.8](https://github.com/netlify/build/compare/build-v35.8.7...build-v35.8.8) (2026-03-05)
+
+
+### Bug Fixes
+
+* **deps:** upgrade to minimatch 10 ([#6954](https://github.com/netlify/build/issues/6954)) ([d89024d](https://github.com/netlify/build/commit/d89024d5ce4a7b2d6a7d51d6fcc3a9e90b41e290))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.24 to ^6.2.25
+    * @netlify/zip-it-and-ship-it bumped from 14.4.1 to 14.4.2
+
 ## [35.8.7](https://github.com/netlify/build/compare/build-v35.8.6...build-v35.8.7) (2026-03-05)
 
 

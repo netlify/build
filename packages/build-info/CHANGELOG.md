@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.3.2](https://github.com/netlify/build/compare/build-info-v10.3.1...build-info-v10.3.2) (2026-03-05)
+
+
+### Bug Fixes
+
+* **deps:** upgrade to minimatch 10 ([#6954](https://github.com/netlify/build/issues/6954)) ([d89024d](https://github.com/netlify/build/commit/d89024d5ce4a7b2d6a7d51d6fcc3a9e90b41e290))
+
 ## [10.3.1](https://github.com/netlify/build/compare/build-info-v10.3.0...build-info-v10.3.1) (2026-02-25)
 
 
