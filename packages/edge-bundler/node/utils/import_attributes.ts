@@ -48,6 +48,11 @@ function collectImportAssertions(source: string, node: Node | Node[]): ImportRep
     return node.flatMap((n) => collectImportAssertions(source, n))
   }
 
+  // Ensure we are viewing a Node and not a plain object
+  if (!node.type) {
+    return collectedNodes
+  }
+
   // Capture all import assertion statements
   const assertionNodeTypes = ['ImportDeclaration', 'ImportExpression', 'ExportAllDeclaration', 'ExportNamedDeclaration']
   if (assertionNodeTypes.includes(node.type)) {
