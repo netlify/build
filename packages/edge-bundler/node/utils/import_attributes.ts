@@ -86,6 +86,6 @@ function parseImportAssertion(
   }
 }
 
-function isNode(arg: unknown) {
+function isNode(arg: unknown): arg is Node {
   return typeof arg === 'object' && arg !== null && 'type' in arg
 }
