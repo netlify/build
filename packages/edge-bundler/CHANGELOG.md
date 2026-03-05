@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.14](https://github.com/netlify/build/compare/edge-bundler-v14.9.13...edge-bundler-v14.9.14) (2026-03-05)
+
+
+### Bug Fixes
+
+* skip AST traversal on non-nodes ([#6965](https://github.com/netlify/build/issues/6965)) ([bf5b717](https://github.com/netlify/build/commit/bf5b71794a9e0c75b52d1951fc2ace795ef8e61e))
+
 ## [14.9.13](https://github.com/netlify/build/compare/edge-bundler-v14.9.12...edge-bundler-v14.9.13) (2026-03-04)
 
 
