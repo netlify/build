@@ -46,7 +46,7 @@
     "@netlify/binary-info": "^1.0.0",
     "@netlify/serverless-functions-api": "^2.10.0",
     "@vercel/nft": "0.29.4",
-    "archiver": "^7.0.0",
+    "@archiver/archiver": "^0.0.3",
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
@@ -75,7 +75,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/archiver": "6.0.4",
     "@types/is-ci": "3.0.4",
     "@types/node": "20.19.33",
     "@types/normalize-path": "3.0.2",
