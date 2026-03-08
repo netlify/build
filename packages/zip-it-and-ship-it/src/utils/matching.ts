@@ -1,6 +1,6 @@
 import originalGlob from 'fast-glob'
 import { minimatch as minimatchFunction, type MinimatchOptions } from 'minimatch'
-import { normalizePath } from '@archiver/compress-commons/util'
+import { normalizePath } from '@archiver/archiver/utils'
 
 /**
  * Both glob and minimatch only support unix style slashes in patterns
