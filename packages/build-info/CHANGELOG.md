@@ -64,6 +64,18 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.4.0](https://github.com/netlify/build/compare/build-info-v10.3.1...build-info-v10.4.0) (2026-03-10)
+
+
+### Features
+
+* **build-info:** add Mastra ([#6929](https://github.com/netlify/build/issues/6929)) ([989db15](https://github.com/netlify/build/commit/989db155cbe19b5f3febdb3f1b6fefead75eada2))
+
+
+### Bug Fixes
+
+* **deps:** upgrade to minimatch 10 ([#6954](https://github.com/netlify/build/issues/6954)) ([d89024d](https://github.com/netlify/build/commit/d89024d5ce4a7b2d6a7d51d6fcc3a9e90b41e290))
+
 ## [10.3.1](https://github.com/netlify/build/compare/build-info-v10.3.0...build-info-v10.3.1) (2026-02-25)
 
 
