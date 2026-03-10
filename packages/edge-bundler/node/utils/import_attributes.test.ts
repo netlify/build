@@ -137,11 +137,13 @@ export const config: Config = {
     const source = `
 import data3 from './data.json' assert { type: 'json' };
 const params = inputs as Params;
+const [,foo]=[1,2]
 import data2 from './data.json' assert { type: 'json' };
 `
     const expectedResult = `
 import data3 from './data.json' with { type: 'json' };
 const params = inputs as Params;
+const [,foo]=[1,2]
 import data2 from './data.json' with { type: 'json' };
 `
 
