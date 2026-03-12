@@ -2933,6 +2933,41 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
   expect(rewriteConfig.aggregate.keys).toStrictEqual([{ type: 'ip' }, { type: 'domain' }])
 })
 
+test('Writes event subscriptions to the manifest when the feature flag is enabled', async () => {
+  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const manifestPath = join(tmpDir, 'manifest.json')
+
+  await zipFixture('v2-api-event-handlers', {
+    fixtureDir: FIXTURES_ESM_DIR,
+    opts: {
+      manifest: manifestPath,
+      featureFlags: { zisi_event_subscriptions: true },
+    },
+  })
+
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'))
+  const func = manifest.functions.find((fn) => fn.name === 'function')
+
+  expect(func.eventSubscriptions).toEqual(['fetch', 'deploy-succeeded', 'identity-signup'])
+})
+
+test('Does not write event subscriptions to the manifest when the feature flag is disabled', async () => {
+  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const manifestPath = join(tmpDir, 'manifest.json')
+
+  await zipFixture('v2-api-event-handlers', {
+    fixtureDir: FIXTURES_ESM_DIR,
+    opts: {
+      manifest: manifestPath,
+    },
+  })
+
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'))
+  const func = manifest.functions.find((fn) => fn.name === 'function')
+
+  expect(func.eventSubscriptions).toBeUndefined()
+})
+
 test('Supports both files and directories and ignores files that are not functions', async () => {
   const tmpDir = await getTmpDir({
     // Cleanup the folder even if there are still files in them

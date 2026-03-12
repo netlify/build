@@ -824,6 +824,73 @@ describe('V2 API', () => {
     })
   })
 
+  describe('Event subscriptions', () => {
+    test('Extracts event subscriptions from an object default export with methods', () => {
+      const source = `export default { deploySucceeded() {}, fetch() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded', 'fetch'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from a binding-resolved object default export', () => {
+      const source = `const h = { deploySucceeded() {} }; export default h`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Does not set eventSubscriptions for a function default export', () => {
+      const source = `export default () => {}`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toBeUndefined()
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts a single event subscription', () => {
+      const source = `export default { fetch() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Ignores unknown property names in the object', () => {
+      const source = `export default { deploySucceeded() {}, someHelper() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from a CJS default export', () => {
+      const source = `exports.default = { deployFailed() {}, userLogin() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy-failed', 'identity-login'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from export { x as default }', () => {
+      const source = `
+      const handlers = { userSignup() {}, userValidate() {} }
+      export { handlers as default }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['identity-signup', 'identity-validate'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+  })
+
   test('Understands timeout', () => {
     const source = `
     export default async () => new Response("Hello!")

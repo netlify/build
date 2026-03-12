@@ -1,6 +1,13 @@
 import { dirname } from 'path'
 
-import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+import type {
+  ArgumentPlaceholder,
+  Declaration,
+  Expression,
+  ObjectExpression,
+  SpreadElement,
+  JSXNamespacedName,
+} from '@babel/types'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
 import mergeOptions from 'merge-options'
@@ -13,18 +20,21 @@ import { ensureArray } from '../../../utils/ensure_array.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
 import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
+import type { BindingMethod } from '../parser/bindings.js'
 import { createBindingsMethod } from '../parser/bindings.js'
 import { traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
 import { safelyParseSource, safelyReadSource } from '../parser/index.js'
 import type { ModuleFormat } from '../utils/module_format.js'
 
+import { eventHandlers } from '@netlify/serverless-functions-api'
 import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
 export interface StaticAnalysisResult {
   config: InSourceConfig
+  eventSubscriptions?: string[]
   excludedRoutes?: Route[]
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
@@ -75,6 +85,50 @@ export const inSourceConfig = functionConfig
   })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
+
+/**
+ * Extracts event subscription slugs from the default export expression,
+ * if it's an object whose property names match known event handlers.
+ */
+const getEventSubscriptions = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): string[] => {
+  let objectExpression: ObjectExpression | undefined
+
+  if (expression?.type === 'ObjectExpression') {
+    objectExpression = expression
+  } else if (expression?.type === 'Identifier') {
+    const binding = getAllBindings().get(expression.name)
+
+    if (binding?.type === 'ObjectExpression') {
+      objectExpression = binding
+    }
+  }
+
+  if (!objectExpression) {
+    return []
+  }
+
+  const events: string[] = []
+
+  for (const property of objectExpression.properties) {
+    let name: string | undefined
+
+    if (
+      (property.type === 'ObjectMethod' || property.type === 'ObjectProperty') &&
+      property.key.type === 'Identifier'
+    ) {
+      name = property.key.name
+    }
+
+    if (name && name in eventHandlers) {
+      events.push(eventHandlers[name as keyof typeof eventHandlers])
+    }
+  }
+
+  return events
+}
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
   if (!functionFound) {
@@ -132,7 +186,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   let scheduleFound = false
 
   const getAllBindings = createBindingsMethod(ast.body)
-  const { configExport, handlerExports, hasDefaultExport, inputModuleFormat } = traverseNodes(ast.body, getAllBindings)
+  const { configExport, handlerExports, hasDefaultExport, defaultExportExpression, inputModuleFormat } = traverseNodes(
+    ast.body,
+    getAllBindings,
+  )
   const isV2API = handlerExports.length === 0 && hasDefaultExport
 
   if (isV2API) {
@@ -141,6 +198,13 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       inputModuleFormat,
       runtimeAPIVersion: 2,
     }
+
+    const eventSubscriptions = getEventSubscriptions(defaultExportExpression, getAllBindings)
+
+    if (eventSubscriptions.length > 0) {
+      result.eventSubscriptions = eventSubscriptions
+    }
+
     const { data, error, success } = inSourceConfig.safeParse(configExport)
 
     if (success) {
