@@ -2,7 +2,6 @@ import { promises as fs } from 'fs'
 import { resolve } from 'path'
 import { arch, platform } from 'process'
 
-import type { FeatureFlags } from './feature_flags.js'
 import type { InvocationMode } from './function.js'
 import type { TrafficRules } from './rate_limit.js'
 import type { FunctionResult } from './utils/format_result.js'
@@ -40,16 +39,8 @@ export interface Manifest {
 
 const MANIFEST_VERSION = 1
 
-export const createManifest = async ({
-  functions,
-  featureFlags = {},
-  path,
-}: {
-  functions: FunctionResult[]
-  featureFlags?: FeatureFlags
-  path: string
-}) => {
-  const formattedFunctions = functions.map((func) => formatFunctionForManifest(func, featureFlags))
+export const createManifest = async ({ functions, path }: { functions: FunctionResult[]; path: string }) => {
+  const formattedFunctions = functions.map((func) => formatFunctionForManifest(func))
   const payload: Manifest = {
     functions: formattedFunctions,
     system: { arch, platform },
@@ -81,7 +72,6 @@ const formatFunctionForManifest = (
     schedule,
     timeout,
   }: FunctionResult,
-  featureFlags: FeatureFlags,
 ): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
     bundler,
@@ -100,7 +90,7 @@ const formatFunctionForManifest = (
     schedule,
   }
 
-  if (featureFlags.zisi_event_subscriptions && eventSubscriptions?.length) {
+  if (eventSubscriptions?.length) {
     manifestFunction.eventSubscriptions = eventSubscriptions
   }
 

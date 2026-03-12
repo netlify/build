@@ -131,11 +131,7 @@ export const zipFunctions = async function (
     }),
   )
 
-  await createManifest({
-    functions: formattedResults,
-    featureFlags,
-    path: resolve(manifest || join(destFolder, 'manifest.json')),
-  })
+  await createManifest({ functions: formattedResults, path: resolve(manifest || join(destFolder, 'manifest.json')) })
 
   return formattedResults
 }

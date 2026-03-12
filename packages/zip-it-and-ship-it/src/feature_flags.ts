@@ -28,9 +28,6 @@ export const defaultFlags = {
   zisi_add_instrumentation_loader: true,
 
   zisi_netlify_play: false,
-
-  // Write event subscriptions to the manifest file.
-  zisi_event_subscriptions: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>
