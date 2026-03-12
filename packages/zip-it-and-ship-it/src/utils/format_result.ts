@@ -8,6 +8,7 @@ export type FunctionResult = Omit<FunctionArchive, 'runtime'> & {
   bootstrapVersion?: string
   routes?: ExtendedRoute[]
   excludedRoutes?: Route[]
+  region?: string
   runtime: RuntimeName
   schedule?: string
   runtimeAPIVersion?: number
@@ -20,6 +21,7 @@ export const formatZipResult = (archive: FunctionArchive) => {
     staticAnalysisResult: undefined,
     routes: archive.staticAnalysisResult?.routes,
     excludedRoutes: archive.staticAnalysisResult?.excludedRoutes,
+    region: archive.staticAnalysisResult?.region,
     runtime: archive.runtime.name,
     schedule: archive.staticAnalysisResult?.config?.schedule ?? archive?.config?.schedule,
     runtimeAPIVersion: archive.staticAnalysisResult?.runtimeAPIVersion,
