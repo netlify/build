@@ -51,28 +51,26 @@ export const createManifest = async ({ functions, path }: { functions: FunctionR
   await fs.writeFile(path, JSON.stringify(payload))
 }
 
-const formatFunctionForManifest = (
-  {
-    bootstrapVersion,
-    bundler,
-    displayName,
-    eventSubscriptions,
-    excludedRoutes,
-    generator,
-    invocationMode,
-    mainFile,
-    name,
-    path,
-    priority,
-    trafficRules,
-    routes,
-    runtime,
-    runtimeVersion,
-    runtimeAPIVersion,
-    schedule,
-    timeout,
-  }: FunctionResult,
-): ManifestFunction => {
+const formatFunctionForManifest = ({
+  bootstrapVersion,
+  bundler,
+  displayName,
+  eventSubscriptions,
+  excludedRoutes,
+  generator,
+  invocationMode,
+  mainFile,
+  name,
+  path,
+  priority,
+  trafficRules,
+  routes,
+  runtime,
+  runtimeVersion,
+  runtimeAPIVersion,
+  schedule,
+  timeout,
+}: FunctionResult): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
     bundler,
     displayName,
