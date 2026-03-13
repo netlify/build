@@ -2947,7 +2947,7 @@ test('Writes event subscriptions to the manifest', async () => {
   const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'))
   const func = manifest.functions.find((fn) => fn.name === 'function')
 
-  expect(func.eventSubscriptions).toEqual(['fetch', 'deploy-succeeded', 'identity-signup'])
+  expect(func.eventSubscriptions).toEqual(['fetch', 'deploy_succeeded', 'identity_signup'])
 })
 
 test('Supports both files and directories and ignores files that are not functions', async () => {

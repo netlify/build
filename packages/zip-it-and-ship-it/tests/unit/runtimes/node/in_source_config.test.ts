@@ -830,7 +830,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded', 'fetch'])
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded', 'fetch'])
       expect(isc.runtimeAPIVersion).toBe(2)
     })
 
@@ -839,7 +839,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded'])
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded'])
       expect(isc.runtimeAPIVersion).toBe(2)
     })
 
@@ -866,7 +866,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc.eventSubscriptions).toEqual(['deploy-succeeded'])
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded'])
       expect(isc.runtimeAPIVersion).toBe(2)
     })
 
@@ -875,7 +875,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc.eventSubscriptions).toEqual(['deploy-failed', 'identity-login'])
+      expect(isc.eventSubscriptions).toEqual(['deploy_failed', 'identity_login'])
       expect(isc.runtimeAPIVersion).toBe(2)
     })
 
@@ -886,7 +886,7 @@ describe('V2 API', () => {
 
       const isc = parseSource(source, options)
 
-      expect(isc.eventSubscriptions).toEqual(['identity-signup', 'identity-validate'])
+      expect(isc.eventSubscriptions).toEqual(['identity_signup', 'identity_validate'])
       expect(isc.runtimeAPIVersion).toBe(2)
     })
   })
