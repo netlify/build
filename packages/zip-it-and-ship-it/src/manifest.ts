@@ -11,6 +11,7 @@ interface ManifestFunction {
   buildData?: Record<string, unknown>
   bundler?: string
   displayName?: string
+  eventSubscriptions?: string[]
   excludedRoutes?: Route[]
   generator?: string
   invocationMode?: InvocationMode
@@ -54,6 +55,7 @@ const formatFunctionForManifest = ({
   bootstrapVersion,
   bundler,
   displayName,
+  eventSubscriptions,
   excludedRoutes,
   generator,
   invocationMode,
@@ -84,6 +86,10 @@ const formatFunctionForManifest = ({
     path: resolve(path),
     runtime,
     schedule,
+  }
+
+  if (eventSubscriptions?.length) {
+    manifestFunction.eventSubscriptions = eventSubscriptions
   }
 
   if (routes?.length !== 0) {
