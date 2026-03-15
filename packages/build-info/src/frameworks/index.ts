@@ -5,6 +5,7 @@ import { Astro } from './astro.js'
 import { Blitz } from './blitz.js'
 import { Brunch } from './brunch.js'
 import { Cecil } from './cecil.js'
+import { CedarJS } from './cedarjs.js'
 import { DocPad } from './docpad.js'
 import { Docusaurus } from './docusaurus.js'
 import { Eleventy } from './eleventy.js'
@@ -56,6 +57,7 @@ import { Zola } from './zola.js'
 export const frameworks = [
   // Static site generators / meta frameworks
   Astro,
+  CedarJS,
   Docusaurus,
   Eleventy,
   Gatsby,
