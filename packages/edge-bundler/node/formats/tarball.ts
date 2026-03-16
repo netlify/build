@@ -212,6 +212,7 @@ async function getRequiredSourceFiles(
       const { stdout } = await deno.run([
         'info',
         '--json',
+        '--no-config',
         '--import-map',
         importMapDataUrl,
         pathToFileURL(entryPoint).href,
