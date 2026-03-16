@@ -56,7 +56,6 @@ export const bundle = async ({
 
   // Use deno info to get the module graph and identify which local files are actually needed.
   // This avoids copying unnecessary files (like node_modules) that happen to be under commonPath.
-  // If module graph analysis fails, fall back to copying files from entry point directories.
   const sourceFilesSet = await getRequiredSourceFiles(deno, entryPoints, importMap)
 
   // Build prefix mappings to transform file:// URLs to relative paths
@@ -194,9 +193,6 @@ const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.m
  * Uses deno info to get the module graph and extract only the local source files
  * that are actually needed by the entry points. This avoids copying unnecessary
  * files (like node_modules, .next, etc.) that may be under the common path.
- *
- * If deno info fails, falls back to copying files from the directories containing
- * the entry points (not the entire common path).
  */
 async function getRequiredSourceFiles(
   deno: DenoBridge,
@@ -208,31 +204,21 @@ async function getRequiredSourceFiles(
 
   // Run deno info for each entry point and combine the results
   for (const entryPoint of entryPoints) {
-    try {
-      const { stdout } = await deno.run([
-        'info',
-        '--json',
-        '--import-map',
-        importMapDataUrl,
-        pathToFileURL(entryPoint).href,
-      ])
+    const { stdout } = await deno.run([
+      'info',
+      '--json',
+      '--import-map',
+      importMapDataUrl,
+      pathToFileURL(entryPoint).href,
+    ])
 
-      const graph = JSON.parse(stdout) as ModuleGraphJson
+    const graph = JSON.parse(stdout) as ModuleGraphJson
 
-      // Extract all local files from the module graph
-      for (const module of graph.modules) {
-        if (module.specifier.startsWith('file://')) {
-          const filePath = fileURLToPath(module.specifier)
-          localFiles.add(filePath)
-        }
-      }
-    } catch {
-      // If deno info fails for this entry point, fall back to copying files
-      // from its directory
-      const dir = path.dirname(entryPoint)
-      const files = await listRecursively(dir)
-      for (const file of files) {
-        localFiles.add(file)
+    // Extract all local files from the module graph
+    for (const module of graph.modules) {
+      if (module.specifier.startsWith('file://')) {
+        const filePath = fileURLToPath(module.specifier)
+        localFiles.add(filePath)
       }
     }
   }
