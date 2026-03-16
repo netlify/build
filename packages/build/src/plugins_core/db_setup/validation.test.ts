@@ -10,6 +10,10 @@ describe('MIGRATION_DIR_PATTERN', () => {
     '9999999999_z',
     '1700000000_a',
     '1700000000_abc-def-123',
+    '001_create-users',
+    '1_init',
+    '0001_add-posts',
+    '42_z',
   ]
 
   test.each(validNames)('matches valid name: %s', (name) => {
@@ -17,14 +21,12 @@ describe('MIGRATION_DIR_PATTERN', () => {
   })
 
   const invalidNames = [
-    { name: '170000000_short-ts', reason: '9-digit timestamp' },
-    { name: '17000000000_long-ts', reason: '11-digit timestamp' },
     { name: '1700000000_CAPS', reason: 'uppercase letters' },
     { name: '1700000000_under_score', reason: 'underscores in slug' },
-    { name: 'no-timestamp', reason: 'no timestamp prefix' },
+    { name: 'no-timestamp', reason: 'no numeric prefix' },
     { name: '1700000000_', reason: 'empty slug' },
     { name: '1700000000', reason: 'missing underscore and slug' },
-    { name: '_create-users', reason: 'missing timestamp' },
+    { name: '_create-users', reason: 'missing number prefix' },
     { name: '1700000000_hello world', reason: 'spaces in slug' },
     { name: '1700000000_special!char', reason: 'special characters in slug' },
   ]
@@ -101,7 +103,7 @@ describe('formatValidationErrors', () => {
 
     expect(message).toContain('Database migration validation failed')
     expect(message).toContain('"bad-name"')
-    expect(message).toContain('<Unix-timestamp>_<slug>')
+    expect(message).toContain('<number>_<slug>')
   })
 
   test('formats missing_sql_file errors', () => {
