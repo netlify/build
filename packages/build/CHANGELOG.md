@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.9.0](https://github.com/netlify/build/compare/build-v35.8.9...build-v35.9.0) (2026-03-17)
+
+
+### Features
+
+* allow any numeric prefix on migration files ([#6980](https://github.com/netlify/build/issues/6980)) ([ef0c60a](https://github.com/netlify/build/commit/ef0c60a227cf51312ce9ecc6bf243d02fcfa4e0e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.15 to 14.9.16
+
 ## [35.8.9](https://github.com/netlify/build/compare/build-v35.8.8...build-v35.8.9) (2026-03-13)
 
 

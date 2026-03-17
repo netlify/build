@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.9.16](https://github.com/netlify/build/compare/edge-bundler-v14.9.15...edge-bundler-v14.9.16) (2026-03-17)
+
+
+### Bug Fixes
+
+* don't ignore deno info failures ([#6982](https://github.com/netlify/build/issues/6982)) ([d148ff0](https://github.com/netlify/build/commit/d148ff0e736ad2be2f127596f1d625aab8499dd0))
+* ignore deno.json config when producing module graph for tarball bundle ([#6983](https://github.com/netlify/build/issues/6983)) ([9c4919f](https://github.com/netlify/build/commit/9c4919fc9cb2c4ca696dd3f3522514d3190db42b))
+
 ## [14.9.15](https://github.com/netlify/build/compare/edge-bundler-v14.9.14...edge-bundler-v14.9.15) (2026-03-10)
 
 
