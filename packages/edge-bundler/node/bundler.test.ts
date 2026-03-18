@@ -753,7 +753,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe.skipIf(lt(denoVersion, '2.4.3'))(
+describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
   () => {
     test('With only local imports', async () => {
@@ -1148,6 +1148,65 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       // Verify key files are present (vendor directory may contain additional files)
       expect(entries).toContain('___netlify-edge-functions.json')
       expect(entries).toContain('deno.json')
+
+      await cleanup()
+    })
+
+    test('Importing from root vendor directory is handled', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_vendor', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, '.netlify/edge-functions/config.json'),
+        importMapPaths: [resolve(basePath, 'import_map.json')],
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'hello hello',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toContain('___netlify-edge-functions.json')
+      expect(entries).toContain('deno.json')
+      expect(entries).toContain('netlify/edge-functions/func1.ts')
+      // vendor directory content was moved
+      expect(entries).toContain('.root-vendor/hello.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
 
       await cleanup()
     })
