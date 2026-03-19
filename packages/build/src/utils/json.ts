@@ -17,3 +17,5 @@ export const importJsonFile = async function (filePath: string): Promise<Package
 }
 
 export const ROOT_PACKAGE_JSON = (await importJsonFile(ROOT_PACKAGE_JSON_PATH)) as RootPackageJson
+
+export const getVersion = () => ROOT_PACKAGE_JSON.version
