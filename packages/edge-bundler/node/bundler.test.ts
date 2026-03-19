@@ -1151,6 +1151,48 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
 
       await cleanup()
     })
+    test('With @ prefixed local import filenames', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_at_prefixed_files', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      // This should not throw ENOENT for the @ prefixed file.
+      // Previously, node-tar would strip the '@' from filenames like
+      // '@file_prefixed_with_the_at_symbol.ts', treating them as GNU tar archive-include directives,
+      // causing a stat failure on the wrong path.
+      await expect(
+        bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+          basePath,
+          featureFlags: {
+            edge_bundler_generate_tarball: true,
+          },
+        }),
+      ).resolves.not.toThrow()
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+
+      // Verify the @ prefixed file is actually in the tarball
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+      expect(entries.some((e) => e.includes('@file_prefixed_with_the_at_symbol.ts'))).toBe(true)
+
+      // Verify the function actually runs correctly
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual({ func1: 'ok' })
+
+      await cleanup()
+    })
   },
   10_000,
 )
