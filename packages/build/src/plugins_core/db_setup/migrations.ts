@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path'
 import { pathExists } from 'path-exists'
 
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-import { validateMigrationDirs, formatValidationErrors } from './validation.js'
+import { validateMigrations, formatValidationErrors } from './validation.js'
 
 const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
   if (!featureFlags?.netlify_build_db_setup) {
@@ -26,14 +26,17 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
   const entries = await readdir(srcDir)
 
   const dirNames: string[] = []
+  const fileNames: string[] = []
   for (const entry of entries) {
     const entryStat = await stat(join(srcDir, entry))
     if (entryStat.isDirectory()) {
       dirNames.push(entry)
+    } else if (entry.endsWith('.sql')) {
+      fileNames.push(entry)
     }
   }
 
-  if (dirNames.length === 0) {
+  if (dirNames.length === 0 && fileNames.length === 0) {
     systemLog('No migration directories found, skipping copy.')
     return {}
   }
@@ -46,7 +49,7 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
     }
   }
 
-  const result = validateMigrationDirs(dirNames, existingSqlFiles)
+  const result = validateMigrations(dirNames, fileNames, existingSqlFiles)
 
   if (!result.valid) {
     const message = formatValidationErrors(result.errors)
@@ -59,7 +62,15 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
     await copyFile(join(srcDir, dirName, 'migration.sql'), join(migrationDestDir, 'migration.sql'))
   }
 
-  systemLog(`Copied ${String(result.dirs.length)} migration(s) to ${destDir}`)
+  for (const fileName of result.files) {
+    const stem = fileName.replace(/\.sql$/, '')
+    const migrationDestDir = join(destDir, stem)
+    await mkdir(migrationDestDir, { recursive: true })
+    await copyFile(join(srcDir, fileName), join(migrationDestDir, 'migration.sql'))
+  }
+
+  const totalCount = result.dirs.length + result.files.length
+  systemLog(`Copied ${String(totalCount)} migration(s) to ${destDir}`)
 
   return {}
 }

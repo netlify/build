@@ -1,13 +1,15 @@
-export const MIGRATION_DIR_PATTERN = /^\d+_[a-z0-9-]+$/
+export const MIGRATION_DIR_PATTERN = /^\d+_[a-z0-9_-]+$/
+export const MIGRATION_FILE_PATTERN = /^\d+_[a-z0-9_-]+\.sql$/
 
 interface ValidationError {
-  type: 'invalid_dir_name' | 'missing_sql_file'
+  type: 'missing_sql_file'
   dirName: string
 }
 
 interface ValidationResult {
   valid: true
   dirs: string[]
+  files: string[]
 }
 
 interface ValidationFailure {
@@ -15,17 +17,20 @@ interface ValidationFailure {
   errors: ValidationError[]
 }
 
-export const validateMigrationDirs = (
+export const validateMigrations = (
   dirNames: string[],
+  fileNames: string[],
   existingSqlFiles: Set<string>,
 ): ValidationResult | ValidationFailure => {
   const errors: ValidationError[] = []
+  const matchingDirs: string[] = []
 
   for (const dirName of dirNames) {
     if (!MIGRATION_DIR_PATTERN.test(dirName)) {
-      errors.push({ type: 'invalid_dir_name', dirName })
       continue
     }
+
+    matchingDirs.push(dirName)
 
     if (!existingSqlFiles.has(dirName)) {
       errors.push({ type: 'missing_sql_file', dirName })
@@ -36,20 +41,23 @@ export const validateMigrationDirs = (
     return { valid: false, errors }
   }
 
-  const sorted = [...dirNames].sort()
-  return { valid: true, dirs: sorted }
+  const matchingFiles: string[] = []
+  for (const fileName of fileNames) {
+    if (MIGRATION_FILE_PATTERN.test(fileName)) {
+      matchingFiles.push(fileName)
+    }
+  }
+
+  return {
+    valid: true,
+    dirs: [...matchingDirs].sort(),
+    files: [...matchingFiles].sort(),
+  }
 }
 
 export const formatValidationErrors = (errors: ValidationError[]): string => {
   const lines = errors.map((error) => {
-    if (error.type === 'invalid_dir_name') {
-      return `  - "${error.dirName}" does not match the required pattern "<number>_<slug>" (e.g. "1700000000_create-users" or "001_create-users"). Slugs must be lowercase alphanumeric with hyphens.`
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (error.type === 'missing_sql_file') {
-      return `  - "${error.dirName}/migration.sql" is missing.`
-    }
-    return `  - "${error.dirName}": unknown validation error.`
+    return `  - "${error.dirName}/migration.sql" is missing.`
   })
 
   return `Database migration validation failed:\n${lines.join('\n')}`
