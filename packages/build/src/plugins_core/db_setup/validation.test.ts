@@ -1,6 +1,11 @@
 import { describe, expect, test } from 'vitest'
 
-import { MIGRATION_DIR_PATTERN, MIGRATION_FILE_PATTERN, validateMigrations, formatValidationErrors } from './validation.js'
+import {
+  MIGRATION_DIR_PATTERN,
+  MIGRATION_FILE_PATTERN,
+  validateMigrations,
+  formatValidationErrors,
+} from './validation.js'
 
 describe('MIGRATION_DIR_PATTERN', () => {
   const validNames = [
