@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.10.0](https://github.com/netlify/build/compare/build-v35.9.0...build-v35.10.0) (2026-03-19)
+
+
+### Features
+
+* export getVersion helper from @netlify/build ([#6984](https://github.com/netlify/build/issues/6984)) ([8b0e729](https://github.com/netlify/build/commit/8b0e7298403f6e4e6a9843781915baac064fcb45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.16 to 14.9.17
+
 ## [35.9.0](https://github.com/netlify/build/compare/build-v35.8.9...build-v35.9.0) (2026-03-17)
 
 

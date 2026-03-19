@@ -167,9 +167,12 @@ export const bundle = async ({
   // List files to include in the tarball as paths relative to the bundle dir.
   // Using absolute paths here leads to platform-specific quirks (notably on Windows),
   // where entries can include drive letters and break extraction/imports.
+  // The './' prefix is required to prevent node-tar from interpreting entries
+  // starting with '@' as GNU tar archive-include directives, which would cause
+  // it to strip the '@' and stat a non-existent path (ENOENT).
   const files = (await listRecursively(bundleDir.path))
     .map((p) => path.relative(bundleDir.path, p))
-    .map((p) => getUnixPath(p))
+    .map((p) => './' + getUnixPath(p))
     .sort()
 
   await tar.create(
