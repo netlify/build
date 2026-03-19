@@ -10,7 +10,10 @@ describe('MIGRATION_DIR_PATTERN', () => {
     '9999999999_z',
     '1700000000_a',
     '1700000000_abc-def-123',
+    '1700000000_under_score',
+    '1700000000_mix-and_match',
     '001_create-users',
+    '001_create_users',
     '1_init',
     '0001_add-posts',
     '42_z',
@@ -22,7 +25,6 @@ describe('MIGRATION_DIR_PATTERN', () => {
 
   const invalidNames = [
     { name: '1700000000_CAPS', reason: 'uppercase letters' },
-    { name: '1700000000_under_score', reason: 'underscores in slug' },
     { name: 'no-timestamp', reason: 'no numeric prefix' },
     { name: '1700000000_', reason: 'empty slug' },
     { name: '1700000000', reason: 'missing underscore and slug' },
