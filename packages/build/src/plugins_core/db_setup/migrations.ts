@@ -1,9 +1,10 @@
-import { copyFile, mkdir, readdir, stat } from 'node:fs/promises'
+import { copyFile, mkdir } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
 import { pathExists } from 'path-exists'
 
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
+import { readMigrationEntries } from './utils.js'
 import { validateMigrations, formatValidationErrors } from './validation.js'
 
 const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
@@ -23,18 +24,7 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
   const srcDir = resolve(buildDir, constants.DB_MIGRATIONS_SRC!)
   const destDir = resolve(buildDir, constants.DB_MIGRATIONS_DIST!)
 
-  const entries = await readdir(srcDir)
-
-  const dirNames: string[] = []
-  const fileNames: string[] = []
-  for (const entry of entries) {
-    const entryStat = await stat(join(srcDir, entry))
-    if (entryStat.isDirectory()) {
-      dirNames.push(entry)
-    } else if (entry.endsWith('.sql')) {
-      fileNames.push(entry)
-    }
-  }
+  const { dirNames, fileNames } = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC!)
 
   if (dirNames.length === 0 && fileNames.length === 0) {
     systemLog('No migration directories found, skipping copy.')
@@ -82,4 +72,5 @@ export const copyDbMigrations: CoreStep = {
   coreStepName: 'Netlify DB migrations',
   coreStepDescription: () => 'Copy database migrations to internal directory',
   condition,
+  quiet: true,
 }

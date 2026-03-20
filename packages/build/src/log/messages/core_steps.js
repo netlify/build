@@ -124,6 +124,26 @@ export const logFunctionsToBundle = function ({
   logArray(logs, userFunctions, { indent: false })
 }
 
+// Print the database provisioning message
+export const logDbProvisioning = function ({ logs, branch, context }) {
+  log(logs, `Provisioning ${THEME.highlightWords('NetlifyDB')} database`)
+
+  if (context !== 'production') {
+    log(logs, `Creating database branch for ${THEME.highlightWords(branch)}`)
+  }
+}
+
+// Print the list of database migrations about to be copied
+export const logDbMigrations = function ({ logs, migrations, srcDir }) {
+  if (migrations.length === 0) {
+    log(logs, `No migrations found in ${THEME.highlightWords(srcDir)} directory`)
+    return
+  }
+
+  log(logs, `Copying migrations from ${THEME.highlightWords(srcDir)} directory:`)
+  logArray(logs, migrations, { indent: false })
+}
+
 const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
   const externalNodeModules = modulesWithDynamicImports.map((moduleName) => `"${moduleName}"`).join(', ')
 
