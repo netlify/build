@@ -753,7 +753,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe.skipIf(lt(denoVersion, '2.4.3'))(
+describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
   () => {
     test('With only local imports', async () => {
@@ -802,9 +802,9 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify key files are present (vendor directory may contain additional files)
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
-      expect(entries).toContain('func1.ts')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./func1.ts')
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
@@ -926,11 +926,11 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify that sibling directory files are included in the tarball
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
-      expect(entries).toContain('netlify/edge-functions/func1.ts')
-      expect(entries).toContain('data/config.json')
-      expect(entries).toContain('data/items.json')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./netlify/edge-functions/func1.ts')
+      expect(entries).toContain('./data/config.json')
+      expect(entries).toContain('./data/items.json')
 
       await cleanup()
     })
@@ -1146,8 +1146,8 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify key files are present (vendor directory may contain additional files)
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
 
       await cleanup()
     })
