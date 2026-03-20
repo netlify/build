@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.10.1](https://github.com/netlify/build/compare/build-v35.10.0...build-v35.10.1) (2026-03-20)
+
+
+### Bug Fixes
+
+* loosen db migration rules ([#6992](https://github.com/netlify/build/issues/6992)) ([e634bfe](https://github.com/netlify/build/commit/e634bfe7259a8dc86c9d919f4b71310e3fe1176e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.4.3 to ^24.4.4
+    * @netlify/edge-bundler bumped from 14.9.17 to 14.9.18
+    * @netlify/functions-utils bumped from ^6.2.26 to ^6.2.27
+    * @netlify/zip-it-and-ship-it bumped from 14.5.0 to 14.5.1
+
 ## [35.10.0](https://github.com/netlify/build/compare/build-v35.9.0...build-v35.10.0) (2026-03-19)
 
 
