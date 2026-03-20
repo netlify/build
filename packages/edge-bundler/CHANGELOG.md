@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.9.18](https://github.com/netlify/build/compare/edge-bundler-v14.9.17...edge-bundler-v14.9.18) (2026-03-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tar to v7.5.12 ([#6994](https://github.com/netlify/build/issues/6994)) ([2b0ba3b](https://github.com/netlify/build/commit/2b0ba3b536ca21143e23aec6d767552659414741))
+
 ## [14.9.17](https://github.com/netlify/build/compare/edge-bundler-v14.9.16...edge-bundler-v14.9.17) (2026-03-19)
 
 
