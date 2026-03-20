@@ -61,6 +61,7 @@ export const bundle = async ({
   // Build prefix mappings to transform file:// URLs to relative paths
   const npmVendorDir = '.netlify-npm-vendor'
   const prefixes: Record<string, string> = {}
+  const additionalImportMapEntries: Record<string, string> = {}
 
   // Copy pre-bundled npm modules from vendorDirectory if present.
   // This supports the legacy approach where npm packages are pre-bundled and mapped
@@ -99,7 +100,17 @@ export const bundle = async ({
   }
 
   for (const sourceFile of sourceFilesSet) {
-    const relativePath = path.relative(commonPath, sourceFile)
+    let relativePath = path.relative(commonPath, sourceFile)
+
+    if (relativePath.startsWith('vendor' + path.sep)) {
+      // root vendor directory is reserved directory and can't be imported directly from with `vendor: true` or `--vendor` flag
+      // move from vendor/ to .root-vendor/
+      relativePath = relativePath.replace(/vendor[\\/]/, `.root-vendor/`)
+      // and import map rewrite so imports remain resolvable
+      additionalImportMapEntries['./vendor/'] = `./.root-vendor/`
+      prefixes[pathToFileURL(path.join(commonPath, 'vendor') + path.sep).href] = './.root-vendor/'
+    }
+
     const destPath = path.join(bundleDir.path, relativePath)
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
@@ -112,7 +123,7 @@ export const bundle = async ({
   prefixes[pathToFileURL(commonPath + path.sep).href] = './'
 
   // Get import map contents with file:// URLs transformed to relative paths
-  const importMapContents = importMap.getContents(prefixes)
+  const importMapContents = importMap.getContents(prefixes, additionalImportMapEntries)
 
   // Create deno.json with import map contents for runtime resolution
   const denoConfigPath = path.join(bundleDir.path, 'deno.json')
@@ -156,9 +167,12 @@ export const bundle = async ({
   // List files to include in the tarball as paths relative to the bundle dir.
   // Using absolute paths here leads to platform-specific quirks (notably on Windows),
   // where entries can include drive letters and break extraction/imports.
+  // The './' prefix is required to prevent node-tar from interpreting entries
+  // starting with '@' as GNU tar archive-include directives, which would cause
+  // it to strip the '@' and stat a non-existent path (ENOENT).
   const files = (await listRecursively(bundleDir.path))
     .map((p) => path.relative(bundleDir.path, p))
-    .map((p) => getUnixPath(p))
+    .map((p) => './' + getUnixPath(p))
     .sort()
 
   await tar.create(
