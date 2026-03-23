@@ -126,7 +126,7 @@ export const logFunctionsToBundle = function ({
 
 // Print the database provisioning message
 export const logDbProvisioning = function ({ logs, branch, context }) {
-  log(logs, `Provisioning ${THEME.highlightWords('NetlifyDB')} database`)
+  log(logs, `Provisioning database`)
 
   if (context !== 'production') {
     log(logs, `Creating database branch for ${THEME.highlightWords(branch)}`)
@@ -140,7 +140,7 @@ export const logDbMigrations = function ({ logs, migrations, srcDir }) {
     return
   }
 
-  log(logs, `Copying migrations from ${THEME.highlightWords(srcDir)} directory:`)
+  log(logs, `Loading migrations from ${THEME.highlightWords(srcDir)} directory:`)
   logArray(logs, migrations, { indent: false })
 }
 

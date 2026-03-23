@@ -77,7 +77,7 @@ export const dbSetup: CoreStep = {
   event: 'onPreBuild',
   coreStep,
   coreStepId: 'db_provision',
-  coreStepName: 'NetlifyDB setup',
-  coreStepDescription: () => 'NetlifyDB setup',
+  coreStepName: 'Netlify DB setup',
+  coreStepDescription: () => 'Netlify DB setup',
   condition,
 }
