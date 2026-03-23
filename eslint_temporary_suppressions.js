@@ -990,6 +990,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/src/plugins_core/db_setup/index.ts'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/plugins_core/edge_functions/index.ts'],
     rules: {
       'n/no-missing-import': 'off',
