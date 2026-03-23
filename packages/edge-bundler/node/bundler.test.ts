@@ -1036,7 +1036,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
           systemLogger,
         })
 
-        expect(systemLogger).toHaveBeenCalledWith('Dry run: Tarball bundle generated successfully.')
+        expect(systemLogger).toHaveBeenCalledWith('Dry run: Eszip and tarball bundle generated successfully.')
 
         const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
         const manifest = JSON.parse(manifestFile)
@@ -1085,7 +1085,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         ).resolves.toBeDefined()
 
         expect(systemLogger).toHaveBeenCalledWith(
-          `Dry run: Tarball bundle generation failed: Simulated tarball bundling failure`,
+          `Dry run: Eszip successful, tarball bundle generation failed: Simulated tarball bundling failure`,
         )
 
         const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
