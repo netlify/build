@@ -129,6 +129,7 @@ export const bundle = async (
 
   const bundles: Bundle[] = []
   let tarballBundleDurationMs: number | undefined
+  let tarballLogMsg: string | undefined
 
   if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
     const tarballPromise = (async () => {
@@ -156,13 +157,13 @@ export const bundle = async (
     if (featureFlags.edge_bundler_dry_run_generate_tarball) {
       try {
         await tarballPromise
-        logger.system('Dry run: Tarball bundle generated successfully.')
+        tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
         tarballPromiseResolved = true
       } catch (error: unknown) {
         if (error instanceof Error) {
-          logger.system(`Dry run: Tarball bundle generation failed: ${error.message}`)
+          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${error.message}`
         } else {
-          logger.system(`Dry run: Tarball bundle generation failed: ${String(error)}`)
+          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(error)}`
         }
       }
     }
@@ -187,6 +188,12 @@ export const bundle = async (
     }),
   )
 
+  // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
+  if (tarballLogMsg) {
+    // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
+    // while still ensuring it could be expanded into the original multi-line message if needed.
+    logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
+  }
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
