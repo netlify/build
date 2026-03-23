@@ -1267,8 +1267,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        configPath: join(basePath, '.netlify/edge-functions/config.json'),
-        importMapPaths: [resolve(basePath, 'import_map.json')],
         featureFlags: {
           edge_bundler_generate_tarball: true,
         },
