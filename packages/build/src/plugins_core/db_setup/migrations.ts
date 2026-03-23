@@ -24,7 +24,7 @@ const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) =>
   const srcDir = resolve(buildDir, constants.DB_MIGRATIONS_SRC!)
   const destDir = resolve(buildDir, constants.DB_MIGRATIONS_DIST!)
 
-  const { dirNames, fileNames } = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC!)
+  const { dirNames, fileNames } = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC)
 
   if (dirNames.length === 0 && fileNames.length === 0) {
     systemLog('No migration directories found, skipping copy.')
