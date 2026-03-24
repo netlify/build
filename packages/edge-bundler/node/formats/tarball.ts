@@ -61,6 +61,7 @@ export const bundle = async ({
   // Build prefix mappings to transform file:// URLs to relative paths
   const npmVendorDir = '.netlify-npm-vendor'
   const prefixes: Record<string, string> = {}
+  const additionalImportMapEntries: Record<string, string> = {}
 
   // Copy pre-bundled npm modules from vendorDirectory if present.
   // This supports the legacy approach where npm packages are pre-bundled and mapped
@@ -99,7 +100,17 @@ export const bundle = async ({
   }
 
   for (const sourceFile of sourceFilesSet) {
-    const relativePath = path.relative(commonPath, sourceFile)
+    let relativePath = path.relative(commonPath, sourceFile)
+
+    if (relativePath.startsWith('vendor' + path.sep)) {
+      // root vendor directory is reserved directory and can't be imported directly from with `vendor: true` or `--vendor` flag
+      // move from vendor/ to .root-vendor/
+      relativePath = relativePath.replace(/vendor[\\/]/, `.root-vendor/`)
+      // and import map rewrite so imports remain resolvable
+      additionalImportMapEntries['./vendor/'] = `./.root-vendor/`
+      prefixes[pathToFileURL(path.join(commonPath, 'vendor') + path.sep).href] = './.root-vendor/'
+    }
+
     const destPath = path.join(bundleDir.path, relativePath)
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
@@ -112,7 +123,7 @@ export const bundle = async ({
   prefixes[pathToFileURL(commonPath + path.sep).href] = './'
 
   // Get import map contents with file:// URLs transformed to relative paths
-  const importMapContents = importMap.getContents(prefixes)
+  const importMapContents = importMap.getContents(prefixes, additionalImportMapEntries)
 
   // Create deno.json with import map contents for runtime resolution
   const denoConfigPath = path.join(bundleDir.path, 'deno.json')
@@ -221,6 +232,11 @@ async function getRequiredSourceFiles(
     // Extract all local files from the module graph
     for (const module of graph.modules) {
       if (module.specifier.startsWith('file://')) {
+        if (module.error?.startsWith('Module not found')) {
+          // Module graph contains all found imported/required modules, even if they don't actually exist
+          // This can happen for optional dependencies (dynamic import or require in try/catch).
+          continue
+        }
         const filePath = fileURLToPath(module.specifier)
         localFiles.add(filePath)
       }

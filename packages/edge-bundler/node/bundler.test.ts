@@ -753,7 +753,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   await cleanup()
 })
 
-describe.skipIf(lt(denoVersion, '2.4.3'))(
+describe.skipIf(lt(denoVersion, '2.4.2'))(
   'Produces a tarball bundle',
   () => {
     test('With only local imports', async () => {
@@ -802,9 +802,9 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify key files are present (vendor directory may contain additional files)
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
-      expect(entries).toContain('func1.ts')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./func1.ts')
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
@@ -926,11 +926,11 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify that sibling directory files are included in the tarball
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
-      expect(entries).toContain('netlify/edge-functions/func1.ts')
-      expect(entries).toContain('data/config.json')
-      expect(entries).toContain('data/items.json')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./netlify/edge-functions/func1.ts')
+      expect(entries).toContain('./data/config.json')
+      expect(entries).toContain('./data/items.json')
 
       await cleanup()
     })
@@ -1036,7 +1036,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
           systemLogger,
         })
 
-        expect(systemLogger).toHaveBeenCalledWith('Dry run: Tarball bundle generated successfully.')
+        expect(systemLogger).toHaveBeenCalledWith('Dry run: Eszip and tarball bundle generated successfully.')
 
         const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
         const manifest = JSON.parse(manifestFile)
@@ -1085,7 +1085,7 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
         ).resolves.toBeDefined()
 
         expect(systemLogger).toHaveBeenCalledWith(
-          `Dry run: Tarball bundle generation failed: Simulated tarball bundling failure`,
+          `Dry run: Eszip successful, tarball bundle generation failed: Simulated tarball bundling failure`,
         )
 
         const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -1146,8 +1146,8 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       })
 
       // Verify key files are present (vendor directory may contain additional files)
-      expect(entries).toContain('___netlify-edge-functions.json')
-      expect(entries).toContain('deno.json')
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
 
       await cleanup()
     })
@@ -1190,6 +1190,122 @@ describe.skipIf(lt(denoVersion, '2.4.3'))(
       // Verify the function actually runs correctly
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual({ func1: 'ok' })
+
+      await cleanup()
+    })
+
+    test('Importing from root vendor directory is handled', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('imports_vendor', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, '.netlify/edge-functions/config.json'),
+        importMapPaths: [resolve(basePath, 'import_map.json')],
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'hello hello',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./netlify/edge-functions/func1.ts')
+      // vendor directory content was moved
+      expect(entries).toContain('./.root-vendor/hello.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
+    test('Importing not existing module when caught is handled', async () => {
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('caught-module-not-found-import', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      expect(
+        systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
+      ).toBeUndefined()
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./func1.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
 
       await cleanup()
     })

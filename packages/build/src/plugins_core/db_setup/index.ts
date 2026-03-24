@@ -1,7 +1,9 @@
 import { join } from 'node:path'
 
+import { logDbProvisioning, logDbMigrations } from '../../log/messages/core_steps.js'
 import { getPackageJson, type PackageJson } from '../../utils/package.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
+import { readMigrationEntries, getMigrationNames } from './utils.js'
 
 const NPM_PACKAGE_NAME = '@netlify/db'
 
@@ -32,8 +34,16 @@ interface TemporaryDatabaseResponse {
   connection_string: string
 }
 
-const coreStep: CoreStepFunction = async ({ api, branch, constants, context }) => {
+const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, context, logs }) => {
   const siteId = constants.SITE_ID
+
+  logDbProvisioning({ logs, branch, context })
+
+  const entries = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC)
+  const migrationNames = getMigrationNames(entries)
+  if (migrationNames.length > 0) {
+    logDbMigrations({ logs, migrations: migrationNames, srcDir: constants.DB_MIGRATIONS_SRC! })
+  }
 
   // @ts-expect-error This is an internal method for now so it isn't typed yet.
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -68,6 +78,6 @@ export const dbSetup: CoreStep = {
   coreStep,
   coreStepId: 'db_provision',
   coreStepName: 'Netlify DB setup',
-  coreStepDescription: () => 'Setup Netlify DB database',
+  coreStepDescription: () => 'Netlify DB setup',
   condition,
 }
