@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.11.0](https://github.com/netlify/build/compare/build-v35.10.1...build-v35.11.0) (2026-03-24)
+
+
+### Features
+
+* better netlifyDB logging ([#7002](https://github.com/netlify/build/issues/7002)) ([2aed6d2](https://github.com/netlify/build/commit/2aed6d2e986d9425cf983219d8179255849acae1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.9.18 to 14.9.19
+
 ## [35.10.1](https://github.com/netlify/build/compare/build-v35.10.0...build-v35.10.1) (2026-03-20)
 
 

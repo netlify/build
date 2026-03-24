@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "35.10.1",
+  "version": "35.11.0",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -70,7 +70,7 @@
     "@netlify/blobs": "^10.4.4",
     "@netlify/cache-utils": "^6.0.5",
     "@netlify/config": "^24.4.4",
-    "@netlify/edge-bundler": "14.9.18",
+    "@netlify/edge-bundler": "14.9.19",
     "@netlify/functions-utils": "^6.2.27",
     "@netlify/git-utils": "^6.0.4",
     "@netlify/opentelemetry-utils": "^2.0.2",
