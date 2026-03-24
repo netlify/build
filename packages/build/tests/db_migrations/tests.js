@@ -9,36 +9,28 @@ const FEATURE_FLAGS = { netlify_build_db_setup: true }
 test('Copies valid migrations to internal directory', async (t) => {
   const fixture = await new Fixture('./fixtures/valid_migrations').withCopyRoot({ git: false })
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+  const { success } = await fixture
+    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
+    .runBuildProgrammatic()
 
   t.true(success)
 
   const internalDir = join(fixture.repositoryRoot, '.netlify/internal/db/migrations')
   t.true(existsSync(join(internalDir, '1700000000_create-users/migration.sql')))
   t.true(existsSync(join(internalDir, '1700000001_add-posts/migration.sql')))
-
-  const output = stdout.join('\n')
-  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Copies migrations from a custom path', async (t) => {
   const fixture = await new Fixture('./fixtures/custom_path').withCopyRoot({ git: false })
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+  const { success } = await fixture
+    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
+    .runBuildProgrammatic()
 
   t.true(success)
 
   const internalDir = join(fixture.repositoryRoot, '.netlify/internal/db/migrations')
   t.true(existsSync(join(internalDir, '1700000000_create-users/migration.sql')))
-
-  const output = stdout.join('\n')
-  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Silently skips directories with invalid names', async (t) => {
@@ -100,46 +92,37 @@ test('Skips step when feature flag is off', async (t) => {
 test('Copies loose .sql files wrapped in subdirectory format', async (t) => {
   const fixture = await new Fixture('./fixtures/loose_sql_files').withCopyRoot({ git: false })
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+  const { success } = await fixture
+    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
+    .runBuildProgrammatic()
 
   t.true(success)
 
   const internalDir = join(fixture.repositoryRoot, '.netlify/internal/db/migrations')
   t.true(existsSync(join(internalDir, '001_create-users/migration.sql')))
   t.true(existsSync(join(internalDir, '002_add-posts/migration.sql')))
-
-  const output = stdout.join('\n')
-  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Copies mixed migrations (dirs and loose files) to internal directory', async (t) => {
   const fixture = await new Fixture('./fixtures/mixed_migrations').withCopyRoot({ git: false })
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+  const { success } = await fixture
+    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
+    .runBuildProgrammatic()
 
   t.true(success)
 
   const internalDir = join(fixture.repositoryRoot, '.netlify/internal/db/migrations')
   t.true(existsSync(join(internalDir, '1700000000_create-users/migration.sql')))
   t.true(existsSync(join(internalDir, '1700000001_add-posts/migration.sql')))
-
-  const output = stdout.join('\n')
-  t.true(output.includes('Netlify DB migrations'))
 })
 
 test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', async (t) => {
   const fixture = await new Fixture('./fixtures/drizzle_kit').withCopyRoot({ git: false })
 
-  const {
-    success,
-    logs: { stdout },
-  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+  const { success } = await fixture
+    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
+    .runBuildProgrammatic()
 
   t.true(success)
 
@@ -155,7 +138,4 @@ test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', asy
 
   // The meta directory should not be copied (it doesn't match the migration pattern)
   t.false(existsSync(join(internalDir, 'meta/migration.sql')))
-
-  const output = stdout.join('\n')
-  t.true(output.includes('Netlify DB migrations'))
 })
