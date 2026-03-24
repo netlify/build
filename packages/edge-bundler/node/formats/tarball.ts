@@ -232,6 +232,11 @@ async function getRequiredSourceFiles(
     // Extract all local files from the module graph
     for (const module of graph.modules) {
       if (module.specifier.startsWith('file://')) {
+        if (module.error?.startsWith('Module not found')) {
+          // Module graph contains all found imported/required modules, even if they don't actually exist
+          // This can happen for optional dependencies (dynamic import or require in try/catch).
+          continue
+        }
         const filePath = fileURLToPath(module.specifier)
         localFiles.add(filePath)
       }
