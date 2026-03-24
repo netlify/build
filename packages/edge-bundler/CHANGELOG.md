@@ -1,5 +1,14 @@
 # Changelog
 
+## [14.9.19](https://github.com/netlify/build/compare/edge-bundler-v14.9.18...edge-bundler-v14.9.19) (2026-03-24)
+
+
+### Bug Fixes
+
+* don't fail tarball bundling on modules that don't exist if they are optional or caught ([#7001](https://github.com/netlify/build/issues/7001)) ([e3a2934](https://github.com/netlify/build/commit/e3a2934e9fb731c22fc3bb6a5da73c382a1446c3))
+* only log tarball dry run results if eszip bundling was succesful ([#6986](https://github.com/netlify/build/issues/6986)) ([238ed96](https://github.com/netlify/build/commit/238ed96995038554a5c9cd4c6e2146b89f636d5b))
+* rename root vendor directory when creating tarball bundle ([#6985](https://github.com/netlify/build/issues/6985)) ([66cba91](https://github.com/netlify/build/commit/66cba91f4a7059ca8e695e5339fe3abfb7c371a2))
+
 ## [14.9.18](https://github.com/netlify/build/compare/edge-bundler-v14.9.17...edge-bundler-v14.9.18) (2026-03-20)
 
 
