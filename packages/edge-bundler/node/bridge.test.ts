@@ -1,9 +1,9 @@
 import { Buffer } from 'buffer'
 import { rm } from 'fs/promises'
-import { createRequire } from 'module'
 import { platform, env } from 'process'
 import { PassThrough } from 'stream'
 
+import { ZipArchive } from '@archiver/archiver'
 import nock from 'nock'
 import semver from 'semver'
 import tmp, { DirectoryResult } from 'tmp-promise'
@@ -12,13 +12,10 @@ import { test, expect } from 'vitest'
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
-const require = createRequire(import.meta.url)
-const archiver = require('archiver')
-
 const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(data)
   archive.append(Buffer.from(mockBinaryOutput.replace(/@@@latestVersion@@@/g, latestVersion)), {
@@ -141,7 +138,7 @@ test('Provides actionable error message when downloaded binary cannot be execute
   const tmpDir = await tmp.dir()
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(data)
   // Create a binary that will fail to execute (invalid content)
