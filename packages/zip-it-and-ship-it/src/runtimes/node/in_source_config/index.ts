@@ -22,7 +22,7 @@ import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
 import type { BindingMethod } from '../parser/bindings.js'
 import { createBindingsMethod } from '../parser/bindings.js'
-import { traverseNodes } from '../parser/exports.js'
+import { parseObject, traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
 import { safelyParseSource, safelyReadSource } from '../parser/index.js'
 import type { ModuleFormat } from '../utils/module_format.js'
@@ -87,6 +87,29 @@ export const inSourceConfig = functionConfig
 export type InSourceConfig = z.infer<typeof inSourceConfig>
 
 /**
+ * Resolves the default export expression to an ObjectExpression if possible,
+ * following identifier bindings when needed.
+ */
+const resolveObjectExpression = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): ObjectExpression | undefined => {
+  if (expression?.type === 'ObjectExpression') {
+    return expression
+  }
+
+  if (expression?.type === 'Identifier') {
+    const binding = getAllBindings().get(expression.name)
+
+    if (binding?.type === 'ObjectExpression') {
+      return binding
+    }
+  }
+
+  return undefined
+}
+
+/**
  * Extracts event subscription slugs from the default export expression,
  * if it's an object whose property names match known event handlers.
  */
@@ -94,17 +117,7 @@ const getEventSubscriptions = (
   expression: Expression | Declaration | undefined,
   getAllBindings: BindingMethod,
 ): string[] => {
-  let objectExpression: ObjectExpression | undefined
-
-  if (expression?.type === 'ObjectExpression') {
-    objectExpression = expression
-  } else if (expression?.type === 'Identifier') {
-    const binding = getAllBindings().get(expression.name)
-
-    if (binding?.type === 'ObjectExpression') {
-      objectExpression = binding
-    }
-  }
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
 
   if (!objectExpression) {
     return []
@@ -128,6 +141,41 @@ const getEventSubscriptions = (
   }
 
   return events
+}
+
+/**
+ * Extracts a `config` property from the default export object expression,
+ * returning it as a plain object. This supports patterns like:
+ *
+ * ```js
+ * export default {
+ *   fetch() { ... },
+ *   config: { path: "/hello" }
+ * }
+ * ```
+ */
+const getConfigFromDefaultExport = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): Record<string, unknown> | undefined => {
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
+
+  if (!objectExpression) {
+    return undefined
+  }
+
+  for (const property of objectExpression.properties) {
+    if (
+      property.type === 'ObjectProperty' &&
+      property.key.type === 'Identifier' &&
+      property.key.name === 'config' &&
+      property.value.type === 'ObjectExpression'
+    ) {
+      return parseObject(property.value)
+    }
+  }
+
+  return undefined
 }
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
@@ -205,7 +253,11 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       result.eventSubscriptions = eventSubscriptions
     }
 
-    const { data, error, success } = inSourceConfig.safeParse(configExport)
+    // Config from the default export object's `config` property is used as a
+    // fallback when no separate `export const config` exists.
+    const inlineConfig = getConfigFromDefaultExport(defaultExportExpression, getAllBindings)
+    const mergedConfigExport = Object.keys(configExport).length > 0 ? configExport : (inlineConfig ?? {})
+    const { data, error, success } = inSourceConfig.safeParse(mergedConfigExport)
 
     if (success) {
       result.config = data
