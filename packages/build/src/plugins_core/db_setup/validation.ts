@@ -8,7 +8,7 @@ interface MissingSqlFileError {
 
 interface DuplicateMigrationNumberError {
   type: 'duplicate_migration_number'
-  migrationNumber: number
+  migrationNumber: string
   names: string[]
 }
 
@@ -25,13 +25,13 @@ interface ValidationFailure {
   errors: ValidationError[]
 }
 
-export const trackMigrationNumber = (numberToNames: Map<number, string[]>, name: string) => {
-  const num = Number(/^(\d+)_/.exec(name)![1])
-  const existing = numberToNames.get(num)
+export const trackMigrationNumber = (numberToNames: Map<string, string[]>, name: string) => {
+  const key = /^(\d+)_/.exec(name)![1].replace(/^0+/, '') || '0'
+  const existing = numberToNames.get(key)
   if (existing) {
     existing.push(name)
   } else {
-    numberToNames.set(num, [name])
+    numberToNames.set(key, [name])
   }
 }
 
@@ -42,7 +42,7 @@ export const validateMigrations = (
 ): ValidationResult | ValidationFailure => {
   const errors: ValidationError[] = []
   const matchingDirs: string[] = []
-  const numberToNames = new Map<number, string[]>()
+  const numberToNames = new Map<string, string[]>()
 
   for (const dirName of dirNames) {
     if (!MIGRATION_DIR_PATTERN.test(dirName)) {
@@ -55,10 +55,6 @@ export const validateMigrations = (
     if (!existingSqlFiles.has(dirName)) {
       errors.push({ type: 'missing_sql_file', dirName })
     }
-  }
-
-  if (errors.length > 0) {
-    return { valid: false, errors }
   }
 
   const matchingFiles: string[] = []
@@ -91,7 +87,7 @@ export const formatValidationErrors = (errors: ValidationError[]): string => {
     if (error.type === 'missing_sql_file') {
       return `  - "${error.dirName}/migration.sql" is missing.`
     }
-    return `  - Duplicate migration number ${String(error.migrationNumber)}: ${error.names.map((n) => `"${n}"`).join(', ')}`
+    return `  - Duplicate migration number ${error.migrationNumber}: ${error.names.map((n) => `"${n}"`).join(', ')}`
   })
 
   return `Database migration validation failed:\n${lines.join('\n')}`

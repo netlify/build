@@ -73,26 +73,27 @@ describe('MIGRATION_FILE_PATTERN', () => {
 
 describe('trackMigrationNumber', () => {
   const cases = [
-    { name: '001_create-users', expected: 1 },
-    { name: '1_init', expected: 1 },
-    { name: '0001_add-posts', expected: 1 },
-    { name: '42_z', expected: 42 },
-    { name: '1700000000_create-users', expected: 1700000000 },
-    { name: '1700000000_create-users.sql', expected: 1700000000 },
-    { name: '001_create-users.sql', expected: 1 },
+    { name: '001_create-users', expected: '1' },
+    { name: '1_init', expected: '1' },
+    { name: '0001_add-posts', expected: '1' },
+    { name: '42_z', expected: '42' },
+    { name: '1700000000_create-users', expected: '1700000000' },
+    { name: '1700000000_create-users.sql', expected: '1700000000' },
+    { name: '001_create-users.sql', expected: '1' },
+    { name: '0000000000_init', expected: '0' },
   ]
 
-  test.each(cases)('tracks $name under number $expected', ({ name, expected }) => {
-    const map = new Map<number, string[]>()
+  test.each(cases)('tracks $name under key $expected', ({ name, expected }) => {
+    const map = new Map<string, string[]>()
     trackMigrationNumber(map, name)
     expect(map.get(expected)).toEqual([name])
   })
 
   test('groups names with the same migration number', () => {
-    const map = new Map<number, string[]>()
+    const map = new Map<string, string[]>()
     trackMigrationNumber(map, '001_create-users')
     trackMigrationNumber(map, '1_init')
-    expect(map.get(1)).toEqual(['001_create-users', '1_init'])
+    expect(map.get('1')).toEqual(['001_create-users', '1_init'])
   })
 })
 
@@ -205,7 +206,7 @@ describe('validateMigrations', () => {
     expect(result).toEqual({
       valid: false,
       errors: [
-        { type: 'duplicate_migration_number', migrationNumber: 1, names: ['001_add-posts', '001_create-users'] },
+        { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts', '001_create-users'] },
       ],
     })
   })
@@ -220,7 +221,7 @@ describe('validateMigrations', () => {
       errors: [
         {
           type: 'duplicate_migration_number',
-          migrationNumber: 1,
+          migrationNumber: '1',
           names: ['001_add-posts.sql', '001_create-users.sql'],
         },
       ],
@@ -237,7 +238,7 @@ describe('validateMigrations', () => {
     expect(result).toEqual({
       valid: false,
       errors: [
-        { type: 'duplicate_migration_number', migrationNumber: 1, names: ['001_add-posts.sql', '001_create-users'] },
+        { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts.sql', '001_create-users'] },
       ],
     })
   })
@@ -250,7 +251,7 @@ describe('validateMigrations', () => {
 
     expect(result).toEqual({
       valid: false,
-      errors: [{ type: 'duplicate_migration_number', migrationNumber: 1, names: ['001_setup', '1_init'] }],
+      errors: [{ type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_setup', '1_init'] }],
     })
   })
 })
@@ -275,7 +276,7 @@ describe('formatValidationErrors', () => {
 
   test('formats duplicate_migration_number errors', () => {
     const message = formatValidationErrors([
-      { type: 'duplicate_migration_number', migrationNumber: 1, names: ['001_add-posts', '001_create-users'] },
+      { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts', '001_create-users'] },
     ])
 
     expect(message).toContain('Database migration validation failed')
