@@ -117,6 +117,20 @@ test('Copies mixed migrations (dirs and loose files) to internal directory', asy
   t.true(existsSync(join(internalDir, '1700000001_add-posts/migration.sql')))
 })
 
+test('Fails build for duplicate migration numbers', async (t) => {
+  const fixture = await new Fixture('./fixtures/duplicate_migration_number').withCopyRoot({ git: false })
+
+  const {
+    success,
+    logs: { stdout },
+  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+
+  t.false(success)
+
+  const output = stdout.join('\n')
+  t.true(output.includes('Duplicate migration number'))
+})
+
 test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', async (t) => {
   const fixture = await new Fixture('./fixtures/drizzle_kit').withCopyRoot({ git: false })
 
