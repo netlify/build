@@ -19,7 +19,7 @@ export const hasVitePlusPackage = (packageJSON: PackageJson): boolean => {
 
 export const getVitePlusVersion = async (buildDir: string, packagePath?: string): Promise<string> => {
   const { packageJson } = await getPackageJson(buildDir)
-  const version = packageJson.devDependencies?.[NPM_PACKAGE_NAME] || packageJson.dependencies?.[NPM_PACKAGE_NAME]
+  const version = packageJson.devDependencies?.[NPM_PACKAGE_NAME] ?? packageJson.dependencies?.[NPM_PACKAGE_NAME]
 
   if (version) {
     return version
@@ -28,8 +28,8 @@ export const getVitePlusVersion = async (buildDir: string, packagePath?: string)
   if (packagePath) {
     const { packageJson: workspacePackageJson } = await getPackageJson(join(buildDir, packagePath))
     return (
-      workspacePackageJson.devDependencies?.[NPM_PACKAGE_NAME] ||
-      workspacePackageJson.dependencies?.[NPM_PACKAGE_NAME] ||
+      workspacePackageJson.devDependencies?.[NPM_PACKAGE_NAME] ??
+      workspacePackageJson.dependencies?.[NPM_PACKAGE_NAME] ??
       'latest'
     )
   }
@@ -44,7 +44,7 @@ export const installVitePlusCli = async (version: string): Promise<string> => {
       stdio: 'pipe',
     })
   } catch (error) {
-    throw new Error(`Failed to install Vite+ CLI: ${error instanceof Error ? error.message : error}`)
+    throw new Error(`Failed to install Vite+ CLI: ${error instanceof Error ? error.message : String(error)}`)
   }
 
   const vitePlusBinDir = join(homedir(), '.vite-plus', 'bin')
@@ -87,7 +87,7 @@ const coreStep: CoreStepFunction = async ({ buildDir, packagePath, logs }) => {
   log(logs, `Installing Vite+ CLI${version !== 'latest' ? ` (${THEME.highlightWords(version)})` : ''}`)
 
   const vitePlusBinDir = await installVitePlusCli(version)
-  const newPath = `${vitePlusBinDir}:${process.env.PATH}`
+  const newPath = `${vitePlusBinDir}:${process.env.PATH ?? ''}`
   process.env.PATH = newPath
 
   log(logs, `Vite+ CLI installed successfully`)

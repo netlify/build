@@ -13,10 +13,10 @@ vi.mock('../../utils/package.js', () => ({
   getPackageJson: vi.fn().mockResolvedValue({ packageJson: {} }),
 }))
 
-import { execa } from 'execa'
+import { execa, type Options, type ExecaChildProcess } from 'execa'
 import { getPackageJson } from '../../utils/package.js'
 
-const mockedExeca = vi.mocked(execa)
+const mockedExeca = vi.mocked(execa as (file: string, args?: readonly string[], options?: Options) => ExecaChildProcess)
 const mockedGetPackageJson = vi.mocked(getPackageJson)
 
 beforeEach(() => {
@@ -96,11 +96,15 @@ describe('installVitePlusCli', () => {
   test('calls curl with the install script', async () => {
     await installVitePlusCli('1.0.0')
 
-    expect(mockedExeca).toHaveBeenCalledWith('bash', ['-c', 'curl -fsSL --max-time 120 https://vite.plus | bash'], {
-      env: expect.objectContaining({
+    expect(mockedExeca).toHaveBeenCalledOnce()
+    const [cmd, args, opts] = mockedExeca.mock.calls[0]
+    expect(cmd).toBe('bash')
+    expect(args).toEqual(['-c', 'curl -fsSL --max-time 120 https://vite.plus | bash'])
+    expect(opts).toMatchObject({
+      env: {
         VP_VERSION: '1.0.0',
         VITE_PLUS_VERSION: '1.0.0',
-      }),
+      },
       stdio: 'pipe',
     })
   })
@@ -108,16 +112,14 @@ describe('installVitePlusCli', () => {
   test('passes latest as version env vars', async () => {
     await installVitePlusCli('latest')
 
-    expect(mockedExeca).toHaveBeenCalledWith(
-      'bash',
-      expect.any(Array),
-      expect.objectContaining({
-        env: expect.objectContaining({
-          VP_VERSION: 'latest',
-          VITE_PLUS_VERSION: 'latest',
-        }),
-      }),
-    )
+    expect(mockedExeca).toHaveBeenCalledOnce()
+    const [, , opts] = mockedExeca.mock.calls[0]
+    expect(opts).toMatchObject({
+      env: {
+        VP_VERSION: 'latest',
+        VITE_PLUS_VERSION: 'latest',
+      },
+    })
   })
 
   test('returns the vite-plus bin directory', async () => {

@@ -14,7 +14,7 @@ export class VitePlus extends BaseBuildTool {
     if (pkgJsonPath) {
       const pkg = await this.project.fs.readJSON<Record<string, Record<string, string>>>(pkgJsonPath)
       if (pkg.dependencies?.['vite-plus'] || pkg.devDependencies?.['vite-plus']) {
-        this.version = pkg.devDependencies?.['vite-plus'] || pkg.dependencies?.['vite-plus']
+        this.version = pkg.devDependencies?.['vite-plus'] ?? pkg.dependencies?.['vite-plus']
         return this
       }
     }
