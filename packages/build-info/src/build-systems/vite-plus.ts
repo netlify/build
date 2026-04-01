@@ -21,15 +21,19 @@ export class VitePlus extends BaseBuildTool {
   }
 
   async getCommands(packagePath: string): Promise<Command[]> {
-    const { scripts } = await this.project.fs.readJSON<Record<string, Record<string, string>>>(
-      this.project.resolveFromPackage(packagePath, 'package.json'),
-    )
+    try {
+      const { scripts } = await this.project.fs.readJSON<Record<string, Record<string, string>>>(
+        this.project.resolveFromPackage(packagePath, 'package.json'),
+      )
 
-    if (scripts && Object.keys(scripts).length > 0) {
-      return Object.entries(scripts).map(([scriptName, value]) => ({
-        type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
-        command: `vp run ${scriptName}`,
-      }))
+      if (scripts && Object.keys(scripts).length > 0) {
+        return Object.entries(scripts).map(([scriptName, value]) => ({
+          type: isNpmDevScript(scriptName, value) ? 'dev' : isNpmBuildScript(scriptName, value) ? 'build' : 'unknown',
+          command: `vp run ${scriptName}`,
+        }))
+      }
+    } catch {
+      // noop
     }
     return []
   }

@@ -38,10 +38,14 @@ export const getVitePlusVersion = async (buildDir: string, packagePath?: string)
 }
 
 export const installVitePlusCli = async (version: string): Promise<string> => {
-  await execa('bash', ['-c', `curl -fsSL ${INSTALL_URL} | bash`], {
-    env: { ...process.env, VP_VERSION: version, VITE_PLUS_VERSION: version },
-    stdio: 'pipe',
-  })
+  try {
+    await execa('bash', ['-c', `curl -fsSL --max-time 120 ${INSTALL_URL} | bash`], {
+      env: { ...process.env, VP_VERSION: version, VITE_PLUS_VERSION: version },
+      stdio: 'pipe',
+    })
+  } catch (error) {
+    throw new Error(`Failed to install Vite+ CLI: ${error instanceof Error ? error.message : error}`)
+  }
 
   const vitePlusBinDir = join(homedir(), '.vite-plus', 'bin')
   return vitePlusBinDir
@@ -52,17 +56,25 @@ const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlag
     return false
   }
 
-  const { packageJson } = await getPackageJson(buildDir)
+  try {
+    const { packageJson } = await getPackageJson(buildDir)
 
-  if (hasVitePlusPackage(packageJson)) {
-    return true
+    if (hasVitePlusPackage(packageJson)) {
+      return true
+    }
+  } catch {
+    // noop — root package.json missing or invalid
   }
 
   if (packagePath) {
-    const { packageJson: workspacePackageJson } = await getPackageJson(join(buildDir, packagePath))
+    try {
+      const { packageJson: workspacePackageJson } = await getPackageJson(join(buildDir, packagePath))
 
-    if (hasVitePlusPackage(workspacePackageJson)) {
-      return true
+      if (hasVitePlusPackage(workspacePackageJson)) {
+        return true
+      }
+    } catch {
+      // noop — workspace package.json missing or invalid
     }
   }
 

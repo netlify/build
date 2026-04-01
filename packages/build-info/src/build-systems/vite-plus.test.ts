@@ -14,8 +14,9 @@ test('detects Vite+ when vite-plus is in devDependencies', async ({ fs }) => {
   })
   const detected = await new Project(fs, cwd).detectBuildSystem()
 
-  expect(detected[0]?.name).toBe('Vite+')
-  expect(detected[0]?.version).toBe('^1.0.0')
+  const vitePlus = detected.find((b) => b.name === 'Vite+')
+  expect(vitePlus).toBeDefined()
+  expect(vitePlus?.version).toBe('^1.0.0')
 })
 
 test('detects Vite+ when vite-plus is in dependencies', async ({ fs }) => {
@@ -24,8 +25,9 @@ test('detects Vite+ when vite-plus is in dependencies', async ({ fs }) => {
   })
   const detected = await new Project(fs, cwd).detectBuildSystem()
 
-  expect(detected[0]?.name).toBe('Vite+')
-  expect(detected[0]?.version).toBe('^2.0.0')
+  const vitePlus = detected.find((b) => b.name === 'Vite+')
+  expect(vitePlus).toBeDefined()
+  expect(vitePlus?.version).toBe('^2.0.0')
 })
 
 test('does not detect Vite+ when vite-plus is absent', async ({ fs }) => {
@@ -52,6 +54,7 @@ test('generates vp run commands from package.json scripts', async ({ fs }) => {
   const detected = await project.detectBuildSystem()
   const vitePlus = detected.find((b) => b.name === 'Vite+')
 
+  expect(vitePlus).toBeDefined()
   const commands = await vitePlus!.getCommands!('')
   expect(commands).toEqual([
     { type: 'build', command: 'vp run build' },

@@ -96,7 +96,7 @@ describe('installVitePlusCli', () => {
   test('calls curl with the install script', async () => {
     await installVitePlusCli('1.0.0')
 
-    expect(mockedExeca).toHaveBeenCalledWith('bash', ['-c', 'curl -fsSL https://vite.plus | bash'], {
+    expect(mockedExeca).toHaveBeenCalledWith('bash', ['-c', 'curl -fsSL --max-time 120 https://vite.plus | bash'], {
       env: expect.objectContaining({
         VP_VERSION: '1.0.0',
         VITE_PLUS_VERSION: '1.0.0',
