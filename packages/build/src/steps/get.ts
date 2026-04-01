@@ -8,6 +8,7 @@ import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { applyDeployConfig } from '../plugins_core/frameworks_api/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { dbSetup } from '../plugins_core/db_setup/index.js'
+import { vitePlusSetup } from '../plugins_core/vite_plus_setup/index.js'
 import { copyDbMigrations } from '../plugins_core/db_setup/migrations.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
@@ -78,6 +79,7 @@ const getEventSteps = function (eventHandlers?: any[]) {
 const addCoreSteps = function (steps): CoreStep[] {
   return [
     preCleanup,
+    vitePlusSetup,
     dbSetup,
     buildCommandCore,
     applyDeployConfig,
