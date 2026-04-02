@@ -7,7 +7,7 @@ export class VitePress extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'vitepress dev',
+    command: 'vitepress dev docs',
     port: 5173,
     pollingStrategies: [{ name: 'TCP' }],
   }
