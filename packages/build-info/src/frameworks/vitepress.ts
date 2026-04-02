@@ -13,8 +13,8 @@ export class VitePress extends BaseFramework implements Framework {
   }
 
   build = {
-    command: 'vitepress build',
-    directory: '.vitepress/dist',
+    command: 'vitepress build docs',
+    directory: 'docs/.vitepress/dist',
   }
 
   logo = {

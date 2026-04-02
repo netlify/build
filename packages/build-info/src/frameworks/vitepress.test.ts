@@ -28,8 +28,8 @@ test('detects a Vitepress site', async ({ fs }) => {
   expect(detected?.length).toBe(1)
 
   expect(detected?.[0]?.id).toBe('vitepress')
-  expect(detected?.[0]?.build?.command).toBe('vitepress build')
-  expect(detected?.[0]?.build?.directory).toBe('.vitepress/dist')
+  expect(detected?.[0]?.build?.command).toBe('vitepress build docs')
+  expect(detected?.[0]?.build?.directory).toBe('docs/.vitepress/dist')
   expect(detected?.[0]?.dev?.command).toBe('vitepress dev')
   expect(detected?.[0]?.dev?.port).toBe(5173)
 })
