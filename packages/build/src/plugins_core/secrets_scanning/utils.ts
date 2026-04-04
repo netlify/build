@@ -1,6 +1,7 @@
-import { createReadStream, promises as fs, existsSync } from 'node:fs'
+import { createReadStream } from 'node:fs'
 import path from 'node:path'
 
+import { execa, execaSync } from 'execa'
 import { fdir } from 'fdir'
 import { minimatch } from 'minimatch'
 
@@ -238,26 +239,32 @@ export function findLikelySecrets({
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   const omitPathsAlways = ['.git/', '.cache/']
 
-  // node modules is dense and is only useful to scan if the repo itself commits these
-  // files. As a simple check to understand if the repo would commit these files, we expect
-  // that they would not ignore them from their git settings. So if gitignore includes
-  // node_modules anywhere we will omit looking in those folders - this will allow repos
-  // that do commit node_modules to still scan them.
-  let ignoreNodeModules = false
-
-  const gitignorePath = path.resolve(base, '.gitignore')
-  const gitignoreContents = existsSync(gitignorePath) ? await fs.readFile(gitignorePath, 'utf-8') : ''
-
-  if (gitignoreContents?.includes('node_modules')) {
-    ignoreNodeModules = true
-  }
-
+  const isInGitWorktree = (await execa('git', ['rev-parse', '--show-toplevel'], { reject: false })).exitCode === 0
   let files = await new fdir()
     .withRelativePaths()
-    .filter((path) => {
-      if (ignoreNodeModules && path.includes('node_modules')) {
-        return false
+    .filter((filepath) => {
+      if (path.basename(filepath) === 'node_modules') {
+        if (!isInGitWorktree) {
+          // When we're not in a git worktree (e.g. triggered by Drop, SWAR), users don't
+          // intentionally commit `node_modules` directories. There's little to no value to scanning
+          // third-party modules and we might pick up secrets that the user doesn't have a way to
+          // resolve.
+          //
+          // XXX(ndhoule): This isn't technically true, though, is it? Couldn't someone include a
+          // (smaller, to get around filesize limits) node_modules directory in their upload?
+          return false
+        }
+
+        // The user may intentionally commit their `node_modules`, in which case we assume they may
+        // be vendoring their own internal modules and scanning them may be valuable.
+        //
+        // git check-ignore returns 0 when the file is referenced by any .gitignore up to the root
+        // of the worktree, and 1 otherwise.
+        if (execaSync('git', ['check-ignore', filepath], { reject: false }).exitCode === 0) {
+          return false
+        }
       }
+
       return true
     })
     .crawl(base)
