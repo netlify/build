@@ -99,7 +99,7 @@ describe('installVitePlusCli', () => {
     expect(mockedExeca).toHaveBeenCalledOnce()
     const [cmd, args, opts] = mockedExeca.mock.calls[0]
     expect(cmd).toBe('bash')
-    expect(args).toEqual(['-c', 'curl -fsSL --max-time 120 https://vite.plus | bash'])
+    expect(args).toEqual(['-o', 'pipefail', '-c', 'curl -fsSL --max-time 120 https://vite.plus | bash'])
     expect(opts).toMatchObject({
       env: {
         VP_VERSION: '1.0.0',

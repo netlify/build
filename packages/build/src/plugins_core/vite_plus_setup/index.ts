@@ -39,7 +39,7 @@ export const getVitePlusVersion = async (buildDir: string, packagePath?: string)
 
 export const installVitePlusCli = async (version: string): Promise<string> => {
   try {
-    await execa('bash', ['-c', `curl -fsSL --max-time 120 ${INSTALL_URL} | bash`], {
+    await execa('bash', ['-o', 'pipefail', '-c', `curl -fsSL --max-time 120 ${INSTALL_URL} | bash`], {
       env: { ...process.env, VP_VERSION: version, VITE_PLUS_VERSION: version },
       stdio: 'pipe',
     })
