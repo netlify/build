@@ -24,7 +24,7 @@ import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
-import { writeManifest } from './manifest.js'
+import { generateManifestFunctionConfig, writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
@@ -127,6 +127,36 @@ export const bundle = async (
     importMap.add(vendor.importMap)
   }
 
+  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
+    await getFunctionConfigs({
+      deno,
+      importMap,
+      internalFunctions,
+      log: logger,
+      userFunctions,
+    })
+
+  // Creating a final declarations array by combining the TOML file with the
+  // deploy configuration API and the in-source configuration.
+  const declarations = mergeDeclarations(
+    tomlDeclarations,
+    userFunctionsWithConfig,
+    internalFunctionsWithConfig,
+    deployConfig.declarations,
+    featureFlags,
+  )
+
+  const internalFunctionConfig = createFunctionConfig({
+    internalFunctionsWithConfig,
+    declarations,
+  })
+
+  const manifestFunctionConfig = generateManifestFunctionConfig({
+    functions,
+    internalFunctionConfig,
+    userFunctionConfig: userFunctionsWithConfig,
+  })
+
   const bundles: Bundle[] = []
   let tarballBundleDurationMs: number | undefined
   let tarballLogMsg: string | undefined
@@ -146,6 +176,7 @@ export const bundle = async (
           featureFlags,
           importMap: importMap.clone(),
           vendorDirectory: vendor?.directory,
+          manifestFunctionConfig,
         })
       } finally {
         tarballBundleDurationMs = Date.now() - start
@@ -199,38 +230,13 @@ export const bundle = async (
   // rename the bundles to their permanent names.
   await createFinalBundles(bundles, distDirectory, buildID)
 
-  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
-    await getFunctionConfigs({
-      deno,
-      importMap,
-      internalFunctions,
-      log: logger,
-      userFunctions,
-    })
-
-  // Creating a final declarations array by combining the TOML file with the
-  // deploy configuration API and the in-source configuration.
-  const declarations = mergeDeclarations(
-    tomlDeclarations,
-    userFunctionsWithConfig,
-    internalFunctionsWithConfig,
-    deployConfig.declarations,
-    featureFlags,
-  )
-
-  const internalFunctionConfig = createFunctionConfig({
-    internalFunctionsWithConfig,
-    declarations,
-  })
-
   const manifest = await writeManifest({
     bundles,
     declarations,
     distDirectory,
     featureFlags,
     functions,
-    userFunctionConfig: userFunctionsWithConfig,
-    internalFunctionConfig,
+    manifestFunctionConfig,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
     bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },

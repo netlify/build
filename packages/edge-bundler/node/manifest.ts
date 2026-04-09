@@ -64,17 +64,24 @@ interface Manifest {
   function_config: Record<string, EdgeFunctionConfig>
 }
 
-interface GenerateManifestOptions {
+interface GenerateManifestFunctionConfigOptions {
+  functions: EdgeFunction[]
+  internalFunctionConfig?: Record<string, FunctionConfig>
+  userFunctionConfig?: Record<string, FunctionConfig>
+}
+
+interface GenerateManifestOptionsBase {
   bundles?: Bundle[]
   declarations?: Declaration[]
   featureFlags?: FeatureFlags
-  functions: EdgeFunction[]
   importMap?: string
-  internalFunctionConfig?: Record<string, FunctionConfig>
   layers?: Layer[]
-  userFunctionConfig?: Record<string, FunctionConfig>
   bundlingTiming?: BundlingTiming
+  functions: EdgeFunction[]
 }
+
+type GenerateManifestOptions = GenerateManifestOptionsBase &
+  (GenerateManifestFunctionConfigOptions | { manifestFunctionConfig: Record<string, EdgeFunctionConfig> })
 
 const removeEmptyConfigValues = (functionConfig: EdgeFunctionConfig) =>
   Object.entries(functionConfig).reduce((acc, [key, value]) => {
@@ -147,23 +154,14 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
   })
 }
 
-const generateManifest = ({
-  bundles = [],
-  declarations = [],
+export const generateManifestFunctionConfig = ({
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
-  importMap,
-  layers = [],
-  bundlingTiming,
-}: GenerateManifestOptions) => {
-  const preCacheRoutes: Route[] = []
-  const postCacheRoutes: Route[] = []
+}: GenerateManifestFunctionConfigOptions) => {
   const manifestFunctionConfig: Manifest['function_config'] = Object.fromEntries(
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
-  const routedFunctions = new Set<string>()
-  const declarationsWithoutFunction = new Set<string>()
 
   for (const [name, singleUserFunctionConfig] of Object.entries(userFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
@@ -209,6 +207,28 @@ const generateManifest = ({
       ...rest,
     }
   }
+
+  return sanitizeEdgeFunctionConfig(manifestFunctionConfig)
+}
+
+const generateManifest = ({
+  bundles = [],
+  declarations = [],
+  importMap,
+  layers = [],
+  bundlingTiming,
+  functions,
+  ...rest
+}: GenerateManifestOptions) => {
+  const manifestFunctionConfig =
+    'manifestFunctionConfig' in rest
+      ? rest.manifestFunctionConfig
+      : generateManifestFunctionConfig({ functions, ...rest })
+
+  const preCacheRoutes: Route[] = []
+  const postCacheRoutes: Route[] = []
+  const routedFunctions = new Set<string>()
+  const declarationsWithoutFunction = new Set<string>()
 
   declarations.forEach((declaration) => {
     const func = functions.find(({ name }) => declaration.function === name)
@@ -366,7 +386,7 @@ const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
   return []
 }
 
-interface WriteManifestOptions extends GenerateManifestOptions {
+type WriteManifestOptions = GenerateManifestOptions & {
   distDirectory: string
 }
 
