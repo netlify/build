@@ -105,6 +105,18 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.12.0](https://github.com/netlify/build/compare/build-v35.11.2...build-v35.12.0) (2026-04-09)
+
+
+### Features
+
+* validate duplicate netlifyDB migrations ([#7010](https://github.com/netlify/build/issues/7010)) ([230dfbf](https://github.com/netlify/build/commit/230dfbf9ae323b41f6734cc1ffe48a676bfea4ef))
+
+
+### Bug Fixes
+
+* do not scan for secrets in the ignored folders or files ([#7022](https://github.com/netlify/build/issues/7022)) ([42f6753](https://github.com/netlify/build/commit/42f6753d12bde9ef3e50306df334acd78450635c))
+
 ## [35.11.2](https://github.com/netlify/build/compare/build-v35.11.1...build-v35.11.2) (2026-03-26)
 
 
