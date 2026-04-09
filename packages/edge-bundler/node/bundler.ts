@@ -24,7 +24,7 @@ import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
-import { generateManifestFunctionConfig, writeManifest } from './manifest.js'
+import { generateManifestFunctionConfig, generateManifestRoutes, writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
@@ -157,6 +157,11 @@ export const bundle = async (
     userFunctionConfig: userFunctionsWithConfig,
   })
 
+  const manifestRoutes = generateManifestRoutes({
+    functions,
+    declarations,
+  })
+
   const bundles: Bundle[] = []
   let tarballBundleDurationMs: number | undefined
   let tarballLogMsg: string | undefined
@@ -177,6 +182,7 @@ export const bundle = async (
           importMap: importMap.clone(),
           vendorDirectory: vendor?.directory,
           manifestFunctionConfig,
+          manifestRoutes,
         })
       } finally {
         tarballBundleDurationMs = Date.now() - start

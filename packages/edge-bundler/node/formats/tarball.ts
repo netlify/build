@@ -16,11 +16,15 @@ import { getFileHash } from '../utils/sha256.js'
 import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
+import { generateManifestRoutes, Route } from '../manifest.js'
 
 const TARBALL_EXTENSION = '.tar.gz'
 
 interface Manifest {
   functions: Record<string, string>
+  functionConfig: Record<string, EdgeFunctionConfig>
+  routes: Route[]
+  postCacheRoutes: Route[]
   version: number
 }
 
@@ -35,6 +39,7 @@ interface BundleTarballOptions {
   importMap: ImportMap
   vendorDirectory?: string
   manifestFunctionConfig: Record<string, EdgeFunctionConfig>
+  manifestRoutes: ReturnType<typeof generateManifestRoutes>
 }
 
 const getUnixPath = (input: string) => input.split(path.sep).join('/')
@@ -47,13 +52,17 @@ export const bundle = async ({
   importMap,
   vendorDirectory,
   manifestFunctionConfig,
+  manifestRoutes,
 }: BundleTarballOptions): Promise<Bundle> => {
   const bundleDir = await tmp.dir({ unsafeCleanup: true })
   const cleanup = [bundleDir.cleanup]
 
   const manifest: Manifest = {
     functions: {},
-    version: 1,
+    functionConfig: manifestFunctionConfig,
+    routes: manifestRoutes.preCacheRoutes,
+    postCacheRoutes: manifestRoutes.postCacheRoutes,
+    version: 2,
   }
   const entryPoints = functions.map((func) => func.path)
 
@@ -163,10 +172,6 @@ export const bundle = async ({
   const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
   const manifestContents = JSON.stringify(manifest)
   await fs.writeFile(manifestPath, manifestContents)
-
-  const functionConfigPath = path.join(bundleDir.path, '___netlify-function-config.json')
-  const functionConfigContents = JSON.stringify(manifestFunctionConfig)
-  await fs.writeFile(functionConfigPath, functionConfigContents)
 
   const tarballPath = path.join(distDirectory, buildID + TARBALL_EXTENSION)
   await fs.mkdir(path.dirname(tarballPath), { recursive: true })

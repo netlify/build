@@ -70,18 +70,19 @@ interface GenerateManifestFunctionConfigOptions {
   userFunctionConfig?: Record<string, FunctionConfig>
 }
 
+interface GenerateManifestRoutesOptions {
+  functions: EdgeFunction[]
+  declarations?: Declaration[]
+}
+
 interface GenerateManifestOptionsBase {
   bundles?: Bundle[]
-  declarations?: Declaration[]
   featureFlags?: FeatureFlags
   importMap?: string
   layers?: Layer[]
   bundlingTiming?: BundlingTiming
   functions: EdgeFunction[]
 }
-
-type GenerateManifestOptions = GenerateManifestOptionsBase &
-  (GenerateManifestFunctionConfigOptions | { manifestFunctionConfig: Record<string, EdgeFunctionConfig> })
 
 const removeEmptyConfigValues = (functionConfig: EdgeFunctionConfig) =>
   Object.entries(functionConfig).reduce((acc, [key, value]) => {
@@ -211,20 +212,7 @@ export const generateManifestFunctionConfig = ({
   return sanitizeEdgeFunctionConfig(manifestFunctionConfig)
 }
 
-const generateManifest = ({
-  bundles = [],
-  declarations = [],
-  importMap,
-  layers = [],
-  bundlingTiming,
-  functions,
-  ...rest
-}: GenerateManifestOptions) => {
-  const manifestFunctionConfig =
-    'manifestFunctionConfig' in rest
-      ? rest.manifestFunctionConfig
-      : generateManifestFunctionConfig({ functions, ...rest })
-
+export const generateManifestRoutes = ({ functions, declarations = [] }: GenerateManifestRoutesOptions) => {
   const preCacheRoutes: Route[] = []
   const postCacheRoutes: Route[] = []
   const routedFunctions = new Set<string>()
@@ -274,14 +262,53 @@ const generateManifest = ({
       preCacheRoutes.push(route)
     }
   })
+
+  const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
+
+  return {
+    preCacheRoutes: preCacheRoutes.filter(nonNullable),
+    postCacheRoutes: postCacheRoutes.filter(nonNullable),
+    unroutedFunctions,
+    declarationsWithoutFunction,
+  }
+}
+
+type GenerateManifestOptions = GenerateManifestOptionsBase &
+  (
+    | GenerateManifestFunctionConfigOptions
+    | { manifestFunctionConfig: ReturnType<typeof generateManifestFunctionConfig> }
+  ) &
+  (GenerateManifestRoutesOptions | { manifestRoutes: ReturnType<typeof generateManifestRoutes> })
+
+const generateManifest = ({
+  bundles = [],
+  importMap,
+  layers = [],
+  bundlingTiming,
+  functions,
+  ...rest
+}: GenerateManifestOptions) => {
+  const manifestFunctionConfig =
+    'manifestFunctionConfig' in rest
+      ? rest.manifestFunctionConfig
+      : generateManifestFunctionConfig({ functions, ...rest })
+
+  const { preCacheRoutes, postCacheRoutes, unroutedFunctions, declarationsWithoutFunction } =
+    'manifestRoutes' in rest
+      ? rest.manifestRoutes
+      : generateManifestRoutes({
+          functions,
+          ...rest,
+        })
+
   const manifestBundles = bundles.map(({ extension, format, hash }) => ({
     asset: hash + extension,
     format,
   }))
   const manifest: Manifest = {
     bundles: manifestBundles,
-    routes: preCacheRoutes.filter(nonNullable),
-    post_cache_routes: postCacheRoutes.filter(nonNullable),
+    routes: preCacheRoutes,
+    post_cache_routes: postCacheRoutes,
     bundler_version: getPackageVersion(),
     layers,
     import_map: importMap,
@@ -290,7 +317,6 @@ const generateManifest = ({
       ? { bundling_timing: bundlingTiming }
       : {}),
   }
-  const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
 
   return { declarationsWithoutFunction: [...declarationsWithoutFunction], manifest, unroutedFunctions }
 }
