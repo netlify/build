@@ -127,6 +127,63 @@ export const bundle = async (
     importMap.add(vendor.importMap)
   }
 
+  const bundles: Bundle[] = []
+  let tarballBundleDurationMs: number | undefined
+  let tarballDryRunError: unknown
+  let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>> | undefined
+
+  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
+    const tarballInitialPromise = (async () => {
+      const start = Date.now()
+
+      try {
+        return await bundleTarball({
+          basePath,
+          buildID,
+          debug,
+          deno,
+          distDirectory,
+          functions,
+          featureFlags,
+          importMap: importMap.clone(),
+          vendorDirectory: vendor?.directory,
+        })
+      } finally {
+        tarballBundleDurationMs = Date.now() - start
+      }
+    })()
+
+    let tarballPromiseResolved = false
+
+    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+      try {
+        await tarballInitialPromise
+        tarballPromiseResolved = true
+      } catch (error: unknown) {
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle generation')
+      }
+    }
+
+    if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
+      finalizeTarballBundle = await tarballInitialPromise
+    }
+  }
+
+  bundles.push(
+    await bundleESZIP({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      externals,
+      functions,
+      featureFlags,
+      importMap,
+      vendorDirectory: vendor?.directory,
+    }),
+  )
+
   const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
     await getFunctionConfigs({
       deno,
@@ -162,75 +219,37 @@ export const bundle = async (
     declarations,
   })
 
-  const bundles: Bundle[] = []
-  let tarballBundleDurationMs: number | undefined
-  let tarballLogMsg: string | undefined
-
-  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
-    const tarballPromise = (async () => {
-      const start = Date.now()
-
-      try {
-        return await bundleTarball({
-          basePath,
-          buildID,
-          debug,
-          deno,
-          distDirectory,
-          functions,
-          featureFlags,
-          importMap: importMap.clone(),
-          vendorDirectory: vendor?.directory,
-          manifestFunctionConfig,
-          manifestRoutes,
-        })
-      } finally {
-        tarballBundleDurationMs = Date.now() - start
+  if (!tarballDryRunError && finalizeTarballBundle) {
+    try {
+      bundles.push(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
+    } catch (error: unknown) {
+      if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle finalization')
+      } else {
+        throw error
       }
-    })()
-
-    let tarballPromiseResolved = false
-
-    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
-      try {
-        await tarballPromise
-        tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
-        tarballPromiseResolved = true
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${error.message}`
-        } else {
-          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(error)}`
-        }
-      }
-    }
-
-    if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
-      bundles.push(await tarballPromise)
     }
   }
 
-  bundles.push(
-    await bundleESZIP({
-      basePath,
-      buildID,
-      debug,
-      deno,
-      distDirectory,
-      externals,
-      functions,
-      featureFlags,
-      importMap,
-      vendorDirectory: vendor?.directory,
-    }),
-  )
-
-  // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
-  if (tarballLogMsg) {
-    // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
-    // while still ensuring it could be expanded into the original multi-line message if needed.
-    logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
+  if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+    let tarballLogMsg: string | undefined
+    if (tarballDryRunError) {
+      if (tarballDryRunError instanceof Error) {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${tarballDryRunError.message}`
+      } else {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError)}`
+      }
+    } else {
+      tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
+    }
+    if (tarballLogMsg) {
+      // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
+      // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
+      // while still ensuring it could be expanded into the original multi-line message if needed.
+      logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
+    }
   }
+
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
@@ -238,11 +257,11 @@ export const bundle = async (
 
   const manifest = await writeManifest({
     bundles,
-    declarations,
     distDirectory,
     featureFlags,
     functions,
     manifestFunctionConfig,
+    manifestRoutes,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
     bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },
