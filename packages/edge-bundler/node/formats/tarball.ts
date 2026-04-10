@@ -22,9 +22,9 @@ const TARBALL_EXTENSION = '.tar.gz'
 
 interface Manifest {
   functions: Record<string, string>
-  functionConfig: Record<string, EdgeFunctionConfig>
+  function_config: Record<string, EdgeFunctionConfig>
   routes: Route[]
-  postCacheRoutes: Route[]
+  post_cache_routes: Route[]
   version: number
 }
 
@@ -58,7 +58,7 @@ export const bundle = async ({
   const bundleDir = await tmp.dir({ unsafeCleanup: true })
   const cleanup = [bundleDir.cleanup]
 
-  const initialManifest: Omit<Manifest, 'functionConfig' | 'routes' | 'postCacheRoutes'> = {
+  const initialManifest: Omit<Manifest, 'function_config' | 'routes' | 'post_cache_routes'> = {
     functions: {},
     version: 2,
   }
@@ -174,9 +174,9 @@ export const bundle = async ({
   return async function finalizeBundle({ manifestFunctionConfig, manifestRoutes }: FinalizeTarballBundleOptions) {
     const manifest: Manifest = {
       ...initialManifest,
-      functionConfig: manifestFunctionConfig,
+      function_config: manifestFunctionConfig,
       routes: manifestRoutes.preCacheRoutes,
-      postCacheRoutes: manifestRoutes.postCacheRoutes,
+      post_cache_routes: manifestRoutes.postCacheRoutes,
     }
 
     const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
