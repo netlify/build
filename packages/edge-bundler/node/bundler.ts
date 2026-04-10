@@ -221,7 +221,7 @@ export const bundle = async (
 
   if (!tarballDryRunError && finalizeTarballBundle) {
     try {
-      bundles.push(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
+      bundles.unshift(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
     } catch (error: unknown) {
       if (featureFlags.edge_bundler_dry_run_generate_tarball) {
         tarballDryRunError = error ?? new Error('Unknown error during tarball bundle finalization')
