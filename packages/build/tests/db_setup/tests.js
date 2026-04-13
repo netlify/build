@@ -36,7 +36,7 @@ test('Runs the db_setup core step and makes NETLIFY_DB_URL available to the buil
     context: 'production',
   })
 
-  t.true(output.includes('Netlify DB setup completed'))
+  t.true(output.includes('Netlify Database setup completed'))
   t.true(output.includes(MAIN_CONNECTION_STRING))
 
   // Should call createSiteDatabase but not createSiteDatabaseBranch for production
@@ -52,7 +52,7 @@ test('Runs the db_setup core step and creates a database branch for non-producti
     { context: 'deploy-preview' },
   )
 
-  t.true(output.includes('Netlify DB setup completed'))
+  t.true(output.includes('Netlify Database setup completed'))
   t.true(output.includes(BRANCH_CONNECTION_STRING))
 
   // Should call both createSiteDatabase and createSiteDatabaseBranch for non-production
@@ -65,7 +65,7 @@ test('Runs the db_setup core step and creates a database branch for non-producti
   t.deepEqual(branchRequests[0].body, { branch_id: 'feat/my-feature' })
 })
 
-test('Does not run the db_setup core step when @netlify/db is not in dependencies', async (t) => {
+test('Does not run the db_setup core step when @netlify/database is not in dependencies', async (t) => {
   const fixture = await new Fixture('./fixtures/without_db_dependency').withCopyRoot({ git: false })
 
   const {
@@ -74,7 +74,7 @@ test('Does not run the db_setup core step when @netlify/db is not in dependencie
   } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
 
   t.true(success)
-  t.false(stdout.join('\n').includes('Netlify DB setup completed'))
+  t.false(stdout.join('\n').includes('Netlify Database setup completed'))
 })
 
 test('Does not run the db_setup core step when the feature flag is off', async (t) => {
@@ -86,14 +86,14 @@ test('Does not run the db_setup core step when the feature flag is off', async (
   } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   t.true(success)
-  t.false(stdout.join('\n').includes('Netlify DB setup completed'))
+  t.false(stdout.join('\n').includes('Netlify Database setup completed'))
 })
 
-test('monorepo > Runs the db_setup core step when @netlify/db is in workspace devDependencies', async (t) => {
+test('monorepo > Runs the db_setup core step when @netlify/database is in workspace devDependencies', async (t) => {
   const { output } = await runWithMockServer(
     new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }),
   )
 
-  t.true(output.includes('Netlify DB setup completed'))
+  t.true(output.includes('Netlify Database setup completed'))
   t.true(output.includes(MAIN_CONNECTION_STRING))
 })

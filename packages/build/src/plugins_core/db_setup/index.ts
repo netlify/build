@@ -5,7 +5,10 @@ import { getPackageJson, type PackageJson } from '../../utils/package.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 import { readMigrationEntries, getMigrationNames } from './utils.js'
 
-const NPM_PACKAGE_NAME = '@netlify/db'
+const NPM_PACKAGE_NAME = '@netlify/database'
+
+// TODO: Remove once we stop supporting the legacy `@netlify/db` package name.
+const NPM_PACKAGE_NAME_LEGACY = '@netlify/db'
 
 const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlags }) => {
   if (!featureFlags?.netlify_build_db_setup) {
@@ -70,14 +73,19 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
 const hasDBPackage = (packageJSON: PackageJson): boolean => {
   const { dependencies = {}, devDependencies = {} } = packageJSON
 
-  return NPM_PACKAGE_NAME in dependencies || NPM_PACKAGE_NAME in devDependencies
+  return (
+    NPM_PACKAGE_NAME in dependencies ||
+    NPM_PACKAGE_NAME in devDependencies ||
+    NPM_PACKAGE_NAME_LEGACY in dependencies ||
+    NPM_PACKAGE_NAME_LEGACY in devDependencies
+  )
 }
 
 export const dbSetup: CoreStep = {
   event: 'onPreBuild',
   coreStep,
   coreStepId: 'db_provision',
-  coreStepName: 'Netlify DB setup',
-  coreStepDescription: () => 'Netlify DB setup',
+  coreStepName: 'Netlify Database setup',
+  coreStepDescription: () => 'Netlify Database setup',
   condition,
 }

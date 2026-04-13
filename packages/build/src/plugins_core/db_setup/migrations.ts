@@ -69,7 +69,7 @@ export const copyDbMigrations: CoreStep = {
   event: 'onBuild',
   coreStep,
   coreStepId: 'db_migrations_copy',
-  coreStepName: 'Netlify DB migrations',
+  coreStepName: 'Netlify Database migrations',
   coreStepDescription: () => 'Copy database migrations to internal directory',
   condition,
   quiet: true,
