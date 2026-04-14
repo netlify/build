@@ -72,7 +72,7 @@ test('Skips step when migrations directory does not exist', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('Netlify DB migrations'))
+  t.false(output.includes('Netlify Database migrations'))
 })
 
 test('Skips step when feature flag is off', async (t) => {
@@ -86,7 +86,7 @@ test('Skips step when feature flag is off', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('Netlify DB migrations'))
+  t.false(output.includes('Netlify Database migrations'))
 })
 
 test('Copies loose .sql files wrapped in subdirectory format', async (t) => {
