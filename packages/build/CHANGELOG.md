@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.13.0](https://github.com/netlify/build/compare/build-v35.12.0...build-v35.13.0) (2026-04-14)
+
+
+### Features
+
+* rename `@netlify/db` to `@netlify/database` ([#7026](https://github.com/netlify/build/issues/7026)) ([3361c94](https://github.com/netlify/build/commit/3361c94f9572f2afed2cbb23b420b318a94674f7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.4.4 to ^24.5.0
+
 ## [35.12.0](https://github.com/netlify/build/compare/build-v35.11.2...build-v35.12.0) (2026-04-09)
 
 
