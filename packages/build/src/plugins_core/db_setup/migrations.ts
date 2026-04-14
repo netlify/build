@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path'
 import { pathExists } from 'path-exists'
 
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-import { readMigrationEntries } from './utils.js'
+import { readMigrationEntries, getMigrationsSrc } from './utils.js'
 import { validateMigrations, formatValidationErrors } from './validation.js'
 
 const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
@@ -12,7 +12,7 @@ const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir 
     return false
   }
 
-  const srcDir = constants.DB_MIGRATIONS_SRC
+  const srcDir = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
   if (!srcDir) {
     return false
   }
@@ -21,10 +21,11 @@ const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir 
 }
 
 const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) => {
-  const srcDir = resolve(buildDir, constants.DB_MIGRATIONS_SRC!)
+  const migrationsSrc = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
+  const srcDir = resolve(buildDir, migrationsSrc!)
   const destDir = resolve(buildDir, constants.DB_MIGRATIONS_DIST!)
 
-  const { dirNames, fileNames } = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC)
+  const { dirNames, fileNames } = await readMigrationEntries(buildDir, migrationsSrc)
 
   if (dirNames.length === 0 && fileNames.length === 0) {
     systemLog('No migration directories found, skipping copy.')

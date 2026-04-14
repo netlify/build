@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { logDbProvisioning, logDbMigrations } from '../../log/messages/core_steps.js'
 import { getPackageJson, type PackageJson } from '../../utils/package.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-import { readMigrationEntries, getMigrationNames } from './utils.js'
+import { readMigrationEntries, getMigrationNames, getMigrationsSrc } from './utils.js'
 
 const NPM_PACKAGE_NAME = '@netlify/database'
 
@@ -42,10 +42,11 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
 
   logDbProvisioning({ logs, branch, context })
 
-  const entries = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC)
+  const migrationsSrc = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
+  const entries = await readMigrationEntries(buildDir, migrationsSrc)
   const migrationNames = getMigrationNames(entries)
-  if (migrationNames.length > 0) {
-    logDbMigrations({ logs, migrations: migrationNames, srcDir: constants.DB_MIGRATIONS_SRC! })
+  if (migrationNames.length > 0 && migrationsSrc) {
+    logDbMigrations({ logs, migrations: migrationNames, srcDir: migrationsSrc })
   }
 
   // @ts-expect-error This is an internal method for now so it isn't typed yet.
