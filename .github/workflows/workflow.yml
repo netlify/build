@@ -8,42 +8,39 @@ on:
   merge_group:
 jobs:
   e2e:
-    # Skip for PRs from forks — they don't have access to the secrets needed for e2e tests
-    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
-      # Sets an output parameter if this is a release PR
-      - name: Check for release
-        id: release-check
-        # For windows we have to use $env:
-        run: |-
-          echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
-          echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
-        if: ${{ startsWith(github.head_ref, 'release-') }}
+      - name: Check if tests should run
+        id: should-run
+        # Skip for fork PRs (no access to secrets) and release PRs
+        if: >-
+          !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) &&
+          !startsWith(github.head_ref, 'release-')
+        run: echo "RUN=true" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ steps.should-run.outputs.RUN }}
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ steps.should-run.outputs.RUN }}
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ steps.should-run.outputs.RUN }}
       - name: Install dependencies
         run: npm ci
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ steps.should-run.outputs.RUN }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ steps.should-run.outputs.RUN }}
       - name: test
         run: npx nx run-many --target=e2e
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ steps.should-run.outputs.RUN }}
       - uses: actions/upload-artifact@v6
-        if: always()
+        if: ${{ always() && steps.should-run.outputs.RUN }}
         with:
           name: playwright-report
           path: playwright-report/
