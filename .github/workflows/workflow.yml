@@ -9,7 +9,7 @@ on:
 jobs:
   e2e:
     # Skip for PRs from forks — they don't have access to the secrets needed for e2e tests
-    if: ${{ github.event.pull_request.head.repo.fork != true }}
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
