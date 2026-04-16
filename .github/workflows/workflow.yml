@@ -13,11 +13,14 @@ jobs:
     steps:
       - name: Check if tests should run
         id: should-run
-        # Skip for fork PRs (no access to secrets) and release PRs
-        if: >-
-          !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) &&
-          !startsWith(github.head_ref, 'release-')
-        run: echo "RUN=true" >> $GITHUB_OUTPUT
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.event.pull_request.head.repo.fork }}" == "true" ]]; then
+            echo "::notice::Skipping e2e tests — PRs from forks don't have access to required secrets."
+          elif [[ "${{ github.head_ref }}" == release-* ]]; then
+            echo "::notice::Skipping e2e tests on release PR."
+          else
+            echo "RUN=true" >> $GITHUB_OUTPUT
+          fi
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
