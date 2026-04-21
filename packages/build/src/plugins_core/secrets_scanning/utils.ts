@@ -2,6 +2,7 @@ import { createReadStream, promises as fs, existsSync } from 'node:fs'
 import path from 'node:path'
 
 import { fdir } from 'fdir'
+import ignore from 'ignore'
 import { minimatch } from 'minimatch'
 
 import { LIKELY_SECRET_PREFIXES, SAFE_LISTED_VALUES } from './secret_prefixes.js'
@@ -238,24 +239,17 @@ export function findLikelySecrets({
 export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   const omitPathsAlways = ['.git/', '.cache/']
 
-  // node modules is dense and is only useful to scan if the repo itself commits these
-  // files. As a simple check to understand if the repo would commit these files, we expect
-  // that they would not ignore them from their git settings. So if gitignore includes
-  // node_modules anywhere we will omit looking in those folders - this will allow repos
-  // that do commit node_modules to still scan them.
-  let ignoreNodeModules = false
-
+  // Files/folders ignored by the repo's .gitignore should not be scanned, since they
+  // are not committed to the repo and are not part of the build output the user controls.
+  // This also naturally excludes things like node_modules when the repo gitignores it.
   const gitignorePath = path.resolve(base, '.gitignore')
   const gitignoreContents = existsSync(gitignorePath) ? await fs.readFile(gitignorePath, 'utf-8') : ''
-
-  if (gitignoreContents?.includes('node_modules')) {
-    ignoreNodeModules = true
-  }
+  const gitIgnoreFilter = gitignoreContents ? ignore().add(gitignoreContents) : null
 
   let files = await new fdir()
     .withRelativePaths()
-    .filter((path) => {
-      if (ignoreNodeModules && path.includes('node_modules')) {
+    .filter((filePath) => {
+      if (gitIgnoreFilter && filePath && gitIgnoreFilter.ignores(filePath)) {
         return false
       }
       return true

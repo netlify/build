@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.5.0](https://github.com/netlify/build/compare/build-info-v10.4.0...build-info-v10.5.0) (2026-04-09)
+
+
+### Features
+
+* add vitepress ([#6866](https://github.com/netlify/build/issues/6866)) ([99b64c4](https://github.com/netlify/build/commit/99b64c439dc1cf16c27670f81c544263d31fb56a))
+
 ## [10.4.0](https://github.com/netlify/build/compare/build-info-v10.3.1...build-info-v10.4.0) (2026-03-10)
 
 

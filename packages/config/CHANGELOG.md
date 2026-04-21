@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.5.0](https://github.com/netlify/build/compare/config-v24.4.4...config-v24.5.0) (2026-04-14)
+
+
+### Features
+
+* rename `@netlify/db` to `@netlify/database` ([#7026](https://github.com/netlify/build/issues/7026)) ([3361c94](https://github.com/netlify/build/commit/3361c94f9572f2afed2cbb23b420b318a94674f7))
+
 ## [24.4.4](https://github.com/netlify/build/compare/config-v24.4.3...config-v24.4.4) (2026-03-20)
 
 

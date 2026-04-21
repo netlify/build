@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@netlify/db": "^1.0.0"
+    "@netlify/database": "^1.0.0"
   }
 }
