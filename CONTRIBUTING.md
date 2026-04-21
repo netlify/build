@@ -33,14 +33,12 @@ npm test
 
 Make sure everything is correctly setup by running those tests first.
 
-ESLint and Prettier are performed automatically on `git push`. However, we recommend you setup your IDE or text editor
-to run ESLint and Prettier automatically on file save. Otherwise, you should run them manually using:
+ESLint and [oxfmt](https://oxc.rs/docs/guide/usage/formatter.html) are run automatically on `git push`. However, we recommend you setup your IDE or text editor
+to run ESLint and [oxfmt](https://oxc.rs/docs/guide/usage/formatter/editors.html) automatically on file save. Otherwise, you should run them manually using:
 
 ```bash
 npm run format
 ```
-
-Alternatively you can setup your IDE to integrate with Prettier and ESLint for JavaScript and Markdown files.
 
 This is a monorepo using [npm 7 (or later) workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces). You can find
 the included packages in the [packages](packages) directory.
