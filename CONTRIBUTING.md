@@ -33,8 +33,10 @@ npm test
 
 Make sure everything is correctly setup by running those tests first.
 
-ESLint and [oxfmt](https://oxc.rs/docs/guide/usage/formatter.html) are run automatically on `git push`. However, we recommend you setup your IDE or text editor
-to run ESLint and [oxfmt](https://oxc.rs/docs/guide/usage/formatter/editors.html) automatically on file save. Otherwise, you should run them manually using:
+ESLint and [oxfmt](https://oxc.rs/docs/guide/usage/formatter.html) are run automatically on `git push`. However, we
+recommend you setup your IDE or text editor to run ESLint and
+[oxfmt](https://oxc.rs/docs/guide/usage/formatter/editors.html) automatically on file save. Otherwise, you should run
+them manually using:
 
 ```bash
 npm run format
