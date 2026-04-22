@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url'
 import { includeIgnoreFile } from '@eslint/compat'
 import eslint from '@eslint/js'
 import vitest from '@vitest/eslint-plugin'
-import prettier from 'eslint-config-prettier'
 import ava from 'eslint-plugin-ava'
 import * as importPlugin from 'eslint-plugin-import'
 import node from 'eslint-plugin-n'
@@ -135,7 +134,4 @@ export default tseslint.config(
   },
 
   temporarySuppressions,
-
-  // Must be last
-  prettier,
 )
