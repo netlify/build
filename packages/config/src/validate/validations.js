@@ -113,16 +113,16 @@ export const PRE_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
-    property: 'db',
+    property: 'database',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
   },
   {
-    property: 'db.migrations',
+    property: 'database.migrations',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
   },
 ]
 
@@ -279,10 +279,10 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
-    property: 'db.migrations.path',
+    property: 'database.migrations.path',
     check: isString,
     message: 'must be a string.',
-    example: () => ({ db: { migrations: { path: 'netlify/db/migrations' } } }),
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
   },
   ...edgeFunctionValidations,
 ]

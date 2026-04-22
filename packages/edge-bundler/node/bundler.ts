@@ -24,7 +24,7 @@ import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
-import { writeManifest } from './manifest.js'
+import { generateManifestFunctionConfig, generateManifestRoutes, writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
@@ -129,10 +129,11 @@ export const bundle = async (
 
   const bundles: Bundle[] = []
   let tarballBundleDurationMs: number | undefined
-  let tarballLogMsg: string | undefined
+  let tarballDryRunError: unknown
+  let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>> | undefined
 
   if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
-    const tarballPromise = (async () => {
+    const tarballInitialPromise = (async () => {
       const start = Date.now()
 
       try {
@@ -156,20 +157,15 @@ export const bundle = async (
 
     if (featureFlags.edge_bundler_dry_run_generate_tarball) {
       try {
-        await tarballPromise
-        tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
+        await tarballInitialPromise
         tarballPromiseResolved = true
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${error.message}`
-        } else {
-          tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(error)}`
-        }
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle generation')
       }
     }
 
     if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
-      bundles.push(await tarballPromise)
+      finalizeTarballBundle = await tarballInitialPromise
     }
   }
 
@@ -187,17 +183,6 @@ export const bundle = async (
       vendorDirectory: vendor?.directory,
     }),
   )
-
-  // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
-  if (tarballLogMsg) {
-    // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
-    // while still ensuring it could be expanded into the original multi-line message if needed.
-    logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
-  }
-  // The final file name of the bundles contains a SHA256 hash of the contents,
-  // which we can only compute now that the files have been generated. So let's
-  // rename the bundles to their permanent names.
-  await createFinalBundles(bundles, distDirectory, buildID)
 
   const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
     await getFunctionConfigs({
@@ -223,14 +208,60 @@ export const bundle = async (
     declarations,
   })
 
+  const manifestFunctionConfig = generateManifestFunctionConfig({
+    functions,
+    internalFunctionConfig,
+    userFunctionConfig: userFunctionsWithConfig,
+  })
+
+  const manifestRoutes = generateManifestRoutes({
+    functions,
+    declarations,
+  })
+
+  if (!tarballDryRunError && finalizeTarballBundle) {
+    try {
+      bundles.unshift(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
+    } catch (error: unknown) {
+      if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle finalization')
+      } else {
+        throw error
+      }
+    }
+  }
+
+  if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+    let tarballLogMsg: string | undefined
+    if (tarballDryRunError) {
+      if (tarballDryRunError instanceof Error) {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${tarballDryRunError.message}`
+      } else {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError as unknown)}`
+      }
+    } else {
+      tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
+    }
+    if (tarballLogMsg) {
+      // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
+      // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
+      // while still ensuring it could be expanded into the original multi-line message if needed.
+      logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
+    }
+  }
+
+  // The final file name of the bundles contains a SHA256 hash of the contents,
+  // which we can only compute now that the files have been generated. So let's
+  // rename the bundles to their permanent names.
+  await createFinalBundles(bundles, distDirectory, buildID)
+
   const manifest = await writeManifest({
     bundles,
-    declarations,
     distDirectory,
     featureFlags,
     functions,
-    userFunctionConfig: userFunctionsWithConfig,
-    internalFunctionConfig,
+    manifestFunctionConfig,
+    manifestRoutes,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
     bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },
