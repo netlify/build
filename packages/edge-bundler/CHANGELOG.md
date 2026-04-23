@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.10.1](https://github.com/netlify/build/compare/edge-bundler-v14.10.0...edge-bundler-v14.10.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* allow HEAD as part of the `HTTPMethod` type ([#7033](https://github.com/netlify/build/issues/7033)) ([f2f5e77](https://github.com/netlify/build/commit/f2f5e77f9eae802deaa2524e914b9b9c775c227d))
+
 ## [14.10.0](https://github.com/netlify/build/compare/edge-bundler-v14.9.19...edge-bundler-v14.10.0) (2026-04-14)
 
 
