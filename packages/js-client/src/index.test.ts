@@ -1,8 +1,8 @@
+import crypto from 'crypto'
 import http from 'http'
 
 import fromString from 'from2-string'
 import nock from 'nock'
-import { v4 as uuidv4 } from 'uuid'
 import { assert, expect, test } from 'vitest'
 
 import { NetlifyAPI } from '../lib/index.js'
@@ -117,7 +117,7 @@ test('Can specify access token as an option', () => {
 })
 
 test('Can use underscored parameters in path variables', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client = getClient()
@@ -127,7 +127,7 @@ test('Can use underscored parameters in path variables', async () => {
 })
 
 test('Can use camelcase parameters in path variables', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client = getClient()
@@ -137,7 +137,7 @@ test('Can use camelcase parameters in path variables', async () => {
 })
 
 test('Can use global parameters in path variables', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client: any = getClient({ globalParams: { account_id: accountId } })
@@ -147,7 +147,7 @@ test('Can use global parameters in path variables', async () => {
 })
 
 test('Can use underscored parameters in query variables', async () => {
-  const clientId = uuidv4()
+  const clientId = crypto.randomUUID()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
   const client = getClient()
@@ -157,7 +157,7 @@ test('Can use underscored parameters in query variables', async () => {
 })
 
 test('Can use camelcase parameters in query variables', async () => {
-  const clientId = uuidv4()
+  const clientId = crypto.randomUUID()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
   const client = getClient()
@@ -167,7 +167,7 @@ test('Can use camelcase parameters in query variables', async () => {
 })
 
 test('Can use global parameters in query variables', async () => {
-  const clientId = uuidv4()
+  const clientId = crypto.randomUUID()
   const scope = nock(origin).post(`${pathPrefix}/oauth/tickets`).query({ client_id: clientId }).reply(200)
 
   const client: any = getClient({ globalParams: { client_id: clientId } })
@@ -177,7 +177,7 @@ test('Can use global parameters in query variables', async () => {
 })
 
 test('Allow array query parameters', async () => {
-  const siteId = uuidv4()
+  const siteId = crypto.randomUUID()
   const scope = nock(origin)
     .get(
       `${pathPrefix}/sites/${siteId}/plugin_runs/latest?packages%5B%5D=%40scope%2Fpackage&packages%5B%5D=%40scope%2Fpackage-two`,
@@ -215,7 +215,7 @@ test('Can specify JSON request body as a function', async () => {
 })
 
 test('Can specify binary request body as a stream', async () => {
-  const deployId = uuidv4()
+  const deployId = crypto.randomUUID()
   const path = 'testPath'
   const body = 'test'
   const expectedResponse = { test: 'test' }
@@ -231,7 +231,7 @@ test('Can specify binary request body as a stream', async () => {
 })
 
 test('Can specify binary request body as a function', async () => {
-  const deployId = uuidv4()
+  const deployId = crypto.randomUUID()
   const path = 'testPath'
   const body = 'test'
   const expectedResponse = { test: 'test' }
@@ -257,7 +257,7 @@ test('Can use global parameters in request body', async () => {
 })
 
 test('Can set header parameters', async () => {
-  const deployId = uuidv4()
+  const deployId = crypto.randomUUID()
   const functionName = 'testFunction'
   const body = 'test'
   const expectedResponse = { test: 'test' }
@@ -282,7 +282,7 @@ test('Can set header parameters', async () => {
 })
 
 test('Validates required path parameters', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).put(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client: any = getClient()
@@ -292,7 +292,7 @@ test('Validates required path parameters', async () => {
 })
 
 test('Validates required query parameters', async () => {
-  const zone_id = uuidv4()
+  const zone_id = crypto.randomUUID()
   const scope = nock(origin).post(`${pathPrefix}/dns_zones/${zone_id}/transfer`).reply(200)
 
   const client: any = getClient()
@@ -304,7 +304,7 @@ test('Validates required query parameters', async () => {
 test('Can set request headers', async () => {
   const headerName = 'test'
   const headerValue = 'test'
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).matchHeader(headerName, headerValue).reply(200)
 
   const client = getClient()
@@ -314,7 +314,7 @@ test('Can set request headers', async () => {
 })
 
 test('Can parse JSON responses', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = { test: 'test' }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
@@ -326,7 +326,7 @@ test('Can parse JSON responses', async () => {
 })
 
 test('Can parse text responses', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200, expectedResponse)
 
@@ -338,7 +338,7 @@ test('Can parse text responses', async () => {
 })
 
 test('Handle error empty responses', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const status = 404
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
@@ -357,7 +357,7 @@ test('Handle error empty responses', async () => {
 })
 
 test('Handle error text responses', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const status = 404
   const expectedResponse = 'test'
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, expectedResponse)
@@ -376,7 +376,7 @@ test('Handle error text responses', async () => {
 })
 
 test('Handle error text responses on JSON endpoints', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const status = 404
   const expectedResponse = 'test'
   const scope = nock(origin)
@@ -397,7 +397,7 @@ test('Handle error text responses on JSON endpoints', async () => {
 })
 
 test('Handle error JSON responses', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const status = 404
   const errorJson = { error: true }
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(status, errorJson)
@@ -416,7 +416,7 @@ test('Handle error JSON responses', async () => {
 })
 
 test('Handle network errors', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = 'test'
   const url = `${pathPrefix}/accounts/${accountId}`
   const scope = nock(origin).get(url).replyWithError(expectedResponse)
@@ -435,7 +435,7 @@ test('Handle network errors', async () => {
 })
 
 test('Can get an access token from a ticket', async () => {
-  const ticketId = uuidv4()
+  const ticketId = crypto.randomUUID()
   const accessToken = 'test'
   const scope = nock(origin)
     .get(`${pathPrefix}/oauth/tickets/${ticketId}`)
@@ -453,7 +453,7 @@ test('Can get an access token from a ticket', async () => {
 })
 
 test('Can poll for access token', async () => {
-  const ticketId = uuidv4()
+  const ticketId = crypto.randomUUID()
   const accessToken = 'test'
   const scope = nock(origin)
     .get(`${pathPrefix}/oauth/tickets/${ticketId}`)
@@ -470,7 +470,7 @@ test('Can poll for access token', async () => {
 })
 
 test('Can change access token polling', async () => {
-  const ticketId = uuidv4()
+  const ticketId = crypto.randomUUID()
   const accessToken = 'test'
   const scope = nock(origin)
     .get(`${pathPrefix}/oauth/tickets/${ticketId}`)
@@ -487,7 +487,7 @@ test('Can change access token polling', async () => {
 })
 
 test('Can timeout access token polling', async () => {
-  const ticketId = uuidv4()
+  const ticketId = crypto.randomUUID()
   const accessToken = 'test'
   const scope = nock(origin)
     .get(`${pathPrefix}/oauth/tickets/${ticketId}`)
@@ -505,7 +505,7 @@ test('Can timeout access token polling', async () => {
 
 test('Does not retry on server errors', async () => {
   const errorMessage = 'Something went zap!'
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
@@ -525,7 +525,7 @@ test('Does not retry on server errors', async () => {
 
 test('Retries on server errors for the `getLatestPluginRuns` endpoint', async () => {
   const packages = 'foo'
-  const siteId = uuidv4()
+  const siteId = crypto.randomUUID()
   const expectedResponse = { test: 'test' }
   const scope = nock(origin)
     .get(`${pathPrefix}/sites/${siteId}/plugin_runs/latest`)
@@ -543,7 +543,7 @@ test('Retries on server errors for the `getLatestPluginRuns` endpoint', async ()
 })
 
 test('Handles API rate limiting', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
   const retryAt = Math.ceil(retryAtMs / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
@@ -562,7 +562,7 @@ test('Handles API rate limiting', async () => {
 })
 
 test('Handles API rate limiting when date is in the past', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = { test: 'test' }
   const retryAt = 0
   const scope = nock(origin)
@@ -578,7 +578,7 @@ test('Handles API rate limiting when date is in the past', async () => {
 })
 
 test('Handles API rate limiting when X-RateLimit-Reset is missing', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const expectedResponse = { test: 'test' }
   const retryAt = 'invalid'
   const scope = nock(origin)
@@ -594,7 +594,7 @@ test('Handles API rate limiting when X-RateLimit-Reset is missing', async () => 
 })
 
 test('Gives up retrying on API rate limiting after a timeout', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const retryAt = Math.ceil(Date.now() / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
   const times = 20
@@ -619,7 +619,7 @@ test('Gives up retrying on API rate limiting after a timeout', async () => {
 const errorCodes = ['ETIMEDOUT', 'ECONNRESET']
 errorCodes.forEach((code) => {
   test(`Retries on ${code} connection errors`, async () => {
-    const accountId = uuidv4()
+    const accountId = crypto.randomUUID()
     const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
     const expectedResponse = { test: 'test' }
     const scope = nock(origin)
@@ -638,7 +638,7 @@ errorCodes.forEach((code) => {
 })
 
 test('Recreates a function body when handling API rate limiting', async () => {
-  const deployId = uuidv4()
+  const deployId = crypto.randomUUID()
   const path = 'testPath'
   const body = 'test'
   const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
@@ -663,7 +663,7 @@ test('Can set (proxy) agent', () => {
 })
 
 test('(Proxy) agent is passed as request option', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client = getClient({ accessToken: testAccessToken, agent })
@@ -672,7 +672,7 @@ test('(Proxy) agent is passed as request option', async () => {
 })
 
 test('(Proxy) agent is not passed as request option if not set', async () => {
-  const accountId = uuidv4()
+  const accountId = crypto.randomUUID()
   const scope = nock(origin).get(`${pathPrefix}/accounts/${accountId}`).reply(200)
 
   const client = getClient({ accessToken: testAccessToken })
