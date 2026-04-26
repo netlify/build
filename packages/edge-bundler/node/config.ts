@@ -112,6 +112,7 @@ export const getFunctionConfig = async ({
       `--allow-write=${collector.path}`,
       `--import-map=${importMap.toDataURL()}`,
       '--no-config',
+      '--no-lock',
       '--node-modules-dir=false',
       '--quiet',
       extractorPath,
