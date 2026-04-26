@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.13.4](https://github.com/netlify/build/compare/build-v35.13.3...build-v35.13.4) (2026-04-26)
+
+
+### Bug Fixes
+
+* cleanup migration dist files ([#7039](https://github.com/netlify/build/issues/7039)) ([bd970ff](https://github.com/netlify/build/commit/bd970ffd187d1f6d2860da7826f8f6035fe7f4e0))
+
 ## [35.13.3](https://github.com/netlify/build/compare/build-v35.13.2...build-v35.13.3) (2026-04-22)
 
 
