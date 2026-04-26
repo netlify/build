@@ -3,6 +3,7 @@ import { join } from 'path'
 
 import { type Extension, getExtensions } from '../../api/site_info.js'
 import { type ModeOption } from '../../types/options.js'
+import { type TestOptions } from '../../types/test_options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
 
@@ -17,14 +18,14 @@ function getPackageJSON(directory: string) {
 }
 
 interface AutoInstallOptions {
-  featureFlags: any
+  featureFlags: Record<string, boolean>
   siteId: string
   accountId: string
   token: string
   buildDir: string
   extensions: Extension[]
   offline: boolean
-  testOpts: any
+  testOpts: TestOptions
   mode: ModeOption
   extensionApiBaseUrl: string
   debug?: boolean
