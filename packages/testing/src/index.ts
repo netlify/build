@@ -1,5 +1,5 @@
 export * from './dir.js'
-export * from './fixture.js'
+export { AvaFixture as Fixture } from './fixture-ava.js'
 export * from './fs.js'
 export * from './normalize.js'
 export * from './server.js'
