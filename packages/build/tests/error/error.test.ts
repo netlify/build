@@ -1,12 +1,8 @@
 import { normalizeOutput } from '@netlify/testing/lib/normalize.js'
 import { Fixture } from '@netlify/testing/lib/fixture.js'
-import { test, expect } from 'vitest';
+import { test, expect } from 'vitest'
 
-import {
-  buildErrorToTracingAttributes,
-  type BuildError,
-  type BasicErrorInfo
-} from '../../lib/error/types.js'
+import { buildErrorToTracingAttributes, type BuildError, type BasicErrorInfo } from '../../lib/error/types.js'
 
 test('exception', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/exception').runWithBuild()
@@ -119,9 +115,9 @@ test('Redact API token on errors', async () => {
 })
 
 const testMatrixAttributeTracing: Array<{
-  description: string;
-  input: BuildError | BasicErrorInfo;
-  expects: Record<string, string>;
+  description: string
+  input: BuildError | BasicErrorInfo
+  expects: Record<string, string>
 }> = [
   {
     description: 'build command error',
@@ -269,12 +265,12 @@ testMatrixAttributeTracing.forEach(({ description, input, expects }) => {
 
 test('Trusted plugins - internal errors are system errors', async () => {
   const fixture = new Fixture(import.meta.url, './fixtures/trusted_plugin_uncaught')
-  const { severityCode } = await fixture.runBuildProgrammatic() as { severityCode: number }
+  const { severityCode } = (await fixture.runBuildProgrammatic()) as { severityCode: number }
   expect(severityCode).toEqual(4)
 })
 
 test('Trusted plugins - controlled failures are user errors', async () => {
   const fixture = new Fixture(import.meta.url, './fixtures/trusted_plugin')
-  const { severityCode } = await fixture.runBuildProgrammatic() as { severityCode: number }
+  const { severityCode } = (await fixture.runBuildProgrammatic()) as { severityCode: number }
   expect(severityCode).toEqual(2)
 })

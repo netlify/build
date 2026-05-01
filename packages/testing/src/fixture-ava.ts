@@ -1,4 +1,4 @@
-import {Fixture} from './fixture.js';
+import { Fixture } from './fixture.js'
 import test from 'ava'
 
 export class AvaFixture extends Fixture {
