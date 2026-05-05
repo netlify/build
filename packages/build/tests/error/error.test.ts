@@ -97,7 +97,7 @@ test('Plugin errors can have a toJSON() method', async () => {
 })
 
 if (process.platform !== 'win32') {
-  test.skip('Early exit', async (t) => {
+  test('Early exit', async () => {
     const output = await new Fixture(import.meta.url, './fixtures/early_exit').runWithBuild()
     expect(normalizeOutput(output)).toMatchSnapshot()
   })
@@ -110,11 +110,11 @@ test('Redact API token on errors', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-const testMatrixAttributeTracing: Array<{
+const testMatrixAttributeTracing: {
   description: string
   input: BuildError | BasicErrorInfo
   expects: Record<string, string>
-}> = [
+}[] = [
   {
     description: 'build command error',
     input: {
@@ -253,7 +253,7 @@ const testMatrixAttributeTracing: Array<{
 ]
 
 testMatrixAttributeTracing.forEach(({ description, input, expects }) => {
-  test(`Tracing attributes - ${description}`, async () => {
+  test(`Tracing attributes - ${description}`, () => {
     const attributes = buildErrorToTracingAttributes(input)
     expect(attributes).toEqual(expects)
   })
