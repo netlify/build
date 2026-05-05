@@ -5,9 +5,13 @@ import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
 import { pathExists } from 'path-exists'
 
+interface Options {
+  fail?: (message: string, opts?: { error: Error }) => void
+}
+
 // Add a Netlify Function file to the `functions` directory, so it is processed
 // by `@netlify/plugin-functions-core`
-export const add = async function (src?: string, dist?: string, { fail = defaultFail } = {}): Promise<void> {
+export const add = async function (src?: string, dist?: string, { fail = defaultFail }: Options = {}): Promise<void> {
   if (src === undefined) {
     return fail('No function source directory was specified')
   }
@@ -35,7 +39,7 @@ const getSrcAndDest = async function (src: string, srcBasename: string, dist: st
   return [srcBasename, dist]
 }
 
-export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const list = async function (functionsSrc, { fail = defaultFail }: Options = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -47,7 +51,7 @@ export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const listAll = async function (functionsSrc, { fail = defaultFail }: Options = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
