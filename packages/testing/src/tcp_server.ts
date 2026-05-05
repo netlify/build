@@ -5,7 +5,15 @@ import getPort from 'get-port'
 import { tmpName } from 'tmp-promise'
 
 // Start a TCP server to mock calls.
-export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest } = {}) {
+export const startTcpServer = async function ({
+  response = '',
+  useUnixSocket = true,
+  onRequest,
+}: {
+  response?: string
+  useUnixSocket?: boolean
+  onRequest?: (request: string | Record<string, unknown>) => Promise<void>
+} = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests, onRequest }))
