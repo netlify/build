@@ -151,11 +151,7 @@ const getInternalEnv = function (
 }
 
 const getDeployUrls = function ({
-  siteInfo: {
-    name = DEFAULT_SITE_NAME,
-    ssl_url: sslUrl,
-    build_settings: { repo_url: REPOSITORY_URL = undefined } = {},
-  },
+  siteInfo: { name = DEFAULT_SITE_NAME, ssl_url: sslUrl, build_settings: { repo_url: REPOSITORY_URL } = {} },
   branch,
   deployId,
 }) {

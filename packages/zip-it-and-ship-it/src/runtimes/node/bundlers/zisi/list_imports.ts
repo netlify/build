@@ -73,9 +73,10 @@ const listImportsWithESBuild = async ({
   return [...imports]
 }
 
-const listImportsWithPrecinct = async ({ functionName, path }: { functionName: string; path: string }) => {
+const listImportsWithPrecinct = ({ functionName, path }: { functionName: string; path: string }) => {
   try {
-    return await precinct.paperwork(path, { includeCore: false })
+    // eslint-disable-next-line import-x/no-named-as-default-member
+    return precinct.paperwork(path, { includeCore: false })
   } catch (error) {
     // Syntax errors from babel are user errors
     if (error.code === 'BABEL_PARSER_SYNTAX_ERROR') {
@@ -97,4 +98,4 @@ export const listImports = async ({
   featureFlags: FeatureFlags
   functionName: string
   path: string
-}) => (featureFlags.parseWithEsbuild ? await listImportsWithESBuild(args) : await listImportsWithPrecinct(args))
+}) => (featureFlags.parseWithEsbuild ? await listImportsWithESBuild(args) : listImportsWithPrecinct(args))

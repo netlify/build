@@ -26,7 +26,7 @@ export const getUtils = function ({
   constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR },
   generatedFunctions = [],
   runState,
-  deployEnvVars = [],
+  deployEnvVars,
 }: {
   event: BuildEvent
   constants: NetlifyPluginConstants

@@ -35,7 +35,7 @@ const getSrcAndDest = async function (src: string, srcBasename: string, dist: st
   return [srcBasename, dist]
 }
 
-export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {
+export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -47,7 +47,7 @@ export const list = async function (functionsSrc, { fail = defaultFail } = {} as
   }
 }
 
-export const listAll = async function (functionsSrc, { fail = defaultFail } = {} as any) {
+export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }

@@ -3,7 +3,10 @@
   "description": "Netlify Node.js API client",
   "version": "14.0.18",
   "type": "module",
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/types.js": "./lib/types.js"
+  },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [

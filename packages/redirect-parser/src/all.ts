@@ -9,10 +9,10 @@ import { splitResults, concatResults } from './results.js'
  * files, then normalize and validate those.
  */
 export const parseAllRedirects = async function ({
-  redirectsFiles = [],
+  redirectsFiles,
   netlifyConfigPath,
-  configRedirects = [],
-  minimal = false,
+  configRedirects,
+  minimal,
 }: {
   redirectsFiles: string[]
   netlifyConfigPath?: string

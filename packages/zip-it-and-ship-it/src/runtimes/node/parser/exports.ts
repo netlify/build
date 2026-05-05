@@ -75,7 +75,7 @@ export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod)
 
     if (node.type === 'ExportDefaultDeclaration') {
       hasDefaultExport = true
-      defaultExportExpression = node.declaration as Expression
+      defaultExportExpression = node.declaration
 
       return
     }
@@ -284,10 +284,10 @@ const getExportsFromBindings = (
   const specifier = specifiers.find((node) => isNamedExport(node, name))
 
   // If there's no named export with the given name, check if there's a default
-  if (!specifier || specifier.type !== 'ExportSpecifier') {
+  if (specifier?.type !== 'ExportSpecifier') {
     const defaultExport = specifiers.find((node) => isDefaultExport(node))
 
-    if (defaultExport && defaultExport.type === 'ExportSpecifier') {
+    if (defaultExport?.type === 'ExportSpecifier') {
       const binding = getAllBindings().get(defaultExport.local.name)
 
       if (
@@ -329,7 +329,7 @@ const getESMReexportedDefaultExpression = (
       spec.type === 'ExportSpecifier' && spec.exported.type === 'Identifier' && spec.exported.name === 'default',
   )
 
-  if (defaultSpecifier && defaultSpecifier.type === 'ExportSpecifier') {
+  if (defaultSpecifier?.type === 'ExportSpecifier') {
     return getAllBindings().get(defaultSpecifier.local.name)
   }
 

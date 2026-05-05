@@ -50,7 +50,7 @@ const getExternalAndIgnoredModules = async ({ config, srcDir }: { config: Functi
 
 const bundle: BundleFunction = async ({
   basePath,
-  config = {},
+  config,
   extension,
   featureFlags,
   filename,
@@ -71,7 +71,7 @@ const bundle: BundleFunction = async ({
     cleanTempFiles,
     inputs,
     moduleFormat,
-    nativeNodeModules = {},
+    nativeNodeModules,
     outputExtension,
     warnings,
   } = await bundleJsFile({

@@ -6,10 +6,11 @@ import cpy from 'cpy'
 import decompress from 'decompress'
 import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
+// eslint-disable-next-line import-x/no-named-as-default
 import glob from 'fast-glob'
 import isCI from 'is-ci'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
+import * as semver from 'semver'
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 import unixify from 'unixify'
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
@@ -1948,7 +1949,7 @@ describe('zip-it-and-ship-it', () => {
     const tmpDirectory = await tmpName({ prefix: `zip-it-test` })
 
     vi.mocked(shellUtils.runCommand).mockImplementation(async (...args) => {
-      const [rootCommand, , { cwd = undefined, env: environment = undefined } = {}] = args
+      const [rootCommand, , { cwd, env: environment } = {}] = args
 
       if (rootCommand === 'cargo') {
         const directory = join(environment.CARGO_TARGET_DIR, args[1][2], 'release')

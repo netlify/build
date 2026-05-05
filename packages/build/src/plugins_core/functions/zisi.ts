@@ -1,7 +1,7 @@
 import { join, resolve } from 'path'
 
 import { type FunctionConfig, type ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import type { FeatureFlags } from '../../core/feature_flags.js'
 
@@ -83,7 +83,7 @@ export const getZisiParameters = ({
 // translation here.
 export const normalizeFunctionConfig = ({
   buildDir,
-  functionConfig = {},
+  functionConfig,
   isRunningLocally,
   nodeVersion,
 }: {

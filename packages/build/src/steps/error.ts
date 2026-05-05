@@ -8,8 +8,7 @@ import { serializeErrorStatus } from '../error/parse/serialize_status.js'
 import { BuildError, isPluginLocation, PluginLocation, ErrorTypes } from '../error/types.js'
 import { isSoftFailEvent } from '../plugins/events.js'
 import { addBuildErrorToActiveSpan } from '../tracing/main.js'
-
-import { isTrustedPlugin } from './plugin.js'
+import { isTrustedPlugin } from '../plugins/internal.js'
 
 /**
  * Handle build command errors and plugin errors:

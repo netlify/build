@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 
 import { normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { getSystemLogger } from '../../../lib/log/logger.js'
 

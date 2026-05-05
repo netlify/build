@@ -4,8 +4,8 @@ import { platform, version as nodeVersion } from 'process'
 
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
-import semver from 'semver'
-import tmp from 'tmp-promise'
+import * as semver from 'semver'
+import * as tmp from 'tmp-promise'
 
 test('Does not mutate read-only properties', async (t) => {
   const { netlifyConfig } = await new Fixture('./fixtures/readonly_properties').runWithBuildAndIntrospect()

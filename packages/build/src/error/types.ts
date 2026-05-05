@@ -386,7 +386,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
 
       return `Bundling of function "${functionName}" failed`
     },
-    group: ({ location: { functionType = 'serverless' } }: { location: FunctionsBundlingLocation }) =>
+    group: ({ location: { functionType } }: { location: FunctionsBundlingLocation }) =>
       `Bundling of ${functionType} function failed`,
     stackType: 'none',
     locationType: 'functionsBundling',

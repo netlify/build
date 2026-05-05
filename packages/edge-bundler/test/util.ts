@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import cpy from 'cpy'
 import { execa } from 'execa'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'
@@ -37,7 +37,7 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
 
     return {
       basePath: tmpFixtureDir.path,
-      cleanup: () => Promise.allSettled([tmpDistDir.cleanup, tmpFixtureDir.cleanup]),
+      cleanup: () => Promise.allSettled([tmpDistDir.cleanup(), tmpFixtureDir.cleanup()]),
       distPath,
     }
   }
@@ -60,7 +60,7 @@ const inspectESZIPFunction = (path: string) => `
 
     responses[functionName] = await res.text();
   }
-  
+
   console.log(JSON.stringify(responses));
 `
 
