@@ -96,16 +96,12 @@ test('Plugin errors can have a toJSON() method', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-// Process exit is different on Windows
-// @todo: re-enable. This test is currently randomly failing.
-// @todo: uncomment after upgrading to Ava v4.
-// See https://github.com/netlify/build/issues/3615
-// if (platform !== 'win32') {
-//   test.skip('Early exit', async (t) => {
-//     const output = await new Fixture(import.meta.url, './fixtures/early_exit').runWithBuild()
-//     t.snapshot(normalizeOutput(output))
-//   })
-// }
+if (process.platform !== 'win32') {
+  test.skip('Early exit', async (t) => {
+    const output = await new Fixture(import.meta.url, './fixtures/early_exit').runWithBuild()
+    expect(normalizeOutput(output)).toMatchSnapshot()
+  })
+}
 
 test('Redact API token on errors', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/api_token_redact')
