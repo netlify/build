@@ -124,9 +124,7 @@ test('Validate --node-path version is supported by the plugin', async (t) => {
     .runWithBuild()
   t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
   t.true(
-    output.includes(
-      'Warning: Starting June 2, 2026 plugin "./plugin.js" will be executed with Node.js version 22.',
-    ),
+    output.includes('Warning: Starting June 2, 2026 plugin "./plugin.js" will be executed with Node.js version 22.'),
   )
   const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
   await systemLog.cleanup()
