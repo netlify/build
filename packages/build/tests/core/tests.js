@@ -8,7 +8,6 @@ import test from 'ava'
 import getNode from 'get-node'
 import { memoize } from 'micro-memoize'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
 import { spy, spyOn } from 'tinyspy'
 import { tmpName } from 'tmp-promise'
 
@@ -454,12 +453,7 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
   t.is(params1.repositoryRoot, fixtureDir)
 
-  const testNodeVersion = process.versions.node
-  if (semver.gte(testNodeVersion, '16.0.0')) {
-    t.is(params1.config['*'].nodeVersion, testNodeVersion)
-  } else {
-    t.is(params1.config['*'].nodeVersion, undefined)
-  }
+  t.is(params1.config['*'].nodeVersion, process.versions.node)
 
   const params2 = mockZipFunctions.calls[1][2]
 
