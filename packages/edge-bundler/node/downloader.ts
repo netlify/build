@@ -5,7 +5,7 @@ import { promisify } from 'util'
 
 import StreamZip from 'node-stream-zip'
 import pRetry from 'p-retry'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { Logger } from './logger.js'
 import { getBinaryExtension, getPlatformTarget } from './platform.js'

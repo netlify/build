@@ -1,6 +1,6 @@
 import pLocate from 'p-locate'
 import { type PackageJson } from 'read-package-up'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { SystemLogger } from '../plugins_core/types.js'

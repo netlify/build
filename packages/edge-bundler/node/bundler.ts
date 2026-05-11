@@ -237,7 +237,8 @@ export const bundle = async (
       if (tarballDryRunError instanceof Error) {
         tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${tarballDryRunError.message}`
       } else {
-        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError as unknown)}`
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError)}`
       }
     } else {
       tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'

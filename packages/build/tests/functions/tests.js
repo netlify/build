@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
+import * as semver from 'semver'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 

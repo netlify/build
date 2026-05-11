@@ -8,9 +8,9 @@ import { BlobsServer } from '@netlify/blobs/server'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
-import semver from 'semver'
+import * as semver from 'semver'
 import { spyOn } from 'tinyspy'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 const TOKEN = 'test'
 

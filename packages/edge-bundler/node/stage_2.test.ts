@@ -3,7 +3,7 @@ import { join } from 'path'
 import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { getLocalEntryPoint } from './formats/javascript.js'

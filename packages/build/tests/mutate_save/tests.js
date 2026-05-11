@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 

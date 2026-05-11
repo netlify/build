@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { cwd } from 'process'
 
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { load } from './deploy_config.js'

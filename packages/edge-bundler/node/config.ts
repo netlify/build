@@ -3,7 +3,7 @@ import { join } from 'path'
 import { pathToFileURL } from 'url'
 
 import { SemVer } from 'semver'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'

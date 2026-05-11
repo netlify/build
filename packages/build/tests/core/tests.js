@@ -8,7 +8,7 @@ import test from 'ava'
 import getNode from 'get-node'
 import { memoize } from 'micro-memoize'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
+import * as semver from 'semver'
 import { spy, spyOn } from 'tinyspy'
 import { tmpName } from 'tmp-promise'
 

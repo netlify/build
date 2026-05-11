@@ -8,7 +8,7 @@ export const getPropName = function (keys: string[]) {
   // is an array index.
   // In those cases, we replace it by "*".
   return keys.reduce((propName, key) => {
-    const normalizedKey = Number.isInteger(key) || DYNAMIC_OBJECT_PROPS.has(propName) ? '*' : String(key)
+    const normalizedKey = Number.isInteger(key) || DYNAMIC_OBJECT_PROPS.has(propName) ? '*' : key
     return propName === '' ? normalizedKey : `${propName}.${normalizedKey}`
   }, '')
 }

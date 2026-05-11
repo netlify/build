@@ -9,7 +9,7 @@ import { promisify } from 'util'
 
 import cpy from 'cpy'
 import { x as tarExtract } from 'tar'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 const exec = promisify(childProcess.exec)
 const require = createRequire(import.meta.url)
