@@ -59,7 +59,7 @@ jobs:
         include:
           - os: ubuntu-24.04
             # Earliest supported version
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             # Minimum supported deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
             deno-version: 'v2.4.2'
       fail-fast: false
@@ -122,23 +122,23 @@ jobs:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-24.04
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             install-command: npm ci
             machine: '0'
           - os: ubuntu-24.04
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             install-command: npm ci
             machine: '1'
           - os: ubuntu-24.04
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             install-command: npm ci
             machine: '2'
           - os: ubuntu-24.04
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             install-command: npm ci
             machine: '3'
           - os: ubuntu-24.04
-            node-version: '18.14.0'
+            node-version: '22.12.0'
             install-command: npm ci
             machine: '4'
       fail-fast: false
