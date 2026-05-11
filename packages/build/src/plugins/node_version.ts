@@ -105,7 +105,7 @@ const addPluginNodeVersion = async function ({
       const { packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
 
       // Ensure Node.js version is compatible with plugin's `engines.node`
-      const pluginNodeVersionRange = pluginPackageJson?.engines?.node
+      const pluginNodeVersionRange = pluginPackageJson.engines?.node
       if (!pluginNodeVersionRange) {
         systemLog(`plugin "${packageName}" does not specify node support range`)
       } else if (semver.satisfies('22.12.0', pluginNodeVersionRange)) {
