@@ -2846,4 +2846,29 @@ export default [
       'import/no-named-as-default-member': 'off',
     },
   },
+  {
+    files: [
+      'packages/build/src/error/parse/parse.ts',
+      'packages/build/src/error/types.ts',
+      'packages/build/src/plugins/child/utils.ts',
+      'packages/build/src/plugins/compatibility.ts',
+      'packages/build/src/plugins/list.ts',
+      'packages/build/src/plugins_core/frameworks_api/index.ts',
+      'packages/build/src/plugins_core/functions/zisi.ts',
+      'packages/build/src/time/main.ts',
+      'packages/config/src/case.ts',
+      'packages/config/src/env/main.ts',
+      'packages/functions-utils/src/main.ts',
+      'packages/redirect-parser/src/all.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/bundler.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/index.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/src_files.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/index.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/parser/index.ts',
+      'packages/zip-it-and-ship-it/tests/main.test.ts',
+    ],
+    rules: {
+      '@typescript-eslint/no-useless-default-assignment': 'off'
+    }
+  }
 ]

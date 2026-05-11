@@ -1949,7 +1949,7 @@ describe('zip-it-and-ship-it', () => {
     const tmpDirectory = await tmpName({ prefix: `zip-it-test` })
 
     vi.mocked(shellUtils.runCommand).mockImplementation(async (...args) => {
-      const [rootCommand, , { cwd, env: environment } = {}] = args
+      const [rootCommand, , { cwd = undefined, env: environment = undefined } = {}] = args
 
       if (rootCommand === 'cargo') {
         const directory = join(environment.CARGO_TARGET_DIR, args[1][2], 'release')

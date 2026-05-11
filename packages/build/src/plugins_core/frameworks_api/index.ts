@@ -55,7 +55,14 @@ const handleSkewProtection = async (buildDir: string, packagePath?: string) => {
   }
 }
 
-const coreStep: CoreStepFunction = async function ({ buildDir, netlifyConfig, packagePath, systemLog }) {
+const coreStep: CoreStepFunction = async function ({
+  buildDir,
+  netlifyConfig,
+  packagePath,
+  systemLog = () => {
+    // no-op
+  },
+}) {
   await handleSkewProtection(buildDir, packagePath)
   let config: Partial<NetlifyConfig> | undefined
 

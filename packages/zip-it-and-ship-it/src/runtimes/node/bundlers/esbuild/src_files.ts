@@ -63,7 +63,7 @@ const getSrcFilesForDependencies = async function ({
 const getSrcFilesForDependency = async function ({
   dependency,
   basedir,
-  state,
+  state = getNewCache(),
   packageJson,
   pluginsModulesPath,
   nodeVersion,

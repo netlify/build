@@ -78,9 +78,9 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 export const bundleJsFile = async function ({
   additionalModulePaths,
   config,
-  externalModules,
+  externalModules = [],
   featureFlags,
-  ignoredModules,
+  ignoredModules = [],
   mainFile,
   name,
   srcDir,
@@ -139,7 +139,7 @@ export const bundleJsFile = async function ({
   const outputExtension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
 
   try {
-    const { metafile, warnings } = await build({
+    const { metafile = { inputs: {}, outputs: {} }, warnings } = await build({
       banner: moduleFormat === MODULE_FORMAT.ESM ? { js: CJS_SHIM } : undefined,
       bundle: true,
       entryPoints: [srcFile],

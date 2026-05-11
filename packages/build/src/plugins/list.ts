@@ -127,7 +127,7 @@ const normalizePluginsList = function (pluginsList: PluginListEntry[]) {
 
 // When `compatability` array is present it takes precedence, otherwise top-level `version` field is used as latest version
 // Plugin data comes from @netlify/plugins
-const normalizePluginItem = function ({ package: packageName, version, compatibility }: PluginListEntry) {
+const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }: PluginListEntry) {
   const versions = compatibility.length === 0 ? [{ version }] : compatibility
   const versionsA = versions.map(normalizeCompatVersion)
   return [packageName, versionsA] as const

@@ -49,7 +49,12 @@ export const measureDuration = keepFuncProps(kMeasureDuration)
 export const createTimer = function (
   stageTag,
   durationNs,
-  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category, tags }: MeasureDurationOptions = {},
+  {
+    metricName = DEFAULT_METRIC_NAME,
+    parentTag = TOP_PARENT_TAG,
+    category = undefined,
+    tags = undefined,
+  }: MeasureDurationOptions = {},
 ) {
   return { metricName, stageTag, parentTag, durationNs, category, tags }
 }

@@ -83,7 +83,7 @@ export const getZisiParameters = ({
 // translation here.
 export const normalizeFunctionConfig = ({
   buildDir,
-  functionConfig,
+  functionConfig = {},
   isRunningLocally,
   nodeVersion,
 }: {

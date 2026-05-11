@@ -47,7 +47,7 @@ export const getExpectedVersion = async function ({
   selected */
   authoritative?: boolean
 }) {
-  const { version, conditions } = await getCompatibleEntry({
+  const { version, conditions = [] } = await getCompatibleEntry({
     versions,
     nodeVersion,
     packageJson,

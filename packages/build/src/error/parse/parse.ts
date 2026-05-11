@@ -26,7 +26,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }): BuildError 
     errorMetadata,
   } = basicErrorInfo
 
-  const { location, plugin = {}, tsConfig } = errorInfo
+  const { location = {}, plugin = {}, tsConfig } = errorInfo
 
   const titleA = getTitle(title, errorInfo)
 

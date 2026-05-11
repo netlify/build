@@ -162,7 +162,7 @@ const parseRequire = ({
   expression: CallExpression
   resolveDir: string
 }) => {
-  const { arguments: args } = expression
+  const { arguments: args = [] } = expression
   const [firstArg] = args
 
   if (firstArg === undefined) {

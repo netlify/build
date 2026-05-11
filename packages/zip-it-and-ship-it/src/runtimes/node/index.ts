@@ -39,7 +39,7 @@ const zipFunction: ZipFunction = async function ({
   basePath,
   branch,
   cache,
-  config,
+  config = {},
   destFolder,
   extension,
   featureFlags,
@@ -94,7 +94,7 @@ const zipFunction: ZipFunction = async function ({
     bundlerWarnings,
     includedFiles,
     inputs,
-    mainFile: finalMainFile,
+    mainFile: finalMainFile = mainFile,
     moduleFormat,
     nativeNodeModules,
     rewrites = new Map(),
@@ -193,7 +193,7 @@ const zipFunction: ZipFunction = async function ({
   }
 }
 
-const zipWithFunctionWithFallback: ZipFunction = async ({ config, ...parameters }) => {
+const zipWithFunctionWithFallback: ZipFunction = async ({ config = {}, ...parameters }) => {
   // If a specific JS bundler version is specified, we'll use it.
   if (config.nodeBundler !== NODE_BUNDLER.ESBUILD_ZISI) {
     return zipFunction({ ...parameters, config })

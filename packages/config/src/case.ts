@@ -1,7 +1,7 @@
 // Some properties can be optionally capitalized. We normalize them to lowercase
 export const normalizeConfigCase = function ({
   Build,
-  build,
+  build = Build,
   ...config
 }: {
   Build: Record<string, unknown>
