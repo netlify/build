@@ -59,6 +59,6 @@ export const listAll = async function (functionsSrc, { fail = defaultFail } = {}
   }
 }
 
-const defaultFail = function (message) {
+const defaultFail = function (message, _opts?: unknown) {
   throw new Error(message)
 }
