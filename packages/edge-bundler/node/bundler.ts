@@ -1,8 +1,8 @@
+import crypto from 'crypto'
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
 import commonPathPrefix from 'common-path-prefix'
-import { v4 as uuidv4 } from 'uuid'
 
 import { importMapSpecifier } from '../shared/consts.js'
 
@@ -92,7 +92,7 @@ export const bundle = async (
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID
   // to create the bundle artifacts and rename them later.
-  const buildID = uuidv4()
+  const buildID = crypto.randomUUID()
 
   // Loading any configuration options from the deploy configuration API, if it
   // exists.

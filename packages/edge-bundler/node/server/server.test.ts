@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { createWriteStream } from 'fs'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
@@ -10,7 +11,6 @@ import process from 'process'
 import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
 import tmp from 'tmp-promise'
-import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'
 
 import { fixturesDir } from '../../test/util.js'
@@ -73,7 +73,7 @@ test('Starts a server and serves requests for edge functions', async () => {
     headers: {
       'x-nf-edge-functions': 'echo_env',
       'x-ef-passthrough': 'passthrough',
-      'X-NF-Request-ID': uuidv4(),
+      'X-NF-Request-ID': crypto.randomUUID(),
     },
   })
   expect(response1.status).toBe(200)
@@ -83,7 +83,7 @@ test('Starts a server and serves requests for edge functions', async () => {
     headers: {
       'x-nf-edge-functions': 'greet',
       'x-ef-passthrough': 'passthrough',
-      'X-NF-Request-ID': uuidv4(),
+      'X-NF-Request-ID': crypto.randomUUID(),
     },
   })
   expect(response2.status).toBe(200)
@@ -93,7 +93,7 @@ test('Starts a server and serves requests for edge functions', async () => {
     headers: {
       'x-nf-edge-functions': 'global_netlify',
       'x-ef-passthrough': 'passthrough',
-      'X-NF-Request-ID': uuidv4(),
+      'X-NF-Request-ID': crypto.randomUUID(),
     },
   })
   expect(await response3.json()).toEqual({
@@ -166,7 +166,7 @@ test('Serves edge functions in a monorepo setup', async () => {
     headers: {
       'x-nf-edge-functions': 'func1',
       'x-ef-passthrough': 'passthrough',
-      'X-NF-Request-ID': uuidv4(),
+      'X-NF-Request-ID': crypto.randomUUID(),
     },
   })
 
