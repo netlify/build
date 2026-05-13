@@ -7,6 +7,9 @@ on:
 jobs:
   prerelease:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -16,9 +19,9 @@ jobs:
           node-version: '22'
           check-latest: true
           registry-url: 'https://registry.npmjs.org'
-      # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
+      # npm@11.5.1+ required for trusted publishing
       - name: Setup npm version
-        run: npm install -g npm@10
+        run: npm install -g npm@11
       - name: Extract tag, version and package
         id: extract
         run: |-
@@ -61,6 +64,4 @@ jobs:
         run: npm install
       - name: Build workspaces
         run: npx lerna run build
-      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }} --provenance --access public
