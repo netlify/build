@@ -18,9 +18,9 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: "22"
           check-latest: true
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
@@ -50,8 +50,7 @@ jobs:
         # See https://github.com/npm/cli/issues/2010,https://github.com/npm/npm/issues/9111
         run: mkdir packages/${{ steps.extract.outputs.package }}/.git
       - name: Run npm version
-        run:
-          'npm version --workspace packages/${{ steps.extract.outputs.package }} ${{ steps.extract.outputs.version
+        run: 'npm version --workspace packages/${{ steps.extract.outputs.package }} ${{ steps.extract.outputs.version
           }}-${{ steps.extract.outputs.tag }} -m "chore: release @netlify/${{ steps.extract.outputs.package }} ${{
           steps.extract.outputs.version }}-${{ steps.extract.outputs.tag }}"'
       - name: Prefix package to git tag

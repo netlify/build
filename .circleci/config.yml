@@ -14,7 +14,7 @@ workflows:
             branches:
               only: [release-please--branches--main]
 
-  'Test & Check 🕵️‍♀️':
+  "Test & Check 🕵️‍♀️":
     jobs:
       - formatting
       - e2e/test:
