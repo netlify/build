@@ -1,0 +1,48 @@
+name: Update release lockfile
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  contents: write
+
+jobs:
+  update-lockfile:
+    if: ${{ startsWith(github.head_ref, 'release-please--') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          check-latest: true
+
+      - name: Install dependencies (updates lockfile)
+        run: npm install
+
+      - name: Check for lockfile changes
+        id: check-changes
+        run: |
+          if git diff --quiet package-lock.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push lockfile
+        if: ${{ steps.check-changes.outputs.changed == 'true' }}
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add package-lock.json
+          git commit -m "chore: update lockfile"
+          git push

@@ -4,6 +4,11 @@ on:
     branches:
       # releases/<package>/<tag>/<version>
       - releases/*/*/*
+
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   prerelease:
     runs-on: ubuntu-24.04
@@ -61,6 +66,7 @@ jobs:
         run: npm install
       - name: Build workspaces
         run: npx lerna run build
-      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
+      - name: Publish with provenance
+        run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }} --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -4,24 +4,6 @@ orbs:
   e2e: netlify/e2e@1
 
 workflows:
-  release-please:
-    jobs:
-      - release-please:
-          context: [shared-secrets]
-          filters:
-            branches:
-              only: [main]
-
-  # Workflow responsible for correctly updating the root lockfile for the release-please PR
-  # See: https://github.com/googleapis/release-please/issues/1101
-  release-pull-request:
-    jobs:
-      - update-lockfile:
-          context: [shared-secrets]
-          filters:
-            branches:
-              only: [release-please--branches--main]
-
   'Test & Check 🕵️‍♀️':
     jobs:
       - formatting
@@ -41,7 +23,7 @@ workflows:
 executors:
   node:
     docker:
-      - image: cimg/node:18.20.8
+      - image: cimg/node:22.14.0
   windows:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -76,44 +58,6 @@ commands:
             - node_modules
 
 jobs:
-  release-please:
-    description: The release action that runs on the main branch
-    executor: node
-    steps:
-      - checkout
-      - npm-install-deps
-      - run: npm run build
-      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-      - run: npx lerna publish from-package --yes --no-private
-      - run:
-          name: Create Github Release
-          command: |
-            npx release-please github-release \
-              --token "${GITHUB_RELEASES_TOKEN}" \
-              --repo-url "${CIRCLE_REPOSITORY_URL}" \
-      - run:
-          name: Run release-please
-          command: |
-            npx release-please release-pr \
-              --token "${GITHUB_RELEASES_TOKEN}" \
-              --repo-url "${CIRCLE_REPOSITORY_URL}" \
-
-  update-lockfile:
-    description: Update lockfile in a release please PR
-    executor: node
-    steps:
-      - checkout
-      - run: npm install
-      - run:
-          name: Commit and push lockfile
-          command: |
-            git remote remove origin
-            git remote add origin "https://${GITHUB_RELEASES_TOKEN}@github.com/netlify/build.git"
-            git config  user.email "33464286+netlify-jenkins@users.noreply.github.com"
-            git config  user.name "netlify-jenkins"
-            git add package-lock.json && \
-            git commit -m "chore: update lockfile" || true && \
-            git push --set-upstream origin release-please--branches--main
   formatting:
     description: Checks if the codebase satisfies wit the lint and style rules
     executor: node
