@@ -38,5 +38,4 @@ jobs:
       - name: Publish packages
         run: npx lerna publish from-package --yes --no-private
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

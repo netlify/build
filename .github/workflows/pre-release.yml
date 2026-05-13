@@ -63,5 +63,3 @@ jobs:
       - name: Build workspaces
         run: npx lerna run build
       - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }} --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
