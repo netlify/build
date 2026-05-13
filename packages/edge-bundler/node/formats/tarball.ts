@@ -269,19 +269,61 @@ async function getRequiredSourceFiles(
   return localFiles
 }
 
+// WebAssembly binary magic bytes: `\0asm` (0x00 0x61 0x73 0x6d).
+const WASM_MAGIC = Buffer.from([0x00, 0x61, 0x73, 0x6d])
+
+/**
+ * Detects whether a file is a raw WebAssembly module by its magic bytes.
+ * Deno <2.6 vendors imported `.wasm` modules under a `.d.mts` extension even
+ * though the content is the raw WASM binary, so we cannot rely on extension
+ * alone to decide whether a file is safe to read as UTF-8 and rewrite.
+ */
+async function isWasm(sourceFile: string): Promise<boolean> {
+  const fd = await fs.open(sourceFile, 'r')
+  try {
+    const buf = Buffer.alloc(WASM_MAGIC.length)
+    const { bytesRead } = await fd.read(buf, 0, buf.length, 0)
+    return bytesRead === WASM_MAGIC.length && buf.equals(WASM_MAGIC)
+  } finally {
+    await fd.close()
+  }
+}
+
+/**
+ * Decides whether a source file should be parsed and rewritten. Cheap extension
+ * check first; only if it passes do we open the file to rule out raw WebAssembly
+ * binaries (Deno <2.6 vendors `.wasm` imports under `.d.mts`) — reading those
+ * as UTF-8 would corrupt the binary on round-trip.
+ */
+async function shouldRewrite(sourceFile: string): Promise<boolean> {
+  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+    return false
+  }
+
+  if (await isWasm(sourceFile)) {
+    return false
+  }
+
+  return true
+}
+
 /**
  * Rewrites import assert into import with in the bundle directory
  * Defaults to copying the file in its current form
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
-  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+  if (!(await shouldRewrite(sourceFile))) {
     if (sourceFile !== destPath) {
       await fs.copyFile(sourceFile, destPath)
     }
     return
   }
 
-  const source = await fs.readFile(sourceFile, 'utf-8')
-  const modified = rewriteSourceImportAssertions(source)
-  await fs.writeFile(destPath, modified)
+  try {
+    const source = await fs.readFile(sourceFile, 'utf-8')
+    const modified = rewriteSourceImportAssertions(source)
+    await fs.writeFile(destPath, modified)
+  } catch (error) {
+    throw new Error(`Failed to rewrite import assertions in ${sourceFile}`, { cause: error })
+  }
 }
