@@ -1,10 +1,16 @@
 import type { NetlifyAPI } from '@netlify/api'
 import omit from 'omit.js'
+import slug from 'slug'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
+
+const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
+// `site.name` is `undefined` when there is no token or siteId
+const DEFAULT_SITE_NAME = 'site-name'
+const DEFAULT_SITE_ID = '00000000-0000-0000-0000-000000000000'
 
 // Retrieve this site's environment variable. Also take into account team-wide
 // environment variables.
@@ -111,8 +117,8 @@ const getGeneralEnv = async function ({
   const gitEnv = await getGitEnv(buildDir, branch)
   const deployUrls = getDeployUrls({ siteInfo: siteInfo as $TSFixMe, branch, deployId })
   return removeFalsy({
-    SITE_ID: id,
-    SITE_NAME: name,
+    SITE_ID: id ?? DEFAULT_SITE_ID,
+    SITE_NAME: name ?? DEFAULT_SITE_NAME,
     DEPLOY_ID: deployId,
     NETLIFY_SKEW_PROTECTION_TOKEN: skewProtectionToken,
     BUILD_ID: buildId,
@@ -160,16 +166,12 @@ const getDeployUrls = function ({
   deployId,
 }) {
   return {
-    URL: sslUrl,
+    URL: sslUrl ?? `https://${name}${NETLIFY_DEFAULT_DOMAIN}`,
     REPOSITORY_URL,
-    DEPLOY_PRIME_URL: `https://${branch}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
+    DEPLOY_PRIME_URL: `https://${slug(branch)}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
     DEPLOY_URL: `https://${deployId}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
   }
 }
-
-const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
-// `site.name` is `undefined` when there is no token or siteId
-const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
 const getUserEnv = async function ({ api, config, siteInfo, accounts, context }) {
@@ -223,8 +225,13 @@ const READONLY_ENV = [
   'CACHED_COMMIT_REF',
   'COMMIT_REF',
   'CONTEXT',
+  'DEPLOY_ID',
+  'DEPLOY_PRIME_URL',
+  'DEPLOY_URL',
   'HEAD',
   'REPOSITORY_URL',
+  'SITE_ID',
+  'SITE_NAME',
   'URL',
 
   // CI builds set NETLIFY=true while CLI and programmatic builds set
