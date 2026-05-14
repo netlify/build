@@ -1,6 +1,7 @@
 import type { NetlifyAPI } from '@netlify/api'
 import anyAscii from 'any-ascii'
 import omit from 'omit.js'
+import { env } from 'node:process'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
@@ -118,7 +119,7 @@ const getGeneralEnv = async function ({
   const deployUrls = getDeployUrls({ siteInfo: siteInfo as $TSFixMe, branch, deployId })
   return removeFalsy({
     SITE_ID: id ?? DEFAULT_SITE_ID,
-    SITE_NAME: name ?? DEFAULT_SITE_NAME,
+    SITE_NAME: name ?? env.SITE_NAME ?? DEFAULT_SITE_NAME, // env.SITE_NAME used in monitor/tests.js
     DEPLOY_ID: deployId,
     NETLIFY_SKEW_PROTECTION_TOKEN: skewProtectionToken,
     BUILD_ID: buildId,
@@ -244,7 +245,6 @@ const READONLY_ENV = [
   'HEAD',
   'REPOSITORY_URL',
   'SITE_ID',
-  'SITE_NAME',
   'URL',
 
   // CI builds set NETLIFY=true while CLI and programmatic builds set
