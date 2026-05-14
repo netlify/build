@@ -1,6 +1,6 @@
 import type { NetlifyAPI } from '@netlify/api'
+import anyAscii from 'any-ascii'
 import omit from 'omit.js'
-import slug from 'slug'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
@@ -156,6 +156,18 @@ const getInternalEnv = function (
   )
 }
 
+/**
+ * Function matching the backend logic to slugify strings
+ * @param str string to slugify
+ * @returns string
+ */
+const slugify = (str: string) => anyAscii(str)
+    .replace(/[-\u2010\u2012\u2013\u2014\u2015\u2043\u2212\u00ad]/g, '-')
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .trim()
+    .replace(/ +/g, '-')
+
 const getDeployUrls = function ({
   siteInfo: {
     name = DEFAULT_SITE_NAME,
@@ -168,7 +180,7 @@ const getDeployUrls = function ({
   return {
     URL: sslUrl ?? `https://${name}${NETLIFY_DEFAULT_DOMAIN}`,
     REPOSITORY_URL,
-    DEPLOY_PRIME_URL: `https://${slug(branch)}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
+    DEPLOY_PRIME_URL: `https://${slugify(branch)}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
     DEPLOY_URL: `https://${deployId}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
   }
 }

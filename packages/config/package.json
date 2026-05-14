@@ -62,6 +62,7 @@
     "@netlify/api": "^14.0.19",
     "@netlify/headers-parser": "^9.0.3",
     "@netlify/redirect-parser": "^15.0.4",
+    "any-ascii": "^0.3.3",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
@@ -78,7 +79,6 @@
     "p-locate": "^6.0.0",
     "path-type": "^6.0.0",
     "read-package-up": "^11.0.0",
-    "slug": "^11.0.1",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^5.0.0",
     "yaml": "^2.8.0",
@@ -87,7 +87,6 @@
   },
   "devDependencies": {
     "@types/node": "^18.19.111",
-    "@types/slug": "^5.0.9",
     "ava": "^5.0.0",
     "c8": "^10.0.0",
     "has-ansi": "^6.0.0",
