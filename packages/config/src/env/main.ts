@@ -161,7 +161,8 @@ const getInternalEnv = function (
  * @param str string to slugify
  * @returns string
  */
-const slugify = (str: string) => anyAscii(str)
+const slugify = (str: string) =>
+  anyAscii(str)
     .replace(/[-\u2010\u2012\u2013\u2014\u2015\u2043\u2212\u00ad]/g, '-')
     .toLowerCase()
     .replace(/[^a-z0-9 ]/g, ' ')
