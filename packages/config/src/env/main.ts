@@ -1,5 +1,5 @@
 import type { NetlifyAPI } from '@netlify/api'
-import anyAscii from 'any-ascii'
+import transliterate from '@sindresorhus/transliterate'
 import omit from 'omit.js'
 import { env } from 'node:process'
 
@@ -163,7 +163,7 @@ const getInternalEnv = function (
  * @returns string
  */
 const slugify = (str: string) =>
-  anyAscii(str)
+  transliterate(str)
     .replace(/[-\u2010\u2012\u2013\u2014\u2015\u2043\u2212\u00ad]/g, '-')
     .toLowerCase()
     .replace(/[^a-z0-9 ]/g, ' ')
