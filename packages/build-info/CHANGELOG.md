@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [10.5.1](https://github.com/netlify/build/compare/build-info-v10.5.0...build-info-v10.5.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* ensure that React Router is not detected as part of Hydrogen projects ([#7020](https://github.com/netlify/build/issues/7020)) ([24d5886](https://github.com/netlify/build/commit/24d58863de012eb2022848ed090b87b00f331baf))
+
 ## [10.5.0](https://github.com/netlify/build/compare/build-info-v10.4.0...build-info-v10.5.0) (2026-04-09)
 
 

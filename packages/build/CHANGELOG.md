@@ -105,6 +105,54 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.13.6](https://github.com/netlify/build/compare/build-v35.13.5...build-v35.13.6) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.5.0 to ^24.5.1
+    * @netlify/edge-bundler bumped from 14.10.1 to 14.10.2
+    * @netlify/functions-utils bumped from ^6.2.31 to ^6.2.32
+    * @netlify/zip-it-and-ship-it bumped from 14.5.5 to 14.5.6
+
+## [35.13.5](https://github.com/netlify/build/compare/build-v35.13.4...build-v35.13.5) (2026-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.6 ([#7048](https://github.com/netlify/build/issues/7048)) ([07a4565](https://github.com/netlify/build/commit/07a4565918867b63dd1f62be0219cfb7875a4b4d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.30 to ^6.2.31
+    * @netlify/zip-it-and-ship-it bumped from 14.5.4 to 14.5.5
+
+## [35.13.4](https://github.com/netlify/build/compare/build-v35.13.3...build-v35.13.4) (2026-04-26)
+
+
+### Bug Fixes
+
+* cleanup migration dist files ([#7039](https://github.com/netlify/build/issues/7039)) ([bd970ff](https://github.com/netlify/build/commit/bd970ffd187d1f6d2860da7826f8f6035fe7f4e0))
+
+## [35.13.3](https://github.com/netlify/build/compare/build-v35.13.2...build-v35.13.3) (2026-04-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.10.0 to 14.10.1
+
 ## [35.13.2](https://github.com/netlify/build/compare/build-v35.13.1...build-v35.13.2) (2026-04-15)
 
 
