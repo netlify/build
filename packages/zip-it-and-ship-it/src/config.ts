@@ -52,7 +52,7 @@ export const functionConfig = z.object({
   nodeBundler: nodeBundler.optional().catch(undefined),
   nodeSourcemap: z.boolean().optional().catch(undefined),
   nodeVersion: z.string().optional().catch(undefined),
-  region: functionRegion.optional().catch(undefined),
+  region: functionRegion.optional(),
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
   timeout: z.number().optional().catch(undefined),

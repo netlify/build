@@ -920,4 +920,12 @@ describe('V2 API', () => {
       runtimeAPIVersion: 2,
     })
   })
+
+  test('Rejects an invalid region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "not-a-real-region" }`
+
+    expect(() => parseSource(source, options)).toThrow(/region/)
+  })
 })
