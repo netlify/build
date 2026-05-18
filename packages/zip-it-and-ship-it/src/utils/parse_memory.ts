@@ -8,7 +8,7 @@ const MEMORY_PATTERN = /^(\d+(?:\.\d+)?)\s*(mb|gb)?$/
 
 export const parseMemoryMB = (input: number | string): number => {
   if (typeof input === 'number') {
-    return input
+    return Math.round(input)
   }
 
   const match = MEMORY_PATTERN.exec(input.trim().toLowerCase())

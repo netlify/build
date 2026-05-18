@@ -17,6 +17,12 @@ describe('parseMemoryMB', () => {
     test('passes through negative numbers (range checks are the caller’s concern)', () => {
       expect(parseMemoryMB(-128)).toBe(-128)
     })
+
+    test('rounds decimal numbers (consistent with string-input rounding)', () => {
+      expect(parseMemoryMB(1024.4)).toBe(1024)
+      expect(parseMemoryMB(1024.5)).toBe(1025)
+      expect(parseMemoryMB(2047.6)).toBe(2048)
+    })
   })
 
   describe('numeric string inputs (no unit)', () => {
