@@ -55,7 +55,7 @@
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   },
   "dependencies": {
     "@import-maps/resolve": "^2.0.0",
