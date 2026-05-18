@@ -262,6 +262,22 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.memory',
+    check: (value) => typeof value === 'number' || isString(value),
+    message: 'must be a number (in MB) or a string with a unit (e.g. "2gb").',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { memory: '2gb' } },
+    }),
+  },
+  {
+    property: 'functions.*.region',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { region: 'cmh' } },
+    }),
+  },
+  {
     property: 'functions.*.schedule',
     check: isValidCronExpression,
     message: 'must be a valid cron expression (see https://ntl.fyi/cron-syntax).',

@@ -59,9 +59,11 @@ export const inSourceConfig = functionConfig
     generator: true,
     includedFiles: true,
     ignoredNodeModules: true,
+    memory: true,
     name: true,
     nodeBundler: true,
     nodeVersion: true,
+    region: true,
     schedule: true,
     timeout: true,
   })

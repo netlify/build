@@ -53,7 +53,9 @@ export const FUNCTION_CONFIG_PROPERTIES = new Set([
   'external_node_modules',
   'ignored_node_modules',
   'included_files',
+  'memory',
   'node_bundler',
+  'region',
   'schedule',
 ])
 

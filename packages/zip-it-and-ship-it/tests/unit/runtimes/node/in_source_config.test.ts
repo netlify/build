@@ -905,4 +905,96 @@ describe('V2 API', () => {
       runtimeAPIVersion: 2,
     })
   })
+
+  test('Understands region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "iad" }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      config: { region: 'iad' },
+      excludedRoutes: [],
+      inputModuleFormat: 'esm',
+      routes: [],
+      runtimeAPIVersion: 2,
+    })
+  })
+
+  test('Normalizes region casing to lower case', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "IAD" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.region).toBe('iad')
+  })
+
+  test('Rejects an invalid region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "not-a-real-region" }`
+
+    expect(() => parseSource(source, options)).toThrow(/region/)
+  })
+
+  test('Understands memory as a bare number (interpreted as MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with a `gb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2gb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with an `mb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1024mb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(1024)
+  })
+
+  test('Normalizes memory unit casing', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2GB" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Rejects memory below the minimum (1024 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 512 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects memory above the maximum (4096 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "5gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a malformed memory string', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "lots" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
 })

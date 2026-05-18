@@ -16,9 +16,11 @@ interface ManifestFunction {
   generator?: string
   invocationMode?: InvocationMode
   mainFile: string
+  memory?: number
   name: string
   path: string
   priority?: number
+  region?: string
   routes?: ExtendedRoute[]
   runtime: string
   runtimeVersion?: string
@@ -60,9 +62,11 @@ const formatFunctionForManifest = ({
   generator,
   invocationMode,
   mainFile,
+  memory,
   name,
   path,
   priority,
+  region,
   trafficRules,
   routes,
   runtime,
@@ -79,8 +83,10 @@ const formatFunctionForManifest = ({
     invocationMode,
     buildData: { bootstrapVersion, runtimeAPIVersion },
     mainFile,
+    memory,
     name,
     priority,
+    region,
     trafficRules,
     runtimeVersion,
     path: resolve(path),
