@@ -1,7 +1,7 @@
 import { createRequire } from 'module'
 
 import { findUp } from 'find-up'
-import { pathExists } from 'path-exists'
+import { access } from 'fs/promises'
 // @ts-expect-error doesnt export async
 import { async as asyncResolve } from 'resolve'
 
@@ -96,9 +96,14 @@ const resolvePackageFallback = async function (moduleName: string, baseDirs: str
 const isPackageDir = async function (moduleName: string, dir: string) {
   // Need to use `endsWith()` to take into account `@scope/package`.
   // Backslashes need to be converted for Windows.
-  if (!dir.replace(BACKSLASH_REGEXP, '/').endsWith(moduleName) || !(await pathExists(`${dir}/package.json`))) {
+  if (!dir.replace(BACKSLASH_REGEXP, '/').endsWith(moduleName)) {
     return
   }
 
-  return dir
+  try {
+    await access(`${dir}/package.json`)
+    return dir
+  } catch {
+    return
+  }
 }
