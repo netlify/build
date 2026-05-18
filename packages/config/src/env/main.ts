@@ -1,10 +1,17 @@
 import type { NetlifyAPI } from '@netlify/api'
+import transliterate from '@sindresorhus/transliterate'
 import omit from 'omit.js'
+import { env } from 'node:process'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
+
+const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
+// `site.name` is `undefined` when there is no token or siteId
+const DEFAULT_SITE_NAME = 'site-name'
+const DEFAULT_SITE_ID = '00000000-0000-0000-0000-000000000000'
 
 // Retrieve this site's environment variable. Also take into account team-wide
 // environment variables.
@@ -111,8 +118,8 @@ const getGeneralEnv = async function ({
   const gitEnv = await getGitEnv(buildDir, branch)
   const deployUrls = getDeployUrls({ siteInfo: siteInfo as $TSFixMe, branch, deployId })
   return removeFalsy({
-    SITE_ID: id,
-    SITE_NAME: name,
+    SITE_ID: id ?? DEFAULT_SITE_ID,
+    SITE_NAME: name ?? env.SITE_NAME ?? DEFAULT_SITE_NAME, // env.SITE_NAME used in monitor/tests.js
     DEPLOY_ID: deployId,
     NETLIFY_SKEW_PROTECTION_TOKEN: skewProtectionToken,
     BUILD_ID: buildId,
@@ -150,6 +157,19 @@ const getInternalEnv = function (
   )
 }
 
+/**
+ * Function matching the backend logic to slugify strings
+ * @param str string to slugify
+ * @returns string
+ */
+const slugify = (str: string) =>
+  transliterate(str)
+    .replace(/[-\u2010\u2012\u2013\u2014\u2015\u2043\u2212\u00ad]/g, '-')
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .trim()
+    .replace(/ +/g, '-')
+
 const getDeployUrls = function ({
   siteInfo: {
     name = DEFAULT_SITE_NAME,
@@ -160,16 +180,12 @@ const getDeployUrls = function ({
   deployId,
 }) {
   return {
-    URL: sslUrl,
+    URL: sslUrl ?? `https://${name}${NETLIFY_DEFAULT_DOMAIN}`,
     REPOSITORY_URL,
-    DEPLOY_PRIME_URL: `https://${branch}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
+    DEPLOY_PRIME_URL: `https://${slugify(branch)}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
     DEPLOY_URL: `https://${deployId}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
   }
 }
-
-const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
-// `site.name` is `undefined` when there is no token or siteId
-const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
 const getUserEnv = async function ({ api, config, siteInfo, accounts, context }) {
@@ -223,8 +239,12 @@ const READONLY_ENV = [
   'CACHED_COMMIT_REF',
   'COMMIT_REF',
   'CONTEXT',
+  'DEPLOY_ID',
+  'DEPLOY_PRIME_URL',
+  'DEPLOY_URL',
   'HEAD',
   'REPOSITORY_URL',
+  'SITE_ID',
   'URL',
 
   // CI builds set NETLIFY=true while CLI and programmatic builds set
