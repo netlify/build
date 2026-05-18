@@ -206,7 +206,7 @@ const parseConfigESMExport = (node: Statement) => {
  * subtree. Only values supported by the `parsePrimitive` method are returned,
  * and any others will be ignored and excluded from the resulting object.
  */
-const parseObject = (node: ObjectExpression) =>
+export const parseObject = (node: ObjectExpression) =>
   node.properties.reduce(
     (acc, property): Record<string, unknown> => {
       if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {

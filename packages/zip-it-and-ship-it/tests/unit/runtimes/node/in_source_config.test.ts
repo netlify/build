@@ -905,4 +905,57 @@ describe('V2 API', () => {
       runtimeAPIVersion: 2,
     })
   })
+
+  describe('Inline config in default export object', () => {
+    test('Extracts config from the default export object', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toEqual([{ pattern: '/hello', literal: '/hello', methods: [], prefer_static: undefined }])
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config from a binding-resolved default export object', () => {
+      const source = `const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/api" }
+      }
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/api'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+
+    test('Named config export takes precedence over inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = { path: "/named" }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/named'] })
+    })
+
+    test('Ignores non-object config property', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: "not-an-object"
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+  })
 })
