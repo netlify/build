@@ -25,7 +25,7 @@ export const parseConfig = async function (configPath?: string) {
  * Same but `configPath` is required and `configPath` might point to a
  * non-existing file.
  */
-export const parseOptionalConfig = async function (configPath) {
+export const parseOptionalConfig = async function (configPath: string) {
   if (!existsSync(configPath)) {
     return {}
   }
@@ -33,7 +33,7 @@ export const parseOptionalConfig = async function (configPath) {
   return await readConfigPath(configPath)
 }
 
-const readConfigPath = async function (configPath) {
+const readConfigPath = async function (configPath: string) {
   const configString = await readConfig(configPath)
 
   validateTomlBlackslashes(configString)
@@ -41,22 +41,22 @@ const readConfigPath = async function (configPath) {
   try {
     return parseToml(configString)
   } catch (error) {
-    throwUserError('Could not parse configuration file', error)
+    throwUserError('Could not parse configuration file', error as Error)
   }
 }
 
 /**
  * Reach the configuration file's raw content
  */
-const readConfig = async function (configPath) {
+const readConfig = async function (configPath: string): Promise<string> {
   try {
     return await fs.readFile(configPath, 'utf8')
   } catch (error) {
-    throwUserError('Could not read configuration file', error)
+    return throwUserError('Could not read configuration file', error as Error)
   }
 }
 
-const validateTomlBlackslashes = function (configString) {
+const validateTomlBlackslashes = function (configString: string) {
   const result = INVALID_TOML_BLACKSLASH.exec(configString)
   if (result === null) {
     return
