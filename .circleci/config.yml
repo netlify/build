@@ -4,14 +4,6 @@ orbs:
   e2e: netlify/e2e@1
 
 workflows:
-  release-please:
-    jobs:
-      - release-please:
-          context: [shared-secrets]
-          filters:
-            branches:
-              only: [main]
-
   # Workflow responsible for correctly updating the root lockfile for the release-please PR
   # See: https://github.com/googleapis/release-please/issues/1101
   release-pull-request:
@@ -22,7 +14,7 @@ workflows:
             branches:
               only: [release-please--branches--main]
 
-  'Test & Check 🕵️‍♀️':
+  "Test & Check 🕵️‍♀️":
     jobs:
       - formatting
       - e2e/test:
@@ -76,28 +68,6 @@ commands:
             - node_modules
 
 jobs:
-  release-please:
-    description: The release action that runs on the main branch
-    executor: node
-    steps:
-      - checkout
-      - npm-install-deps
-      - run: npm run build
-      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-      - run: npx lerna publish from-package --yes --no-private
-      - run:
-          name: Create Github Release
-          command: |
-            npx release-please github-release \
-              --token "${GITHUB_RELEASES_TOKEN}" \
-              --repo-url "${CIRCLE_REPOSITORY_URL}" \
-      - run:
-          name: Run release-please
-          command: |
-            npx release-please release-pr \
-              --token "${GITHUB_RELEASES_TOKEN}" \
-              --repo-url "${CIRCLE_REPOSITORY_URL}" \
-
   update-lockfile:
     description: Update lockfile in a release please PR
     executor: node

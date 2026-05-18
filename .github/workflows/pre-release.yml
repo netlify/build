@@ -4,6 +4,11 @@ on:
     branches:
       # releases/<package>/<tag>/<version>
       - releases/*/*/*
+
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   prerelease:
     runs-on: ubuntu-24.04
@@ -13,9 +18,9 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: '22'
+          node-version: "22"
           check-latest: true
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
@@ -45,8 +50,7 @@ jobs:
         # See https://github.com/npm/cli/issues/2010,https://github.com/npm/npm/issues/9111
         run: mkdir packages/${{ steps.extract.outputs.package }}/.git
       - name: Run npm version
-        run:
-          'npm version --workspace packages/${{ steps.extract.outputs.package }} ${{ steps.extract.outputs.version
+        run: 'npm version --workspace packages/${{ steps.extract.outputs.package }} ${{ steps.extract.outputs.version
           }}-${{ steps.extract.outputs.tag }} -m "chore: release @netlify/${{ steps.extract.outputs.package }} ${{
           steps.extract.outputs.version }}-${{ steps.extract.outputs.tag }}"'
       - name: Prefix package to git tag
@@ -61,6 +65,4 @@ jobs:
         run: npm install
       - name: Build workspaces
         run: npx lerna run build
-      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }} --provenance
