@@ -7,6 +7,7 @@ import type { ExtendedRoute, Route } from './routes.js'
 export type FunctionResult = Omit<FunctionArchive, 'runtime'> & {
   bootstrapVersion?: string
   eventSubscriptions?: string[]
+  region?: string
   routes?: ExtendedRoute[]
   excludedRoutes?: Route[]
   runtime: RuntimeName
@@ -23,6 +24,7 @@ export const formatZipResult = (archive: FunctionArchive) => {
     routes: archive.staticAnalysisResult?.routes,
     excludedRoutes: archive.staticAnalysisResult?.excludedRoutes,
     runtime: archive.runtime.name,
+    region: archive.staticAnalysisResult?.config?.region ?? archive?.config?.region,
     schedule: archive.staticAnalysisResult?.config?.schedule ?? archive?.config?.schedule,
     runtimeAPIVersion: archive.staticAnalysisResult?.runtimeAPIVersion,
   }

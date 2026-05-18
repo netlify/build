@@ -62,6 +62,7 @@ export const inSourceConfig = functionConfig
     name: true,
     nodeBundler: true,
     nodeVersion: true,
+    region: true,
     schedule: true,
     timeout: true,
   })

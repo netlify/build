@@ -262,6 +262,14 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.region',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { region: 'cmh' } },
+    }),
+  },
+  {
     property: 'functions.*.schedule',
     check: isValidCronExpression,
     message: 'must be a valid cron expression (see https://ntl.fyi/cron-syntax).',

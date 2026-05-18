@@ -54,6 +54,7 @@ export const FUNCTION_CONFIG_PROPERTIES = new Set([
   'ignored_node_modules',
   'included_files',
   'node_bundler',
+  'region',
   'schedule',
 ])
 
