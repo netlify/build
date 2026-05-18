@@ -16,6 +16,7 @@ interface ManifestFunction {
   generator?: string
   invocationMode?: InvocationMode
   mainFile: string
+  memory?: number
   name: string
   path: string
   priority?: number
@@ -61,6 +62,7 @@ const formatFunctionForManifest = ({
   generator,
   invocationMode,
   mainFile,
+  memory,
   name,
   path,
   priority,
@@ -81,6 +83,7 @@ const formatFunctionForManifest = ({
     invocationMode,
     buildData: { bootstrapVersion, runtimeAPIVersion },
     mainFile,
+    memory,
     name,
     priority,
     region,

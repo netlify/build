@@ -591,7 +591,7 @@ describe('V2 functions API', () => {
     })
   })
 
-  test('Name, Generator, Timeout and Region are taken from ISC and take precedence over deploy config', async () => {
+  test('Name, Generator, Timeout, Region and Memory are taken from ISC and take precedence over deploy config', async () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
     const manifestPath = join(tmpDir, 'manifest.json')
 
@@ -613,6 +613,8 @@ describe('V2 functions API', () => {
     expect(func.timeout).toBe(60)
     expect(func.generator).toBe('next-runtime@1.2.3')
     expect(func.region).toBe('iad')
+    // The fixture uses "2gb" — parsed and normalized to 2048 MB.
+    expect(func.memory).toBe(2048)
 
     const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
     const manifest = JSON.parse(manifestString)
@@ -621,6 +623,7 @@ describe('V2 functions API', () => {
     expect(manifest.functions[0].displayName).toEqual('SSR Function')
     expect(manifest.functions[0].generator).toEqual('next-runtime@1.2.3')
     expect(manifest.functions[0].region).toEqual('iad')
+    expect(manifest.functions[0].memory).toEqual(2048)
   })
 
   testMany(

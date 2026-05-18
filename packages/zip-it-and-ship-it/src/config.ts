@@ -12,6 +12,7 @@ import { FunctionSource } from './function.js'
 import { nodeBundler } from './runtimes/node/bundlers/types.js'
 import { moduleFormat } from './runtimes/node/utils/module_format.js'
 import { minimatch } from './utils/matching.js'
+import { parseMemoryMB } from './utils/parse_memory.js'
 
 // We only need the list of valid region codes here (to feed into Zod's
 // `enum` for runtime validation). The natural shape would be a literal
@@ -47,6 +48,14 @@ const functionRegion = z.preprocess(
   z.enum(FUNCTION_REGION_CODES),
 )
 
+const FUNCTION_MEMORY_MIN_MB = 1024
+const FUNCTION_MEMORY_MAX_MB = 4096
+
+const functionMemory = z.preprocess(
+  (input) => (typeof input === 'string' || typeof input === 'number' ? parseMemoryMB(input) : input),
+  z.number().int().min(FUNCTION_MEMORY_MIN_MB).max(FUNCTION_MEMORY_MAX_MB),
+)
+
 export const functionConfig = z.object({
   externalNodeModules: z.array(z.string()).optional().catch([]),
   generator: z.string().optional().catch(undefined),
@@ -57,6 +66,7 @@ export const functionConfig = z.object({
   nodeBundler: nodeBundler.optional().catch(undefined),
   nodeSourcemap: z.boolean().optional().catch(undefined),
   nodeVersion: z.string().optional().catch(undefined),
+  memory: functionMemory.optional(),
   region: functionRegion.optional(),
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
