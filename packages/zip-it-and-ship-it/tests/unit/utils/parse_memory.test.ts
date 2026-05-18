@@ -14,8 +14,18 @@ describe('parseMemoryMB', () => {
       expect(parseMemoryMB(0)).toBe(0)
     })
 
-    test('passes through negative numbers (range checks are the caller’s concern)', () => {
-      expect(parseMemoryMB(-128)).toBe(-128)
+    test('rejects negative numbers (consistent with the string branch)', () => {
+      expect(parseMemoryMB(-128)).toBeNaN()
+      expect(parseMemoryMB(-1)).toBeNaN()
+    })
+
+    test('rejects Infinity and -Infinity', () => {
+      expect(parseMemoryMB(Number.POSITIVE_INFINITY)).toBeNaN()
+      expect(parseMemoryMB(Number.NEGATIVE_INFINITY)).toBeNaN()
+    })
+
+    test('rejects NaN', () => {
+      expect(parseMemoryMB(Number.NaN)).toBeNaN()
     })
 
     test('rounds decimal numbers (consistent with string-input rounding)', () => {

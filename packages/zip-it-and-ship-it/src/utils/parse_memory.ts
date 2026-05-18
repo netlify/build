@@ -8,6 +8,9 @@ const MEMORY_PATTERN = /^(\d+(?:\.\d+)?)\s*(mb|gb)?$/
 
 export const parseMemoryMB = (input: number | string): number => {
   if (typeof input === 'number') {
+    if (!Number.isFinite(input) || input < 0) {
+      return Number.NaN
+    }
     return Math.round(input)
   }
 
