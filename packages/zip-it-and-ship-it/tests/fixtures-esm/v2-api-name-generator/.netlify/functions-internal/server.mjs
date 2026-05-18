@@ -4,4 +4,5 @@ export const config = {
   name: 'SSR Function',
   generator: 'next-runtime@1.2.3',
   timeout: 60,
+  region: 'iad',
 }

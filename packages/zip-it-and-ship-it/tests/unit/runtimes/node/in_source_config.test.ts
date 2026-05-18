@@ -905,4 +905,19 @@ describe('V2 API', () => {
       runtimeAPIVersion: 2,
     })
   })
+
+  test('Understands region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "iad" }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      config: { region: 'iad' },
+      excludedRoutes: [],
+      inputModuleFormat: 'esm',
+      routes: [],
+      runtimeAPIVersion: 2,
+    })
+  })
 })
