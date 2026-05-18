@@ -3,21 +3,21 @@
 // case-insensitive). Everything is normalized to an integer megabyte count.
 // Malformed input returns NaN.
 
-const MEMORY_UNIT_TO_MB: Record<string, number> = { mb: 1, gb: 1024 };
-const MEMORY_PATTERN = /^(\d+(?:\.\d+)?)\s*(mb|gb)?$/;
+const MEMORY_UNIT_TO_MB: Record<string, number> = { mb: 1, gb: 1024 }
+const MEMORY_PATTERN = /^(\d+(?:\.\d+)?)\s*(mb|gb)?$/
 
 export const parseMemoryMB = (input: number | string): number => {
-  if (typeof input === "number") {
-    return input;
+  if (typeof input === 'number') {
+    return input
   }
 
-  const match = MEMORY_PATTERN.exec(input.trim().toLowerCase());
+  const match = MEMORY_PATTERN.exec(input.trim().toLowerCase())
   if (!match) {
-    return Number.NaN;
+    return Number.NaN
   }
 
-  const value = parseFloat(match[1]);
-  const unit = match[2] || "mb";
+  const value = parseFloat(match[1])
+  const unit = match[2] || 'mb'
 
-  return Math.round(value * MEMORY_UNIT_TO_MB[unit]);
-};
+  return Math.round(value * MEMORY_UNIT_TO_MB[unit])
+}
