@@ -40,7 +40,12 @@ const FUNCTION_REGION_KEYS = {
 
 const FUNCTION_REGION_CODES = Object.keys(FUNCTION_REGION_KEYS) as [FunctionRegion, ...FunctionRegion[]]
 
-const functionRegion = z.enum(FUNCTION_REGION_CODES)
+// Accept any casing in source (`iad`, `IAD`, `Iad`) but normalize to lower
+// case before validating and writing to the manifest.
+const functionRegion = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toLowerCase() : input),
+  z.enum(FUNCTION_REGION_CODES),
+)
 
 export const functionConfig = z.object({
   externalNodeModules: z.array(z.string()).optional().catch([]),

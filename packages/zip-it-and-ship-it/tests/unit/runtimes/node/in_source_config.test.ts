@@ -921,6 +921,15 @@ describe('V2 API', () => {
     })
   })
 
+  test('Normalizes region casing to lower case', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "IAD" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.region).toBe('iad')
+  })
+
   test('Rejects an invalid region', () => {
     const source = `
     export default async () => new Response("Hello!")
