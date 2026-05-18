@@ -18,8 +18,7 @@ export type FunctionResult = Omit<FunctionArchive, 'runtime'> & {
 
 // Takes the result of zipping a function and formats it for output.
 export const formatZipResult = (archive: FunctionArchive) => {
-  const memory: number | undefined =
-    archive.staticAnalysisResult?.config?.memory ?? archive?.config?.memory
+  const memory: number | undefined = archive.staticAnalysisResult?.config?.memory ?? archive?.config?.memory
 
   const functionResult: FunctionResult = {
     ...archive,
