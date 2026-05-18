@@ -1,9 +1,9 @@
 import { Buffer } from 'buffer'
 import { rm } from 'fs/promises'
-import { createRequire } from 'module'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
+import { ZipArchive } from '@archiver/archiver'
 import nock from 'nock'
 import semver from 'semver'
 import tmp from 'tmp-promise'
@@ -12,14 +12,11 @@ import { test, expect, vi } from 'vitest'
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
-const require = createRequire(import.meta.url)
-const archiver = require('archiver')
-
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async () => {
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const mockBinaryOutput = `#!/usr/bin/env sh\n\necho "deno ${latestVersion}"`
   const data = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(data)
   archive.append(Buffer.from(mockBinaryOutput), { name: platform === 'win32' ? 'deno.exe' : 'deno' })

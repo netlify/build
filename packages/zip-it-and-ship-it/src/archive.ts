@@ -2,11 +2,11 @@ import { Buffer } from 'buffer'
 import { createWriteStream, Stats, readlinkSync } from 'fs'
 import { Writable } from 'stream'
 
-import archiver, { Archiver } from 'archiver'
+import { Archiver, ZipArchive as ZipArchiveClass, TarArchive } from '@archiver/archiver'
 
 import { ObjectValues } from './types/utils.js'
 
-export { Archiver as ZipArchive } from 'archiver'
+export { Archiver as ZipArchive } from '@archiver/archiver'
 
 export const ARCHIVE_FORMAT = {
   NONE: 'none',
@@ -19,7 +19,7 @@ export type ArchiveFormat = ObjectValues<typeof ARCHIVE_FORMAT>
 // Start zipping files
 export const startZip = function (destPath: string): { archive: Archiver; output: Writable } {
   const output = createWriteStream(destPath)
-  const archive = archiver('zip')
+  const archive = new ZipArchiveClass()
 
   archive.pipe(output)
 
@@ -62,7 +62,7 @@ export const endZip = async function (archive: Archiver, output: Writable): Prom
 
 export const startTar = function (destPath: string): { archive: Archiver; output: Writable } {
   const output = createWriteStream(destPath)
-  const archive = archiver('tar', { gzip: true })
+  const archive = new TarArchive({ gzip: true })
 
   archive.pipe(output)
 

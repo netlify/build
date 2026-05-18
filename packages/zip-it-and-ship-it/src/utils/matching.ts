@@ -1,6 +1,6 @@
 import originalGlob from 'fast-glob'
 import { minimatch as minimatchFunction, type MinimatchOptions } from 'minimatch'
-import normalizePath from 'normalize-path'
+import { normalizePath } from '@archiver/archiver/utils'
 
 /**
  * Both glob and minimatch only support unix style slashes in patterns
@@ -8,10 +8,10 @@ import normalizePath from 'normalize-path'
  * We use `normalize-path` here instead of `unixify` because we do not want to remove drive letters
  */
 export const glob = function (pattern: string, options: originalGlob.Options): Promise<string[]> {
-  const normalizedIgnore = options.ignore?.map((expression) => normalizePath(expression))
-  return originalGlob(normalizePath(pattern), { ...options, ignore: normalizedIgnore })
+  const normalizedIgnore = options.ignore?.map((expression) => normalizePath(expression, false))
+  return originalGlob(normalizePath(pattern, false), { ...options, ignore: normalizedIgnore })
 }
 
 export const minimatch = function (target: string, pattern: string, options?: MinimatchOptions): boolean {
-  return minimatchFunction(target, normalizePath(pattern), options)
+  return minimatchFunction(target, normalizePath(pattern, false), options)
 }
