@@ -13,7 +13,7 @@ import type {
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfig } from '../../../config.js'
+import { FunctionConfig, functionConfigShape } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
@@ -53,17 +53,20 @@ const path = z.string().startsWith('/', { message: "Must start with a '/'" })
 export type HttpMethod = z.infer<typeof httpMethod>
 export type HttpMethods = z.infer<typeof httpMethods>
 
-export const inSourceConfig = functionConfig
+export const inSourceConfig = functionConfigShape
   .pick({
     externalNodeModules: true,
     generator: true,
     includedFiles: true,
     ignoredNodeModules: true,
+    memory: true,
     name: true,
     nodeBundler: true,
     nodeVersion: true,
+    region: true,
     schedule: true,
     timeout: true,
+    vcpu: true,
   })
   .extend({
     method: z
@@ -82,6 +85,10 @@ export const inSourceConfig = functionConfig
       .optional(),
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
+  })
+  .refine((cfg) => !(cfg.memory !== undefined && cfg.vcpu !== undefined), {
+    message: '`memory` and `vcpu` cannot both be set.',
+    path: ['vcpu'],
   })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>

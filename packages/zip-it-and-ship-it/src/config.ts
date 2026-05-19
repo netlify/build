@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import { basename, extname, dirname, join } from 'path'
 
+import type { FunctionRegion } from '@netlify/types'
 import isPathInside from 'is-path-inside'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
@@ -11,8 +12,56 @@ import { FunctionSource } from './function.js'
 import { nodeBundler } from './runtimes/node/bundlers/types.js'
 import { moduleFormat } from './runtimes/node/utils/module_format.js'
 import { minimatch } from './utils/matching.js'
+import { parseMemoryMB } from './utils/parse_memory.js'
 
-export const functionConfig = z.object({
+// We only need the list of valid region codes here (to feed into Zod's
+// `enum` for runtime validation). The natural shape would be a literal
+// array, but TypeScript has no way to enforce that an array contains every
+// member of a union type — it can only check that each element belongs to
+// the union, not that none are missing.
+//
+// A Record keyed by the union, however, IS exhaustiveness-checked: with
+// `satisfies Record<FunctionRegion, ...>`, TypeScript refuses to compile
+// if any region in `FunctionRegion` is absent here, or if anything here
+// isn't a valid `FunctionRegion`.
+const FUNCTION_REGION_KEYS = {
+  cmh: null,
+  dub: null,
+  fra: null,
+  gru: null,
+  iad: null,
+  lhr: null,
+  nrt: null,
+  pdx: null,
+  sfo: null,
+  sin: null,
+  syd: null,
+  yul: null,
+} as const satisfies Record<FunctionRegion, null>
+
+const FUNCTION_REGION_CODES = Object.keys(FUNCTION_REGION_KEYS) as [FunctionRegion, ...FunctionRegion[]]
+
+// Accept any casing in source (`iad`, `IAD`, `Iad`) but normalize to lower
+// case before validating and writing to the manifest.
+const functionRegion = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toLowerCase() : input),
+  z.enum(FUNCTION_REGION_CODES),
+)
+
+const FUNCTION_MEMORY_MIN_MB = 1024
+const FUNCTION_MEMORY_MAX_MB = 4096
+
+const functionMemory = z.preprocess(
+  (input) => (typeof input === 'string' || typeof input === 'number' ? parseMemoryMB(input) : input),
+  z.number().int().min(FUNCTION_MEMORY_MIN_MB).max(FUNCTION_MEMORY_MAX_MB),
+)
+
+const FUNCTION_VCPU_MIN = 0.5
+const FUNCTION_VCPU_MAX = 2
+
+const functionVcpu = z.number().min(FUNCTION_VCPU_MIN).max(FUNCTION_VCPU_MAX)
+
+export const functionConfigShape = z.object({
   externalNodeModules: z.array(z.string()).optional().catch([]),
   generator: z.string().optional().catch(undefined),
   includedFiles: z.array(z.string()).optional().catch([]),
@@ -22,9 +71,12 @@ export const functionConfig = z.object({
   nodeBundler: nodeBundler.optional().catch(undefined),
   nodeSourcemap: z.boolean().optional().catch(undefined),
   nodeVersion: z.string().optional().catch(undefined),
+  memory: functionMemory.optional(),
+  region: functionRegion.optional(),
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
   timeout: z.number().optional().catch(undefined),
+  vcpu: functionVcpu.optional(),
   zipGo: z.boolean().optional().catch(undefined),
 
   // Temporary configuration property, only meant to be used by the deploy
@@ -33,7 +85,15 @@ export const functionConfig = z.object({
   nodeModuleFormat: moduleFormat.optional().catch(undefined),
 })
 
-type FunctionConfig = z.infer<typeof functionConfig>
+const refuseMemoryAndVcpu = (cfg: { memory?: unknown; vcpu?: unknown }): boolean =>
+  !(cfg.memory !== undefined && cfg.vcpu !== undefined)
+
+export const functionConfig = functionConfigShape.refine(refuseMemoryAndVcpu, {
+  message: '`memory` and `vcpu` cannot both be set.',
+  path: ['vcpu'],
+})
+
+type FunctionConfig = z.infer<typeof functionConfigShape>
 
 interface FunctionConfigFile {
   config: FunctionConfig
