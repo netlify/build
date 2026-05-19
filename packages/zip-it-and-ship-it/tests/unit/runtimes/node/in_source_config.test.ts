@@ -998,6 +998,22 @@ describe('V2 API', () => {
     expect(() => parseSource(source, options)).toThrow(/memory/)
   })
 
+  test('Rejects a fractional memory value', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a fractional memory string that resolves to fractional MB', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1.7gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
   test('Understands vcpu', () => {
     const source = `
     export default async () => new Response("Hello!")
