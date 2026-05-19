@@ -55,6 +55,7 @@ export type HttpMethods = z.infer<typeof httpMethods>
 
 export const inSourceConfig = functionConfigShape
   .pick({
+    background: true,
     externalNodeModules: true,
     generator: true,
     includedFiles: true,
@@ -222,6 +223,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
         methods: data.method ?? [],
         prefer_static: data.preferStatic || undefined,
       }))
+
+      if (data.background) {
+        result.invocationMode = INVOCATION_MODE.Background
+      }
     } else {
       // TODO: Handle multiple errors.
       const [issue] = error.issues

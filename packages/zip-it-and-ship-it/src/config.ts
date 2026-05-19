@@ -62,6 +62,7 @@ const FUNCTION_VCPU_MAX = 2
 const functionVcpu = z.number().min(FUNCTION_VCPU_MIN).max(FUNCTION_VCPU_MAX)
 
 export const functionConfigShape = z.object({
+  background: z.boolean().optional().catch(undefined),
   externalNodeModules: z.array(z.string()).optional().catch([]),
   generator: z.string().optional().catch(undefined),
   includedFiles: z.array(z.string()).optional().catch([]),

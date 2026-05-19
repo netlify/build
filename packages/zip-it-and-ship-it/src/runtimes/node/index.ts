@@ -153,14 +153,16 @@ const zipFunction: ZipFunction = async function ({
   // `stream` helper.
   let { invocationMode } = staticAnalysisResult
 
-  // If we're using the V2 API, force the invocation to "stream".
-  if (runtimeAPIVersion === 2) {
-    invocationMode = INVOCATION_MODE.Stream
-  }
-
-  // If this is a background function, set the right `invocationMode` value.
+  // If this is a background function (filename suffix), set the right
+  // `invocationMode` value.
   if (name.endsWith('-background')) {
     invocationMode = INVOCATION_MODE.Background
+  }
+
+  // V2 functions default to streamed invocation unless they were already
+  // marked as background (via filename suffix or `config.background: true`).
+  if (runtimeAPIVersion === 2 && invocationMode !== INVOCATION_MODE.Background) {
+    invocationMode = INVOCATION_MODE.Stream
   }
 
   const outputModuleFormat =
