@@ -57,6 +57,7 @@ export const FUNCTION_CONFIG_PROPERTIES = new Set([
   'node_bundler',
   'region',
   'schedule',
+  'vcpu',
 ])
 
 // Takes a functions configuration object and looks for the functions directory

@@ -626,6 +626,29 @@ describe('V2 functions API', () => {
     expect(manifest.functions[0].memory).toEqual(2048)
   })
 
+  test('vcpu from ISC is surfaced on FunctionResult and persisted to the manifest', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const manifestPath = join(tmpDir, 'manifest.json')
+
+    const fixtureName = 'v2-api-vcpu'
+    const pathInternal = join(fixtureName, '.netlify', 'functions-internal')
+
+    const {
+      files: [func],
+    } = await zipFixture(pathInternal, {
+      fixtureDir: FIXTURES_ESM_DIR,
+      length: 1,
+      opts: { manifest: manifestPath },
+    })
+
+    expect(func.vcpu).toBe(1.5)
+
+    const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
+    const manifest = JSON.parse(manifestString)
+    expect(manifest.functions).toHaveLength(1)
+    expect(manifest.functions[0].vcpu).toEqual(1.5)
+  })
+
   testMany(
     'Bootstrap is imported before user code so it can apply side-effects before the user code runs',
     ['bundler_default', 'bundler_esbuild', 'bundler_esbuild_zisi', 'bundler_default_nft', 'bundler_nft'],

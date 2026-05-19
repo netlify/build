@@ -997,4 +997,55 @@ describe('V2 API', () => {
 
     expect(() => parseSource(source, options)).toThrow(/memory/)
   })
+
+  test('Understands vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 1.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(1.5)
+  })
+
+  test('Accepts vcpu at the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(0.5)
+  })
+
+  test('Accepts vcpu at the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(2)
+  })
+
+  test('Rejects vcpu below the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.4 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects vcpu above the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects setting both memory and vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048, vcpu: 1.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory.*vcpu|vcpu.*memory/)
+  })
 })

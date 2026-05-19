@@ -27,6 +27,7 @@ interface ManifestFunction {
   schedule?: string
   timeout?: number
   trafficRules?: TrafficRules
+  vcpu?: number
 }
 
 export interface Manifest {
@@ -74,6 +75,7 @@ const formatFunctionForManifest = ({
   runtimeAPIVersion,
   schedule,
   timeout,
+  vcpu,
 }: FunctionResult): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
     bundler,
@@ -92,6 +94,7 @@ const formatFunctionForManifest = ({
     path: resolve(path),
     runtime,
     schedule,
+    vcpu,
   }
 
   if (eventSubscriptions?.length) {

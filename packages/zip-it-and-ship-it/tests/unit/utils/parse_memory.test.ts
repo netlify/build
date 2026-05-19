@@ -46,9 +46,10 @@ describe('parseMemoryMB', () => {
       expect(parseMemoryMB('\t2048\n')).toBe(2048)
     })
 
-    test('parses a decimal number string as MB and rounds', () => {
+    test('parses a decimal number string as MB and rounds to integer', () => {
       expect(parseMemoryMB('1024.4')).toBe(1024)
       expect(parseMemoryMB('1024.5')).toBe(1025)
+      expect(parseMemoryMB('2048.7')).toBe(2049)
     })
   })
 

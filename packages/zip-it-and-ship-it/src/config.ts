@@ -56,7 +56,12 @@ const functionMemory = z.preprocess(
   z.number().int().min(FUNCTION_MEMORY_MIN_MB).max(FUNCTION_MEMORY_MAX_MB),
 )
 
-export const functionConfig = z.object({
+const FUNCTION_VCPU_MIN = 0.5
+const FUNCTION_VCPU_MAX = 2
+
+const functionVcpu = z.number().min(FUNCTION_VCPU_MIN).max(FUNCTION_VCPU_MAX)
+
+export const functionConfigShape = z.object({
   externalNodeModules: z.array(z.string()).optional().catch([]),
   generator: z.string().optional().catch(undefined),
   includedFiles: z.array(z.string()).optional().catch([]),
@@ -71,6 +76,7 @@ export const functionConfig = z.object({
   rustTargetDirectory: z.string().optional().catch(undefined),
   schedule: z.string().optional().catch(undefined),
   timeout: z.number().optional().catch(undefined),
+  vcpu: functionVcpu.optional(),
   zipGo: z.boolean().optional().catch(undefined),
 
   // Temporary configuration property, only meant to be used by the deploy
@@ -79,7 +85,15 @@ export const functionConfig = z.object({
   nodeModuleFormat: moduleFormat.optional().catch(undefined),
 })
 
-type FunctionConfig = z.infer<typeof functionConfig>
+const refuseMemoryAndVcpu = (cfg: { memory?: unknown; vcpu?: unknown }): boolean =>
+  !(cfg.memory !== undefined && cfg.vcpu !== undefined)
+
+export const functionConfig = functionConfigShape.refine(refuseMemoryAndVcpu, {
+  message: '`memory` and `vcpu` cannot both be set.',
+  path: ['vcpu'],
+})
+
+type FunctionConfig = z.infer<typeof functionConfigShape>
 
 interface FunctionConfigFile {
   config: FunctionConfig
