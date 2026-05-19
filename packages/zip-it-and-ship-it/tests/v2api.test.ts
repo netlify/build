@@ -630,12 +630,9 @@ describe('V2 functions API', () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
     const manifestPath = join(tmpDir, 'manifest.json')
 
-    const fixtureName = 'v2-api-vcpu'
-    const pathInternal = join(fixtureName, '.netlify', 'functions-internal')
-
     const {
       files: [func],
-    } = await zipFixture(pathInternal, {
+    } = await zipFixture('v2-api-vcpu', {
       fixtureDir: FIXTURES_ESM_DIR,
       length: 1,
       opts: { manifest: manifestPath },
