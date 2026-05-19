@@ -1064,4 +1064,33 @@ describe('V2 API', () => {
 
     expect(() => parseSource(source, options)).toThrow(/memory.*vcpu|vcpu.*memory/)
   })
+
+  test('Sets background invocation mode when `config.background` is true', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: true }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.background).toBe(true)
+    expect(isc.invocationMode).toBe('background')
+    expect(isc.runtimeAPIVersion).toBe(2)
+  })
+
+  test('Does not set background invocation mode when `config.background` is false', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: false }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
+  })
+
+  test('Does not set background invocation mode when `config.background` is absent', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
+  })
 })
