@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.6.0](https://github.com/netlify/build/compare/config-v24.5.1...config-v24.6.0) (2026-05-21)
+
+
+### Features
+
+* add additional function config properties ([#7064](https://github.com/netlify/build/issues/7064)) ([41bf8da](https://github.com/netlify/build/commit/41bf8dace0b0b2e8ab55e6b85cdb314fed12a208))
+
 ## [24.5.1](https://github.com/netlify/build/compare/config-v24.5.0...config-v24.5.1) (2026-05-12)
 
 
