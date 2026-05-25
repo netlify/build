@@ -3,9 +3,12 @@ import { join } from 'node:path'
 import { logDbProvisioning, logDbMigrations } from '../../log/messages/core_steps.js'
 import { getPackageJson, type PackageJson } from '../../utils/package.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-import { readMigrationEntries, getMigrationNames } from './utils.js'
+import { readMigrationEntries, getMigrationNames, getMigrationsSrc } from './utils.js'
 
-const NPM_PACKAGE_NAME = '@netlify/db'
+const NPM_PACKAGE_NAME = '@netlify/database'
+
+// TODO: Remove once we stop supporting the legacy `@netlify/db` package name.
+const NPM_PACKAGE_NAME_LEGACY = '@netlify/db'
 
 const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlags }) => {
   if (!featureFlags?.netlify_build_db_setup) {
@@ -39,10 +42,11 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
 
   logDbProvisioning({ logs, branch, context })
 
-  const entries = await readMigrationEntries(buildDir, constants.DB_MIGRATIONS_SRC)
+  const migrationsSrc = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
+  const entries = await readMigrationEntries(buildDir, migrationsSrc)
   const migrationNames = getMigrationNames(entries)
-  if (migrationNames.length > 0) {
-    logDbMigrations({ logs, migrations: migrationNames, srcDir: constants.DB_MIGRATIONS_SRC! })
+  if (migrationNames.length > 0 && migrationsSrc) {
+    logDbMigrations({ logs, migrations: migrationNames, srcDir: migrationsSrc })
   }
 
   // @ts-expect-error This is an internal method for now so it isn't typed yet.
@@ -70,14 +74,19 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
 const hasDBPackage = (packageJSON: PackageJson): boolean => {
   const { dependencies = {}, devDependencies = {} } = packageJSON
 
-  return NPM_PACKAGE_NAME in dependencies || NPM_PACKAGE_NAME in devDependencies
+  return (
+    NPM_PACKAGE_NAME in dependencies ||
+    NPM_PACKAGE_NAME in devDependencies ||
+    NPM_PACKAGE_NAME_LEGACY in dependencies ||
+    NPM_PACKAGE_NAME_LEGACY in devDependencies
+  )
 }
 
 export const dbSetup: CoreStep = {
   event: 'onPreBuild',
   coreStep,
   coreStepId: 'db_provision',
-  coreStepName: 'Netlify DB setup',
-  coreStepDescription: () => 'Netlify DB setup',
+  coreStepName: 'Netlify Database setup',
+  coreStepDescription: () => 'Netlify Database setup',
   condition,
 }

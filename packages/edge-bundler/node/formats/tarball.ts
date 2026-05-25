@@ -15,11 +15,16 @@ import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
 import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
+import { EdgeFunctionConfig } from '../index.js'
+import { generateManifestRoutes, Route } from '../manifest.js'
 
 const TARBALL_EXTENSION = '.tar.gz'
 
 interface Manifest {
   functions: Record<string, string>
+  function_config: Record<string, EdgeFunctionConfig>
+  routes: Route[]
+  post_cache_routes: Route[]
   version: number
 }
 
@@ -35,6 +40,11 @@ interface BundleTarballOptions {
   vendorDirectory?: string
 }
 
+interface FinalizeTarballBundleOptions {
+  manifestFunctionConfig: Record<string, EdgeFunctionConfig>
+  manifestRoutes: ReturnType<typeof generateManifestRoutes>
+}
+
 const getUnixPath = (input: string) => input.split(path.sep).join('/')
 
 export const bundle = async ({
@@ -44,13 +54,13 @@ export const bundle = async ({
   functions,
   importMap,
   vendorDirectory,
-}: BundleTarballOptions): Promise<Bundle> => {
+}: BundleTarballOptions): Promise<(arg: FinalizeTarballBundleOptions) => Promise<Bundle>> => {
   const bundleDir = await tmp.dir({ unsafeCleanup: true })
   const cleanup = [bundleDir.cleanup]
 
-  const manifest: Manifest = {
+  const initialManifest: Omit<Manifest, 'function_config' | 'routes' | 'post_cache_routes'> = {
     functions: {},
-    version: 1,
+    version: 2,
   }
   const entryPoints = functions.map((func) => func.path)
 
@@ -96,7 +106,7 @@ export const bundle = async ({
   // Build the manifest mapping function names to their relative paths
   for (const func of functions) {
     const relativePath = path.relative(commonPath, func.path)
-    manifest.functions[func.name] = getUnixPath(relativePath)
+    initialManifest.functions[func.name] = getUnixPath(relativePath)
   }
 
   for (const sourceFile of sourceFilesSet) {
@@ -141,7 +151,7 @@ export const bundle = async ({
       '--node-modules-dir=manual',
       '--vendor',
       '--entrypoint',
-      ...Object.values(manifest.functions),
+      ...Object.values(initialManifest.functions),
     ],
     {
       cwd: bundleDir.path,
@@ -157,46 +167,59 @@ export const bundle = async ({
     }
   }
 
-  const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
-  const manifestContents = JSON.stringify(manifest)
-  await fs.writeFile(manifestPath, manifestContents)
+  // First stage of bundling is now done. To finalize bundling we require functionConfig, routes and postCacheRoutes
+  // so we could inject those into bundle manifest. Tarball bundling is done in 2-step process process to preserve ordering
+  // and potential errors messages that could be thrown to make sure we don't impact behaviors. Otherwise we would throw different
+  // kind of errors than we used to and introduce confusion for users.
+  return async function finalizeBundle({ manifestFunctionConfig, manifestRoutes }: FinalizeTarballBundleOptions) {
+    const manifest: Manifest = {
+      ...initialManifest,
+      function_config: manifestFunctionConfig,
+      routes: manifestRoutes.preCacheRoutes,
+      post_cache_routes: manifestRoutes.postCacheRoutes,
+    }
 
-  const tarballPath = path.join(distDirectory, buildID + TARBALL_EXTENSION)
-  await fs.mkdir(path.dirname(tarballPath), { recursive: true })
+    const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
+    const manifestContents = JSON.stringify(manifest)
+    await fs.writeFile(manifestPath, manifestContents)
 
-  // List files to include in the tarball as paths relative to the bundle dir.
-  // Using absolute paths here leads to platform-specific quirks (notably on Windows),
-  // where entries can include drive letters and break extraction/imports.
-  // The './' prefix is required to prevent node-tar from interpreting entries
-  // starting with '@' as GNU tar archive-include directives, which would cause
-  // it to strip the '@' and stat a non-existent path (ENOENT).
-  const files = (await listRecursively(bundleDir.path))
-    .map((p) => path.relative(bundleDir.path, p))
-    .map((p) => './' + getUnixPath(p))
-    .sort()
+    const tarballPath = path.join(distDirectory, buildID + TARBALL_EXTENSION)
+    await fs.mkdir(path.dirname(tarballPath), { recursive: true })
 
-  await tar.create(
-    {
-      cwd: bundleDir.path,
-      file: tarballPath,
-      gzip: true,
-      noDirRecurse: true,
-      // Ensure forward slashes inside the tarball for cross-platform consistency.
-      onWriteEntry(entry) {
-        entry.path = getUnixPath(entry.path)
+    // List files to include in the tarball as paths relative to the bundle dir.
+    // Using absolute paths here leads to platform-specific quirks (notably on Windows),
+    // where entries can include drive letters and break extraction/imports.
+    // The './' prefix is required to prevent node-tar from interpreting entries
+    // starting with '@' as GNU tar archive-include directives, which would cause
+    // it to strip the '@' and stat a non-existent path (ENOENT).
+    const files = (await listRecursively(bundleDir.path))
+      .map((p) => path.relative(bundleDir.path, p))
+      .map((p) => './' + getUnixPath(p))
+      .sort()
+
+    await tar.create(
+      {
+        cwd: bundleDir.path,
+        file: tarballPath,
+        gzip: true,
+        noDirRecurse: true,
+        // Ensure forward slashes inside the tarball for cross-platform consistency.
+        onWriteEntry(entry) {
+          entry.path = getUnixPath(entry.path)
+        },
       },
-    },
-    files,
-  )
+      files,
+    )
 
-  const hash = await getFileHash(tarballPath)
+    const hash = await getFileHash(tarballPath)
 
-  await Promise.allSettled(cleanup)
+    await Promise.allSettled(cleanup)
 
-  return {
-    extension: TARBALL_EXTENSION,
-    format: BundleFormat.TARBALL,
-    hash,
+    return {
+      extension: TARBALL_EXTENSION,
+      format: BundleFormat.TARBALL,
+      hash,
+    }
   }
 }
 

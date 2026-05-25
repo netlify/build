@@ -958,4 +958,192 @@ describe('V2 API', () => {
       expect(isc.config).toEqual({})
     })
   })
+
+  test('Understands region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "iad" }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      config: { region: 'iad' },
+      excludedRoutes: [],
+      inputModuleFormat: 'esm',
+      routes: [],
+      runtimeAPIVersion: 2,
+    })
+  })
+
+  test('Normalizes region casing to lower case', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "IAD" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.region).toBe('iad')
+  })
+
+  test('Rejects an invalid region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "not-a-real-region" }`
+
+    expect(() => parseSource(source, options)).toThrow(/region/)
+  })
+
+  test('Understands memory as a bare number (interpreted as MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with a `gb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2gb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with an `mb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1024mb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(1024)
+  })
+
+  test('Normalizes memory unit casing', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2GB" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Rejects memory below the minimum (1024 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 512 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects memory above the maximum (4096 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "5gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a malformed memory string', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "lots" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a fractional memory value', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a fractional memory string that resolves to fractional MB', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1.7gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Understands vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 1.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(1.5)
+  })
+
+  test('Accepts vcpu at the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(0.5)
+  })
+
+  test('Accepts vcpu at the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(2)
+  })
+
+  test('Rejects vcpu below the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.4 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects vcpu above the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects setting both memory and vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048, vcpu: 1.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory.*vcpu|vcpu.*memory/)
+  })
+
+  test('Sets background invocation mode when `config.background` is true', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: true }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.background).toBe(true)
+    expect(isc.invocationMode).toBe('background')
+    expect(isc.runtimeAPIVersion).toBe(2)
+  })
+
+  test('Does not set background invocation mode when `config.background` is false', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: false }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
+  })
+
+  test('Does not set background invocation mode when `config.background` is absent', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
+  })
 })

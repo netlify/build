@@ -1,5 +1,27 @@
 # Changelog
 
+## [14.10.2](https://github.com/netlify/build/compare/edge-bundler-v14.10.1...edge-bundler-v14.10.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+* **deps:** update dependency esbuild to v0.28.0 ([#7056](https://github.com/netlify/build/issues/7056)) ([4ecb3a8](https://github.com/netlify/build/commit/4ecb3a8bec4e34c293eae2682f14e3be42a593a0))
+
+## [14.10.1](https://github.com/netlify/build/compare/edge-bundler-v14.10.0...edge-bundler-v14.10.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* allow HEAD as part of the `HTTPMethod` type ([#7033](https://github.com/netlify/build/issues/7033)) ([f2f5e77](https://github.com/netlify/build/commit/f2f5e77f9eae802deaa2524e914b9b9c775c227d))
+
+## [14.10.0](https://github.com/netlify/build/compare/edge-bundler-v14.9.19...edge-bundler-v14.10.0) (2026-04-14)
+
+
+### Features
+
+* store function and routes configuration in edge functions tarball ([#7025](https://github.com/netlify/build/issues/7025)) ([63a96dc](https://github.com/netlify/build/commit/63a96dc79db7fc6fd5f0b0e0ae00d46d25f940e3))
+
 ## [14.9.19](https://github.com/netlify/build/compare/edge-bundler-v14.9.18...edge-bundler-v14.9.19) (2026-03-24)
 
 

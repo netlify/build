@@ -120,6 +120,9 @@ jobs:
     steps:
       - checkout
       - npm-install-deps
+      # This is necessary to work around platform-specific optional dependencies bug
+      # (https://github.com/npm/cli/issues/4828).
+      - run: npm i -D @oxfmt/binding-linux-x64-gnu
       - run: npm run format:ci
       - run: npm run build
       - run: npm run lint:ci

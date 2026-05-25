@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest'
 import {
   MIGRATION_DIR_PATTERN,
   MIGRATION_FILE_PATTERN,
+  trackMigrationNumber,
   validateMigrations,
   formatValidationErrors,
 } from './validation.js'
@@ -67,6 +68,32 @@ describe('MIGRATION_FILE_PATTERN', () => {
 
   test.each(invalidNames)('rejects invalid name: $name ($reason)', ({ name }) => {
     expect(MIGRATION_FILE_PATTERN.test(name)).toBe(false)
+  })
+})
+
+describe('trackMigrationNumber', () => {
+  const cases = [
+    { name: '001_create-users', expected: '1' },
+    { name: '1_init', expected: '1' },
+    { name: '0001_add-posts', expected: '1' },
+    { name: '42_z', expected: '42' },
+    { name: '1700000000_create-users', expected: '1700000000' },
+    { name: '1700000000_create-users.sql', expected: '1700000000' },
+    { name: '001_create-users.sql', expected: '1' },
+    { name: '0000000000_init', expected: '0' },
+  ]
+
+  test.each(cases)('tracks $name under key $expected', ({ name, expected }) => {
+    const map = new Map<string, string[]>()
+    trackMigrationNumber(map, name)
+    expect(map.get(expected)).toEqual([name])
+  })
+
+  test('groups names with the same migration number', () => {
+    const map = new Map<string, string[]>()
+    trackMigrationNumber(map, '001_create-users')
+    trackMigrationNumber(map, '1_init')
+    expect(map.get('1')).toEqual(['001_create-users', '1_init'])
   })
 })
 
@@ -169,6 +196,64 @@ describe('validateMigrations', () => {
       files: [],
     })
   })
+
+  test('returns error for duplicate migration numbers in dirs', () => {
+    const dirNames = ['001_create-users', '001_add-posts']
+    const existingSqlFiles = new Set(['001_create-users', '001_add-posts'])
+
+    const result = validateMigrations(dirNames, [], existingSqlFiles)
+
+    expect(result).toEqual({
+      valid: false,
+      errors: [
+        { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts', '001_create-users'] },
+      ],
+    })
+  })
+
+  test('returns error for duplicate migration numbers in files', () => {
+    const fileNames = ['001_create-users.sql', '001_add-posts.sql']
+
+    const result = validateMigrations([], fileNames, new Set())
+
+    expect(result).toEqual({
+      valid: false,
+      errors: [
+        {
+          type: 'duplicate_migration_number',
+          migrationNumber: '1',
+          names: ['001_add-posts.sql', '001_create-users.sql'],
+        },
+      ],
+    })
+  })
+
+  test('returns error for duplicate migration numbers across dirs and files', () => {
+    const dirNames = ['001_create-users']
+    const fileNames = ['001_add-posts.sql']
+    const existingSqlFiles = new Set(['001_create-users'])
+
+    const result = validateMigrations(dirNames, fileNames, existingSqlFiles)
+
+    expect(result).toEqual({
+      valid: false,
+      errors: [
+        { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts.sql', '001_create-users'] },
+      ],
+    })
+  })
+
+  test('treats different zero-padded prefixes as duplicates', () => {
+    const dirNames = ['1_init', '001_setup']
+    const existingSqlFiles = new Set(['1_init', '001_setup'])
+
+    const result = validateMigrations(dirNames, [], existingSqlFiles)
+
+    expect(result).toEqual({
+      valid: false,
+      errors: [{ type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_setup', '1_init'] }],
+    })
+  })
 })
 
 describe('formatValidationErrors', () => {
@@ -187,5 +272,14 @@ describe('formatValidationErrors', () => {
 
     expect(message).toContain('"1700000000_create-users/migration.sql" is missing')
     expect(message).toContain('"1700000001_add-posts/migration.sql" is missing')
+  })
+
+  test('formats duplicate_migration_number errors', () => {
+    const message = formatValidationErrors([
+      { type: 'duplicate_migration_number', migrationNumber: '1', names: ['001_add-posts', '001_create-users'] },
+    ])
+
+    expect(message).toContain('Database migration validation failed')
+    expect(message).toContain('Duplicate migration number 1: "001_add-posts", "001_create-users"')
   })
 })

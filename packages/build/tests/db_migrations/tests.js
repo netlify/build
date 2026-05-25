@@ -72,7 +72,7 @@ test('Skips step when migrations directory does not exist', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('Netlify DB migrations'))
+  t.false(output.includes('Netlify Database migrations'))
 })
 
 test('Skips step when feature flag is off', async (t) => {
@@ -86,7 +86,7 @@ test('Skips step when feature flag is off', async (t) => {
   t.true(success)
 
   const output = stdout.join('\n')
-  t.false(output.includes('Netlify DB migrations'))
+  t.false(output.includes('Netlify Database migrations'))
 })
 
 test('Copies loose .sql files wrapped in subdirectory format', async (t) => {
@@ -115,6 +115,20 @@ test('Copies mixed migrations (dirs and loose files) to internal directory', asy
   const internalDir = join(fixture.repositoryRoot, '.netlify/internal/db/migrations')
   t.true(existsSync(join(internalDir, '1700000000_create-users/migration.sql')))
   t.true(existsSync(join(internalDir, '1700000001_add-posts/migration.sql')))
+})
+
+test('Fails build for duplicate migration numbers', async (t) => {
+  const fixture = await new Fixture('./fixtures/duplicate_migration_number').withCopyRoot({ git: false })
+
+  const {
+    success,
+    logs: { stdout },
+  } = await fixture.withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS }).runBuildProgrammatic()
+
+  t.false(success)
+
+  const output = stdout.join('\n')
+  t.true(output.includes('Duplicate migration number'))
 })
 
 test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', async (t) => {

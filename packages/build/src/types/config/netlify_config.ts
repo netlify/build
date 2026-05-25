@@ -32,12 +32,12 @@ interface NetlifyPlugin {
   inputs: PluginInputs
 }
 
-interface DbMigrationsConfig {
+interface DatabaseMigrationsConfig {
   path?: string
 }
 
-interface DbConfig {
-  migrations?: DbMigrationsConfig
+interface DatabaseConfig {
+  migrations?: DatabaseMigrationsConfig
 }
 
 interface ImagesConfig {
@@ -70,5 +70,5 @@ export interface NetlifyConfig {
   /**
    * object with options for database configuration
    */
-  db?: DbConfig
+  database?: DatabaseConfig
 }

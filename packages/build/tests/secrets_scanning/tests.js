@@ -1,3 +1,6 @@
+import fs from 'fs/promises'
+import path from 'path'
+
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
@@ -497,7 +500,7 @@ test('secrets scanning, should not run enhanced scan in passive mode when no exp
   t.true(requests.length === 0)
 })
 
-test('does not crash if line in scanned file exceed available memory', async (t) => {
+test('secrets scanning, does not crash if line in scanned file exceed available memory', async (t) => {
   const { output } = await new Fixture('./fixtures/src_scanning_large_binary_file')
     .withEnv({
       // fixture produces a ~256MB file with single line, so this intentionally limits available memory
@@ -517,4 +520,20 @@ test('does not crash if line in scanned file exceed available memory', async (t)
     ),
     'Scanning should find a secret, instead got: ' + normalizeOutput(output),
   )
+})
+
+test('secrets scanning, does not check in gitignored', async (t) => {
+  const fixture = await new Fixture('./fixtures/src_scanning_omit_ignored').withCopyRoot()
+  const { repositoryRoot } = fixture
+  await fs.writeFile(path.join(repositoryRoot, '.gitignore'), 'src/skip')
+
+  const output = await fixture
+    .withFlags({
+      debug: false,
+      explicitSecretKeys: 'ENV_VAR_1',
+      cwd: fixture.repositoryRoot,
+    })
+    .runWithBuild()
+
+  t.false(normalizeOutput(output).includes('found value at line 1 in src/skip/unsafe.js'))
 })
