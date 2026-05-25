@@ -116,7 +116,15 @@ const resolveObjectExpression = (
   }
 
   if (unwrapped?.type === 'Identifier') {
-    const binding = getAllBindings().get(unwrapped.name)
+    let binding = getAllBindings().get(unwrapped.name)
+
+    if (
+      binding?.type === 'TSSatisfiesExpression' ||
+      binding?.type === 'TSAsExpression' ||
+      binding?.type === 'TSTypeAssertion'
+    ) {
+      binding = binding.expression
+    }
 
     if (binding?.type === 'ObjectExpression') {
       return binding

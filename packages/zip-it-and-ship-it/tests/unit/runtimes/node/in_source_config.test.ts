@@ -996,6 +996,20 @@ describe('V2 API', () => {
       expect(isc.config).toEqual({ path: ['/hello'] })
       expect(isc.routes).toHaveLength(1)
     })
+
+    test('Extracts config from a binding whose value uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/binding-sat" }
+      } satisfies NetlifyFunction
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/binding-sat'] })
+      expect(isc.routes).toHaveLength(1)
+    })
   })
 
   test('Understands region', () => {
