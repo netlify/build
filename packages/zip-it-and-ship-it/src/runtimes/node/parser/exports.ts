@@ -28,7 +28,7 @@ type PrimitiveResult = string | number | boolean | Record<string, unknown> | und
 export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod) => {
   const handlerExports: ISCExport[] = []
 
-  let configExport: Record<string, unknown> = {}
+  let configExport: Record<string, unknown> | undefined
   let hasDefaultExport = false
   let defaultExportExpression: Expression | Declaration | undefined
   let inputModuleFormat: ModuleFormat = MODULE_FORMAT.COMMONJS
@@ -206,7 +206,7 @@ const parseConfigESMExport = (node: Statement) => {
  * subtree. Only values supported by the `parsePrimitive` method are returned,
  * and any others will be ignored and excluded from the resulting object.
  */
-const parseObject = (node: ObjectExpression) =>
+export const parseObject = (node: ObjectExpression) =>
   node.properties.reduce(
     (acc, property): Record<string, unknown> => {
       if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {

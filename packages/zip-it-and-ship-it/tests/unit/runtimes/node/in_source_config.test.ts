@@ -906,6 +906,112 @@ describe('V2 API', () => {
     })
   })
 
+  describe('Inline config in default export object', () => {
+    test('Extracts config from the default export object', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toEqual([{ pattern: '/hello', literal: '/hello', methods: [], prefer_static: undefined }])
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config from a binding-resolved default export object', () => {
+      const source = `const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/api" }
+      }
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/api'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+
+    test('Named config export takes precedence over inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = { path: "/named" }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/named'] })
+    })
+
+    test('An empty named config export overrides inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = {}`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+
+    test('Ignores non-object config property', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: "not-an-object"
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+
+    test('Extracts config when the default export uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } satisfies NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config when the default export uses `as`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } as NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+
+    test('Extracts config from a binding whose value uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/binding-sat" }
+      } satisfies NetlifyFunction
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/binding-sat'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+  })
+
   test('Understands region', () => {
     const source = `
     export default async () => new Response("Hello!")
