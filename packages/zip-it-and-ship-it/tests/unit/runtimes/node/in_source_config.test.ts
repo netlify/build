@@ -947,6 +947,18 @@ describe('V2 API', () => {
       expect(isc.config).toEqual({ path: ['/named'] })
     })
 
+    test('An empty named config export overrides inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = {}`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+
     test('Ignores non-object config property', () => {
       const source = `export default {
         fetch() { return new Response("Hello") },
@@ -956,6 +968,33 @@ describe('V2 API', () => {
       const isc = parseSource(source, options)
 
       expect(isc.config).toEqual({})
+    })
+
+    test('Extracts config when the default export uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } satisfies NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config when the default export uses `as`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } as NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
     })
   })
 

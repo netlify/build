@@ -28,7 +28,7 @@ type PrimitiveResult = string | number | boolean | Record<string, unknown> | und
 export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod) => {
   const handlerExports: ISCExport[] = []
 
-  let configExport: Record<string, unknown> = {}
+  let configExport: Record<string, unknown> | undefined
   let hasDefaultExport = false
   let defaultExportExpression: Expression | Declaration | undefined
   let inputModuleFormat: ModuleFormat = MODULE_FORMAT.COMMONJS

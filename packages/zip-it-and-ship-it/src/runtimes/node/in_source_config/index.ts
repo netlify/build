@@ -102,12 +102,21 @@ const resolveObjectExpression = (
   expression: Expression | Declaration | undefined,
   getAllBindings: BindingMethod,
 ): ObjectExpression | undefined => {
-  if (expression?.type === 'ObjectExpression') {
-    return expression
+  // Unwrap TS type assertions so `{...} satisfies T` and `{...} as T` are
+  // treated the same as the bare object literal.
+  const unwrapped =
+    expression?.type === 'TSSatisfiesExpression' ||
+    expression?.type === 'TSAsExpression' ||
+    expression?.type === 'TSTypeAssertion'
+      ? expression.expression
+      : expression
+
+  if (unwrapped?.type === 'ObjectExpression') {
+    return unwrapped
   }
 
-  if (expression?.type === 'Identifier') {
-    const binding = getAllBindings().get(expression.name)
+  if (unwrapped?.type === 'Identifier') {
+    const binding = getAllBindings().get(unwrapped.name)
 
     if (binding?.type === 'ObjectExpression') {
       return binding
@@ -173,12 +182,15 @@ const getConfigFromDefaultExport = (
   }
 
   for (const property of objectExpression.properties) {
-    if (
-      property.type === 'ObjectProperty' &&
-      property.key.type === 'Identifier' &&
-      property.key.name === 'config' &&
-      property.value.type === 'ObjectExpression'
-    ) {
+    if (property.type !== 'ObjectProperty' || property.value.type !== 'ObjectExpression') {
+      continue
+    }
+
+    const isConfigKey =
+      (property.key.type === 'Identifier' && property.key.name === 'config') ||
+      (property.key.type === 'StringLiteral' && property.key.value === 'config')
+
+    if (isConfigKey) {
       return parseObject(property.value)
     }
   }
@@ -261,10 +273,11 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       result.eventSubscriptions = eventSubscriptions
     }
 
-    // Config from the default export object's `config` property is used as a
-    // fallback when no separate `export const config` exists.
+    // A named `export const config` always wins (even if empty); we fall back
+    // to the `config` property of the default export object only when no
+    // named export exists.
     const inlineConfig = getConfigFromDefaultExport(defaultExportExpression, getAllBindings)
-    const mergedConfigExport = Object.keys(configExport).length > 0 ? configExport : (inlineConfig ?? {})
+    const mergedConfigExport = configExport ?? inlineConfig ?? {}
     const { data, error, success } = inSourceConfig.safeParse(mergedConfigExport)
 
     if (success) {
