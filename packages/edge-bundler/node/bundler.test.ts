@@ -108,9 +108,12 @@ test('Adds a custom error property to user errors during bundling', async () => 
     const messageBeforeStack = (error as BundleError).message
     expect(
       messageBeforeStack
-        .replace(/file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/, 'file://$2')
         // eslint-disable-next-line no-control-regex
-        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
+        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+        .replace(
+          /file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/,
+          'file://$2',
+        ),
     ).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
