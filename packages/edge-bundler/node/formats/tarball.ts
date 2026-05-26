@@ -252,17 +252,44 @@ async function getRequiredSourceFiles(
 
     const graph = JSON.parse(stdout) as ModuleGraphJson
 
+    // Collect the specifiers of every module reachable through a *code* (runtime)
+    // import edge. Deno's module graph classifies each dependency as either a `code`
+    // edge (a real runtime import) or a `type`-only edge (`import type`, `@deno-types`).
+    // Type-only edges are erased during transpilation and are never loaded at runtime
+    // (`deno run` doesn't type-check), so the files they point to don't belong in the
+    // bundle. The entry points themselves are always runtime.
+    const runtimeSpecifiers = new Set<string>(graph.roots)
+    for (const module of graph.modules) {
+      for (const dependency of module.dependencies ?? []) {
+        if (dependency.code?.specifier) {
+          runtimeSpecifiers.add(dependency.code.specifier)
+        }
+      }
+    }
+
     // Extract all local files from the module graph
     for (const module of graph.modules) {
-      if (module.specifier.startsWith('file://')) {
-        if (module.error?.startsWith('Module not found')) {
-          // Module graph contains all found imported/required modules, even if they don't actually exist
-          // This can happen for optional dependencies (dynamic import or require in try/catch).
+      if (!module.specifier.startsWith('file://')) {
+        continue
+      }
+
+      if (module.error) {
+        // A module reachable only through type-only edges (e.g. a directory specifier
+        // behind `import type`) can fail to resolve as an ES module. That's safe to
+        // ignore: the runtime never loads it.
+        if (!runtimeSpecifiers.has(module.specifier)) {
           continue
         }
-        const filePath = fileURLToPath(module.specifier)
-        localFiles.add(filePath)
+
+        if (module.error.startsWith('Module not found')) {
+          // Module graph contains all found imported/required modules, even if they don't
+          // actually exist. This can happen for optional dependencies (dynamic import or
+          // require in try/catch).
+          continue
+        }
       }
+
+      localFiles.add(fileURLToPath(module.specifier))
     }
   }
 
