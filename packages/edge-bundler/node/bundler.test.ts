@@ -1313,6 +1313,63 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Importing a remote module that imports a WebAssembly binary (deno_dom)', async () => {
+      // Deno <2.6 vendors `.wasm` imports under a `.d.mts` extension even though
+      // the content is the raw WASM binary. The rewriter must detect this by
+      // magic bytes and copy the file through untouched instead of attempting
+      // to parse it as UTF-8 source.
+      const { basePath, cleanup, distPath } = await useFixture('imports_deno_dom_wasm', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+      })
+      const expectedOutput = {
+        func1: 'hello from deno_dom',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toContain('./___netlify-edge-functions.json')
+      expect(entries).toContain('./deno.json')
+      expect(entries).toContain('./func1.ts')
+
+      // The vendored deno_dom WASM payload must be present in the tarball.
+      // Deno <2.6 vendors `.wasm` imports under a `.d.mts` extension (with a
+      // content-hash suffix); 2.6+ keeps the original `.wasm` extension.
+      const denoDomVendorPrefix = './vendor/deno.land/x/deno_dom@v0.1.56/build/deno-wasm/'
+      const expectedWasmEntry = lt(denoVersion, '2.6.0')
+        ? `${denoDomVendorPrefix}#deno-wasm_bg.wasm_d2792.d.mts`
+        : `${denoDomVendorPrefix}deno-wasm_bg.wasm`
+      expect(entries).toContain(expectedWasmEntry)
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
     test('With a type-only import from a directory', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('import-types-directory', { copyDirectory: true })
@@ -1356,5 +1413,5 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
   },
-  10_000,
+  50_000,
 )
