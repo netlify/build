@@ -7,6 +7,7 @@ import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { logLambdaCompatibilityDeprecation } from '../../log/messages/lambda_compat_deprecation.js'
 import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 
 import { getZipError } from './error.js'
@@ -77,6 +78,7 @@ const zipFunctionsAndLogResults = async ({
   repositoryRoot,
   userNodeVersion,
   systemLog,
+  pluginsOptions,
 }) => {
   const zisiParameters = getZisiParameters({
     branch,
@@ -115,6 +117,12 @@ const zipFunctionsAndLogResults = async ({
     const bundlers = Array.from(getBundlers(results))
 
     logBundleResults({ logs, results })
+    logLambdaCompatibilityDeprecation({
+      logs,
+      results,
+      functionsSrc,
+      pluginsOptions,
+    })
 
     return { bundlers }
   } catch (error) {
@@ -142,6 +150,7 @@ const coreStep = async function ({
   userNodeVersion,
   systemLog,
   returnValues,
+  pluginsOptions,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -206,6 +215,7 @@ const coreStep = async function ({
     userNodeVersion,
     systemLog,
     generatedFunctions: generatedFunctions.map((func) => func.path),
+    pluginsOptions,
   })
 
   const metrics = getMetrics(internalFunctions, userFunctions)

@@ -367,6 +367,7 @@ const tFireStep = function ({
   extensionMetadata,
   api,
   returnValues,
+  pluginsOptions,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -408,6 +409,7 @@ const tFireStep = function ({
       deployId,
       api,
       returnValues,
+      pluginsOptions,
     })
   }
 

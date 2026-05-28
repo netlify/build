@@ -708,6 +708,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/src/log/messages/lambda_compat_deprecation.ts'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/log/messages/mutations.js'],
     rules: {
       'n/no-missing-import': 'off',
