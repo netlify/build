@@ -73,6 +73,7 @@ export const runStep = async function ({
   edgeFunctionsBootstrapURL,
   extensionMetadata,
   returnValues,
+  pluginsOptions,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -195,6 +196,7 @@ export const runStep = async function ({
       api,
       returnValues,
       deployEnvVars,
+      pluginsOptions,
     })
 
     const newValues = await getStepReturn({
