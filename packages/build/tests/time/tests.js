@@ -64,14 +64,14 @@ test('Default --framework CLI flag to nothing', async (t) => {
   t.true(timerRequests.every((timerRequest) => !timerRequest.includes('framework:')))
 })
 
-test('Sends a `bundler: "zisi"` tag when bundler set to zisi', async (t) => {
+test('Sends a `bundler: "esbuild"` tag when bundler set to zisi and esbuild succeeds', async (t) => {
   const timerRequests = await getAllTimerRequests(t, './fixtures/functions_zisi')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
   )
 
-  t.true(functionsBundlingRequest.includes('bundler:zisi'))
-  t.false(functionsBundlingRequest.includes('bundler:zisi,bundler:zisi'))
+  t.true(functionsBundlingRequest.includes('bundler:esbuild'))
+  t.false(functionsBundlingRequest.includes('bundler:esbuild,bundler:esbuild'))
 })
 
 test('Sends a `bundler: "nft"` tag when bundler set to nft', async (t) => {
