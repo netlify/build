@@ -123,8 +123,7 @@ const zipFunctionsAndLogResults = async ({
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-
-const coreStep = async function ({
+const coreStep: CoreStepFunction = async function ({
   childEnv,
   constants: {
     INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
@@ -145,7 +144,7 @@ const coreStep = async function ({
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
-  const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
+  const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc ?? '')
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_PATH)
   const frameworkFunctionsSrcExists = await pathExists(frameworkFunctionsSrc)
