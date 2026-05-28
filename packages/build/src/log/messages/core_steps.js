@@ -27,9 +27,6 @@ export const logBundleResults = ({ logs, results = [] }) => {
   const resultsWithWarnings = results.filter(
     ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
   )
-  const modulesWithDynamicImports = [
-    ...new Set(results.flatMap((result) => result.nodeModulesWithDynamicImports || [])),
-  ]
 
   if (resultsWithErrors.length !== 0) {
     logBundleResultFunctions({
@@ -47,10 +44,6 @@ export const logBundleResults = ({ logs, results = [] }) => {
       logs,
       error: false,
     })
-  }
-
-  if (modulesWithDynamicImports.length !== 0) {
-    logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
 }
 
@@ -142,25 +135,6 @@ export const logDbMigrations = function ({ logs, migrations, srcDir }) {
 
   log(logs, `Loading migrations from ${THEME.highlightWords(srcDir)} directory:`)
   logArray(logs, migrations, { indent: false })
-}
-
-const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
-  const externalNodeModules = modulesWithDynamicImports.map((moduleName) => `"${moduleName}"`).join(', ')
-
-  logWarningSubHeader(logs, `The following Node.js modules use dynamic expressions to include files:`)
-  logArray(logs, modulesWithDynamicImports)
-  log(
-    logs,
-    `\n  Because files included with dynamic expressions aren't bundled with your serverless functions by default,
-  this may result in an error when invoking a function. To resolve this error, you can mark these Node.js
-  modules as external in the [functions] section of your \`netlify.toml\` configuration file:
-
-  [functions]
-    external_node_modules = [${externalNodeModules}]
-
-  Visit https://ntl.fyi/dynamic-imports for more information.
-  `,
-  )
 }
 
 export const logSecretsScanSkipMessage = function (logs, msg) {
