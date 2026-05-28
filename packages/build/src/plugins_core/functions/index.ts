@@ -1,26 +1,23 @@
 import { resolve } from 'path'
 
-import { type NodeBundlerName, RUNTIME, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
+import { type NodeBundlerName, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
-import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import {
+  logBundleResults,
+  logFunctionsNonExistingDir,
+  logFunctionsToBundle,
+  trackBundleResults,
+} from '../../log/messages/core_steps.js'
 import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
+import type { CoreStepFunction } from '../types.js'
 
 import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
-
-// Get a list of all unique bundlers in this run
-const getBundlers = (results: FunctionResult[] = []) =>
-  // using a Set to filter duplicates
-  new Set(
-    results
-      .map((bundle) => (bundle.runtime === RUNTIME.JAVASCRIPT ? bundle.bundler : null))
-      .filter(Boolean) as NodeBundlerName[],
-  )
 
 // see https://docs.netlify.com/functions/trigger-on-events/#available-triggers
 const eventTriggeredFunctions = new Set([
@@ -112,11 +109,10 @@ const zipFunctionsAndLogResults = async ({
 
     validateCustomRoutes(results)
 
-    const bundlers = Array.from(getBundlers(results))
-
     logBundleResults({ logs, results })
+    const summary = trackBundleResults({ results, systemLog })
 
-    return { bundlers }
+    return summary
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
@@ -189,7 +185,7 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
 
-  const { bundlers } = await zipFunctionsAndLogResults({
+  const { bundlers, fallbackCount } = await zipFunctionsAndLogResults({
     branch,
     buildDir,
     childEnv,
@@ -207,11 +203,13 @@ const coreStep: CoreStepFunction = async function ({
     generatedFunctions: generatedFunctions.map((func) => func.path),
   })
 
-  const metrics = getMetrics(internalFunctions, userFunctions)
+  const fallback = fallbackCount > 0 ? 'true' : 'false'
+  const metrics = getMetrics(internalFunctions, userFunctions, { bundlers, fallback })
 
   return {
     tags: {
       bundler: bundlers,
+      fallback,
     },
     metrics,
   }
@@ -292,19 +290,23 @@ export const zipItAndShipIt = {
   },
 }
 
-const getMetrics = (internalFunctions: string[], userFunctions: string[]) => {
+const getMetrics = (
+  internalFunctions: string[],
+  userFunctions: string[],
+  { bundlers, fallback }: { bundlers: NodeBundlerName[]; fallback: string },
+) => {
   return [
     {
       type: 'increment',
       name: 'buildbot.build.functions',
       value: internalFunctions.length,
-      tags: { type: 'lambda:generated' },
+      tags: { type: 'lambda:generated', bundler: bundlers, fallback },
     },
     {
       type: 'increment',
       name: 'buildbot.build.functions',
       value: userFunctions.length,
-      tags: { type: 'lambda:user' },
+      tags: { type: 'lambda:user', bundler: bundlers, fallback },
     },
   ]
 }

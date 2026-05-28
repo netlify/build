@@ -4,9 +4,13 @@ import { version as nodeVersion } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
+import { ROOT_CONTEXT, context, trace } from '@opentelemetry/api'
+import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base'
 import test from 'ava'
 import { pathExists } from 'path-exists'
 import semver from 'semver'
+
+import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -199,6 +203,95 @@ if (semver.gte(nodeVersion, '18.19.0')) {
     t.true(app2FunctionsDist.includes('worker.zip'))
   })
 }
+
+const createContextManager = (activeContext) => ({
+  with: (_, fn, thisArg, ...args) => fn.call(thisArg, ...args),
+  active: () => activeContext,
+  enable: () => activeContext,
+  disable: () => activeContext,
+})
+
+const withActiveSpan = (fn) => {
+  trace.setGlobalTracerProvider(new BasicTracerProvider())
+  const span = trace.getTracer('test').startSpan('functions_bundling')
+  context.setGlobalContextManager(createContextManager(trace.setSpan(ROOT_CONTEXT, span)))
+  try {
+    return fn(span)
+  } finally {
+    context.disable()
+    trace.disable()
+  }
+}
+
+const fakeResult = (overrides = {}) => ({
+  name: 'fn',
+  runtime: 'js',
+  bundler: 'zisi',
+  ...overrides,
+})
+
+test.serial('trackBundleResults: sets bundler-summary attributes on the active span', (t) => {
+  withActiveSpan((span) => {
+    trackBundleResults({
+      systemLog: () => {},
+      results: [
+        fakeResult({ name: 'a', bundler: 'esbuild' }),
+        fakeResult({ name: 'b', bundler: 'esbuild', bundlerWarnings: [{}] }),
+        fakeResult({ name: 'c', bundler: 'zisi', bundlerErrors: [{}] }),
+        fakeResult({ name: 'd', runtime: 'go', bundler: undefined }),
+      ],
+    })
+    t.deepEqual(span.attributes['build.execution.step.bundler'], ['esbuild', 'zisi'])
+    t.is(span.attributes['build.execution.step.functions_count'], 4)
+    t.is(span.attributes['build.execution.step.bundler.fallback_count'], 1)
+    t.is(span.attributes['build.execution.step.bundler.warnings_count'], 1)
+    t.is(span.attributes['build.execution.step.bundler.esbuild.count'], 2)
+    t.is(span.attributes['build.execution.step.bundler.zisi.count'], 1)
+  })
+})
+
+test.serial('trackBundleResults: writes the rich summary to the system log', (t) => {
+  withActiveSpan(() => {
+    const messages = []
+    trackBundleResults({
+      systemLog: (...args) => messages.push(args),
+      results: [fakeResult({ name: 'a', bundler: 'zisi', bundlerErrors: [{}] })],
+    })
+    t.deepEqual(messages, [
+      [
+        {
+          msg: 'Functions bundling completed',
+          bundlers: ['zisi'],
+          bundlerCounts: { zisi: 1 },
+          fallbackCount: 1,
+          warningsCount: 0,
+          functions: [
+            {
+              name: 'a',
+              runtime: 'js',
+              bundler: 'zisi',
+              hadFallback: true,
+              hadWarnings: false,
+            },
+          ],
+        },
+      ],
+    ])
+  })
+})
+
+test.serial('trackBundleResults: returns summary stats for metric tags', (t) => {
+  withActiveSpan(() => {
+    const summary = trackBundleResults({
+      systemLog: () => {},
+      results: [
+        fakeResult({ name: 'a', bundler: 'esbuild' }),
+        fakeResult({ name: 'b', bundler: 'zisi', bundlerErrors: [{}] }),
+      ],
+    })
+    t.deepEqual(summary, { bundlers: ['esbuild', 'zisi'], fallbackCount: 1, warningsCount: 0 })
+  })
+})
 
 test('Functions: creates metadata file', async (t) => {
   const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
