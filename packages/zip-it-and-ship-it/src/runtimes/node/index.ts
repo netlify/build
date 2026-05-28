@@ -204,8 +204,9 @@ const zipFunction: ZipFunction = async function ({
 }
 
 const zipWithFunctionWithFallback: ZipFunction = async ({ config = {}, ...parameters }) => {
-  // If a specific JS bundler version is specified, we'll use it.
-  if (config.nodeBundler !== NODE_BUNDLER.ESBUILD_ZISI) {
+  // If a specific JS bundler version is specified (other than zisi or the
+  // explicit esbuild-with-zisi-fallback), we'll use it as-is.
+  if (config.nodeBundler !== NODE_BUNDLER.ESBUILD_ZISI && config.nodeBundler !== NODE_BUNDLER.ZISI) {
     return zipFunction({ ...parameters, config })
   }
 
