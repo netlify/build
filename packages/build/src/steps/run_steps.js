@@ -47,6 +47,7 @@ export const runSteps = async function ({
   explicitSecretKeys,
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
+  pluginsOptions,
 }) {
   const {
     index: stepsCount,
@@ -164,6 +165,7 @@ export const runSteps = async function ({
         explicitSecretKeys,
         enhancedSecretScan,
         edgeFunctionsBootstrapURL,
+        pluginsOptions,
       })
 
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })

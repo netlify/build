@@ -73,6 +73,7 @@ export const runStep = async function ({
   edgeFunctionsBootstrapURL,
   extensionMetadata,
   returnValues,
+  pluginsOptions,
 }) {
   // Add relevant attributes to the upcoming span context
   const attributes: StepExecutionAttributes = {
@@ -195,6 +196,7 @@ export const runStep = async function ({
       api,
       returnValues,
       deployEnvVars,
+      pluginsOptions,
     })
 
     const newValues = await getStepReturn({
@@ -367,6 +369,7 @@ const tFireStep = function ({
   extensionMetadata,
   api,
   returnValues,
+  pluginsOptions,
 }) {
   if (coreStep !== undefined) {
     return fireCoreStep({
@@ -408,6 +411,7 @@ const tFireStep = function ({
       deployId,
       api,
       returnValues,
+      pluginsOptions,
     })
   }
 

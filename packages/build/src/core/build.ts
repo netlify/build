@@ -704,6 +704,7 @@ const runBuild = async function ({
     explicitSecretKeys,
     enhancedSecretScan,
     edgeFunctionsBootstrapURL,
+    pluginsOptions,
   })
 
   return {
