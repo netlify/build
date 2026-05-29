@@ -277,11 +277,12 @@ test('Sets SITE_ID environment variable', async (t) => {
   t.is(SITE_ID.value, 'test')
 })
 
-test('Does not set SITE_ID environment variable if no flag is provided', async (t) => {
+test('Set default SITE_ID environment variable if no flag is provided', async (t) => {
   const {
     env: { SITE_ID },
   } = await new Fixture('./fixtures/empty').runWithConfigAsObject()
-  t.is(SITE_ID, undefined)
+  t.deepEqual(SITE_ID.sources, ['general'])
+  t.is(SITE_ID.value, '00000000-0000-0000-0000-000000000000')
 })
 
 test('Sets SITE_NAME environment variable', async (t) => {
@@ -294,13 +295,14 @@ test('Sets SITE_NAME environment variable', async (t) => {
   t.is(SITE_NAME.value, 'test-name')
 })
 
-test('Does not set SITE_NAME environment variable if offline', async (t) => {
+test('Set default SITE_NAME environment variable if offline', async (t) => {
   const {
     env: { SITE_NAME },
   } = await new Fixture('./fixtures/empty')
     .withFlags(AUTH_FLAGS_OFFLINE)
     .runConfigServerAsObject(SITE_INFO_RESPONSE_ENV)
-  t.is(SITE_NAME, undefined)
+  t.deepEqual(SITE_NAME.sources, ['general'])
+  t.is(SITE_NAME.value, 'site-name')
 })
 
 test('Sets URL environment variable', async (t) => {
