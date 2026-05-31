@@ -293,6 +293,24 @@ test.serial('trackBundleResults: returns summary stats for metric tags', (t) => 
   })
 })
 
+// Prebuilt `.zip` JS functions pass through zip-it-and-ship-it with no
+// `bundler` field. They should not pollute `bundlers` with `undefined`.
+test.serial('trackBundleResults: excludes JS results that have no bundler (prebuilt .zip)', (t) => {
+  withActiveSpan((span) => {
+    const summary = trackBundleResults({
+      systemLog: () => {},
+      results: [
+        fakeResult({ name: 'a', bundler: 'esbuild' }),
+        fakeResult({ name: 'b', bundler: undefined }), // prebuilt .zip
+      ],
+    })
+    t.deepEqual(summary.bundlers, ['esbuild'])
+    t.deepEqual(span.attributes['build.execution.step.bundler'], ['esbuild'])
+    t.is(span.attributes['build.execution.step.bundler.esbuild.count'], 1)
+    t.is(span.attributes['build.execution.step.bundler.undefined.count'], undefined)
+  })
+})
+
 test('Functions: creates metadata file', async (t) => {
   const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
   const build = await fixture

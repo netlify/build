@@ -58,8 +58,9 @@ export const logBundleResults = ({ logs, results = [] }) => {
 }
 
 /**
- * Derives structured telemetry from function bundling results and emits it to the system log and the active span.
- * Also returns summary stats the caller can use for metric tags.
+ * Sibling of `logBundleResults`. Derives structured telemetry from the same
+ * `results` array and emits it to the system log and the active span. Returns
+ * summary stats the caller can use for metric tags.
  *
  * @param {object} options
  * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
@@ -82,7 +83,9 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
     hadWarnings: (result.bundlerWarnings?.length ?? 0) > 0,
   }))
 
-  const jsResults = perFunction.filter((p) => p.bundler !== null)
+  // Exclude both `null` (non-JS runtimes) and `undefined` (prebuilt `.zip`
+  // JS functions, which zip-it-and-ship-it passes through with no bundler).
+  const jsResults = perFunction.filter((p) => p.bundler != null)
   const bundlers = [...new Set(jsResults.map((p) => p.bundler))]
   const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {})
   const fallbackCount = perFunction.filter((p) => p.hadFallback).length
