@@ -185,7 +185,7 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
 
-  const { bundlers, fallbackCount } = await zipFunctionsAndLogResults({
+  const { bundlers, fallbackCount, warningsCount } = await zipFunctionsAndLogResults({
     branch,
     buildDir,
     childEnv,
@@ -204,12 +204,14 @@ const coreStep: CoreStepFunction = async function ({
   })
 
   const fallback = fallbackCount > 0 ? 'true' : 'false'
-  const metrics = getMetrics(internalFunctions, userFunctions, { bundlers, fallback })
+  const warnings = warningsCount > 0 ? 'true' : 'false'
+  const metrics = getMetrics(internalFunctions, userFunctions, { bundlers, fallback, warnings })
 
   return {
     tags: {
       bundler: bundlers,
       fallback,
+      warnings,
     },
     metrics,
   }
@@ -293,20 +295,20 @@ export const zipItAndShipIt = {
 const getMetrics = (
   internalFunctions: string[],
   userFunctions: string[],
-  { bundlers, fallback }: { bundlers: NodeBundlerName[]; fallback: string },
+  { bundlers, fallback, warnings }: { bundlers: NodeBundlerName[]; fallback: string; warnings: string },
 ) => {
   return [
     {
       type: 'increment',
       name: 'buildbot.build.functions',
       value: internalFunctions.length,
-      tags: { type: 'lambda:generated', bundler: bundlers, fallback },
+      tags: { type: 'lambda:generated', bundler: bundlers, fallback, warnings },
     },
     {
       type: 'increment',
       name: 'buildbot.build.functions',
       value: userFunctions.length,
-      tags: { type: 'lambda:user', bundler: bundlers, fallback },
+      tags: { type: 'lambda:user', bundler: bundlers, fallback, warnings },
     },
   ]
 }
