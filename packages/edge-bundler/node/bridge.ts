@@ -16,6 +16,8 @@ const DENO_VERSION_FILE = 'version.txt'
 
 export const LEGACY_DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
 
+export const TARBALL_DENO_VERSION_RANGE = '2.3.1'
+
 // When updating DENO_VERSION_RANGE, ensure that the deno version
 // on the netlify/buildbot build image satisfies this range!
 // https://github.com/netlify/buildbot/blob/f9c03c9dcb091d6570e9d0778381560d469e78ad/build-image/noble/Dockerfile#L410
@@ -42,6 +44,11 @@ export interface ProcessRef {
 
 interface RunOptions {
   cwd?: string
+  // Overrides the `DENO_DIR` for this invocation only, taking precedence over
+  // the bridge-level `denoDir`. Used to point a single command (e.g. `deno
+  // cache`) at a bundle-local cache without affecting other commands that
+  // should keep using the shared, cross-build cache.
+  denoDir?: string
   env?: NodeJS.ProcessEnv
   extendEnv?: boolean
   pipeOutput?: boolean
@@ -246,11 +253,12 @@ To install Deno manually: https://ntl.fyi/install-deno`,
     return { global: false, path: downloadedPath }
   }
 
-  getEnvironmentVariables(inputEnv: NodeJS.ProcessEnv = {}) {
+  getEnvironmentVariables(inputEnv: NodeJS.ProcessEnv = {}, denoDirOverride?: string) {
     const env: NodeJS.ProcessEnv = { ...inputEnv }
 
-    if (this.denoDir !== undefined) {
-      env.DENO_DIR = this.denoDir
+    const denoDir = denoDirOverride ?? this.denoDir
+    if (denoDir !== undefined) {
+      env.DENO_DIR = denoDir
     }
 
     // Ensure PATH is always set as otherwise we are not able to find the global deno binary
@@ -263,10 +271,10 @@ To install Deno manually: https://ntl.fyi/install-deno`,
   // process, awaiting its execution.
   async run(
     args: string[],
-    { cwd, env: inputEnv, extendEnv = true, rejectOnExitCode = true, stderr, stdout }: RunOptions = {},
+    { cwd, denoDir, env: inputEnv, extendEnv = true, rejectOnExitCode = true, stderr, stdout }: RunOptions = {},
   ) {
     const { path: binaryPath } = await this.getBinaryPath()
-    const env = this.getEnvironmentVariables(inputEnv)
+    const env = this.getEnvironmentVariables(inputEnv, denoDir)
     const options: Options = { cwd, env, extendEnv, reject: rejectOnExitCode }
 
     return DenoBridge.runWithBinary(binaryPath, args, { options, stderr, stdout })
@@ -277,10 +285,10 @@ To install Deno manually: https://ntl.fyi/install-deno`,
   async runInBackground(
     args: string[],
     ref?: ProcessRef,
-    { env: inputEnv, extendEnv = true, pipeOutput, stderr, stdout }: RunOptions = {},
+    { denoDir, env: inputEnv, extendEnv = true, pipeOutput, stderr, stdout }: RunOptions = {},
   ) {
     const { path: binaryPath } = await this.getBinaryPath()
-    const env = this.getEnvironmentVariables(inputEnv)
+    const env = this.getEnvironmentVariables(inputEnv, denoDir)
     const options: Options = { env, extendEnv }
     const ps = DenoBridge.runWithBinary(binaryPath, args, { options, pipeOutput, stderr, stdout })
 

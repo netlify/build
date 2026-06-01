@@ -816,6 +816,54 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Includes a relocated Deno cache (DENO_DIR) in the tarball', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        configPath: join(basePath, '.netlify/edge-functions/config.json'),
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+      })
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // The transpiled local function should be cached under the runtime mount
+      // path (`gen/file/platform/...`), not the arbitrary bundling path.
+      expect(entries).toContain('./.deno_dir/gen/file/platform/func1.ts.js')
+
+      const genFileEntries = entries.filter((entry) => entry.startsWith('./.deno_dir/gen/file/'))
+      expect(genFileEntries.length).toBeGreaterThan(0)
+
+      // No `gen/file` entry should leak a bundling-time absolute path; they must
+      // all live under the relocated `platform/` directory.
+      for (const entry of genFileEntries) {
+        expect(entry.startsWith('./.deno_dir/gen/file/platform/')).toBe(true)
+      }
+
+      // The absolute-path-keyed dependency-analysis cache should be dropped.
+      expect(entries.some((entry) => entry.includes('dep_analysis_cache'))).toBe(false)
+
+      await cleanup()
+    })
+
     test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
@@ -1355,13 +1403,11 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./func1.ts')
 
       // The vendored deno_dom WASM payload must be present in the tarball.
-      // Deno <2.6 vendors `.wasm` imports under a `.d.mts` extension (with a
-      // content-hash suffix); 2.6+ keeps the original `.wasm` extension.
-      const denoDomVendorPrefix = './vendor/deno.land/x/deno_dom@v0.1.56/build/deno-wasm/'
-      const expectedWasmEntry = lt(denoVersion, '2.6.0')
-        ? `${denoDomVendorPrefix}#deno-wasm_bg.wasm_d2792.d.mts`
-        : `${denoDomVendorPrefix}deno-wasm_bg.wasm`
-      expect(entries).toContain(expectedWasmEntry)
+      // Tarball bundling always vendors with the runtime-matched Deno (see
+      // `TARBALL_DENO_VERSION_RANGE`), independent of the local Deno running
+      // these tests. That version is <2.6, which vendors `.wasm` imports under a
+      // hashed `.d.mts` name.
+      expect(entries).toContain('./vendor/deno.land/x/deno_dom@v0.1.56/build/deno-wasm/#deno-wasm_bg.wasm_d2792.d.mts')
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)

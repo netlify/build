@@ -12,6 +12,7 @@ import {
   OnAfterDownloadHook,
   OnBeforeDownloadHook,
   LEGACY_DENO_VERSION_RANGE,
+  TARBALL_DENO_VERSION_RANGE,
 } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
@@ -133,6 +134,11 @@ export const bundle = async (
   let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>> | undefined
 
   if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
+    // Tarball bundles are executed at runtime by a Deno version matching
+    // `TARBALL_DENO_VERSION_RANGE`, so we bundle them with that same version to
+    // keep the produced module graph and Deno cache compatible.
+    const denoTarball = createTarballDenoBridge(options)
+
     const tarballInitialPromise = (async () => {
       const start = Date.now()
 
@@ -141,7 +147,7 @@ export const bundle = async (
           basePath,
           buildID,
           debug,
-          deno,
+          deno: denoTarball,
           distDirectory,
           functions,
           featureFlags,
@@ -274,6 +280,24 @@ export const bundle = async (
   }
 
   return { functions, manifest }
+}
+
+// Builds a `DenoBridge` pinned to the Deno version used to run tarball bundles
+// at runtime (`TARBALL_DENO_VERSION_RANGE`). It reuses the shared options
+// (including `denoDir`, so the module download cache is shared across builds)
+// but downloads its binary into a dedicated directory so it doesn't clash with
+// the default bridge's binary, which targets a different version range.
+const createTarballDenoBridge = (options: DenoOptions) => {
+  const binaryCacheDirectory =
+    options.cacheDirectory === undefined
+      ? getPathInHome('deno-cli-tarball')
+      : join(options.cacheDirectory, 'deno-cli-tarball')
+
+  return new DenoBridge({
+    ...options,
+    cacheDirectory: binaryCacheDirectory,
+    versionRange: TARBALL_DENO_VERSION_RANGE,
+  })
 }
 
 interface GetFunctionConfigsOptions {
