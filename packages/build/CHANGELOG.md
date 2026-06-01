@@ -105,6 +105,18 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.14.0](https://github.com/netlify/build/compare/build-v35.13.9...build-v35.14.0) (2026-06-01)
+
+
+### Features
+
+* add new config properties to `FunctionsObject` ([#7079](https://github.com/netlify/build/issues/7079)) ([9bfb608](https://github.com/netlify/build/commit/9bfb608db83fdc1788329a7d9dbffb02ac85bad2))
+
+
+### Bug Fixes
+
+* attach bundler info to functions bundling telemetry ([#7076](https://github.com/netlify/build/issues/7076)) ([ebab822](https://github.com/netlify/build/commit/ebab822c2117b833d845e76a889e199a406407c4))
+
 ## [35.13.9](https://github.com/netlify/build/compare/build-v35.13.8...build-v35.13.9) (2026-05-27)
 
 
