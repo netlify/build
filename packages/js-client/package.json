@@ -52,7 +52,7 @@
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "vitest": "^3.2.3"
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=18.14.0"
