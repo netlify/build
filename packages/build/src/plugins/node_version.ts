@@ -86,7 +86,7 @@ const addPluginNodeVersion = async function ({
   ) {
     logWarningSubHeader(
       logs,
-      `Warning: Starting June 2, 2026 plugin "${packageName}" will be executed with Node.js version 22.`,
+      `Warning: Starting June 16, 2026 plugin "${packageName}" will be executed with Node.js version 22.`,
     )
     logWarning(
       logs,
@@ -96,7 +96,7 @@ const addPluginNodeVersion = async function ({
 
   Read more about our minimum required version in our ${link(
     'forums announcement',
-    'https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-14-node-js-16/136405',
+    'https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-18-node-js-20/162662',
   )}`,
     )
 
@@ -129,7 +129,7 @@ const addPluginNodeVersion = async function ({
 
   Read more about our minimum required version in our ${link(
     'forums announcement',
-    'https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-14-node-js-16/136405',
+    'https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-18-node-js-20/162662',
   )}`,
   )
 
