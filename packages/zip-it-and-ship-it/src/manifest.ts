@@ -16,15 +16,18 @@ interface ManifestFunction {
   generator?: string
   invocationMode?: InvocationMode
   mainFile: string
+  memory?: number
   name: string
   path: string
   priority?: number
+  region?: string
   routes?: ExtendedRoute[]
   runtime: string
   runtimeVersion?: string
   schedule?: string
   timeout?: number
   trafficRules?: TrafficRules
+  vcpu?: number
 }
 
 export interface Manifest {
@@ -60,9 +63,11 @@ const formatFunctionForManifest = ({
   generator,
   invocationMode,
   mainFile,
+  memory,
   name,
   path,
   priority,
+  region,
   trafficRules,
   routes,
   runtime,
@@ -70,6 +75,7 @@ const formatFunctionForManifest = ({
   runtimeAPIVersion,
   schedule,
   timeout,
+  vcpu,
 }: FunctionResult): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
     bundler,
@@ -79,13 +85,16 @@ const formatFunctionForManifest = ({
     invocationMode,
     buildData: { bootstrapVersion, runtimeAPIVersion },
     mainFile,
+    memory,
     name,
     priority,
+    region,
     trafficRules,
     runtimeVersion,
     path: resolve(path),
     runtime,
     schedule,
+    vcpu,
   }
 
   if (eventSubscriptions?.length) {

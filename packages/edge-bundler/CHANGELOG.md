@@ -1,5 +1,21 @@
 # Changelog
 
+## [14.10.3](https://github.com/netlify/build/compare/edge-bundler-v14.10.2...edge-bundler-v14.10.3) (2026-05-27)
+
+
+### Bug Fixes
+
+* handle TsTypeAssertion that conflicts with JSX handling for tarball bundling ([#7049](https://github.com/netlify/build/issues/7049)) ([3d2a644](https://github.com/netlify/build/commit/3d2a644d0ecf3d5c9dcc9547214b45941e9d73b1))
+* ignore type-only errored modules from module graph ([#7072](https://github.com/netlify/build/issues/7072)) ([96faaaf](https://github.com/netlify/build/commit/96faaaf3539123c23931275265faf57dc6d1f66d))
+
+## [14.10.2](https://github.com/netlify/build/compare/edge-bundler-v14.10.1...edge-bundler-v14.10.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+* **deps:** update dependency esbuild to v0.28.0 ([#7056](https://github.com/netlify/build/issues/7056)) ([4ecb3a8](https://github.com/netlify/build/commit/4ecb3a8bec4e34c293eae2682f14e3be42a593a0))
+
 ## [14.10.1](https://github.com/netlify/build/compare/edge-bundler-v14.10.0...edge-bundler-v14.10.1) (2026-04-22)
 
 

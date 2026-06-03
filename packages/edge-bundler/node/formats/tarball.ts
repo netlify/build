@@ -252,21 +252,86 @@ async function getRequiredSourceFiles(
 
     const graph = JSON.parse(stdout) as ModuleGraphJson
 
+    // Collect the specifiers of every module reachable through a *code* (runtime)
+    // import edge. Deno's module graph classifies each dependency as either a `code`
+    // edge (a real runtime import) or a `type`-only edge (`import type`, `@deno-types`).
+    // Type-only edges are erased during transpilation and are never loaded at runtime
+    // (`deno run` doesn't type-check), so the files they point to don't belong in the
+    // bundle. The entry points themselves are always runtime.
+    const runtimeSpecifiers = new Set<string>(graph.roots)
+    for (const module of graph.modules) {
+      for (const dependency of module.dependencies ?? []) {
+        if (dependency.code?.specifier) {
+          runtimeSpecifiers.add(dependency.code.specifier)
+        }
+      }
+    }
+
     // Extract all local files from the module graph
     for (const module of graph.modules) {
-      if (module.specifier.startsWith('file://')) {
-        if (module.error?.startsWith('Module not found')) {
-          // Module graph contains all found imported/required modules, even if they don't actually exist
-          // This can happen for optional dependencies (dynamic import or require in try/catch).
+      if (!module.specifier.startsWith('file://')) {
+        continue
+      }
+
+      if (module.error) {
+        // A module reachable only through type-only edges (e.g. a directory specifier
+        // behind `import type`) can fail to resolve as an ES module. That's safe to
+        // ignore: the runtime never loads it.
+        if (!runtimeSpecifiers.has(module.specifier)) {
           continue
         }
-        const filePath = fileURLToPath(module.specifier)
-        localFiles.add(filePath)
+
+        if (module.error.startsWith('Module not found')) {
+          // Module graph contains all found imported/required modules, even if they don't
+          // actually exist. This can happen for optional dependencies (dynamic import or
+          // require in try/catch).
+          continue
+        }
       }
+
+      localFiles.add(fileURLToPath(module.specifier))
     }
   }
 
   return localFiles
+}
+
+// WebAssembly binary magic bytes: `\0asm` (0x00 0x61 0x73 0x6d).
+const WASM_MAGIC = Buffer.from([0x00, 0x61, 0x73, 0x6d])
+
+/**
+ * Detects whether a file is a raw WebAssembly module by its magic bytes.
+ * Deno <2.6 vendors imported `.wasm` modules under a `.d.mts` extension even
+ * though the content is the raw WASM binary, so we cannot rely on extension
+ * alone to decide whether a file is safe to read as UTF-8 and rewrite.
+ */
+async function isWasm(sourceFile: string): Promise<boolean> {
+  const fd = await fs.open(sourceFile, 'r')
+  try {
+    const buf = Buffer.alloc(WASM_MAGIC.length)
+    const { bytesRead } = await fd.read(buf, 0, buf.length, 0)
+    return bytesRead === WASM_MAGIC.length && buf.equals(WASM_MAGIC)
+  } finally {
+    await fd.close()
+  }
+}
+
+/**
+ * Decides whether a source file should be parsed and rewritten. Cheap extension
+ * check first; only if it passes do we open the file to rule out raw WebAssembly
+ * binaries (Deno <2.6 vendors `.wasm` imports under `.d.mts`) — reading those
+ * as UTF-8 would corrupt the binary on round-trip.
+ */
+async function shouldRewrite(sourceFile: string): Promise<boolean> {
+  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+    return false
+  }
+
+  if (await isWasm(sourceFile)) {
+    return false
+  }
+
+  return true
 }
 
 /**
@@ -274,14 +339,18 @@ async function getRequiredSourceFiles(
  * Defaults to copying the file in its current form
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
-  if (!REWRITABLE_EXTENSIONS.has(path.extname(sourceFile))) {
+  if (!(await shouldRewrite(sourceFile))) {
     if (sourceFile !== destPath) {
       await fs.copyFile(sourceFile, destPath)
     }
     return
   }
 
-  const source = await fs.readFile(sourceFile, 'utf-8')
-  const modified = rewriteSourceImportAssertions(source)
-  await fs.writeFile(destPath, modified)
+  try {
+    const source = await fs.readFile(sourceFile, 'utf-8')
+    const modified = rewriteSourceImportAssertions(source)
+    await fs.writeFile(destPath, modified)
+  } catch (error) {
+    throw new Error(`Failed to rewrite import assertions in ${sourceFile}`, { cause: error })
+  }
 }

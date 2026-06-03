@@ -105,6 +105,80 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.14.0](https://github.com/netlify/build/compare/build-v35.13.9...build-v35.14.0) (2026-06-01)
+
+
+### Features
+
+* add new config properties to `FunctionsObject` ([#7079](https://github.com/netlify/build/issues/7079)) ([9bfb608](https://github.com/netlify/build/commit/9bfb608db83fdc1788329a7d9dbffb02ac85bad2))
+
+
+### Bug Fixes
+
+* attach bundler info to functions bundling telemetry ([#7076](https://github.com/netlify/build/issues/7076)) ([ebab822](https://github.com/netlify/build/commit/ebab822c2117b833d845e76a889e199a406407c4))
+
+## [35.13.9](https://github.com/netlify/build/compare/build-v35.13.8...build-v35.13.9) (2026-05-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 14.10.2 to 14.10.3
+
+## [35.13.8](https://github.com/netlify/build/compare/build-v35.13.7...build-v35.13.8) (2026-05-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.33 to ^6.2.34
+    * @netlify/zip-it-and-ship-it bumped from 14.6.0 to 14.7.0
+
+## [35.13.7](https://github.com/netlify/build/compare/build-v35.13.6...build-v35.13.7) (2026-05-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.5.1 to ^24.6.0
+    * @netlify/functions-utils bumped from ^6.2.32 to ^6.2.33
+    * @netlify/zip-it-and-ship-it bumped from 14.5.6 to 14.6.0
+
+## [35.13.6](https://github.com/netlify/build/compare/build-v35.13.5...build-v35.13.6) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^24.5.0 to ^24.5.1
+    * @netlify/edge-bundler bumped from 14.10.1 to 14.10.2
+    * @netlify/functions-utils bumped from ^6.2.31 to ^6.2.32
+    * @netlify/zip-it-and-ship-it bumped from 14.5.5 to 14.5.6
+
+## [35.13.5](https://github.com/netlify/build/compare/build-v35.13.4...build-v35.13.5) (2026-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.6 ([#7048](https://github.com/netlify/build/issues/7048)) ([07a4565](https://github.com/netlify/build/commit/07a4565918867b63dd1f62be0219cfb7875a4b4d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.30 to ^6.2.31
+    * @netlify/zip-it-and-ship-it bumped from 14.5.4 to 14.5.5
+
 ## [35.13.4](https://github.com/netlify/build/compare/build-v35.13.3...build-v35.13.4) (2026-04-26)
 
 
