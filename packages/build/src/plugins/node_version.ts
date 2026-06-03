@@ -105,12 +105,16 @@ const addPluginNodeVersion = async function ({
       const { packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
 
       // Ensure Node.js version is compatible with plugin's `engines.node`
-      const pluginNodeVersionRange = pluginPackageJson.engines?.node
+      const pluginNodeVersionRange = pluginPackageJson?.engines?.node
       if (!pluginNodeVersionRange) {
         systemLog(`plugin "${packageName}" does not specify node support range`)
       } else if (semver.satisfies('22.12.0', pluginNodeVersionRange)) {
         systemLog(`plugin "${packageName}" node support range includes v22`)
       } else {
+        logWarning(
+          logs,
+          `  In its package.json, the plugin "${packageName}" declares a Node.js version range ("${pluginNodeVersionRange}") that does not include Node.js 22. Please upgrade the plugin so it can be run on Node.js 22.`,
+        )
         systemLog(`plugin "${packageName}" node support range does NOT include v22`)
       }
     } else {
