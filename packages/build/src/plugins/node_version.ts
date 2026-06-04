@@ -102,11 +102,21 @@ const addPluginNodeVersion = async function ({
 
     if (pluginPath) {
       const pluginDir = dirname(pluginPath)
-      const { packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
+      const { packageJson: pluginPackageJson, packageDir } = await getPackageJson(pluginDir)
+
+      // `getPackageJson` walks up to the nearest `package.json`. For a `package.json`-installed
+      // plugin that's the plugin's own manifest, but for a local single-file plugin
+      // (e.g. `./plugins/foo.js`) it resolves an ancestor — typically the *site's*
+      // `package.json`, whose `engines.node` describes the site rather than the plugin. Only
+      // trust the resolved range when the manifest belongs to the plugin: an installed package,
+      // or a local plugin shipping its own `package.json` alongside its entry file.
+      const pluginOwnsPackageJson = loadedFrom === 'package.json' || packageDir === pluginDir
+      const pluginNodeVersionRange = pluginOwnsPackageJson ? pluginPackageJson.engines?.node : undefined
 
       // Ensure Node.js version is compatible with plugin's `engines.node`
-      const pluginNodeVersionRange = pluginPackageJson.engines?.node
-      if (!pluginNodeVersionRange) {
+      if (!pluginOwnsPackageJson) {
+        systemLog(`plugin "${packageName}" node support range could not be determined (no own package.json)`)
+      } else if (!pluginNodeVersionRange) {
         systemLog(`plugin "${packageName}" does not specify node support range`)
       } else if (semver.satisfies('22.12.0', pluginNodeVersionRange)) {
         systemLog(`plugin "${packageName}" node support range includes v22`)

@@ -137,6 +137,34 @@ test('Validate --node-path version is supported by the plugin', async (t) => {
   t.true(systemLogContents.includes('plugin "./plugin.js" node support range does NOT include v22'))
 })
 
+test('Does not attribute the site package.json engines to a local single-file plugin', async (t) => {
+  const systemLog = await tmp.file()
+
+  const nodePath = getNodePath('16.14.0')
+  const output = await new Fixture('./fixtures/engines_no_package')
+    .withFlags({
+      nodePath,
+      featureFlags: { build_warn_upcoming_system_version_change: true },
+      systemLogFile: systemLog.fd,
+      debug: false,
+    })
+    .runWithBuild()
+  // The general advance-notice warning still fires for any sub-v22 local plugin
+  t.true(
+    output.includes(
+      'Warning: Starting June 16, 2026 plugin "./plugins/plugin.js" will be executed with Node.js version 22.',
+    ),
+  )
+  // But the targeted "engines exclude v22" warning must NOT fire: the only package.json
+  // reachable by walking up is the site's, not the plugin's.
+  t.false(output.includes('declares a Node.js version range'))
+  const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+  await systemLog.cleanup()
+
+  t.true(systemLogContents.includes('node support range could not be determined (no own package.json)'))
+  t.false(systemLogContents.includes('node support range does NOT include v22'))
+})
+
 test('Validate --node-path exists', async (t) => {
   const output = await new Fixture('./fixtures/node_version_simple')
     .withFlags({ nodePath: '/doesNotExist' })
