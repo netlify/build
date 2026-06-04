@@ -1,4 +1,5 @@
 import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
+import { execFileSync } from 'node:child_process'
 import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -12,6 +13,19 @@ import semver from 'semver'
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+
+// The monorepo fixtures build with pnpm, which isn't usable in every CI environment
+// (e.g. pinned-Node legs where corepack can't provision it). Run these tests only
+// where pnpm can actually be invoked; skip otherwise.
+const isPnpmAvailable = (() => {
+  try {
+    execFileSync('pnpm', ['--version'], { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+})()
+const monorepoTest = isPnpmAvailable ? test : test.skip
 
 test('Functions: missing source directory', async (t) => {
   const output = await new Fixture('./fixtures/missing').runWithBuild()
@@ -168,7 +182,7 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
   t.snapshot(normalizeOutput(output))
 })
 
-test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
+monorepoTest('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
   const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
   const app1 = await fixture
     .withFlags({

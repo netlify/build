@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
+import { execFileSync } from 'node:child_process'
 import { access, readFile } from 'node:fs/promises'
 import { platform } from 'node:process'
 import { join } from 'path'
@@ -10,6 +11,19 @@ import test from 'ava'
 import getPort from 'get-port'
 import { spyOn } from 'tinyspy'
 import tmp from 'tmp-promise'
+
+// The monorepo fixtures build with pnpm, which isn't usable in every CI environment
+// (e.g. pinned-Node legs where corepack can't provision it). Run these tests only
+// where pnpm can actually be invoked; skip otherwise.
+const isPnpmAvailable = (() => {
+  try {
+    execFileSync('pnpm', ['--version'], { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+})()
+const monorepoTest = isPnpmAvailable ? test.serial : test.serial.skip
 
 const TOKEN = 'test'
 
@@ -217,7 +231,7 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
   t.is(severityCode, 4)
 })
 
-test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
+monorepoTest('monorepo > blobs upload, uploads files to deploy store', async (t) => {
   const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
