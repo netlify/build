@@ -129,7 +129,8 @@ const bundle: BundleFunction = async ({
     mainFile: normalizedMainFile,
     moduleFormat,
     nativeNodeModules,
-    srcFiles: [...supportingSrcFiles, ...bundlePaths.keys()],
+    // We sort so that the archive's checksum is deterministic.
+    srcFiles: [...supportingSrcFiles, ...bundlePaths.keys()].sort(),
   }
 }
 
