@@ -57,6 +57,13 @@ const DENO_DIR_NAME = '.deno_dir'
 // (arbitrary) bundling path to this path to remain resolvable at runtime.
 const RUNTIME_MOUNT_DIR = 'platform'
 
+// Subdirectory of DENO_DIR holding Deno's emit cache: the transpiled JS output
+// of non-JS sources (TypeScript, JSX). Deno calls this the `gen` cache (the
+// `EmitCache`, surfaced as the emit/TypeScript cache in `deno info`). Shipping
+// it lets the runtime skip transpiling those sources on cold start, and it's the
+// only DENO_DIR artifact we keep — see `pruneDenoDirToGen`.
+const DENO_EMIT_CACHE_DIR = 'gen'
+
 interface CreateDenoCacheOptions {
   deno: DenoBridge
   bundleDirPath: string
@@ -84,7 +91,7 @@ const createDenoCache = async ({ deno, bundleDirPath, denoConfigPath, entrypoint
   })
 
   await relocateGenFileCache(bundleDirPath, denoDir)
-  await dropAbsolutePathCaches(denoDir)
+  await pruneDenoDirToGen(denoDir)
 }
 
 /**
@@ -96,7 +103,7 @@ const createDenoCache = async ({ deno, bundleDirPath, denoConfigPath, entrypoint
  * (content-addressed) and need no relocation.
  */
 const relocateGenFileCache = async (bundleDirPath: string, denoDir: string) => {
-  const genFileDir = path.join(denoDir, 'gen', 'file')
+  const genFileDir = path.join(denoDir, DENO_EMIT_CACHE_DIR, 'file')
 
   // Deno resolves symlinks before computing the cache path (e.g. on macOS
   // `/var` -> `/private/var`), so we resolve the bundle path the same way to
@@ -120,17 +127,22 @@ const relocateGenFileCache = async (bundleDirPath: string, denoDir: string) => {
 }
 
 /**
- * Removes Deno's dependency-analysis cache, a SQLite database that keys local
- * modules by absolute path. Its entries wouldn't match the runtime paths, so it
- * would just be dead weight in the tarball; Deno regenerates it on demand.
+ * Prunes the DENO_DIR down to just the emit cache (`DENO_EMIT_CACHE_DIR`) — the
+ * transpiled output we actually want to ship. We use an allowlist (keep the emit
+ * cache) rather than a blocklist (drop known-bad entries) so we stay robust to
+ * future Deno versions writing new, non-portable artifacts into the cache.
+ * Everything else Deno puts there is either regenerated on demand (e.g. the
+ * `dep_analysis_cache*` SQLite DBs, which key modules by absolute path and so
+ * wouldn't match runtime paths) or redundant with the vendored sources already
+ * in the bundle (`remote/` stays empty under `--vendor`).
  */
-const dropAbsolutePathCaches = async (denoDir: string) => {
+const pruneDenoDirToGen = async (denoDir: string) => {
   const entries = await fs.readdir(denoDir)
 
   await Promise.all(
     entries
-      .filter((entry) => entry.startsWith('dep_analysis_cache'))
-      .map((entry) => fs.rm(path.join(denoDir, entry), { force: true })),
+      .filter((entry) => entry !== DENO_EMIT_CACHE_DIR)
+      .map((entry) => fs.rm(path.join(denoDir, entry), { recursive: true, force: true })),
   )
 }
 
