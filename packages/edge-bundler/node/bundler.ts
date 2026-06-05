@@ -289,9 +289,7 @@ export const bundle = async (
 // the default bridge's binary, which targets a different version range.
 const createTarballDenoBridge = (options: DenoOptions) => {
   const binaryCacheDirectory =
-    options.cacheDirectory === undefined
-      ? getPathInHome('deno-cli-tarball')
-      : join(options.cacheDirectory, 'deno-cli-tarball')
+    options.cacheDirectory === undefined ? getPathInHome('deno-tarball') : join(options.cacheDirectory, 'deno-tarball')
 
   return new DenoBridge({
     ...options,
