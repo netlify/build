@@ -43,8 +43,8 @@
   "dependencies": {
     "@netlify/open-api": "^2.52.0",
     "node-fetch": "^3.0.0",
-    "picoquery": "^2.5.0",
-    "p-wait-for": "^5.0.0"
+    "p-wait-for": "^5.0.0",
+    "picoquery": "^2.5.0"
   },
   "devDependencies": {
     "@types/node": "^18.19.111",
@@ -52,7 +52,7 @@
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "vitest": "^3.2.3"
+    "vitest": "^3.2.6"
   },
   "engines": {
     "node": ">=18.14.0"
