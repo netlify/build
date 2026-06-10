@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [35.15.0](https://github.com/netlify/build/compare/build-v35.14.0...build-v35.15.0) (2026-06-10)
+
+
+### Features
+
+* warn about upcoming Node.js v22 minimum for build plugins ([#7053](https://github.com/netlify/build/issues/7053)) ([66acbee](https://github.com/netlify/build/commit/66acbee9bdd184cca30a8a877f32842dd727d371))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.34 to ^6.2.35
+    * @netlify/zip-it-and-ship-it bumped from 14.7.0 to 14.7.1
+
 ## [35.14.0](https://github.com/netlify/build/compare/build-v35.13.9...build-v35.14.0) (2026-06-01)
 
 
