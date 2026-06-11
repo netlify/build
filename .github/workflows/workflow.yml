@@ -176,8 +176,12 @@ jobs:
         # so forcing fixed version of corepack here
         run: npm i -g corepack --force
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: setup pnpm/yarn
-        run: corepack enable
+      - name: setup yarn
+        # Yarn only — NOT pnpm. A bare `corepack enable` also creates a pnpm shim that
+        # shadows the pinned pnpm below and downloads the LATEST pnpm at invocation
+        # time; pnpm >=11.5 requires Node >=22.13, which breaks fixture build commands
+        # on the oldest-supported-Node leg (22.12.0).
+        run: corepack enable yarn
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup pnpm
         # Some test fixtures run `pnpm` directly in their build commands. Install it
