@@ -177,8 +177,7 @@ test('Functions: loads functions generated with the Frameworks API in a monorepo
     })
     .runWithBuildAndIntrospect()
 
-  // Surface the build output on failure so CI failures are diagnosable
-  t.true(app1.success, app1.output)
+  t.true(app1.success)
 
   const app2 = await fixture
     .withFlags({
@@ -187,7 +186,7 @@ test('Functions: loads functions generated with the Frameworks API in a monorepo
     })
     .runWithBuildAndIntrospect()
 
-  t.true(app2.success, app2.output)
+  t.true(app2.success)
 
   const app1FunctionsDist = await readdir(resolve(fixture.repositoryRoot, 'apps/app-1/.netlify/functions'))
   t.is(app1FunctionsDist.length, 2)
