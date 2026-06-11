@@ -219,11 +219,12 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
 
 test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
   const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
-  const { success } = await fixture
+  const { success, logs } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
     .runBuildProgrammatic()
 
-  t.true(success)
+  // Surface the build output on failure so CI failures are diagnosable
+  t.true(success, [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n'))
   t.is(t.context.blobRequests.set.length, 6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
