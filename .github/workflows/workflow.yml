@@ -85,7 +85,7 @@ jobs:
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && startsWith(matrix.node-version, '22') }}
       - name: Setup Deno
         uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
         with:
@@ -170,7 +170,7 @@ jobs:
       # Use npm@10 on Node 22+ due to https://github.com/npm/cli/issues/8489
       - name: Setup npm version
         run: npm install -g npm@10
-        if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE && startsWith(matrix.node-version, '22') }}
       - name: corepack update
         # The Node-bundled corepack can fail on newer package-manager releases; install the
         # latest. Corepack only manages yarn here (see below).
