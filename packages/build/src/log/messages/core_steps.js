@@ -1,22 +1,22 @@
-import path from "path";
+import path from 'path'
 
-import { RUNTIME } from "@netlify/zip-it-and-ship-it";
-import { trace } from "@opentelemetry/api";
+import { RUNTIME } from '@netlify/zip-it-and-ship-it'
+import { trace } from '@opentelemetry/api'
 
-import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from "../logger.js";
-import { THEME } from "../theme.js";
+import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
 const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
-  const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath));
+  const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath))
 
   if (error) {
-    logErrorSubHeader(logs, headerMessage);
+    logErrorSubHeader(logs, headerMessage)
   } else {
-    logWarningSubHeader(logs, headerMessage);
+    logWarningSubHeader(logs, headerMessage)
   }
 
-  logArray(logs, functionNames);
-};
+  logArray(logs, functionNames)
+}
 
 /**
  * Logs the result of bundling functions (user facing)
@@ -26,36 +26,36 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
  * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
  */
 export const logBundleResults = ({ logs, results = [] }) => {
-  const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0);
+  const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
   const resultsWithWarnings = results.filter(
-    ({ bundler, bundlerWarnings }) => bundler === "esbuild" && bundlerWarnings && bundlerWarnings.length !== 0,
-  );
+    ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
+  )
   const modulesWithDynamicImports = [
     ...new Set(results.flatMap((result) => result.nodeModulesWithDynamicImports || [])),
-  ];
+  ]
 
   if (resultsWithErrors.length !== 0) {
     logBundleResultFunctions({
       functions: resultsWithErrors,
-      headerMessage: "Failed to bundle functions with selected bundler (fallback used):",
+      headerMessage: 'Failed to bundle functions with selected bundler (fallback used):',
       logs,
       error: true,
-    });
+    })
   }
 
   if (resultsWithWarnings.length !== 0) {
     logBundleResultFunctions({
       functions: resultsWithWarnings,
-      headerMessage: "Functions bundled with warnings:",
+      headerMessage: 'Functions bundled with warnings:',
       logs,
       error: false,
-    });
+    })
   }
 
   if (modulesWithDynamicImports.length !== 0) {
-    logModulesWithDynamicImports({ logs, modulesWithDynamicImports });
+    logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
-};
+}
 
 /**
  * Sibling of `logBundleResults`. Derives structured telemetry from the same
@@ -81,42 +81,42 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
     bundler: result.runtime === RUNTIME.JAVASCRIPT ? result.bundler : null,
     hadFallback: (result.bundlerErrors?.length ?? 0) > 0,
     hadWarnings: (result.bundlerWarnings?.length ?? 0) > 0,
-  }));
+  }))
 
   // Exclude both `null` (non-JS runtimes) and `undefined` (prebuilt `.zip`
   // JS functions, which zip-it-and-ship-it passes through with no bundler).
-  const jsResults = perFunction.filter((p) => p.bundler != null);
-  const bundlers = [...new Set(jsResults.map((p) => p.bundler))];
-  const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {});
-  const fallbackCount = perFunction.filter((p) => p.hadFallback).length;
-  const warningsCount = perFunction.filter((p) => p.hadWarnings).length;
+  const jsResults = perFunction.filter((p) => p.bundler != null)
+  const bundlers = [...new Set(jsResults.map((p) => p.bundler))]
+  const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {})
+  const fallbackCount = perFunction.filter((p) => p.hadFallback).length
+  const warningsCount = perFunction.filter((p) => p.hadWarnings).length
 
   systemLog({
-    msg: "Functions bundling completed",
+    msg: 'Functions bundling completed',
     bundlers,
     bundlerCounts,
     fallbackCount,
     warningsCount,
     functions: perFunction,
-  });
+  })
 
-  const span = trace.getActiveSpan();
+  const span = trace.getActiveSpan()
   if (span) {
-    span.setAttribute("build.execution.step.bundler", bundlers);
-    span.setAttribute("build.execution.step.functions_count", perFunction.length);
-    span.setAttribute("build.execution.step.bundler.fallback_count", fallbackCount);
-    span.setAttribute("build.execution.step.bundler.warnings_count", warningsCount);
+    span.setAttribute('build.execution.step.bundler', bundlers)
+    span.setAttribute('build.execution.step.functions_count', perFunction.length)
+    span.setAttribute('build.execution.step.bundler.fallback_count', fallbackCount)
+    span.setAttribute('build.execution.step.bundler.warnings_count', warningsCount)
     for (const [bundler, count] of Object.entries(bundlerCounts)) {
-      span.setAttribute(`build.execution.step.bundler.${bundler}.count`, count);
+      span.setAttribute(`build.execution.step.bundler.${bundler}.count`, count)
     }
   }
 
-  return { bundlers, fallbackCount, warningsCount };
-};
+  return { bundlers, fallbackCount, warningsCount }
+}
 
 export const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
-  log(logs, `The Netlify Functions setting targets a non-existing directory: ${relativeFunctionsSrc}`);
-};
+  log(logs, `The Netlify Functions setting targets a non-existing directory: ${relativeFunctionsSrc}`)
+}
 
 // Print the list of Netlify Functions about to be bundled
 export const logFunctionsToBundle = function ({
@@ -128,87 +128,87 @@ export const logFunctionsToBundle = function ({
   internalFunctionsSrc,
   frameworkFunctions,
   generatedFunctions,
-  type = "Functions",
+  type = 'Functions',
 }) {
-  let needsSpace = false;
+  let needsSpace = false
 
   for (const id in generatedFunctions) {
     if (generatedFunctions[id].length === 0) {
-      continue;
+      continue
     }
 
     // Getting the generator block from the first function, since it will be
     // the same for all of them.
-    const { generator } = generatedFunctions[id][0];
-    const functionNames = generatedFunctions[id].map((func) => path.basename(func.path));
+    const { generator } = generatedFunctions[id][0]
+    const functionNames = generatedFunctions[id].map((func) => path.basename(func.path))
 
-    if (needsSpace) log(logs, "");
+    if (needsSpace) log(logs, '')
 
-    log(logs, `Packaging ${type} generated by ${THEME.highlightWords(generator.displayName)} ${generator.type}:`);
-    logArray(logs, functionNames, { indent: false });
+    log(logs, `Packaging ${type} generated by ${THEME.highlightWords(generator.displayName)} ${generator.type}:`)
+    logArray(logs, functionNames, { indent: false })
 
-    needsSpace = true;
+    needsSpace = true
   }
 
   if (internalFunctions.length !== 0) {
-    if (needsSpace) log(logs, "");
+    if (needsSpace) log(logs, '')
 
-    log(logs, `Packaging ${type} from ${THEME.highlightWords(internalFunctionsSrc)} directory:`);
-    logArray(logs, internalFunctions, { indent: false });
+    log(logs, `Packaging ${type} from ${THEME.highlightWords(internalFunctionsSrc)} directory:`)
+    logArray(logs, internalFunctions, { indent: false })
 
-    needsSpace = true;
+    needsSpace = true
   }
 
   if (frameworkFunctions.length !== 0) {
-    if (needsSpace) log(logs, "");
+    if (needsSpace) log(logs, '')
 
-    log(logs, `Packaging ${type} generated by your framework:`);
-    logArray(logs, frameworkFunctions, { indent: false });
+    log(logs, `Packaging ${type} generated by your framework:`)
+    logArray(logs, frameworkFunctions, { indent: false })
 
-    needsSpace = true;
+    needsSpace = true
   }
 
   if (!userFunctionsSrcExists) {
-    return;
+    return
   }
 
   if (userFunctions.length === 0) {
-    log(logs, `No ${type} were found in ${THEME.highlightWords(userFunctionsSrc)} directory`);
+    log(logs, `No ${type} were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
 
-    return;
+    return
   }
 
-  if (needsSpace) log(logs, "");
+  if (needsSpace) log(logs, '')
 
-  log(logs, `Packaging ${type} from ${THEME.highlightWords(userFunctionsSrc)} directory:`);
-  logArray(logs, userFunctions, { indent: false });
-};
+  log(logs, `Packaging ${type} from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
+  logArray(logs, userFunctions, { indent: false })
+}
 
 // Print the database provisioning message
 export const logDbProvisioning = function ({ logs, branch, context }) {
-  log(logs, `Provisioning database`);
+  log(logs, `Provisioning database`)
 
-  if (context !== "production") {
-    log(logs, `Creating database branch for ${THEME.highlightWords(branch)}`);
+  if (context !== 'production') {
+    log(logs, `Creating database branch for ${THEME.highlightWords(branch)}`)
   }
-};
+}
 
 // Print the list of database migrations about to be copied
 export const logDbMigrations = function ({ logs, migrations, srcDir }) {
   if (migrations.length === 0) {
-    log(logs, `No migrations found in ${THEME.highlightWords(srcDir)} directory`);
-    return;
+    log(logs, `No migrations found in ${THEME.highlightWords(srcDir)} directory`)
+    return
   }
 
-  log(logs, `Loading migrations from ${THEME.highlightWords(srcDir)} directory:`);
-  logArray(logs, migrations, { indent: false });
-};
+  log(logs, `Loading migrations from ${THEME.highlightWords(srcDir)} directory:`)
+  logArray(logs, migrations, { indent: false })
+}
 
 const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
-  const externalNodeModules = modulesWithDynamicImports.map((moduleName) => `"${moduleName}"`).join(", ");
+  const externalNodeModules = modulesWithDynamicImports.map((moduleName) => `"${moduleName}"`).join(', ')
 
-  logWarningSubHeader(logs, `The following Node.js modules use dynamic expressions to include files:`);
-  logArray(logs, modulesWithDynamicImports);
+  logWarningSubHeader(logs, `The following Node.js modules use dynamic expressions to include files:`)
+  logArray(logs, modulesWithDynamicImports)
   log(
     logs,
     `\n  Because files included with dynamic expressions aren't bundled with your serverless functions by default,
@@ -220,77 +220,77 @@ const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
 
   Visit https://ntl.fyi/dynamic-imports for more information.
   `,
-  );
-};
+  )
+}
 
 export const logSecretsScanSkipMessage = function (logs, msg) {
-  log(logs, msg, { color: THEME.warningHighlightWords });
-};
+  log(logs, msg, { color: THEME.warningHighlightWords })
+}
 
 export const logSecretsScanSuccessMessage = function (logs, msg) {
-  log(logs, msg, { color: THEME.highlightWords });
-};
+  log(logs, msg, { color: THEME.highlightWords })
+}
 
 export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
-  const { secretMatches, enhancedSecretMatches } = groupedResults;
-  const secretMatchesKeys = Object.keys(secretMatches);
-  const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches);
+  const { secretMatches, enhancedSecretMatches } = groupedResults
+  const secretMatchesKeys = Object.keys(secretMatches)
+  const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ""} in build output or repo code.\n`,
-  );
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
+  )
 
   // Explicit secret matches
   secretMatchesKeys.forEach((key) => {
-    logError(logs, `Secret env var "${key}"'s value detected:`);
+    logError(logs, `Secret env var "${key}"'s value detected:`)
 
     secretMatches[key]
       .sort((a, b) => {
-        return a.file > b.file ? 0 : 1;
+        return a.file > b.file ? 0 : 1
       })
       .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true });
-      });
-  });
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
 
   if (secretMatchesKeys.length) {
     logError(
       logs,
       `\nTo prevent exposing secrets, the build will fail until these secret values are not found in build output or repo files.`,
-    );
+    )
     logError(
       logs,
       `\nIf these are expected, use SECRETS_SCAN_OMIT_PATHS, SECRETS_SCAN_OMIT_KEYS, or SECRETS_SCAN_ENABLED to prevent detecting.`,
-    );
+    )
   }
 
   // Likely secret matches from enhanced scan
   enhancedSecretMatchesKeys.forEach((key, index) => {
-    logError(logs, `${index === 0 && secretMatchesKeys.length ? "\n" : ""}"${key}***" detected as a likely secret:`);
+    logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
 
     enhancedSecretMatches[key]
       .sort((a, b) => {
-        return a.file > b.file ? 0 : 1;
+        return a.file > b.file ? 0 : 1
       })
       .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true });
-      });
-  });
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
 
   if (enhancedSecretMatchesKeys.length) {
     logError(
       logs,
       `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
-    );
+    )
     logError(
       logs,
       `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
-    );
+    )
   }
 
   logError(
     logs,
     `\nFor more information on secrets scanning, see the Netlify Docs: https://ntl.fyi/configure-secrets-scanning`,
-  );
-};
+  )
+}
