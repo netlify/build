@@ -30,7 +30,6 @@ const coreStep: CoreStepFunction = async function ({
   netlifyConfig,
   explicitSecretKeys,
   enhancedSecretScan,
-  featureFlags,
   systemLog,
   deployId,
   api,
