@@ -1,9 +1,9 @@
+import { existsSync } from 'fs'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
-import { pathExists } from 'path-exists'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -24,7 +24,7 @@ const runInstallFixture = async (t, fixtureName, dirs = [], flags = {}, binary =
 
     await Promise.all(
       dirs.map(async (dir) => {
-        t.true(await pathExists(dir))
+        t.true(existsSync(dir))
       }),
     )
 
@@ -77,27 +77,27 @@ test('Functions: install dependencies with Yarn in CI', async (t) => {
 
 test('Functions: does not install dependencies unless opting in', async (t) => {
   await runInstallFixture(t, 'optional')
-  t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
+  t.false(existsSync(`${FIXTURES_DIR}/optional/functions/node_modules/`))
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild)', async (t) => {
   await runInstallFixture(t, 'optional-esbuild')
-  t.false(await pathExists(`${FIXTURES_DIR}/optional-esbuild/functions/node_modules/`))
+  t.false(existsSync(`${FIXTURES_DIR}/optional-esbuild/functions/node_modules/`))
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild, many dependencies)', async (t) => {
   await runInstallFixture(t, 'optional-many-esbuild')
-  t.false(await pathExists(`${FIXTURES_DIR}/optional-many-esbuild/functions/node_modules/`))
+  t.false(existsSync(`${FIXTURES_DIR}/optional-many-esbuild/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was mispelled', async (t) => {
   await runInstallFixture(t, 'mispelled_dep')
-  t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
+  t.false(existsSync(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was local', async (t) => {
   await runInstallFixture(t, 'local_dep')
-  t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
+  t.false(existsSync(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
 })
 
 test('Functions: install dependencies handles errors', async (t) => {

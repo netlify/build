@@ -1,8 +1,7 @@
+import { once } from 'events'
 import net, { NetConnectOpts } from 'net'
 import { normalize, resolve, relative } from 'path'
 import { promisify } from 'util'
-
-import { pEvent } from 'p-event'
 
 import { addErrorInfo } from '../../error/info.js'
 import { runsAfterDeploy } from '../../plugins/events.js'
@@ -79,7 +78,7 @@ const getConnectionOpts = function (buildbotServerSocket: string): NetConnectOpt
  * Emits the connect event
  */
 export const connectBuildbotClient = addAsyncErrorMessage(async (client: net.Socket) => {
-  await pEvent(client, 'connect')
+  await once(client, 'connect')
 }, 'Could not connect to buildbot')
 
 /**
@@ -98,7 +97,7 @@ const writePayload = addAsyncErrorMessage(async (buildbotClient: net.Socket, pay
 }, 'Could not send payload to buildbot')
 
 const getNextParsedResponsePromise = addAsyncErrorMessage<BuildbotResponse>(async (buildbotClient: net.Socket) => {
-  const data = await pEvent<'data', string>(buildbotClient, 'data')
+  const [data] = await once(buildbotClient, 'data')
   return JSON.parse(data) as BuildbotResponse
 }, 'Invalid response from buildbot')
 

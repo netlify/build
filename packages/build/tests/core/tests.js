@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 import { join, resolve } from 'path'
 import { arch, kill, platform } from 'process'
 import { fileURLToPath } from 'url'
@@ -7,7 +7,6 @@ import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testi
 import test from 'ava'
 import getNode from 'get-node'
 import { memoize } from 'micro-memoize'
-import { pathExists } from 'path-exists'
 import { spy, spyOn } from 'tinyspy'
 import { tmpName } from 'tmp-promise'
 
@@ -696,7 +695,7 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
   await new Fixture('./fixtures/functions_internal_manifest').withFlags({ mode: 'cli' }).runWithBuild()
   const manifestPath = `${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions/manifest.json`
 
-  t.true(await pathExists(manifestPath))
+  t.true(existsSync(manifestPath))
 
   const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
 
@@ -714,7 +713,7 @@ test('Generates a `manifest.json` file when the `buildbot_create_functions_manif
 
   const manifestPath = `${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions/manifest.json`
 
-  t.true(await pathExists(manifestPath))
+  t.true(existsSync(manifestPath))
 
   const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
 

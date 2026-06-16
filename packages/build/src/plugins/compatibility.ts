@@ -1,4 +1,3 @@
-import pLocate from 'p-locate'
 import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
 
@@ -103,7 +102,10 @@ const getCompatibleEntry = async function ({
   featureFlags?: FeatureFlags
   systemLog?: SystemLogger
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
-  const compatibleEntry = await pLocate(versions, async ({ version, overridePinnedVersion, conditions }) => {
+  let compatibleEntry: PluginVersion | undefined
+  for (const entry of versions) {
+    const { version, overridePinnedVersion, conditions } = entry
+
     // When there's a `pinnedVersion`, we typically pick the first version that
     // matches that range. The exception is if `overridePinnedVersion` is also
     // present. This property says that if the pinned version is within a given
@@ -116,22 +118,27 @@ const getCompatibleEntry = async function ({
     // If there's a pinned version and this entry doesn't satisfy that range,
     // discard it. The exception is if this entry overrides the pinned version.
     if (pinnedVersion && !overridesPin && !semver.satisfies(version, pinnedVersion, { includePrerelease: true })) {
-      return false
+      continue
     }
 
     // no conditions means nothing to filter
     if (conditions.length === 0 && pinnedVersion === undefined) {
-      return false
+      continue
     }
 
-    return (
+    const isCompatible = (
       await Promise.all(
         conditions.map(async ({ type, condition }) =>
           CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
         ),
       )
     ).every(Boolean)
-  })
+
+    if (isCompatible) {
+      compatibleEntry = entry
+      break
+    }
+  }
 
   if (compatibleEntry) {
     systemLog(
@@ -187,19 +194,28 @@ const getFirstCompatibleEntry = async function ({
   packagePath?: string
   pinnedVersion?: string
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
-  const compatibleEntry = await pLocate(versions, async ({ conditions }) => {
+  let compatibleEntry: PluginVersion | undefined
+  for (const entry of versions) {
+    const { conditions } = entry
+
     if (conditions.length === 0) {
-      return true
+      compatibleEntry = entry
+      break
     }
 
-    return (
+    const isCompatible = (
       await Promise.all(
         conditions.map(async ({ type, condition }) =>
           CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
         ),
       )
     ).every(Boolean)
-  })
+
+    if (isCompatible) {
+      compatibleEntry = entry
+      break
+    }
+  }
 
   if (compatibleEntry) {
     return compatibleEntry

@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, existsSync } from 'fs'
 import { join } from 'path'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url'
 import { DenoBridge } from '@netlify/edge-bundler'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import { pathExists } from 'path-exists'
 import semver from 'semver'
 import tmp from 'tmp-promise'
 
@@ -18,7 +17,7 @@ const assertManifest = async (t, fixtureName) => {
   const distPath = join(FIXTURES_DIR, fixtureName, '.netlify', 'edge-functions-dist')
   const manifestPath = join(distPath, 'manifest.json')
 
-  t.true(await pathExists(manifestPath))
+  t.true(existsSync(manifestPath))
 
   const manifestFile = await fs.readFile(manifestPath, 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -27,7 +26,7 @@ const assertManifest = async (t, fixtureName) => {
     manifest.bundles.map(async (bundle) => {
       const bundlePath = join(distPath, bundle.asset)
 
-      t.true(await pathExists(bundlePath))
+      t.true(existsSync(bundlePath))
     }),
   )
 
@@ -253,8 +252,8 @@ for (const variant of FLAG_VARIANTS) {
     await fs.writeFile(oldBundlePath, 'some-data')
     await fs.writeFile(manifestPath, '{}')
 
-    t.true(await pathExists(oldBundlePath))
-    t.true(await pathExists(manifestPath))
+    t.true(existsSync(oldBundlePath))
+    t.true(existsSync(manifestPath))
 
     await fixture.withFlags({ ...variant.flags, mode: 'buildbot' }).runWithBuild()
 
@@ -264,7 +263,7 @@ for (const variant of FLAG_VARIANTS) {
     const oldBundleAsset = manifest.bundles.find((bundle) => bundle.asset === 'old.eszip')
     t.is(oldBundleAsset, undefined)
 
-    t.false(await pathExists(oldBundlePath))
+    t.false(existsSync(oldBundlePath))
   })
 
   test.serial(variant.id + ' - builds edge functions generated with the Frameworks API', async (t) => {
@@ -359,7 +358,7 @@ for (const variant of FLAG_VARIANTS) {
       'manifest.json',
     )
 
-    t.false(await pathExists(manifestPath))
+    t.false(existsSync(manifestPath))
   })
 
   test.serial(
@@ -375,7 +374,7 @@ for (const variant of FLAG_VARIANTS) {
         'manifest.json',
       )
 
-      t.false(await pathExists(manifestPath))
+      t.false(existsSync(manifestPath))
     },
   )
 }
