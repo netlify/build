@@ -76,6 +76,26 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.0.0](https://github.com/netlify/build/compare/config-v24.6.0...config-v25.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.19 to ^15.0.0
+    * @netlify/headers-parser bumped from ^9.0.3 to ^10.0.0
+    * @netlify/redirect-parser bumped from ^15.0.4 to ^16.0.0
+
 ## [24.6.0](https://github.com/netlify/build/compare/config-v24.5.1...config-v24.6.0) (2026-05-21)
 
 
