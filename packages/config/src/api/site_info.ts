@@ -172,8 +172,8 @@ const ExtensionResponseSchema = z.array(
     // path. They might call the Netlify API expecting to have an API token available to them when
     // they really don't. For the time being, I've added instrumentation to Jigsaw to help us figure
     // out if this is dead code or actually supports current users.
-    author: z.string().optional().default(undefined),
-    extension_token: z.string().optional().default(undefined),
+    author: z.string().optional(),
+    extension_token: z.string().optional(),
     has_build: z.boolean(),
     name: z.string(),
     slug: z.string(),
