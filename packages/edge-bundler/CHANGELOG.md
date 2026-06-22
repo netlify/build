@@ -1,5 +1,23 @@
 # Changelog
 
+## [15.0.1](https://github.com/netlify/build/compare/edge-bundler-v15.0.0...edge-bundler-v15.0.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.28.1 ([#7096](https://github.com/netlify/build/issues/7096)) ([95f22fc](https://github.com/netlify/build/commit/95f22fc73481023160dbbe89781a7e5144e1700f))
+
+## [15.0.0](https://github.com/netlify/build/compare/edge-bundler-v14.10.3...edge-bundler-v15.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
 ## [14.10.3](https://github.com/netlify/build/compare/edge-bundler-v14.10.2...edge-bundler-v14.10.3) (2026-05-27)
 
 
