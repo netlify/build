@@ -62,7 +62,9 @@ const coreStep: CoreStepFunction = async function ({
       blobsToUpload,
       async ({ key, contentPath, metadataPath }) => {
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        await blobStore.set(key, new Blob([data]), { metadata })
+        // `data` is a `Buffer`, typed by @types/node as `Buffer<ArrayBufferLike>`, which TS
+        // rejects as a `BlobPart`; the runtime value is a valid blob part.
+        await blobStore.set(key, new Blob([data as BlobPart]), { metadata })
       },
       { concurrency: 10 },
     )
