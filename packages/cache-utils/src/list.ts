@@ -1,6 +1,6 @@
-import { join } from 'path'
-
-import { readdirpPromise } from 'readdirp'
+import { join, relative } from 'path'
+import { readdir } from 'node:fs/promises'
+import type { Dirent } from 'node:fs'
 
 import { getCacheDir } from './dir.js'
 import { isManifest } from './manifest.js'
@@ -36,11 +36,33 @@ const listBase = async function ({
   cacheDir: string
   depth?: number
 }) {
-  const files = await readdirpPromise(`${cacheDir}/${name}`, { fileFilter, depth, type: 'files_directories' })
-  const filesA = files.map(({ path }) => join(base, path))
-  return filesA
+  let queue = [{ path: `${cacheDir}/${name}`, depth: 0 }]
+  const results: string[] = []
+  let queueEntry: { path: string; depth: number } | undefined
+  while ((queueEntry = queue.pop())) {
+    const { path: currentPath, depth: currentDepth } = queueEntry
+    let children: Dirent[]
+    try {
+      children = await readdir(currentPath, { withFileTypes: true })
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        continue
+      }
+      throw error
+    }
+    for (const child of children) {
+      const childPath = join(child.parentPath, child.name)
+      if ((child.isDirectory() || child.isFile()) && fileFilter(child.name)) {
+        results.push(join(base, relative(`${cacheDir}/${name}`, childPath)))
+      }
+      if ((depth === undefined || currentDepth < depth) && child.isDirectory()) {
+        queue.push({ path: childPath, depth: currentDepth + 1 })
+      }
+    }
+  }
+  return results
 }
 
-const fileFilter = function ({ basename }) {
+const fileFilter = function (basename) {
   return !isManifest(basename)
 }
