@@ -326,7 +326,7 @@ describe('V2 functions API', () => {
     expect(statusCode).toBe(200)
   })
 
-  test('Returns Node.js 18 if older version is set', async () => {
+  test('Returns Node.js 24 if older version is set', async () => {
     const { files } = await zipFixture('v2-api-mjs', {
       fixtureDir: FIXTURES_ESM_DIR,
       opts: {
@@ -338,10 +338,10 @@ describe('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs22.x')
+    expect(files[0].runtimeVersion).toBe('nodejs24.x')
   })
 
-  test('Returns Node.js 18 if invalid version is set', async () => {
+  test('Returns Node.js 24 if invalid version is set', async () => {
     const { files } = await zipFixture('v2-api-mjs', {
       fixtureDir: FIXTURES_ESM_DIR,
       opts: {
@@ -353,7 +353,7 @@ describe('V2 functions API', () => {
       },
     })
 
-    expect(files[0].runtimeVersion).toBe('nodejs22.x')
+    expect(files[0].runtimeVersion).toBe('nodejs24.x')
   })
 
   test('Returns no Node.js version if version is newer than 18 but not a valid runtime', async () => {
