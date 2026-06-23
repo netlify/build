@@ -28,7 +28,9 @@ const download = async (targetDirectory: string, versionRange: string) => {
   try {
     await new Promise<void>((resolve, reject) => {
       data.on('error', reject)
-      file.on('finish', () => resolve())
+      file.on('finish', () => {
+        resolve()
+      })
       data.pipe(file)
     })
 

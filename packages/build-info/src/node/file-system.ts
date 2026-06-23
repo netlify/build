@@ -64,7 +64,7 @@ export class NodeFS extends FileSystem {
   }
 
   async readFile(path: string): Promise<string> {
-    return (await fs.readFile(resolve(path), 'utf-8')).toString()
+    return await fs.readFile(resolve(path), 'utf-8')
   }
 
   /** Node implementation of finding a file or directory by walking up parent directories. */
