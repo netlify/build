@@ -1,8 +1,6 @@
-import { promises as fs, Stats } from 'fs'
-import { basename, dirname, join } from 'path'
+import { promises as fs, Stats } from 'node:fs'
+import { basename } from 'node:path'
 
-import cpy from 'cpy'
-import { type Options, globby } from 'globby'
 import { isNotJunk } from 'junk'
 import { moveFile } from 'move-file'
 
@@ -18,66 +16,29 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
     return moveFile(src, dest, { overwrite: false })
   }
 
-  const { srcGlob, dest: matchedDest, ...options } = await getSrcAndDest(src, dirname(dest))
-  if (srcGlob && matchedDest) {
-    return cpy(srcGlob, matchedDest, { ...options, overwrite: false })
+  if ((await getStat(src)) === undefined) {
+    return
   }
+
+  await fs.cp(src, dest, { recursive: true, force: false, errorOnExist: false })
 }
 
 /**
  * Non-existing files and empty directories are always skipped
  */
 export const hasFiles = async function (src: string): Promise<boolean> {
-  const { srcGlob, isDir, dest, ...options } = await getSrcAndDest(src, '')
-  return srcGlob !== undefined && !(await isEmptyDir(srcGlob, isDir, options))
-}
-
-/** Replicates what `cpy` is doing under the hood. */
-const isEmptyDir = async function (globPattern: string, isDir: boolean, options: Options) {
-  if (!isDir) {
+  const stat = await getStat(src)
+  if (stat === undefined) {
     return false
   }
-
-  const files = await globby(globPattern, options)
-  const filteredFiles = files.filter((file) => isNotJunk(basename(file)))
-  return filteredFiles.length === 0
-}
-
-type GlobOptions = {
-  srcGlob?: string
-  dest?: string
-  isDir: boolean
-  cwd: string
-  dot?: boolean
-}
-
-/**
- * Get globbing pattern with files to move/copy
- */
-const getSrcAndDest = async function (src: string, dest: string): Promise<GlobOptions> {
-  const srcStat = await getStat(src)
-
-  if (srcStat === undefined) {
-    return { srcGlob: undefined, isDir: false, cwd: '' }
+  if (!stat.isDirectory()) {
+    return isNotJunk(basename(src))
   }
-
-  const isDir = srcStat.isDirectory()
-  const srcBasename = basename(src)
-  const cwd = dirname(src)
-
-  const baseOptions: GlobOptions = {
-    srcGlob: srcBasename,
-    dest,
-    isDir,
-    cwd,
-    dot: true, // collect .dot directories as well
-  }
-
-  if (isDir) {
-    return { ...baseOptions, srcGlob: `${srcBasename}/**`, dest: join(dest, srcBasename) }
-  }
-
-  return baseOptions
+  const files = await fs.readdir(src, {
+    recursive: true,
+    withFileTypes: true,
+  })
+  return files.some((entry) => !entry.isDirectory() && isNotJunk(entry.name))
 }
 
 const getStat = async (src: string): Promise<Stats | undefined> => {
