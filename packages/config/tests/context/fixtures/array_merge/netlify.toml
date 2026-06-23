@@ -1,8 +1,8 @@
 [build]
-ignore = ["a", "b"]
+ignore = "a"
 
 [context.production]
-ignore = ["c", "d"]
+ignore = "b"
 
 [functions]
 external_node_modules = ["module-one", "module-two"]

@@ -1,0 +1,8 @@
+[build]
+  publish = "./dist"
+
+[build.environment]
+  ENV_VAR_1 = "val2-val2-val2"
+  SECRETS_SCAN_OMIT_PATHS = "netlify.toml"
+
+

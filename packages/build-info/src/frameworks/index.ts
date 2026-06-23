@@ -16,9 +16,11 @@ import { Grunt } from './grunt.js'
 import { Gulp } from './gulp.js'
 import { Harp } from './harp.js'
 import { Hexo } from './hexo.js'
+import { Hono } from './hono.js'
 import { Hugo } from './hugo.js'
 import { Hydrogen } from './hydrogen.js'
 import { Jekyll } from './jekyll.js'
+import { Mastra } from './mastra.js'
 import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
 import { Next } from './next.js'
@@ -42,9 +44,12 @@ import { SvelteKit } from './svelte-kit.js'
 import { Svelte } from './svelte.js'
 import { TanStackRouter } from './tanstack-router.js'
 import { TanStackStart } from './tanstack-start.js'
+import { Vike } from './vike.js'
 import { Vite } from './vite.js'
+import { VitePress } from './vitepress.js'
 import { Vue } from './vue.js'
 import { VuePress } from './vuepress.js'
+import { Waku } from './waku.js'
 import { Wintersmith } from './wintersmith.js'
 import { WMR } from './wmr.js'
 import { Zola } from './zola.js'
@@ -86,6 +91,13 @@ export const frameworks = [
   Zola,
   Observable,
   Analog,
+  Vike,
+  Waku,
+  VitePress,
+
+  // Back-end frameworks
+  Hono,
+  Mastra,
 
   // Front-end frameworks
   Angular,

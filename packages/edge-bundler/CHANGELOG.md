@@ -1,5 +1,265 @@
 # Changelog
 
+## [14.10.3](https://github.com/netlify/build/compare/edge-bundler-v14.10.2...edge-bundler-v14.10.3) (2026-05-27)
+
+
+### Bug Fixes
+
+* handle TsTypeAssertion that conflicts with JSX handling for tarball bundling ([#7049](https://github.com/netlify/build/issues/7049)) ([3d2a644](https://github.com/netlify/build/commit/3d2a644d0ecf3d5c9dcc9547214b45941e9d73b1))
+* ignore type-only errored modules from module graph ([#7072](https://github.com/netlify/build/issues/7072)) ([96faaaf](https://github.com/netlify/build/commit/96faaaf3539123c23931275265faf57dc6d1f66d))
+
+## [14.10.2](https://github.com/netlify/build/compare/edge-bundler-v14.10.1...edge-bundler-v14.10.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+* **deps:** update dependency esbuild to v0.28.0 ([#7056](https://github.com/netlify/build/issues/7056)) ([4ecb3a8](https://github.com/netlify/build/commit/4ecb3a8bec4e34c293eae2682f14e3be42a593a0))
+
+## [14.10.1](https://github.com/netlify/build/compare/edge-bundler-v14.10.0...edge-bundler-v14.10.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* allow HEAD as part of the `HTTPMethod` type ([#7033](https://github.com/netlify/build/issues/7033)) ([f2f5e77](https://github.com/netlify/build/commit/f2f5e77f9eae802deaa2524e914b9b9c775c227d))
+
+## [14.10.0](https://github.com/netlify/build/compare/edge-bundler-v14.9.19...edge-bundler-v14.10.0) (2026-04-14)
+
+
+### Features
+
+* store function and routes configuration in edge functions tarball ([#7025](https://github.com/netlify/build/issues/7025)) ([63a96dc](https://github.com/netlify/build/commit/63a96dc79db7fc6fd5f0b0e0ae00d46d25f940e3))
+
+## [14.9.19](https://github.com/netlify/build/compare/edge-bundler-v14.9.18...edge-bundler-v14.9.19) (2026-03-24)
+
+
+### Bug Fixes
+
+* don't fail tarball bundling on modules that don't exist if they are optional or caught ([#7001](https://github.com/netlify/build/issues/7001)) ([e3a2934](https://github.com/netlify/build/commit/e3a2934e9fb731c22fc3bb6a5da73c382a1446c3))
+* only log tarball dry run results if eszip bundling was succesful ([#6986](https://github.com/netlify/build/issues/6986)) ([238ed96](https://github.com/netlify/build/commit/238ed96995038554a5c9cd4c6e2146b89f636d5b))
+* rename root vendor directory when creating tarball bundle ([#6985](https://github.com/netlify/build/issues/6985)) ([66cba91](https://github.com/netlify/build/commit/66cba91f4a7059ca8e695e5339fe3abfb7c371a2))
+
+## [14.9.18](https://github.com/netlify/build/compare/edge-bundler-v14.9.17...edge-bundler-v14.9.18) (2026-03-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tar to v7.5.12 ([#6994](https://github.com/netlify/build/issues/6994)) ([2b0ba3b](https://github.com/netlify/build/commit/2b0ba3b536ca21143e23aec6d767552659414741))
+
+## [14.9.17](https://github.com/netlify/build/compare/edge-bundler-v14.9.16...edge-bundler-v14.9.17) (2026-03-19)
+
+
+### Bug Fixes
+
+* edge bundling - tarball - add ./ prefix to tar entries to handle '@' prefixed filenames ([#6990](https://github.com/netlify/build/issues/6990)) ([8537ffa](https://github.com/netlify/build/commit/8537ffa233c40740a375e072693f3923764b97d6))
+
+## [14.9.16](https://github.com/netlify/build/compare/edge-bundler-v14.9.15...edge-bundler-v14.9.16) (2026-03-17)
+
+
+### Bug Fixes
+
+* don't ignore deno info failures ([#6982](https://github.com/netlify/build/issues/6982)) ([d148ff0](https://github.com/netlify/build/commit/d148ff0e736ad2be2f127596f1d625aab8499dd0))
+* ignore deno.json config when producing module graph for tarball bundle ([#6983](https://github.com/netlify/build/issues/6983)) ([9c4919f](https://github.com/netlify/build/commit/9c4919fc9cb2c4ca696dd3f3522514d3190db42b))
+
+## [14.9.15](https://github.com/netlify/build/compare/edge-bundler-v14.9.14...edge-bundler-v14.9.15) (2026-03-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.27.3 ([#6945](https://github.com/netlify/build/issues/6945)) ([ddfe191](https://github.com/netlify/build/commit/ddfe19181b66a1b87dbf15f767a3f2da6b72e243))
+
+## [14.9.14](https://github.com/netlify/build/compare/edge-bundler-v14.9.13...edge-bundler-v14.9.14) (2026-03-05)
+
+
+### Bug Fixes
+
+* skip AST traversal on non-nodes ([#6965](https://github.com/netlify/build/issues/6965)) ([bf5b717](https://github.com/netlify/build/commit/bf5b71794a9e0c75b52d1951fc2ace795ef8e61e))
+
+## [14.9.13](https://github.com/netlify/build/compare/edge-bundler-v14.9.12...edge-bundler-v14.9.13) (2026-03-04)
+
+
+### Bug Fixes
+
+* handle jsx parsing in acorn ([#6960](https://github.com/netlify/build/issues/6960)) ([a7f56dc](https://github.com/netlify/build/commit/a7f56dc97a32c4a7941637df64a144949c70b5e0))
+
+## [14.9.12](https://github.com/netlify/build/compare/edge-bundler-v14.9.11...edge-bundler-v14.9.12) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+## [14.9.11](https://github.com/netlify/build/compare/edge-bundler-v14.9.10...edge-bundler-v14.9.11) (2026-02-24)
+
+
+### Bug Fixes
+
+* do not rewrite bare specifiers during tarball bundling ([#6947](https://github.com/netlify/build/issues/6947)) ([e8f65ab](https://github.com/netlify/build/commit/e8f65ab6430bcaa9772258a7edae7257630e8dfb))
+* edge bundling - tarball - replace import assertions after deno vendoring ([#6948](https://github.com/netlify/build/issues/6948)) ([c94eb51](https://github.com/netlify/build/commit/c94eb51315858b3a80761d59e86d6e7ea5e0c7ea))
+
+## [14.9.10](https://github.com/netlify/build/compare/edge-bundler-v14.9.9...edge-bundler-v14.9.10) (2026-02-18)
+
+
+### Bug Fixes
+
+* partially replace files with import assertions in the case of a parsing error ([#6934](https://github.com/netlify/build/issues/6934)) ([8db5782](https://github.com/netlify/build/commit/8db57829c479222865c8bd82b81b99945c01bf1a))
+
+## [14.9.9](https://github.com/netlify/build/compare/edge-bundler-v14.9.8...edge-bundler-v14.9.9) (2026-02-17)
+
+
+### Bug Fixes
+
+* tarball bundling - import assertion replacement ([#6928](https://github.com/netlify/build/issues/6928)) ([7a5a649](https://github.com/netlify/build/commit/7a5a649d7045aa2c075b51cc097a28420e38d7b1))
+
+## [14.9.8](https://github.com/netlify/build/compare/edge-bundler-v14.9.7...edge-bundler-v14.9.8) (2026-02-06)
+
+
+### Bug Fixes
+
+* **edge-bundler:** rewrite vendored npm bare specifiers in tarball bundles ([#6919](https://github.com/netlify/build/issues/6919)) ([3ed5378](https://github.com/netlify/build/commit/3ed537885a14ef786155eb90dfa7226e9ca26ed4))
+
+## [14.9.7](https://github.com/netlify/build/compare/edge-bundler-v14.9.6...edge-bundler-v14.9.7) (2026-02-05)
+
+
+### Bug Fixes
+
+* **edge-bundler:** rewrite bare specifier imports to resolved URLs in tarball bundles ([#6916](https://github.com/netlify/build/issues/6916)) ([db6c0c1](https://github.com/netlify/build/commit/db6c0c12b3a70c24e9b69ded684fe42e19aacfcd))
+
+## [14.9.6](https://github.com/netlify/build/compare/edge-bundler-v14.9.5...edge-bundler-v14.9.6) (2026-02-05)
+
+
+### Bug Fixes
+
+* **edge-bundler:** include sibling directory imports in tarball bundle ([#6915](https://github.com/netlify/build/issues/6915)) ([f279145](https://github.com/netlify/build/commit/f279145671b0607f9d586d8c459e21e6b3ec024c))
+
+## [14.9.5](https://github.com/netlify/build/compare/edge-bundler-v14.9.4...edge-bundler-v14.9.5) (2026-01-30)
+
+
+### Bug Fixes
+
+* do not bundle Edge Functions - vendor dependencies in the tarball instead ([#6907](https://github.com/netlify/build/issues/6907)) ([c91b37c](https://github.com/netlify/build/commit/c91b37c61db0f20254da48ba3ce7f6fd18193b4c))
+
+## [14.9.4](https://github.com/netlify/build/compare/edge-bundler-v14.9.3...edge-bundler-v14.9.4) (2026-01-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tar to ^7.5.3 [security] ([#6881](https://github.com/netlify/build/issues/6881)) ([29f806c](https://github.com/netlify/build/commit/29f806ce0fc86bdca61fa0993efaf84d3c0cfa6c))
+
+## [14.9.3](https://github.com/netlify/build/compare/edge-bundler-v14.9.2...edge-bundler-v14.9.3) (2026-01-14)
+
+
+### Bug Fixes
+
+* **edge-bundler:** include tarball in bundles when dry-run succeeds ([#6872](https://github.com/netlify/build/issues/6872)) ([edebe2f](https://github.com/netlify/build/commit/edebe2f12d4a3b01f9caad88f9588308858a6f01))
+
+## [14.9.2](https://github.com/netlify/build/compare/edge-bundler-v14.9.1...edge-bundler-v14.9.2) (2025-12-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.27.2 ([#6846](https://github.com/netlify/build/issues/6846)) ([d4ed18e](https://github.com/netlify/build/commit/d4ed18efe49648932f89bfd367ae95d6ee8b31fc))
+
+## [14.9.1](https://github.com/netlify/build/compare/edge-bundler-v14.9.0...edge-bundler-v14.9.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.27.0 ([#6761](https://github.com/netlify/build/issues/6761)) ([cfbb099](https://github.com/netlify/build/commit/cfbb0990109da2a7ae78c697b977fa13c6d92a00))
+* **deps:** update dependency esbuild to v0.27.1 ([#6815](https://github.com/netlify/build/issues/6815)) ([26e8049](https://github.com/netlify/build/commit/26e804993923c200c2fdc13621c02c1bf06de607))
+
+## [14.9.0](https://github.com/netlify/build/compare/edge-bundler-v14.8.7...edge-bundler-v14.9.0) (2025-11-21)
+
+
+### Features
+
+* add tarball bundling timing metric for Edge Functions and expose it via manifest/schema ([#6786](https://github.com/netlify/build/issues/6786)) ([e1c7e95](https://github.com/netlify/build/commit/e1c7e95a451b06d983fa3b9ac96eb41c39b6866f))
+
+## [14.8.7](https://github.com/netlify/build/compare/edge-bundler-v14.8.6...edge-bundler-v14.8.7) (2025-11-11)
+
+
+### Bug Fixes
+
+* update deno run commands to set node-modules-dir to manual ([#6771](https://github.com/netlify/build/issues/6771)) ([64ce870](https://github.com/netlify/build/commit/64ce8700d93a48702e7cd6932a0fea03b0aac58a))
+
+## [14.8.6](https://github.com/netlify/build/compare/edge-bundler-v14.8.5...edge-bundler-v14.8.6) (2025-11-04)
+
+
+### Bug Fixes
+
+* remove references to `edge_bundler_deno_v2` feature flag ([#6764](https://github.com/netlify/build/issues/6764)) ([1420b86](https://github.com/netlify/build/commit/1420b86f956fab19711231f1116f95abf2d054d5))
+
+## [14.8.5](https://github.com/netlify/build/compare/edge-bundler-v14.8.4...edge-bundler-v14.8.5) (2025-11-03)
+
+
+### Bug Fixes
+
+* update edge_bundler_deno_v2 default value ([#6753](https://github.com/netlify/build/issues/6753)) ([30cd508](https://github.com/netlify/build/commit/30cd508fae3f8a38df5196f9cda1f6fd3ca9d253))
+
+## [14.8.4](https://github.com/netlify/build/compare/edge-bundler-v14.8.3...edge-bundler-v14.8.4) (2025-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.25.11 ([#6748](https://github.com/netlify/build/issues/6748)) ([e3dee38](https://github.com/netlify/build/commit/e3dee38dd509e9bf7cd025bfbd710ad91a7161e7))
+* offer backwards compatibility for Deno 1.x features ([#6751](https://github.com/netlify/build/issues/6751)) ([0c166f6](https://github.com/netlify/build/commit/0c166f686b757be94343ab7a671509d314f762c5))
+
+## [14.8.3](https://github.com/netlify/build/compare/edge-bundler-v14.8.2...edge-bundler-v14.8.3) (2025-10-29)
+
+
+### Bug Fixes
+
+* revert - update edge_bundler_deno_v2 default value ([#6744](https://github.com/netlify/build/issues/6744)) ([6cc03cc](https://github.com/netlify/build/commit/6cc03cc3ed3dfdfe4727260b21aaf7252fc0779e))
+
+## [14.8.2](https://github.com/netlify/build/compare/edge-bundler-v14.8.1...edge-bundler-v14.8.2) (2025-10-27)
+
+
+### Bug Fixes
+
+* update edge_bundler_deno_v2 default value ([#6738](https://github.com/netlify/build/issues/6738)) ([bb304c9](https://github.com/netlify/build/commit/bb304c9a97637d8a4c66a45f89044c25b3cfc419))
+
+## [14.8.1](https://github.com/netlify/build/compare/edge-bundler-v14.8.0...edge-bundler-v14.8.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* add dry-run feature flag for edge-function tarball generation ([#6712](https://github.com/netlify/build/issues/6712)) ([ac48c83](https://github.com/netlify/build/commit/ac48c838bd88a7898b4282837a9e7513d7200e37))
+
+## [14.8.0](https://github.com/netlify/build/compare/edge-bundler-v14.7.2...edge-bundler-v14.8.0) (2025-10-22)
+
+
+### Features
+
+* log warning for import assertion ([#6724](https://github.com/netlify/build/issues/6724)) ([0378894](https://github.com/netlify/build/commit/037889486b389fba70c3eded95740a0705e64b6c))
+
+## [14.7.2](https://github.com/netlify/build/compare/edge-bundler-v14.7.1...edge-bundler-v14.7.2) (2025-10-22)
+
+
+### Bug Fixes
+
+* only target `file:` specifiers when extracting ESZIP ([#6722](https://github.com/netlify/build/issues/6722)) ([3f342bd](https://github.com/netlify/build/commit/3f342bdb9844e1691cd90fd3626c642ccf6f391a))
+
+## [14.7.1](https://github.com/netlify/build/compare/edge-bundler-v14.7.0...edge-bundler-v14.7.1) (2025-10-21)
+
+
+### Bug Fixes
+
+* throw precise, actionable error when downloaded deno cli is unusable ([#6708](https://github.com/netlify/build/issues/6708)) ([27c4d71](https://github.com/netlify/build/commit/27c4d715c5d6af2b86eda549514ea3b6061daae7))
+
+## [14.7.0](https://github.com/netlify/build/compare/edge-bundler-v14.6.0...edge-bundler-v14.7.0) (2025-10-21)
+
+
+### Features
+
+* add feature flag for Deno 2.x update ([#6720](https://github.com/netlify/build/issues/6720)) ([99236bd](https://github.com/netlify/build/commit/99236bd0daddf85f4de6f3e11ed3b057afe7738b))
+
+## [14.6.0](https://github.com/netlify/build/compare/edge-bundler-v14.5.6...edge-bundler-v14.6.0) (2025-10-21)
+
+
+### Features
+
+* update edge functions bundling to Deno 2.x ([#6716](https://github.com/netlify/build/issues/6716)) ([4816b70](https://github.com/netlify/build/commit/4816b703d77a73ac643ed758ba831862f81d6036))
+
 ## [14.5.6](https://github.com/netlify/build/compare/edge-bundler-v14.5.5...edge-bundler-v14.5.6) (2025-09-24)
 
 

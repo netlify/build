@@ -15,32 +15,18 @@ beforeEach(() => {
   fs = new NodeFS()
 })
 
-describe('Nuxt V2', () => {
+describe('Nuxt (modern config)', () => {
   test.each([
-    ['dependency', { 'package.json': JSON.stringify({ dependencies: { nuxt: 'latest' } }) }],
-    ['edge dependency', { 'package.json': JSON.stringify({ dependencies: { 'nuxt-edge': 'latest' } }) }],
-  ])('should detect Nuxt via the %s', async (_, files) => {
-    const cwd = mockFileSystem(files)
-    const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].name).toBe('Nuxt')
-    expect(detected?.[0].build.command).toBe('nuxt generate')
-    expect(detected?.[0].dev?.command).toBe('nuxt')
-    expect(detected?.[0].dev?.port).toBe(3000)
-    expect(detected?.[0].env).toEqual({})
-  })
-})
-
-describe('Nuxt V3', () => {
-  test.each([
-    ['dependency', { 'package.json': JSON.stringify({ dependencies: { nuxt3: 'latest' } }) }],
-    ['major version', { 'package.json': JSON.stringify({ dependencies: { nuxt: '^3.0.0' } }) }],
-  ])('should detect Nuxt via the %s', async (_, files) => {
+    ['nuxt3 dependency', { 'package.json': JSON.stringify({ dependencies: { nuxt3: '^3.0.0' } }) }],
+    ['nuxt v3', { 'package.json': JSON.stringify({ dependencies: { nuxt: '^3.0.0' } }) }],
+    ['nuxt v4', { 'package.json': JSON.stringify({ dependencies: { nuxt: '^4.0.0' } }) }],
+    ['nuxt-edge v3', { 'package.json': JSON.stringify({ dependencies: { 'nuxt-edge': '^3.0.0' } }) }],
+  ])('should detect Nuxt via %s', async (_, files) => {
     const cwd = mockFileSystem(files)
     const project = new Project(fs, cwd)
     const detected = await project.detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].name).toBe('Nuxt 3')
+    expect(detected?.[0].name).toBe('Nuxt')
     expect(detected?.[0].build.command).toBe('nuxt build')
     expect(detected?.[0].build?.directory).toBe('dist')
     expect(detected?.[0].dev?.command).toBe('nuxt dev')
@@ -49,5 +35,21 @@ describe('Nuxt V3', () => {
 
     const settings = await getSettings(detected![0], project, cwd)
     expect(settings.clearPublishDirectory).toBeTruthy()
+  })
+})
+
+describe('Nuxt (legacy config)', () => {
+  test.each([
+    ['nuxt v2', { 'package.json': JSON.stringify({ dependencies: { nuxt: '^2.0.0' } }) }],
+    ['nuxt-edge v2', { 'package.json': JSON.stringify({ dependencies: { 'nuxt-edge': '^2.0.0' } }) }],
+  ])('should detect Nuxt via %s', async (_, files) => {
+    const cwd = mockFileSystem(files)
+    const detected = await new Project(fs, cwd).detectFrameworks()
+    expect(detected?.[0].id).toBe('nuxt')
+    expect(detected?.[0].name).toBe('Nuxt')
+    expect(detected?.[0].build.command).toBe('nuxt generate')
+    expect(detected?.[0].dev?.command).toBe('nuxt')
+    expect(detected?.[0].dev?.port).toBe(3000)
+    expect(detected?.[0].env).toEqual({})
   })
 })

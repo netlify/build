@@ -1,5 +1,6 @@
 const defaultFlags = {
   edge_bundler_generate_tarball: false,
+  edge_bundler_dry_run_generate_tarball: false,
 }
 
 type FeatureFlag = keyof typeof defaultFlags

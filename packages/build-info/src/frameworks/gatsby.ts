@@ -44,7 +44,7 @@ export class Gatsby extends BaseFramework implements Framework {
       }
 
       const nodeVersion = await this.project.getCurrentNodeVersion()
-      if (nodeVersion && gte(nodeVersion, '12.13.0')) {
+      if (nodeVersion && gte(nodeVersion, '12.13.0') && !process.env.NETLIFY_SKIP_GATSBY_BUILD_PLUGIN) {
         this.plugins.push('@netlify/plugin-gatsby')
       }
       return this as DetectedFramework

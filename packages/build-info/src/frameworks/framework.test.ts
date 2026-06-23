@@ -7,7 +7,13 @@ import { Environment } from '../file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
 
-import { Accuracy, DetectedFramework, mergeDetections, sortFrameworksBasedOnAccuracy } from './framework.js'
+import {
+  Accuracy,
+  type DetectedFramework,
+  VersionAccuracy,
+  mergeDetections,
+  sortFrameworksBasedOnAccuracy,
+} from './framework.js'
 import { Grunt } from './grunt.js'
 import { Gulp } from './gulp.js'
 import { Hexo } from './hexo.js'
@@ -176,6 +182,94 @@ describe('detect framework version', () => {
         name: undefined,
         version: 'unknown',
       },
+    })
+  })
+})
+
+describe('detected framework version accuracy', () => {
+  test('should mark pinned version from package.json with medium accuracy', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '2.0.0' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBe(VersionAccuracy.PackageJSONPinned)
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      name: '@11ty/eleventy',
+      version: '2.0.0',
+      versionAccuracy: VersionAccuracy.PackageJSONPinned,
+    })
+  })
+
+  test('should mark range version from package.json with low accuracy', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBe(VersionAccuracy.PackageJSON)
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      name: '@11ty/eleventy',
+      version: '2.0.0',
+      versionAccuracy: VersionAccuracy.PackageJSON,
+    })
+  })
+
+  test('should mark version from node_modules with high accuracy', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
+      'node_modules/@11ty/eleventy/package.json': JSON.stringify({ version: '2.0.1' }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBe(VersionAccuracy.NodeModules)
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      name: '@11ty/eleventy',
+      version: '2.0.1',
+      versionAccuracy: VersionAccuracy.NodeModules,
+    })
+  })
+
+  test('should not set version accuracy if no version is detected', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': 'latest' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBeUndefined()
+    expect(detection?.[0].toJSON().package.versionAccuracy).toBeUndefined()
+  })
+
+  test('should not set version accuracy for non-node.js frameworks', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'config.rb': '', // Middleman framework (no npm dependencies)
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package).toBeUndefined()
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      version: 'unknown',
+      versionAccuracy: undefined,
+    })
+  })
+
+  test('should fall back to package.json accuracy in browser environment', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
+    })
+    vi.spyOn(fs, 'getEnvironment').mockImplementation(() => Environment.Browser)
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].detected.package?.versionAccuracy).toBe(VersionAccuracy.PackageJSON)
+    expect(detection?.[0].toJSON().package).toMatchObject({
+      version: '2.0.0',
+      versionAccuracy: VersionAccuracy.PackageJSON,
     })
   })
 })

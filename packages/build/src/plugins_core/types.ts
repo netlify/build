@@ -1,8 +1,9 @@
 import { type DynamicMethods } from 'packages/js-client/lib/types.js'
 
-import { NetlifyPluginConstants } from '../core/constants.js'
-import { BufferedLogs } from '../log/logger.js'
-import { NetlifyConfig } from '../types/config/netlify_config.js'
+import type { NetlifyPluginConstants } from '../core/constants.js'
+import type { BufferedLogs } from '../log/logger.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
+import type { ReturnValue } from '../steps/return_values.js'
 
 type $TSFixme = any
 
@@ -17,21 +18,39 @@ export type CoreStepFunctionArgs = {
    * `undefined` if none is set.
    */
   packagePath?: string
+  repositoryRoot: string
   deployId: string
+  /**
+   * The deploy context (e.g. 'production', 'deploy-preview', 'branch-deploy')
+   */
+  context: string
+  /**
+   * The branch being built (e.g. 'main', 'my-feature-123')
+   */
+  branch: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
   quiet?: boolean
   debug?: boolean
+  events: string[]
   logs?: BufferedLogs
   systemLog: SystemLogger
   edgeFunctionsBootstrapURL?: string
   featureFlags?: Record<string, any>
 
+  headersPath?: string
+  redirectsPath?: string
+  configMutations: unknown[] // FIXME
+  configPath: string
   netlifyConfig: NetlifyConfig
   explicitSecretKeys: $TSFixme
   enhancedSecretScan: boolean
+  deployEnvVars: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
+  userNodeVersion?: string
+  childEnv: $TSFixme
+  returnValues: Record<string, ReturnValue>
 
-  buildbotServerSocket: $TSFixme
+  buildbotServerSocket?: string
   api: DynamicMethods
 }
 

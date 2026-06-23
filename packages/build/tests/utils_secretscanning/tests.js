@@ -112,3 +112,36 @@ test('findLikelySecrets - should match full secret value against omitValues', as
   })
   t.is(fullMatch.length, 0)
 })
+
+test('findLikelySecrets - should match omitValues case-insensitively', async (t) => {
+  const testCases = [
+    {
+      text: 'key="AIzaSyBdVl-cTICSwYKrZ96snp88z"',
+      omitValue: 'AIzaSyBdVl-cTICSwYKrZ96snp88z',
+      description: 'exact case match',
+    },
+    {
+      text: 'key="AIzaSyBdVl-cTICSwYKrZ96snp88z"',
+      omitValue: 'aizaSyBdVl-cTICSwYKrZ96snp88z',
+      description: 'lowercase prefix in omit value',
+    },
+    {
+      text: 'key="aizaSyBdVl-cTICSwYKrZ96snp88z"',
+      omitValue: 'AIzaSyBdVl-cTICSwYKrZ96snp88z',
+      description: 'lowercase prefix in detected secret',
+    },
+    {
+      text: 'key="AIZASYBD-VLTICTCSWYKRZ96SNP88Z"',
+      omitValue: 'aizasybd-vltictcswykrz96snp88z',
+      description: 'all uppercase secret with lowercase omit value',
+    },
+  ]
+
+  testCases.forEach(({ text, omitValue, description }) => {
+    const matches = findLikelySecrets({
+      text,
+      omitValuesFromEnhancedScan: [omitValue],
+    })
+    t.is(matches.length, 0, `Should omit secret for case: ${description}`)
+  })
+})

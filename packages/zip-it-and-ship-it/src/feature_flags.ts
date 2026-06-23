@@ -27,8 +27,7 @@ export const defaultFlags = {
   // Adds the `___netlify-telemetry.mjs` file to the function bundle.
   zisi_add_instrumentation_loader: true,
 
-  // Dynamically import the function handler.
-  zisi_dynamic_import_function_handler_entry_point: false,
+  zisi_netlify_play: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>

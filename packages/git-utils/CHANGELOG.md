@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.0.4](https://github.com/netlify/build/compare/git-utils-v6.0.3...git-utils-v6.0.4) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+## [6.0.3](https://github.com/netlify/build/compare/git-utils-v6.0.2...git-utils-v6.0.3) (2025-12-19)
+
+
+### Bug Fixes
+
+* replace moize with micro-memoize ([#6836](https://github.com/netlify/build/issues/6836)) ([40f4bc6](https://github.com/netlify/build/commit/40f4bc6bf2821515a4293bc08f3f414a77b21dbc))
+
 ## [6.0.2](https://github.com/netlify/build/compare/git-utils-v6.0.1...git-utils-v6.0.2) (2025-05-29)
 
 

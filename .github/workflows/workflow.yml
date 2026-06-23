@@ -19,11 +19,11 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 22
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -40,7 +40,7 @@ jobs:
       - name: test
         run: npx nx run-many --target=e2e
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: playwright-report
@@ -53,15 +53,15 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
         node-version: ['22']
-        # Must include the minimum deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
-        # We're adding v2.4.2 here because it's needed for the upcoming nimble release, so we can test
-        # those workflows ahead of time before we can update the base version across the board.
-        deno-version: ['v1.39.0', 'v2.2.4', 'v2.4.2']
+        # Maximum supported deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
+        # If there is no upper band - this should be set to whatever is the latest deno version at the time of updating this workflow.
+        deno-version: ['v2.8.0']
         include:
           - os: ubuntu-24.04
             # Earliest supported version
             node-version: '18.14.0'
-            deno-version: 'v2.2.4'
+            # Minimum supported deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
+            deno-version: 'v2.4.2'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -72,12 +72,12 @@ jobs:
           echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -87,7 +87,7 @@ jobs:
         run: npm install -g npm@10
         if: ${{ !steps.release-check.outputs.IS_RELEASE && matrix.node-version == '22' }}
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
         with:
           deno-version: ${{ matrix.deno-version }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -95,7 +95,7 @@ jobs:
         run: deno cache https://deno.land/x/eszip@v0.55.2/eszip.ts
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -152,17 +152,17 @@ jobs:
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
       - name: Git checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
         with:
-          deno-version: v2.2.4
+          deno-version: 2.5.6
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -180,7 +180,7 @@ jobs:
         run: corepack enable
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
           go-version: '1.18'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
@@ -209,7 +209,7 @@ jobs:
           echo "node=node_${node/.*.*/}" >> $GITHUB_OUTPUT
           echo "node=node_${node/.*.*/}" >> $env:GITHUB_OUTPUT
         shell: bash
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5.5.4
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           files:

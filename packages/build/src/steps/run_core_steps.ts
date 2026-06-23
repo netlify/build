@@ -166,7 +166,11 @@ const runBuildStep = async function ({
   deployId,
   quiet,
 }) {
-  const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
+  const {
+    netlifyConfig: netlifyConfigA,
+    configMutations,
+    deployEnvVars,
+  } = await runSteps({
     steps: getBuildSteps(buildSteps),
     buildDir,
     nodePath,
@@ -186,5 +190,5 @@ const runBuildStep = async function ({
     quiet,
   } as any)
 
-  return { netlifyConfig: netlifyConfigA, configMutations }
+  return { deployEnvVars, netlifyConfig: netlifyConfigA, configMutations }
 }

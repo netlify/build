@@ -4,14 +4,6 @@ orbs:
   e2e: netlify/e2e@1
 
 workflows:
-  release:
-    jobs:
-      - release:
-          context: [shared-secrets]
-          filters:
-            branches:
-              only: [main]
-
   release-please:
     jobs:
       - release-please:
@@ -84,7 +76,7 @@ commands:
             - node_modules
 
 jobs:
-  release:
+  release-please:
     description: The release action that runs on the main branch
     executor: node
     steps:
@@ -99,12 +91,6 @@ jobs:
             npx release-please github-release \
               --token "${GITHUB_RELEASES_TOKEN}" \
               --repo-url "${CIRCLE_REPOSITORY_URL}" \
-
-  release-please:
-    description: Update and creates release PRs on the main branch
-    executor: node
-    steps:
-      - checkout
       - run:
           name: Run release-please
           command: |
@@ -134,6 +120,9 @@ jobs:
     steps:
       - checkout
       - npm-install-deps
+      # This is necessary to work around platform-specific optional dependencies bug
+      # (https://github.com/npm/cli/issues/4828).
+      - run: npm i -D @oxfmt/binding-linux-x64-gnu
       - run: npm run format:ci
       - run: npm run build
       - run: npm run lint:ci

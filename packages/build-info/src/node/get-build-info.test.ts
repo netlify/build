@@ -53,10 +53,14 @@ test('should not crash on invalid projects', async (ctx) => {
   expect(packageManager).toMatchInlineSnapshot(`
     {
       "installCommand": "npm install",
+      "localPackageCommand": "npx",
       "lockFiles": [
         "package-lock.json",
       ],
       "name": "npm",
+      "remotePackageCommand": [
+        "npx",
+      ],
       "runCommand": "npm run",
     }
   `)

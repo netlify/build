@@ -1,6 +1,6 @@
-import * as fs from 'fs/promises'
-import { platform } from 'process'
-import { fileURLToPath } from 'url'
+import * as fs from 'node:fs/promises'
+import { platform } from 'node:process'
+import { fileURLToPath } from 'node:url'
 
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
@@ -87,7 +87,7 @@ test('Resolution is relative to the build directory', async (t) => {
 })
 
 test('Resolution respects monorepo node module resolution rules', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo')
+  const fixture = new Fixture('./fixtures/monorepo')
   const output = await fixture.withFlags({ packagePath: 'apps/unpinned' }).runWithBuild()
   // fixture has 2 versions of the same build plugin used by different workspaces
   // this ensures version used by apps/unpinned is used instead of version that
@@ -111,14 +111,64 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
-  const nodePath = getNodePath('16.14.0')
-  const output = await new Fixture('./fixtures/engines')
-    .withFlags({
-      nodePath,
-      debug: false,
-    })
-    .runWithBuild()
-  t.true(normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'))
+  const systemLog = await tmp.file()
+
+  try {
+    const nodePath = getNodePath('16.14.0')
+    const output = await new Fixture('./fixtures/engines')
+      .withFlags({
+        nodePath,
+        featureFlags: { build_warn_upcoming_system_version_change: true },
+        systemLogFile: systemLog.fd,
+        debug: false,
+      })
+      .runWithBuild()
+    t.true(
+      normalizeOutput(output).includes('The Node.js version is 1.0.0 but the plugin "./plugin.js" requires >=1.0.0'),
+    )
+    t.true(
+      output.includes('Warning: Starting June 16, 2026 plugin "./plugin.js" will be executed with Node.js version 22.'),
+    )
+    t.true(
+      output.includes(
+        'the plugin "./plugin.js" declares a Node.js version range (">=99.0.0") that does not include Node.js 22',
+      ),
+    )
+    const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+    t.true(systemLogContents.includes('plugin "./plugin.js" node support range does NOT include v22'))
+  } finally {
+    await systemLog.cleanup()
+  }
+})
+
+test('Does not attribute the site package.json engines to a local single-file plugin', async (t) => {
+  const systemLog = await tmp.file()
+
+  try {
+    const nodePath = getNodePath('16.14.0')
+    const output = await new Fixture('./fixtures/engines_no_package')
+      .withFlags({
+        nodePath,
+        featureFlags: { build_warn_upcoming_system_version_change: true },
+        systemLogFile: systemLog.fd,
+        debug: false,
+      })
+      .runWithBuild()
+    // The general advance-notice warning still fires for any sub-v22 local plugin
+    t.true(
+      output.includes(
+        'Warning: Starting June 16, 2026 plugin "./plugins/plugin.js" will be executed with Node.js version 22.',
+      ),
+    )
+    // But the targeted "engines exclude v22" warning must NOT fire: the only package.json
+    // reachable by walking up is the site's, not the plugin's.
+    t.false(output.includes('declares a Node.js version range'))
+    const systemLogContents = await fs.readFile(systemLog.path, 'utf8')
+    t.true(systemLogContents.includes('node support range could not be determined (no own package.json)'))
+    t.false(systemLogContents.includes('node support range does NOT include v22'))
+  } finally {
+    await systemLog.cleanup()
+  }
 })
 
 test('Validate --node-path exists', async (t) => {

@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { NodeFS } from '../node/file-system.js'
@@ -6,6 +6,10 @@ import { Project } from '../project.js'
 
 beforeEach((ctx) => {
   ctx.fs = new NodeFS()
+})
+
+afterEach(() => {
+  vi.unstubAllEnvs()
 })
 
 test('should detect Angular', async ({ fs }) => {
@@ -65,4 +69,28 @@ test('should only install plugin on v17+', async ({ fs }) => {
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].build.directory).toBe('dist/')
   expect(detected?.[0].plugins).toEqual([])
+})
+
+test('should not install plugin when NETLIFY_ANGULAR_PLUGIN_SKIP is set', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ dependencies: { '@angular/cli': '17.0.0' } }),
+    'angular.json': JSON.stringify({
+      projects: {
+        demo: {
+          architect: {
+            build: {
+              builder: '@angular-devkit/build-angular:application',
+              options: {
+                outputPath: 'dist/demo',
+              },
+            },
+          },
+        },
+      },
+    }),
+  })
+  vi.stubEnv('NETLIFY_ANGULAR_PLUGIN_SKIP', 'true')
+  const detected = await new Project(fs, cwd).detectFrameworks()
+  expect(detected?.[0].id).toBe('angular')
+  expect(detected?.[0].plugins).toHaveLength(0)
 })

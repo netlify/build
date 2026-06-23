@@ -1,7 +1,7 @@
 import { closeClient, formatTags, InputStatsDOptions, startClient, validateStatsDOptions } from '../report/statsd.js'
 
 export type Metric = {
-  type: 'increment'
+  type: 'increment' | 'timing'
   name: string
   value: number
   tags: Record<string, string | string[]>

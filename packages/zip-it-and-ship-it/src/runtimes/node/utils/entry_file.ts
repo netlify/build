@@ -45,26 +45,19 @@ export const kebabCase = (input: string): string =>
 const getEntryFileContents = (
   mainPath: string,
   moduleFormat: string,
-  featureFlags: FeatureFlags,
   runtimeAPIVersion: number,
+  addBootstrap: boolean,
 ) => {
   const importPath = `.${mainPath.startsWith('/') ? mainPath : `/${mainPath}`}`
 
+  if (!addBootstrap) {
+    return `export * as func from '${importPath}'`
+  }
+
   if (runtimeAPIVersion === 2) {
-    if (featureFlags.zisi_dynamic_import_function_handler_entry_point) {
-      return [
-        `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
-        `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
-      ].join(';')
-    }
     return [
       `import * as bootstrap from './${BOOTSTRAP_FILE_NAME}'`,
-      `import * as func from '${importPath}'`,
-
-      // See https://esbuild.github.io/content-types/#default-interop.
-      'const funcModule = typeof func.default === "function" ? func : func.default',
-
-      `export const handler = bootstrap.getLambdaHandler(funcModule)`,
+      `export const handler = bootstrap.getLambdaHandler('${importPath}')`,
     ].join(';')
   }
 
@@ -204,6 +197,7 @@ ${readFileSync(filePath, 'utf8')}
 }
 
 export const getEntryFile = ({
+  addBootstrap,
   commonPrefix,
   featureFlags,
   filename,
@@ -212,6 +206,7 @@ export const getEntryFile = ({
   userNamespace,
   runtimeAPIVersion,
 }: {
+  addBootstrap: boolean
   commonPrefix: string
   featureFlags: FeatureFlags
   filename: string
@@ -223,7 +218,7 @@ export const getEntryFile = ({
   const mainPath = normalizeFilePath({ commonPrefix, path: mainFile, userNamespace })
   const extension = getFileExtensionForFormat(moduleFormat, featureFlags, runtimeAPIVersion)
   const entryFilename = getEntryFileName({ extension, filename, runtimeAPIVersion })
-  const contents = getEntryFileContents(mainPath, moduleFormat, featureFlags, runtimeAPIVersion)
+  const contents = getEntryFileContents(mainPath, moduleFormat, runtimeAPIVersion, addBootstrap)
 
   return {
     contents,

@@ -165,10 +165,23 @@ const getMetrics = (manifest): Metric[] => {
 
   const numUserEfs = totalEfs.length - numGenEfs
 
-  return [
+  const metrics: Metric[] = [
     { type: 'increment', name: 'buildbot.build.functions', value: numGenEfs, tags: { type: 'edge:generated' } },
     { type: 'increment', name: 'buildbot.build.functions', value: numUserEfs, tags: { type: 'edge:user' } },
   ]
+
+  const tarballDurationMs = manifest.bundling_timing?.tarball_ms
+
+  if (typeof tarballDurationMs === 'number') {
+    metrics.push({
+      type: 'timing',
+      name: 'buildbot.build.edge_functions.bundling_ms',
+      value: tarballDurationMs,
+      tags: { format: 'tarball' },
+    })
+  }
+
+  return metrics
 }
 // We run this core step if at least one of the functions directories (the
 // one configured by the user or the internal one) exists. We use a dynamic

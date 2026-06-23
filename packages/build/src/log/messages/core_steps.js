@@ -1,5 +1,8 @@
 import path from 'path'
 
+import { RUNTIME } from '@netlify/zip-it-and-ship-it'
+import { trace } from '@opentelemetry/api'
+
 import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
@@ -16,7 +19,7 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
 }
 
 /**
- * Logs the result of bundling functions
+ * Logs the result of bundling functions (user facing)
  *
  * @param {object} options
  * @param {any} options.logs
@@ -52,6 +55,63 @@ export const logBundleResults = ({ logs, results = [] }) => {
   if (modulesWithDynamicImports.length !== 0) {
     logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
+}
+
+/**
+ * Sibling of `logBundleResults`. Derives structured telemetry from the same
+ * `results` array and emits it to the system log and the active span. Returns
+ * summary stats the caller can use for metric tags.
+ *
+ * @param {object} options
+ * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
+ * @param {(...args: unknown[]) => void} options.systemLog
+ * @returns {{
+ *   bundlers: import("@netlify/zip-it-and-ship-it").NodeBundlerName[],
+ *   fallbackCount: number,
+ *   warningsCount: number,
+ * }}
+ */
+export const trackBundleResults = ({ results = [], systemLog }) => {
+  // `bundlerErrors` is only set when the user requested `esbuild_zisi` (esbuild
+  // with zisi fallback), esbuild failed, and zisi succeeded. The final
+  // `bundler` reflects the fallback, so this is our "silent fallback" signal.
+  const perFunction = results.map((result) => ({
+    name: result.name,
+    runtime: result.runtime,
+    bundler: result.runtime === RUNTIME.JAVASCRIPT ? result.bundler : null,
+    hadFallback: (result.bundlerErrors?.length ?? 0) > 0,
+    hadWarnings: (result.bundlerWarnings?.length ?? 0) > 0,
+  }))
+
+  // Exclude both `null` (non-JS runtimes) and `undefined` (prebuilt `.zip`
+  // JS functions, which zip-it-and-ship-it passes through with no bundler).
+  const jsResults = perFunction.filter((p) => p.bundler != null)
+  const bundlers = [...new Set(jsResults.map((p) => p.bundler))]
+  const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {})
+  const fallbackCount = perFunction.filter((p) => p.hadFallback).length
+  const warningsCount = perFunction.filter((p) => p.hadWarnings).length
+
+  systemLog({
+    msg: 'Functions bundling completed',
+    bundlers,
+    bundlerCounts,
+    fallbackCount,
+    warningsCount,
+    functions: perFunction,
+  })
+
+  const span = trace.getActiveSpan()
+  if (span) {
+    span.setAttribute('build.execution.step.bundler', bundlers)
+    span.setAttribute('build.execution.step.functions_count', perFunction.length)
+    span.setAttribute('build.execution.step.bundler.fallback_count', fallbackCount)
+    span.setAttribute('build.execution.step.bundler.warnings_count', warningsCount)
+    for (const [bundler, count] of Object.entries(bundlerCounts)) {
+      span.setAttribute(`build.execution.step.bundler.${bundler}.count`, count)
+    }
+  }
+
+  return { bundlers, fallbackCount, warningsCount }
 }
 
 export const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
@@ -122,6 +182,26 @@ export const logFunctionsToBundle = function ({
 
   log(logs, `Packaging ${type} from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
   logArray(logs, userFunctions, { indent: false })
+}
+
+// Print the database provisioning message
+export const logDbProvisioning = function ({ logs, branch, context }) {
+  log(logs, `Provisioning database`)
+
+  if (context !== 'production') {
+    log(logs, `Creating database branch for ${THEME.highlightWords(branch)}`)
+  }
+}
+
+// Print the list of database migrations about to be copied
+export const logDbMigrations = function ({ logs, migrations, srcDir }) {
+  if (migrations.length === 0) {
+    log(logs, `No migrations found in ${THEME.highlightWords(srcDir)} directory`)
+    return
+  }
+
+  log(logs, `Loading migrations from ${THEME.highlightWords(srcDir)} directory:`)
+  logArray(logs, migrations, { indent: false })
 }
 
 const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {

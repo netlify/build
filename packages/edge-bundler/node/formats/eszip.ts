@@ -13,6 +13,8 @@ import { wrapNpmImportError } from '../npm_import_error.js'
 import { getPackagePath } from '../package_json.js'
 import { getFileHash } from '../utils/sha256.js'
 
+export const extension = '.eszip'
+
 interface BundleESZIPOptions {
   basePath: string
   buildID: string
@@ -26,7 +28,7 @@ interface BundleESZIPOptions {
   vendorDirectory?: string
 }
 
-const bundleESZIP = async ({
+export const bundle = async ({
   basePath,
   buildID,
   debug,
@@ -37,7 +39,6 @@ const bundleESZIP = async ({
   importMap,
   vendorDirectory,
 }: BundleESZIPOptions): Promise<Bundle> => {
-  const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
   const importMapPrefixes: Record<string, string> = {
     [`${pathToFileURL(basePath)}/`]: virtualRoot,
@@ -81,8 +82,7 @@ const getESZIPPaths = () => {
 
   return {
     bundler: join(denoPath, 'bundle.ts'),
+    extractor: join(denoPath, 'extract.ts'),
     importMap: join(denoPath, 'vendor', 'import_map.json'),
   }
 }
-
-export { bundleESZIP as bundle }

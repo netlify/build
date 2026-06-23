@@ -86,6 +86,7 @@ const tExecBuild = async function ({
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
   eventHandlers,
+  skewProtectionToken,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -107,6 +108,7 @@ const tExecBuild = async function ({
     buildId,
     testOpts,
     featureFlags,
+    skewProtectionToken,
   })
 
   const {
@@ -167,6 +169,7 @@ const tExecBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -224,6 +227,7 @@ const tExecBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   }
 }
 
@@ -288,6 +292,7 @@ export const runAndReportBuild = async function ({
       configMutations,
       metrics,
       returnValues,
+      deployEnvVars,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -374,6 +379,7 @@ export const runAndReportBuild = async function ({
       configMutations,
       metrics,
       returnValues,
+      deployEnvVars,
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
@@ -507,6 +513,7 @@ const initAndRunBuild = async function ({
       configMutations,
       metrics,
       returnValues,
+      deployEnvVars,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -566,6 +573,7 @@ const initAndRunBuild = async function ({
       configMutations,
       metrics,
       returnValues,
+      deployEnvVars,
     }
   } finally {
     // Terminate the child processes of plugins so that they don't linger after
@@ -658,6 +666,7 @@ const runBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   } = await runSteps({
     steps,
     buildbotServerSocket,
@@ -706,5 +715,6 @@ const runBuild = async function ({
     configMutations,
     metrics,
     returnValues,
+    deployEnvVars,
   }
 }

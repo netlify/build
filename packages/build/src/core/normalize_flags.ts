@@ -87,6 +87,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     edgeFunctionsDistDir: DEFAULT_EDGE_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,
+    skewProtectionToken: combinedEnv.NETLIFY_SKEW_PROTECTION_TOKEN,
     buildId: combinedEnv.BUILD_ID,
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,

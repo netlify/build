@@ -28,8 +28,9 @@ type PrimitiveResult = string | number | boolean | Record<string, unknown> | und
 export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod) => {
   const handlerExports: ISCExport[] = []
 
-  let configExport: Record<string, unknown> = {}
+  let configExport: Record<string, unknown> | undefined
   let hasDefaultExport = false
+  let defaultExportExpression: Expression | Declaration | undefined
   let inputModuleFormat: ModuleFormat = MODULE_FORMAT.COMMONJS
 
   nodes.forEach((node) => {
@@ -67,12 +68,27 @@ export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod)
 
     if (cjsDefaultExports.length !== 0) {
       hasDefaultExport = true
+      defaultExportExpression = getCJSDefaultExpression(node)
 
       return
     }
 
-    if (isESMDefaultExport(node)) {
+    if (node.type === 'ExportDefaultDeclaration') {
       hasDefaultExport = true
+      defaultExportExpression = node.declaration as Expression
+
+      return
+    }
+
+    if (
+      node.type === 'ExportNamedDeclaration' &&
+      node.specifiers.some(
+        (exportSpecifier) =>
+          exportSpecifier.exported.type === 'Identifier' && exportSpecifier.exported.name === 'default',
+      )
+    ) {
+      hasDefaultExport = true
+      defaultExportExpression = getESMReexportedDefaultExpression(node, getAllBindings)
     }
 
     const esmConfig = parseConfigESMExport(node)
@@ -90,7 +106,7 @@ export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod)
     }
   })
 
-  return { configExport, handlerExports, hasDefaultExport, inputModuleFormat }
+  return { configExport, handlerExports, hasDefaultExport, defaultExportExpression, inputModuleFormat }
 }
 
 // Finds the main handler export in a CJS AST.
@@ -166,15 +182,6 @@ const isNamedExport = (node: ExportNamedDeclaration['specifiers'][number], name:
   )
 }
 
-// Returns whether a given node is or contains a default export declaration.
-const isESMDefaultExport = (node: Statement): boolean =>
-  node.type === 'ExportDefaultDeclaration' ||
-  (node.type === 'ExportNamedDeclaration' &&
-    node.specifiers.some(
-      (exportSpecifier) =>
-        exportSpecifier.exported.type === 'Identifier' && exportSpecifier.exported.name === 'default',
-    ))
-
 /**
  * Finds a `config` named CJS export that maps to an object variable
  * declaration, like:
@@ -199,7 +206,7 @@ const parseConfigESMExport = (node: Statement) => {
  * subtree. Only values supported by the `parsePrimitive` method are returned,
  * and any others will be ignored and excluded from the resulting object.
  */
-const parseObject = (node: ObjectExpression) =>
+export const parseObject = (node: ObjectExpression) =>
   node.properties.reduce(
     (acc, property): Record<string, unknown> => {
       if (property.type === 'ObjectProperty' && property.key.type === 'Identifier') {
@@ -300,6 +307,33 @@ const getExportsFromBindings = (
   const exports = getExportsFromExpression(binding)
 
   return exports
+}
+
+// Extracts the right-hand side expression from a CJS default export
+// (e.g. `exports.default = expr` or `module.exports.default = expr`).
+const getCJSDefaultExpression = (node: Statement): Expression | undefined => {
+  if (node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && node.expression.right) {
+    return node.expression.right
+  }
+
+  return undefined
+}
+
+// Resolves the expression for `export { x as default }` by looking up `x` in bindings.
+const getESMReexportedDefaultExpression = (
+  node: ExportNamedDeclaration,
+  getAllBindings: BindingMethod,
+): Expression | Declaration | undefined => {
+  const defaultSpecifier = node.specifiers.find(
+    (spec) =>
+      spec.type === 'ExportSpecifier' && spec.exported.type === 'Identifier' && spec.exported.name === 'default',
+  )
+
+  if (defaultSpecifier && defaultSpecifier.type === 'ExportSpecifier') {
+    return getAllBindings().get(defaultSpecifier.local.name)
+  }
+
+  return undefined
 }
 
 const getExportsFromExpression = (node: Expression | Declaration | undefined | null): ISCExport[] => {

@@ -36,6 +36,8 @@ test('detects a site using React Router v7 as a framework', async ({ fs }) => {
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
 
+  expect(detected?.length).toBe(1)
+
   const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
   expect(detectedFrameworks).not.toContain('remix')
 

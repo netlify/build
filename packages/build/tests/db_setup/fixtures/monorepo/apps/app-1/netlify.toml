@@ -1,0 +1,5 @@
+[build]
+publish = "."
+
+[[plugins]]
+package = "./apps/app-1/plugin.js"

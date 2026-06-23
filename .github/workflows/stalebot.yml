@@ -7,7 +7,7 @@ jobs:
   stale:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/stale@v10.0.0
+      - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10.2.0
         with:
           exempt-issue-labels: 'WIP,security,action_item,never_stale'
           days-before-issue-stale: 365

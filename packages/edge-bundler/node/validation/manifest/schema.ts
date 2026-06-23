@@ -18,6 +18,14 @@ const excludedPatternsSchema = {
   },
 }
 
+const bundlingTimingSchema = {
+  type: 'object',
+  properties: {
+    tarball_ms: { type: 'number', minimum: 0 },
+  },
+  additionalProperties: false,
+}
+
 const headersSchema = {
   type: 'object',
   patternProperties: {
@@ -112,6 +120,7 @@ const edgeManifestSchema = {
     },
     import_map: { type: 'string' },
     bundler_version: { type: 'string' },
+    bundling_timing: bundlingTimingSchema,
     function_config: { type: 'object', additionalProperties: functionConfigSchema },
   },
   additionalProperties: false,

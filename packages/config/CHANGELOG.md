@@ -76,6 +76,172 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [24.6.0](https://github.com/netlify/build/compare/config-v24.5.1...config-v24.6.0) (2026-05-21)
+
+
+### Features
+
+* add additional function config properties ([#7064](https://github.com/netlify/build/issues/7064)) ([41bf8da](https://github.com/netlify/build/commit/41bf8dace0b0b2e8ab55e6b85cdb314fed12a208))
+
+## [24.5.1](https://github.com/netlify/build/compare/config-v24.5.0...config-v24.5.1) (2026-05-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.18 to ^14.0.19
+
+## [24.5.0](https://github.com/netlify/build/compare/config-v24.4.4...config-v24.5.0) (2026-04-14)
+
+
+### Features
+
+* rename `@netlify/db` to `@netlify/database` ([#7026](https://github.com/netlify/build/issues/7026)) ([3361c94](https://github.com/netlify/build/commit/3361c94f9572f2afed2cbb23b420b318a94674f7))
+
+## [24.4.4](https://github.com/netlify/build/compare/config-v24.4.3...config-v24.4.4) (2026-03-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.17 to ^14.0.18
+
+## [24.4.3](https://github.com/netlify/build/compare/config-v24.4.2...config-v24.4.3) (2026-03-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.16 to ^14.0.17
+
+## [24.4.2](https://github.com/netlify/build/compare/config-v24.4.1...config-v24.4.2) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.15 to ^14.0.16
+    * @netlify/headers-parser bumped from ^9.0.2 to ^9.0.3
+    * @netlify/redirect-parser bumped from ^15.0.3 to ^15.0.4
+
+## [24.4.1](https://github.com/netlify/build/compare/config-v24.4.0...config-v24.4.1) (2026-02-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.14 to ^14.0.15
+
+## [24.4.0](https://github.com/netlify/build/compare/config-v24.3.1...config-v24.4.0) (2026-02-11)
+
+
+### Features
+
+* add and validate db migrations ([#6921](https://github.com/netlify/build/issues/6921)) ([85aae73](https://github.com/netlify/build/commit/85aae73cc21fb5bf678745a103aa15837c2bea45))
+
+## [24.3.1](https://github.com/netlify/build/compare/config-v24.3.0...config-v24.3.1) (2026-02-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.13 to ^14.0.14
+
+## [24.3.0](https://github.com/netlify/build/compare/config-v24.2.1...config-v24.3.0) (2026-01-22)
+
+
+### Features
+
+* add wildcard branch matching for context configuration ([#6886](https://github.com/netlify/build/issues/6886)) ([aa65667](https://github.com/netlify/build/commit/aa65667d6678a4ba19cf301899ee22428f9cf57a))
+
+## [24.2.1](https://github.com/netlify/build/compare/config-v24.2.0...config-v24.2.1) (2026-01-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.12 to ^14.0.13
+
+## [24.2.0](https://github.com/netlify/build/compare/config-v24.1.2...config-v24.2.0) (2025-12-07)
+
+
+### Features
+
+* `build.ignore` validation ([#6813](https://github.com/netlify/build/issues/6813)) ([4988fe9](https://github.com/netlify/build/commit/4988fe960a257873899d3b16b66aa83c225b1e6f))
+
+## [24.1.2](https://github.com/netlify/build/compare/config-v24.1.1...config-v24.1.2) (2025-12-04)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.11 to ^14.0.12
+
+## [24.1.1](https://github.com/netlify/build/compare/config-v24.1.0...config-v24.1.1) (2025-11-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.10 to ^14.0.11
+
+## [24.1.0](https://github.com/netlify/build/compare/config-v24.0.9...config-v24.1.0) (2025-11-24)
+
+
+### Features
+
+* populate `NETLIFY_SKEW_PROTECTION_TOKEN` ([#6792](https://github.com/netlify/build/issues/6792)) ([1bfdd27](https://github.com/netlify/build/commit/1bfdd2726beb4443535bb44e8d60ff794d005548))
+
+## [24.0.9](https://github.com/netlify/build/compare/config-v24.0.8...config-v24.0.9) (2025-11-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.9 to ^14.0.10
+
+## [24.0.8](https://github.com/netlify/build/compare/config-v24.0.7...config-v24.0.8) (2025-10-30)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.8 to ^14.0.9
+
+## [24.0.7](https://github.com/netlify/build/compare/config-v24.0.6...config-v24.0.7) (2025-10-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.7 to ^14.0.8
+
+## [24.0.6](https://github.com/netlify/build/compare/config-v24.0.5...config-v24.0.6) (2025-10-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^14.0.6 to ^14.0.7
+
 ## [24.0.5](https://github.com/netlify/build/compare/config-v24.0.4...config-v24.0.5) (2025-10-01)
 
 

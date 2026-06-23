@@ -824,6 +824,73 @@ describe('V2 API', () => {
     })
   })
 
+  describe('Event subscriptions', () => {
+    test('Extracts event subscriptions from an object default export with methods', () => {
+      const source = `export default { deploySucceeded() {}, fetch() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded', 'fetch'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from a binding-resolved object default export', () => {
+      const source = `const h = { deploySucceeded() {} }; export default h`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Does not set eventSubscriptions for a function default export', () => {
+      const source = `export default () => {}`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toBeUndefined()
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts a single event subscription', () => {
+      const source = `export default { fetch() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Ignores unknown property names in the object', () => {
+      const source = `export default { deploySucceeded() {}, someHelper() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy_succeeded'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from a CJS default export', () => {
+      const source = `exports.default = { deployFailed() {}, userLogin() {} }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['deploy_failed', 'identity_login'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+
+    test('Extracts event subscriptions from export { x as default }', () => {
+      const source = `
+      const handlers = { userSignup() {}, userValidate() {} }
+      export { handlers as default }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.eventSubscriptions).toEqual(['identity_signup', 'identity_validate'])
+      expect(isc.runtimeAPIVersion).toBe(2)
+    })
+  })
+
   test('Understands timeout', () => {
     const source = `
     export default async () => new Response("Hello!")
@@ -837,5 +904,299 @@ describe('V2 API', () => {
       routes: [],
       runtimeAPIVersion: 2,
     })
+  })
+
+  describe('Inline config in default export object', () => {
+    test('Extracts config from the default export object', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toEqual([{ pattern: '/hello', literal: '/hello', methods: [], prefer_static: undefined }])
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config from a binding-resolved default export object', () => {
+      const source = `const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/api" }
+      }
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.runtimeAPIVersion).toBe(2)
+      expect(isc.config).toEqual({ path: ['/api'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+
+    test('Named config export takes precedence over inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = { path: "/named" }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/named'] })
+    })
+
+    test('An empty named config export overrides inline config', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/inline" }
+      }
+      export const config = {}`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+
+    test('Ignores non-object config property', () => {
+      const source = `export default {
+        fetch() { return new Response("Hello") },
+        config: "not-an-object"
+      }`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({})
+    })
+
+    test('Extracts config when the default export uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } satisfies NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
+      expect(isc.eventSubscriptions).toEqual(['fetch'])
+    })
+
+    test('Extracts config when the default export uses `as`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      export default {
+        fetch() { return new Response("Hello") },
+        config: { path: "/hello" }
+      } as NetlifyFunction`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/hello'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+
+    test('Extracts config from a binding whose value uses `satisfies`', () => {
+      const source = `import type { NetlifyFunction } from "@netlify/functions"
+      const handlers = {
+        fetch() { return new Response("Hello") },
+        config: { path: "/binding-sat" }
+      } satisfies NetlifyFunction
+      export default handlers`
+
+      const isc = parseSource(source, options)
+
+      expect(isc.config).toEqual({ path: ['/binding-sat'] })
+      expect(isc.routes).toHaveLength(1)
+    })
+  })
+
+  test('Understands region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "iad" }`
+
+    const isc = parseSource(source, options)
+    expect(isc).toEqual({
+      config: { region: 'iad' },
+      excludedRoutes: [],
+      inputModuleFormat: 'esm',
+      routes: [],
+      runtimeAPIVersion: 2,
+    })
+  })
+
+  test('Normalizes region casing to lower case', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "IAD" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.region).toBe('iad')
+  })
+
+  test('Rejects an invalid region', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { region: "not-a-real-region" }`
+
+    expect(() => parseSource(source, options)).toThrow(/region/)
+  })
+
+  test('Understands memory as a bare number (interpreted as MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with a `gb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2gb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Understands memory as a human-friendly string with an `mb` unit', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1024mb" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(1024)
+  })
+
+  test('Normalizes memory unit casing', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "2GB" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.memory).toBe(2048)
+  })
+
+  test('Rejects memory below the minimum (1024 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 512 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects memory above the maximum (4096 MB)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "5gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a malformed memory string', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "lots" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a fractional memory value', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Rejects a fractional memory string that resolves to fractional MB', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: "1.7gb" }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory/)
+  })
+
+  test('Understands vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 1.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(1.5)
+  })
+
+  test('Accepts vcpu at the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.5 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(0.5)
+  })
+
+  test('Accepts vcpu at the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2 }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.vcpu).toBe(2)
+  })
+
+  test('Rejects vcpu below the minimum (0.5)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 0.4 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects vcpu above the maximum (2)', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { vcpu: 2.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/vcpu/)
+  })
+
+  test('Rejects setting both memory and vcpu', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { memory: 2048, vcpu: 1.5 }`
+
+    expect(() => parseSource(source, options)).toThrow(/memory.*vcpu|vcpu.*memory/)
+  })
+
+  test('Sets background invocation mode when `config.background` is true', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: true }`
+
+    const isc = parseSource(source, options)
+    expect(isc.config.background).toBe(true)
+    expect(isc.invocationMode).toBe('background')
+    expect(isc.runtimeAPIVersion).toBe(2)
+  })
+
+  test('Does not set background invocation mode when `config.background` is false', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello", background: false }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
+  })
+
+  test('Does not set background invocation mode when `config.background` is absent', () => {
+    const source = `
+    export default async () => new Response("Hello!")
+    export const config = { path: "/hello" }`
+
+    const isc = parseSource(source, options)
+    expect(isc.invocationMode).toBeUndefined()
   })
 })

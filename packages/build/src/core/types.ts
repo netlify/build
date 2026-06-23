@@ -10,6 +10,8 @@ export type BuildCLIFlags = {
   token: string
   /** Netlify Deploy ID */
   deployId: string
+  /** Netlify Skew Protection token */
+  skewProtectionToken?: string
   /**
    * Run in dry mode, i.e. printing steps without executing them
    * @default false
@@ -44,6 +46,8 @@ export type BuildCLIFlags = {
 export type BuildFlags = BuildCLIFlags & {
   env?: Record<string, unknown>
   eventHandlers?: EventHandlers
+  /** Custom logger function to capture build output */
+  logger?: (message: string) => void
 }
 
 type EventHandlers = {

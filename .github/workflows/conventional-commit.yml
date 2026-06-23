@@ -7,7 +7,7 @@ jobs:
   lint-title:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install Dependencies
         run: npm install @commitlint/config-conventional
-      - uses: JulienKode/pull-request-name-linter-action@v19.0.0
+      - uses: JulienKode/pull-request-name-linter-action@4fb4c2773193ad7ae5fe105c98ab30778abb1536 # v20.1.0

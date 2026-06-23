@@ -1,7 +1,7 @@
 import process from 'process'
 import { existsSync } from 'fs'
 import { execaSync } from 'execa'
-import moize from 'moize/mjs/index.mjs'
+import { memoize } from 'micro-memoize'
 
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
@@ -17,7 +17,7 @@ const mGit = function (args, cwd) {
   }
 }
 
-export const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
+export const git = memoize(mGit, { isKeyItemEqual: 'deep', maxSize: 1e3 })
 
 const safeGetCwd = function (cwd) {
   const cwdA = getCwdValue(cwd)

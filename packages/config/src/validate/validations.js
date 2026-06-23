@@ -112,6 +112,18 @@ export const PRE_NORMALIZE_VALIDATIONS = [
       ],
     }),
   },
+  {
+    property: 'database',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
+  },
+  {
+    property: 'database.migrations',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
+  },
 ]
 
 const EXAMPLE_PORT = 80
@@ -182,6 +194,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { functions: 'functions' } }),
   },
   {
+    property: 'build.ignore',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ build: { ignore: 'ignore' } }),
+  },
+  {
     property: 'build.edge_functions',
     check: isString,
     message: 'must be a string.',
@@ -244,6 +262,30 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.memory',
+    check: (value) => typeof value === 'number' || isString(value),
+    message: 'must be a number (in MB) or a string with a unit (e.g. "2gb").',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { memory: '2gb' } },
+    }),
+  },
+  {
+    property: 'functions.*.region',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { region: 'cmh' } },
+    }),
+  },
+  {
+    property: 'functions.*.vcpu',
+    check: (value) => typeof value === 'number' && value >= 0.5 && value <= 2,
+    message: 'must be a number between 0.5 and 2.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { vcpu: 1.5 } },
+    }),
+  },
+  {
     property: 'functions.*.schedule',
     check: isValidCronExpression,
     message: 'must be a valid cron expression (see https://ntl.fyi/cron-syntax).',
@@ -259,6 +301,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({
       functions: { directory: 'my-functions' },
     }),
+  },
+  {
+    property: 'database.migrations.path',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
   },
   ...edgeFunctionValidations,
 ]

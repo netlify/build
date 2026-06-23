@@ -11,7 +11,7 @@ import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { RateLimit, RateLimitAction, RateLimitAlgorithm, RateLimitAggregator } from './rate_limit.js'
 import { nonNullable } from './utils/non_nullable.js'
-import { ExtendedURLPattern } from './utils/urlpattern.js'
+import { getRegexpFromURLPatternPath } from './utils/urlpattern.js'
 
 interface Route {
   function: string
@@ -49,9 +49,14 @@ export interface EdgeFunctionConfig {
   traffic_rules?: TrafficRules
 }
 
+interface BundlingTiming {
+  tarball_ms?: number
+}
+
 interface Manifest {
   bundler_version: string
   bundles: { asset: string; format: string }[]
+  bundling_timing?: BundlingTiming
   import_map?: string
   layers: { name: string; flag: string }[]
   routes: Route[]
@@ -59,15 +64,24 @@ interface Manifest {
   function_config: Record<string, EdgeFunctionConfig>
 }
 
-interface GenerateManifestOptions {
-  bundles?: Bundle[]
-  declarations?: Declaration[]
-  featureFlags?: FeatureFlags
+interface GenerateManifestFunctionConfigOptions {
   functions: EdgeFunction[]
-  importMap?: string
   internalFunctionConfig?: Record<string, FunctionConfig>
-  layers?: Layer[]
   userFunctionConfig?: Record<string, FunctionConfig>
+}
+
+interface GenerateManifestRoutesOptions {
+  functions: EdgeFunction[]
+  declarations?: Declaration[]
+}
+
+interface GenerateManifestOptionsBase {
+  bundles?: Bundle[]
+  featureFlags?: FeatureFlags
+  importMap?: string
+  layers?: Layer[]
+  bundlingTiming?: BundlingTiming
+  functions: EdgeFunction[]
 }
 
 const removeEmptyConfigValues = (functionConfig: EdgeFunctionConfig) =>
@@ -141,22 +155,14 @@ const normalizeMethods = (method: unknown, name: string): string[] | undefined =
   })
 }
 
-const generateManifest = ({
-  bundles = [],
-  declarations = [],
+export const generateManifestFunctionConfig = ({
   functions,
   userFunctionConfig = {},
   internalFunctionConfig = {},
-  importMap,
-  layers = [],
-}: GenerateManifestOptions) => {
-  const preCacheRoutes: Route[] = []
-  const postCacheRoutes: Route[] = []
+}: GenerateManifestFunctionConfigOptions) => {
   const manifestFunctionConfig: Manifest['function_config'] = Object.fromEntries(
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
-  const routedFunctions = new Set<string>()
-  const declarationsWithoutFunction = new Set<string>()
 
   for (const [name, singleUserFunctionConfig] of Object.entries(userFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
@@ -203,6 +209,15 @@ const generateManifest = ({
     }
   }
 
+  return sanitizeEdgeFunctionConfig(manifestFunctionConfig)
+}
+
+export const generateManifestRoutes = ({ functions, declarations = [] }: GenerateManifestRoutesOptions) => {
+  const preCacheRoutes: Route[] = []
+  const postCacheRoutes: Route[] = []
+  const routedFunctions = new Set<string>()
+  const declarationsWithoutFunction = new Set<string>()
+
   declarations.forEach((declaration) => {
     const func = functions.find(({ name }) => declaration.function === name)
 
@@ -247,20 +262,61 @@ const generateManifest = ({
       preCacheRoutes.push(route)
     }
   })
+
+  const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
+
+  return {
+    preCacheRoutes: preCacheRoutes.filter(nonNullable),
+    postCacheRoutes: postCacheRoutes.filter(nonNullable),
+    unroutedFunctions,
+    declarationsWithoutFunction,
+  }
+}
+
+type GenerateManifestOptions = GenerateManifestOptionsBase &
+  (
+    | GenerateManifestFunctionConfigOptions
+    | { manifestFunctionConfig: ReturnType<typeof generateManifestFunctionConfig> }
+  ) &
+  (GenerateManifestRoutesOptions | { manifestRoutes: ReturnType<typeof generateManifestRoutes> })
+
+const generateManifest = ({
+  bundles = [],
+  importMap,
+  layers = [],
+  bundlingTiming,
+  functions,
+  ...rest
+}: GenerateManifestOptions) => {
+  const manifestFunctionConfig =
+    'manifestFunctionConfig' in rest
+      ? rest.manifestFunctionConfig
+      : generateManifestFunctionConfig({ functions, ...rest })
+
+  const { preCacheRoutes, postCacheRoutes, unroutedFunctions, declarationsWithoutFunction } =
+    'manifestRoutes' in rest
+      ? rest.manifestRoutes
+      : generateManifestRoutes({
+          functions,
+          ...rest,
+        })
+
   const manifestBundles = bundles.map(({ extension, format, hash }) => ({
     asset: hash + extension,
     format,
   }))
   const manifest: Manifest = {
     bundles: manifestBundles,
-    routes: preCacheRoutes.filter(nonNullable),
-    post_cache_routes: postCacheRoutes.filter(nonNullable),
+    routes: preCacheRoutes,
+    post_cache_routes: postCacheRoutes,
     bundler_version: getPackageVersion(),
     layers,
     import_map: importMap,
     function_config: sanitizeEdgeFunctionConfig(manifestFunctionConfig),
+    ...(bundlingTiming && Object.values(bundlingTiming).some((value) => value !== undefined)
+      ? { bundling_timing: bundlingTiming }
+      : {}),
   }
-  const unroutedFunctions = functions.filter(({ name }) => !routedFunctions.has(name)).map(({ name }) => name)
 
   return { declarationsWithoutFunction: [...declarationsWithoutFunction], manifest, unroutedFunctions }
 }
@@ -297,11 +353,9 @@ const pathToRegularExpression = (path: string) => {
   }
 
   try {
-    const pattern = new ExtendedURLPattern({ pathname: path })
-
     // Removing the `^` and `$` delimiters because we'll need to modify what's
     // between them.
-    const source = pattern.regexp.pathname.source.slice(1, -1)
+    const source = getRegexpFromURLPatternPath(path).slice(1, -1)
 
     // Wrapping the expression source with `^` and `$`. Also, adding an optional
     // trailing slash, so that a declaration of `path: "/foo"` matches requests
@@ -358,7 +412,7 @@ const getExcludedRegularExpressions = (declaration: Declaration): string[] => {
   return []
 }
 
-interface WriteManifestOptions extends GenerateManifestOptions {
+type WriteManifestOptions = GenerateManifestOptions & {
   distDirectory: string
 }
 

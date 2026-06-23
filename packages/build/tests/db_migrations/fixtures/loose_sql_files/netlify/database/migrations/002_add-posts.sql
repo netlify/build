@@ -1,0 +1,1 @@
+CREATE TABLE posts (id SERIAL PRIMARY KEY, title TEXT NOT NULL, user_id INTEGER REFERENCES users(id));

@@ -1,30 +1,40 @@
 import { dirname } from 'path'
 
-import type { ArgumentPlaceholder, Expression, SpreadElement, JSXNamespacedName } from '@babel/types'
+import type {
+  ArgumentPlaceholder,
+  Declaration,
+  Expression,
+  ObjectExpression,
+  SpreadElement,
+  JSXNamespacedName,
+} from '@babel/types'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfig } from '../../../config.js'
+import { FunctionConfig, functionConfigShape } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
 import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
+import type { BindingMethod } from '../parser/bindings.js'
 import { createBindingsMethod } from '../parser/bindings.js'
-import { traverseNodes } from '../parser/exports.js'
+import { parseObject, traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
 import { safelyParseSource, safelyReadSource } from '../parser/index.js'
 import type { ModuleFormat } from '../utils/module_format.js'
 
+import { eventHandlers } from '@netlify/serverless-functions-api'
 import { parse as parseSchedule } from './properties/schedule.js'
 
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
 export interface StaticAnalysisResult {
   config: InSourceConfig
+  eventSubscriptions?: string[]
   excludedRoutes?: Route[]
   inputModuleFormat?: ModuleFormat
   invocationMode?: InvocationMode
@@ -43,17 +53,21 @@ const path = z.string().startsWith('/', { message: "Must start with a '/'" })
 export type HttpMethod = z.infer<typeof httpMethod>
 export type HttpMethods = z.infer<typeof httpMethods>
 
-export const inSourceConfig = functionConfig
+export const inSourceConfig = functionConfigShape
   .pick({
+    background: true,
     externalNodeModules: true,
     generator: true,
     includedFiles: true,
     ignoredNodeModules: true,
+    memory: true,
     name: true,
     nodeBundler: true,
     nodeVersion: true,
+    region: true,
     schedule: true,
     timeout: true,
+    vcpu: true,
   })
   .extend({
     method: z
@@ -73,8 +87,124 @@ export const inSourceConfig = functionConfig
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
   })
+  .refine((cfg) => !(cfg.memory !== undefined && cfg.vcpu !== undefined), {
+    message: '`memory` and `vcpu` cannot both be set.',
+    path: ['vcpu'],
+  })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
+
+/**
+ * Resolves the default export expression to an ObjectExpression if possible,
+ * following identifier bindings when needed.
+ */
+const resolveObjectExpression = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): ObjectExpression | undefined => {
+  // Unwrap TS type assertions so `{...} satisfies T` and `{...} as T` are
+  // treated the same as the bare object literal.
+  const unwrapped =
+    expression?.type === 'TSSatisfiesExpression' ||
+    expression?.type === 'TSAsExpression' ||
+    expression?.type === 'TSTypeAssertion'
+      ? expression.expression
+      : expression
+
+  if (unwrapped?.type === 'ObjectExpression') {
+    return unwrapped
+  }
+
+  if (unwrapped?.type === 'Identifier') {
+    let binding = getAllBindings().get(unwrapped.name)
+
+    if (
+      binding?.type === 'TSSatisfiesExpression' ||
+      binding?.type === 'TSAsExpression' ||
+      binding?.type === 'TSTypeAssertion'
+    ) {
+      binding = binding.expression
+    }
+
+    if (binding?.type === 'ObjectExpression') {
+      return binding
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Extracts event subscription slugs from the default export expression,
+ * if it's an object whose property names match known event handlers.
+ */
+const getEventSubscriptions = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): string[] => {
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
+
+  if (!objectExpression) {
+    return []
+  }
+
+  const events: string[] = []
+
+  for (const property of objectExpression.properties) {
+    let name: string | undefined
+
+    if (
+      (property.type === 'ObjectMethod' || property.type === 'ObjectProperty') &&
+      property.key.type === 'Identifier'
+    ) {
+      name = property.key.name
+    }
+
+    if (name && name in eventHandlers) {
+      events.push(eventHandlers[name as keyof typeof eventHandlers])
+    }
+  }
+
+  return events
+}
+
+/**
+ * Extracts a `config` property from the default export object expression,
+ * returning it as a plain object. This supports patterns like:
+ *
+ * ```js
+ * export default {
+ *   fetch() { ... },
+ *   config: { path: "/hello" }
+ * }
+ * ```
+ */
+const getConfigFromDefaultExport = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): Record<string, unknown> | undefined => {
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
+
+  if (!objectExpression) {
+    return undefined
+  }
+
+  for (const property of objectExpression.properties) {
+    if (property.type !== 'ObjectProperty' || property.value.type !== 'ObjectExpression') {
+      continue
+    }
+
+    const isConfigKey =
+      (property.key.type === 'Identifier' && property.key.name === 'config') ||
+      (property.key.type === 'StringLiteral' && property.key.value === 'config')
+
+    if (isConfigKey) {
+      return parseObject(property.value)
+    }
+  }
+
+  return undefined
+}
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
   if (!functionFound) {
@@ -132,7 +262,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
   let scheduleFound = false
 
   const getAllBindings = createBindingsMethod(ast.body)
-  const { configExport, handlerExports, hasDefaultExport, inputModuleFormat } = traverseNodes(ast.body, getAllBindings)
+  const { configExport, handlerExports, hasDefaultExport, defaultExportExpression, inputModuleFormat } = traverseNodes(
+    ast.body,
+    getAllBindings,
+  )
   const isV2API = handlerExports.length === 0 && hasDefaultExport
 
   if (isV2API) {
@@ -141,7 +274,19 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       inputModuleFormat,
       runtimeAPIVersion: 2,
     }
-    const { data, error, success } = inSourceConfig.safeParse(configExport)
+
+    const eventSubscriptions = getEventSubscriptions(defaultExportExpression, getAllBindings)
+
+    if (eventSubscriptions.length > 0) {
+      result.eventSubscriptions = eventSubscriptions
+    }
+
+    // A named `export const config` always wins (even if empty); we fall back
+    // to the `config` property of the default export object only when no
+    // named export exists.
+    const inlineConfig = getConfigFromDefaultExport(defaultExportExpression, getAllBindings)
+    const mergedConfigExport = configExport ?? inlineConfig ?? {}
+    const { data, error, success } = inSourceConfig.safeParse(mergedConfigExport)
 
     if (success) {
       result.config = data
@@ -151,6 +296,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
         methods: data.method ?? [],
         prefer_static: data.preferStatic || undefined,
       }))
+
+      if (data.background) {
+        result.invocationMode = INVOCATION_MODE.Background
+      }
     } else {
       // TODO: Handle multiple errors.
       const [issue] = error.issues

@@ -1,12 +1,18 @@
+import crypto from 'crypto'
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
 import commonPathPrefix from 'common-path-prefix'
-import { v4 as uuidv4 } from 'uuid'
 
 import { importMapSpecifier } from '../shared/consts.js'
 
-import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
+import {
+  DenoBridge,
+  DenoOptions,
+  OnAfterDownloadHook,
+  OnBeforeDownloadHook,
+  LEGACY_DENO_VERSION_RANGE,
+} from './bridge.js'
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations } from './declaration.js'
@@ -18,10 +24,11 @@ import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
-import { writeManifest } from './manifest.js'
+import { generateManifestFunctionConfig, generateManifestRoutes, writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
+import { getPathInHome } from './home_path.js'
 
 export interface BundleOptions {
   basePath?: string
@@ -85,7 +92,7 @@ export const bundle = async (
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID
   // to create the bundle artifacts and rename them later.
-  const buildID = uuidv4()
+  const buildID = crypto.randomUUID()
 
   // Loading any configuration options from the deploy configuration API, if it
   // exists.
@@ -116,26 +123,50 @@ export const bundle = async (
     vendorDirectory,
   })
 
-  const bundles: Bundle[] = []
-
-  if (featureFlags.edge_bundler_generate_tarball) {
-    bundles.push(
-      await bundleTarball({
-        basePath,
-        buildID,
-        debug,
-        deno,
-        distDirectory,
-        functions,
-        featureFlags,
-        importMap: importMap.clone(),
-        vendorDirectory: vendor?.directory,
-      }),
-    )
-  }
-
   if (vendor) {
     importMap.add(vendor.importMap)
+  }
+
+  const bundles: Bundle[] = []
+  let tarballBundleDurationMs: number | undefined
+  let tarballDryRunError: unknown
+  let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>> | undefined
+
+  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
+    const tarballInitialPromise = (async () => {
+      const start = Date.now()
+
+      try {
+        return await bundleTarball({
+          basePath,
+          buildID,
+          debug,
+          deno,
+          distDirectory,
+          functions,
+          featureFlags,
+          importMap: importMap.clone(),
+          vendorDirectory: vendor?.directory,
+        })
+      } finally {
+        tarballBundleDurationMs = Date.now() - start
+      }
+    })()
+
+    let tarballPromiseResolved = false
+
+    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+      try {
+        await tarballInitialPromise
+        tarballPromiseResolved = true
+      } catch (error: unknown) {
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle generation')
+      }
+    }
+
+    if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
+      finalizeTarballBundle = await tarballInitialPromise
+    }
   }
 
   bundles.push(
@@ -153,23 +184,14 @@ export const bundle = async (
     }),
   )
 
-  // The final file name of the bundles contains a SHA256 hash of the contents,
-  // which we can only compute now that the files have been generated. So let's
-  // rename the bundles to their permanent names.
-  await createFinalBundles(bundles, distDirectory, buildID)
-
-  // Retrieving a configuration object for each function.
-  // Run `getFunctionConfig` in parallel as it is a non-trivial operation and spins up deno
-  const internalConfigPromises = internalFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-  const userConfigPromises = userFunctions.map(
-    async (func) => [func.name, await getFunctionConfig({ func, importMap, deno, log: logger })] as const,
-  )
-
-  // Creating a hash of function names to configuration objects.
-  const internalFunctionsWithConfig = Object.fromEntries(await Promise.all(internalConfigPromises))
-  const userFunctionsWithConfig = Object.fromEntries(await Promise.all(userConfigPromises))
+  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
+    await getFunctionConfigs({
+      deno,
+      importMap,
+      internalFunctions,
+      log: logger,
+      userFunctions,
+    })
 
   // Creating a final declarations array by combining the TOML file with the
   // deploy configuration API and the in-source configuration.
@@ -186,16 +208,63 @@ export const bundle = async (
     declarations,
   })
 
+  const manifestFunctionConfig = generateManifestFunctionConfig({
+    functions,
+    internalFunctionConfig,
+    userFunctionConfig: userFunctionsWithConfig,
+  })
+
+  const manifestRoutes = generateManifestRoutes({
+    functions,
+    declarations,
+  })
+
+  if (!tarballDryRunError && finalizeTarballBundle) {
+    try {
+      bundles.unshift(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
+    } catch (error: unknown) {
+      if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle finalization')
+      } else {
+        throw error
+      }
+    }
+  }
+
+  if (featureFlags.edge_bundler_dry_run_generate_tarball) {
+    let tarballLogMsg: string | undefined
+    if (tarballDryRunError) {
+      if (tarballDryRunError instanceof Error) {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${tarballDryRunError.message}`
+      } else {
+        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError as unknown)}`
+      }
+    } else {
+      tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
+    }
+    if (tarballLogMsg) {
+      // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
+      // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
+      // while still ensuring it could be expanded into the original multi-line message if needed.
+      logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
+    }
+  }
+
+  // The final file name of the bundles contains a SHA256 hash of the contents,
+  // which we can only compute now that the files have been generated. So let's
+  // rename the bundles to their permanent names.
+  await createFinalBundles(bundles, distDirectory, buildID)
+
   const manifest = await writeManifest({
     bundles,
-    declarations,
     distDirectory,
     featureFlags,
     functions,
-    userFunctionConfig: userFunctionsWithConfig,
-    internalFunctionConfig,
+    manifestFunctionConfig,
+    manifestRoutes,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
+    bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },
   })
 
   await vendor?.cleanup()
@@ -207,15 +276,80 @@ export const bundle = async (
   return { functions, manifest }
 }
 
+interface GetFunctionConfigsOptions {
+  deno: DenoBridge
+  importMap: ImportMap
+  internalFunctions: EdgeFunction[]
+  log: Logger
+  userFunctions: EdgeFunction[]
+}
+
+const getFunctionConfigs = async ({
+  deno,
+  importMap,
+  log,
+  internalFunctions,
+  userFunctions,
+}: GetFunctionConfigsOptions) => {
+  const functions = [...internalFunctions, ...userFunctions]
+  const results = await Promise.allSettled(
+    functions.map(async (func) => {
+      return [func.name, await getFunctionConfig({ functionPath: func.path, importMap, deno, log })] as const
+    }),
+  )
+  const legacyDeno = new DenoBridge({
+    cacheDirectory: getPathInHome('deno-cli-v1'),
+    useGlobal: false,
+    versionRange: LEGACY_DENO_VERSION_RANGE,
+  })
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    const func = functions[i]
+
+    // We offer support for some features of Deno 1.x that have been removed
+    // from 2.x, such as import assertions and the `window` global. When we
+    // see that we failed to extract a config due to those edge cases, re-run
+    // the script with Deno 1.x so we can extract the config.
+    if (
+      result.status === 'rejected' &&
+      result.reason instanceof Error &&
+      (result.reason.cause === 'IMPORT_ASSERT' || result.reason.cause === 'WINDOW_GLOBAL')
+    ) {
+      try {
+        const fallbackConfig = await getFunctionConfig({ functionPath: func.path, importMap, deno: legacyDeno, log })
+
+        results[i] = { status: 'fulfilled', value: [func.name, fallbackConfig] }
+      } catch {
+        throw result.reason
+      }
+    }
+  }
+
+  const failure = results.find((result) => result.status === 'rejected')
+  if (failure) {
+    throw failure.reason
+  }
+
+  const configs = results.map((config) => (config as PromiseFulfilledResult<[string, FunctionConfig]>).value)
+
+  return {
+    internalFunctions: Object.fromEntries(configs.slice(0, internalFunctions.length)),
+    userFunctions: Object.fromEntries(configs.slice(internalFunctions.length)),
+  }
+}
+
 const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buildID: string) => {
   const renamingOps = bundles.map(async ({ extension, hash }) => {
     const tempBundlePath = join(distDirectory, `${buildID}${extension}`)
     const finalBundlePath = join(distDirectory, `${hash}${extension}`)
 
     await fs.rename(tempBundlePath, finalBundlePath)
+
+    return finalBundlePath
   })
 
-  await Promise.all(renamingOps)
+  return await Promise.all(renamingOps)
 }
 
 const getBasePath = (sourceDirectories: string[], inputBasePath?: string) => {

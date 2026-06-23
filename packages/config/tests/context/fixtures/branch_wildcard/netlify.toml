@@ -1,0 +1,17 @@
+[build]
+command = "echo default"
+
+[context."feat/*"]
+command = "echo feat-wildcard"
+
+[context."feat/special"]
+command = "echo feat-exact"
+
+[context."feat/nested/*"]
+command = "echo feat-nested-wildcard"
+
+[context."feature/*"]
+command = "echo feature-wildcard"
+
+[context."feat*"]
+command = "echo feat-star"

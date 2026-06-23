@@ -8,12 +8,13 @@ import {
 
 describe('getNodeVersion', () => {
   test.each([
-    ['nodejs14.x', 14],
     ['nodejs12.x', 12],
+    ['nodejs14.x', 14],
     ['nodejs16.x', 16],
     ['nodejs18.x', 18],
     ['nodejs20.x', 20],
     ['nodejs22.x', 22],
+    ['nodejs24.x', 24],
     ['18.x', 18],
     ['node16', 16],
     ['14.1.1', 14],
@@ -26,11 +27,13 @@ describe('getNodeVersion', () => {
 
 describe('parseVersion', () => {
   test.each([
-    ['nodejs14.x', 14],
     ['nodejs12.x', 12],
+    ['nodejs14.x', 14],
+    ['nodejs16.x', 16],
     ['nodejs18.x', 18],
     ['nodejs20.x', 20],
     ['nodejs22.x', 22],
+    ['nodejs24.x', 24],
     ['18.x', 18],
     ['node14', 14],
     ['14.1.1', 14],

@@ -4,6 +4,7 @@ import { handleStepError } from './error.js'
 
 // Retrieve the return value of a step
 export const getStepReturn = function ({
+  deployEnvVars,
   event,
   packageName,
   newError,
@@ -53,6 +54,7 @@ export const getStepReturn = function ({
   }
 
   return {
+    deployEnvVars,
     newEnvChanges,
     netlifyConfig,
     configMutations,
