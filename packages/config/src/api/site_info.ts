@@ -1,6 +1,5 @@
-import { NetlifyAPI } from '@netlify/api'
-
 import * as z from 'zod'
+import type { NetlifyAPI } from '@netlify/api'
 
 import { getEnvelope } from '../env/envelope.js'
 import { throwUserError } from '../error.js'
@@ -29,8 +28,8 @@ type GetSiteInfoOptions = {
 }
 
 export type Extension = {
-  author: string | undefined
-  extension_token: string | undefined
+  author?: string | undefined
+  extension_token?: string | undefined
   has_build: boolean
   name: string
   slug: string
