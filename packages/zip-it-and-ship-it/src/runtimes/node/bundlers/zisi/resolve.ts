@@ -4,8 +4,6 @@ import { findUp } from 'find-up'
 import { pathExists } from 'path-exists'
 import { async as asyncResolve } from 'resolve'
 
-// The types do not include the mjs api of resolve
-
 const require = createRequire(import.meta.url)
 
 const BACKSLASH_REGEXP = /\\/g
