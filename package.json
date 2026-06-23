@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "description": "Netlify build module",
   "type": "module",
+  "packageManager": "npm@11.17.0+sha512.3eeaf18997b11070d313849268b23766b9db0068997dec9471073170fe43fa17f2b4d0337bf0f52330ee2274e7f5754b21b01052742e48f5c9c74d8b1e32ef43",
   "author": "Netlify Inc.",
   "scripts": {
     "lint": "eslint --cache --fix",
@@ -63,5 +64,15 @@
   },
   "engines": {
     "node": ">=22.12.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.2": true,
+    "fsevents@2.3.3": true,
+    "nx@20.8.2": true,
+    "protobufjs@7.4.0": true,
+    "unix-dgram@2.0.6": true,
+    "yarn@1.22.22": true
   }
 }
