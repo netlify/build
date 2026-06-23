@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "10.5.1",
+  "version": "11.0.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -66,6 +66,6 @@
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }

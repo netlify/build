@@ -1,6 +1,6 @@
 {
   "name": "@netlify/git-utils",
-  "version": "6.0.4",
+  "version": "7.0.0",
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "type": "module",
   "exports": "./lib/main.js",
@@ -61,6 +61,6 @@
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }
