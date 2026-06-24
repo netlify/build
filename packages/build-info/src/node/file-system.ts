@@ -74,13 +74,14 @@ export class NodeFS extends FileSystem {
       last: options.stopAt,
     }
     const names = typeof name === 'string' ? [name] : name
-    for (const dir of walkUp('.', walkOptions)) {
+    const targetType = options.type ?? 'file'
+    for (const dir of walkUp(options.cwd ?? '.', walkOptions)) {
       for (const potentialName of names) {
         const filePath = join(dir, potentialName)
         try {
           const stats = await fs.stat(filePath)
           const type = stats.isFile() ? 'file' : 'directory'
-          if (options.type === type || !options.type) {
+          if (targetType === type) {
             return filePath
           }
         } catch {

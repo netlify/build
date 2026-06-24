@@ -84,6 +84,7 @@ const resolvePackageFallback = async function (moduleName: string, baseDirs: str
   for (const dir of walkUp(mainFilePath)) {
     if (await isPackageDir(moduleName, dir)) {
       packagePath = dir
+      break
     }
   }
 
