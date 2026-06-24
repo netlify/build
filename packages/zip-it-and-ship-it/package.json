@@ -1,6 +1,6 @@
 {
   "name": "@netlify/zip-it-and-ship-it",
-  "version": "14.7.0",
+  "version": "15.0.1",
   "description": "Zip it and ship it",
   "main": "./dist/main.js",
   "type": "module",
@@ -50,7 +50,7 @@
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
-    "esbuild": "0.28.0",
+    "esbuild": "0.28.1",
     "execa": "^8.0.0",
     "fast-glob": "^3.3.3",
     "filter-obj": "^6.0.0",
@@ -78,7 +78,7 @@
     "@netlify/types": "2.7.0",
     "@types/archiver": "6.0.4",
     "@types/is-ci": "3.0.4",
-    "@types/node": "20.19.33",
+    "@types/node": "^22.12.0",
     "@types/normalize-path": "3.0.2",
     "@types/resolve": "1.20.6",
     "@types/semver": "7.7.1",
@@ -98,6 +98,6 @@
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }

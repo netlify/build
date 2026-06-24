@@ -92,7 +92,10 @@ export const resolveFunctionsDirectories = (input: string | string[]) => {
   return absoluteDirectories
 }
 
-export const mkdirAndWriteFile: typeof fs.writeFile = async (path: PathLike | fs.FileHandle, ...params) => {
+export const mkdirAndWriteFile: typeof fs.writeFile = async (
+  path: PathLike | fs.FileHandle,
+  ...params: [data: Parameters<typeof fs.writeFile>[1], options?: Parameters<typeof fs.writeFile>[2]]
+) => {
   if (typeof path === 'string') {
     const directory = dirname(path)
 

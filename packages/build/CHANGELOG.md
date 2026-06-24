@@ -105,6 +105,78 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.0.1](https://github.com/netlify/build/compare/build-v36.0.0...build-v36.0.1) (2026-06-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.0 to 15.0.1
+    * @netlify/functions-utils bumped from ^7.0.0 to ^7.0.1
+    * @netlify/zip-it-and-ship-it bumped from 15.0.0 to 15.0.1
+
+## [36.0.0](https://github.com/netlify/build/compare/build-v35.15.0...build-v36.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+
+### Bug Fixes
+
+* update otel peerDependencies ([#7094](https://github.com/netlify/build/issues/7094)) ([0151b1a](https://github.com/netlify/build/commit/0151b1a57c83d55767f0843607ec8795c641c58f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^6.0.5 to ^7.0.0
+    * @netlify/config bumped from ^24.6.0 to ^25.0.0
+    * @netlify/edge-bundler bumped from 14.10.3 to 15.0.0
+    * @netlify/functions-utils bumped from ^6.2.35 to ^7.0.0
+    * @netlify/git-utils bumped from ^6.0.4 to ^7.0.0
+    * @netlify/opentelemetry-utils bumped from ^2.0.2 to ^3.0.0
+    * @netlify/run-utils bumped from ^6.0.3 to ^7.0.0
+    * @netlify/zip-it-and-ship-it bumped from 14.7.1 to 15.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^5.0.2 to ^6.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.0.0
+
+## [35.15.0](https://github.com/netlify/build/compare/build-v35.14.0...build-v35.15.0) (2026-06-10)
+
+
+### Features
+
+* warn about upcoming Node.js v22 minimum for build plugins ([#7053](https://github.com/netlify/build/issues/7053)) ([66acbee](https://github.com/netlify/build/commit/66acbee9bdd184cca30a8a877f32842dd727d371))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^6.2.34 to ^6.2.35
+    * @netlify/zip-it-and-ship-it bumped from 14.7.0 to 14.7.1
+
+## [35.14.0](https://github.com/netlify/build/compare/build-v35.13.9...build-v35.14.0) (2026-06-01)
+
+
+### Features
+
+* add new config properties to `FunctionsObject` ([#7079](https://github.com/netlify/build/issues/7079)) ([9bfb608](https://github.com/netlify/build/commit/9bfb608db83fdc1788329a7d9dbffb02ac85bad2))
+
+
+### Bug Fixes
+
+* attach bundler info to functions bundling telemetry ([#7076](https://github.com/netlify/build/issues/7076)) ([ebab822](https://github.com/netlify/build/commit/ebab822c2117b833d845e76a889e199a406407c4))
+
 ## [35.13.9](https://github.com/netlify/build/compare/build-v35.13.8...build-v35.13.9) (2026-05-27)
 
 

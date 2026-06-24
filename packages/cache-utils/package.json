@@ -1,6 +1,6 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "6.0.5",
+  "version": "7.0.0",
   "description": "Utility for caching files in Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",
@@ -59,12 +59,12 @@
     "readdirp": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.111",
+    "@types/node": "^22.12.0",
     "tmp-promise": "^3.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }
