@@ -50,8 +50,8 @@
     "@commitlint/config-conventional": "^19.0.0",
     "@eslint/compat": "^1.2.9",
     "@eslint/js": "^9.28.0",
-    "@typescript-eslint/eslint-plugin": "^8.34.0",
-    "@vitest/eslint-plugin": "^1.2.1",
+    "@typescript-eslint/eslint-plugin": "~8.49.0",
+    "@vitest/eslint-plugin": "~1.4.3",
     "eslint": "^9.28.0",
     "eslint-plugin-ava": "^15.0.1",
     "eslint-plugin-import": "^2.31.0",
@@ -59,7 +59,8 @@
     "execa": "^8.0.1",
     "lerna": "^9.0.7",
     "oxfmt": "^0.46.0",
-    "typescript-eslint": "^8.34.0"
+    "typescript-eslint": "~8.49.0",
+    "vite": "^7.1.0"
   },
   "engines": {
     "node": ">=22.12.0"
