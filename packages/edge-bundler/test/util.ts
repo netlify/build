@@ -37,7 +37,7 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
 
     return {
       basePath: tmpFixtureDir.path,
-      cleanup: () => Promise.allSettled([tmpDistDir.cleanup, tmpFixtureDir.cleanup]),
+      cleanup: () => Promise.allSettled([tmpDistDir.cleanup(), tmpFixtureDir.cleanup()]),
       distPath,
     }
   }

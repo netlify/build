@@ -28,7 +28,7 @@ const getImportsFromCJS = (node: Statement, importPath: string) => {
     (declaration) => declaration.type === 'VariableDeclarator' && isRequire(declaration.init, importPath),
   )
 
-  if (requireDeclaration === undefined || requireDeclaration.id.type !== 'ObjectPattern') {
+  if (requireDeclaration?.id.type !== 'ObjectPattern') {
     return []
   }
 

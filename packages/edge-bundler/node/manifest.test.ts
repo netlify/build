@@ -34,7 +34,7 @@ test('Generates a manifest with different bundles', () => {
 
   expect(manifest.bundles).toEqual(expectedBundles)
   expect(manifest.routes).toEqual(expectedRoutes)
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 })
 
 test('Generates a manifest with display names', () => {
@@ -58,7 +58,7 @@ test('Generates a manifest with display names', () => {
     'func-1': { name: 'Display Name' },
   })
   expect(manifest.routes).toEqual(expectedRoutes)
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 })
 
 test('Generates a manifest with a generator field', () => {
@@ -116,7 +116,7 @@ test('Generates a manifest with excluded paths and patterns', () => {
 
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.function_config).toEqual({})
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 
   const matcher = getRouteMatcher(manifest)
 
@@ -142,7 +142,7 @@ test('TOML-defined paths can be combined with ISC-defined excluded paths', () =>
   expect(manifest.function_config).toEqual({
     'func-1': { excluded_patterns: ['^/f1/exclude/?$'] },
   })
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 })
 
 test('Filters out internal in-source configurations in user created functions', () => {
@@ -352,7 +352,7 @@ test('Generates a manifest without bundles', () => {
 
   expect(manifest.bundles).toEqual([])
   expect(manifest.routes).toEqual(expectedRoutes)
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 })
 
 test('Generates a manifest with pre and post-cache routes', () => {
@@ -393,7 +393,7 @@ test('Generates a manifest with pre and post-cache routes', () => {
   expect(manifest.bundles).toEqual(expectedBundles)
   expect(manifest.routes).toEqual(expectedPreCacheRoutes)
   expect(manifest.post_cache_routes).toEqual(expectedPostCacheRoutes)
-  expect(manifest.bundler_version).toBe(version as string)
+  expect(manifest.bundler_version).toBe(version)
 })
 
 test('Generates a manifest with layers', () => {

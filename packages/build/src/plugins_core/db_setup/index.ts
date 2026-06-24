@@ -49,15 +49,11 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
     logDbMigrations({ logs, migrations: migrationNames, srcDir: migrationsSrc })
   }
 
-  // @ts-expect-error This is an internal method for now so it isn't typed yet.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const database = (await api.createSiteDatabase({ site_id: siteId })) as TemporaryDatabaseResponse
 
   let connectionString: string = database.connection_string
 
   if (context !== 'production') {
-    // @ts-expect-error This is an internal method for now so it isn't typed yet.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const databaseBranch = (await api.createSiteDatabaseBranch({
       site_id: siteId,
       body: { branch_id: branch },

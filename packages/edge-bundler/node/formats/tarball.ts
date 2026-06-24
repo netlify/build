@@ -213,7 +213,7 @@ export const bundle = async ({
 
     const hash = await getFileHash(tarballPath)
 
-    await Promise.allSettled(cleanup)
+    await Promise.allSettled(cleanup.map((task) => task()))
 
     return {
       extension: TARBALL_EXTENSION,

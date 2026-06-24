@@ -2,11 +2,7 @@ import { createRequire } from 'module'
 
 import { up as walkUp } from 'empathic/walk'
 import { pathExists } from 'path-exists'
-// @ts-expect-error doesnt export async
 import { async as asyncResolve } from 'resolve'
-
-// The types do not include the mjs api of resolve
-const resolveLib = asyncResolve as typeof import('resolve')
 
 const require = createRequire(import.meta.url)
 
@@ -43,7 +39,7 @@ export const resolvePackage = async function (moduleName: string, baseDirs: stri
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
 const resolvePathPreserveSymlinksForDir = function (path: string, basedir: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    resolveLib(path, { basedir, preserveSymlinks: true }, (error, resolvedLocation) => {
+    asyncResolve(path, { basedir, preserveSymlinks: true }, (error, resolvedLocation) => {
       if (error || resolvedLocation === undefined) {
         return reject(error)
       }
