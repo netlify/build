@@ -75,7 +75,7 @@ export class NodeFS extends FileSystem {
     }
     const names = typeof name === 'string' ? [name] : name
     const targetType = options.type ?? 'file'
-    for (const dir of walkUp(options.cwd ?? '.', walkOptions)) {
+    for (const dir of walkUp('.', walkOptions)) {
       for (const potentialName of names) {
         const filePath = join(dir, potentialName)
         try {
@@ -99,7 +99,7 @@ export class NodeFS extends FileSystem {
       cwd: options.cwd,
       last: options.stopAt,
     }
-    for (const dir of walkUp(options.cwd ?? '.', walkOptions)) {
+    for (const dir of walkUp('.', walkOptions)) {
       for (const potentialName of normalisedNames) {
         const filePath = join(dir, potentialName)
         try {
