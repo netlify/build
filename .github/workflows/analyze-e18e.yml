@@ -19,7 +19,7 @@ jobs:
         uses: e18e/action-dependency-diff@8e9b8c1957ab066d36235a43f4c1ff1522e1bdbc
         with:
           mode: artifact
-          duplicate-threshold: -1
+          duplicate-threshold: 999 # disable, would be too noisy here 😬
       - name: Upload Artifact
         if: steps.analyze.outputs.artifact-path
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
