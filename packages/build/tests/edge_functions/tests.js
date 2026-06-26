@@ -161,7 +161,9 @@ for (const variant of FLAG_VARIANTS) {
   if (platform !== 'win32') {
     test.serial(variant.id + ' - handles failure when bundling Edge Functions', async (t) => {
       const output = await new Fixture('./fixtures/functions_invalid').withFlags(variant.flags).runWithBuild()
-      t.snapshot(normalizeOutput(output))
+      t.snapshot(
+        normalizeOutput(output.replace(/"?[a-zA-Z0-9\\/.-_]*deno-tarball[/\\]deno[a-zA-Z0-9\\/.-_]*"?/g, 'deno')),
+      )
     })
   }
 

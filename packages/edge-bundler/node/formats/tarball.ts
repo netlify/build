@@ -47,6 +47,105 @@ interface FinalizeTarballBundleOptions {
 
 const getUnixPath = (input: string) => input.split(path.sep).join('/')
 
+// Name of the Deno cache directory (DENO_DIR) we create inside the bundle. The
+// runtime points `DENO_DIR` at this directory once the bundle is mounted.
+const DENO_DIR_NAME = '.deno_dir'
+
+// The directory (relative to the filesystem root) the bundle is mounted at when
+// executed at runtime. Deno keys the transpiled output of local source files by
+// their absolute path under `gen/file/`, so cache entries are relocated from the
+// (arbitrary) bundling path to this path to remain resolvable at runtime.
+const RUNTIME_MOUNT_DIR = 'platform'
+
+// Subdirectory of DENO_DIR holding Deno's emit cache: the transpiled JS output
+// of non-JS sources (TypeScript, JSX). Deno calls this the `gen` cache (the
+// `EmitCache`, surfaced as the emit/TypeScript cache in `deno info`). Shipping
+// it lets the runtime skip transpiling those sources on cold start, and it's the
+// only DENO_DIR artifact we keep — see `pruneDenoDirToGen`.
+const DENO_EMIT_CACHE_DIR = 'gen'
+
+interface CreateDenoCacheOptions {
+  deno: DenoBridge
+  bundleDirPath: string
+  denoConfigPath: string
+  entrypoints: string[]
+}
+
+/**
+ * Runs `deno cache` to populate a DENO_DIR inside the bundle, then rewrites it
+ * so it's usable from the runtime mount path. The cache lets the runtime skip
+ * transpiling (and re-downloading) modules on cold start.
+ */
+const createDenoCache = async ({ deno, bundleDirPath, denoConfigPath, entrypoints }: CreateDenoCacheOptions) => {
+  console.log('[dev-log] Creating Deno cache for tarball bundle...')
+  const denoDir = path.join(bundleDirPath, DENO_DIR_NAME)
+
+  // `--vendor` makes Deno resolve dependencies from the vendor directory, just
+  // like the runtime does, so the cached output lines up with runtime resolution.
+  // `--config` loads the import map from the generated deno.json. `--allow-import`
+  // permits fetching from hosts outside Deno's default allow-list (mirroring how
+  // the runtime and the vendoring step are invoked).
+  await deno.run(['cache', '--allow-import', '--vendor', '--config', denoConfigPath, ...entrypoints], {
+    cwd: bundleDirPath,
+    denoDir,
+  })
+
+  await relocateGenFileCache(bundleDirPath, denoDir)
+  await pruneDenoDirToGen(denoDir)
+}
+
+/**
+ * Deno stores the transpiled output of local source files under
+ * `<DENO_DIR>/gen/file/<absolute source path>`, using the real (symlink-resolved)
+ * path. Because the bundle is created at an arbitrary path but mounted at
+ * `/<RUNTIME_MOUNT_DIR>` at runtime, we move that subtree so the entries match the
+ * runtime paths. Remote and vendored modules are cached under `gen/https/<hash>`
+ * (content-addressed) and need no relocation.
+ */
+const relocateGenFileCache = async (bundleDirPath: string, denoDir: string) => {
+  const genFileDir = path.join(denoDir, DENO_EMIT_CACHE_DIR, 'file')
+
+  // Deno resolves symlinks before computing the cache path (e.g. on macOS
+  // `/var` -> `/private/var`), so we resolve the bundle path the same way to
+  // locate the subtree it emitted.
+  const realBundleDirPath = await fs.realpath(bundleDirPath)
+  const segments = realBundleDirPath.split(path.sep).filter(Boolean)
+  const source = path.join(genFileDir, ...segments)
+  const destination = path.join(genFileDir, RUNTIME_MOUNT_DIR)
+
+  if (!existsSync(source)) {
+    throw new Error(`Expected Deno to emit transpiled local files at ${source}, but the directory was not found`)
+  }
+
+  await fs.rename(source, destination)
+
+  // Remove the now-empty leading directories (e.g. `gen/file/private/...`) left
+  // behind by the move so they don't end up in the tarball.
+  if (segments[0] !== RUNTIME_MOUNT_DIR) {
+    await fs.rm(path.join(genFileDir, segments[0]), { recursive: true, force: true })
+  }
+}
+
+/**
+ * Prunes the DENO_DIR down to just the emit cache (`DENO_EMIT_CACHE_DIR`) — the
+ * transpiled output we actually want to ship. We use an allowlist (keep the emit
+ * cache) rather than a blocklist (drop known-bad entries) so we stay robust to
+ * future Deno versions writing new, non-portable artifacts into the cache.
+ * Everything else Deno puts there is either regenerated on demand (e.g. the
+ * `dep_analysis_cache*` SQLite DBs, which key modules by absolute path and so
+ * wouldn't match runtime paths) or redundant with the vendored sources already
+ * in the bundle (`remote/` stays empty under `--vendor`).
+ */
+const pruneDenoDirToGen = async (denoDir: string) => {
+  const entries = await fs.readdir(denoDir)
+
+  await Promise.all(
+    entries
+      .filter((entry) => entry !== DENO_EMIT_CACHE_DIR)
+      .map((entry) => fs.rm(path.join(denoDir, entry), { recursive: true, force: true })),
+  )
+}
+
 export const bundle = async ({
   buildID,
   deno,
@@ -166,6 +265,16 @@ export const bundle = async ({
       await rewriteImportAssertions(denoVendorFile, denoVendorFile)
     }
   }
+
+  // Produce a Deno cache (DENO_DIR) inside the bundle so the runtime can skip
+  // downloading and transpiling modules on cold start, and include it in the
+  // tarball.
+  await createDenoCache({
+    deno,
+    bundleDirPath: bundleDir.path,
+    denoConfigPath,
+    entrypoints: Object.values(initialManifest.functions),
+  })
 
   // First stage of bundling is now done. To finalize bundling we require functionConfig, routes and postCacheRoutes
   // so we could inject those into bundle manifest. Tarball bundling is done in 2-step process process to preserve ordering
