@@ -1,8 +1,7 @@
 import { createHash } from 'crypto'
-import { createReadStream } from 'fs'
+import { createReadStream, promises as fs } from 'fs'
 
 import getStream from 'get-stream'
-import { locatePath } from 'locate-path'
 
 // We need a hashing algorithm that's as fast as possible.
 // Userland CRC32 implementations are actually slower than Node.js SHA1.
@@ -17,7 +16,18 @@ export const getHash = async function (digests, move) {
     return
   }
 
-  const digestPath = await locatePath(digests)
+  let digestPath = undefined
+
+  for (const digest of digests) {
+    try {
+      await fs.access(digest)
+      digestPath = digest
+      break
+    } catch {
+      continue
+    }
+  }
+
   if (digestPath === undefined) {
     return
   }
