@@ -1,5 +1,4 @@
 import { getDeployStore, type GetDeployStoreOptions } from '@netlify/blobs'
-import pMap from 'p-map'
 
 import { log, logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
@@ -61,18 +60,28 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   try {
-    await pMap(
-      blobsToUpload,
-      async ({ key, contentPath, metadataPath }) => {
-        if (debug && !quiet) {
-          log(logs, `- Uploading blob ${key}`, { indent: true })
+    const queue = blobsToUpload[Symbol.iterator]()
+    let stopQueue = true
+    await Promise.all(
+      Array.from({ length: 10 }, async () => {
+        while (!stopQueue) {
+          const next = queue.next()
+          if (next.done) {
+            return
+          }
+          const { key, contentPath, metadataPath } = next.value
+          if (debug && !quiet) {
+            log(logs, `- Uploading blob ${key}`, { indent: true })
+          }
+          try {
+            const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
+            await blobStore.set(key, new Blob([data]), { metadata })
+          } catch (err) {
+            stopQueue = true
+            throw err
+          }
         }
-        const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        // `data` is a `Buffer`, typed by @types/node as `Buffer<ArrayBufferLike>`, which TS
-        // rejects as a `BlobPart`; the runtime value is a valid blob part.
-        await blobStore.set(key, new Blob([data as BlobPart]), { metadata })
-      },
-      { concurrency: 10 },
+      }),
     )
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)

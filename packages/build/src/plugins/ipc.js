@@ -2,8 +2,6 @@ import crypto from 'crypto'
 import process from 'process'
 import { promisify } from 'util'
 
-import { pEvent } from 'p-event'
-
 import { jsonToError, errorToJson } from '../error/build.js'
 import { addErrorInfo } from '../error/info.js'
 import {
@@ -33,41 +31,36 @@ export const callChild = async function ({ childProcess, eventName, payload, log
 //    child process
 //  - child process `exit`
 // In the later two cases, we propagate the error.
-// We need to make `p-event` listeners are properly cleaned up too.
 export const getEventFromChild = async function (childProcess, callId) {
   if (childProcessHasExited(childProcess)) {
     throw getChildExitError('Could not receive event from child process because it already exited.')
   }
 
-  const messagePromise = pEvent(childProcess, 'message', { filter: (data) => data?.[0] === callId })
-  const errorPromise = pEvent(childProcess, 'message', { filter: (data) => data?.[0] === 'error' })
-  const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
-  try {
-    return await Promise.race([getMessage(messagePromise), getError(errorPromise), getExit(exitPromise)])
-  } finally {
-    messagePromise.cancel()
-    errorPromise.cancel()
-    exitPromise.cancel()
-  }
+  return new Promise((resolve, reject) => {
+    const onMessage = function (data) {
+      if (data?.[0] === callId) {
+        cleanup()
+        resolve(data[1])
+      } else if (data?.[0] === 'error') {
+        cleanup()
+        reject(jsonToError(data[1]))
+      }
+    }
+    const onExit = function (exitCode, signal) {
+      cleanup()
+      reject(getChildExitError(`Plugin exited with exit code ${exitCode} and signal ${signal}.`))
+    }
+    const cleanup = function () {
+      childProcess.removeListener('message', onMessage)
+      childProcess.removeListener('exit', onExit)
+    }
+    childProcess.on('message', onMessage)
+    childProcess.on('exit', onExit)
+  })
 }
 
 const childProcessHasExited = function (childProcess) {
   return !childProcess.connected || childProcess.signalCode !== null || childProcess.exitCode !== null
-}
-
-const getMessage = async function (messagePromise) {
-  const [, response] = await messagePromise
-  return response
-}
-
-const getError = async function (errorPromise) {
-  const [, error] = await errorPromise
-  throw jsonToError(error)
-}
-
-const getExit = async function (exitPromise) {
-  const [exitCode, signal] = await exitPromise
-  throw getChildExitError(`Plugin exited with exit code ${exitCode} and signal ${signal}.`)
 }
 
 // Plugins should not terminate processes explicitly:
