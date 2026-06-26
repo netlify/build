@@ -6,6 +6,7 @@
   "type": "module",
   "author": "Netlify Inc.",
   "scripts": {
+    "knip": "knip",
     "lint": "eslint --cache --fix",
     "lint:ci": "eslint --cache",
     "build": "lerna run build",
@@ -54,6 +55,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.19.0",
     "execa": "^8.0.1",
+    "knip": "^6.21.0",
     "lerna": "^9.0.7",
     "oxfmt": "^0.46.0",
     "typescript": "^5.9.3",
