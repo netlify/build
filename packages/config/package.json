@@ -91,7 +91,7 @@
     "has-ansi": "^6.0.0",
     "is-ci": "^4.0.0",
     "tmp-promise": "^3.0.2",
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.0"
   },
   "engines": {
     "node": ">=22.12.0"
