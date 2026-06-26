@@ -10,6 +10,7 @@ import { NPM, PNPM, Yarn } from './package-managers.js'
 import { Pants } from './pants.js'
 import { Rush } from './rush.js'
 import { Turbo } from './turbo.js'
+import { VitePlus } from './vite-plus.js'
 
 export const buildSystems = [
   Bazel,
@@ -23,6 +24,7 @@ export const buildSystems = [
   Pants,
   Rush,
   Turbo,
+  VitePlus,
 
   // JavaScript Package managers that offer building from a workspace
   PNPM,
