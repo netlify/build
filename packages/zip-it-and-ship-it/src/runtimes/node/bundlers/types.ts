@@ -5,6 +5,7 @@ import type { FunctionConfig } from '../../../config.js'
 import type { FeatureFlags } from '../../../feature_flags.js'
 import type { FunctionSource } from '../../../function.js'
 import type { RuntimeCache } from '../../../utils/cache.js'
+import type { ObjectValues } from '../../../types/utils.js'
 import { Logger } from '../../../utils/logger.js'
 import type { ModuleFormat } from '../utils/module_format.js'
 
@@ -19,6 +20,20 @@ export const NODE_BUNDLER = {
 export const nodeBundler = z.nativeEnum(NODE_BUNDLER)
 
 export type NodeBundlerName = z.infer<typeof nodeBundler>
+
+/* Why a bundler was used to bundle a given function */
+export const BUNDLER_REASON = {
+  ConfigOverride: 'config-override', // explicit `config.nodeBundler`
+  NoneOverride: 'none-override', // explicit `config.nodeBundler === 'none'`
+  V2Default: 'v2-nft', // runtimeAPIVersion === 2 forces nft
+  MjsPureEsm: 'mjs-pure-esm', // `.mjs` + `zisi_pure_esm_mjs`
+  EsbuildExtension: 'esbuild-ext', // `.ts`/`.tsx`/`.cts`/`.mts`/`.mjs`
+  EsmDefault: 'esm-default', // detected ESM `.js` → nft
+  FlagForcedNft: 'flag-forced-nft', // `traceWithNft` flipped a CJS function to nft
+  ZisiDefault: 'zisi-default', // CJS `.js`, `traceWithNft` flag off
+} as const
+
+export type BundlerReason = ObjectValues<typeof BUNDLER_REASON>
 
 // TODO: Create a generic warning type
 type BundlerWarning = Message
