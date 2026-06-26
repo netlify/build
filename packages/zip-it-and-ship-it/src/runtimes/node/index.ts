@@ -1,12 +1,14 @@
 import { dirname, extname, join } from 'path'
 
 import { copyFile } from 'copy-file'
+import { type Span, trace } from '@opentelemetry/api'
+import { wrapTracer } from '@opentelemetry/api/experimental'
 
 import { INVOCATION_MODE } from '../../function.js'
 import { Priority } from '../../priority.js'
 import { getTrafficRulesConfig } from '../../rate_limit.js'
 import getInternalValue from '../../utils/get_internal_value.js'
-import { GetSrcFilesFunction, Runtime, RUNTIME, ZipFunction } from '../runtime.js'
+import { GetSrcFilesFunction, Runtime, RUNTIME, ZipFunction, type ZipFunctionResult } from '../runtime.js'
 
 import { getBundler, getBundlerName } from './bundlers/index.js'
 import { NODE_BUNDLER } from './bundlers/types.js'
@@ -15,13 +17,15 @@ import { augmentFunctionConfig, parseFile } from './in_source_config/index.js'
 import { MODULE_FORMAT, MODULE_FILE_EXTENSION } from './utils/module_format.js'
 import { getNodeRuntime, getNodeRuntimeForV2 } from './utils/node_runtime.js'
 import { createAliases as createPluginsModulesPathAliases, getPluginsModulesPath } from './utils/plugin_modules_path.js'
+import { getBundleResultSpanAttributes, getFunctionBundleSpanAttributes } from './utils/span_attributes.js'
 import { zipNodeJs } from './utils/zip.js'
+import { getArchiveSize } from '../../utils/archive_size.js'
 
 // A proxy for the `getSrcFiles` that calls `getSrcFiles` on the bundler
 const getSrcFilesWithBundler: GetSrcFilesFunction = async (parameters) => {
   const { config, extension, featureFlags, mainFile, runtimeAPIVersion, srcDir } = parameters
   const pluginsModulesPath = await getPluginsModulesPath(srcDir)
-  const bundlerName = await getBundlerName({
+  const { name: bundlerName } = await getBundlerName({
     config,
     extension,
     featureFlags,
@@ -50,6 +54,7 @@ const zipFunction: ZipFunction = async function ({
   name,
   repositoryRoot,
   runtime,
+  span,
   srcDir,
   srcPath,
   stat,
@@ -79,13 +84,27 @@ const zipFunction: ZipFunction = async function ({
   const staticAnalysisResult = await parseFile(mainFile, { functionName: name })
   const runtimeAPIVersion = staticAnalysisResult.runtimeAPIVersion === 2 ? 2 : 1
   const mergedConfig = augmentFunctionConfig(mainFile, config, staticAnalysisResult.config)
-  const bundlerName = await getBundlerName({
+  const { name: bundlerName, reason: bundlerReason } = await getBundlerName({
     config: mergedConfig,
     extension,
     featureFlags,
     mainFile,
     runtimeAPIVersion,
   })
+
+  const generator = mergedConfig?.generator || getInternalValue(isInternal)
+  span?.setAttributes(
+    getFunctionBundleSpanAttributes({
+      featureFlags,
+      name,
+      generator,
+      runtimeName: runtime.name,
+      runtimeAPIVersion,
+      bundlerName,
+      bundlerReason,
+    }),
+  )
+
   const bundler = getBundler(bundlerName)
   const {
     aliases = new Map(),
@@ -126,7 +145,6 @@ const zipFunction: ZipFunction = async function ({
   // will no longer be inside a `node_modules` directory.
   const finalBasePath = isInPluginsModulesPath ? basePath! : basePathFromBundler
 
-  const generator = mergedConfig?.generator || getInternalValue(isInternal)
   const zipResult = await zipNodeJs({
     aliases,
     archiveFormat,
@@ -181,6 +199,7 @@ const zipFunction: ZipFunction = async function ({
   return {
     bootstrapVersion: zipResult.bootstrapVersion,
     bundler: bundlerName,
+    bundlerReason,
     bundlerWarnings,
     config: mergedConfig,
     displayName: mergedConfig?.name,
@@ -204,24 +223,42 @@ const zipFunction: ZipFunction = async function ({
 }
 
 const zipWithFunctionWithFallback: ZipFunction = async ({ config = {}, ...parameters }) => {
-  // If a specific JS bundler version is specified, we'll use it.
-  if (config.nodeBundler !== NODE_BUNDLER.ESBUILD_ZISI) {
-    return zipFunction({ ...parameters, config })
-  }
+  const tracer = wrapTracer(trace.getTracer('zip-it-and-ship-it'))
 
-  // Otherwise, we'll try to bundle with esbuild and, if that fails, fallback
-  // to zisi.
-  try {
-    return await zipFunction({ ...parameters, config: { ...config, nodeBundler: NODE_BUNDLER.ESBUILD } })
-  } catch (esbuildError) {
-    try {
-      const data = await zipFunction({ ...parameters, config: { ...config, nodeBundler: NODE_BUNDLER.ZISI } })
-
-      return { ...data, bundlerErrors: esbuildError.errors }
-    } catch {
-      throw esbuildError
+  return tracer.withActiveSpan('function.bundle', async (span) => {
+    // If a specific JS bundler version is specified, we'll use it.
+    if (config.nodeBundler !== NODE_BUNDLER.ESBUILD_ZISI) {
+      const result = await zipFunction({ ...parameters, config, span })
+      await trackBundlerResult(span, result)
+      return result
     }
-  }
+
+    // Otherwise, we'll try to bundle with esbuild and, if that fails, fallback
+    // to zisi.
+    try {
+      const result = await zipFunction({
+        ...parameters,
+        config: { ...config, nodeBundler: NODE_BUNDLER.ESBUILD },
+        span,
+      })
+      await trackBundlerResult(span, result)
+      return result
+    } catch (esbuildError) {
+      span.recordException(esbuildError)
+      try {
+        const data = await zipFunction({ ...parameters, config: { ...config, nodeBundler: NODE_BUNDLER.ZISI }, span })
+        const result = { ...data, bundlerErrors: esbuildError.errors }
+        await trackBundlerResult(span, result)
+        return result
+      } catch {
+        throw esbuildError
+      }
+    }
+  })
+}
+
+const trackBundlerResult = async (span: Span, result: ZipFunctionResult) => {
+  span.setAttributes(getBundleResultSpanAttributes(result, await getArchiveSize(result.path)))
 }
 
 const runtime: Runtime = {
