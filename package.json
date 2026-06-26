@@ -46,11 +46,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
     "@eslint/compat": "^1.2.9",
     "@eslint/js": "^9.28.0",
-    "@typescript-eslint/eslint-plugin": "~8.49.0",
     "@vitest/eslint-plugin": "~1.4.3",
     "eslint": "^9.28.0",
     "eslint-plugin-ava": "^15.0.1",
