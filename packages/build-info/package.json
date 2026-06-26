@@ -27,6 +27,7 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "e2e:serve": "vite e2e/fixture --port 3000",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
