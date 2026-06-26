@@ -77,7 +77,6 @@
   "devDependencies": {
     "@netlify/types": "2.7.0",
     "@types/archiver": "6.0.4",
-    "@types/is-ci": "3.0.4",
     "@types/node": "^22.12.0",
     "@types/normalize-path": "3.0.2",
     "@types/resolve": "1.20.6",
@@ -94,7 +93,6 @@
     "is-ci": "4.1.0",
     "lambda-local": "2.2.0",
     "source-map-support": "0.5.21",
-    "typescript": "5.9.3",
     "vitest": "^3.0.0"
   },
   "engines": {

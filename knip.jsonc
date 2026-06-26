@@ -1,0 +1,56 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["**/fixtures/**"],
+  "workspaces": {
+    ".": {},
+    "packages/*": {},
+    "packages/build": {
+      "entry": ["test-d/**/*.ts"],
+      "ignoreDependencies": [
+        // CLI binary spawned as a subprocess (not imported), so knip can't trace it.
+        "atob",
+        // Imported only from a test fixture, which the global `**/fixtures/**` ignore hides.
+        "process-exists",
+        // CLI binary spawned as a subprocess (not imported), so knip can't trace it.
+        "yarn",
+        // Used in tests but can't be declared as a dependency due to a circular dependency.
+        "@netlify/testing",
+      ],
+    },
+    "packages/config": {
+      "ignoreDependencies": [
+        // Used in tests but can't be declared as a dependency due to a circular dependency.
+        "@netlify/testing",
+      ],
+    },
+    "packages/build-info": {
+      "entry": [
+        "e2e/**/*.e2e.ts",
+        // knip doesn't pick up the playwright -> npm -> vite -> <script> entry
+        "e2e/fixture/main.ts",
+      ],
+    },
+    "packages/edge-bundler": {
+      "ignore": ["deno/vendor/**"],
+      "ignoreFiles": [
+        // TODO(serhalp): Probably move these into a `fixtures/` dir.
+        "test/integration/functions/func1.ts",
+        "test/integration/internal-functions/func2.ts",
+        "test/integration/test.js",
+      ],
+    },
+    "packages/zip-it-and-ship-it": {
+      "entry": [
+        // knip doesn't pick up the npm -> bash -> node entry
+        "benchmarks/*.{js,ts}",
+      ],
+      "ignore": ["**/fixtures-esm/**"],
+      "ignoreDependencies": [
+        // Imported only from a test fixture, which the global `**/fixtures/**` ignore hides.
+        "browserslist",
+        // Used from a test fixture via an intentionally obfuscated dynamic require knip can't resolve.
+        "cardinal",
+      ],
+    },
+  },
+}
