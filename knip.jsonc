@@ -1,7 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": ["**/fixtures/**"],
-  // TODO(serhalp): Lint PR titles a saner
+  "ignore": ["**/fixtures/**", "**/vendor/**"],
+  // Don't flag extraneous `export`s, low impact not worth the noise.
+  "ignoreExportsUsedInFile": true,
+  // Used magically by `conventional-commit.yml` GHA workflow
+  // TODO(serhalp): Lint PR titles a more explicit way and remove this
   "commitlint": {
     "config": ["commitlint.config.js"],
   },
@@ -19,6 +22,8 @@
         "yarn",
         // Used in tests but can't be declared as a dependency due to a circular dependency.
         "@netlify/testing",
+        // Intentionally an optional peer dep, resolved defensively at runtime
+        "@netlify/opentelemetry-sdk-setup",
       ],
     },
     "packages/config": {
@@ -37,7 +42,6 @@
     "packages/edge-bundler": {
       // knip doesn't pick up the Node.js -> dynamic `deno run <path>` entries
       "entry": ["deno/bundle.ts", "deno/config.ts"],
-      "ignore": ["deno/vendor/**"],
       "ignoreFiles": [
         // TODO(serhalp): Probably move these into a `fixtures/` dir.
         "test/integration/functions/func1.ts",
