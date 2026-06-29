@@ -35,6 +35,8 @@
       ],
     },
     "packages/edge-bundler": {
+      // knip doesn't pick up the Node.js -> dynamic `deno run <path>` entries
+      "entry": ["deno/bundle.ts", "deno/config.ts"],
       "ignore": ["deno/vendor/**"],
       "ignoreFiles": [
         // TODO(serhalp): Probably move these into a `fixtures/` dir.
