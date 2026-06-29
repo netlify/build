@@ -1,6 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignore": ["**/fixtures/**"],
+  // TODO(serhalp): Lint PR titles a saner
+  "commitlint": {
+    "config": ["commitlint.config.js"],
+  },
   "workspaces": {
     ".": {},
     "packages/*": {},
