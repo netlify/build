@@ -3,7 +3,7 @@ const bundlesSchema = {
   required: ['asset', 'format'],
   properties: {
     asset: { type: 'string' },
-    format: { type: 'string', enum: ['eszip2', 'js', 'tar'] },
+    format: { type: 'string', enum: ['eszip2', 'tar'] },
   },
   additionalProperties: false,
 }
