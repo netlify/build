@@ -50,9 +50,6 @@ const httpMethod = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', '
 const httpMethods = z.preprocess((input) => (typeof input === 'string' ? input.toUpperCase() : input), httpMethod)
 const path = z.string().startsWith('/', { message: "Must start with a '/'" })
 
-export type HttpMethod = z.infer<typeof httpMethod>
-export type HttpMethods = z.infer<typeof httpMethods>
-
 export const inSourceConfig = functionConfigShape
   .pick({
     background: true,

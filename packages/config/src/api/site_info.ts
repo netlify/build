@@ -183,8 +183,6 @@ const ExtensionResponseSchema = z.array(
   }),
 )
 
-export type ExtensionResponse = z.output<typeof ExtensionResponseSchema>
-
 type GetExtensionsOptions = {
   siteId?: string
   accountId?: string
