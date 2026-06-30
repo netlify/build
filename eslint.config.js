@@ -75,6 +75,15 @@ export default tseslint.config(
     },
   },
 
+  // TODO(jg): remove once eslint-plugin-n can handle
+  // (or be configured to handle) package exports
+  {
+    files: ['packages/build/tests/**/*.ts'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+
   // Project-specific rules
   {
     ignores: ['packages/**/dist', 'packages/**/lib', 'packages/edge-bundler/deno/**'],

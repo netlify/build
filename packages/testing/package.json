@@ -2,7 +2,11 @@
   "name": "@netlify/testing",
   "private": true,
   "type": "module",
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/fixture.js": "./lib/fixture.js",
+    "./lib/normalize.js": "./lib/normalize.js"
+  },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [

@@ -1,5 +1,4 @@
 import type { NetlifyAPI } from '@netlify/api'
-import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
@@ -214,7 +213,7 @@ const getConfigFileEnv = function ({
 
 // Some environment variables cannot be overridden by configuration
 const cleanUserEnv = function (userEnv) {
-  return omit.default(userEnv, READONLY_ENV)
+  return Object.fromEntries(Object.entries(userEnv ?? {}).filter(([key]) => !READONLY_ENV.includes(key)))
 }
 
 const READONLY_ENV = [

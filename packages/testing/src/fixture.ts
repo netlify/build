@@ -5,7 +5,6 @@ import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import { default as build, startDev } from '@netlify/build'
-import test from 'ava'
 import cpy from 'cpy'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
@@ -101,6 +100,7 @@ export class Fixture {
   }
 
   constructor(
+    testFilePath: string,
     /**
      * a relative path from the test file to the fixture directory
      * @example: ./fixtures/my_fixture
@@ -108,7 +108,7 @@ export class Fixture {
     relativeFixturePath?: string,
   ) {
     if (relativeFixturePath && relativeFixturePath.length !== 0) {
-      const testFile = fileURLToPath(test.meta.file)
+      const testFile = fileURLToPath(testFilePath)
       this.repositoryRoot = normalize(`${testFile}/../${relativeFixturePath}`)
 
       if (!existsSync(this.repositoryRoot)) {
