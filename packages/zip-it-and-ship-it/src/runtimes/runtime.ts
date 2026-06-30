@@ -1,3 +1,5 @@
+import type { Span } from '@opentelemetry/api'
+
 import type { ArchiveFormat } from '../archive.js'
 import type { FunctionConfig } from '../config.js'
 import type { FeatureFlags } from '../feature_flags.js'
@@ -8,7 +10,7 @@ import { ObjectValues } from '../types/utils.js'
 import type { RuntimeCache } from '../utils/cache.js'
 import { Logger } from '../utils/logger.js'
 
-import type { NodeBundlerName } from './node/bundlers/types.js'
+import type { BundlerReason, NodeBundlerName } from './node/bundlers/types.js'
 import type { StaticAnalysisResult } from './node/in_source_config/index.js'
 
 export const RUNTIME = {
@@ -43,6 +45,7 @@ export type GetSrcFilesFunction = (
 
 export interface ZipFunctionResult {
   bundler?: NodeBundlerName
+  bundlerReason?: BundlerReason
   bundlerErrors?: object[]
   bundlerWarnings?: object[]
   config: FunctionConfig
@@ -75,6 +78,7 @@ export type ZipFunction = (
     isInternal: boolean
     logger: Logger
     repositoryRoot?: string
+    span?: Span
   } & FunctionSource,
 ) => Promise<ZipFunctionResult>
 

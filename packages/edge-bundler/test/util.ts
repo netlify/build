@@ -37,7 +37,7 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
 
     return {
       basePath: tmpFixtureDir.path,
-      cleanup: () => Promise.allSettled([tmpDistDir.cleanup, tmpFixtureDir.cleanup]),
+      cleanup: () => Promise.allSettled([tmpDistDir.cleanup(), tmpFixtureDir.cleanup()]),
       distPath,
     }
   }
@@ -65,16 +65,18 @@ const inspectESZIPFunction = (path: string) => `
 `
 
 const inspectTarballFunction = () => `
-import path from "node:path";
-import { pathToFileURL } from "node:url";
 import manifest from "./___netlify-edge-functions.json" with { type: "json" };
 
 const responses = {};
 
 for (const functionName in manifest.functions) {
   const req = new Request("https://test.netlify");
-  const entrypoint = path.resolve(manifest.functions[functionName]);
-  const func = await import(pathToFileURL(entrypoint))
+  // Import via a relative specifier so Deno resolves the module URL itself,
+  // keeping its encoding consistent with the import map base (both derived from
+  // cwd). Pre-building an absolute file:// URL on the Node side encodes paths
+  // differently from Deno (e.g. '~' in Windows 8.3 short names), which breaks
+  // import map prefix matching on Deno 2.8+.
+  const func = await import("./" + manifest.functions[functionName]);
   const res = await func.default(req);
 
   responses[functionName] = await res.text();

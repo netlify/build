@@ -1,5 +1,7 @@
 import path from 'path'
 
+import { RUNTIME } from '@netlify/zip-it-and-ship-it'
+
 import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
@@ -16,7 +18,7 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
 }
 
 /**
- * Logs the result of bundling functions
+ * Logs the result of bundling functions (user facing)
  *
  * @param {object} options
  * @param {any} options.logs
@@ -52,6 +54,54 @@ export const logBundleResults = ({ logs, results = [] }) => {
   if (modulesWithDynamicImports.length !== 0) {
     logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
+}
+
+/**
+ * Sibling of `logBundleResults`. Derives structured telemetry from the same
+ * `results` array and emits it to the system log and the active span. Returns
+ * summary stats the caller can use for metric tags.
+ *
+ * @param {object} options
+ * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
+ * @param {(...args: unknown[]) => void} options.systemLog
+ * @returns {{
+ *   bundlers: import("@netlify/zip-it-and-ship-it").NodeBundlerName[],
+ *   fallbackCount: number,
+ *   warningsCount: number,
+ * }}
+ */
+export const trackBundleResults = ({ results = [], systemLog }) => {
+  // `bundlerErrors` is only set when the user requested `esbuild_zisi` (esbuild
+  // with zisi fallback), esbuild failed, and zisi succeeded. The final
+  // `bundler` reflects the fallback, so this is our "silent fallback" signal.
+  const perFunction = results.map((result) => ({
+    name: result.name,
+    runtime: result.runtime,
+    bundler: result.runtime === RUNTIME.JAVASCRIPT ? result.bundler : null,
+    bundlerReason: result.runtime === RUNTIME.JAVASCRIPT ? (result.bundlerReason ?? null) : null,
+    sizeBytes: result.size ?? null,
+    hadFallback: (result.bundlerErrors?.length ?? 0) > 0,
+    hadWarnings: (result.bundlerWarnings?.length ?? 0) > 0,
+  }))
+
+  // Exclude both `null` (non-JS runtimes) and `undefined` (prebuilt `.zip`
+  // JS functions, which zip-it-and-ship-it passes through with no bundler).
+  const jsResults = perFunction.filter((p) => p.bundler != null)
+  const bundlers = [...new Set(jsResults.map((p) => p.bundler))]
+  const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {})
+  const fallbackCount = perFunction.filter((p) => p.hadFallback).length
+  const warningsCount = perFunction.filter((p) => p.hadWarnings).length
+
+  systemLog({
+    msg: 'Functions bundling completed successfully',
+    bundlers,
+    bundlerCounts,
+    fallbackCount,
+    warningsCount,
+    functions: perFunction,
+  })
+
+  return { bundlers, fallbackCount, warningsCount }
 }
 
 export const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
@@ -171,19 +221,14 @@ export const logSecretsScanSuccessMessage = function (logs, msg) {
   log(logs, msg, { color: THEME.highlightWords })
 }
 
-export const logSecretsScanFailBuildMessage = function ({
-  logs,
-  scanResults,
-  groupedResults,
-  enhancedScanShouldRunInActiveMode,
-}) {
+export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
   const { secretMatches, enhancedSecretMatches } = groupedResults
   const secretMatchesKeys = Object.keys(secretMatches)
   const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 && enhancedScanShouldRunInActiveMode ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
+    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
   // Explicit secret matches
@@ -210,30 +255,28 @@ export const logSecretsScanFailBuildMessage = function ({
     )
   }
 
-  if (enhancedScanShouldRunInActiveMode) {
-    // Likely secret matches from enhanced scan
-    enhancedSecretMatchesKeys.forEach((key, index) => {
-      logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
+  // Likely secret matches from enhanced scan
+  enhancedSecretMatchesKeys.forEach((key, index) => {
+    logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
 
-      enhancedSecretMatches[key]
-        .sort((a, b) => {
-          return a.file > b.file ? 0 : 1
-        })
-        .forEach(({ lineNumber, file }) => {
-          logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
-        })
-    })
+    enhancedSecretMatches[key]
+      .sort((a, b) => {
+        return a.file > b.file ? 0 : 1
+      })
+      .forEach(({ lineNumber, file }) => {
+        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+      })
+  })
 
-    if (enhancedSecretMatchesKeys.length) {
-      logError(
-        logs,
-        `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
-      )
-      logError(
-        logs,
-        `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
-      )
-    }
+  if (enhancedSecretMatchesKeys.length) {
+    logError(
+      logs,
+      `\nTo prevent exposing secrets, the build will fail until these likely secret values are not found in build output or repo files.`,
+    )
+    logError(
+      logs,
+      `\nIf these are expected, use SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES, or SECRETS_SCAN_SMART_DETECTION_ENABLED to prevent detecting.`,
+    )
   }
 
   logError(

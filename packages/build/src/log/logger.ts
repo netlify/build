@@ -53,7 +53,7 @@ export const log = function (
 ) {
   const { indent = false, color } = config
   const stringA = indent ? indentString(string, INDENT_SIZE) : string
-  const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+  const stringB = stringA.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
   if (logs && logs.outputFlusher) {

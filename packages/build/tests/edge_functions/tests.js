@@ -72,27 +72,27 @@ const FLAG_VARIANTS = isDenoVersionSupported(denoVersion)
   : [{ id: 'default', flags: { debug: false } }]
 
 for (const variant of FLAG_VARIANTS) {
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
     const output = await new Fixture('./fixtures/src_default').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC automatic value', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC automatic value', async (t) => {
     const output = await new Fixture('./fixtures/src_auto').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC relative path', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC relative path', async (t) => {
     const output = await new Fixture('./fixtures/src_relative').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC missing path', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC missing path', async (t) => {
     const output = await new Fixture('./fixtures/src_missing').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_SRC created dynamically', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC created dynamically', async (t) => {
     const output = await new Fixture('./fixtures/src_dynamic')
       .withFlags(variant.flags)
       .withCopyRoot({ git: false })
@@ -100,7 +100,7 @@ for (const variant of FLAG_VARIANTS) {
     t.snapshot(normalizeOutput(output))
   })
 
-  test(
+  test.serial(
     variant.id + ' - constants.EDGE_FUNCTIONS_SRC dynamic is ignored if EDGE_FUNCTIONS_SRC is specified',
     async (t) => {
       const output = await new Fixture('./fixtures/src_dynamic_ignore')
@@ -111,12 +111,12 @@ for (const variant of FLAG_VARIANTS) {
     },
   )
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
     const output = await new Fixture('./fixtures/print_dist').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
-  test(variant.id + ' - constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
+  test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
     const output = await new Fixture('./fixtures/print_dist')
       .withFlags({ ...variant.flags, mode: 'buildbot', edgeFunctionsDistDir: '/another/path' })
       .runWithBuild()
@@ -183,7 +183,7 @@ for (const variant of FLAG_VARIANTS) {
     assertBundlesExist(t, manifest, variant)
   })
 
-  test(variant.id + ' - handles failure when bundling Edge Functions via runCoreSteps function', async (t) => {
+  test.serial(variant.id + ' - handles failure when bundling Edge Functions via runCoreSteps function', async (t) => {
     const output = await new Fixture('./fixtures/functions_invalid')
       .withFlags({ ...variant.flags, buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
       .runWithBuild()
@@ -228,7 +228,7 @@ for (const variant of FLAG_VARIANTS) {
     }
   })
 
-  test(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+  test.serial(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
     const output = await new Fixture('./fixtures/functions_plugin_mutations').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
     const manifest = await assertManifest(t, 'functions_plugin_mutations')
@@ -348,7 +348,7 @@ for (const variant of FLAG_VARIANTS) {
     },
   )
 
-  test(variant.id + ' - skip bundling when edge function directories exist, contain no functions', async (t) => {
+  test.serial(variant.id + ' - skip bundling when edge function directories exist, contain no functions', async (t) => {
     await new Fixture('./fixtures/functions_empty_directory').withFlags(variant.flags).runWithBuild()
 
     const manifestPath = join(
@@ -362,7 +362,7 @@ for (const variant of FLAG_VARIANTS) {
     t.false(await pathExists(manifestPath))
   })
 
-  test(
+  test.serial(
     variant.id + ' - skip bundling when edge function directories exist, contain no functions, contain empty manifest',
     async (t) => {
       await new Fixture('./fixtures/functions_empty_manifest').withFlags(variant.flags).runWithBuild()
