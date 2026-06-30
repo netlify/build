@@ -45,6 +45,7 @@
     "@babel/types": "^7.28.5",
     "@netlify/binary-info": "^1.0.0",
     "@netlify/serverless-functions-api": "2.16.0",
+    "@opentelemetry/api": "~1.8.0",
     "@vercel/nft": "0.29.4",
     "archiver": "^7.0.0",
     "common-path-prefix": "^3.0.0",
@@ -76,6 +77,7 @@
   },
   "devDependencies": {
     "@netlify/types": "2.7.0",
+    "@opentelemetry/sdk-trace-base": "~1.24.0",
     "@types/archiver": "6.0.4",
     "@types/is-ci": "3.0.4",
     "@types/node": "^22.12.0",
