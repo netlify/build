@@ -78,7 +78,7 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
     return null
   }
 
-  if (await project.isRedwoodProject()) {
+  if ((await project.isRedwoodProject()) || (await project.isCedarProject())) {
     return null
   }
 
