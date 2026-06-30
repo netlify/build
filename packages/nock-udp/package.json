@@ -29,7 +29,7 @@
   "author": "Netlify Inc.",
   "devDependencies": {
     "@types/node": "^22.12.0",
-    "typescript": "^5.0.0",
+    "typescript": "^6.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {
