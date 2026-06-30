@@ -116,7 +116,7 @@
     "typescript": "^5.0.0",
     "yaml": "^2.8.0",
     "yargs": "^17.6.0",
-    "zod": "^3.25.76"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@netlify/nock-udp": "^6.0.0",
