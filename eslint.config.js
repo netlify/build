@@ -80,8 +80,8 @@ export default tseslint.config(
   {
     files: ['packages/build/tests/**/*.ts'],
     rules: {
-      'n/no-missing-import': 'off'
-    }
+      'n/no-missing-import': 'off',
+    },
   },
 
   // Project-specific rules
