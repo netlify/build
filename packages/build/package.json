@@ -67,7 +67,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^8.0.0",
-    "@netlify/blobs": "^10.4.4",
+    "@netlify/blobs": "^10.7.9",
     "@netlify/cache-utils": "^7.0.0",
     "@netlify/config": "^25.0.0",
     "@netlify/edge-bundler": "15.0.1",
