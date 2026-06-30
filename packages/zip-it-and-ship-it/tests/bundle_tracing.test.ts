@@ -2,7 +2,7 @@ import { SpanStatusCode, trace } from '@opentelemetry/api'
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 
-import { zipNode } from './helpers/main.js'
+import { zipFixture } from './helpers/main.js'
 
 // `function.bundle` spans are created via the global tracer, so capture them with an
 // in-memory exporter. Reset between tests since the tracer provider is global state.
@@ -24,7 +24,7 @@ const getBundleSpans = () => exporter.getFinishedSpans().filter((span) => span.n
 
 describe('function.bundle spans', () => {
   test('emits a span with bundler and size attributes for a successful bundle', async () => {
-    await zipNode('simple')
+    await zipFixture('simple')
 
     const spans = getBundleSpans()
     expect(spans).toHaveLength(1)
@@ -40,21 +40,40 @@ describe('function.bundle spans', () => {
   })
 
   test('records bundler.reason=flag-forced-nft when traceWithNft is enabled', async () => {
-    await zipNode('simple', { opts: { featureFlags: { traceWithNft: true } } })
+    await zipFixture('simple', { opts: { featureFlags: { traceWithNft: true } } })
 
     const [span] = getBundleSpans()
     expect(span.attributes['bundler.name']).toBe('nft')
     expect(span.attributes['bundler.reason']).toBe('flag-forced-nft')
   })
 
-  test('records an exception event when esbuild fails and falls back to zisi', async () => {
-    // `esbuild_zisi` tries esbuild first; the fixture is invalid for esbuild, so the
-    // exception is recorded on the span before recovering with zisi.
-    await zipNode('node-syntax-error', { opts: { config: { '*': { nodeBundler: 'esbuild_zisi' } } } }).catch(() => {
-      // If zisi also fails the call rejects, but the esbuild exception is still recorded.
-    })
+  test('records an exception and marks the span as errored when the bundler fails', async () => {
+    await expect(
+      zipFixture('node-syntax-error-cjs', { opts: { config: { '*': { nodeBundler: 'esbuild' } } } }),
+    ).rejects.toThrow()
 
     const [span] = getBundleSpans()
-    expect(span.events.some((event) => event.name === 'exception')).toBe(true)
+    expect(span.status.code).toBe(SpanStatusCode.ERROR)
+    expect(span.events.filter((event) => event.name === 'exception')).toHaveLength(1)
+  })
+
+  test('records an exception per bundler and marks the span as errored when esbuild and its zisi fallback both fail', async () => {
+    await expect(
+      zipFixture('node-syntax-error-cjs', { opts: { config: { '*': { nodeBundler: 'esbuild_zisi' } } } }),
+    ).rejects.toThrow()
+
+    const [span] = getBundleSpans()
+    expect(span.status.code).toBe(SpanStatusCode.ERROR)
+    expect(span.events.filter((event) => event.name === 'exception')).toHaveLength(2)
+    // The two exception events should have different attributes because they are different exceptions (esbuild vs zisi)
+    expect(span.events[0].attributes).not.toEqual(span.events[1].attributes)
+  })
+
+  test('records the esbuild exception but leaves the span un-errored when the zisi fallback succeeds', async () => {
+    await zipFixture('node-syntax-error', { opts: { config: { '*': { nodeBundler: 'esbuild_zisi' } } } })
+
+    const [span] = getBundleSpans()
+    expect(span.status.code).not.toBe(SpanStatusCode.ERROR)
+    expect(span.events.filter((event) => event.name === 'exception')).toHaveLength(1)
   })
 })
