@@ -750,6 +750,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/src/plugins/child/diff.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/plugins/child/error.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1060,6 +1066,12 @@ export default [
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['packages/build/src/plugins_core/functions_install/index.js'],
+    rules: {
+      'n/no-missing-import': 'off',
     },
   },
   {

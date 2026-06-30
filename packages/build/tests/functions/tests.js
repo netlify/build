@@ -1,10 +1,10 @@
+import { existsSync } from 'fs'
 import { readdir, readFile, rm, stat, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import test from 'ava'
-import { pathExists } from 'path-exists'
 import semver from 'semver'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
@@ -63,7 +63,7 @@ test('Functions: --functionsDistDir', async (t) => {
       .withFlags({ mode: 'buildbot', functionsDistDir })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
-    t.true(await pathExists(functionsDistDir))
+    t.true(existsSync(functionsDistDir))
     const files = await readdir(functionsDistDir)
     // We're expecting two files: the function ZIP and the manifest.
     t.is(files.length, 2)

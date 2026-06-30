@@ -1,10 +1,10 @@
+import { existsSync } from 'fs'
 import { copyFile, readFile, rm } from 'fs/promises'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
-import { pathExists } from 'path-exists'
 import tmp from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
@@ -288,7 +288,7 @@ test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
       })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
-    t.false(await pathExists(configPath))
+    t.false(existsSync(configPath))
   } finally {
     await stopServer()
   }
