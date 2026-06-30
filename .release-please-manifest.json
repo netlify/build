@@ -1,17 +1,17 @@
 {
   "packages/build-info": "11.0.0",
-  "packages/build": "36.0.1",
+  "packages/build": "36.1.0",
   "packages/edge-bundler": "15.0.1",
   "packages/cache-utils": "7.0.0",
   "packages/config": "25.0.0",
-  "packages/functions-utils": "7.0.1",
+  "packages/functions-utils": "7.0.2",
   "packages/git-utils": "7.0.0",
   "packages/headers-parser": "10.0.0",
   "packages/js-client": "15.0.0",
   "packages/nock-udp": "6.0.0",
   "packages/redirect-parser": "16.0.0",
   "packages/run-utils": "7.0.0",
-  "packages/opentelemetry-sdk-setup": "3.0.0",
+  "packages/opentelemetry-sdk-setup": "3.0.1",
   "packages/opentelemetry-utils": "3.0.0",
-  "packages/zip-it-and-ship-it": "15.0.1"
+  "packages/zip-it-and-ship-it": "15.1.0"
 }
