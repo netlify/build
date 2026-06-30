@@ -12,7 +12,7 @@ export default defineConfig({
     // onConsoleLog: (log, type) => {
     //   process[type].write(log)
     // },
-    setupFiles: ['tests/test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts'],
     deps: {
       // this is to work inside memfs as well
       inline: ['find-up', 'locate-path'],

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["**/fixtures/**", "**/vendor/**"],
+  // Don't flag extraneous `export`s, low impact not worth the noise.
+  "ignoreExportsUsedInFile": true,
+  // Used magically by `conventional-commit.yml` GHA workflow
+  // TODO(serhalp): Lint PR titles a more explicit way and remove this
+  "commitlint": {
+    "config": ["commitlint.config.js"],
+  },
+  "workspaces": {
+    ".": {},
+    "packages/*": {},
+    "packages/build": {
+      "entry": ["test-d/**/*.ts"],
+      "ignoreDependencies": [
+        // CLI binary spawned as a subprocess (not imported), so knip can't trace it.
+        "atob",
+        // Imported only from a test fixture, which the global `**/fixtures/**` ignore hides.
+        "process-exists",
+        // CLI binary spawned as a subprocess (not imported), so knip can't trace it.
+        "yarn",
+        // Used in tests but can't be declared as a dependency due to a circular dependency.
+        "@netlify/testing",
+        // Intentionally an optional peer dep, resolved defensively at runtime
+        "@netlify/opentelemetry-sdk-setup",
+      ],
+    },
+    "packages/config": {
+      "ignoreDependencies": [
+        // Used in tests but can't be declared as a dependency due to a circular dependency.
+        "@netlify/testing",
+      ],
+    },
+    "packages/build-info": {
+      "entry": [
+        "e2e/**/*.e2e.ts",
+        // knip doesn't pick up the playwright -> npm -> vite -> <script> entry
+        "e2e/fixture/main.ts",
+      ],
+    },
+    "packages/edge-bundler": {
+      // knip doesn't pick up the Node.js -> dynamic `deno run <path>` entries
+      "entry": ["deno/bundle.ts", "deno/config.ts"],
+      "ignoreFiles": [
+        // TODO(serhalp): Probably move these into a `fixtures/` dir.
+        "test/integration/functions/func1.ts",
+        "test/integration/internal-functions/func2.ts",
+        "test/integration/test.js",
+      ],
+    },
+    "packages/zip-it-and-ship-it": {
+      "entry": [
+        // knip doesn't pick up the npm -> bash -> node entry
+        "benchmarks/*.{js,ts}",
+      ],
+      "ignore": ["**/fixtures-esm/**"],
+      "ignoreDependencies": [
+        // Imported only from a test fixture, which the global `**/fixtures/**` ignore hides.
+        "browserslist",
+        // Used from a test fixture via an intentionally obfuscated dynamic require knip can't resolve.
+        "cardinal",
+      ],
+    },
+  },
+}
