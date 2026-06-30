@@ -244,13 +244,14 @@ const zipWithFunctionWithFallback: ZipFunction = async ({ config = {}, ...parame
       await trackBundlerResult(span, result)
       return result
     } catch (esbuildError) {
-      span.recordException(esbuildError)
       try {
         const data = await zipFunction({ ...parameters, config: { ...config, nodeBundler: NODE_BUNDLER.ZISI }, span })
         const result = { ...data, bundlerErrors: esbuildError.errors }
         await trackBundlerResult(span, result)
+        span.recordException(esbuildError)
         return result
-      } catch {
+      } catch (zisiError) {
+        span.recordException(zisiError)
         throw esbuildError
       }
     }
