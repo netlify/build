@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.0.0...opentelemetry-sdk-setup-v3.0.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/core to ~1.30.0 [security] ([#7102](https://github.com/netlify/build/issues/7102)) ([745b5b7](https://github.com/netlify/build/commit/745b5b7d9dbb465dbb74bfa5442c07d67ef5572b))
+
 ## [3.0.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.3...opentelemetry-sdk-setup-v3.0.0) (2026-06-16)
 
 
