@@ -73,6 +73,81 @@ $ node --invalid
 node: bad option: --invalid"
 `;
 
+exports[`Early exit 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/error/fixtures/early_exit
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/error/fixtures/early_exit
+
+> Config file
+  packages/build/tests/error/fixtures/early_exit/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/error/fixtures/early_exit
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+    - inputs: {}
+      origin: config
+      package: ./plugin_slow
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin@1.0.0 from netlify.toml
+   - ./plugin_slow@1.0.0 from netlify.toml
+Build step duration: ./plugin onPreBuild completed in 1ms
+Build step duration: ./plugin_slow onBuild completed in 1ms
+
+Plugin "./plugin" internal error                              
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Could not receive event from child process because it already exited.
+  The plugin might have exited due to a bug terminating the process, such as an infinite loop.
+  The plugin might also have explicitly terminated the process, for example with process.exit().
+  Plugin methods should instead:
+    - on success: return
+    - on failure: call utils.build.failPlugin() or utils.build.failBuild()
+
+  Plugin details
+  Package:        ./plugin
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPostBuild" event in "./plugin" from netlify.toml
+
+  Resolved config
+  build:
+    publish: packages/build/tests/error/fixtures/early_exit
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+    - inputs: {}
+      origin: config
+      package: ./plugin_slow"
+`;
+
 exports[`Exits in plugins 1`] = `
 "
 Netlify Build                                                 
