@@ -105,6 +105,23 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.1.0](https://github.com/netlify/build/compare/build-v36.0.1...build-v36.1.0) (2026-06-30)
+
+
+### Features
+
+* record child span per bundled function, handle failures ([#7116](https://github.com/netlify/build/issues/7116)) ([1709d5c](https://github.com/netlify/build/commit/1709d5c7a65e059647c98379af87037cacc20174))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.1 to ^7.0.2
+    * @netlify/zip-it-and-ship-it bumped from 15.0.1 to 15.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.0.1
+
 ## [36.0.1](https://github.com/netlify/build/compare/build-v36.0.0...build-v36.0.1) (2026-06-18)
 
 
