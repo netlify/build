@@ -10,13 +10,13 @@ const HASH_ALGO = 'sha1'
 // Caching a big directory like `node_modules` is slow. However, those can
 // sometime be represented by a digest file such as `package-lock.json`. If this
 // has not changed, we don't need to save cache again.
-export const getHash = async function (digests, move) {
+export const getHash = async function (digests: string[], move: boolean) {
   // Moving files is faster than computing hashes
   if (move || digests.length === 0) {
     return
   }
 
-  let digestPath = undefined
+  let digestPath: string | undefined = undefined
 
   for (const digest of digests) {
     try {
