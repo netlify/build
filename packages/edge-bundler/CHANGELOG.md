@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.0.2](https://github.com/netlify/build/compare/edge-bundler-v15.0.1...edge-bundler-v15.0.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* make edge-bundler tars deterministic ([#7118](https://github.com/netlify/build/issues/7118)) ([c8aee02](https://github.com/netlify/build/commit/c8aee024e8390260e1eedcf0bdfe315b52b8ad76))
+
 ## [15.0.1](https://github.com/netlify/build/compare/edge-bundler-v15.0.0...edge-bundler-v15.0.1) (2026-06-18)
 
 
