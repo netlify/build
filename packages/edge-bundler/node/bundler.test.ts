@@ -816,6 +816,51 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Produces byte-identical tarballs when bundling the same code twice', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      // Bundle the same code into two separate dist directories, one after the other.
+      const secondDist = await tmp.dir({ unsafeCleanup: true })
+      const secondDistPath = join(secondDist.path, '.netlify', 'edge-functions-dist')
+
+      const bundleTarball = async (dist: string) => {
+        await bundle([join(basePath, 'netlify/edge-functions')], dist, declarations, {
+          basePath,
+          configPath: join(basePath, '.netlify/edge-functions/config.json'),
+          featureFlags: {
+            edge_bundler_generate_tarball: true,
+          },
+        })
+
+        const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'))
+
+        return join(dist, manifest.bundles[0].asset)
+      }
+
+      const firstTarballPath = await bundleTarball(distPath)
+
+      // Wait long enough to cross a whole-second boundary. tar stores mtime at
+      // second resolution, so without the mtime-normalisation fix the second
+      // bundle's freshly written files would carry a different mtime and the two
+      // tarballs would diverge. With the fix, mtime is omitted and they match.
+      await new Promise((done) => setTimeout(done, 1_500))
+
+      const secondTarballPath = await bundleTarball(secondDistPath)
+
+      const [firstTarball, secondTarball] = await Promise.all([readFile(firstTarballPath), readFile(secondTarballPath)])
+
+      // The two tarballs must be byte-for-byte identical for reproducible builds.
+      expect(firstTarball.equals(secondTarball)).toBe(true)
+
+      await Promise.all([cleanup(), secondDist.cleanup()])
+    })
+
     test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
