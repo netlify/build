@@ -20,9 +20,11 @@ export const getHash = async function (digests: string[], move: boolean) {
 
   for (const digest of digests) {
     try {
-      await fs.access(digest)
-      digestPath = digest
-      break
+      const stat = await fs.stat(digest)
+      if (stat.isFile()) {
+        digestPath = digest
+        break
+      }
     } catch {
       continue
     }
