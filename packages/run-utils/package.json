@@ -1,6 +1,6 @@
 {
   "name": "@netlify/run-utils",
-  "version": "6.0.3",
+  "version": "7.0.0",
   "description": "Utility for running commands inside Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",
@@ -53,12 +53,12 @@
     "execa": "^8.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.111",
+    "@types/node": "^22.12.0",
     "semver": "^7.3.8",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }

@@ -93,6 +93,26 @@ test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbui
   t.true(functionsBundlingRequest.includes('bundler:nft,bundler:esbuild'))
 })
 
+test('Sends a `bundler` tag on the `buildbot.build.functions` metric', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, './fixtures/functions_zisi')
+  const functionsMetricRequests = timerRequests.filter((timerRequest) =>
+    timerRequest.startsWith('buildbot.build.functions:'),
+  )
+
+  t.true(functionsMetricRequests.length > 0)
+  t.true(functionsMetricRequests.every((req) => req.includes('bundler:zisi')))
+})
+
+test('Sends multiple `bundler` tags on `buildbot.build.functions` when multiple bundlers are used', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, './fixtures/functions_esbuild')
+  const functionsMetricRequests = timerRequests.filter((timerRequest) =>
+    timerRequest.startsWith('buildbot.build.functions:'),
+  )
+
+  t.true(functionsMetricRequests.length > 0)
+  t.true(functionsMetricRequests.every((req) => req.includes('bundler:nft') && req.includes('bundler:esbuild')))
+})
+
 // Retrieve statsd packets sent to --statsd.host|port, and get their snapshot
 const getTimerRequestsString = async function (t, fixtureName, flags) {
   const timerRequests = await getAllTimerRequests(t, fixtureName, flags)

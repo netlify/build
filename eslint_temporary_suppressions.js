@@ -2868,7 +2868,7 @@ export default [
       'packages/zip-it-and-ship-it/tests/main.test.ts',
     ],
     rules: {
-      '@typescript-eslint/no-useless-default-assignment': 'off'
-    }
-  }
+      '@typescript-eslint/no-useless-default-assignment': 'off',
+    },
+  },
 ]

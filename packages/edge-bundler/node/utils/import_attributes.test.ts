@@ -153,6 +153,30 @@ import data2 from './data.json' with { type: 'json' };
     expect(result).toEqual(expectedResult)
   })
 
+  test('handles TsTypeAssertion (handling of syntax not supported in JSX mode)', () => {
+    // edge case, because "<Params> inputs" is valid JSX syntax (a component with name "Params" and children "inputs"),
+    // but also valid TypeScript syntax (type assertion). In this case, the acorn-jsx parser will parse it as JSX,
+    // but then throw an error when it encounters the "assert" keyword in the import assertion.
+    // We want to make sure we can handle this case and still rewrite the import assertions correctly.
+    const source = `
+import data3 from './data.json' assert { type: 'json' };
+const params = <Params> inputs;
+const [,foo]=[1,2]
+import data2 from './data.json' assert { type: 'json' };
+`
+    const expectedResult = `
+import data3 from './data.json' with { type: 'json' };
+const params = <Params> inputs;
+const [,foo]=[1,2]
+import data2 from './data.json' with { type: 'json' };
+`
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
   test('complex JSX import assertion case', () => {
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`

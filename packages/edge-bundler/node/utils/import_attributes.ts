@@ -1,8 +1,35 @@
 import { Parser, Node } from 'acorn'
-import type { ExportAllDeclaration, ExportNamedDeclaration, ImportDeclaration, ImportExpression } from 'acorn'
+import type {
+  ExportAllDeclaration,
+  ExportNamedDeclaration,
+  ImportDeclaration,
+  ImportExpression,
+  Options as AcornOptions,
+  Program,
+} from 'acorn'
 import { tsPlugin } from '@sveltejs/acorn-typescript'
 
-const acorn = Parser.extend(tsPlugin({ jsx: true }))
+const acornNoJSX = Parser.extend(tsPlugin({ jsx: false }))
+const acornJSX = Parser.extend(tsPlugin({ jsx: true }))
+
+const parseOptions: AcornOptions = {
+  ecmaVersion: 'latest',
+  sourceType: 'module',
+  locations: true,
+}
+
+const parseAST = (source: string): Program => {
+  try {
+    return acornJSX.parse(source, parseOptions)
+  } catch (error) {
+    // for non-jsx typescript casting to type via "<type> value" (normally done with "value as type") will throw an "Unexpected token" error in acorn-jsx,
+    // but is valid syntax in TypeScript. In this case, we can retry parsing with the non-jsx parser.
+    if (error instanceof SyntaxError) {
+      return acornNoJSX.parse(source, parseOptions)
+    }
+    throw error
+  }
+}
 
 /**
  * Given source code rewrites import assert into import with
@@ -15,11 +42,7 @@ export function rewriteSourceImportAssertions(source: string): string {
   let modified = source
 
   try {
-    const parsedAST = acorn.parse(source, {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      locations: true,
-    })
+    const parsedAST = parseAST(source)
 
     const statements = collectImportAssertions(source, parsedAST.body)
 

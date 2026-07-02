@@ -16,7 +16,7 @@ test('workspace detection should throw if no package manager was detected previo
   const cwd = mockFileSystem({})
   const project = new Project(fs, cwd)
 
-  await expect(async () => await detectWorkspaces(project)).rejects.toThrowError()
+  await expect(detectWorkspaces(project)).rejects.toThrowError()
 })
 
 test('should detect workspace packages correctly for an npm workspace', async ({ fs }) => {

@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/netlify/build/compare/opentelemetry-utils-v2.0.2...opentelemetry-utils-v3.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
 ## [2.0.2](https://github.com/netlify/build/compare/opentelemetry-utils-v2.0.1...opentelemetry-utils-v2.0.2) (2026-02-25)
 
 
