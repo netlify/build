@@ -2846,6 +2846,10 @@ export default [
       'import/no-named-as-default-member': 'off',
     },
   },
+  // TODO (43081j): removing these will make ESLint auto-fix them by
+  // removing useless defaults (e.g. `const {x = 5} = fn()` when `fn` _always_
+  // returns an `x`.
+  // They need individually investigating and removing from this list.
   {
     files: [
       'packages/build/src/error/parse/parse.ts',
