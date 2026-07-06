@@ -203,6 +203,9 @@ export const bundle = async ({
         file: tarballPath,
         gzip: true,
         noDirRecurse: true,
+        // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
+        portable: true, // omit uid/gid/uname/gname/ctime/atime
+        noMtime: true, // omit mtime
         // Ensure forward slashes inside the tarball for cross-platform consistency.
         onWriteEntry(entry) {
           entry.path = getUnixPath(entry.path)
