@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@import-maps/resolve": "^2.0.0",
-    "@sveltejs/acorn-typescript": "^1.0.9",
+    "@sveltejs/acorn-typescript": "^1.0.11",
     "acorn": "^8.15.0",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
