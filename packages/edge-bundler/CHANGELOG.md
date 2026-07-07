@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.0.3](https://github.com/netlify/build/compare/edge-bundler-v15.0.2...edge-bundler-v15.0.3) (2026-07-07)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.11 ([#7121](https://github.com/netlify/build/issues/7121)) ([07f8021](https://github.com/netlify/build/commit/07f8021d1f441275cb170577b9ff698e5b77486b))
+
 ## [15.0.2](https://github.com/netlify/build/compare/edge-bundler-v15.0.1...edge-bundler-v15.0.2) (2026-07-02)
 
 
