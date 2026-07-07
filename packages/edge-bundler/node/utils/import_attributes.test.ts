@@ -177,6 +177,19 @@ import data2 from './data.json' with { type: 'json' };
     expect(result).toEqual(expectedResult)
   })
 
+  test('handles parenthesized `in` expression in a for-loop init', () => {
+    const source = `import data3 from './data.json' assert { type: 'json' };;
+for (var hasFlag = ('flag' in options), i = 0; i < 1; i++) {}
+`
+    const expectedResult = `import data3 from './data.json' with { type: 'json' };;
+for (var hasFlag = ('flag' in options), i = 0; i < 1; i++) {}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
   test('complex JSX import assertion case', () => {
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
