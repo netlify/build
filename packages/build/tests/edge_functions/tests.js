@@ -348,6 +348,31 @@ for (const variant of FLAG_VARIANTS) {
     },
   )
 
+  test.serial(
+    variant.id + ' - honors declarative `edge_functions` routes from the Frameworks API config file',
+    async (t) => {
+      await new Fixture('./fixtures/functions_frameworks_api_config')
+        .withFlags({
+          ...variant.flags,
+          mode: 'buildbot',
+        })
+        .runWithBuild()
+
+      const manifest = await assertManifest(t, 'functions_frameworks_api_config')
+      assertBundlesExist(t, manifest, variant)
+      const { routes } = manifest
+
+      t.deepEqual(routes, [
+        {
+          function: 'framework-edge',
+          pattern: '^/framework-route/?$',
+          excluded_patterns: [],
+          path: '/framework-route',
+        },
+      ])
+    },
+  )
+
   test.serial(variant.id + ' - skip bundling when edge function directories exist, contain no functions', async (t) => {
     await new Fixture('./fixtures/functions_empty_directory').withFlags(variant.flags).runWithBuild()
 
