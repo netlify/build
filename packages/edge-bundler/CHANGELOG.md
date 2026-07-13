@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.0.4](https://github.com/netlify/build/compare/edge-bundler-v15.0.3...edge-bundler-v15.0.4) (2026-07-13)
+
+
+### Bug Fixes
+
+* skip directory imports when generating edge function tarballs ([#7126](https://github.com/netlify/build/issues/7126)) ([74ed378](https://github.com/netlify/build/commit/74ed3784574e7863804962ae652a99e3b21bb620))
+
 ## [15.0.3](https://github.com/netlify/build/compare/edge-bundler-v15.0.2...edge-bundler-v15.0.3) (2026-07-07)
 
 
