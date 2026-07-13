@@ -1358,6 +1358,60 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Importing a directory when caught is handled', async () => {
+      // Importing a directory is unsupported in Deno, but `deno info` still lists
+      // the directory as an errored module reachable via a runtime (code) edge,
+      // so it lands in the set of source files to bundle. Tarball generation used
+      // to throw EISDIR when copying the directory; it must skip it instead.
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('caught-directory-import', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // The directory itself must not be present as an entry in the tarball.
+      expect(entries).toContain('./func1.ts')
+      expect(entries.some((entry) => entry === './models' || entry === './models/')).toBe(false)
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
     test('Importing a remote module that imports a WebAssembly binary (deno_dom)', async () => {
       // Deno <2.6 vendors `.wasm` imports under a `.d.mts` extension even though
       // the content is the raw WASM binary. The rewriter must detect this by
