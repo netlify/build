@@ -816,6 +816,51 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Produces byte-identical tarballs when bundling the same code twice', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      // Bundle the same code into two separate dist directories, one after the other.
+      const secondDist = await tmp.dir({ unsafeCleanup: true })
+      const secondDistPath = join(secondDist.path, '.netlify', 'edge-functions-dist')
+
+      const bundleTarball = async (dist: string) => {
+        await bundle([join(basePath, 'netlify/edge-functions')], dist, declarations, {
+          basePath,
+          configPath: join(basePath, '.netlify/edge-functions/config.json'),
+          featureFlags: {
+            edge_bundler_generate_tarball: true,
+          },
+        })
+
+        const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'))
+
+        return join(dist, manifest.bundles[0].asset)
+      }
+
+      const firstTarballPath = await bundleTarball(distPath)
+
+      // Wait long enough to cross a whole-second boundary. tar stores mtime at
+      // second resolution, so without the mtime-normalisation fix the second
+      // bundle's freshly written files would carry a different mtime and the two
+      // tarballs would diverge. With the fix, mtime is omitted and they match.
+      await new Promise((done) => setTimeout(done, 1_500))
+
+      const secondTarballPath = await bundleTarball(secondDistPath)
+
+      const [firstTarball, secondTarball] = await Promise.all([readFile(firstTarballPath), readFile(secondTarballPath)])
+
+      // The two tarballs must be byte-for-byte identical for reproducible builds.
+      expect(firstTarball.equals(secondTarball)).toBe(true)
+
+      await Promise.all([cleanup(), secondDist.cleanup()])
+    })
+
     test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
@@ -1305,6 +1350,60 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./___netlify-edge-functions.json')
       expect(entries).toContain('./deno.json')
       expect(entries).toContain('./func1.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
+    test('Importing a directory when caught is handled', async () => {
+      // Importing a directory is unsupported in Deno, but `deno info` still lists
+      // the directory as an errored module reachable via a runtime (code) edge,
+      // so it lands in the set of source files to bundle. Tarball generation used
+      // to throw EISDIR when copying the directory; it must skip it instead.
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('caught-directory-import', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // The directory itself must not be present as an entry in the tarball.
+      expect(entries).toContain('./func1.ts')
+      expect(entries.some((entry) => entry === './models' || entry === './models/')).toBe(false)
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
