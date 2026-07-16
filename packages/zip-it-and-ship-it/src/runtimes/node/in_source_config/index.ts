@@ -13,7 +13,7 @@ import type {
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfig } from '../../../config.js'
+import { FunctionConfig, functionConfigShape } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
@@ -22,7 +22,7 @@ import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
 import type { BindingMethod } from '../parser/bindings.js'
 import { createBindingsMethod } from '../parser/bindings.js'
-import { traverseNodes } from '../parser/exports.js'
+import { parseObject, traverseNodes } from '../parser/exports.js'
 import { getImports } from '../parser/imports.js'
 import { safelyParseSource, safelyReadSource } from '../parser/index.js'
 import type { ModuleFormat } from '../utils/module_format.js'
@@ -53,17 +53,21 @@ const path = z.string().startsWith('/', { message: "Must start with a '/'" })
 export type HttpMethod = z.infer<typeof httpMethod>
 export type HttpMethods = z.infer<typeof httpMethods>
 
-export const inSourceConfig = functionConfig
+export const inSourceConfig = functionConfigShape
   .pick({
+    background: true,
     externalNodeModules: true,
     generator: true,
     includedFiles: true,
     ignoredNodeModules: true,
+    memory: true,
     name: true,
     nodeBundler: true,
     nodeVersion: true,
+    region: true,
     schedule: true,
     timeout: true,
+    vcpu: true,
   })
   .extend({
     method: z
@@ -83,8 +87,52 @@ export const inSourceConfig = functionConfig
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
   })
+  .refine((cfg) => !(cfg.memory !== undefined && cfg.vcpu !== undefined), {
+    message: '`memory` and `vcpu` cannot both be set.',
+    path: ['vcpu'],
+  })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
+
+/**
+ * Resolves the default export expression to an ObjectExpression if possible,
+ * following identifier bindings when needed.
+ */
+const resolveObjectExpression = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): ObjectExpression | undefined => {
+  // Unwrap TS type assertions so `{...} satisfies T` and `{...} as T` are
+  // treated the same as the bare object literal.
+  const unwrapped =
+    expression?.type === 'TSSatisfiesExpression' ||
+    expression?.type === 'TSAsExpression' ||
+    expression?.type === 'TSTypeAssertion'
+      ? expression.expression
+      : expression
+
+  if (unwrapped?.type === 'ObjectExpression') {
+    return unwrapped
+  }
+
+  if (unwrapped?.type === 'Identifier') {
+    let binding = getAllBindings().get(unwrapped.name)
+
+    if (
+      binding?.type === 'TSSatisfiesExpression' ||
+      binding?.type === 'TSAsExpression' ||
+      binding?.type === 'TSTypeAssertion'
+    ) {
+      binding = binding.expression
+    }
+
+    if (binding?.type === 'ObjectExpression') {
+      return binding
+    }
+  }
+
+  return undefined
+}
 
 /**
  * Extracts event subscription slugs from the default export expression,
@@ -94,17 +142,7 @@ const getEventSubscriptions = (
   expression: Expression | Declaration | undefined,
   getAllBindings: BindingMethod,
 ): string[] => {
-  let objectExpression: ObjectExpression | undefined
-
-  if (expression?.type === 'ObjectExpression') {
-    objectExpression = expression
-  } else if (expression?.type === 'Identifier') {
-    const binding = getAllBindings().get(expression.name)
-
-    if (binding?.type === 'ObjectExpression') {
-      objectExpression = binding
-    }
-  }
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
 
   if (!objectExpression) {
     return []
@@ -128,6 +166,44 @@ const getEventSubscriptions = (
   }
 
   return events
+}
+
+/**
+ * Extracts a `config` property from the default export object expression,
+ * returning it as a plain object. This supports patterns like:
+ *
+ * ```js
+ * export default {
+ *   fetch() { ... },
+ *   config: { path: "/hello" }
+ * }
+ * ```
+ */
+const getConfigFromDefaultExport = (
+  expression: Expression | Declaration | undefined,
+  getAllBindings: BindingMethod,
+): Record<string, unknown> | undefined => {
+  const objectExpression = resolveObjectExpression(expression, getAllBindings)
+
+  if (!objectExpression) {
+    return undefined
+  }
+
+  for (const property of objectExpression.properties) {
+    if (property.type !== 'ObjectProperty' || property.value.type !== 'ObjectExpression') {
+      continue
+    }
+
+    const isConfigKey =
+      (property.key.type === 'Identifier' && property.key.name === 'config') ||
+      (property.key.type === 'StringLiteral' && property.key.value === 'config')
+
+    if (isConfigKey) {
+      return parseObject(property.value)
+    }
+  }
+
+  return undefined
 }
 
 const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean, functionName: string): void => {
@@ -205,7 +281,12 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
       result.eventSubscriptions = eventSubscriptions
     }
 
-    const { data, error, success } = inSourceConfig.safeParse(configExport)
+    // A named `export const config` always wins (even if empty); we fall back
+    // to the `config` property of the default export object only when no
+    // named export exists.
+    const inlineConfig = getConfigFromDefaultExport(defaultExportExpression, getAllBindings)
+    const mergedConfigExport = configExport ?? inlineConfig ?? {}
+    const { data, error, success } = inSourceConfig.safeParse(mergedConfigExport)
 
     if (success) {
       result.config = data
@@ -215,6 +296,10 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
         methods: data.method ?? [],
         prefer_static: data.preferStatic || undefined,
       }))
+
+      if (data.background) {
+        result.invocationMode = INVOCATION_MODE.Background
+      }
     } else {
       // TODO: Handle multiple errors.
       const [issue] = error.issues

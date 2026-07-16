@@ -12,7 +12,7 @@ export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   return includeKeys(parentEnv, shouldKeepEnv)
 }
 
-const shouldKeepEnv = function (key) {
+const shouldKeepEnv = function (key: string) {
   return !REMOVED_PARENT_ENV.has(key.toLowerCase())
 }
 

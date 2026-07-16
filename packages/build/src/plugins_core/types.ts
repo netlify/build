@@ -1,8 +1,9 @@
 import { type DynamicMethods } from 'packages/js-client/lib/types.js'
 
-import { NetlifyPluginConstants } from '../core/constants.js'
-import { BufferedLogs } from '../log/logger.js'
-import { NetlifyConfig } from '../types/config/netlify_config.js'
+import type { NetlifyPluginConstants } from '../core/constants.js'
+import type { BufferedLogs } from '../log/logger.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
+import type { ReturnValue } from '../steps/return_values.js'
 
 type $TSFixme = any
 
@@ -45,6 +46,9 @@ export type CoreStepFunctionArgs = {
   explicitSecretKeys: $TSFixme
   enhancedSecretScan: boolean
   deployEnvVars: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
+  userNodeVersion?: string
+  childEnv: $TSFixme
+  returnValues: Record<string, ReturnValue>
 
   buildbotServerSocket?: string
   api: DynamicMethods

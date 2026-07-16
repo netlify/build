@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/netlify/build/compare/cache-utils-v6.0.5...cache-utils-v7.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
 ## [6.0.5](https://github.com/netlify/build/compare/cache-utils-v6.0.4...cache-utils-v6.0.5) (2026-02-25)
 
 

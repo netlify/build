@@ -1,7 +1,7 @@
 {
   "name": "@netlify/api",
   "description": "Netlify Node.js API client",
-  "version": "14.0.18",
+  "version": "15.0.1",
   "type": "module",
   "exports": "./lib/index.js",
   "main": "./lib/index.js",
@@ -41,21 +41,20 @@
     "node client"
   ],
   "dependencies": {
-    "@netlify/open-api": "^2.52.0",
+    "@netlify/open-api": "^2.57.0",
     "node-fetch": "^3.0.0",
     "picoquery": "^2.5.0",
     "p-wait-for": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.111",
+    "@types/node": "^22.12.0",
     "from2-string": "^1.1.0",
     "nock": "^13.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0",
-    "uuid": "^11.0.0",
     "vitest": "^3.2.3"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }

@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 import { access, readFile } from 'node:fs/promises'
-import { platform, version as nodeVersion } from 'node:process'
+import { platform } from 'node:process'
 import { join } from 'path'
 
 import { getDeployStore } from '@netlify/blobs'
@@ -8,7 +8,6 @@ import { BlobsServer } from '@netlify/blobs/server'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
-import semver from 'semver'
 import { spyOn } from 'tinyspy'
 import tmp from 'tmp-promise'
 
@@ -218,33 +217,30 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
   t.is(severityCode, 4)
 })
 
-// the monorepo works with pnpm which is not always available
-if (semver.gte(nodeVersion, '18.19.0')) {
-  test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
-    const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
-    const { success } = await fixture
-      .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
-      .runBuildProgrammatic()
+test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
+  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
+  const { success } = await fixture
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
+    .runBuildProgrammatic()
 
-    t.true(success)
-    t.is(t.context.blobRequests.set.length, 6)
+  t.true(success)
+  t.is(t.context.blobRequests.set.length, 6)
 
-    const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
-    const store = getDeployStore(storeOpts)
+  const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
+  const store = getDeployStore(storeOpts)
 
-    const blob1 = await store.getWithMetadata('something.txt')
-    t.is(blob1.data, 'some value')
-    t.deepEqual(blob1.metadata, {})
+  const blob1 = await store.getWithMetadata('something.txt')
+  t.is(blob1.data, 'some value')
+  t.deepEqual(blob1.metadata, {})
 
-    const blob2 = await store.getWithMetadata('with-metadata.txt')
-    t.is(blob2.data, 'another value')
-    t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  const blob2 = await store.getWithMetadata('with-metadata.txt')
+  t.is(blob2.data, 'another value')
+  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
 
-    const blob3 = await store.getWithMetadata('nested/file.txt')
-    t.is(blob3.data, 'file value')
-    t.deepEqual(blob3.metadata, { some: 'metadata' })
-  })
-}
+  const blob3 = await store.getWithMetadata('nested/file.txt')
+  t.is(blob3.data, 'file value')
+  t.deepEqual(blob3.metadata, { some: 'metadata' })
+})
 
 test.serial('Blobs upload failure print full error stack and cause to systemlog', async (t) => {
   const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })

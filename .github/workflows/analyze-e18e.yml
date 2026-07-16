@@ -1,0 +1,28 @@
+name: Analyze Dependencies (e18e)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions: {}
+
+jobs:
+  diff_dependencies:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+      - name: Analyze Dependencies
+        id: analyze
+        uses: e18e/action-dependency-diff@8e9b8c1957ab066d36235a43f4c1ff1522e1bdbc
+        with:
+          mode: artifact
+          duplicate-threshold: 999 # disable, would be too noisy here 😬
+      - name: Upload Artifact
+        if: steps.analyze.outputs.artifact-path
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: e18e-diff-result
+          path: ${{ steps.analyze.outputs.artifact-path }}

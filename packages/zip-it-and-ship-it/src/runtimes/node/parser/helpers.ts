@@ -46,7 +46,7 @@ export const isModuleExports = (
   isDotExpression(node.expression.left, dotExpression)
 
 export const isRequire = (node: Expression | undefined | null, requirePath: string) => {
-  if (!node || node.type !== 'CallExpression') {
+  if (node?.type !== 'CallExpression') {
     return false
   }
 

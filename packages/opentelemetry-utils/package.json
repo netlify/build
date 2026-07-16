@@ -1,6 +1,6 @@
 {
   "name": "@netlify/opentelemetry-utils",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Opentelemetry utility methods",
   "type": "module",
   "exports": "./lib/index.js",
@@ -33,12 +33,12 @@
     "@opentelemetry/api": "~1.8.0",
     "@opentelemetry/sdk-trace-base": "~1.24.0",
     "@opentelemetry/sdk-trace-node": "~1.24.0",
-    "@types/node": "^18.19.111",
+    "@types/node": "^22.12.0",
     "@vitest/ui": "^3.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.12.0"
   }
 }

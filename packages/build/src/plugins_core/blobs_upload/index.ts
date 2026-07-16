@@ -1,4 +1,4 @@
-import { getDeployStore } from '@netlify/blobs'
+import { getDeployStore, type GetDeployStoreOptions } from '@netlify/blobs'
 import { inspect } from 'node:util'
 import pMap from 'p-map'
 
@@ -23,7 +23,7 @@ const coreStep: CoreStepFunction = async function ({
   // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
   const apiHost = NETLIFY_API_HOST || DEFAULT_API_HOST
 
-  const storeOpts: Parameters<typeof getDeployStore>[0] = {
+  const storeOpts: GetDeployStoreOptions = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
@@ -62,7 +62,9 @@ const coreStep: CoreStepFunction = async function ({
       blobsToUpload,
       async ({ key, contentPath, metadataPath }) => {
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        await blobStore.set(key, new Blob([data]), { metadata })
+        // `data` is a `Buffer`, typed by @types/node as `Buffer<ArrayBufferLike>`, which TS
+        // rejects as a `BlobPart`; the runtime value is a valid blob part.
+        await blobStore.set(key, new Blob([data as BlobPart]), { metadata })
       },
       { concurrency: 10 },
     )

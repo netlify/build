@@ -1,5 +1,67 @@
 # Changelog
 
+## [15.0.4](https://github.com/netlify/build/compare/edge-bundler-v15.0.3...edge-bundler-v15.0.4) (2026-07-13)
+
+
+### Bug Fixes
+
+* skip directory imports when generating edge function tarballs ([#7126](https://github.com/netlify/build/issues/7126)) ([74ed378](https://github.com/netlify/build/commit/74ed3784574e7863804962ae652a99e3b21bb620))
+
+## [15.0.3](https://github.com/netlify/build/compare/edge-bundler-v15.0.2...edge-bundler-v15.0.3) (2026-07-07)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.11 ([#7121](https://github.com/netlify/build/issues/7121)) ([07f8021](https://github.com/netlify/build/commit/07f8021d1f441275cb170577b9ff698e5b77486b))
+
+## [15.0.2](https://github.com/netlify/build/compare/edge-bundler-v15.0.1...edge-bundler-v15.0.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* make edge-bundler tars deterministic ([#7118](https://github.com/netlify/build/issues/7118)) ([c8aee02](https://github.com/netlify/build/commit/c8aee024e8390260e1eedcf0bdfe315b52b8ad76))
+
+## [15.0.1](https://github.com/netlify/build/compare/edge-bundler-v15.0.0...edge-bundler-v15.0.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.28.1 ([#7096](https://github.com/netlify/build/issues/7096)) ([95f22fc](https://github.com/netlify/build/commit/95f22fc73481023160dbbe89781a7e5144e1700f))
+
+## [15.0.0](https://github.com/netlify/build/compare/edge-bundler-v14.10.3...edge-bundler-v15.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+## [14.10.3](https://github.com/netlify/build/compare/edge-bundler-v14.10.2...edge-bundler-v14.10.3) (2026-05-27)
+
+
+### Bug Fixes
+
+* handle TsTypeAssertion that conflicts with JSX handling for tarball bundling ([#7049](https://github.com/netlify/build/issues/7049)) ([3d2a644](https://github.com/netlify/build/commit/3d2a644d0ecf3d5c9dcc9547214b45941e9d73b1))
+* ignore type-only errored modules from module graph ([#7072](https://github.com/netlify/build/issues/7072)) ([96faaaf](https://github.com/netlify/build/commit/96faaaf3539123c23931275265faf57dc6d1f66d))
+
+## [14.10.2](https://github.com/netlify/build/compare/edge-bundler-v14.10.1...edge-bundler-v14.10.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** replace external uuid with crypto.randomUUID() ([#7040](https://github.com/netlify/build/issues/7040)) ([68e1f30](https://github.com/netlify/build/commit/68e1f30b7d27ed5881b145100e33e1c681e13a8b))
+* **deps:** update dependency esbuild to v0.28.0 ([#7056](https://github.com/netlify/build/issues/7056)) ([4ecb3a8](https://github.com/netlify/build/commit/4ecb3a8bec4e34c293eae2682f14e3be42a593a0))
+
+## [14.10.1](https://github.com/netlify/build/compare/edge-bundler-v14.10.0...edge-bundler-v14.10.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* allow HEAD as part of the `HTTPMethod` type ([#7033](https://github.com/netlify/build/issues/7033)) ([f2f5e77](https://github.com/netlify/build/commit/f2f5e77f9eae802deaa2524e914b9b9c775c227d))
+
 ## [14.10.0](https://github.com/netlify/build/compare/edge-bundler-v14.9.19...edge-bundler-v14.10.0) (2026-04-14)
 
 

@@ -2338,6 +2338,21 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
+    'Sets `invocationMode: "background"` when `background: true` is set in `netlify.toml` per-function config',
+    [...allBundleConfigs, 'bundler_none'],
+    async (options) => {
+      const { files } = await zipFixture('simple', {
+        opts: {
+          ...options,
+          config: { function: { background: true } },
+        },
+      })
+
+      expect(files[0].invocationMode).toBe('background')
+    },
+  )
+
+  testMany(
     'Throws error when `schedule` helper is used but cron expression not found',
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {

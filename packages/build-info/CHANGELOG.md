@@ -64,6 +64,24 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [11.0.0](https://github.com/netlify/build/compare/build-info-v10.5.1...build-info-v11.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+## [10.5.1](https://github.com/netlify/build/compare/build-info-v10.5.0...build-info-v10.5.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* ensure that React Router is not detected as part of Hydrogen projects ([#7020](https://github.com/netlify/build/issues/7020)) ([24d5886](https://github.com/netlify/build/commit/24d58863de012eb2022848ed090b87b00f331baf))
+
 ## [10.5.0](https://github.com/netlify/build/compare/build-info-v10.4.0...build-info-v10.5.0) (2026-04-09)
 
 
