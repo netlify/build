@@ -1,7 +1,6 @@
 import path from 'path'
 
 import { RUNTIME } from '@netlify/zip-it-and-ship-it'
-import { trace } from '@opentelemetry/api'
 
 import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
@@ -79,6 +78,8 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
     name: result.name,
     runtime: result.runtime,
     bundler: result.runtime === RUNTIME.JAVASCRIPT ? result.bundler : null,
+    bundlerReason: result.runtime === RUNTIME.JAVASCRIPT ? (result.bundlerReason ?? null) : null,
+    sizeBytes: result.size ?? null,
     hadFallback: (result.bundlerErrors?.length ?? 0) > 0,
     hadWarnings: (result.bundlerWarnings?.length ?? 0) > 0,
   }))
@@ -92,24 +93,13 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
   const warningsCount = perFunction.filter((p) => p.hadWarnings).length
 
   systemLog({
-    msg: 'Functions bundling completed',
+    msg: 'Functions bundling completed successfully',
     bundlers,
     bundlerCounts,
     fallbackCount,
     warningsCount,
     functions: perFunction,
   })
-
-  const span = trace.getActiveSpan()
-  if (span) {
-    span.setAttribute('build.execution.step.bundler', bundlers)
-    span.setAttribute('build.execution.step.functions_count', perFunction.length)
-    span.setAttribute('build.execution.step.bundler.fallback_count', fallbackCount)
-    span.setAttribute('build.execution.step.bundler.warnings_count', warningsCount)
-    for (const [bundler, count] of Object.entries(bundlerCounts)) {
-      span.setAttribute(`build.execution.step.bundler.${bundler}.count`, count)
-    }
-  }
 
   return { bundlers, fallbackCount, warningsCount }
 }

@@ -203,6 +203,9 @@ export const bundle = async ({
         file: tarballPath,
         gzip: true,
         noDirRecurse: true,
+        // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
+        portable: true, // omit uid/gid/uname/gname/ctime/atime
+        noMtime: true, // omit mtime
         // Ensure forward slashes inside the tarball for cross-platform consistency.
         onWriteEntry(entry) {
           entry.path = getUnixPath(entry.path)
@@ -273,6 +276,8 @@ async function getRequiredSourceFiles(
         continue
       }
 
+      const filePath = fileURLToPath(module.specifier)
+
       if (module.error) {
         // A module reachable only through type-only edges (e.g. a directory specifier
         // behind `import type`) can fail to resolve as an ES module. That's safe to
@@ -287,13 +292,34 @@ async function getRequiredSourceFiles(
           // require in try/catch).
           continue
         }
+
+        // Importing a directory is unsupported in Deno (ERR_UNSUPPORTED_DIR_IMPORT), yet
+        // the directory still surfaces here as an errored module. It's not a bundleable
+        // file: including it would pollute the common path prefix and, once copied, throw
+        // EISDIR. Skip it.
+        if (await isDirectory(filePath)) {
+          continue
+        }
       }
 
-      localFiles.add(fileURLToPath(module.specifier))
+      localFiles.add(filePath)
     }
   }
 
   return localFiles
+}
+
+/**
+ * Returns whether the given path exists and is a directory. Used to filter out
+ * directory specifiers that Deno surfaces as errored modules (directory imports
+ * are unsupported) so they're never treated as bundleable source files.
+ */
+async function isDirectory(entryPath: string): Promise<boolean> {
+  try {
+    return (await fs.stat(entryPath)).isDirectory()
+  } catch {
+    return false
+  }
 }
 
 // WebAssembly binary magic bytes: `\0asm` (0x00 0x61 0x73 0x6d).
@@ -339,6 +365,13 @@ async function shouldRewrite(sourceFile: string): Promise<boolean> {
  * Defaults to copying the file in its current form
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
+  // Defensive guard: a directory has nothing to bundle, and copying/reading one
+  // throws EISDIR. `getRequiredSourceFiles` already filters directory specifiers
+  // out of the source set, so this only matters if one slips through.
+  if (await isDirectory(sourceFile)) {
+    return
+  }
+
   if (!(await shouldRewrite(sourceFile))) {
     if (sourceFile !== destPath) {
       await fs.copyFile(sourceFile, destPath)

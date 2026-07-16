@@ -8,7 +8,8 @@ import { MODULE_FILE_EXTENSION } from '../utils/module_format.js'
 import esbuildBundler from './esbuild/index.js'
 import nftBundler from './nft/index.js'
 import noBundler from './none/index.js'
-import { NodeBundler, NodeBundlerName, NODE_BUNDLER } from './types.js'
+import { BUNDLER_REASON, NODE_BUNDLER } from './types.js'
+import type { BundlerReason, NodeBundler, NodeBundlerName } from './types.js'
 import zisiBundler from './zisi/index.js'
 
 export const getBundler = (name: NodeBundlerName): NodeBundler => {
@@ -43,15 +44,17 @@ export const getBundlerName = async ({
   featureFlags: FeatureFlags
   mainFile: string
   runtimeAPIVersion: number
-}): Promise<NodeBundlerName> => {
+}): Promise<{ name: NodeBundlerName; reason: BundlerReason }> => {
   // For V2 functions, we force the bundler to NFT. The only exception is when
   // a `none` override was provided.
   if (runtimeAPIVersion === 2) {
-    return nodeBundler === NODE_BUNDLER.NONE ? NODE_BUNDLER.NONE : NODE_BUNDLER.NFT
+    return nodeBundler === NODE_BUNDLER.NONE
+      ? { name: NODE_BUNDLER.NONE, reason: BUNDLER_REASON.NoneOverride }
+      : { name: NODE_BUNDLER.NFT, reason: BUNDLER_REASON.V2Default }
   }
 
   if (nodeBundler) {
-    return nodeBundler
+    return { name: nodeBundler, reason: BUNDLER_REASON.ConfigOverride }
   }
 
   return await getDefaultBundler({ extension, featureFlags, mainFile })
@@ -69,20 +72,22 @@ const getDefaultBundler = async ({
   extension: string
   mainFile: string
   featureFlags: FeatureFlags
-}): Promise<NodeBundlerName> => {
+}): Promise<{ name: NodeBundlerName; reason: BundlerReason }> => {
   if (extension === MODULE_FILE_EXTENSION.MJS && featureFlags.zisi_pure_esm_mjs) {
-    return NODE_BUNDLER.NFT
+    return { name: NODE_BUNDLER.NFT, reason: BUNDLER_REASON.MjsPureEsm }
   }
 
   if (ESBUILD_EXTENSIONS.has(extension)) {
-    return NODE_BUNDLER.ESBUILD
+    return { name: NODE_BUNDLER.ESBUILD, reason: BUNDLER_REASON.EsbuildExtension }
   }
 
   if (featureFlags.traceWithNft) {
-    return NODE_BUNDLER.NFT
+    return { name: NODE_BUNDLER.NFT, reason: BUNDLER_REASON.FlagForcedNft }
   }
 
   const functionIsESM = extname(mainFile) !== MODULE_FILE_EXTENSION.CJS && (await detectEsModule({ mainFile }))
 
-  return functionIsESM ? NODE_BUNDLER.NFT : NODE_BUNDLER.ZISI
+  return functionIsESM
+    ? { name: NODE_BUNDLER.NFT, reason: BUNDLER_REASON.EsmDefault }
+    : { name: NODE_BUNDLER.ZISI, reason: BUNDLER_REASON.ZisiDefault }
 }
