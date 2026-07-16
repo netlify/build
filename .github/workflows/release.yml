@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  # Manual retry for failed publishes: `lerna publish from-package` is idempotent,
+  # so it only publishes versions missing from the registry.
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -11,18 +14,26 @@ permissions:
 
 jobs:
   release-please:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-24.04
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          app-id: ${{ secrets.TOKENS_APP_ID }}
+          private-key: ${{ secrets.TOKENS_PRIVATE_KEY }}
       - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         id: release
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
   publish:
     needs: release-please
-    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    if:
+      ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || needs.release-please.outputs.releases_created ==
+      'true') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
