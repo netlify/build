@@ -74,3 +74,39 @@ test('Can use context properties for edge_functions', async (t) => {
   const output = await new Fixture('./fixtures/context_edge_functions_top').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
+
+test('Context with branch wildcard pattern feat/*', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard')
+    .withFlags({ branch: 'feat/test-wildcard' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Context with branch exact match takes precedence over wildcard', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard').withFlags({ branch: 'feat/special' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Context with branch that does not match wildcard falls back to default', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard').withFlags({ branch: 'main' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Context with nested branch wildcard pattern feat/nested/*', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard')
+    .withFlags({ branch: 'feat/nested/deep-branch' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Context with branch wildcard pattern feature/*', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard')
+    .withFlags({ branch: 'feature/new-feature' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('Context with branch wildcard pattern feat* without slash', async (t) => {
+  const output = await new Fixture('./fixtures/branch_wildcard').withFlags({ branch: 'featawesome' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})

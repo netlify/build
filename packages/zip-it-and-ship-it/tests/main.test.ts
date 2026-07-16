@@ -2338,6 +2338,21 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
+    'Sets `invocationMode: "background"` when `background: true` is set in `netlify.toml` per-function config',
+    [...allBundleConfigs, 'bundler_none'],
+    async (options) => {
+      const { files } = await zipFixture('simple', {
+        opts: {
+          ...options,
+          config: { function: { background: true } },
+        },
+      })
+
+      expect(files[0].invocationMode).toBe('background')
+    },
+  )
+
+  testMany(
     'Throws error when `schedule` helper is used but cron expression not found',
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {
@@ -2793,7 +2808,7 @@ describe('zip-it-and-ship-it', () => {
       basePath: join(FIXTURES_DIR, fixtureName),
       config: {
         '*': {
-          nodeVersion: 'nodejs16.x',
+          nodeVersion: 'nodejs18.x',
         },
       },
     })
@@ -2931,6 +2946,23 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
   expect(rewriteConfig.rateLimitConfig.windowSize).toBe(20)
   expect(rewriteConfig.rateLimitConfig.algorithm).toBe('sliding_window')
   expect(rewriteConfig.aggregate.keys).toStrictEqual([{ type: 'ip' }, { type: 'domain' }])
+})
+
+test('Writes event subscriptions to the manifest', async () => {
+  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const manifestPath = join(tmpDir, 'manifest.json')
+
+  await zipFixture('v2-api-event-handlers', {
+    fixtureDir: FIXTURES_ESM_DIR,
+    opts: {
+      manifest: manifestPath,
+    },
+  })
+
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'))
+  const func = manifest.functions.find((fn) => fn.name === 'function')
+
+  expect(func.eventSubscriptions).toEqual(['fetch', 'deploy_succeeded', 'identity_signup'])
 })
 
 test('Supports both files and directories and ignores files that are not functions', async () => {

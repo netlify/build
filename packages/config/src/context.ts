@@ -38,8 +38,32 @@ export const mergeContext = function ({
 
   const contexts = [context, branch]
   validateContextsPluginsConfig({ contextProps, plugins, contexts, logs })
-  const filteredContextProps = contexts.map((key) => contextProps[key]).filter(Boolean)
+  const filteredContextProps = contexts.flatMap((key) => findMatchingContextProps(contextProps, key)).filter(Boolean)
   return mergeConfigs([config, ...filteredContextProps])
+}
+
+// Find matching context properties for a given key.
+// First tries exact match, then falls back to wildcard pattern matching.
+// Wildcard patterns use prefix matching with '*' suffix (e.g., "feat/*" matches "feat/my-branch").
+const findMatchingContextProps = function (contextProps: Record<string, unknown>, key: string): unknown[] {
+  if (!key) {
+    return []
+  }
+
+  // Exact match takes precedence
+  if (contextProps[key]) {
+    return [contextProps[key]]
+  }
+
+  // Fall back to wildcard pattern matching
+  const matchingProps: unknown[] = []
+  for (const [pattern, value] of Object.entries(contextProps)) {
+    if (pattern.endsWith('*') && key.startsWith(pattern.slice(0, -1))) {
+      matchingProps.push(value)
+    }
+  }
+
+  return matchingProps
 }
 
 // `config.context.{context}.*` properties are merged either to `config.*` or

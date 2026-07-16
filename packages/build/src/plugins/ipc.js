@@ -1,8 +1,8 @@
+import crypto from 'crypto'
 import process from 'process'
 import { promisify } from 'util'
 
 import { pEvent } from 'p-event'
-import { v4 as uuidv4 } from 'uuid'
 
 import { jsonToError, errorToJson } from '../error/build.js'
 import { addErrorInfo } from '../error/info.js'
@@ -17,7 +17,7 @@ import {
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
 export const callChild = async function ({ childProcess, eventName, payload, logs, verbose }) {
-  const callId = uuidv4()
+  const callId = crypto.randomUUID()
   const [response] = await Promise.all([
     getEventFromChild(childProcess, callId),
     sendEventToChild({ childProcess, callId, eventName, payload, logs, verbose }),

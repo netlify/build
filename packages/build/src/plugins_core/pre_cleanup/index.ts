@@ -5,11 +5,15 @@ import { getBlobsDirs } from '../../utils/blobs.js'
 import { FRAMEWORKS_API_PATH } from '../../utils/frameworks_api.js'
 import { CoreStep, CoreStepFunction } from '../types.js'
 
-const coreStep: CoreStepFunction = async ({ buildDir, packagePath }) => {
-  const dirs = [...getBlobsDirs(buildDir, packagePath), resolve(buildDir, packagePath || '', FRAMEWORKS_API_PATH)]
+const coreStep: CoreStepFunction = async ({ buildDir, constants, packagePath }) => {
+  const paths = [
+    ...getBlobsDirs(buildDir, packagePath),
+    resolve(buildDir, packagePath || '', FRAMEWORKS_API_PATH),
+    constants.DB_MIGRATIONS_DIST ? resolve(buildDir, constants.DB_MIGRATIONS_DIST) : undefined,
+  ].filter((path): path is string => Boolean(path))
 
   try {
-    await Promise.all(dirs.map((dir) => rm(dir, { recursive: true, force: true })))
+    await Promise.all(paths.map((dir) => rm(dir, { recursive: true, force: true })))
   } catch {
     // Ignore errors if it fails, we can continue anyway.
   }

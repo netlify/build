@@ -1,5 +1,44 @@
 # Changelog
 
+## [3.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.0.0...opentelemetry-sdk-setup-v3.0.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/core to ~1.30.0 [security] ([#7102](https://github.com/netlify/build/issues/7102)) ([745b5b7](https://github.com/netlify/build/commit/745b5b7d9dbb465dbb74bfa5442c07d67ef5572b))
+
+## [3.0.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.3...opentelemetry-sdk-setup-v3.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~2.0.2 to ~3.0.0
+
+## [2.0.3](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.2...opentelemetry-sdk-setup-v2.0.3) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~2.0.1 to ~2.0.2
+
 ## [2.0.2](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v2.0.1...opentelemetry-sdk-setup-v2.0.2) (2025-05-29)
 
 

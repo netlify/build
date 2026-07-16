@@ -84,3 +84,22 @@ test('detects a Hydrogen v2 site using Remix Vite', async ({ fs }) => {
   expect(detected?.[0]?.dev?.command).toBe('shopify hydrogen dev')
   expect(detected?.[0]?.dev?.port).toBe(5173)
 })
+
+test('should not detect React Router', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'react-router.config.ts': '',
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({
+      dependencies: {
+        '@react-router/dev': '^7.0.2',
+        '@shopify/hydrogen': '^2024.7.4',
+        'react-router': '^7.0.2',
+        react: '^18.3.1',
+        'react-dom': '^18.3.1',
+      },
+    }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
+  expect(detectedFrameworks).toEqual(['hydrogen'])
+})

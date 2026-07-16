@@ -99,14 +99,14 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
   // perform a parallel detection of all workspace packages
   const results = (
     await Promise.all(
-      patterns.map((pattern) => {
+      patterns.flatMap((pattern) => {
         const cleanedPattern = pattern.replace(/^!?(\.\/)/, (match, p1) => match.replace(p1, ''))
         const matcher = new Minimatch(cleanedPattern)
         if (matcher.negate) {
-          return
+          return []
         }
         const { dir, depth } = getDirFromPattern(matcher)
-        return findPackages(project, dir, defaultIdentifyPackage, depth)
+        return [findPackages(project, dir, defaultIdentifyPackage, depth)]
       }),
     )
   )

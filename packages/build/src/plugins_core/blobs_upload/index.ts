@@ -1,4 +1,5 @@
-import { getDeployStore } from '@netlify/blobs'
+import { getDeployStore, type GetDeployStoreOptions } from '@netlify/blobs'
+import { inspect } from 'node:util'
 import pMap from 'p-map'
 
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
@@ -22,7 +23,7 @@ const coreStep: CoreStepFunction = async function ({
   // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
   const apiHost = NETLIFY_API_HOST || DEFAULT_API_HOST
 
-  const storeOpts: Parameters<typeof getDeployStore>[0] = {
+  const storeOpts: GetDeployStoreOptions = {
     siteID: SITE_ID,
     deployID: deployId,
     token: NETLIFY_API_TOKEN,
@@ -60,15 +61,23 @@ const coreStep: CoreStepFunction = async function ({
     await pMap(
       blobsToUpload,
       async ({ key, contentPath, metadataPath }) => {
-        systemLog(`Uploading blob ${key}`)
-
         const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        await blobStore.set(key, new Blob([data]), { metadata })
+        // `data` is a `Buffer`, typed by @types/node as `Buffer<ArrayBufferLike>`, which TS
+        // rejects as a `BlobPart`; the runtime value is a valid blob part.
+        await blobStore.set(key, new Blob([data as BlobPart]), { metadata })
       },
       { concurrency: 10 },
     )
   } catch (err) {
     logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
+
+    try {
+      systemLog(
+        `Error uploading blobs to deploy store full error: ${inspect(err, { colors: false, compact: true, maxStringLength: Infinity, maxArrayLength: Infinity, depth: Infinity, breakLength: Infinity })}`,
+      )
+    } catch {
+      // systemLog is meant for debugging purposes, we should not ever throw if it fails
+    }
 
     throw new Error(`Failed while uploading blobs to deploy store`)
   }

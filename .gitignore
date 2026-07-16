@@ -30,6 +30,7 @@ packages/*/lib/
 !**/fixtures/**/functions_*/.netlify
 !**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
 !**/fixtures/**/monorepo/**/.netlify
+**/fixtures/**/monorepo/**/.netlify/internal/db/migrations
 **/plugins/deno-cli
 !**/fixtures-esm/v2-api-files-and-directories/.netlify
 

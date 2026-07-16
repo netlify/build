@@ -167,8 +167,7 @@ export class ImportMap {
   // to full URLs. It takes an optional `prefixes` object that specifies a list
   // of prefixes to replace path prefixes (see `applyPrefixesToPath`). Prefixes
   // will be applied on both `imports` and `scopes`.
-  getContents(prefixes: Record<string, string> = {}) {
-    let imports: Imports = {}
+  getContents(prefixes: Record<string, string> = {}, imports: Imports = {}) {
     let scopes: Record<string, Imports> = {}
 
     this.sources.forEach((file) => {

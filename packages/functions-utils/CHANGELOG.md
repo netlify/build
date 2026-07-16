@@ -1,5 +1,226 @@
 # Changelog
 
+## [7.0.3](https://github.com/netlify/build/compare/functions-utils-v7.0.2...functions-utils-v7.0.3) (2026-07-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.1.0 to 15.2.0
+
+## [7.0.2](https://github.com/netlify/build/compare/functions-utils-v7.0.1...functions-utils-v7.0.2) (2026-06-30)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.0.1 to 15.1.0
+
+## [7.0.1](https://github.com/netlify/build/compare/functions-utils-v7.0.0...functions-utils-v7.0.1) (2026-06-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.0.0 to 15.0.1
+
+## [7.0.0](https://github.com/netlify/build/compare/functions-utils-v6.2.35...functions-utils-v7.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.7.1 to 15.0.0
+
+## [6.2.35](https://github.com/netlify/build/compare/functions-utils-v6.2.34...functions-utils-v6.2.35) (2026-06-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.7.0 to 14.7.1
+
+## [6.2.34](https://github.com/netlify/build/compare/functions-utils-v6.2.33...functions-utils-v6.2.34) (2026-05-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.6.0 to 14.7.0
+
+## [6.2.33](https://github.com/netlify/build/compare/functions-utils-v6.2.32...functions-utils-v6.2.33) (2026-05-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.6 to 14.6.0
+
+## [6.2.32](https://github.com/netlify/build/compare/functions-utils-v6.2.31...functions-utils-v6.2.32) (2026-05-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.5 to 14.5.6
+
+## [6.2.31](https://github.com/netlify/build/compare/functions-utils-v6.2.30...functions-utils-v6.2.31) (2026-05-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.4 to 14.5.5
+
+## [6.2.30](https://github.com/netlify/build/compare/functions-utils-v6.2.29...functions-utils-v6.2.30) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.3 to 14.5.4
+
+## [6.2.29](https://github.com/netlify/build/compare/functions-utils-v6.2.28...functions-utils-v6.2.29) (2026-03-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.2 to 14.5.3
+
+## [6.2.28](https://github.com/netlify/build/compare/functions-utils-v6.2.27...functions-utils-v6.2.28) (2026-03-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.1 to 14.5.2
+
+## [6.2.27](https://github.com/netlify/build/compare/functions-utils-v6.2.26...functions-utils-v6.2.27) (2026-03-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.5.0 to 14.5.1
+
+## [6.2.26](https://github.com/netlify/build/compare/functions-utils-v6.2.25...functions-utils-v6.2.26) (2026-03-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.4.2 to 14.5.0
+
+## [6.2.25](https://github.com/netlify/build/compare/functions-utils-v6.2.24...functions-utils-v6.2.25) (2026-03-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.4.1 to 14.4.2
+
+## [6.2.24](https://github.com/netlify/build/compare/functions-utils-v6.2.23...functions-utils-v6.2.24) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.4.0 to 14.4.1
+
+## [6.2.23](https://github.com/netlify/build/compare/functions-utils-v6.2.22...functions-utils-v6.2.23) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.3.2 to 14.4.0
+
+## [6.2.22](https://github.com/netlify/build/compare/functions-utils-v6.2.21...functions-utils-v6.2.22) (2026-02-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.3.1 to 14.3.2
+
+## [6.2.21](https://github.com/netlify/build/compare/functions-utils-v6.2.20...functions-utils-v6.2.21) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.3.0 to 14.3.1
+
+## [6.2.20](https://github.com/netlify/build/compare/functions-utils-v6.2.19...functions-utils-v6.2.20) (2026-01-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.2.0 to 14.3.0
+
+## [6.2.19](https://github.com/netlify/build/compare/functions-utils-v6.2.18...functions-utils-v6.2.19) (2026-01-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.1.18 to 14.2.0
+
+## [6.2.18](https://github.com/netlify/build/compare/functions-utils-v6.2.17...functions-utils-v6.2.18) (2025-12-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.1.17 to 14.1.18
+
+## [6.2.17](https://github.com/netlify/build/compare/functions-utils-v6.2.16...functions-utils-v6.2.17) (2025-12-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 14.1.16 to 14.1.17
+
 ## [6.2.16](https://github.com/netlify/build/compare/functions-utils-v6.2.15...functions-utils-v6.2.16) (2025-12-08)
 
 

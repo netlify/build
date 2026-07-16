@@ -6,7 +6,8 @@ export default defineConfig({
   },
   test: {
     include: ['node/**/*.test.ts'],
-    testTimeout: 30_000,
+    // Some tests download and install deno CLI, so allow some extra time for that
+    testTimeout: 60_000,
     env: {
       FORCE_COLOR: '0',
     },

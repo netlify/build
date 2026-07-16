@@ -50,7 +50,7 @@ function normalizePathSegments(parts: string[], allowAboveRoot: boolean) {
 /** A platform independent version of path.normalize()  */
 export function normalize(path: string): string {
   const isAbsolute = path.startsWith('/')
-  const trailingSlash = path && path[path.length - 1] === '/'
+  const trailingSlash = path?.[path.length - 1] === '/'
 
   // Normalize the path
   path = normalizePathSegments(path.split('/'), !isAbsolute).join('/')

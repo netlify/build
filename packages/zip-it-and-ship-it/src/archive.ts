@@ -10,6 +10,7 @@ export { Archiver as ZipArchive } from 'archiver'
 
 export const ARCHIVE_FORMAT = {
   NONE: 'none',
+  TAR: 'tar',
   ZIP: 'zip',
 } as const
 
@@ -57,4 +58,13 @@ export const endZip = async function (archive: Archiver, output: Writable): Prom
   await archive.finalize()
 
   return result
+}
+
+export const startTar = function (destPath: string): { archive: Archiver; output: Writable } {
+  const output = createWriteStream(destPath)
+  const archive = archiver('tar', { gzip: true })
+
+  archive.pipe(output)
+
+  return { archive, output }
 }

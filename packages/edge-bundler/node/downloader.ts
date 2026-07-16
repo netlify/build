@@ -26,9 +26,11 @@ const download = async (targetDirectory: string, versionRange: string) => {
   const file = createWriteStream(zipPath)
 
   try {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       data.on('error', reject)
-      file.on('finish', resolve)
+      file.on('finish', () => {
+        resolve()
+      })
       data.pipe(file)
     })
 

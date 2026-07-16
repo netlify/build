@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "aliased_vendor": "./vendor/hello.ts"
+  }
+}

@@ -6,9 +6,8 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testing'
 import test from 'ava'
 import getNode from 'get-node'
-import moize from 'moize'
+import { memoize } from 'micro-memoize'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
 import { spy, spyOn } from 'tinyspy'
 import { tmpName } from 'tmp-promise'
 
@@ -37,7 +36,7 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
   }
 }
 
-const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
+const mGetNode = memoize(getNodeBinary, { async: true, maxSize: 1e3 })
 
 test('--help', async (t) => {
   const { output } = await new Fixture().withFlags({ help: true }).runBuildBinary()
@@ -454,12 +453,7 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
   t.is(params1.repositoryRoot, fixtureDir)
 
-  const testNodeVersion = process.versions.node
-  if (semver.gte(testNodeVersion, '16.0.0')) {
-    t.is(params1.config['*'].nodeVersion, testNodeVersion)
-  } else {
-    t.is(params1.config['*'].nodeVersion, undefined)
-  }
+  t.is(params1.config['*'].nodeVersion, process.versions.node)
 
   const params2 = mockZipFunctions.calls[1][2]
 

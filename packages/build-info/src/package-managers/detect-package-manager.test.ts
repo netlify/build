@@ -80,6 +80,21 @@ test('should fallback to npm if just a package.json is present there', async ({ 
   expect(pkgManager?.name).toBe('npm')
 })
 
+describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }])(
+  'should fallback to user agent if present',
+  ({ pm }) => {
+    test(`fallback ${pm}`, async ({ fs }) => {
+      const cwd = mockFileSystem({})
+      const project = new Project(fs, cwd).setEnvironment({ npm_config_user_agent: pm })
+      const pkgManager = await detectPackageManager(project, { enableUserAgentSniffing: true })
+      expect(pkgManager?.name).toBe(pm)
+
+      const pkgManagerNoSniff = await detectPackageManager(project)
+      expect(pkgManagerNoSniff?.name).toBeUndefined()
+    })
+  },
+)
+
 test('should use yarn if there is a yarn.lock in the root', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': '{}',

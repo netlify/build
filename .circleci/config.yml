@@ -41,7 +41,7 @@ workflows:
 executors:
   node:
     docker:
-      - image: cimg/node:18.20.8
+      - image: cimg/node:24.17.0
   windows:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -120,6 +120,9 @@ jobs:
     steps:
       - checkout
       - npm-install-deps
+      # This is necessary to work around platform-specific optional dependencies bug
+      # (https://github.com/npm/cli/issues/4828).
+      - run: npm i -D @oxfmt/binding-linux-x64-gnu
       - run: npm run format:ci
       - run: npm run build
       - run: npm run lint:ci

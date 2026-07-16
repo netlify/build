@@ -64,6 +64,73 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [11.0.0](https://github.com/netlify/build/compare/build-info-v10.5.1...build-info-v11.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054))
+
+### Features
+
+* end of support for Node.js v18 and v20 ([#7054](https://github.com/netlify/build/issues/7054)) ([4358aa0](https://github.com/netlify/build/commit/4358aa0c0c5fedf482c48696305b0c707f3ea408))
+
+## [10.5.1](https://github.com/netlify/build/compare/build-info-v10.5.0...build-info-v10.5.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* ensure that React Router is not detected as part of Hydrogen projects ([#7020](https://github.com/netlify/build/issues/7020)) ([24d5886](https://github.com/netlify/build/commit/24d58863de012eb2022848ed090b87b00f331baf))
+
+## [10.5.0](https://github.com/netlify/build/compare/build-info-v10.4.0...build-info-v10.5.0) (2026-04-09)
+
+
+### Features
+
+* add vitepress ([#6866](https://github.com/netlify/build/issues/6866)) ([99b64c4](https://github.com/netlify/build/commit/99b64c439dc1cf16c27670f81c544263d31fb56a))
+
+## [10.4.0](https://github.com/netlify/build/compare/build-info-v10.3.1...build-info-v10.4.0) (2026-03-10)
+
+
+### Features
+
+* **build-info:** add Mastra ([#6929](https://github.com/netlify/build/issues/6929)) ([989db15](https://github.com/netlify/build/commit/989db155cbe19b5f3febdb3f1b6fefead75eada2))
+
+
+### Bug Fixes
+
+* **deps:** upgrade to minimatch 10 ([#6954](https://github.com/netlify/build/issues/6954)) ([d89024d](https://github.com/netlify/build/commit/d89024d5ce4a7b2d6a7d51d6fcc3a9e90b41e290))
+
+## [10.3.1](https://github.com/netlify/build/compare/build-info-v10.3.0...build-info-v10.3.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/serverless-functions-api to v2.10.0 for identity support ([#6952](https://github.com/netlify/build/issues/6952)) ([15d00dd](https://github.com/netlify/build/commit/15d00ddffb030be7b63dcb5c32975c7d94c4484e))
+
+## [10.3.0](https://github.com/netlify/build/compare/build-info-v10.2.0...build-info-v10.3.0) (2025-12-19)
+
+
+### Features
+
+* return detected framework version accuracy ([#6852](https://github.com/netlify/build/issues/6852)) ([66891ca](https://github.com/netlify/build/commit/66891ca2cb6b1b0cc15df41b64ee84207e8ea6bc))
+
+## [10.2.0](https://github.com/netlify/build/compare/build-info-v10.1.0...build-info-v10.2.0) (2025-12-16)
+
+
+### Features
+
+* include user agent sniffing ([#6783](https://github.com/netlify/build/issues/6783)) ([7d97824](https://github.com/netlify/build/commit/7d97824eb9eed5cd14dfce4cca7f3d67ec0dd9eb))
+
+## [10.1.0](https://github.com/netlify/build/compare/build-info-v10.0.11...build-info-v10.1.0) (2025-12-15)
+
+
+### Features
+
+* add Hono framework detection ([da2c9b2](https://github.com/netlify/build/commit/da2c9b270cede6ded8081784d233f7787e014181))
+* add Vike framework detection ([955d7e4](https://github.com/netlify/build/commit/955d7e4f2b0dc21e4d7746aae962fb6efec350e1))
+* add Waku framework detection ([bc0e398](https://github.com/netlify/build/commit/bc0e398b6d4e6d531eb4790942bea558248f1222))
+
 ## [10.0.11](https://github.com/netlify/build/compare/build-info-v10.0.10...build-info-v10.0.11) (2025-12-04)
 
 

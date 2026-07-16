@@ -9,6 +9,7 @@ export class ReactRouter extends BaseFramework implements Framework {
   // other frameworks/bundlers/runners be detected). There isn't a perfect way to identify a site's mode, but at the
   // time of writing both `@react-router/dev` and `react-router.config` should only be present in framework mode.
   npmDependencies = ['@react-router/dev']
+  excludedNpmDependencies = ['@shopify/hydrogen']
   configFiles = ['react-router.config.ts', 'react-router.config.js']
   category = Category.SSG
 

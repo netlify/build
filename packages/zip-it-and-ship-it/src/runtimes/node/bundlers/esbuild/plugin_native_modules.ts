@@ -18,7 +18,7 @@ const packageName = /^([^@][^/]*|@[^/]*\/[^/]+)(?:\/|$)/
 const findNativeModule = (packageJsonPath: string, cache: NativeModuleCache) => {
   if (cache[packageJsonPath] === undefined) {
     cache[packageJsonPath] = readPackageJson(packageJsonPath).then(
-      (data) => [Boolean(isNativeModule(data)), data],
+      (data) => [isNativeModule(data), data],
       () => [undefined, {}],
     )
   }

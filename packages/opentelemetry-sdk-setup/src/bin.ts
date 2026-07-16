@@ -35,7 +35,7 @@ const args = argsParser(process.argv) as unknown as {
 // Apply the defaults making sure we're not tripped by falsy values
 const options = Object.entries(defaultOptions)
   .map(([key, defaultValue]) => {
-    if (args.tracing !== undefined && args.tracing[key] !== undefined) {
+    if (args.tracing?.[key] !== undefined) {
       return { [key]: args.tracing[key] }
     }
     return { [key]: defaultValue }

@@ -32,6 +32,14 @@ interface NetlifyPlugin {
   inputs: PluginInputs
 }
 
+interface DatabaseMigrationsConfig {
+  path?: string
+}
+
+interface DatabaseConfig {
+  migrations?: DatabaseMigrationsConfig
+}
+
 interface ImagesConfig {
   remote_images: string[]
 }
@@ -59,4 +67,8 @@ export interface NetlifyConfig {
    * object with options for image transforms
    */
   images: ImagesConfig
+  /**
+   * object with options for database configuration
+   */
+  database?: DatabaseConfig
 }
