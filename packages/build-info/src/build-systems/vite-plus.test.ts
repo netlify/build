@@ -117,6 +117,31 @@ test('detects vite-plus from a monorepo base directory with the dependency at th
   expect(vitePlus?.version).toBe('0.2.4')
 })
 
+test('resolves against the lock file of the package.json with vite-plus dep', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({
+      workspaces: ['apps/*'],
+      devDependencies: { 'vite-plus': '^0.2.0' },
+    }),
+    'package-lock.json': NPM_LOCKFILE,
+    'apps/web/package.json': JSON.stringify({ name: 'web' }),
+    // stray nested lock file that does not lock the root's dependencies
+    'apps/web/package-lock.json': JSON.stringify({
+      name: 'web',
+      version: '1.0.0',
+      lockfileVersion: 3,
+      requires: true,
+      packages: {
+        '': { name: 'web', version: '1.0.0' },
+      },
+    }),
+  })
+  const detected = await new Project(fs, join(cwd, 'apps/web'), cwd).detectBuildSystem()
+
+  const vitePlus = detected.find(({ id }) => id === 'vite-plus')
+  expect(vitePlus?.version).toBe('0.2.4')
+})
+
 test('provides vp run workspace commands for a package', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ workspaces: ['apps/*'], devDependencies: { 'vite-plus': '^0.2.0' } }),

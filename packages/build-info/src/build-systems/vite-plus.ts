@@ -67,15 +67,15 @@ export class VitePlus extends BaseBuildTool {
         // consumers install the vp CLI version matching the project's lock file.
         // Note that, since vite-plus is also used as a package manager (... wrapper), we can't just *install* first and
         // then read the installed version 🔁.
-        this.version = (await this.resolveLockedVersion(pkgJson)) ?? declared
+        this.version = (await this.resolveLockedVersion(pkgJson, pkgJsonPath)) ?? declared
         return this
       }
     }
   }
 
-  private async resolveLockedVersion(pkgJson: Partial<PackageJson>): Promise<string | undefined> {
+  private async resolveLockedVersion(pkgJson: Partial<PackageJson>, pkgJsonPath: string): Promise<string | undefined> {
     const lockfilePath = await this.project.fs.findUp(LOCK_FILES, {
-      cwd: this.project.baseDirectory,
+      cwd: this.project.fs.dirname(pkgJsonPath),
       stopAt: this.project.root,
     })
     if (!lockfilePath) {
@@ -94,7 +94,7 @@ export class VitePlus extends BaseBuildTool {
       const { packages } = await parse(content, typeOrFileName, pkgJson as PackageJsonLike)
       return packages.find((pkg) => pkg.name === PACKAGE_NAME)?.version
     } catch {
-      // an unparsable lock file shouldn't fail detection; fall back to the declared range
+      // An unparsable lock file shouldn't fail detection; fall back to the declared range
       return undefined
     }
   }
