@@ -1,4 +1,4 @@
-import CronParser from 'cron-parser'
+import * as CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 

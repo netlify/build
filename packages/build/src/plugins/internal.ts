@@ -10,3 +10,5 @@ const NETLIFY_MAINTAINED_PLUGINS = new Set([
 
 export const isNetlifyMaintainedPlugin = (pluginPackage: string): boolean =>
   NETLIFY_MAINTAINED_PLUGINS.has(pluginPackage)
+
+export const isTrustedPlugin = (packageName: string | undefined) => packageName?.startsWith('@netlify/')

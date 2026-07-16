@@ -5,13 +5,14 @@ import { addOutputFlusher } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { getStandardStreams } from '../log/output_flusher.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
+import { isTrustedPlugin } from '../plugins/internal.js'
 import { callChild } from '../plugins/ipc.js'
 import { getSuccessStatus } from '../status/success.js'
 
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
-export const isTrustedPlugin = (packageName) => packageName?.startsWith('@netlify/')
+export { isTrustedPlugin }
 
 // Fire a plugin step
 export const firePluginStep = async function ({

@@ -1,4 +1,4 @@
-import babelTypes from '@babel/types'
+import * as babelTypes from '@babel/types'
 
 import type { BindingMethod } from '../../parser/bindings.js'
 import type { ISCHandlerArg } from '../index.js'

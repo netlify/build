@@ -1,7 +1,7 @@
 import { dirname } from 'path'
 
 import { type PackageJson } from 'read-package-up'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { addErrorInfo } from '../error/info.js'
 import { installLocalPluginsDependencies } from '../install/local.js'

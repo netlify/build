@@ -5,8 +5,9 @@ import { platform, env } from 'process'
 import { PassThrough } from 'stream'
 
 import nock from 'nock'
-import semver from 'semver'
-import tmp, { DirectoryResult } from 'tmp-promise'
+import * as semver from 'semver'
+import * as tmp from 'tmp-promise'
+import { DirectoryResult } from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'

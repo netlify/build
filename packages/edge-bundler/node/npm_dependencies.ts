@@ -7,7 +7,7 @@ import { resolve, ParsedImportMap } from '@import-maps/resolve'
 import { build } from 'esbuild'
 import { findUp } from 'find-up'
 import { parseImports } from 'parse-imports'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
