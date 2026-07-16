@@ -105,6 +105,69 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.1.5](https://github.com/netlify/build/compare/build-v36.1.4...build-v36.1.5) (2026-07-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.3 to 15.0.4
+
+## [36.1.4](https://github.com/netlify/build/compare/build-v36.1.3...build-v36.1.4) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.0.0 to ^25.0.1
+
+## [36.1.3](https://github.com/netlify/build/compare/build-v36.1.2...build-v36.1.3) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.2 to 15.0.3
+
+## [36.1.2](https://github.com/netlify/build/compare/build-v36.1.1...build-v36.1.2) (2026-07-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.2 to ^7.0.3
+    * @netlify/zip-it-and-ship-it bumped from 15.1.0 to 15.2.0
+
+## [36.1.1](https://github.com/netlify/build/compare/build-v36.1.0...build-v36.1.1) (2026-07-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.1 to 15.0.2
+
+## [36.1.0](https://github.com/netlify/build/compare/build-v36.0.1...build-v36.1.0) (2026-06-30)
+
+
+### Features
+
+* record child span per bundled function, handle failures ([#7116](https://github.com/netlify/build/issues/7116)) ([1709d5c](https://github.com/netlify/build/commit/1709d5c7a65e059647c98379af87037cacc20174))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.1 to ^7.0.2
+    * @netlify/zip-it-and-ship-it bumped from 15.0.1 to 15.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.0.1
+
 ## [36.0.1](https://github.com/netlify/build/compare/build-v36.0.0...build-v36.0.1) (2026-06-18)
 
 
