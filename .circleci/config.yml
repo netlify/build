@@ -19,6 +19,15 @@ workflows:
       - formatting
       - e2e/test:
           context: [shared-secrets, clone-repo, netlify-e2e]
+          pre-steps:
+            # Forked-PR builds don't receive contexts, so the orb fails on the missing CIRCLECI_TOKEN
+            - run:
+                name: Skip on forked PRs
+                command: |
+                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
+                    echo "Skipping e2e — forked PRs don't get CircleCI contexts/secrets."
+                    circleci-agent step halt
+                  fi
           config_yml: |
             links:
               - repo: netlify/build
