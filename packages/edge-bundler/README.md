@@ -3,7 +3,7 @@
 
 # Edge Bundler
 
-Intelligently prepare Netlify Edge Functions for deployment.
+Prepare Netlify Edge Functions for deployment
 
 ## Usage
 
@@ -46,5 +46,5 @@ This will go away soon as we move away from the ESZIP format.
 
 ## Contributors
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on how to set up and work on this repository. Thanks
-for contributing!
+Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for instructions on how to set up and work on this repository. Thanks for
+contributing!
