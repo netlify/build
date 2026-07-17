@@ -1,7 +1,8 @@
 # Nock UDP
 
-Mock outgoing UDP requests. Useful for testing purposes mostly. Based on
-[node-mock-udp](https://github.com/mattrobenolt/node-mock-udp).
+Mock outgoing UDP requests. Useful for testing purposes mostly.
+
+Based on [node-mock-udp](https://github.com/mattrobenolt/node-mock-udp).
 
 ## Install
 
@@ -71,5 +72,5 @@ console.log(isMocked())
 
 ## Contributors
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on how to set up and work on this repository. Thanks
-for contributing!
+Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for instructions on how to set up and work on this repository. Thanks for
+contributing!
