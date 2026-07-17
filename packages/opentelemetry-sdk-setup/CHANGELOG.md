@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.0.1...opentelemetry-sdk-setup-v3.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~3.0.0 to ~3.1.0
+
 ## [3.0.1](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.0.0...opentelemetry-sdk-setup-v3.0.1) (2026-06-30)
 
 

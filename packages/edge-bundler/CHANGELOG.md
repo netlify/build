@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.1.0](https://github.com/netlify/build/compare/edge-bundler-v15.0.4...edge-bundler-v15.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
 ## [15.0.4](https://github.com/netlify/build/compare/edge-bundler-v15.0.3...edge-bundler-v15.0.4) (2026-07-13)
 
 

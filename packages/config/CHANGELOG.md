@@ -76,6 +76,27 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.1.0](https://github.com/netlify/build/compare/config-v25.0.1...config-v25.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Bug Fixes
+
+* **deps:** switch from `@iarna/toml` to `smol-toml` ([#6837](https://github.com/netlify/build/issues/6837)) ([5577d4a](https://github.com/netlify/build/commit/5577d4ac3def0bcd17fd4d666a71461a3dd1a078))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.0.1 to ^15.1.0
+    * @netlify/headers-parser bumped from ^10.0.0 to ^10.1.0
+    * @netlify/redirect-parser bumped from ^16.0.0 to ^16.1.0
+
 ## [25.0.1](https://github.com/netlify/build/compare/config-v25.0.0...config-v25.0.1) (2026-07-07)
 
 
