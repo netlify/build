@@ -72,10 +72,20 @@ test('Honors `edge_functions` declared through the Frameworks API config file', 
   t.true(success)
   // Framework-declared edge functions are merged with the ones defined in
   // `netlify.toml`. As with `redirects`, user-defined values take precedence
-  // and are evaluated first.
+  // and are evaluated first. All supported properties (including `name` and
+  // `generator`, which frameworks like SvelteKit's adapter emit) are preserved.
   t.deepEqual(netlifyConfig.edge_functions, [
     { path: '/from-toml', function: 'user_edge' },
-    { path: '/from-api', function: 'my_framework_edge' },
+    {
+      function: 'my_framework_edge',
+      name: 'My framework edge function',
+      generator: 'package-name@1.2.3',
+      path: '/from-api/*',
+      excludedPath: ['/from-api/static/*', '/from-api/skip'],
+      cache: 'manual',
+      method: ['GET', 'POST'],
+      header: { 'x-custom': true },
+    },
   ])
 })
 

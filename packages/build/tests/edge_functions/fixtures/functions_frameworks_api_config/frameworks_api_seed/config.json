@@ -1,3 +1,17 @@
 {
-  "edge_functions": [{ "path": "/framework-route", "function": "framework-edge" }]
+  "edge_functions": [
+    {
+      "function": "framework-edge",
+      "name": "Framework edge function",
+      "generator": "package-name@1.2.3",
+      "path": "/framework-route/*",
+      "excludedPath": ["/framework-route/static/*", "/framework-route/skip"]
+    },
+    {
+      "function": "framework-edge-isc",
+      "name": "Framework edge function with in-source config",
+      "generator": "package-name@1.2.3",
+      "path": "/declaration-route/*"
+    }
+  ]
 }

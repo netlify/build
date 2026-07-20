@@ -326,6 +326,16 @@ test('edge_functions.any.method: disallowed values', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('edge_functions.any.name: allowed in netlify.toml', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_name').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.generator: not allowed in netlify.toml', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_reserved_generator').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('edge_functions.any.header: allowed values', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_header_allowed').runWithConfig()
   t.snapshot(normalizeOutput(output))

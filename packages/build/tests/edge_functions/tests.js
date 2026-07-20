@@ -360,16 +360,42 @@ for (const variant of FLAG_VARIANTS) {
 
       const manifest = await assertManifest(t, 'functions_frameworks_api_config')
       assertBundlesExist(t, manifest, variant)
-      const { routes } = manifest
+      const { routes, function_config } = manifest
 
+      // `path` and `excludedPath` become the route pattern and excluded patterns.
+      // `framework-edge-isc` declares a route in its in-source config too, so it
+      // gets a route from each source.
       t.deepEqual(routes, [
         {
-          function: 'framework-edge',
-          pattern: '^/framework-route/?$',
+          function: 'framework-edge-isc',
+          pattern: '^/isc-route(?:/(.*))/?$',
           excluded_patterns: [],
-          path: '/framework-route',
+          path: '/isc-route/*',
+        },
+        {
+          function: 'framework-edge',
+          pattern: '^/framework-route(?:/(.*))/?$',
+          excluded_patterns: ['^/framework-route/static(?:/(.*))/?$', '^/framework-route/skip/?$'],
+          path: '/framework-route/*',
+        },
+        {
+          function: 'framework-edge-isc',
+          pattern: '^/declaration-route(?:/(.*))/?$',
+          excluded_patterns: [],
+          path: '/declaration-route/*',
         },
       ])
+
+      // `name` and `generator` are carried through to the function config, whether
+      // or not the function also has in-source config.
+      t.deepEqual(function_config['framework-edge'], {
+        name: 'Framework edge function',
+        generator: 'package-name@1.2.3',
+      })
+      t.deepEqual(function_config['framework-edge-isc'], {
+        name: 'Framework edge function with in-source config',
+        generator: 'package-name@1.2.3',
+      })
     },
   )
 
