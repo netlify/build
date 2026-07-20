@@ -364,6 +364,6 @@ Site's environment variables. Each environment variable value is an object with 
 netlify-config
 ```
 
-Like [`resolveConfig()`](resolveconfig), but in the CLI. The return value is printed on `stdout`.
+Like [`resolveConfig()`](resolveconfig), but in the CLI. The return value is printed as JSON on `stdout`.
 
 The CLI flags use the same options.

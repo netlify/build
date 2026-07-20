@@ -127,12 +127,13 @@ To test a prerelease of `@netlify/<package>` in a site you have 2 options. Creat
 
 This is especially useful to test how an ongoing PR in `@netlify/<package>` would behave in production.
 
-### Create a Beta release
+### Use a pkg.pr.new preview release
 
-- Create a branch named `releases/<package>/<tag>/<version>` with the package and version you'd like to release. For
-  example, a branch named `releases/cache-utils/rc/2.0.0` will create the version `v2.0.0-rc` and publish it under the
-  `rc` tag.
-- Push the branch to the repo
+Every PR (and every push to `main`) automatically publishes preview releases of all packages via
+[pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new). The `prerelease` GitHub action posts a comment on the PR
+with install URLs for each package.
+
+- Install a package preview directly, e.g. `npm i https://pkg.pr.new/@netlify/cache-utils@<commit-sha>`
 - Make a PR in the buildbot to use this version
 - Update the `build_image` of a site to use this PR
 
