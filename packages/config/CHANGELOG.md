@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.1.1](https://github.com/netlify/build/compare/config-v25.1.0...config-v25.1.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor edge functions configuration in frameworks api config ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
 ## [25.1.0](https://github.com/netlify/build/compare/config-v25.0.1...config-v25.1.0) (2026-07-17)
 
 
