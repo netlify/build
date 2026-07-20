@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.2.1](https://github.com/netlify/build/compare/build-v36.2.0...build-v36.2.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor edge_functions configuration provided via the Frameworks API ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.1.0 to ^25.1.1
+    * @netlify/edge-bundler bumped from 15.1.0 to 15.1.1
+
 ## [36.2.0](https://github.com/netlify/build/compare/build-v36.1.5...build-v36.2.0) (2026-07-17)
 
 
