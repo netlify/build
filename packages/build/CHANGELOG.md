@@ -110,7 +110,7 @@
 
 ### Bug Fixes
 
-* honor edge functions configuration in frameworks api config ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+* honor edge_functions configuration provided via the Frameworks API ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
 
 
 ### Dependencies
