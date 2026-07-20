@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.1.1](https://github.com/netlify/build/compare/edge-bundler-v15.1.0...edge-bundler-v15.1.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor name and generator across all declarations for an edge function, not just the first match ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
 ## [15.1.0](https://github.com/netlify/build/compare/edge-bundler-v15.0.4...edge-bundler-v15.1.0) (2026-07-17)
 
 
