@@ -8,6 +8,7 @@ import {
   PRE_CONTEXT_VALIDATIONS,
   PRE_NORMALIZE_VALIDATIONS,
   POST_NORMALIZE_VALIDATIONS,
+  CONFIG_FILE_VALIDATIONS,
 } from './validations.js'
 
 // Validate the configuration file, before case normalization.
@@ -18,6 +19,14 @@ export const validatePreCaseNormalize = function (config) {
 // Validate the configuration file, before `defaultConfig` merge.
 export const validatePreMergeConfig = function (config) {
   validateConfig(config, PRE_MERGE_VALIDATIONS)
+}
+
+// Validate properties that are only allowed to be set from the user's
+// configuration file (`netlify.toml`). This runs exclusively on the config
+// coming from that file, so properties reserved for other origins (e.g. the
+// Frameworks API) can still set them.
+export const validateConfigFile = function (config) {
+  validateConfig(config, CONFIG_FILE_VALIDATIONS)
 }
 
 // Validate the configuration file, before context merge.
