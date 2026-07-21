@@ -9,7 +9,6 @@ import { default as build, startDev } from '@netlify/build'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
-import isPlainObj from 'is-plain-obj'
 import { merge } from 'lodash-es'
 
 import { createRepoDir, removeDir } from './dir.js'
@@ -306,6 +305,9 @@ export class Fixture {
   }
 }
 
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
 const getCliFlags = (mainFlags: Record<string, unknown>, prefix: string[] = []) =>
   Object.entries(mainFlags).flatMap(([name, value]) => getCliFlag(name, value, prefix))
 
@@ -317,7 +319,7 @@ const getCliFlag = (name: string, value: unknown, prefix: string[]) => {
     return [`--${name}=${val}`]
   }
 
-  if (isPlainObj(value)) {
+  if (isObject(value)) {
     return getCliFlags(value, [...prefix, name])
   }
 
