@@ -9,7 +9,6 @@ import { default as build, startDev } from '@netlify/build'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
-import { merge } from 'lodash-es'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
@@ -134,7 +133,7 @@ export class Fixture {
 
   /** any flags/options passed to the main command  */
   withFlags(flags: Record<string, unknown> = {}): this {
-    this.additionalFlags = merge({}, this.additionalFlags, flags)
+    this.additionalFlags = { ...this.additionalFlags, ...flags }
     return this
   }
 
@@ -289,7 +288,9 @@ export class Fixture {
   ): Promise<{ output: string; requests: Request[] }> {
     const { scheme, host, requests, stopServer } = await startServer(handler)
     try {
-      this.withFlags({ testOpts: { scheme, host } })
+      this.withFlags({
+        testOpts: { ...(this.additionalFlags.testOpts as Record<string, unknown> | undefined), scheme, host },
+      })
       const output = await fn.bind(this)()
       return { output, requests }
     } finally {
