@@ -1,12 +1,11 @@
 import { existsSync } from 'fs'
+import { cp } from 'fs/promises'
 import { createRequire } from 'module'
 import { normalize, delimiter } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import { default as build, startDev } from '@netlify/build'
-import test from 'ava'
-import cpy from 'cpy'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
@@ -102,14 +101,19 @@ export class Fixture {
 
   constructor(
     /**
+     * the test file currently running and importing this, as an absolute path
+     * or a `file://` URL (e.g. ava's `test.meta.file`)
+     */
+    testFile?: string,
+    /**
      * a relative path from the test file to the fixture directory
      * @example: ./fixtures/my_fixture
      */
     relativeFixturePath?: string,
   ) {
-    if (relativeFixturePath && relativeFixturePath.length !== 0) {
-      const testFile = fileURLToPath(test.meta.file)
-      this.repositoryRoot = normalize(`${testFile}/../${relativeFixturePath}`)
+    if (testFile && relativeFixturePath && relativeFixturePath.length !== 0) {
+      const testFilePath = testFile.startsWith('file:') ? fileURLToPath(testFile) : testFile
+      this.repositoryRoot = normalize(`${testFilePath}/../${relativeFixturePath}`)
 
       if (!existsSync(this.repositoryRoot)) {
         throw new Error(`The provided fixtures path does not exist: ${this.repositoryRoot}`)
@@ -148,7 +152,7 @@ export class Fixture {
     } = { git: true },
   ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
-    await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
+    await cp(this.repositoryRoot, this.copyRootDir, { recursive: true })
 
     if (copyRoot.branch !== undefined) {
       await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })

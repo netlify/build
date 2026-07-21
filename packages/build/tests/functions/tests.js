@@ -12,33 +12,33 @@ import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Functions: missing source directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: must not be a regular file', async (t) => {
-  const output = await new Fixture('./fixtures/regular_file').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/regular_file').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: can be a symbolic link', async (t) => {
-  const output = await new Fixture('./fixtures/symlink').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/symlink').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: default directory', async (t) => {
-  const output = await new Fixture('./fixtures/default').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/default').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: simple setup', async (t) => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-  const output = await new Fixture('./fixtures/simple').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/simple').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: no functions', async (t) => {
-  const output = await new Fixture('./fixtures/none').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/none').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -48,7 +48,7 @@ test('Functions: invalid package.json', async (t) => {
   // detecting an invalid *.json file.
   await writeFile(packageJsonPath, '{{}')
   try {
-    const output = await new Fixture('./fixtures/functions_package_json_invalid').runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/functions_package_json_invalid').runWithBuild()
     // This shape of this error can change with different Node.js versions.
     t.true(output.includes('in JSON at position 1'))
   } finally {
@@ -59,7 +59,7 @@ test('Functions: invalid package.json', async (t) => {
 test('Functions: --functionsDistDir', async (t) => {
   const functionsDistDir = await getTempName()
   try {
-    const output = await new Fixture('./fixtures/simple')
+    const output = await new Fixture(test.meta.file, './fixtures/simple')
       .withFlags({ mode: 'buildbot', functionsDistDir })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -73,17 +73,17 @@ test('Functions: --functionsDistDir', async (t) => {
 })
 
 test('Functions: custom path on scheduled function', async (t) => {
-  const output = await new Fixture('./fixtures/custom_path_scheduled').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/custom_path_scheduled').runWithBuild()
   t.true(output.includes('Scheduled functions must not specify a custom path.'))
 })
 
 test('Functions: custom path on event-triggered function', async (t) => {
-  const output = await new Fixture('./fixtures/custom_path_event_triggered').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/custom_path_event_triggered').runWithBuild()
   t.true(output.includes('Event-triggered functions must not specify a custom path.'))
 })
 
 test('Functions: internal functions are cleared on the dev timeline', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_leftover')
+  const fixture = await new Fixture(test.meta.file, './fixtures/functions_leftover')
     .withFlags({ debug: false, timeline: 'dev' })
     .withCopyRoot()
 
@@ -111,7 +111,7 @@ test('Functions: internal functions are cleared on the dev timeline', async (t) 
 })
 
 test('Functions: cleanup is only triggered when there are internal functions', async (t) => {
-  const fixture = await new Fixture('./fixtures/internal_functions')
+  const fixture = await new Fixture(test.meta.file, './fixtures/internal_functions')
     .withFlags({ debug: false, timeline: 'dev' })
     .withCopyRoot()
 
@@ -123,7 +123,7 @@ test('Functions: cleanup is only triggered when there are internal functions', a
 })
 
 test('Functions: loads functions generated with the Frameworks API', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_user_and_frameworks')
+  const fixture = await new Fixture(test.meta.file, './fixtures/functions_user_and_frameworks')
     .withFlags({ debug: false })
     .withCopyRoot()
 
@@ -138,7 +138,7 @@ test('Functions: loads functions generated with the Frameworks API', async (t) =
 })
 
 test('Functions: loads functions from the `.netlify/functions-internal` directory and the Frameworks API', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_user_internal_and_frameworks')
+  const fixture = await new Fixture(test.meta.file, './fixtures/functions_user_internal_and_frameworks')
     .withFlags({ debug: false })
     .withCopyRoot()
 
@@ -167,7 +167,7 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
 })
 
 test('Functions: loads functions generated with the Frameworks API in a monorepo setup', async (t) => {
-  const fixture = await new Fixture('./fixtures/functions_monorepo').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/functions_monorepo').withCopyRoot({ git: false })
   const app1 = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
@@ -282,7 +282,7 @@ test.serial('trackBundleResults: excludes JS results that have no bundler (prebu
 })
 
 test('Functions: creates metadata file', async (t) => {
-  const fixture = await new Fixture('./fixtures/v2').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/v2').withCopyRoot({ git: false })
   const build = await fixture
     .withFlags({
       branch: 'my-branch',

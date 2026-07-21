@@ -50,14 +50,14 @@ test('--version', async (t) => {
 })
 
 test('Exit code is 0 on success', async (t) => {
-  const { exitCode } = await new Fixture('./fixtures/empty').runBuildBinary()
+  const { exitCode } = await new Fixture(test.meta.file, './fixtures/empty').runBuildBinary()
   t.is(exitCode, 0)
 })
 
 test('Event handlers are called', async (t) => {
   let flag = false
   let handlerArgs = undefined
-  const { success } = await new Fixture('./fixtures/empty')
+  const { success } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({
       eventHandlers: {
         onPostBuild: (args) => {
@@ -78,7 +78,7 @@ test('Event handlers are called', async (t) => {
 
 test('Event handlers with description are called', async (t) => {
   let flag = false
-  const { success } = await new Fixture('./fixtures/empty')
+  const { success } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({
       eventHandlers: {
         onPostBuild: {
@@ -99,7 +99,7 @@ test('Event handlers with description are called', async (t) => {
 
 test('Event handlers do not displace plugin methods', async (t) => {
   let flag = false
-  const { success, configMutations } = await new Fixture('./fixtures/plugin_mutations')
+  const { success, configMutations } = await new Fixture(test.meta.file, './fixtures/plugin_mutations')
     .withFlags({
       eventHandlers: {
         onPreBuild: {
@@ -127,7 +127,7 @@ test('Event handlers do not displace plugin methods', async (t) => {
 })
 
 test('Exit code is 1 on build cancellation', async (t) => {
-  const { exitCode } = await new Fixture('./fixtures/cancel').runBuildBinary()
+  const { exitCode } = await new Fixture(test.meta.file, './fixtures/cancel').runBuildBinary()
   t.is(exitCode, 1)
 })
 
@@ -137,32 +137,32 @@ test('Exit code is 2 on user error', async (t) => {
 })
 
 test('Exit code is 3 on plugin error', async (t) => {
-  const { exitCode } = await new Fixture('./fixtures/plugin_error').runBuildBinary()
+  const { exitCode } = await new Fixture(test.meta.file, './fixtures/plugin_error').runBuildBinary()
   t.is(exitCode, 3)
 })
 
 test('Success is true on success', async (t) => {
-  const { success } = await new Fixture('./fixtures/empty').runBuildProgrammatic()
+  const { success } = await new Fixture(test.meta.file, './fixtures/empty').runBuildProgrammatic()
   t.true(success)
 })
 
 test('Success is false on build cancellation', async (t) => {
-  const { success } = await new Fixture('./fixtures/cancel').runBuildProgrammatic()
+  const { success } = await new Fixture(test.meta.file, './fixtures/cancel').runBuildProgrammatic()
   t.false(success)
 })
 
 test('Success is false on failure', async (t) => {
-  const { success } = await new Fixture('./fixtures/plugin_error').runBuildProgrammatic()
+  const { success } = await new Fixture(test.meta.file, './fixtures/plugin_error').runBuildProgrammatic()
   t.false(success)
 })
 
 test('severityCode is 0 on success', async (t) => {
-  const { severityCode } = await new Fixture('./fixtures/empty').runBuildProgrammatic()
+  const { severityCode } = await new Fixture(test.meta.file, './fixtures/empty').runBuildProgrammatic()
   t.is(severityCode, 0)
 })
 
 test('severityCode is 1 on build cancellation', async (t) => {
-  const { severityCode } = await new Fixture('./fixtures/cancel').runBuildProgrammatic()
+  const { severityCode } = await new Fixture(test.meta.file, './fixtures/cancel').runBuildProgrammatic()
   t.is(severityCode, 1)
 })
 
@@ -172,12 +172,12 @@ test('severityCode is 2 on user error', async (t) => {
 })
 
 test('severityCode is 3 on plugin error', async (t) => {
-  const { severityCode } = await new Fixture('./fixtures/plugin_error').runBuildProgrammatic()
+  const { severityCode } = await new Fixture(test.meta.file, './fixtures/plugin_error').runBuildProgrammatic()
   t.is(severityCode, 3)
 })
 
 test('returns config mutations', async (t) => {
-  const { configMutations } = await new Fixture('./fixtures/plugin_mutations').runBuildProgrammatic()
+  const { configMutations } = await new Fixture(test.meta.file, './fixtures/plugin_mutations').runBuildProgrammatic()
 
   t.deepEqual(configMutations, [
     {
@@ -205,21 +205,21 @@ test('--config', async (t) => {
 })
 
 test('nested --config', async (t) => {
-  const output = await new Fixture('./fixtures/toml')
+  const output = await new Fixture(test.meta.file, './fixtures/toml')
     .withFlags({ config: `${FIXTURES_DIR}/toml/apps/nested/netlify.toml` })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('empty --config', async (t) => {
-  const output = await new Fixture('./fixtures/toml')
+  const output = await new Fixture(test.meta.file, './fixtures/toml')
     .withFlags({ config: '', cwd: `${FIXTURES_DIR}/toml/apps/nested` })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--defaultConfig CLI flag', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({
       defaultConfig: JSON.stringify({ build: { command: 'echo commandDefault' } }),
     })
@@ -228,7 +228,7 @@ test('--defaultConfig CLI flag', async (t) => {
 })
 
 test('--defaultConfig', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({
       defaultConfig: { build: { command: 'echo commandDefault' } },
     })
@@ -237,16 +237,20 @@ test('--defaultConfig', async (t) => {
 })
 
 test('--cachedConfig CLI flag', async (t) => {
-  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfig()
-  const { output } = await new Fixture('./fixtures/cached_config').withFlags({ cachedConfig }).runBuildBinary()
+  const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfig()
+  const { output } = await new Fixture(test.meta.file, './fixtures/cached_config')
+    .withFlags({ cachedConfig })
+    .runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfigPath CLI flag', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
-    await new Fixture('./fixtures/cached_config').withFlags({ output: cachedConfigPath }).runConfigBinary()
-    const { output } = await new Fixture('./fixtures/cached_config')
+    await new Fixture(test.meta.file, './fixtures/cached_config')
+      .withFlags({ output: cachedConfigPath })
+      .runConfigBinary()
+    const { output } = await new Fixture(test.meta.file, './fixtures/cached_config')
       .withFlags({ cachedConfigPath, context: 'test' })
       .runBuildBinary()
     t.snapshot(normalizeOutput(output))
@@ -256,17 +260,19 @@ test('--cachedConfigPath CLI flag', async (t) => {
 })
 
 test('--cachedConfig', async (t) => {
-  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
-  const output = await new Fixture('./fixtures/cached_config').withFlags({ cachedConfig }).runWithBuild()
+  const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfigAsObject()
+  const output = await new Fixture(test.meta.file, './fixtures/cached_config')
+    .withFlags({ cachedConfig })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfigPath', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
-    const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfig()
+    const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfig()
     await fs.writeFile(cachedConfigPath, cachedConfig)
-    const output = await new Fixture('./fixtures/cached_config')
+    const output = await new Fixture(test.meta.file, './fixtures/cached_config')
       .withFlags({ cachedConfigPath, context: 'test' })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -276,17 +282,23 @@ test('--cachedConfigPath', async (t) => {
 })
 
 test('--context', async (t) => {
-  const output = await new Fixture('./fixtures/context').withFlags({ context: 'testContext' }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/context')
+    .withFlags({ context: 'testContext' })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--branch', async (t) => {
-  const output = await new Fixture('./fixtures/context').withFlags({ branch: 'testContext' }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/context')
+    .withFlags({ branch: 'testContext' })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--baseRelDir', async (t) => {
-  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/basereldir')
+    .withFlags({ baseRelDir: false })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -296,27 +308,27 @@ test('User error', async (t) => {
 })
 
 test('No configuration file', async (t) => {
-  const output = await new Fixture('./fixtures/none').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/none').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--dry with one event', async (t) => {
-  const output = await new Fixture('./fixtures/single').withFlags({ dry: true }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/single').withFlags({ dry: true }).runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--dry with several events', async (t) => {
-  const output = await new Fixture('./fixtures/several').withFlags({ dry: true }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/several').withFlags({ dry: true }).runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--dry-run', async (t) => {
-  const { output } = await new Fixture('./fixtures/single').withFlags({ dryRun: true }).runBuildBinary()
+  const { output } = await new Fixture(test.meta.file, './fixtures/single').withFlags({ dryRun: true }).runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--dry with build.command but no netlify.toml', async (t) => {
-  const output = await new Fixture('./fixtures/none')
+  const output = await new Fixture(test.meta.file, './fixtures/none')
     .withFlags({ dry: true, defaultConfig: { build: { command: 'echo' } } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -324,7 +336,7 @@ test('--dry with build.command but no netlify.toml', async (t) => {
 
 test('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
-  const output = await new Fixture('./fixtures/build_command')
+  const output = await new Fixture(test.meta.file, './fixtures/build_command')
     .withFlags({ nodePath: path })
     .withEnv({ TEST_NODE_PATH: path })
     .runWithBuild()
@@ -333,7 +345,7 @@ test('--node-path is used by build.command', async (t) => {
 
 test('--node-path is not used by local plugins', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
-  const output = await new Fixture('./fixtures/local_node_path_unused')
+  const output = await new Fixture(test.meta.file, './fixtures/local_node_path_unused')
     .withFlags({ nodePath: path })
     .withEnv({ TEST_NODE_PATH: path })
     .runWithBuild()
@@ -342,7 +354,7 @@ test('--node-path is not used by local plugins', async (t) => {
 
 test('--node-path is not used by plugins added to package.json', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
-  const output = await new Fixture('./fixtures/package_node_path_unused')
+  const output = await new Fixture(test.meta.file, './fixtures/package_node_path_unused')
     .withFlags({ nodePath: path })
     .withEnv({ TEST_NODE_PATH: path })
     .runWithBuild()
@@ -351,12 +363,12 @@ test('--node-path is not used by plugins added to package.json', async (t) => {
 
 test('--node-path is not used by core plugins', async (t) => {
   const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
-  const output = await new Fixture('./fixtures/core').withFlags({ nodePath: path }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/core').withFlags({ nodePath: path }).runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--skew-protection-token', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_echo_env')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_echo_env')
     .withFlags({ skewProtectionToken: 'foobar' })
     .runWithBuild()
 
@@ -364,28 +376,30 @@ test('--skew-protection-token', async (t) => {
 })
 
 test('featureFlags can be used programmatically', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ featureFlags: { test: true, testTwo: false } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('featureFlags can be used in the CLI', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ featureFlags: { test: true, testTwo: false } })
     .runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('featureFlags can be not used', async (t) => {
-  const output = await new Fixture('./fixtures/empty').withFlags({ featureFlags: undefined }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
+    .withFlags({ featureFlags: undefined })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 const runWithApiMock = async function (t, flags = {}) {
   const { scheme, host, requests, stopServer } = await startServer({ path: '/api/v1/deploys/test/cancel' })
   try {
-    const output = await new Fixture('./fixtures/cancel')
+    const output = await new Fixture(test.meta.file, './fixtures/cancel')
       .withFlags({ apiHost: host, testOpts: { scheme }, ...flags })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -402,32 +416,32 @@ test('--apiHost is used to set Netlify API host', async (t) => {
 })
 
 test('Print warning when redirects file is missing from publish directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_redirects_warning').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_redirects_warning').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not print warning when redirects file is not missing from publish directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_redirects_present').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_redirects_present').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not print warning when redirects file is missing from the build directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_redirects_absent').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_redirects_absent').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not print warning when redirects file is missing both from the build directory and the publish directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_redirects_none').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_redirects_none').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Print warning for missing redirects file even with a base directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_redirects_base').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_redirects_base').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Print warning when headers file is missing from publish directory', async (t) => {
-  const output = await new Fixture('./fixtures/missing_headers_warning').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/missing_headers_warning').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -436,8 +450,8 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   const stub = spyOn(zipItAndShipIt, 'zipFunctions', mockZipFunctions)
   const fixtureDir = join(FIXTURES_DIR, 'core')
 
-  await new Fixture('./fixtures/core').runWithBuild()
-  await new Fixture('./fixtures/core')
+  await new Fixture(test.meta.file, './fixtures/core').runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/core')
     .withFlags({ mode: 'buildbot' })
     .withEnv({ AWS_LAMBDA_JS_RUNTIME: 'nodejs00.x' })
     .runWithBuild()
@@ -467,7 +481,7 @@ test.serial('Passes functions generated by build plugins to zip-it-and-ship-it',
   const fixtureName = 'functions_generated_from_steps'
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
 
-  const { success, generatedFunctions } = await new Fixture(`./fixtures/${fixtureName}`)
+  const { success, generatedFunctions } = await new Fixture(test.meta.file, `./fixtures/${fixtureName}`)
     .withFlags({ mode: 'buildbot' })
     .runWithBuildAndIntrospect()
 
@@ -506,12 +520,14 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   const mockZipFunctions = spy(() => Promise.resolve())
   const stub = spyOn(zipItAndShipIt, 'zipFunctions', mockZipFunctions)
 
-  await new Fixture('./fixtures/schedule').runWithBuild()
-  await new Fixture('./fixtures/schedule').withFlags({ featureFlags: { buildbot_zisi_trace_nft: true } }).runWithBuild()
-  await new Fixture('./fixtures/schedule')
+  await new Fixture(test.meta.file, './fixtures/schedule').runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/schedule')
+    .withFlags({ featureFlags: { buildbot_zisi_trace_nft: true } })
+    .runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/schedule')
     .withFlags({ featureFlags: { buildbot_zisi_esbuild_parser: true } })
     .runWithBuild()
-  await new Fixture('./fixtures/schedule')
+  await new Fixture(test.meta.file, './fixtures/schedule')
     .withFlags({ featureFlags: { this_is_a_mock_flag: true, and_another_one: true } })
     .runWithBuild()
 
@@ -532,7 +548,7 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
 })
 
 test('Print warning on lingering processes', async (t) => {
-  const output = await new Fixture('./fixtures/lingering')
+  const output = await new Fixture(test.meta.file, './fixtures/lingering')
     .withFlags({ testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' })
     .runWithBuild()
 
@@ -547,52 +563,52 @@ test('Print warning on lingering processes', async (t) => {
 const PID_LINE_REGEXP = /^PID: (\d+)$/m
 
 test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
-  const output = await new Fixture('./fixtures/functions_config_1').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_config_1').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
-  const output = await new Fixture('./fixtures/functions_config_2').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_config_2').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
-  const output = await new Fixture('./fixtures/functions_config_3').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_config_3').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
-  const output = await new Fixture('./fixtures/esbuild_errors_1').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/esbuild_errors_1').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Shows notice about bundling errors and falls back to ZISI', async (t) => {
-  const output = await new Fixture('./fixtures/esbuild_errors_2').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/esbuild_errors_2').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
-  const output = await new Fixture('./fixtures/functions_internal').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_internal').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not require the `.netlify/functions-internal` directory to exist', async (t) => {
-  const output = await new Fixture('./fixtures/functions_internal_missing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_internal_missing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not require the `.netlify/functions-internal` or the user functions directory to exist', async (t) => {
-  const output = await new Fixture('./fixtures/functions_internal_user_missing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_internal_user_missing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
-  const output = await new Fixture('./fixtures/functions_user_missing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_user_missing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Removes duplicate function names from the list of processed functions', async (t) => {
-  const output = await new Fixture('./fixtures/functions_duplicate_names').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/functions_duplicate_names').runWithBuild()
   t.true(normalizeOutput(output).includes(`- function_one.js`))
   t.false(normalizeOutput(output).includes(`- function_one.ts`))
 })
@@ -602,10 +618,12 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   const mockZipFunctions = spy(() => Promise.resolve())
   const stub = spyOn(zipItAndShipIt, 'zipFunctions', mockZipFunctions)
 
-  await new Fixture('./fixtures/functions_config_1').withFlags({ mode: 'buildbot' }).runWithBuild()
-  await new Fixture('./fixtures/functions_config_1').runWithBuild()
-  await new Fixture('./fixtures/functions_internal_missing').withFlags({ mode: 'buildbot' }).runWithBuild()
-  await new Fixture('./fixtures/functions_internal_missing').runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_config_1').withFlags({ mode: 'buildbot' }).runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_config_1').runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_internal_missing')
+    .withFlags({ mode: 'buildbot' })
+    .runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_internal_missing').runWithBuild()
 
   stub.restore()
 
@@ -630,7 +648,7 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
   const mockZipFunctions = spy(() => Promise.resolve())
   const stub = spyOn(zipItAndShipIt, 'zipFunctions', mockZipFunctions)
 
-  await new Fixture('./fixtures/functions_config_json').withFlags({ mode: 'buildbot' }).runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_config_json').withFlags({ mode: 'buildbot' }).runWithBuild()
   stub.restore()
 
   t.is(mockZipFunctions.callCount, runCount)
@@ -644,7 +662,7 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
 
 test.serial('functions can have a config with different parameters passed to zip-it-and-ship-it', async (t) => {
   const zipItAndShipItSpy = spyOn(zipItAndShipIt, 'zipFunctions')
-  const output = await new Fixture('./fixtures/functions_config_json')
+  const output = await new Fixture(test.meta.file, './fixtures/functions_config_json')
     .withFlags({
       mode: 'buildbot',
     })
@@ -665,7 +683,9 @@ test.serial('functions can have a config with different parameters passed to zip
 test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill the generator field', async (t) => {
   const zipItAndShipItSpy = spyOn(zipItAndShipIt, 'zipFunctions')
 
-  await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_internal_src_folder')
+    .withFlags({ mode: 'buildbot' })
+    .runWithBuild()
   zipItAndShipItSpy.restore()
   const call1Args = zipItAndShipItSpy.calls[0]
 
@@ -693,7 +713,7 @@ test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill
 
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
   await removeDir(`${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions`)
-  await new Fixture('./fixtures/functions_internal_manifest').withFlags({ mode: 'cli' }).runWithBuild()
+  await new Fixture(test.meta.file, './fixtures/functions_internal_manifest').withFlags({ mode: 'cli' }).runWithBuild()
   const manifestPath = `${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions/manifest.json`
 
   t.true(await pathExists(manifestPath))
@@ -708,7 +728,7 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
 test('Generates a `manifest.json` file when the `buildbot_create_functions_manifest` feature flag is set', async (t) => {
   await removeDir(`${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions`)
 
-  await new Fixture('./fixtures/functions_internal_manifest')
+  await new Fixture(test.meta.file, './fixtures/functions_internal_manifest')
     .withFlags({ featureFlags: { buildbot_create_functions_manifest: true } })
     .runWithBuild()
 

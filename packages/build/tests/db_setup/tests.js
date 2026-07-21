@@ -38,7 +38,7 @@ const runWithMockServer = async (fixture, { context = 'production' } = {}) => {
 }
 
 test('Runs the db_setup core step and makes NETLIFY_DB_URL available to the build command in production context', async (t) => {
-  const { output, requests } = await runWithMockServer(new Fixture('./fixtures/with_db_dependency'), {
+  const { output, requests } = await runWithMockServer(new Fixture(test.meta.file, './fixtures/with_db_dependency'), {
     context: 'production',
   })
 
@@ -54,7 +54,7 @@ test('Runs the db_setup core step and makes NETLIFY_DB_URL available to the buil
 
 test('Runs the db_setup core step and creates a database branch for non-production context', async (t) => {
   const { output, requests } = await runWithMockServer(
-    new Fixture('./fixtures/with_db_dependency').withFlags({ branch: 'feat/my-feature' }),
+    new Fixture(test.meta.file, './fixtures/with_db_dependency').withFlags({ branch: 'feat/my-feature' }),
     { context: 'deploy-preview' },
   )
 
@@ -72,7 +72,7 @@ test('Runs the db_setup core step and creates a database branch for non-producti
 })
 
 test('Does not run the db_setup core step when @netlify/database is not in dependencies', async (t) => {
-  const fixture = await new Fixture('./fixtures/without_db_dependency').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/without_db_dependency').withCopyRoot({ git: false })
 
   const {
     success,
@@ -84,7 +84,7 @@ test('Does not run the db_setup core step when @netlify/database is not in depen
 })
 
 test('Does not run the db_setup core step when the feature flag is off', async (t) => {
-  const fixture = await new Fixture('./fixtures/with_db_dependency').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/with_db_dependency').withCopyRoot({ git: false })
 
   const {
     success,
@@ -96,7 +96,7 @@ test('Does not run the db_setup core step when the feature flag is off', async (
 })
 
 test('Copies migrations from netlify/database/migrations into DB_MIGRATIONS_DIST', async (t) => {
-  const fixture = await new Fixture('./fixtures/with_db_dependency').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/with_db_dependency').withCopyRoot({ git: false })
   await runWithMockServer(fixture)
 
   const distDir = join(fixture.repositoryRoot, DIST_RELATIVE)
@@ -105,7 +105,7 @@ test('Copies migrations from netlify/database/migrations into DB_MIGRATIONS_DIST
 })
 
 test('Removes stale migrations from previous builds before copying new ones', async (t) => {
-  const fixture = await new Fixture('./fixtures/with_db_dependency').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/with_db_dependency').withCopyRoot({ git: false })
   const distDir = join(fixture.repositoryRoot, DIST_RELATIVE)
 
   await mkdir(join(distDir, '999_stale'), { recursive: true })
@@ -120,7 +120,7 @@ test('Removes stale migrations from previous builds before copying new ones', as
 
 test('monorepo > Runs the db_setup core step when @netlify/database is in workspace devDependencies', async (t) => {
   const { output } = await runWithMockServer(
-    new Fixture('./fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }),
+    new Fixture(test.meta.file, './fixtures/monorepo').withFlags({ packagePath: 'apps/app-1' }),
   )
 
   t.true(output.includes('Netlify Database setup completed'))
@@ -128,7 +128,7 @@ test('monorepo > Runs the db_setup core step when @netlify/database is in worksp
 })
 
 test('monorepo > Copies migrations from apps/app-1/netlify/database/migrations into DB_MIGRATIONS_DIST', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo')
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo')
     .withFlags({ packagePath: 'apps/app-1' })
     .withCopyRoot({ git: false })
   await runWithMockServer(fixture)
@@ -139,7 +139,7 @@ test('monorepo > Copies migrations from apps/app-1/netlify/database/migrations i
 })
 
 test('monorepo > Removes stale migrations from previous builds before copying new ones', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo')
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo')
     .withFlags({ packagePath: 'apps/app-1' })
     .withCopyRoot({ git: false })
   const distDir = join(fixture.repositoryRoot, 'apps/app-1', DIST_RELATIVE)
