@@ -1,4 +1,8 @@
-# Contributions
+# Contributions 
+[[redirects]]
+  from = "/transform-small/*"
+  to = "/.netlify/images?url=/:splat&w=50&h=50"
+  status = 200
 
 🎉 Thanks for considering contributing to this project! 🎉
 
