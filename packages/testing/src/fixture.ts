@@ -11,7 +11,6 @@ import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
 import isPlainObj from 'is-plain-obj'
 import { merge } from 'lodash-es'
-import pathKey from 'path-key'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
@@ -21,6 +20,8 @@ const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
+
+const PATH_KEY = Object.keys(env).findLast((key) => key.toUpperCase() === 'PATH') ?? 'PATH'
 
 // TODO: this type should be moved to @netlify/build and @netlify/config as it's the main argument of the entry point
 type Flags = {
@@ -65,7 +66,7 @@ export class Fixture {
     // regardless of the current directory.
     // This is needed for example to run `yarn` in tests in environments that
     // do not have a global binary of `yarn`.
-    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
+    [PATH_KEY]: `${env[PATH_KEY]}${delimiter}${BUILD_BIN_DIR}`,
   }
 
   copyRootDir: string

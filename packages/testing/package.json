@@ -28,7 +28,6 @@
     "get-stream": "^9.0.0",
     "is-plain-obj": "^4.0.0",
     "lodash-es": "^4.17.21",
-    "path-key": "^4.0.0",
     "typescript": "^5.0.0"
   }
 }
