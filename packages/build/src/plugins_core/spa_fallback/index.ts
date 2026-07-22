@@ -14,28 +14,25 @@ function hasCatchAllRedirect(redirects: NetlifyConfig['redirects']) {
   return redirects.some((r) => r.from === '/*')
 }
 
-function coreStep(coreStepFunctionArgs: CoreStepFunctionArgs) : ReturnType<CoreStepFunction> {
+function coreStep(coreStepFunctionArgs: CoreStepFunctionArgs): ReturnType<CoreStepFunction> {
   if (
-    !coreStepFunctionArgs.netlifyConfig.build.spa
-    || hasCatchAllRedirect(coreStepFunctionArgs.netlifyConfig.redirects)
+    !coreStepFunctionArgs.netlifyConfig.build.spa ||
+    hasCatchAllRedirect(coreStepFunctionArgs.netlifyConfig.redirects)
   ) {
     return Promise.resolve({})
   }
 
   const newConfig: Partial<NetlifyConfig> = {
-    redirects: [
-      ...coreStepFunctionArgs.netlifyConfig.redirects,
-      SPA_FALLBACK_REDIRECT,
-    ],
+    redirects: [...coreStepFunctionArgs.netlifyConfig.redirects, SPA_FALLBACK_REDIRECT],
   }
 
   const configMutations = getConfigMutations(
     coreStepFunctionArgs.netlifyConfig,
     {
       ...coreStepFunctionArgs.netlifyConfig,
-      ...newConfig
+      ...newConfig,
     },
-    applySpaFallback.event
+    applySpaFallback.event,
   ) as unknown[]
 
   return Promise.resolve({ configMutations })
