@@ -73,7 +73,7 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
 }
 
 test('Auto-install extensions: feature flag disabled returns extensions unchanged', async (t) => {
-  const { output } = await new Fixture('./fixtures/with_neon_package')
+  const { output } = await new Fixture(test.meta.file, './fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -94,7 +94,7 @@ test('Auto-install extensions: feature flag disabled returns extensions unchange
 })
 
 test('Auto-install extensions: gracefully handles missing package.json', async (t) => {
-  const { output } = await new Fixture('./fixtures/no_package_json')
+  const { output } = await new Fixture(test.meta.file, './fixtures/no_package_json')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -116,7 +116,7 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
 
 test('Auto-install extensions: correctly reads package.json from buildDir', async (t) => {
   // This test verifies that the function correctly reads package.json from buildDir
-  const { output } = await new Fixture('./fixtures/with_neon_package')
+  const { output } = await new Fixture(test.meta.file, './fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -154,7 +154,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
 
 test('Auto-install extensions: does not install when required packages are missing', async (t) => {
   // This test uses a fixture that has dependencies but not the extension packages
-  const { output } = await new Fixture('./fixtures/without_packages')
+  const { output } = await new Fixture(test.meta.file, './fixtures/without_packages')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -180,7 +180,7 @@ test('Auto-install extensions: does not install when required packages are missi
 test('Auto-install extensions: correctly reads package.json when no netlify.toml exists', async (t) => {
   // This test verifies buildDir resolution works correctly when there's no netlify.toml
   // but package.json exists with extension packages
-  const { output } = await new Fixture('./fixtures/no_netlify_toml_with_neon')
+  const { output } = await new Fixture(test.meta.file, './fixtures/no_netlify_toml_with_neon')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',

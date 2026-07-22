@@ -66,7 +66,7 @@ const runWithApiMock = async function (
 
   const { testOpts = {}, ...restFlags } = flags
   try {
-    const fix = new Fixture(`./fixtures/${fixture}`).withEnv(env).withFlags({
+    const fix = new Fixture(test.meta.file, `./fixtures/${fixture}`).withEnv(env).withFlags({
       siteId: 'test',
       testOpts: {
         telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
