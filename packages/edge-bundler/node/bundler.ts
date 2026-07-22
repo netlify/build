@@ -377,12 +377,17 @@ interface MergeWithDeclarationConfigOptions {
 // declaration level. We want these properties to live at the function level
 // in their config object, so we translate that for backwards-compatibility.
 const mergeWithDeclarationConfig = ({ functionName, config, declarations }: MergeWithDeclarationConfigOptions) => {
-  const declaration = declarations?.find((decl) => decl.function === functionName)
+  // A function may have several declarations — for example, one synthesized
+  // from its in-source config and one coming from `netlify.toml` or the
+  // Frameworks API. Only the latter can carry `name` and `generator`, so we
+  // look for each field across all of the function's declarations rather than
+  // just the first one, which may well be the in-source one.
+  const functionDeclarations = declarations?.filter((decl) => decl.function === functionName) ?? []
 
   return {
     ...config,
-    name: declaration?.name || config.name,
-    generator: declaration?.generator || config.generator,
+    name: functionDeclarations.find((decl) => decl.name)?.name || config.name,
+    generator: functionDeclarations.find((decl) => decl.generator)?.generator || config.generator,
   }
 }
 

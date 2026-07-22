@@ -105,6 +105,116 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.2.1](https://github.com/netlify/build/compare/build-v36.2.0...build-v36.2.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor edge_functions configuration provided via the Frameworks API ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.1.0 to ^25.1.1
+    * @netlify/edge-bundler bumped from 15.1.0 to 15.1.1
+
+## [36.2.0](https://github.com/netlify/build/compare/build-v36.1.5...build-v36.2.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Bug Fixes
+
+* **deps:** switch from `@iarna/toml` to `smol-toml` ([#6837](https://github.com/netlify/build/issues/6837)) ([5577d4a](https://github.com/netlify/build/commit/5577d4ac3def0bcd17fd4d666a71461a3dd1a078))
+* **perf:** replace `string-width` with `fast-string-width` ([#7105](https://github.com/netlify/build/issues/7105)) ([d82e1f1](https://github.com/netlify/build/commit/d82e1f1127e15adade12c0591a3863dbef177f2f))
+* remove dead `logModulesWithDynamicImports` ([#7077](https://github.com/netlify/build/issues/7077)) ([1693ad8](https://github.com/netlify/build/commit/1693ad80e11365063db4746e9ea33aed335475dc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/config bumped from ^25.0.1 to ^25.1.0
+    * @netlify/edge-bundler bumped from 15.0.4 to 15.1.0
+    * @netlify/functions-utils bumped from ^7.0.3 to ^7.1.0
+    * @netlify/git-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/opentelemetry-utils bumped from ^3.0.0 to ^3.1.0
+    * @netlify/run-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/zip-it-and-ship-it bumped from 15.2.0 to 15.3.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^6.0.0 to ^6.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.1.0
+
+## [36.1.5](https://github.com/netlify/build/compare/build-v36.1.4...build-v36.1.5) (2026-07-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.3 to 15.0.4
+
+## [36.1.4](https://github.com/netlify/build/compare/build-v36.1.3...build-v36.1.4) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.0.0 to ^25.0.1
+
+## [36.1.3](https://github.com/netlify/build/compare/build-v36.1.2...build-v36.1.3) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.2 to 15.0.3
+
+## [36.1.2](https://github.com/netlify/build/compare/build-v36.1.1...build-v36.1.2) (2026-07-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.2 to ^7.0.3
+    * @netlify/zip-it-and-ship-it bumped from 15.1.0 to 15.2.0
+
+## [36.1.1](https://github.com/netlify/build/compare/build-v36.1.0...build-v36.1.1) (2026-07-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.1 to 15.0.2
+
+## [36.1.0](https://github.com/netlify/build/compare/build-v36.0.1...build-v36.1.0) (2026-06-30)
+
+
+### Features
+
+* record child span per bundled function, handle failures ([#7116](https://github.com/netlify/build/issues/7116)) ([1709d5c](https://github.com/netlify/build/commit/1709d5c7a65e059647c98379af87037cacc20174))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.1 to ^7.0.2
+    * @netlify/zip-it-and-ship-it bumped from 15.0.1 to 15.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.0.1
+
 ## [36.0.1](https://github.com/netlify/build/compare/build-v36.0.0...build-v36.0.1) (2026-06-18)
 
 
