@@ -1,0 +1,8 @@
+[build]
+command = "echo hi"
+spa = true
+
+[[redirects]]
+from = "/*"
+to = "/200.html"
+status = 200

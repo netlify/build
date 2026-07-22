@@ -1104,6 +1104,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/src/plugins_core/spa_fallback/index.ts'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/plugins_core/types.ts'],
     rules: {
       'n/no-missing-import': 'off',
