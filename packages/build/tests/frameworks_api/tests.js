@@ -96,7 +96,10 @@ test('Honors `edge_functions` declared through the Frameworks API config file', 
 })
 
 test('Honors `build.spa` declared through the Frameworks API config file', async (t) => {
-  const { netlifyConfig, success } = await new Fixture('./fixtures/spa_config').runWithBuildAndIntrospect()
+  const { netlifyConfig, success } = await new Fixture(
+    test.meta.file,
+    './fixtures/spa_config',
+  ).runWithBuildAndIntrospect()
 
   t.true(success)
   t.true(netlifyConfig.build.spa)

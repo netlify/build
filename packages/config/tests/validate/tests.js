@@ -119,7 +119,7 @@ test('build.edge_functions: parent directory', async (t) => {
 })
 
 test('build.spa: boolean', async (t) => {
-  const output = await new Fixture('./fixtures/build_spa_boolean').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/build_spa_boolean').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
