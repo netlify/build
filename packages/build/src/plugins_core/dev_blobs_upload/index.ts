@@ -61,7 +61,7 @@ const coreStep: CoreStepFunction = async function ({
 
   try {
     const queue = blobsToUpload[Symbol.iterator]()
-    let stopQueue = true
+    let stopQueue = false
     await Promise.all(
       Array.from({ length: 10 }, async () => {
         while (!stopQueue) {
