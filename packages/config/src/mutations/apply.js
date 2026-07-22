@@ -69,6 +69,7 @@ const MUTABLE_PROPS = {
   'build.processing.skip_processing': { lastEvent: 'onPostBuild' },
   'build.publish': { lastEvent: 'onPostBuild' },
   'build.services': { lastEvent: 'onPostBuild' },
+  'build.spa': { lastEvent: 'onPostBuild' },
   'build.services.*': { lastEvent: 'onPostBuild' },
   edge_functions: { lastEvent: 'onPostBuild' },
   'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
