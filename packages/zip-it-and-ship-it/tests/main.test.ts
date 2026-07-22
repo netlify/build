@@ -511,6 +511,46 @@ describe('zip-it-and-ship-it', () => {
     },
   )
 
+  testMany(
+    'Produces a bundle that fails at runtime when bundling a CJS function inside a `"type": "module"` package scope (nft)',
+    ['bundler_nft'],
+    async (options) => {
+      const fixtureName = 'node-cjs-in-esm-scope'
+      const { files } = await zipFixture(fixtureName, { opts: options })
+      const unzippedFunctions = await unzipFiles(files)
+      const { unzipPath } = unzippedFunctions[0]
+
+      // NFT traces the repository root `package.json` into the bundle, unpatched.
+      const packageJson = JSON.parse(await readFile(join(unzipPath, 'package.json'), 'utf8'))
+      expect(packageJson.type).toBe('module')
+
+      await expect(importFunctionFile(join(unzipPath, 'function.js'))).rejects.toThrow(
+        'module is not defined in ES module scope',
+      )
+    },
+  )
+
+  testMany(
+    'Produces a working bundle when bundling a CJS function inside a `"type": "module"` package scope (zisi)',
+    ['bundler_default'],
+    async (options) => {
+      const fixtureName = 'node-cjs-in-esm-scope'
+      const { files } = await zipFixture(fixtureName, { opts: options })
+      const unzippedFunctions = await unzipFiles(files)
+      const { unzipPath } = unzippedFunctions[0]
+
+      // With no `package.json` in the bundle, Node falls back to loading the
+      // `.js` main file as CJS.
+      expect(await pathExists(join(unzipPath, 'package.json'))).toBe(false)
+
+      const func = await importFunctionFile(join(unzipPath, 'function.js'))
+      const { body, statusCode } = await func.handler()
+
+      expect(statusCode).toBe(200)
+      expect(body).toBe('Hello world')
+    },
+  )
+
   testMany('Can require local files deeply', [...allBundleConfigs], async (options) => {
     await zipNode('local-deep-require', { opts: options })
   })
