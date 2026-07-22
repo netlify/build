@@ -1,10 +1,11 @@
 import { normalizeConfigCase } from './case.js'
 import { normalizeConfig } from './normalize.js'
-import { addOrigins } from './origin.js'
+import { addOrigins, CONFIG_ORIGIN } from './origin.js'
 import { validateIdenticalPlugins } from './validate/identical.js'
 import {
   validatePreCaseNormalize,
   validatePreMergeConfig,
+  validateConfigFile,
   validatePreNormalizeConfig,
   validatePostNormalizeConfig,
 } from './validate/main.js'
@@ -19,6 +20,13 @@ export const normalizeBeforeConfigMerge = function (config: $TSFixMe, origin) {
   validatePreCaseNormalize(config)
   const configA = normalizeConfigCase(config)
   validatePreMergeConfig(configA)
+
+  // Some properties are only allowed to be set from the user's `netlify.toml`
+  // file, so they are validated exclusively against that origin.
+  if (origin === CONFIG_ORIGIN) {
+    validateConfigFile(configA)
+  }
+
   const configB = addOrigins(configA, origin) as $TSFixMe
   validateIdenticalPlugins(configB)
   return configB

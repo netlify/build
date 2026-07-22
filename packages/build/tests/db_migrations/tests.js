@@ -7,7 +7,7 @@ import test from 'ava'
 const FEATURE_FLAGS = { netlify_build_db_setup: true }
 
 test('Copies valid migrations to internal directory', async (t) => {
-  const fixture = await new Fixture('./fixtures/valid_migrations').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/valid_migrations').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
@@ -21,7 +21,7 @@ test('Copies valid migrations to internal directory', async (t) => {
 })
 
 test('Copies migrations from a custom path', async (t) => {
-  const fixture = await new Fixture('./fixtures/custom_path').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/custom_path').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
@@ -34,7 +34,7 @@ test('Copies migrations from a custom path', async (t) => {
 })
 
 test('Silently skips directories with invalid names', async (t) => {
-  const fixture = await new Fixture('./fixtures/invalid_dir_name').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/invalid_dir_name').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
@@ -47,7 +47,7 @@ test('Silently skips directories with invalid names', async (t) => {
 })
 
 test('Fails build for missing migration.sql', async (t) => {
-  const fixture = await new Fixture('./fixtures/missing_sql_file').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/missing_sql_file').withCopyRoot({ git: false })
 
   const {
     success,
@@ -62,7 +62,7 @@ test('Fails build for missing migration.sql', async (t) => {
 })
 
 test('Skips step when migrations directory does not exist', async (t) => {
-  const fixture = await new Fixture('./fixtures/no_migrations_dir').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/no_migrations_dir').withCopyRoot({ git: false })
 
   const {
     success,
@@ -76,7 +76,7 @@ test('Skips step when migrations directory does not exist', async (t) => {
 })
 
 test('Skips step when feature flag is off', async (t) => {
-  const fixture = await new Fixture('./fixtures/valid_migrations').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/valid_migrations').withCopyRoot({ git: false })
 
   const {
     success,
@@ -90,7 +90,7 @@ test('Skips step when feature flag is off', async (t) => {
 })
 
 test('Copies loose .sql files wrapped in subdirectory format', async (t) => {
-  const fixture = await new Fixture('./fixtures/loose_sql_files').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/loose_sql_files').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
@@ -104,7 +104,7 @@ test('Copies loose .sql files wrapped in subdirectory format', async (t) => {
 })
 
 test('Copies mixed migrations (dirs and loose files) to internal directory', async (t) => {
-  const fixture = await new Fixture('./fixtures/mixed_migrations').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/mixed_migrations').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
@@ -118,7 +118,9 @@ test('Copies mixed migrations (dirs and loose files) to internal directory', asy
 })
 
 test('Fails build for duplicate migration numbers', async (t) => {
-  const fixture = await new Fixture('./fixtures/duplicate_migration_number').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/duplicate_migration_number').withCopyRoot({
+    git: false,
+  })
 
   const {
     success,
@@ -132,7 +134,7 @@ test('Fails build for duplicate migration numbers', async (t) => {
 })
 
 test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', async (t) => {
-  const fixture = await new Fixture('./fixtures/drizzle_kit').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/drizzle_kit').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })

@@ -1,5 +1,40 @@
 # Changelog
 
+## [15.1.1](https://github.com/netlify/build/compare/edge-bundler-v15.1.0...edge-bundler-v15.1.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor name and generator across all declarations for an edge function, not just the first match ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
+## [15.1.0](https://github.com/netlify/build/compare/edge-bundler-v15.0.4...edge-bundler-v15.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+## [15.0.4](https://github.com/netlify/build/compare/edge-bundler-v15.0.3...edge-bundler-v15.0.4) (2026-07-13)
+
+
+### Bug Fixes
+
+* skip directory imports when generating edge function tarballs ([#7126](https://github.com/netlify/build/issues/7126)) ([74ed378](https://github.com/netlify/build/commit/74ed3784574e7863804962ae652a99e3b21bb620))
+
+## [15.0.3](https://github.com/netlify/build/compare/edge-bundler-v15.0.2...edge-bundler-v15.0.3) (2026-07-07)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.11 ([#7121](https://github.com/netlify/build/issues/7121)) ([07f8021](https://github.com/netlify/build/commit/07f8021d1f441275cb170577b9ff698e5b77486b))
+
+## [15.0.2](https://github.com/netlify/build/compare/edge-bundler-v15.0.1...edge-bundler-v15.0.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* make edge-bundler tars deterministic ([#7118](https://github.com/netlify/build/issues/7118)) ([c8aee02](https://github.com/netlify/build/commit/c8aee024e8390260e1eedcf0bdfe315b52b8ad76))
+
 ## [15.0.1](https://github.com/netlify/build/compare/edge-bundler-v15.0.0...edge-bundler-v15.0.1) (2026-06-18)
 
 

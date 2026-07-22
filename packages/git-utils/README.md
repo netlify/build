@@ -79,4 +79,4 @@ export const onPreBuild = function ({ utils }) {
 
 ## Prior art
 
-This was originally found in [danger.js](https://danger.systems/js/) and extracted into this utility
+This was originally found in [danger.js](https://danger.systems/js/) and extracted into this utility.
