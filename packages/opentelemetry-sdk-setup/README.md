@@ -1,8 +1,8 @@
 # Opentelemetry SDK Setup
 
-This package extracts the logic necessary to initialise the Opentelemetry JS SDK using our tracing exporter. This not
+This package extracts the logic necessary to initialise the OpenTelemetry JS SDK using our tracing exporter. This not
 only allows us to reuse the initialisation logic across different node process executions but also means **our modules
-don't need to depend on any @opentelemetry module other than the @opentelemetry/api**
+don't need to depend on any `@opentelemetry` module other than the `@opentelemetry/api`**.
 
 ## How to use it?
 

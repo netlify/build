@@ -17,6 +17,7 @@ import { filterConfig, loadConfigFile } from './util.js'
 const ALLOWED_PROPERTIES = [
   ['build', 'functions'],
   ['build', 'publish'],
+  ['edge_functions'],
   ['functions', '*'],
   ['functions', '*', '*'],
   ['headers'],

@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.1.0](https://github.com/netlify/build/compare/functions-utils-v7.0.3...functions-utils-v7.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.2.0 to 15.3.0
+
 ## [7.0.3](https://github.com/netlify/build/compare/functions-utils-v7.0.2...functions-utils-v7.0.3) (2026-07-06)
 
 

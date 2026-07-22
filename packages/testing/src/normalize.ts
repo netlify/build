@@ -1,8 +1,8 @@
 import { relative } from 'path'
 import { fileURLToPath } from 'url'
+import { stripVTControlCharacters } from 'util'
 
 import figures from 'figures'
-import stripAnsi from 'strip-ansi'
 
 const rootPath = fileURLToPath(new URL('../../..', import.meta.url))
 const unixify = (path) => path.replace(/\\/gu, '/')
@@ -145,6 +145,7 @@ const NORMALIZE_REGEXPS = [
 const isEscapeSequence = (string: string) => string.length <= 2 || UNICODE_BACKSLASH_SEQUENCE.test(string)
 
 /** Normalize log output so it can be snapshot consistently across test runs */
-export const normalizeOutput = (output: string): string => NORMALIZE_REGEXPS.reduce(replaceOutput, stripAnsi(output))
+export const normalizeOutput = (output: string): string =>
+  NORMALIZE_REGEXPS.reduce(replaceOutput, stripVTControlCharacters(output))
 
 const replaceOutput = (output: string, [regExp, replacement]: [RegExp, string]) => output.replace(regExp, replacement)

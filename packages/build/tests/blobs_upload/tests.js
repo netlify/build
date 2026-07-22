@@ -67,7 +67,7 @@ test.serial('Blobs upload step uploads files when deploy ID is provided and no f
   const {
     success,
     logs: { stdout },
-  } = await new Fixture('./fixtures/src_empty')
+  } = await new Fixture(test.meta.file, './fixtures/src_empty')
     // Passing `offline: true` to avoid fetching the configuration from the API
     .withFlags({ deployId: 'abc123', token: TOKEN, offline: true })
     .runBuildProgrammatic()
@@ -81,7 +81,7 @@ test.serial('Blobs upload step uploads files when deploy ID is provided and no f
 test.serial(
   'Blobs upload step uploads files when there are files but deploy ID is not provided (legacy API)',
   async (t) => {
-    const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
+    const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
     const {
       success,
@@ -100,7 +100,7 @@ test.serial(
 )
 
 test.serial('Blobs upload step uploads files to deploy store (legacy API)', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
@@ -134,7 +134,9 @@ test.serial('Blobs upload step uploads files to deploy store (legacy API)', asyn
 })
 
 test.serial('Blobs upload step uploads files to deploy store (legacy deploy config API)', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_blobs_legacy_deploy_config').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy_deploy_config').withCopyRoot({
+    git: false,
+  })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
@@ -167,7 +169,7 @@ test.serial('Blobs upload step uploads files to deploy store (legacy deploy conf
 })
 
 test.serial('Blobs upload step uploads files to deploy store', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
@@ -203,7 +205,9 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
 })
 
 test.serial('Blobs upload step cancels deploy if blob metadata is malformed', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_malformed_blobs_metadata').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_malformed_blobs_metadata').withCopyRoot({
+    git: false,
+  })
   const { success, severityCode } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, debug: false })
     .runBuildProgrammatic()
@@ -218,7 +222,7 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
 })
 
 test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot({ git: false })
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
     .runBuildProgrammatic()
@@ -243,7 +247,7 @@ test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) 
 })
 
 test.serial('Blobs upload failure print full error stack and cause to systemlog', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_with_blobs').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const systemLogFile = await tmp.file()
 

@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import commonPathPrefix from 'common-path-prefix'
+import pRetry, { AbortError } from 'p-retry'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -229,12 +230,32 @@ export const bundle = async ({
 // Source file extensions that may contain import statements.
 const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
 
+// `deno info` fetches remote modules and npm registry metadata, so it can fail for reasons that
+// have nothing to do with the user's code: a dropped connection, a DNS blip, a registry timeout.
+// These are the messages Deno surfaces for those failures. Anything else (a syntax error, an
+// unresolvable import) is deterministic, and retrying it just delays the real error.
+const TRANSIENT_DENO_INFO_ERRORS = [
+  'error sending request',
+  'error reading a body from connection',
+  'connection closed before message completed',
+  'connection reset by peer',
+  'operation timed out',
+  'tcp connect error',
+  'dns error',
+]
+
+const DENO_INFO_RETRIES = 3
+
+// execa folds stderr into `message`, which is where Deno writes the `Caused by:` detail.
+const isTransientDenoInfoError = (error: unknown) =>
+  error instanceof Error && TRANSIENT_DENO_INFO_ERRORS.some((pattern) => error.message.toLowerCase().includes(pattern))
+
 /**
  * Uses deno info to get the module graph and extract only the local source files
  * that are actually needed by the entry points. This avoids copying unnecessary
  * files (like node_modules, .next, etc.) that may be under the common path.
  */
-async function getRequiredSourceFiles(
+export async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
@@ -244,14 +265,33 @@ async function getRequiredSourceFiles(
 
   // Run deno info for each entry point and combine the results
   for (const entryPoint of entryPoints) {
-    const { stdout } = await deno.run([
-      'info',
-      '--json',
-      '--no-config',
-      '--import-map',
-      importMapDataUrl,
-      pathToFileURL(entryPoint).href,
-    ])
+    const { stdout } = await pRetry(
+      async () => {
+        try {
+          return await deno.run([
+            'info',
+            '--json',
+            '--no-config',
+            '--import-map',
+            importMapDataUrl,
+            pathToFileURL(entryPoint).href,
+          ])
+        } catch (error: unknown) {
+          if (isTransientDenoInfoError(error)) {
+            throw error
+          }
+
+          // `AbortError` stops the retry loop and rethrows the error we pass it, unchanged.
+          throw new AbortError(error instanceof Error ? error : new Error(String(error)))
+        }
+      },
+      {
+        retries: DENO_INFO_RETRIES,
+        onFailedAttempt: (error) => {
+          deno.logger.system(`\`deno info\` failed with a transient error, retrying: ${error.message}`)
+        },
+      },
+    )
 
     const graph = JSON.parse(stdout) as ModuleGraphJson
 

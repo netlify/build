@@ -11,70 +11,70 @@ import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
 
 test('Report build.command failure', async (t) => {
-  const output = await new Fixture('./fixtures/command')
+  const output = await new Fixture(test.meta.file, './fixtures/command')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report configuration user error', async (t) => {
-  const output = await new Fixture('./fixtures/config')
+  const output = await new Fixture(test.meta.file, './fixtures/config')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin input error', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_input')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_input')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin validation error', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_validation')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_validation')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin internal error', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_internal')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_internal')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.failBuild()', async (t) => {
-  const output = await new Fixture('./fixtures/monitor_fail_build')
+  const output = await new Fixture(test.meta.file, './fixtures/monitor_fail_build')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.failPlugin()', async (t) => {
-  const output = await new Fixture('./fixtures/monitor_fail_plugin')
+  const output = await new Fixture(test.meta.file, './fixtures/monitor_fail_plugin')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report utils.build.cancelBuild()', async (t) => {
-  const output = await new Fixture('./fixtures/cancel_build')
+  const output = await new Fixture(test.meta.file, './fixtures/cancel_build')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report IPC error', async (t) => {
-  const output = await new Fixture('./fixtures/ipc')
+  const output = await new Fixture(test.meta.file, './fixtures/ipc')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test.serial('Report API error', async (t) => {
-  const output = await new Fixture('./fixtures/cancel_build')
+  const output = await new Fixture(test.meta.file, './fixtures/cancel_build')
     .withFlags({
       token: 'test',
       deployId: 'test',
@@ -89,7 +89,7 @@ test.serial('Report API error', async (t) => {
 // that is hard to normalize in test snapshots.
 if (platform !== 'win32') {
   test('Report TypeScript error', async (t) => {
-    const output = await new Fixture('./fixtures/typescript')
+    const output = await new Fixture(test.meta.file, './fixtures/typescript')
       .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
       .withCopyRoot({ git: false })
       .then((fixture) => fixture.runWithBuild())
@@ -104,35 +104,35 @@ if (platform !== 'win32') {
 }
 
 test('Report dependencies error', async (t) => {
-  const output = await new Fixture('./fixtures/dependencies')
+  const output = await new Fixture(test.meta.file, './fixtures/dependencies')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report buildbot mode as releaseStage', async (t) => {
-  const { output } = await new Fixture('./fixtures/command')
+  const { output } = await new Fixture(test.meta.file, './fixtures/command')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'buildbot' })
     .runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report CLI mode as releaseStage', async (t) => {
-  const { output } = await new Fixture('./fixtures/command')
+  const { output } = await new Fixture(test.meta.file, './fixtures/command')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'cli' })
     .runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report programmatic mode as releaseStage', async (t) => {
-  const { output } = await new Fixture('./fixtures/command')
+  const { output } = await new Fixture(test.meta.file, './fixtures/command')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY, mode: 'require' })
     .runBuildBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Remove colors in error.message', async (t) => {
-  const output = await new Fixture('./fixtures/colors')
+  const output = await new Fixture(test.meta.file, './fixtures/colors')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   const lines = output.split('\n').filter((line) => line.includes('ColorTest'))
@@ -140,7 +140,7 @@ test('Remove colors in error.message', async (t) => {
 })
 
 test('Report BUILD_ID', async (t) => {
-  const { output } = await new Fixture('./fixtures/command')
+  const { output } = await new Fixture(test.meta.file, './fixtures/command')
     .withEnv({ BUILD_ID: 'test' })
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runBuildBinary()
@@ -148,21 +148,21 @@ test('Report BUILD_ID', async (t) => {
 })
 
 test('Report plugin homepage', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_homepage')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_homepage')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin homepage without a repository', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_homepage_no_repo')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_homepage_no_repo')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Report plugin origin', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_origin')
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_origin')
     .withFlags({
       defaultConfig: { plugins: [{ package: './plugin.js' }] },
       testOpts: { errorMonitor: true },
@@ -173,7 +173,7 @@ test('Report plugin origin', async (t) => {
 })
 
 test('Report build logs URLs', async (t) => {
-  const { output } = await new Fixture('./fixtures/command')
+  const { output } = await new Fixture(test.meta.file, './fixtures/command')
     .withEnv({ DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' })
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runBuildBinary()
@@ -184,7 +184,7 @@ test('Report build logs URLs', async (t) => {
 // out which regex is causing the problem and fix it.
 if (platform !== 'win32') {
   test('Normalizes error messages resulting from bundling edge functions', async (t) => {
-    const output = await new Fixture('./fixtures/edge_function_error')
+    const output = await new Fixture(test.meta.file, './fixtures/edge_function_error')
       .withFlags({
         debug: false,
         testOpts: { errorMonitor: true },
@@ -209,7 +209,7 @@ test.serial('Normalizes error messages resulting from bundling TypeScript server
     throw customError
   })
 
-  const output = await new Fixture('./fixtures/serverless_function')
+  const output = await new Fixture(test.meta.file, './fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
 
@@ -245,7 +245,7 @@ error: expected one of \`!\` or \`::\`, found keyword \`use\`
     throw customError
   })
 
-  const output = await new Fixture('./fixtures/serverless_function')
+  const output = await new Fixture(test.meta.file, './fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -266,7 +266,7 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
     throw customError
   })
 
-  const output = await new Fixture('./fixtures/serverless_function')
+  const output = await new Fixture(test.meta.file, './fixtures/serverless_function')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -275,7 +275,7 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
 })
 
 test.serial('Throws a user error when the wrong go version is used', async (t) => {
-  const logs = await new Fixture('./fixtures/go_version_error')
+  const logs = await new Fixture(test.meta.file, './fixtures/go_version_error')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
 
@@ -283,7 +283,7 @@ test.serial('Throws a user error when the wrong go version is used', async (t) =
 })
 
 test.serial('Throws a dependency error when go dependency is missing', async (t) => {
-  const logs = await new Fixture('./fixtures/go_missing_dependency')
+  const logs = await new Fixture(test.meta.file, './fixtures/go_missing_dependency')
     .withFlags({ testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY })
     .runWithBuild()
 
