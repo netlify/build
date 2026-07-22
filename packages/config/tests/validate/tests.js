@@ -118,6 +118,11 @@ test('build.edge_functions: parent directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('build.spa: boolean', async (t) => {
+  const output = await new Fixture('./fixtures/build_spa_boolean').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('build.base: string', async (t) => {
   const output = await new Fixture('./fixtures/build_base_string').runWithConfig()
   t.snapshot(normalizeOutput(output))

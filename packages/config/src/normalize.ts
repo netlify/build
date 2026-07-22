@@ -30,6 +30,7 @@ const DEFAULT_CONFIG = (packagePath?: string) => ({
     publishOrigin: DEFAULT_ORIGIN,
     processing: { css: {}, html: {}, images: {}, js: {} },
     services: {},
+    spa: false,
   },
   functions: { [WILDCARD_ALL]: {} },
   plugins: [],

@@ -91,6 +91,7 @@ const BUILD_PROPERTIES = new Set([
   'ignore',
   'processing',
   'publish',
+  'spa',
 ])
 
 // `config.functions` is a plain object while `config.build.functions` is a

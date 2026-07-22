@@ -5,7 +5,14 @@ import validateNpmPackageName from 'validate-npm-package-name'
 import { validations as edgeFunctionValidations, EDGE_FUNCTIONS_PROPERTIES } from '../edge_functions.js'
 import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
-import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
+import {
+  functionsDirectoryCheck,
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isBoolean,
+  isString,
+  validProperties,
+} from './helpers.js'
 
 /**
  * @param {string} cron
@@ -224,6 +231,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: isString,
     message: 'must be a string.',
     example: () => ({ build: { edge_functions: 'edge-functions' } }),
+  },
+  {
+    property: 'build.spa',
+    check: isBoolean,
+    message: 'must be a boolean.',
+    example: () => ({ build: { spa: true } }),
   },
   {
     property: 'functions.*',

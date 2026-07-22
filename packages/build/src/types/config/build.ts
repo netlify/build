@@ -26,6 +26,11 @@ export interface Build {
    * Includes the path to a site's [Edge Functions directory](https://docs.netlify.com/edge-functions/optional-configuration/#edge-functions-directory)
    */
   edge_functions?: string
+
+  /**
+   * Whether the site is a single-page application (SPA). Defaults to `false`.
+   */
+  spa?: boolean
   /**
    * Contains a site's [environment variables](https://docs.netlify.com/configure-builds/environment-variables/#netlify-configuration-variables)
    */
