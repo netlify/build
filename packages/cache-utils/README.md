@@ -1,7 +1,7 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/main/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-Utility for caching files in Netlify Build.
+Utility for caching files in Netlify Build
 
 # Examples
 

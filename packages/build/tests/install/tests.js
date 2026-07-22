@@ -15,7 +15,7 @@ const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const runInstallFixture = async (t, fixtureName, dirs = [], flags = {}, binary = false, useSnapshot = true) => {
   await removeDir(dirs)
   try {
-    const fixture = new Fixture(`./fixtures/${fixtureName}`).withFlags(flags)
+    const fixture = new Fixture(test.meta.file, `./fixtures/${fixtureName}`).withFlags(flags)
     const result = binary ? await fixture.runBuildBinary().then(({ output }) => output) : await fixture.runWithBuild()
 
     if (useSnapshot) {
@@ -127,7 +127,7 @@ test('Install local plugin dependencies: with yarn in CI', async (t) => {
 })
 
 test('Install local plugin dependencies: propagate errors', async (t) => {
-  const fixture = new Fixture('./fixtures/error')
+  const fixture = new Fixture(test.meta.file, './fixtures/error')
   const { success, output } = await fixture.runWithBuildAndIntrospect()
   const pluginPath = join(fixture.repositoryRoot, 'plugin')
 
@@ -136,29 +136,29 @@ test('Install local plugin dependencies: propagate errors', async (t) => {
 })
 
 test('Install local plugin dependencies: already installed', async (t) => {
-  const output = await new Fixture('./fixtures/already').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/already').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: no package.json', async (t) => {
-  const output = await new Fixture('./fixtures/no_package').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/no_package').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: no root package.json', async (t) => {
-  const output = await new Fixture('./fixtures/no_root_package')
+  const output = await new Fixture(test.meta.file, './fixtures/no_root_package')
     .withCopyRoot()
     .then((fixture) => fixture.runWithBuild())
   t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: missing plugin in netlify.toml', async (t) => {
-  const output = await new Fixture('./fixtures/local_missing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/local_missing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('when --context=dev, install local integration from a directory defined via netlify.toml', async (t) => {
-  const output = await new Fixture('./fixtures/local_missing_integration_directory_path')
+  const output = await new Fixture(test.meta.file, './fixtures/local_missing_integration_directory_path')
     .withFlags({ context: 'dev' })
     .runWithBuild()
 
@@ -166,7 +166,7 @@ test('when --context=dev, install local integration from a directory defined via
 })
 
 test('when --context=dev, install local integration from a tarball defined via netlify.toml', async (t) => {
-  const output = await new Fixture('./fixtures/local_missing_integration_tarball_path')
+  const output = await new Fixture(test.meta.file, './fixtures/local_missing_integration_tarball_path')
     .withFlags({ context: 'dev' })
     .runWithBuild()
 
