@@ -19,7 +19,7 @@ const runWithApiMockAndGetNormalizedOutput = async function (
     status,
   })
   try {
-    const output = await new Fixture(`./fixtures/${fixtureName}`)
+    const output = await new Fixture(test.meta.file, `./fixtures/${fixtureName}`)
       .withFlags({
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
         ...flags,
@@ -406,7 +406,7 @@ const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sen
     { path: '/site/test/integrations/safe', response: [] },
   ])
   try {
-    const output = await new Fixture(`./fixtures/${fixture}`)
+    const output = await new Fixture(test.meta.file, `./fixtures/${fixture}`)
       .withFlags({
         siteId: 'test',
         token: 'test',
@@ -497,7 +497,7 @@ const runWithPluginRunsMock = async function (
     { path: '/site/test/integrations/safe', response: [] },
   ])
   try {
-    const output = await new Fixture(`./fixtures/${fixtureName}`)
+    const output = await new Fixture(test.meta.file, `./fixtures/${fixtureName}`)
       .withFlags({
         siteId: 'test',
         token: 'test',

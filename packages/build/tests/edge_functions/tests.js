@@ -73,27 +73,27 @@ const FLAG_VARIANTS = isDenoVersionSupported(denoVersion)
 
 for (const variant of FLAG_VARIANTS) {
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
-    const output = await new Fixture('./fixtures/src_default').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/src_default').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC automatic value', async (t) => {
-    const output = await new Fixture('./fixtures/src_auto').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/src_auto').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC relative path', async (t) => {
-    const output = await new Fixture('./fixtures/src_relative').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/src_relative').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC missing path', async (t) => {
-    const output = await new Fixture('./fixtures/src_missing').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/src_missing').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_SRC created dynamically', async (t) => {
-    const output = await new Fixture('./fixtures/src_dynamic')
+    const output = await new Fixture(test.meta.file, './fixtures/src_dynamic')
       .withFlags(variant.flags)
       .withCopyRoot({ git: false })
       .then((fixture) => fixture.runWithBuild())
@@ -103,7 +103,7 @@ for (const variant of FLAG_VARIANTS) {
   test.serial(
     variant.id + ' - constants.EDGE_FUNCTIONS_SRC dynamic is ignored if EDGE_FUNCTIONS_SRC is specified',
     async (t) => {
-      const output = await new Fixture('./fixtures/src_dynamic_ignore')
+      const output = await new Fixture(test.meta.file, './fixtures/src_dynamic_ignore')
         .withFlags(variant.flags)
         .withCopyRoot({ git: false })
         .then((fixture) => fixture.runWithBuild())
@@ -112,19 +112,19 @@ for (const variant of FLAG_VARIANTS) {
   )
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
-    const output = await new Fixture('./fixtures/print_dist').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/print_dist').withFlags(variant.flags).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
-    const output = await new Fixture('./fixtures/print_dist')
+    const output = await new Fixture(test.meta.file, './fixtures/print_dist')
       .withFlags({ ...variant.flags, mode: 'buildbot', edgeFunctionsDistDir: '/another/path' })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - builds Edge Functions from the user-defined directory', async (t) => {
-    const output = await new Fixture('./fixtures/functions_user')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_user')
       .withFlags({ ...variant.flags, mode: 'buildbot' })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -133,7 +133,7 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - builds Edge Functions from the internal directory', async (t) => {
-    const output = await new Fixture('./fixtures/functions_internal')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_internal')
       .withFlags({ ...variant.flags, mode: 'buildbot' })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -148,7 +148,7 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - builds Edge Functions from both the user and the internal directories', async (t) => {
-    const output = await new Fixture('./fixtures/functions_user_internal')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_user_internal')
       .withFlags({ ...variant.flags, mode: 'buildbot' })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -160,7 +160,9 @@ for (const variant of FLAG_VARIANTS) {
   // out which regex is causing the problem and fix it.
   if (platform !== 'win32') {
     test.serial(variant.id + ' - handles failure when bundling Edge Functions', async (t) => {
-      const output = await new Fixture('./fixtures/functions_invalid').withFlags(variant.flags).runWithBuild()
+      const output = await new Fixture(test.meta.file, './fixtures/functions_invalid')
+        .withFlags(variant.flags)
+        .runWithBuild()
       t.snapshot(normalizeOutput(output))
     })
   }
@@ -168,14 +170,14 @@ for (const variant of FLAG_VARIANTS) {
   // Does not work because the validator is memoized in edge-bundler and the ff has no effect during runtime.
   // Enable test once removing FF
   test.serial.skip(variant.id + ' - handles failure when validating Edge Functions', async (t) => {
-    const output = await new Fixture('./fixtures/functions_validation_failed')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_validation_failed')
       .withFlags({ debug: false, featureFlags: { edge_functions_manifest_validate_slash: true } })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 
   test.serial(variant.id + ' - bundles Edge Functions via runCoreSteps function', async (t) => {
-    const output = await new Fixture('./fixtures/functions_user')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_user')
       .withFlags({ ...variant.flags, buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
       .runWithBuild()
     t.snapshot(normalizeOutput(output))
@@ -184,7 +186,7 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - handles failure when bundling Edge Functions via runCoreSteps function', async (t) => {
-    const output = await new Fixture('./fixtures/functions_invalid')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_invalid')
       .withFlags({ ...variant.flags, buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
       .runWithBuild()
 
@@ -198,7 +200,7 @@ for (const variant of FLAG_VARIANTS) {
       // This file descriptor doesn't exist, but it won't be used anyway since
       // `debug` is set.
       const systemLogFile = 7
-      const output = await new Fixture('./fixtures/functions_user')
+      const output = await new Fixture(test.meta.file, './fixtures/functions_user')
         .withFlags({
           debug: true,
           mode: 'buildbot',
@@ -215,7 +217,7 @@ for (const variant of FLAG_VARIANTS) {
     const { fd, cleanup, path } = await tmp.file()
 
     try {
-      const output = await new Fixture('./fixtures/functions_user')
+      const output = await new Fixture(test.meta.file, './fixtures/functions_user')
         .withFlags({ ...variant.flags, mode: 'buildbot', systemLogFile: fd })
         .runWithBuild()
       t.snapshot(normalizeOutput(output))
@@ -229,7 +231,9 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
-    const output = await new Fixture('./fixtures/functions_plugin_mutations').withFlags(variant.flags).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/functions_plugin_mutations')
+      .withFlags(variant.flags)
+      .runWithBuild()
     t.snapshot(normalizeOutput(output))
     const manifest = await assertManifest(t, 'functions_plugin_mutations')
     assertBundlesExist(t, manifest, variant)
@@ -243,7 +247,7 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - cleans up the edge functions dist directory before bundling', async (t) => {
-    const fixture = new Fixture('./fixtures/functions_user')
+    const fixture = new Fixture(test.meta.file, './fixtures/functions_user')
     const distDirectory = join(fixture.repositoryRoot, '.netlify', 'edge-functions-dist')
     const oldBundlePath = join(distDirectory, 'old.eszip')
     const manifestPath = join(distDirectory, 'manifest.json')
@@ -268,7 +272,7 @@ for (const variant of FLAG_VARIANTS) {
   })
 
   test.serial(variant.id + ' - builds edge functions generated with the Frameworks API', async (t) => {
-    const output = await new Fixture('./fixtures/functions_user_framework')
+    const output = await new Fixture(test.meta.file, './fixtures/functions_user_framework')
       .withFlags({
         ...variant.flags,
         mode: 'buildbot',
@@ -294,7 +298,7 @@ for (const variant of FLAG_VARIANTS) {
     variant.id +
       ' - builds both edge functions generated with the Frameworks API and the ones in the internal directory',
     async (t) => {
-      const output = await new Fixture('./fixtures/functions_user_internal_framework')
+      const output = await new Fixture(test.meta.file, './fixtures/functions_user_internal_framework')
         .withFlags({
           ...variant.flags,
           mode: 'buildbot',
@@ -351,7 +355,7 @@ for (const variant of FLAG_VARIANTS) {
   test.serial(
     variant.id + ' - honors declarative `edge_functions` routes from the Frameworks API config file',
     async (t) => {
-      await new Fixture('./fixtures/functions_frameworks_api_config')
+      await new Fixture(test.meta.file, './fixtures/functions_frameworks_api_config')
         .withFlags({
           ...variant.flags,
           mode: 'buildbot',
@@ -400,7 +404,7 @@ for (const variant of FLAG_VARIANTS) {
   )
 
   test.serial(variant.id + ' - skip bundling when edge function directories exist, contain no functions', async (t) => {
-    await new Fixture('./fixtures/functions_empty_directory').withFlags(variant.flags).runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/functions_empty_directory').withFlags(variant.flags).runWithBuild()
 
     const manifestPath = join(
       FIXTURES_DIR,
@@ -416,7 +420,7 @@ for (const variant of FLAG_VARIANTS) {
   test.serial(
     variant.id + ' - skip bundling when edge function directories exist, contain no functions, contain empty manifest',
     async (t) => {
-      await new Fixture('./fixtures/functions_empty_manifest').withFlags(variant.flags).runWithBuild()
+      await new Fixture(test.meta.file, './fixtures/functions_empty_manifest').withFlags(variant.flags).runWithBuild()
 
       const manifestPath = join(
         FIXTURES_DIR,

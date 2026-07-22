@@ -1,18 +1,14 @@
 import { existsSync } from 'fs'
+import { cp } from 'fs/promises'
 import { createRequire } from 'module'
 import { normalize, delimiter } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import { default as build, startDev } from '@netlify/build'
-import test from 'ava'
-import cpy from 'cpy'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
-import isPlainObj from 'is-plain-obj'
-import { merge } from 'lodash-es'
-import pathKey from 'path-key'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
@@ -22,6 +18,8 @@ const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
+
+const PATH_KEY = Object.keys(env).findLast((key) => key.toUpperCase() === 'PATH') ?? 'PATH'
 
 // TODO: this type should be moved to @netlify/build and @netlify/config as it's the main argument of the entry point
 type Flags = {
@@ -66,7 +64,7 @@ export class Fixture {
     // regardless of the current directory.
     // This is needed for example to run `yarn` in tests in environments that
     // do not have a global binary of `yarn`.
-    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
+    [PATH_KEY]: `${env[PATH_KEY]}${delimiter}${BUILD_BIN_DIR}`,
   }
 
   copyRootDir: string
@@ -102,14 +100,19 @@ export class Fixture {
 
   constructor(
     /**
+     * the test file currently running and importing this, as an absolute path
+     * or a `file://` URL (e.g. ava's `test.meta.file`)
+     */
+    testFile?: string,
+    /**
      * a relative path from the test file to the fixture directory
      * @example: ./fixtures/my_fixture
      */
     relativeFixturePath?: string,
   ) {
-    if (relativeFixturePath && relativeFixturePath.length !== 0) {
-      const testFile = fileURLToPath(test.meta.file)
-      this.repositoryRoot = normalize(`${testFile}/../${relativeFixturePath}`)
+    if (testFile && relativeFixturePath && relativeFixturePath.length !== 0) {
+      const testFilePath = testFile.startsWith('file:') ? fileURLToPath(testFile) : testFile
+      this.repositoryRoot = normalize(`${testFilePath}/../${relativeFixturePath}`)
 
       if (!existsSync(this.repositoryRoot)) {
         throw new Error(`The provided fixtures path does not exist: ${this.repositoryRoot}`)
@@ -130,7 +133,7 @@ export class Fixture {
 
   /** any flags/options passed to the main command  */
   withFlags(flags: Record<string, unknown> = {}): this {
-    this.additionalFlags = merge({}, this.additionalFlags, flags)
+    this.additionalFlags = { ...this.additionalFlags, ...flags }
     return this
   }
 
@@ -148,7 +151,7 @@ export class Fixture {
     } = { git: true },
   ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
-    await cpy('./**', this.copyRootDir, { cwd: this.repositoryRoot })
+    await cp(this.repositoryRoot, this.copyRootDir, { recursive: true })
 
     if (copyRoot.branch !== undefined) {
       await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })
@@ -285,7 +288,9 @@ export class Fixture {
   ): Promise<{ output: string; requests: Request[] }> {
     const { scheme, host, requests, stopServer } = await startServer(handler)
     try {
-      this.withFlags({ testOpts: { scheme, host } })
+      this.withFlags({
+        testOpts: { ...(this.additionalFlags.testOpts as Record<string, unknown> | undefined), scheme, host },
+      })
       const output = await fn.bind(this)()
       return { output, requests }
     } finally {
@@ -301,6 +306,9 @@ export class Fixture {
   }
 }
 
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
 const getCliFlags = (mainFlags: Record<string, unknown>, prefix: string[] = []) =>
   Object.entries(mainFlags).flatMap(([name, value]) => getCliFlag(name, value, prefix))
 
@@ -312,7 +320,7 @@ const getCliFlag = (name: string, value: unknown, prefix: string[]) => {
     return [`--${name}=${val}`]
   }
 
-  if (isPlainObj(value)) {
+  if (isObject(value)) {
     return getCliFlags(value, [...prefix, name])
   }
 

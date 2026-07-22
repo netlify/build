@@ -128,7 +128,7 @@ const getAllTimerRequests = async function (t, fixtureName, flags = {}) {
 
   // Since we're overriding globals via `nock-udp` our `Fixture` needs to run programmatically. `runBuildBinary` here
   // won't work
-  await new Fixture(fixtureName).withFlags({ statsd: { host, port }, ...flags }).runWithBuild()
+  await new Fixture(test.meta.file, fixtureName).withFlags({ statsd: { host, port }, ...flags }).runWithBuild()
 
   const timerRequests = scope.buffers.flatMap(flattenRequest)
   t.true(scope.used)
