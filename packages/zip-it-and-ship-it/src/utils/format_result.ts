@@ -29,6 +29,15 @@ export const formatZipResult = (archive: FunctionArchive) => {
   const vcpu: number | undefined = archive.staticAnalysisResult?.config?.vcpu ?? archive?.config?.vcpu
   const runtimeAPIVersion = archive.staticAnalysisResult?.runtimeAPIVersion
 
+  // Mirror the `buildData` object that `manifest.ts` persists, so consumers
+  // reading the in-memory result see the same shape as the manifest cache.
+  // Only attach it when there's something to report (e.g. Node functions),
+  // avoiding an empty `buildData: {}` on runtimes like Go and Rust.
+  const buildData = removeUndefined({
+    bootstrapVersion: archive.bootstrapVersion,
+    runtimeAPIVersion,
+  })
+
   const functionResult: FunctionResult = {
     ...archive,
     staticAnalysisResult: undefined,
@@ -40,10 +49,7 @@ export const formatZipResult = (archive: FunctionArchive) => {
     region: archive.staticAnalysisResult?.config?.region ?? archive?.config?.region,
     schedule: archive.staticAnalysisResult?.config?.schedule ?? archive?.config?.schedule,
     runtimeAPIVersion,
-    buildData: {
-      bootstrapVersion: archive.bootstrapVersion,
-      runtimeAPIVersion,
-    },
+    buildData: Object.keys(buildData).length === 0 ? undefined : buildData,
     vcpu,
   }
 
