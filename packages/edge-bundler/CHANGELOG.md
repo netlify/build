@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.1.2](https://github.com/netlify/build/compare/edge-bundler-v15.1.1...edge-bundler-v15.1.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry `deno info` on transient network errors ([#7133](https://github.com/netlify/build/issues/7133)) ([37d2c10](https://github.com/netlify/build/commit/37d2c104b7a467bd920ceac0a8ff965a05f93233))
+
 ## [15.1.1](https://github.com/netlify/build/compare/edge-bundler-v15.1.0...edge-bundler-v15.1.1) (2026-07-20)
 
 
