@@ -41,12 +41,24 @@ test('Does not inject an SPA fallback redirect when `build.spa` is not set', asy
   expect(netlifyConfig.redirects).toEqual([])
 })
 
-test('Does not override a catch-all redirect already declared by the user', async () => {
-  const { netlifyConfig, success } = await new Fixture(
+test('Does not override a mismatched catch-all redirect already declared by the user, and warns about it', async () => {
+  const { netlifyConfig, success, output } = await new Fixture(
     import.meta.url,
     './fixtures/spa_enabled_existing_catch_all',
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
   expect(netlifyConfig.redirects).toEqual([{ ...SPA_FALLBACK_REDIRECT, to: '/200.html' }])
+  expect(output).toContain('a catch-all redirect ("/*") already exists that does not rewrite to "/index.html"')
+})
+
+test('Does not warn when the existing catch-all redirect already matches what Netlify would add', async () => {
+  const { netlifyConfig, success, output } = await new Fixture(
+    import.meta.url,
+    './fixtures/spa_enabled_existing_correct_catch_all',
+  ).runWithBuildAndIntrospect()
+
+  expect(success).toBe(true)
+  expect(netlifyConfig.redirects).toEqual([SPA_FALLBACK_REDIRECT])
+  expect(output).not.toContain('build.spa')
 })
