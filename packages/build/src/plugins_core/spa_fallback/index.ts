@@ -33,7 +33,7 @@ function coreStep(coreStepFunctionArgs: CoreStepFunctionArgs): ReturnType<CoreSt
       ...newConfig,
     },
     applySpaFallback.event,
-  ) as unknown[]
+  )
 
   return Promise.resolve({ configMutations })
 }

@@ -5,8 +5,15 @@ import rfdc from 'rfdc'
 
 const clone = rfdc()
 
+export type ConfigMutation = {
+  keys: string[]
+  keysString: string
+  value: unknown
+  event: string
+}
+
 // Copy `netlifyConfig` so we can compare before/after mutating it
-export const cloneNetlifyConfig = function (netlifyConfig) {
+export function cloneNetlifyConfig<T>(netlifyConfig: T): T {
   return clone(netlifyConfig)
 }
 
@@ -18,22 +25,40 @@ export const cloneNetlifyConfig = function (netlifyConfig) {
 //  - Apply the change to `netlifyConfig` in the parent process so it can
 //    run `@netlify/config` to normalize and validate the new values
 // `configMutations` is passed to parent process as JSON
-export const getConfigMutations = function (netlifyConfig, netlifyConfigCopy, event) {
-  const configMutations = diffObjects(netlifyConfig, netlifyConfigCopy, [])
+
+export function getConfigMutations(
+  netlifyConfig: object,
+  netlifyConfigCopy: object,
+  event: string
+): ConfigMutation[] {
+  const configMutations = diffObjects(
+    netlifyConfig as Record<string, unknown>,
+    netlifyConfigCopy as Record<string, unknown>,
+    [],
+  )
+
   return configMutations.map((configMutation) => getConfigMutation(configMutation, event))
 }
 
+type DiffResult = { keys: string[]; value: unknown }
+
 // We only recurse over plain objects, not arrays. Which means array properties
 // can only be modified all at once.
-const diffObjects = function (objA, objB, parentKeys) {
+
+function diffObjects(
+  objA: Record<string, unknown>,
+  objB: Record<string, unknown>,
+  parentKeys: string[],
+): DiffResult[] {
   const allKeys = [...new Set([...Object.keys(objA), ...Object.keys(objB)])]
+
   return allKeys.flatMap((key) => {
     const valueA = objA[key]
     const valueB = objB[key]
     const keys = [...parentKeys, key]
 
     if (isPlainObj(valueA) && isPlainObj(valueB)) {
-      return diffObjects(valueA, valueB, keys)
+      return diffObjects(valueA as Record<string, unknown>, valueB as Record<string, unknown>, keys)
     }
 
     if (isDeepStrictEqual(valueA, valueB)) {
@@ -44,8 +69,9 @@ const diffObjects = function (objA, objB, parentKeys) {
   })
 }
 
-const getConfigMutation = function ({ keys, value }, event) {
+function getConfigMutation({ keys, value }: DiffResult, event: string): ConfigMutation {
   const serializedKeys = keys.map(String)
+
   return {
     keys: serializedKeys,
     keysString: serializedKeys.join('.'),
