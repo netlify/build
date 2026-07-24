@@ -26,11 +26,7 @@ export function cloneNetlifyConfig<T>(netlifyConfig: T): T {
 //    run `@netlify/config` to normalize and validate the new values
 // `configMutations` is passed to parent process as JSON
 
-export function getConfigMutations(
-  netlifyConfig: object,
-  netlifyConfigCopy: object,
-  event: string
-): ConfigMutation[] {
+export function getConfigMutations(netlifyConfig: object, netlifyConfigCopy: object, event: string): ConfigMutation[] {
   const configMutations = diffObjects(
     netlifyConfig as Record<string, unknown>,
     netlifyConfigCopy as Record<string, unknown>,
@@ -45,11 +41,7 @@ type DiffResult = { keys: string[]; value: unknown }
 // We only recurse over plain objects, not arrays. Which means array properties
 // can only be modified all at once.
 
-function diffObjects(
-  objA: Record<string, unknown>,
-  objB: Record<string, unknown>,
-  parentKeys: string[],
-): DiffResult[] {
+function diffObjects(objA: Record<string, unknown>, objB: Record<string, unknown>, parentKeys: string[]): DiffResult[] {
   const allKeys = [...new Set([...Object.keys(objA), ...Object.keys(objB)])]
 
   return allKeys.flatMap((key) => {
