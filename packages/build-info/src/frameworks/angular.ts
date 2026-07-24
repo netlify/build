@@ -35,12 +35,16 @@ export class Angular extends BaseFramework implements Framework {
         this.plugins.push('@netlify/angular-runtime')
         const angularJson = await this.project.fs.gracefullyReadFile('angular.json')
         if (angularJson) {
-          const { projects, defaultProject } = JSON.parse(angularJson)
-          const project = projects[defaultProject ?? Object.keys(projects)[0]]
-          const outputPath = project?.architect?.build?.options?.outputPath
-          if (outputPath) {
-            const usesApplicationBuilder = project?.architect?.build?.builder?.endsWith(':application')
-            this.build.directory = usesApplicationBuilder ? this.project.fs.join(outputPath, 'browser') : outputPath
+          try {
+            const { projects, defaultProject } = JSON.parse(angularJson)
+            const project = projects[defaultProject ?? Object.keys(projects)[0]]
+            const outputPath = project?.architect?.build?.options?.outputPath
+            if (outputPath) {
+              const usesApplicationBuilder = project?.architect?.build?.builder?.endsWith(':application')
+              this.build.directory = usesApplicationBuilder ? this.project.fs.join(outputPath, 'browser') : outputPath
+            }
+          } catch {
+            // Ignore malformed angular.json files
           }
         }
       }
