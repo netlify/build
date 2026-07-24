@@ -22,12 +22,12 @@ test('--cwd with a relative path config', async (t) => {
 })
 
 test('build.base current directory', async (t) => {
-  const output = await new Fixture('./fixtures/build_base_cwd').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/build_base_cwd').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('build.base override', async (t) => {
-  const output = await new Fixture('./fixtures/build_base_override')
+  const output = await new Fixture(test.meta.file, './fixtures/build_base_override')
     .withFlags({ cwd: `${FIXTURES_DIR}/build_base_override/subdir` })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
@@ -44,7 +44,7 @@ test('--repository-root with cwd', async (t) => {
 })
 
 test('No .git', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withCopyRoot({ git: false, cwd: true })
     .then((fixture) => fixture.runWithConfig())
   t.snapshot(normalizeOutput(output))
@@ -75,7 +75,7 @@ test('--repositoryRoot points to a non-directory file', async (t) => {
 })
 
 test('should detect base directory using package.json in sub dir', async (t) => {
-  const output = await new Fixture('./fixtures/build_base_package_json')
+  const output = await new Fixture(test.meta.file, './fixtures/build_base_package_json')
     .withFlags({ cwd: `${FIXTURES_DIR}/build_base_package_json/subdir` })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))

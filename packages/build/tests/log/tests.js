@@ -4,7 +4,7 @@ import test from 'ava'
 import hasAnsi from 'has-ansi'
 
 test('Colors in parent process', async (t) => {
-  const { output } = await new Fixture('./fixtures/parent')
+  const { output } = await new Fixture(test.meta.file, './fixtures/parent')
     .withFlags({ dry: true })
     .withEnv({ FORCE_COLOR: '1' })
     .runBuildBinary()
@@ -12,12 +12,14 @@ test('Colors in parent process', async (t) => {
 })
 
 test('Colors in child process', async (t) => {
-  const { output } = await new Fixture('./fixtures/child').withEnv({ FORCE_COLOR: '1' }).runBuildBinary()
+  const { output } = await new Fixture(test.meta.file, './fixtures/child')
+    .withEnv({ FORCE_COLOR: '1' })
+    .runBuildBinary()
   t.true(output.includes(colors.red('onPreBuild')))
 })
 
 test('Netlify CI', async (t) => {
-  const { output } = await new Fixture('./fixtures/parent')
+  const { output } = await new Fixture(test.meta.file, './fixtures/parent')
     .withFlags({ dry: true, mode: 'buildbot' })
     .withEnv({ FORCE_COLOR: '1' })
     .runBuildBinary()
@@ -25,7 +27,7 @@ test('Netlify CI', async (t) => {
 })
 
 test('No TTY', async (t) => {
-  const { output } = await new Fixture('./fixtures/parent')
+  const { output } = await new Fixture(test.meta.file, './fixtures/parent')
     .withFlags({ dry: true })
     .withEnv({ FORCE_COLOR: '0' })
     .runBuildBinary()
@@ -33,29 +35,31 @@ test('No TTY', async (t) => {
 })
 
 test('Logs whether the build commands came from the UI', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ defaultConfig: { build: { command: 'node --invalid' } } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('The verbose flag enables verbosity', async (t) => {
-  const output = await new Fixture('./fixtures/verbose').withFlags({ verbose: true }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/verbose').withFlags({ verbose: true }).runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Verbosity works with plugin errors', async (t) => {
-  const output = await new Fixture('./fixtures/verbose_error').withFlags({ verbose: true }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/verbose_error')
+    .withFlags({ verbose: true })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not truncate long headers in logs', async (t) => {
-  const output = await new Fixture('./fixtures/truncate_headers').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/truncate_headers').runWithBuild()
   t.false(output.includes('999'))
 })
 
 test('Does not truncate long redirects in logs', async (t) => {
-  const output = await new Fixture('./fixtures/truncate_redirects').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/truncate_redirects').runWithBuild()
   t.false(output.includes('999'))
 })
 
@@ -64,7 +68,7 @@ test('Accepts a custom log function', async (t) => {
   const logger = (message) => {
     logs.push(message)
   }
-  const result = await new Fixture('./fixtures/with_plugin_and_functions')
+  const result = await new Fixture(test.meta.file, './fixtures/with_plugin_and_functions')
     .withFlags({ logger, verbose: true })
     .runBuildProgrammatic()
 

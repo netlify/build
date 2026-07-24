@@ -24,7 +24,9 @@ const waitsForPostProcessing = function (request) {
 test('Deploy plugin succeeds', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runWithBuild()
     t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
@@ -36,7 +38,7 @@ test('Deploy plugin succeeds', async (t) => {
 test('Deploy plugin sends deployDir as a path relative to repositoryRoot', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/dir_path').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/dir_path').withFlags({ buildbotServerSocket: address }).runWithBuild()
   } finally {
     await stopServer()
   }
@@ -48,7 +50,7 @@ test('Deploy plugin sends deployDir as a path relative to repositoryRoot', async
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async (t) => {
   const { requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/empty').runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/empty').runWithBuild()
   } finally {
     await stopServer()
   }
@@ -59,14 +61,18 @@ test('Deploy plugin is not run unless --buildbotServerSocket is passed', async (
 test('Deploy plugin connection error', async (t) => {
   const { address, stopServer } = await startDeployServer()
   await stopServer()
-  const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
+    .withFlags({ buildbotServerSocket: address })
+    .runWithBuild()
   t.true(output.includes('Internal error during "Deploy site"'))
 })
 
 test('Deploy plugin response syntax error', async (t) => {
   const { address, stopServer } = await startDeployServer({ response: 'test' })
   try {
-    const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runWithBuild()
     // This shape of this error can change with different Node.js versions.
     t.true(output.includes('Internal error during "Deploy site"'))
   } finally {
@@ -79,7 +85,9 @@ test('Deploy plugin response system error', async (t) => {
     response: { succeeded: false, values: { error: 'test', error_type: 'system' } },
   })
   try {
-    const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runWithBuild()
     t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
@@ -91,7 +99,9 @@ test('Deploy plugin response user error', async (t) => {
     response: { succeeded: false, values: { error: 'test', error_type: 'user' } },
   })
   try {
-    const output = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runWithBuild()
     t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
@@ -101,7 +111,7 @@ test('Deploy plugin response user error', async (t) => {
 test('Deploy plugin does not wait for post-processing if not using onSuccess nor onEnd', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/empty').withFlags({ buildbotServerSocket: address }).runWithBuild()
   } finally {
     await stopServer()
   }
@@ -112,7 +122,7 @@ test('Deploy plugin does not wait for post-processing if not using onSuccess nor
 test('Deploy plugin waits for post-processing if using onSuccess', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/success').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/success').withFlags({ buildbotServerSocket: address }).runWithBuild()
   } finally {
     await stopServer()
   }
@@ -123,7 +133,7 @@ test('Deploy plugin waits for post-processing if using onSuccess', async (t) => 
 test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/end').withFlags({ buildbotServerSocket: address }).runWithBuild()
+    await new Fixture(test.meta.file, './fixtures/end').withFlags({ buildbotServerSocket: address }).runWithBuild()
   } finally {
     await stopServer()
   }
@@ -134,7 +144,7 @@ test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
 test('Deploy plugin specifies deploy-specific variables in deploy event', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await new Fixture('./fixtures/deploy_environment_variables')
+    await new Fixture(test.meta.file, './fixtures/deploy_environment_variables')
       .withFlags({ buildbotServerSocket: address })
       .runWithBuild()
   } finally {
@@ -173,7 +183,9 @@ test('Deploy plugin returns an internal deploy error if the server responds with
       success,
       severityCode,
       logs: { stdout },
-    } = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runBuildProgrammatic()
+    } = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runBuildProgrammatic()
     t.false(success)
     // system-error code
     t.is(severityCode, 4)
@@ -194,7 +206,9 @@ test('Deploy plugin returns a  deploy error if the server responds with a 4xx', 
       success,
       severityCode,
       logs: { stdout },
-    } = await new Fixture('./fixtures/empty').withFlags({ buildbotServerSocket: address }).runBuildProgrammatic()
+    } = await new Fixture(test.meta.file, './fixtures/empty')
+      .withFlags({ buildbotServerSocket: address })
+      .runBuildProgrammatic()
     t.false(success)
     // user-error code
     t.is(severityCode, 2)

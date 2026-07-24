@@ -4,14 +4,14 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
 test('Base from defaultConfig', async (t) => {
-  const output = await new Fixture('./fixtures/default_config')
+  const output = await new Fixture(test.meta.file, './fixtures/default_config')
     .withFlags({ defaultConfig: { build: { base: 'base' } } })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Base from configuration file property', async (t) => {
-  const output = await new Fixture('./fixtures/prop_config').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/prop_config').runWithConfig()
   t.snapshot(normalizeOutput(output))
   const {
     buildDir,
@@ -27,12 +27,14 @@ test('Base from configuration file property', async (t) => {
 })
 
 test('Base logic is not recursive', async (t) => {
-  const output = await new Fixture('./fixtures/recursive').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/recursive').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('BaseRelDir feature flag', async (t) => {
-  const output = await new Fixture('./fixtures/prop_config').withFlags({ baseRelDir: false }).runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/prop_config')
+    .withFlags({ baseRelDir: false })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
   const {
     buildDir,
@@ -49,31 +51,31 @@ test('BaseRelDir feature flag', async (t) => {
 })
 
 test('Base directory does not exist', async (t) => {
-  const output = await new Fixture('./fixtures/base_invalid').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/base_invalid').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as default value for "publish"', async (t) => {
-  const output = await new Fixture('./fixtures/base_without_publish').runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as "publish" when it is an empty string', async (t) => {
-  const output = await new Fixture('./fixtures/base_without_publish')
+  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish')
     .withFlags({ defaultConfig: { build: { publish: '' } } })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as "publish" when it is /', async (t) => {
-  const output = await new Fixture('./fixtures/base_without_publish')
+  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish')
     .withFlags({ defaultConfig: { build: { publish: '/' } } })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Monorepo with package path retrieving _redirects', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -110,7 +112,7 @@ test('Monorepo with package path retrieving _redirects', async (t) => {
 })
 
 test('Monorepo with redirects from the publish directory', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo-with-root-files').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -147,7 +149,7 @@ test('Monorepo with redirects from the publish directory', async (t) => {
 })
 
 test('Monorepo with redirects from the top should be joined', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo-with-root-files').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -193,7 +195,7 @@ test('Monorepo with redirects from the top should be joined', async (t) => {
 })
 
 test('Monorepo with package path retrieving _headers', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -227,7 +229,7 @@ test('Monorepo with package path retrieving _headers', async (t) => {
 })
 
 test('Monorepo with serverless functions', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
   const output = await fixture
     .withFlags({
@@ -260,7 +262,7 @@ test('Monorepo with serverless functions', async (t) => {
 })
 
 test('Monorepo with custom serverless function directory', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -291,7 +293,7 @@ test('Monorepo with custom serverless function directory', async (t) => {
 })
 
 test('Monorepo with edge functions', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -325,7 +327,7 @@ test('Monorepo with edge functions', async (t) => {
 })
 
 test('Monorepo with custom edge function directory', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -359,7 +361,7 @@ test('Monorepo with custom edge function directory', async (t) => {
 })
 
 test('Monorepo with base field', async (t) => {
-  const fixture = await new Fixture('./fixtures').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -387,7 +389,7 @@ test('Monorepo with base field', async (t) => {
 })
 
 test('Monorepo with base field and build plugin', async (t) => {
-  const fixture = await new Fixture('./fixtures').withCopyRoot()
+  const fixture = await new Fixture(test.meta.file, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
