@@ -7,5 +7,5 @@
     "strictBindCallApply": false /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
-  "exclude": ["tests/**"]
+  "exclude": ["tests/**", "src/**/*.test.ts"]
 }

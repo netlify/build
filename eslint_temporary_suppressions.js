@@ -2849,7 +2849,10 @@ export default [
     // Same class of gap as packages/build-info's own *.test.ts suppressions (e.g.
     // tests/bin.test.ts): `@netlify/testing` isn't declared as a dependency anywhere
     // (to avoid a circular dependency), so its types don't fully resolve here.
-    files: ['packages/build/tests/frameworks_api/spa.test.ts', 'packages/build/tests/spa_fallback/spa_fallback.test.ts'],
+    files: [
+      'packages/build/tests/frameworks_api/spa.test.ts',
+      'packages/build/tests/spa_fallback/spa_fallback.test.ts',
+    ],
     rules: {
       'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
