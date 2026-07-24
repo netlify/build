@@ -1,5 +1,21 @@
 # Changelog
 
+## [16.0.0](https://github.com/netlify/build/compare/edge-bundler-v15.1.2...edge-bundler-v16.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **edge-bundler:** the `manifest` property returned by `bundle` is now `Manifest | undefined`. It is `undefined` when no function is bundled.
+
+### Features
+
+* **edge-bundler:** exclude unrouted functions from the bundle ([8140b96](https://github.com/netlify/build/commit/8140b969b3a9c2ae1fbaea76a1e1316ae8a34836))
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry config extraction on transient network errors ([#7138](https://github.com/netlify/build/issues/7138)) ([efd3a2b](https://github.com/netlify/build/commit/efd3a2b1aab212ee5e06f3f87b585f07b04813d8))
+
 ## [15.1.2](https://github.com/netlify/build/compare/edge-bundler-v15.1.1...edge-bundler-v15.1.2) (2026-07-23)
 
 
