@@ -19,6 +19,7 @@ import { ESBUILD_LOG_LIMIT } from '../src/runtimes/node/bundlers/esbuild/bundler
 import { NODE_BUNDLER } from '../src/runtimes/node/bundlers/types.js'
 import { detectEsModule } from '../src/runtimes/node/utils/detect_es_module.js'
 import { MODULE_FORMAT } from '../src/runtimes/node/utils/module_format.js'
+import type { FunctionBundlingUserError } from '../src/utils/error.js'
 import { shellUtils } from '../src/utils/shell.js'
 import type { ZipFunctionsOptions } from '../src/zip.js'
 import { zipFunctions } from '../src/zip.js'
@@ -527,6 +528,31 @@ describe('zip-it-and-ship-it', () => {
       await expect(importFunctionFile(join(unzipPath, 'function.js'))).rejects.toThrow(
         'module is not defined in ES module scope',
       )
+    },
+  )
+
+  testMany(
+    'Errors at bundle time when bundling a CJS function inside a `"type": "module"` package scope and the `zisi_error_cjs_in_esm_scope` flag is on (nft)',
+    ['bundler_nft'],
+    async (options) => {
+      const fixtureName = 'node-cjs-in-esm-scope'
+      const opts = merge(options, {
+        featureFlags: { zisi_error_cjs_in_esm_scope: true },
+      })
+
+      try {
+        await zipFixture(fixtureName, { opts })
+
+        expect.fail('Bundling should have thrown')
+      } catch (error) {
+        const { customErrorInfo, message } = error as FunctionBundlingUserError
+
+        expect(message).toMatch('is a CommonJS module, but the closest \'package.json\' declares \'"type": "module"\'')
+        expect(customErrorInfo.type).toBe('functionsBundling')
+        expect(customErrorInfo.location.bundler).toBe('nft')
+        expect(customErrorInfo.location.functionName).toBe('function')
+        expect(customErrorInfo.location.runtime).toBe('js')
+      }
     },
   )
 
