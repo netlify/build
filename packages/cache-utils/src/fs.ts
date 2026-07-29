@@ -20,7 +20,12 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
     return
   }
 
-  await fs.cp(src, dest, { recursive: true, force: false, errorOnExist: false })
+  await fs.cp(src, dest, {
+    recursive: true,
+    force: false,
+    errorOnExist: false,
+    filter: (source) => isNotJunk(basename(source)),
+  })
 }
 
 /**
