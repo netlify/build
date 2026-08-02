@@ -137,6 +137,15 @@ const coreStep = async function ({
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
+
+    // Edge Bundler produces no manifest when there is nothing to deploy - no
+    // edge function has a route - in which case there is nothing more to do.
+    if (manifest === undefined) {
+      systemLog('No edge function has a route; skipping manifest generation.')
+
+      return {}
+    }
+
     const metrics = getMetrics(manifest)
 
     systemLog('Edge Functions manifest:', manifest)
