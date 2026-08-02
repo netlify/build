@@ -20,7 +20,7 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
 
   archive.pipe(data)
   archive.append(Buffer.from(mockBinaryOutput), { name: platform === 'win32' ? 'deno.exe' : 'deno' })
-  archive.finalize()
+  await archive.finalize()
 
   const target = getPlatformTarget()
   const latestReleaseMock = nock('https://dl.deno.land').get('/release-latest.txt').reply(200, `v${latestVersion}`)
