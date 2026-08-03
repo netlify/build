@@ -8,11 +8,12 @@ import { expect, test, vi } from 'vitest'
 import { add, list, listAll } from '../src/main.js'
 
 import { getDist, createDist } from './helpers/main.js'
+import { type ListedFunction } from '@netlify/zip-it-and-ship-it'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Should copy a source file to a dist directory', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
     expect(existsSync(`${dist}/test.mjs`)).toBe(true)
@@ -22,7 +23,7 @@ test('Should copy a source file to a dist directory', async () => {
 })
 
 test('Should copy a source directory to a dist directory', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await add(`${FIXTURES_DIR}/directory/test`, dist)
     expect(existsSync(`${dist}/test/index.js`)).toBe(true)
@@ -32,7 +33,7 @@ test('Should copy a source directory to a dist directory', async () => {
 })
 
 test('Should throw when source is undefined', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add(undefined, dist)).rejects.toThrow()
   } finally {
@@ -41,7 +42,7 @@ test('Should throw when source is undefined', async () => {
 })
 
 test('Should throw when source is empty array', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add([] as any, dist)).rejects.toThrow()
   } finally {
@@ -50,7 +51,7 @@ test('Should throw when source is empty array', async () => {
 })
 
 test('Should throw when source points to non-existing file', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add(`${FIXTURES_DIR}/file/doesNotExist.js`, dist)).rejects.toThrow()
   } finally {
@@ -73,7 +74,7 @@ test('Should copy a source file even if dist directory already exists', async ()
 })
 
 test('Should overwrite dist file if it already exists', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   const fixtureDir = `${FIXTURES_DIR}/file`
   const testModule = `${dist}/test.mjs`
 
@@ -105,7 +106,7 @@ test('Should allow "fail" option to customize failures', async () => {
 })
 
 // Sort by `mainFile`, then `extension`
-const sortFunctions = function (functions) {
+const sortFunctions = function (functions: ListedFunction[]) {
   return [...functions].sort((a, b) => a.mainFile.localeCompare(b.mainFile) || a.extension.localeCompare(b.extension))
 }
 

@@ -6,7 +6,7 @@ import { join } from 'path'
 const PREFIX = 'test-functions-utils-'
 
 // Retrieve name of a temporary directory
-export const getDist = async function () {
+export const getDist = function () {
   return join(tmpdir(), `${PREFIX}${randomUUID()}`)
 }
 
