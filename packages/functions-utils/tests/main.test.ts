@@ -106,9 +106,7 @@ test('Should allow "fail" option to customize failures', async () => {
 
 // Sort by `mainFile`, then `extension`
 const sortFunctions = function (functions) {
-  return [...functions].sort(
-    (a, b) => a.mainFile.localeCompare(b.mainFile) || a.extension.localeCompare(b.extension),
-  )
+  return [...functions].sort((a, b) => a.mainFile.localeCompare(b.mainFile) || a.extension.localeCompare(b.extension))
 }
 
 const normalizeFiles = function (
