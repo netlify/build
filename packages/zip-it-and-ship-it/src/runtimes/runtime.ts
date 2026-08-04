@@ -44,6 +44,7 @@ export type GetSrcFilesFunction = (
 ) => Promise<string[]>
 
 export interface ZipFunctionResult {
+  bootstrapVersion?: string
   bundler?: NodeBundlerName
   bundlerReason?: BundlerReason
   bundlerErrors?: object[]
