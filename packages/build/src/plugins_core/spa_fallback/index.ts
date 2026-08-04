@@ -24,21 +24,21 @@ function matchesSpaFallback(redirect: NonNullable<ReturnType<typeof findCatchAll
 function coreStep(coreStepFunctionArgs: CoreStepFunctionArgs): ReturnType<CoreStepFunction> {
   const { netlifyConfig, logs } = coreStepFunctionArgs
 
-  if (!netlifyConfig.build.spa) {
+  if (!netlifyConfig.spa_fallback) {
     return Promise.resolve({})
   }
 
   const existingCatchAll = findCatchAllRedirect(netlifyConfig.redirects)
 
   if (existingCatchAll) {
-    // `build.spa` asked us to add a catch-all redirect, but the site already
-    // has one. If it doesn't already do what ours would, warn the user
-    // instead of silently overriding their explicit configuration.
+    // `spa_fallback` asked us to add a catch-all redirect, but the site
+    // already has one. If it doesn't already do what ours would, warn the
+    // user instead of silently overriding their explicit configuration.
     if (!matchesSpaFallback(existingCatchAll)) {
       logWarning(
         logs,
         `
-Warning: "build.spa" is enabled, but a catch-all redirect ("/*") already exists that does not rewrite to "${SPA_FALLBACK_REDIRECT.to}" with a "${String(SPA_FALLBACK_REDIRECT.status)}" status, so Netlify did not add its own.
+Warning: "spa_fallback" is enabled, but a catch-all redirect ("/*") already exists that does not rewrite to "${SPA_FALLBACK_REDIRECT.to}" with a "${String(SPA_FALLBACK_REDIRECT.status)}" status, so Netlify did not add its own.
 Please make sure your existing catch-all redirect correctly serves your single-page application.`,
       )
     }

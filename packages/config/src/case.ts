@@ -29,8 +29,6 @@ const normalizeBuildCase = ({
   processing = Processing,
   Publish,
   publish = Publish,
-  Spa,
-  spa = Spa,
   ...build
 }: Record<string, unknown> = {}): Record<string, unknown> => {
   return {
@@ -43,6 +41,5 @@ const normalizeBuildCase = ({
     ignore,
     processing,
     publish,
-    spa,
   }
 }

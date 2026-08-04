@@ -118,8 +118,8 @@ test('build.edge_functions: parent directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('build.spa: boolean', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/build_spa_boolean').runWithConfig()
+test('spa_fallback: boolean', async (t) => {
+  const output = await new Fixture(test.meta.file, './fixtures/spa_fallback_boolean').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 

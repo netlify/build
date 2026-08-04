@@ -233,10 +233,10 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { edge_functions: 'edge-functions' } }),
   },
   {
-    property: 'build.spa',
+    property: 'spa_fallback',
     check: isBoolean,
     message: 'must be a boolean.',
-    example: () => ({ build: { spa: true } }),
+    example: () => ({ spa_fallback: true }),
   },
   {
     property: 'functions.*',

@@ -11,7 +11,7 @@ const SPA_FALLBACK_REDIRECT = {
   to: '/index.html',
 }
 
-test('Injects an SPA fallback redirect when `build.spa` is `true`', async () => {
+test('Injects an SPA fallback redirect when `spa_fallback` is `true`', async () => {
   const { netlifyConfig, success } = await new Fixture(
     import.meta.url,
     './fixtures/spa_enabled',
@@ -21,7 +21,7 @@ test('Injects an SPA fallback redirect when `build.spa` is `true`', async () => 
   expect(netlifyConfig.redirects).toEqual([SPA_FALLBACK_REDIRECT])
 })
 
-test('Does not inject an SPA fallback redirect when `build.spa` is `false`', async () => {
+test('Does not inject an SPA fallback redirect when `spa_fallback` is `false`', async () => {
   const { netlifyConfig, success } = await new Fixture(
     import.meta.url,
     './fixtures/spa_disabled',
@@ -31,7 +31,7 @@ test('Does not inject an SPA fallback redirect when `build.spa` is `false`', asy
   expect(netlifyConfig.redirects).toEqual([])
 })
 
-test('Does not inject an SPA fallback redirect when `build.spa` is not set', async () => {
+test('Does not inject an SPA fallback redirect when `spa_fallback` is not set', async () => {
   const { netlifyConfig, success } = await new Fixture(
     import.meta.url,
     './fixtures/spa_default',
@@ -60,5 +60,5 @@ test('Does not warn when the existing catch-all redirect already matches what Ne
 
   expect(success).toBe(true)
   expect(netlifyConfig.redirects).toEqual([SPA_FALLBACK_REDIRECT])
-  expect(output).not.toContain('build.spa')
+  expect(output).not.toContain('already exists')
 })

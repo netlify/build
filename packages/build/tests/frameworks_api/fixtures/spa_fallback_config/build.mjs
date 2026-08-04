@@ -1,9 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 
 const config = {
-  build: {
-    spa: true,
-  },
+  spa_fallback: true,
 }
 
 await mkdir('.netlify/v1', { recursive: true })

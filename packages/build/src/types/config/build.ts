@@ -28,10 +28,6 @@ export interface Build {
   edge_functions?: string
 
   /**
-   * Whether the site is a single-page application (SPA). Defaults to `false`.
-   */
-  spa?: boolean
-  /**
    * Contains a site's [environment variables](https://docs.netlify.com/configure-builds/environment-variables/#netlify-configuration-variables)
    */
   environment: Partial<Record<string, string>>
