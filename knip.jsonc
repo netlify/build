@@ -12,7 +12,11 @@
     ".": {},
     "packages/*": {},
     "packages/build": {
-      "entry": ["test-d/**/*.ts"],
+      "entry": [
+        // Reached from the package-level CLI shim after TypeScript compilation.
+        "src/core/bin.js",
+        "test-d/**/*.ts",
+      ],
       "ignoreDependencies": [
         // CLI binary spawned as a subprocess (not imported), so knip can't trace it.
         "atob",
@@ -27,6 +31,8 @@
       ],
     },
     "packages/config": {
+      // Reached from the package-level CLI shim after TypeScript compilation.
+      "entry": ["src/bin/main.js"],
       "ignoreDependencies": [
         // Used in tests but can't be declared as a dependency due to a circular dependency.
         "@netlify/testing",
@@ -38,6 +44,10 @@
         // knip doesn't pick up the playwright -> npm -> vite -> <script> entry
         "e2e/fixture/main.ts",
       ],
+    },
+    "packages/opentelemetry-sdk-setup": {
+      // Reached from the package-level CLI shim after TypeScript compilation.
+      "entry": ["src/bin.ts"],
     },
     "packages/edge-bundler": {
       // knip doesn't pick up the Node.js -> dynamic `deno run <path>` entries
@@ -51,6 +61,8 @@
     },
     "packages/zip-it-and-ship-it": {
       "entry": [
+        // Reached from the package-level CLI shim after TypeScript compilation.
+        "src/bin.ts",
         // knip doesn't pick up the npm -> bash -> node entry
         "benchmarks/*.{js,ts}",
       ],

@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import commonPathPrefix from 'common-path-prefix'
+import pRetry, { AbortError } from 'p-retry'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -13,6 +14,7 @@ import { FeatureFlags } from '../feature_flags.js'
 import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
+import { DENO_RETRIES, isTransientDenoErrorObject } from '../utils/transient_error.js'
 import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
@@ -203,6 +205,9 @@ export const bundle = async ({
         file: tarballPath,
         gzip: true,
         noDirRecurse: true,
+        // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
+        portable: true, // omit uid/gid/uname/gname/ctime/atime
+        noMtime: true, // omit mtime
         // Ensure forward slashes inside the tarball for cross-platform consistency.
         onWriteEntry(entry) {
           entry.path = getUnixPath(entry.path)
@@ -231,7 +236,7 @@ const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.m
  * that are actually needed by the entry points. This avoids copying unnecessary
  * files (like node_modules, .next, etc.) that may be under the common path.
  */
-async function getRequiredSourceFiles(
+export async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
@@ -241,14 +246,33 @@ async function getRequiredSourceFiles(
 
   // Run deno info for each entry point and combine the results
   for (const entryPoint of entryPoints) {
-    const { stdout } = await deno.run([
-      'info',
-      '--json',
-      '--no-config',
-      '--import-map',
-      importMapDataUrl,
-      pathToFileURL(entryPoint).href,
-    ])
+    const { stdout } = await pRetry(
+      async () => {
+        try {
+          return await deno.run([
+            'info',
+            '--json',
+            '--no-config',
+            '--import-map',
+            importMapDataUrl,
+            pathToFileURL(entryPoint).href,
+          ])
+        } catch (error: unknown) {
+          if (isTransientDenoErrorObject(error)) {
+            throw error
+          }
+
+          // `AbortError` stops the retry loop and rethrows the error we pass it, unchanged.
+          throw new AbortError(error instanceof Error ? error : new Error(String(error)))
+        }
+      },
+      {
+        retries: DENO_RETRIES,
+        onFailedAttempt: (error) => {
+          deno.logger.system(`\`deno info\` failed with a transient error, retrying: ${error.message}`)
+        },
+      },
+    )
 
     const graph = JSON.parse(stdout) as ModuleGraphJson
 
@@ -273,6 +297,8 @@ async function getRequiredSourceFiles(
         continue
       }
 
+      const filePath = fileURLToPath(module.specifier)
+
       if (module.error) {
         // A module reachable only through type-only edges (e.g. a directory specifier
         // behind `import type`) can fail to resolve as an ES module. That's safe to
@@ -287,13 +313,34 @@ async function getRequiredSourceFiles(
           // require in try/catch).
           continue
         }
+
+        // Importing a directory is unsupported in Deno (ERR_UNSUPPORTED_DIR_IMPORT), yet
+        // the directory still surfaces here as an errored module. It's not a bundleable
+        // file: including it would pollute the common path prefix and, once copied, throw
+        // EISDIR. Skip it.
+        if (await isDirectory(filePath)) {
+          continue
+        }
       }
 
-      localFiles.add(fileURLToPath(module.specifier))
+      localFiles.add(filePath)
     }
   }
 
   return localFiles
+}
+
+/**
+ * Returns whether the given path exists and is a directory. Used to filter out
+ * directory specifiers that Deno surfaces as errored modules (directory imports
+ * are unsupported) so they're never treated as bundleable source files.
+ */
+async function isDirectory(entryPath: string): Promise<boolean> {
+  try {
+    return (await fs.stat(entryPath)).isDirectory()
+  } catch {
+    return false
+  }
 }
 
 // WebAssembly binary magic bytes: `\0asm` (0x00 0x61 0x73 0x6d).
@@ -339,6 +386,13 @@ async function shouldRewrite(sourceFile: string): Promise<boolean> {
  * Defaults to copying the file in its current form
  */
 export async function rewriteImportAssertions(sourceFile: string, destPath: string): Promise<void> {
+  // Defensive guard: a directory has nothing to bundle, and copying/reading one
+  // throws EISDIR. `getRequiredSourceFiles` already filters directory specifiers
+  // out of the source set, so this only matters if one slips through.
+  if (await isDirectory(sourceFile)) {
+    return
+  }
+
   if (!(await shouldRewrite(sourceFile))) {
     if (sourceFile !== destPath) {
       await fs.copyFile(sourceFile, destPath)

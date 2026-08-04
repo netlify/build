@@ -106,21 +106,21 @@ const FETCH_EXTENSIONS_EMPTY_RESPONSE = {
 }
 
 test('--token', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', testOpts: { env: true } })
     .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--token in CLI', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', testOpts: { env: true } })
     .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('NETLIFY_AUTH_TOKEN environment variable', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ testOpts: { env: true } })
     .withEnv({ NETLIFY_AUTH_TOKEN: 'test' })
     .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
@@ -128,14 +128,14 @@ test('NETLIFY_AUTH_TOKEN environment variable', async (t) => {
 })
 
 test('--site-id', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ siteId: 'test' })
     .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('--account-id in offline and buildbot mode', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
     .runWithConfig([])
   const config = JSON.parse(output)
@@ -144,91 +144,91 @@ test('--account-id in offline and buildbot mode', async (t) => {
 })
 
 test('NETLIFY_SITE_ID environment variable', async (t) => {
-  const output = await new Fixture('./fixtures/empty')
+  const output = await new Fixture(test.meta.file, './fixtures/empty')
     .withEnv({ NETLIFY_SITE_ID: 'test' })
     .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo success', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
     .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo API error', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
     .runConfigServer([SITE_INFO_ERROR, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no token', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ siteId: 'test' })
     .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no siteId', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test' })
     .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo offline', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ siteId: 'test', token: 'test', offline: true })
     .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo CI', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
     .runConfigServer([SITE_INFO_DATA, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings can be null', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty')
+  const { output } = await new Fixture(test.meta.file, './fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS_NULL, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use build settings if a siteId and token are provided', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({ token: 'test', siteId: 'test' })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings have low merging priority', async (t) => {
-  const { output } = await new Fixture('./fixtures/build_settings')
+  const { output } = await new Fixture(test.meta.file, './fixtures/build_settings')
     .withFlags({ token: 'test', siteId: 'test', baseRelDir: true })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a token', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({ siteId: 'test' })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a siteId', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({ token: 'test' })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used in CI', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
     .runConfigServer([SITE_INFO_BUILD_SETTINGS, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
 
@@ -236,7 +236,7 @@ test('Build settings are not used in CI', async (t) => {
 })
 
 test('Extensions are returned from getSiteInfo from v1 safe API when there is not accountID', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       token: 'test',
       siteId: 'test',
@@ -253,7 +253,7 @@ test('Extensions are returned from getSiteInfo from v1 safe API when there is no
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not available in API', async (t) => {
-  const { output } = await new Fixture('./fixtures/dev_extension')
+  const { output } = await new Fixture(test.meta.file, './fixtures/dev_extension')
     .withFlags({
       token: 'test',
       siteId: 'test',
@@ -273,7 +273,7 @@ test('In extension dev mode, extension specified in config is returned even if e
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site', async (t) => {
-  const { output } = await new Fixture('./fixtures/dev_extension')
+  const { output } = await new Fixture(test.meta.file, './fixtures/dev_extension')
     .withFlags({
       token: 'test',
       siteId: 'test',
@@ -292,7 +292,7 @@ test('In extension dev mode, extension specified in config is returned even if e
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site and accountId not present', async (t) => {
-  const { output } = await new Fixture('./fixtures/dev_extension')
+  const { output } = await new Fixture(test.meta.file, './fixtures/dev_extension')
     .withFlags({
       token: 'test',
       siteId: 'test',
@@ -310,7 +310,7 @@ test('In extension dev mode, extension specified in config is returned even if e
 })
 
 test('In extension dev mode, extension specified in config is returned and build is forced by config', async (t) => {
-  const { output } = await new Fixture('./fixtures/dev_extension_with_force_build')
+  const { output } = await new Fixture(test.meta.file, './fixtures/dev_extension_with_force_build')
     .withFlags({
       token: 'test',
       siteId: 'test',
@@ -329,7 +329,7 @@ test('In extension dev mode, extension specified in config is returned and build
 })
 
 test('extensions are not returned if offline', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       offline: true,
       siteId: 'test',
@@ -345,7 +345,7 @@ test('extensions are not returned if offline', async (t) => {
 })
 
 test('extensions and account id are returned if mode is buildbot', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'buildbot',
@@ -368,7 +368,7 @@ test('extensions and account id are returned if mode is buildbot', async (t) => 
 })
 
 test('extensions are returned if accountId is present and mode is dev', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'dev',
@@ -387,7 +387,7 @@ test('extensions are returned if accountId is present and mode is dev', async (t
 })
 
 test('extensions are returned and called with a netlify-sdk-build-bot-token header', async (t) => {
-  const { output, requests } = await new Fixture('./fixtures/base')
+  const { output, requests } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'dev',
@@ -413,7 +413,7 @@ test('extensions are returned and called with a netlify-sdk-build-bot-token head
 })
 
 test('extensions are returned and called with a netlify-config-mode header', async (t) => {
-  const { output, requests } = await new Fixture('./fixtures/base')
+  const { output, requests } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'dev',
@@ -439,7 +439,7 @@ test('extensions are returned and called with a netlify-config-mode header', asy
 })
 
 test('extensions are not returned if failed to fetch extensions', async (t) => {
-  const { output } = await new Fixture('./fixtures/base')
+  const { output } = await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'buildbot',
@@ -458,15 +458,15 @@ test('extensions are not returned if failed to fetch extensions', async (t) => {
 test('baseRelDir is true if build.base is overridden', async (t) => {
   const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)
 
-  const { output } = await new Fixture('./fixtures/build_base_override')
+  const { output } = await new Fixture(test.meta.file, './fixtures/build_base_override')
     .withFlags({ cwd: `${fixturesDir}/build_base_override/subdir`, token: 'test', siteId: 'test' })
     .runConfigServer([SITE_INFO_BASE_REL_DIR, FETCH_EXTENSIONS_EMPTY_RESPONSE, SITE_EXTENSIONS_EMPTY_RESPONSE])
   t.snapshot(normalizeOutput(output))
 })
 
 test('It does not fetch site info if cachedConfig is provided, use_cached_site_info is true and there is siteInfo, accounts, and extensions on cachedConfig', async (t) => {
-  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
-  const { requests } = await new Fixture('./fixtures/cached_config')
+  const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture(test.meta.file, './fixtures/cached_config')
     .withFlags({
       cachedConfig,
       siteId: 'test',
@@ -483,8 +483,8 @@ test('It does not fetch site info if cachedConfig is provided, use_cached_site_i
 })
 
 test('It fetches site info if cachedConfig is provided, use_cached_site_info is true and there is no siteInfo, accounts, or extensions on cachedConfig', async (t) => {
-  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
-  const { requests } = await new Fixture('./fixtures/cached_config')
+  const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture(test.meta.file, './fixtures/cached_config')
     .withFlags({
       cachedConfig,
       siteId: 'test',
@@ -501,8 +501,8 @@ test('It fetches site info if cachedConfig is provided, use_cached_site_info is 
 })
 
 test('It fetches site info if cachedConfig is provided, use_cached_site_info is false', async (t) => {
-  const cachedConfig = await new Fixture('./fixtures/cached_config').runWithConfigAsObject()
-  const { requests } = await new Fixture('./fixtures/cached_config')
+  const cachedConfig = await new Fixture(test.meta.file, './fixtures/cached_config').runWithConfigAsObject()
+  const { requests } = await new Fixture(test.meta.file, './fixtures/cached_config')
     .withFlags({
       cachedConfig,
     })
@@ -517,7 +517,7 @@ test('We call the staging extension API when the apiHost is not api.netlify.com'
     baseUrl = url
   }
 
-  await new Fixture('./fixtures/base')
+  await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'dev',
@@ -537,7 +537,7 @@ test('We call the production extension API when the apiHost is api.netlify.com',
     baseUrl = url
   }
 
-  await new Fixture('./fixtures/base')
+  await new Fixture(test.meta.file, './fixtures/base')
     .withFlags({
       siteId: 'test',
       mode: 'dev',

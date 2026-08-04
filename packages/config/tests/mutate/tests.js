@@ -68,7 +68,9 @@ test('updateConfig() saves netlify.toml', async (t) => {
 
 test('updateConfig() updates the configuration so it can be read again', async (t) => {
   const { configPath } = await runUpdateConfig('update')
-  const output = await new Fixture('./fixtures/update').withFlags({ config: configPath }).runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/update')
+    .withFlags({ config: configPath })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -79,13 +81,15 @@ test('updateConfig() is a noop when where are no config mutations', async (t) =>
 
 test('updateConfig() has higher priority than context properties', async (t) => {
   const { configPath } = await runUpdateConfig('context')
-  const output = await new Fixture('./fixtures/context').withFlags({ config: configPath }).runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/context')
+    .withFlags({ config: configPath })
+    .runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
 test('updateConfig() merges with the existing netlify.toml', async (t) => {
   const { configPath } = await runUpdateConfig('merge')
-  const output = await new Fixture('./fixtures/merge').withFlags({ config: configPath }).runWithConfig()
+  const output = await new Fixture(test.meta.file, './fixtures/merge').withFlags({ config: configPath }).runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
