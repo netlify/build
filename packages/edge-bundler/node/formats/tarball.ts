@@ -14,6 +14,7 @@ import { FeatureFlags } from '../feature_flags.js'
 import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
+import { DENO_RETRIES, isTransientDenoErrorObject } from '../utils/transient_error.js'
 import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
@@ -230,26 +231,6 @@ export const bundle = async ({
 // Source file extensions that may contain import statements.
 const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
 
-// `deno info` fetches remote modules and npm registry metadata, so it can fail for reasons that
-// have nothing to do with the user's code: a dropped connection, a DNS blip, a registry timeout.
-// These are the messages Deno surfaces for those failures. Anything else (a syntax error, an
-// unresolvable import) is deterministic, and retrying it just delays the real error.
-const TRANSIENT_DENO_INFO_ERRORS = [
-  'error sending request',
-  'error reading a body from connection',
-  'connection closed before message completed',
-  'connection reset by peer',
-  'operation timed out',
-  'tcp connect error',
-  'dns error',
-]
-
-const DENO_INFO_RETRIES = 3
-
-// execa folds stderr into `message`, which is where Deno writes the `Caused by:` detail.
-const isTransientDenoInfoError = (error: unknown) =>
-  error instanceof Error && TRANSIENT_DENO_INFO_ERRORS.some((pattern) => error.message.toLowerCase().includes(pattern))
-
 /**
  * Uses deno info to get the module graph and extract only the local source files
  * that are actually needed by the entry points. This avoids copying unnecessary
@@ -277,7 +258,7 @@ export async function getRequiredSourceFiles(
             pathToFileURL(entryPoint).href,
           ])
         } catch (error: unknown) {
-          if (isTransientDenoInfoError(error)) {
+          if (isTransientDenoErrorObject(error)) {
             throw error
           }
 
@@ -286,7 +267,7 @@ export async function getRequiredSourceFiles(
         }
       },
       {
-        retries: DENO_INFO_RETRIES,
+        retries: DENO_RETRIES,
         onFailedAttempt: (error) => {
           deno.logger.system(`\`deno info\` failed with a transient error, retrying: ${error.message}`)
         },

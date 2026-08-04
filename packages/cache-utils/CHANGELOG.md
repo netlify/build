@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.1](https://github.com/netlify/build/compare/cache-utils-v7.1.0...cache-utils-v7.1.1) (2026-08-03)
+
+
+### Performance Improvements
+
+* **build:** use node:fs for cache checks ([#7107](https://github.com/netlify/build/issues/7107)) ([23f494c](https://github.com/netlify/build/commit/23f494cfc5ba997f607f094cc3adf7793d9999e8))
+
 ## [7.1.0](https://github.com/netlify/build/compare/cache-utils-v7.0.0...cache-utils-v7.1.0) (2026-07-17)
 
 

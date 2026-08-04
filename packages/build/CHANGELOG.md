@@ -105,6 +105,41 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.2.4](https://github.com/netlify/build/compare/build-v36.2.3...build-v36.2.4) (2026-08-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/edge-bundler bumped from 16.0.0 to 16.0.1
+    * @netlify/functions-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/zip-it-and-ship-it bumped from 15.3.0 to 15.3.1
+
+## [36.2.3](https://github.com/netlify/build/compare/build-v36.2.2...build-v36.2.3) (2026-07-24)
+
+
+### Bug Fixes
+
+* **build:** handle a case when `@netlify/edge-bundler` returns `manifest: undefined` ([6daab50](https://github.com/netlify/build/commit/6daab505f0be765cd9cf946eda40485fc4bd60f0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.1.2 to 16.0.0
+
+## [36.2.2](https://github.com/netlify/build/compare/build-v36.2.1...build-v36.2.2) (2026-07-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.1.1 to 15.1.2
+
 ## [36.2.1](https://github.com/netlify/build/compare/build-v36.2.0...build-v36.2.1) (2026-07-20)
 
 
