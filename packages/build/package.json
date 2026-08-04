@@ -24,7 +24,7 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "postbuild": "npx cpy \"src/**/*.yml\" \"lib/\"",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "test:types": "tsd",
     "test": "ava && tsd && vitest run",
     "test:dev": "ava -w",
