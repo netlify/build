@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.0](https://github.com/netlify/build/compare/config-v25.1.1...config-v25.2.0) (2026-08-04)
+
+
+### Features
+
+* add spa_fallback config option ([#7141](https://github.com/netlify/build/issues/7141)) ([1dbf5ff](https://github.com/netlify/build/commit/1dbf5ff0e8adae27438e66f076f38c1b0a46f8b7))
+
 ## [25.1.1](https://github.com/netlify/build/compare/config-v25.1.0...config-v25.1.1) (2026-07-20)
 
 
