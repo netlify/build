@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "knip": {
+      "source": "brianlovin/claude-config",
+      "sourceType": "github",
+      "skillPath": "skills/knip/SKILL.md",
+      "computedHash": "89f3a78088109045afc77e09c93a28b6cc4cb51ae00e789091e9991a180e39db"
+    }
+  }
+}

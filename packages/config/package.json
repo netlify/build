@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "25.2.0",
+  "version": "25.2.1",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -59,7 +59,7 @@
   "license": "MIT",
   "dependencies": {
     "smol-toml": "^1.5.2",
-    "@netlify/api": "^15.1.0",
+    "@netlify/api": "^15.1.1",
     "@netlify/headers-parser": "^10.1.0",
     "@netlify/redirect-parser": "^16.1.0",
     "chalk": "^5.0.0",
@@ -90,8 +90,7 @@
     "c8": "^10.0.0",
     "has-ansi": "^6.0.0",
     "is-ci": "^4.0.0",
-    "tmp-promise": "^3.0.2",
-    "typescript": "^5.0.0"
+    "tmp-promise": "^3.0.2"
   },
   "engines": {
     "node": ">=22.12.0"
