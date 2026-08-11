@@ -71,4 +71,8 @@ export interface NetlifyConfig {
    * object with options for database configuration
    */
   database?: DatabaseConfig
+  /**
+   * Whether the site is a single-page application (SPA). Defaults to `false`.
+   */
+  spa_fallback?: boolean
 }

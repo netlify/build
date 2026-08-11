@@ -1,0 +1,4 @@
+spa_fallback = false
+
+[build]
+command = "echo hi"

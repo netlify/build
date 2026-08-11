@@ -7,8 +7,8 @@ test('should validate valid manifest', async (t) => {
   const manifest = {
     bundles: [
       {
-        asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js',
-        format: 'js',
+        asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.eszip',
+        format: 'eszip2',
       },
     ],
     routes: [

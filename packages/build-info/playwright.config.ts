@@ -55,7 +55,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npx vite e2e/fixture --port 3000',
+    command: 'npm run e2e:serve',
     port: 3000,
   },
 })
