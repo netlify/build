@@ -64,6 +64,20 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [11.3.0](https://github.com/netlify/build/compare/build-info-v11.2.0...build-info-v11.3.0) (2026-08-06)
+
+
+### Features
+
+* add SolidStart 2.x support ([#7156](https://github.com/netlify/build/issues/7156)) ([4319497](https://github.com/netlify/build/commit/4319497daa1e83656d9200545dfeb8f586cf2c3d))
+
+## [11.2.0](https://github.com/netlify/build/compare/build-info-v11.1.0...build-info-v11.2.0) (2026-07-23)
+
+
+### Features
+
+* add vite-plus support ([#7128](https://github.com/netlify/build/issues/7128)) ([2c86c0c](https://github.com/netlify/build/commit/2c86c0c31ddeec825fb49b42083559b177fff5f4))
+
 ## [11.1.0](https://github.com/netlify/build/compare/build-info-v11.0.0...build-info-v11.1.0) (2026-07-17)
 
 

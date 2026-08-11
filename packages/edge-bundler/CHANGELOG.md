@@ -1,5 +1,35 @@
 # Changelog
 
+## [16.0.1](https://github.com/netlify/build/compare/edge-bundler-v16.0.0...edge-bundler-v16.0.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **deps:** update archiver to v8 ([#7150](https://github.com/netlify/build/issues/7150)) ([457a399](https://github.com/netlify/build/commit/457a3999cf4a6b0030a93f92970358f36a70631a))
+
+## [16.0.0](https://github.com/netlify/build/compare/edge-bundler-v15.1.2...edge-bundler-v16.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **edge-bundler:** the `manifest` property returned by `bundle` is now `Manifest | undefined`. It is `undefined` when no function is bundled.
+
+### Features
+
+* **edge-bundler:** exclude unrouted functions from the bundle ([8140b96](https://github.com/netlify/build/commit/8140b969b3a9c2ae1fbaea76a1e1316ae8a34836))
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry config extraction on transient network errors ([#7138](https://github.com/netlify/build/issues/7138)) ([efd3a2b](https://github.com/netlify/build/commit/efd3a2b1aab212ee5e06f3f87b585f07b04813d8))
+
+## [15.1.2](https://github.com/netlify/build/compare/edge-bundler-v15.1.1...edge-bundler-v15.1.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry `deno info` on transient network errors ([#7133](https://github.com/netlify/build/issues/7133)) ([37d2c10](https://github.com/netlify/build/commit/37d2c104b7a467bd920ceac0a8ff965a05f93233))
+
 ## [15.1.1](https://github.com/netlify/build/compare/edge-bundler-v15.1.0...edge-bundler-v15.1.1) (2026-07-20)
 
 

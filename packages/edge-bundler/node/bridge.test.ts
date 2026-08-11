@@ -1,9 +1,9 @@
 import { Buffer } from 'buffer'
 import { rm } from 'fs/promises'
-import { createRequire } from 'module'
 import { platform, env } from 'process'
 import { PassThrough } from 'stream'
 
+import { ZipArchive } from 'archiver'
 import nock from 'nock'
 import semver from 'semver'
 import tmp, { DirectoryResult } from 'tmp-promise'
@@ -12,19 +12,16 @@ import { test, expect } from 'vitest'
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
-const require = createRequire(import.meta.url)
-const archiver = require('archiver')
-
-const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
+const getMockDenoBridge = async function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(data)
   archive.append(Buffer.from(mockBinaryOutput.replace(/@@@latestVersion@@@/g, latestVersion)), {
     name: platform === 'win32' ? 'deno.exe' : 'deno',
   })
-  archive.finalize()
+  await archive.finalize()
 
   const target = getPlatformTarget()
 
@@ -41,7 +38,7 @@ const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: s
 
 test('Does not inherit environment variables if `extendEnv` is false', async () => {
   const tmpDir = await tmp.dir()
-  const deno = getMockDenoBridge(
+  const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
 
@@ -73,7 +70,7 @@ test('Does not inherit environment variables if `extendEnv` is false', async () 
 
 test('Does inherit environment variables if `extendEnv` is true', async () => {
   const tmpDir = await tmp.dir()
-  const deno = getMockDenoBridge(
+  const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
 
@@ -106,7 +103,7 @@ test('Does inherit environment variables if `extendEnv` is true', async () => {
 
 test('Does inherit environment variables if `extendEnv` is not set', async () => {
   const tmpDir = await tmp.dir()
-  const deno = getMockDenoBridge(
+  const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
 
@@ -141,14 +138,14 @@ test('Provides actionable error message when downloaded binary cannot be execute
   const tmpDir = await tmp.dir()
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(data)
   // Create a binary that will fail to execute (invalid content)
   archive.append(Buffer.from('invalid binary content'), {
     name: platform === 'win32' ? 'deno.exe' : 'deno',
   })
-  archive.finalize()
+  await archive.finalize()
 
   const target = getPlatformTarget()
 
