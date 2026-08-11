@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import commonPathPrefix from 'common-path-prefix'
+import pRetry, { AbortError } from 'p-retry'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -13,6 +14,7 @@ import { FeatureFlags } from '../feature_flags.js'
 import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
+import { DENO_RETRIES, isTransientDenoErrorObject } from '../utils/transient_error.js'
 import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
@@ -234,7 +236,7 @@ const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.m
  * that are actually needed by the entry points. This avoids copying unnecessary
  * files (like node_modules, .next, etc.) that may be under the common path.
  */
-async function getRequiredSourceFiles(
+export async function getRequiredSourceFiles(
   deno: DenoBridge,
   entryPoints: string[],
   importMap: ImportMap,
@@ -244,14 +246,33 @@ async function getRequiredSourceFiles(
 
   // Run deno info for each entry point and combine the results
   for (const entryPoint of entryPoints) {
-    const { stdout } = await deno.run([
-      'info',
-      '--json',
-      '--no-config',
-      '--import-map',
-      importMapDataUrl,
-      pathToFileURL(entryPoint).href,
-    ])
+    const { stdout } = await pRetry(
+      async () => {
+        try {
+          return await deno.run([
+            'info',
+            '--json',
+            '--no-config',
+            '--import-map',
+            importMapDataUrl,
+            pathToFileURL(entryPoint).href,
+          ])
+        } catch (error: unknown) {
+          if (isTransientDenoErrorObject(error)) {
+            throw error
+          }
+
+          // `AbortError` stops the retry loop and rethrows the error we pass it, unchanged.
+          throw new AbortError(error instanceof Error ? error : new Error(String(error)))
+        }
+      },
+      {
+        retries: DENO_RETRIES,
+        onFailedAttempt: (error) => {
+          deno.logger.system(`\`deno info\` failed with a transient error, retrying: ${error.message}`)
+        },
+      },
+    )
 
     const graph = JSON.parse(stdout) as ModuleGraphJson
 

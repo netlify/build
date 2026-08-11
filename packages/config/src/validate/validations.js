@@ -2,10 +2,17 @@ import CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
-import { validations as edgeFunctionValidations } from '../edge_functions.js'
+import { validations as edgeFunctionValidations, EDGE_FUNCTIONS_PROPERTIES } from '../edge_functions.js'
 import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
-import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
+import {
+  functionsDirectoryCheck,
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isBoolean,
+  isString,
+  validProperties,
+} from './helpers.js'
 
 /**
  * @param {string} cron
@@ -42,6 +49,26 @@ export const PRE_CASE_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be a plain object.',
     example: () => ({ build: { command: 'npm run build' } }),
+  },
+]
+
+const edgeFunctionsUserProperties = validProperties(EDGE_FUNCTIONS_PROPERTIES, [])
+
+// Validations performed only on the user's configuration file (`netlify.toml`),
+// i.e. not on configuration coming from other origins such as the UI, the CLI,
+// or the Frameworks API. This is where the schema is restricted to the subset
+// of properties that users are allowed to set, excluding those reserved for
+// platform-generated configuration (e.g. `generator`).
+export const CONFIG_FILE_VALIDATIONS = [
+  {
+    property: 'edge_functions.*',
+    ...edgeFunctionsUserProperties,
+    // Structural problems, such as an entry that is not an object, are reported
+    // by the shared `edge_functions` validations, which run later. We only check
+    // the properties of actual objects here, so that those validations remain
+    // the ones surfacing a meaningful error.
+    check: (edgeFunction) => !isPlainObj(edgeFunction) || edgeFunctionsUserProperties.check(edgeFunction),
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
 ]
 
@@ -204,6 +231,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: isString,
     message: 'must be a string.',
     example: () => ({ build: { edge_functions: 'edge-functions' } }),
+  },
+  {
+    property: 'spa_fallback',
+    check: isBoolean,
+    message: 'must be a boolean.',
+    example: () => ({ spa_fallback: true }),
   },
   {
     property: 'functions.*',

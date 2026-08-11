@@ -19,12 +19,3 @@ export const getFileHash = (path: string): Promise<string> => {
     file.pipe(hash)
   })
 }
-
-export const getStringHash = (input: string) => {
-  const hash = crypto.createHash('sha256')
-
-  hash.setEncoding('hex')
-  hash.update(input)
-
-  return hash.digest('hex')
-}

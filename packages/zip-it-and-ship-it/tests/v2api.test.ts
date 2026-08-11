@@ -786,6 +786,7 @@ describe('V2 functions API', () => {
     expect(files[0].name).toBe('function')
     expect(files[0].bootstrapVersion).toBe(bootstrapVersion)
     expect(files[0].runtimeAPIVersion).toBe(2)
+    expect(files[0].buildData).toEqual({ bootstrapVersion, runtimeAPIVersion: 2 })
 
     const manifestString = await readFile(manifestPath, { encoding: 'utf8' })
     const manifest = JSON.parse(manifestString)
