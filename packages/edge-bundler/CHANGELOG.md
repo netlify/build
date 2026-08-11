@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.0.1](https://github.com/netlify/build/compare/edge-bundler-v16.0.0...edge-bundler-v16.0.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **deps:** update archiver to v8 ([#7150](https://github.com/netlify/build/issues/7150)) ([457a399](https://github.com/netlify/build/commit/457a3999cf4a6b0030a93f92970358f36a70631a))
+
 ## [16.0.0](https://github.com/netlify/build/compare/edge-bundler-v15.1.2...edge-bundler-v16.0.0) (2026-07-24)
 
 

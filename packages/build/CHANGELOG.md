@@ -105,6 +105,50 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.3.2](https://github.com/netlify/build/compare/build-v36.3.1...build-v36.3.2) (2026-08-07)
+
+
+### Bug Fixes
+
+* allow npm remote installs when installing extensions ([#7166](https://github.com/netlify/build/issues/7166)) ([ffd5004](https://github.com/netlify/build/commit/ffd5004768c7c38b4fb4b0036e61fc7c215ee951))
+
+## [36.3.1](https://github.com/netlify/build/compare/build-v36.3.0...build-v36.3.1) (2026-08-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.0 to ^25.2.1
+
+## [36.3.0](https://github.com/netlify/build/compare/build-v36.2.4...build-v36.3.0) (2026-08-04)
+
+
+### Features
+
+* add spa_fallback config option ([#7141](https://github.com/netlify/build/issues/7141)) ([1dbf5ff](https://github.com/netlify/build/commit/1dbf5ff0e8adae27438e66f076f38c1b0a46f8b7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.1.1 to ^25.2.0
+    * @netlify/functions-utils bumped from ^7.1.1 to ^7.1.2
+    * @netlify/zip-it-and-ship-it bumped from 15.3.1 to 15.3.2
+
+## [36.2.4](https://github.com/netlify/build/compare/build-v36.2.3...build-v36.2.4) (2026-08-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/edge-bundler bumped from 16.0.0 to 16.0.1
+    * @netlify/functions-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/zip-it-and-ship-it bumped from 15.3.0 to 15.3.1
+
 ## [36.2.3](https://github.com/netlify/build/compare/build-v36.2.2...build-v36.2.3) (2026-07-24)
 
 
