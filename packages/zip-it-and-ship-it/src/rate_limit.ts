@@ -36,8 +36,8 @@ export const rateLimit = z
     aggregateBy: rateLimitAggregator.or(z.array(rateLimitAggregator)).optional(),
     algorithm: rateLimitAlgorithm.optional(),
   })
-  .merge(slidingWindow)
-  .merge(rewriteActionConfig.partial())
+  .extend(slidingWindow.shape)
+  .extend(rewriteActionConfig.partial().shape)
 
 type RateLimit = z.infer<typeof rateLimit>
 
@@ -47,18 +47,18 @@ type RateLimit = z.infer<typeof rateLimit>
  */
 export const getTrafficRulesConfig = (input: RateLimit): TrafficRules | undefined => {
   const { windowSize, windowLimit, algorithm, aggregateBy, action, to } = input
-  const rateLimitAgg = Array.isArray(aggregateBy) ? aggregateBy : [rateLimitAggregator.Enum.domain]
+  const rateLimitAgg = Array.isArray(aggregateBy) ? aggregateBy : [rateLimitAggregator.enum.domain]
   const rewriteConfig = to ? { to: input.to } : undefined
 
   return {
     action: {
-      type: action || rateLimitAction.Enum.rate_limit,
+      type: action || rateLimitAction.enum.rate_limit,
       config: {
         ...rewriteConfig,
         rateLimitConfig: {
           windowLimit,
           windowSize,
-          algorithm: algorithm || rateLimitAlgorithm.Enum.sliding_window,
+          algorithm: algorithm || rateLimitAlgorithm.enum.sliding_window,
         },
         aggregate: {
           keys: rateLimitAgg.map((agg) => ({ type: agg })),
