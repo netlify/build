@@ -1,5 +1,5 @@
 import { promises as fs, Stats } from 'node:fs'
-import { basename } from 'node:path'
+import { basename, dirname } from 'node:path'
 
 import { isNotJunk } from 'junk'
 
