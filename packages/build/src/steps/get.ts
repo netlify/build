@@ -13,6 +13,7 @@ import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
+import { applySpaFallback } from '../plugins_core/spa_fallback/index.js'
 import { CoreStep, Event } from '../plugins_core/types.js'
 
 // Get all build steps
@@ -85,6 +86,7 @@ const addCoreSteps = function (steps): CoreStep[] {
     bundleFunctions,
     bundleEdgeFunctions,
     copyDbMigrations,
+    applySpaFallback,
     scanForSecrets,
     uploadBlobs,
     deploySite,

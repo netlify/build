@@ -21,7 +21,13 @@ export const addExactDependencies = function ({ packageRoot, isLocal, packages }
 const runCommand = async function ({ packageRoot, packages = [], isLocal, type }) {
   try {
     const [command, ...args] = await getCommand({ packageRoot, type, isLocal })
-    await execa(command, [...args, ...packages], { cwd: packageRoot, all: true })
+    // `addExact` is used to install Netlify Integration/extension plugins, which can be
+    // distributed as remote tarball URLs (e.g. `https://*.netlify.app/packages/*.tgz`)
+    // instead of npm registry packages. Newer npm versions (npm v12+) disable fetching
+    // such "remote" package types by default, so we opt back in for this command only,
+    // without affecting the user's global npm config or other install commands.
+    const env = type === 'addExact' ? { npm_config_allow_remote: 'all' } : {}
+    await execa(command, [...args, ...packages], { cwd: packageRoot, all: true, env })
   } catch (error) {
     const message = getErrorMessage(error.all)
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${message}`)
