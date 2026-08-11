@@ -1,3 +1,7 @@
+import { execFileSync } from 'child_process'
+import { mkdtempSync, rmSync, writeFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { cwd as getCwd, env } from 'process'
 
 import { expect, test, vi } from 'vitest'
@@ -97,6 +101,33 @@ test('Should return the modified/created/deleted files', () => {
   expect(modifiedFiles).toEqual(['src/install/node/bower.js'])
   expect(createdFiles).toEqual(['src/install/node/install-node.js', 'src/install/node/run-npm.js'])
   expect(deletedFiles).toEqual(['src/install/node/index.js', 'src/install/node/npm.js'])
+})
+
+test('Should preserve filenames ending with a space', () => {
+  const cwd = mkdtempSync(join(tmpdir(), 'git-utils-'))
+  const gitEnv = {
+    ...env,
+    GIT_AUTHOR_NAME: 'Test',
+    GIT_AUTHOR_EMAIL: 'test@example.com',
+    GIT_COMMITTER_NAME: 'Test',
+    GIT_COMMITTER_EMAIL: 'test@example.com',
+  }
+  const runGit = (...args: string[]) => execFileSync('git', args, { cwd, env: gitEnv }).toString().trim()
+
+  try {
+    runGit('init')
+    runGit('commit', '--allow-empty', '-m', 'base')
+    const base = runGit('rev-parse', 'HEAD')
+    writeFileSync(join(cwd, 'file '), '')
+    runGit('add', '.')
+    runGit('commit', '-m', 'head')
+    const head = runGit('rev-parse', 'HEAD')
+
+    const { createdFiles } = getGitUtils({ base, head, cwd })
+    expect(createdFiles).toEqual(['file '])
+  } finally {
+    rmSync(cwd, { recursive: true, force: true })
+  }
 })
 
 test('Should return whether specific files are modified/created/deleted/edited', () => {

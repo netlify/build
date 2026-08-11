@@ -1,20 +1,16 @@
 import process from 'process'
 import { existsSync } from 'fs'
-import { execaSync } from 'execa'
 import { memoize } from 'micro-memoize'
+import { xSync } from 'tinyexec'
+
+const MAX_BUFFER = 1e8 // 100MB
 
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
   const cwdA = safeGetCwd(cwd)
-  try {
-    const { stdout } = execaSync('git', args, { cwd: cwdA })
-    return stdout
-  } catch (error) {
-    // The child process `error.message` includes stderr and stdout output which most of the time contains duplicate
-    // information. We rely on `error.shortMessage` instead.
-    error.message = error.shortMessage
-    throw error
-  }
+  const { stdout } = xSync('git', args, { throwOnError: true, nodeOptions: { cwd: cwdA, maxBuffer: MAX_BUFFER } })
+  // Callers split the output on newlines, so the trailing newline must be stripped
+  return stdout.replace(/\n$/, '')
 }
 
 export const git = memoize(mGit, { isKeyItemEqual: 'deep', maxSize: 1e3 })
