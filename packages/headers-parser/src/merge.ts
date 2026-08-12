@@ -1,5 +1,3 @@
-import stringify from 'fast-safe-stringify'
-
 import { splitResults } from './results.js'
 import type { Header, MinimalHeader } from './types.js'
 
@@ -47,12 +45,12 @@ const removeDuplicates = function (headers: MinimalHeader[] | Header[]) {
   return result.reverse()
 }
 
-// We generate a unique header key based on JSON stringify. However, because some
-// properties can be regexes, we need to replace those by their toString representation
-// given the default will be and empty object
+// We generate a unique header key based on JSON stringify. The `values` keys
+// are sorted so that key order does not affect the result. `forRegExp` is
+// derived from `for`, so it does not need to be part of the key.
 const generateHeaderKey = function (header: MinimalHeader | Header): string {
-  return stringify.default.stableStringify(header, (_, value) => {
-    if (value instanceof RegExp) return value.toString()
-    return value
-  })
+  return JSON.stringify([
+    header.for,
+    Object.entries(header.values).sort(([keyA], [keyB]) => (keyA < keyB ? -1 : keyA > keyB ? 1 : 0)),
+  ])
 }
