@@ -4,8 +4,8 @@ import { mkdir, readlink as readLink, rm, symlink, writeFile } from 'fs/promises
 import os from 'os'
 import { basename, dirname, extname, join } from 'path'
 
+import type { Archiver } from '@archiver/archiver'
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
-import type { Archiver } from 'archiver'
 import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
