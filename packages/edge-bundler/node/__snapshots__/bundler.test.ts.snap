@@ -1,10 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Adds a custom error property to user errors during bundling 1`] = `
-"Command failed with exit code 1: deno install --import-map TMP_DIR/deno.json --quiet --allow-import --node-modules-dir=manual --vendor --entrypoint func1.ts
-error: SyntaxError: Expression expected
-  |
-1 | export default async () => 
-  |                           ~
-    at TMP_DIR/func1.ts:1:27"
-`;
+exports[`Adds a custom error property to user errors during bundling 1`] = `"Command failed with exit code 1: deno install --import-map TMP_DIR/deno.json --quiet --allow-import --node-modules-dir=manual --vendor --entrypoint func1.ts"`;

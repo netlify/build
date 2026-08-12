@@ -129,7 +129,7 @@ test('Produces no bundle or manifest when no function has a route and `edge_bund
 
 test('Adds a custom error property to user errors during bundling', async () => {
   process.env.NO_COLOR = 'true'
-  expect.assertions(3)
+  expect.assertions(4)
 
   const { basePath, cleanup, distPath } = await useFixture('invalid_functions')
   const sourceDirectory = join(basePath, 'functions')
@@ -144,15 +144,24 @@ test('Adds a custom error property to user errors during bundling', async () => 
     await bundle([sourceDirectory], distPath, declarations, { basePath })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
-    const messageBeforeStack = (error as BundleError).message
-    expect(
-      messageBeforeStack
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-        // Bundling happens in a temporary directory whose name is random, and
-        // the error message quotes it.
-        .replace(/[^\s"']*[/\\]tmp-\d+-[A-Za-z0-9]+/g, 'TMP_DIR'),
-    ).toMatchSnapshot()
+    const message = (error as BundleError).message
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+      // Bundling happens in a temporary directory whose name is random, and
+      // the error message quotes it.
+      .replace(/[^\s"']*[/\\]tmp-\d+-[A-Za-z0-9]+/g, 'TMP_DIR')
+      // On Windows those paths are built with the platform separator.
+      .replaceAll('TMP_DIR\\', 'TMP_DIR/')
+
+    // Deno words and lays out a parse failure differently across the range we
+    // support (`DENO_VERSION_RANGE`): 2.4.x says "Unexpected eof", 2.5-2.7 say
+    // "Expression expected", and 2.8+ reformats the whole thing as a
+    // `SyntaxError` with a line gutter. Snapshot only the part we own - the
+    // command we asked Deno to run - and assert Deno's own diagnostic loosely.
+    const [commandLine] = message.split('\nerror:')
+
+    expect(commandLine).toMatchSnapshot()
+    expect(message).toMatch(/^error: (SyntaxError|The module's source code could not be parsed)/m)
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
         format: 'tar',

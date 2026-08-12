@@ -151,7 +151,10 @@ test.serial('handles failure when bundling Edge Functions via runCoreSteps funct
     .withFlags({ ...FLAGS, buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true })
     .runWithBuild()
 
-  t.true(output.includes('error: SyntaxError'))
+  // Deno rewords this diagnostic across the versions edge-bundler supports:
+  // 2.8+ report a `SyntaxError`, earlier ones say the source could not be
+  // parsed. Accept either rather than pinning the test to one Deno release.
+  t.regex(output, /error: (SyntaxError|The module's source code could not be parsed)/)
 })
 
 // TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
