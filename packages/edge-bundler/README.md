@@ -33,17 +33,6 @@ Prepare Netlify Edge Functions for deployment
    await bundle(sourceDirectories, distDirectory, declarations)
    ```
 
-## Vendored modules
-
-To avoid pulling in additional dependencies at runtime, this package vendors some Deno modules in the `deno/vendor`
-directory.
-
-This will go away soon as we move away from the ESZIP format.
-
-> [!WARNING]  
-> The `eszip` module contains a set of custom changes that diverge from the upstream. If you need to update this module,
-> make sure to backport them.
-
 ## Contributors
 
 Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for instructions on how to set up and work on this repository. Thanks for

@@ -1,8 +1,8 @@
 // Importing a directory is unsupported in Deno (ERR_UNSUPPORTED_DIR_IMPORT).
 // `deno info` still reports the directory as an errored module reachable via a
 // runtime (code) edge, so it can end up in the list of source files to bundle.
-// Because it's caught, eszip bundling succeeds, but tarball generation used to
-// throw EISDIR when copying the directory. Guard against that.
+// The import is caught, so the function itself is fine, but tarball generation
+// used to throw EISDIR when copying the directory. Guard against that.
 try {
   await import('../../models')
 } catch (error) {

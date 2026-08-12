@@ -22,9 +22,7 @@
     "test:ci": "run-s test:integration test:ci:*",
     "test:dev:vitest": "vitest run",
     "test:dev:vitest:watch": "vitest watch",
-    "test:dev:deno": "deno test --allow-all deno",
     "test:ci:vitest": "vitest run --coverage",
-    "test:ci:deno": "deno test --allow-all deno",
     "test:integration": "node --experimental-modules test/integration/test.js"
   },
   "keywords": [],

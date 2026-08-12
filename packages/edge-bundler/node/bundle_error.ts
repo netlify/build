@@ -1,5 +1,3 @@
-import type { ExecaError } from 'execa'
-
 interface BundleErrorOptions {
   cause?: unknown
   format?: string
@@ -33,10 +31,6 @@ export class BundleError extends Error {
  */
 export const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
   if (input instanceof Error) {
-    if (input.message.includes("The module's source code could not be parsed")) {
-      input.message = (input as ExecaError).stderr
-    }
-
     return new BundleError(input, options)
   }
 

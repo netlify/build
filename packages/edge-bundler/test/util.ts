@@ -1,8 +1,7 @@
 import { execSync } from 'node:child_process'
-import { promises as fs } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { stderr, stdout } from 'node:process'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { stderr } from 'node:process'
+import { fileURLToPath } from 'node:url'
 
 import cpy from 'cpy'
 import { execa } from 'execa'
@@ -49,21 +48,6 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
   }
 }
 
-const inspectESZIPFunction = (path: string) => `
-  import { functions } from "${pathToFileURL(path)}.js";
-
-  const responses = {};
-
-  for (const functionName in functions) {
-    const req = new Request("https://test.netlify");
-    const res = await functions[functionName](req);
-
-    responses[functionName] = await res.text();
-  }
-  
-  console.log(JSON.stringify(responses));
-`
-
 const inspectTarballFunction = () => `
 import manifest from "./___netlify-edge-functions.json" with { type: "json" };
 
@@ -102,55 +86,6 @@ export const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
 
     return !isExcluded
   })
-
-export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
-  const tmpDir = await tmp.dir({ unsafeCleanup: true })
-
-  // Extract ESZIP into temporary directory.
-  const extractCommand = execa('deno', [
-    'run',
-    '--allow-all',
-    '--no-lock',
-    'https://deno.land/x/eszip@v0.55.2/eszip.ts',
-    'x',
-    eszipPath,
-    tmpDir.path,
-  ])
-
-  extractCommand.stderr?.pipe(stderr)
-  extractCommand.stdout?.pipe(stdout)
-
-  await extractCommand
-
-  const virtualRootPath = join(tmpDir.path, 'source', 'root')
-  const stage2Path = join(virtualRootPath, '..', 'bootstrap-stage2')
-  const importMapPath = join(virtualRootPath, '..', 'import-map')
-
-  for (const path of [importMapPath, stage2Path]) {
-    const file = await fs.readFile(path, 'utf8')
-
-    let normalizedFile = file.replace(/file:\/{3}root/g, pathToFileURL(virtualRootPath).toString())
-
-    if (vendorDirectory !== undefined) {
-      normalizedFile = normalizedFile.replace(/file:\/{3}vendor/g, pathToFileURL(vendorDirectory).toString())
-    }
-
-    await fs.writeFile(path, normalizedFile)
-  }
-
-  await fs.rename(stage2Path, `${stage2Path}.js`)
-
-  // Run function that imports the extracted stage 2 and invokes each function.
-  const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectESZIPFunction(stage2Path)])
-
-  evalCommand.stderr?.pipe(stderr)
-
-  const result = await evalCommand
-
-  await tmpDir.cleanup()
-
-  return JSON.parse(result.stdout)
-}
 
 export const runTarball = async (tarballPath: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })

@@ -1,5 +1,4 @@
 export enum BundleFormat {
-  ESZIP2 = 'eszip2',
   TARBALL = 'tar',
 }
 

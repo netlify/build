@@ -245,7 +245,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   const { bundles, routes, post_cache_routes: postCacheRoutes, function_config: functionConfig } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(routes.length).toBe(12)
