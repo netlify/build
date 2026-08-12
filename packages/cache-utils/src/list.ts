@@ -36,7 +36,7 @@ const listBase = async function ({
   cacheDir: string
   depth?: number
 }) {
-  let queue = [{ path: `${cacheDir}/${name}`, depth: 0 }]
+  const queue = [{ path: `${cacheDir}/${name}`, depth: 0 }]
   const results: string[] = []
   let queueEntry: { path: string; depth: number } | undefined
   while ((queueEntry = queue.pop())) {
