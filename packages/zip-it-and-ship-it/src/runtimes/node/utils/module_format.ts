@@ -10,7 +10,7 @@ export const MODULE_FORMAT = {
   ESM: 'esm',
 } as const
 
-export const moduleFormat = z.nativeEnum(MODULE_FORMAT)
+export const moduleFormat = z.enum(MODULE_FORMAT)
 
 export type ModuleFormat = z.infer<typeof moduleFormat>
 
