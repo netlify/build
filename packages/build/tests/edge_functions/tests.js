@@ -66,16 +66,13 @@ test.serial('constants.EDGE_FUNCTIONS_SRC created dynamically', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test.serial(
-  'constants.EDGE_FUNCTIONS_SRC dynamic is ignored if EDGE_FUNCTIONS_SRC is specified',
-  async (t) => {
-    const output = await new Fixture(test.meta.file, './fixtures/src_dynamic_ignore')
-      .withFlags(FLAGS)
-      .withCopyRoot({ git: false })
-      .then((fixture) => fixture.runWithBuild())
-    t.snapshot(normalizeOutput(output))
-  },
-)
+test.serial('constants.EDGE_FUNCTIONS_SRC dynamic is ignored if EDGE_FUNCTIONS_SRC is specified', async (t) => {
+  const output = await new Fixture(test.meta.file, './fixtures/src_dynamic_ignore')
+    .withFlags(FLAGS)
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
+})
 
 test.serial('constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
   const output = await new Fixture(test.meta.file, './fixtures/print_dist').withFlags(FLAGS).runWithBuild()
@@ -126,9 +123,7 @@ test.serial('builds Edge Functions from both the user and the internal directori
 // out which regex is causing the problem and fix it.
 if (platform !== 'win32') {
   test.serial('handles failure when bundling Edge Functions', async (t) => {
-    const output = await new Fixture(test.meta.file, './fixtures/functions_invalid')
-      .withFlags(FLAGS)
-      .runWithBuild()
+    const output = await new Fixture(test.meta.file, './fixtures/functions_invalid').withFlags(FLAGS).runWithBuild()
     t.snapshot(normalizeOutput(output))
   })
 }
@@ -317,56 +312,53 @@ test.serial(
   },
 )
 
-test.serial(
-  'honors declarative `edge_functions` routes from the Frameworks API config file',
-  async (t) => {
-    await new Fixture(test.meta.file, './fixtures/functions_frameworks_api_config')
-      .withFlags({
-        ...FLAGS,
-        mode: 'buildbot',
-      })
-      .runWithBuild()
-
-    const manifest = await assertManifest(t, 'functions_frameworks_api_config')
-    assertBundlesExist(t, manifest)
-    const { routes, function_config } = manifest
-
-    // `path` and `excludedPath` become the route pattern and excluded patterns.
-    // `framework-edge-isc` declares a route in its in-source config too, so it
-    // gets a route from each source.
-    t.deepEqual(routes, [
-      {
-        function: 'framework-edge-isc',
-        pattern: '^/isc-route(?:/(.*))/?$',
-        excluded_patterns: [],
-        path: '/isc-route/*',
-      },
-      {
-        function: 'framework-edge',
-        pattern: '^/framework-route(?:/(.*))/?$',
-        excluded_patterns: ['^/framework-route/static(?:/(.*))/?$', '^/framework-route/skip/?$'],
-        path: '/framework-route/*',
-      },
-      {
-        function: 'framework-edge-isc',
-        pattern: '^/declaration-route(?:/(.*))/?$',
-        excluded_patterns: [],
-        path: '/declaration-route/*',
-      },
-    ])
-
-    // `name` and `generator` are carried through to the function config, whether
-    // or not the function also has in-source config.
-    t.deepEqual(function_config['framework-edge'], {
-      name: 'Framework edge function',
-      generator: 'package-name@1.2.3',
+test.serial('honors declarative `edge_functions` routes from the Frameworks API config file', async (t) => {
+  await new Fixture(test.meta.file, './fixtures/functions_frameworks_api_config')
+    .withFlags({
+      ...FLAGS,
+      mode: 'buildbot',
     })
-    t.deepEqual(function_config['framework-edge-isc'], {
-      name: 'Framework edge function with in-source config',
-      generator: 'package-name@1.2.3',
-    })
-  },
-)
+    .runWithBuild()
+
+  const manifest = await assertManifest(t, 'functions_frameworks_api_config')
+  assertBundlesExist(t, manifest)
+  const { routes, function_config } = manifest
+
+  // `path` and `excludedPath` become the route pattern and excluded patterns.
+  // `framework-edge-isc` declares a route in its in-source config too, so it
+  // gets a route from each source.
+  t.deepEqual(routes, [
+    {
+      function: 'framework-edge-isc',
+      pattern: '^/isc-route(?:/(.*))/?$',
+      excluded_patterns: [],
+      path: '/isc-route/*',
+    },
+    {
+      function: 'framework-edge',
+      pattern: '^/framework-route(?:/(.*))/?$',
+      excluded_patterns: ['^/framework-route/static(?:/(.*))/?$', '^/framework-route/skip/?$'],
+      path: '/framework-route/*',
+    },
+    {
+      function: 'framework-edge-isc',
+      pattern: '^/declaration-route(?:/(.*))/?$',
+      excluded_patterns: [],
+      path: '/declaration-route/*',
+    },
+  ])
+
+  // `name` and `generator` are carried through to the function config, whether
+  // or not the function also has in-source config.
+  t.deepEqual(function_config['framework-edge'], {
+    name: 'Framework edge function',
+    generator: 'package-name@1.2.3',
+  })
+  t.deepEqual(function_config['framework-edge-isc'], {
+    name: 'Framework edge function with in-source config',
+    generator: 'package-name@1.2.3',
+  })
+})
 
 test.serial('skip bundling when edge function directories exist, contain no functions', async (t) => {
   await new Fixture(test.meta.file, './fixtures/functions_empty_directory').withFlags(FLAGS).runWithBuild()
