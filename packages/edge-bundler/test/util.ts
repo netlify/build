@@ -1,9 +1,9 @@
 import { execSync } from 'node:child_process'
+import { promises as fs } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { stderr } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
-import cpy from 'cpy'
 import { execa } from 'execa'
 import * as tar from 'tar'
 import tmp from 'tmp-promise'
@@ -31,8 +31,11 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
   if (copyDirectory) {
     const tmpFixtureDir = await tmp.dir({ unsafeCleanup: true })
 
-    // TODO: Replace with `fs.cp` once the Node.js version range allows.
-    await cpy(`${fixtureDir}/**`, tmpFixtureDir.path)
+    await fs.cp(fixtureDir, tmpFixtureDir.path, {
+      recursive: true,
+      force: false,
+      errorOnExist: false,
+    })
 
     return {
       basePath: tmpFixtureDir.path,

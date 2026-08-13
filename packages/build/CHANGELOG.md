@@ -105,6 +105,32 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.3.4](https://github.com/netlify/build/compare/build-v36.3.3...build-v36.3.4) (2026-08-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.2 to 16.0.3
+
+## [36.3.3](https://github.com/netlify/build/compare/build-v36.3.2...build-v36.3.3) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** de-dupe zod dependencies ([#7169](https://github.com/netlify/build/issues/7169)) ([9979dbd](https://github.com/netlify/build/commit/9979dbd9b2700f4848b02b7a54f9f1980e31369e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.1 to ^25.2.2
+    * @netlify/edge-bundler bumped from 16.0.1 to 16.0.2
+    * @netlify/functions-utils bumped from ^7.1.2 to ^7.1.3
+    * @netlify/zip-it-and-ship-it bumped from 15.3.2 to 15.3.3
+
 ## [36.3.2](https://github.com/netlify/build/compare/build-v36.3.1...build-v36.3.2) (2026-08-07)
 
 
