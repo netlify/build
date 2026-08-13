@@ -79,10 +79,7 @@ const readName = (header: Buffer): string => {
   const raw = header.subarray(0, NAME_LENGTH)
   const end = raw.indexOf(0)
 
-  return raw
-    .subarray(0, end === -1 ? NAME_LENGTH : end)
-    .toString('utf8')
-    .trim()
+  return raw.subarray(0, end === -1 ? NAME_LENGTH : end).toString('utf8')
 }
 
 const readSize = (header: Buffer): number | undefined => {
