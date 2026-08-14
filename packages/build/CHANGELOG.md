@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.3.5](https://github.com/netlify/build/compare/build-v36.3.4...build-v36.3.5) (2026-08-14)
+
+
+### Bug Fixes
+
+* remove unused zisi_esbuild_parser feature flag ([#7183](https://github.com/netlify/build/issues/7183)) ([cd395b0](https://github.com/netlify/build/commit/cd395b050fd620adbceb0defdd1b99033d1e8dab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.3 to ^7.1.4
+    * @netlify/zip-it-and-ship-it bumped from 15.3.3 to 15.3.4
+
 ## [36.3.4](https://github.com/netlify/build/compare/build-v36.3.3...build-v36.3.4) (2026-08-13)
 
 
