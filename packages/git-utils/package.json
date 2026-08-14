@@ -50,7 +50,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "execa": "^8.0.0",
+    "execa": "^10.0.0",
     "map-obj": "^5.0.0",
     "micro-memoize": "^5.1.1",
     "micromatch": "^4.0.2"

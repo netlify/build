@@ -52,7 +52,7 @@
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
     "esbuild": "0.28.1",
-    "execa": "^8.0.0",
+    "execa": "^10.0.0",
     "fast-glob": "^3.3.3",
     "filter-obj": "^6.0.0",
     "find-up": "^7.0.0",
