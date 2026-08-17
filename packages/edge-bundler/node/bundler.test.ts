@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
-import { join, resolve, dirname } from 'path'
+import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
@@ -10,7 +10,7 @@ import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { denoVersion, runESZIP, runTarball, useFixture } from '../test/util.js'
+import { denoVersion, runTarball, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -18,10 +18,9 @@ import { Declaration } from './declaration.js'
 import type { Manifest } from './manifest.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
-import { fileURLToPath } from 'node:url'
 
-test('Produces an ESZIP bundle', async () => {
-  const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
+test('Produces a bundle', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_import_maps', { copyDirectory: true })
   const declarations: Declaration[] = [
     {
       function: 'func1',
@@ -46,13 +45,13 @@ test('Produces an ESZIP bundle', async () => {
   const { bundles, import_map: importMapURL } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(importMapURL).toBe(importMapSpecifier)
 
   const bundlePath = join(distPath, bundles[0].asset)
-  const { func1, func2, func3 } = await runESZIP(bundlePath)
+  const { func1, func2, func3 } = await runTarball(bundlePath)
 
   expect(func1).toBe('HELLO, JANE DOE!')
   expect(func2).toBe('Jane Doe')
@@ -62,7 +61,7 @@ test('Produces an ESZIP bundle', async () => {
 })
 
 test('Excludes functions with no route from the bundle when `edge_bundler_exclude_unrouted_functions` is enabled', async () => {
-  const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
+  const { basePath, cleanup, distPath } = await useFixture('with_import_maps', { copyDirectory: true })
   // Only `func1` is routed. `func2` and `func3` have no declaration, so they
   // should be left out of the bundle rather than eagerly loaded.
   const declarations: Declaration[] = [
@@ -90,7 +89,7 @@ test('Excludes functions with no route from the bundle when `edge_bundler_exclud
   expect(manifest.routes.map((route) => route.function)).toEqual(['func1'])
 
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const bundledFunctions = await runESZIP(bundlePath)
+  const bundledFunctions = await runTarball(bundlePath)
 
   expect(Object.keys(bundledFunctions)).toEqual(['func1'])
   expect(bundledFunctions.func1).toBe('HELLO, JANE DOE!')
@@ -107,16 +106,15 @@ test('Produces no bundle or manifest when no function has a route and `edge_bund
 
   // No declarations at all, so every function is unrouted. There is nothing that
   // can ever be invoked, so there is nothing to deploy: we produce no manifest,
-  // rather than one with no bundle. The deploy pipeline reads a bundle-less
-  // manifest as the deprecated JS format and can reject it, whereas a missing
-  // manifest is the same well-handled path as a site with no edge functions.
+  // rather than one with no bundle. The deploy pipeline can reject a bundle-less
+  // manifest, whereas a missing manifest is the same well-handled path as a site
+  // with no edge functions.
   const result = await bundle([userDirectory, internalDirectory], distPath, [], {
     basePath,
     configPath: join(internalDirectory, 'config.json'),
     importMapPaths: [join(userDirectory, 'import_map.json')],
     featureFlags: {
       edge_bundler_exclude_unrouted_functions: true,
-      edge_bundler_generate_tarball: true,
     },
   })
 
@@ -129,38 +127,9 @@ test('Produces no bundle or manifest when no function has a route and `edge_bund
   await cleanup()
 })
 
-test('Uses the vendored eszip module instead of fetching it from deno.land', async () => {
-  const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
-  const declarations: Declaration[] = [
-    {
-      function: 'func1',
-      path: '/func1',
-    },
-  ]
-  const sourceDirectory = join(basePath, 'functions')
-  const result = await bundle([sourceDirectory], distPath, declarations, {
-    basePath,
-    configPath: join(sourceDirectory, 'config.json'),
-  })
-  const generatedFiles = await readdir(distPath)
-
-  expect(result.functions.length).toBe(1)
-  expect(generatedFiles.length).toBe(2)
-
-  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-  const manifest = JSON.parse(manifestFile)
-  const { bundles } = manifest
-
-  expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
-  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
-
-  await cleanup()
-})
-
 test('Adds a custom error property to user errors during bundling', async () => {
   process.env.NO_COLOR = 'true'
-  expect.assertions(3)
+  expect.assertions(4)
 
   const { basePath, cleanup, distPath } = await useFixture('invalid_functions')
   const sourceDirectory = join(basePath, 'functions')
@@ -175,17 +144,27 @@ test('Adds a custom error property to user errors during bundling', async () => 
     await bundle([sourceDirectory], distPath, declarations, { basePath })
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
-    const messageBeforeStack = (error as BundleError).message
-    const packageDir = pathToFileURL(resolve(dirname(fileURLToPath(import.meta.url)), '../')).href
-    expect(
-      messageBeforeStack
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-        .replace(packageDir, 'file://build/packages/edge-bundler'),
-    ).toMatchSnapshot()
+    const message = (error as BundleError).message
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+      // Bundling happens in a temporary directory whose name is random, and
+      // the error message quotes it.
+      .replace(/[^\s"']*[/\\]tmp-\d+-[A-Za-z0-9]+/g, 'TMP_DIR')
+      // On Windows those paths are built with the platform separator.
+      .replaceAll('TMP_DIR\\', 'TMP_DIR/')
+
+    // Deno words and lays out a parse failure differently across the range we
+    // support (`DENO_VERSION_RANGE`): 2.4.x says "Unexpected eof", 2.5-2.7 say
+    // "Expression expected", and 2.8+ reformats the whole thing as a
+    // `SyntaxError` with a line gutter. Snapshot only the part we own - the
+    // command we asked Deno to run - and assert Deno's own diagnostic loosely.
+    const [commandLine] = message.split('\nerror:')
+
+    expect(commandLine).toMatchSnapshot()
+    expect(message).toMatch(/^error: (SyntaxError|The module's source code could not be parsed)/m)
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
-        format: 'eszip',
+        format: 'tar',
         runtime: 'deno',
       },
       type: 'functionsBundling',
@@ -195,9 +174,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing an npm module', async () => {
-  expect.assertions(2)
-
+test('Supports `npm:` specifiers', async () => {
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
   const sourceDirectory = join(basePath, 'functions')
   const declarations: Declaration[] = [
@@ -207,18 +184,21 @@ test('Prints a nice error message when user tries importing an npm module', asyn
     },
   ]
 
-  try {
-    await bundle([sourceDirectory], distPath, declarations, {
-      basePath,
-    })
-  } catch (error) {
-    expect(error).toBeInstanceOf(BundleError)
-    expect((error as BundleError).message).toEqual(
-      `There was an error when loading the 'p-retry' npm module. Support for npm modules in edge functions is an experimental feature. Refer to https://ntl.fyi/edge-functions-npm for more information.`,
-    )
-  } finally {
-    await cleanup()
-  }
+  await bundle([sourceDirectory], distPath, declarations, {
+    basePath,
+  })
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+
+  // Deno resolves `npm:` specifiers natively when it vendors the bundle, so the
+  // module is there at runtime.
+  const { func1 } = await runTarball(bundlePath)
+
+  expect(func1).toBe('function')
+
+  await cleanup()
 })
 
 test('Does not add a custom error property to system errors during bundling', async () => {
@@ -286,7 +266,7 @@ test('Supports import maps with relative paths', async () => {
   const { bundles } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await cleanup()
@@ -372,7 +352,7 @@ test('Processes a function that imports a custom layer', async () => {
   const { bundles, layers } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(layers).toEqual([layer])
@@ -403,7 +383,7 @@ test('Loads declarations and import maps from the deploy configuration and in-so
   const manifest = JSON.parse(manifestFile)
   const { bundles, function_config: functionConfig, routes } = manifest
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   // respects excludedPath from deploy config
@@ -490,7 +470,7 @@ test('Handles imports with the `node:` prefix', async () => {
   const { bundles, import_map: importMapURL, routes } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
   expect(importMapURL).toBe(importMapSpecifier)
   expect(routes.length).toBe(1)
@@ -499,7 +479,7 @@ test('Handles imports with the `node:` prefix', async () => {
 
   const bundlePath = join(distPath, bundles[0].asset)
 
-  const { func1 } = await runESZIP(bundlePath)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(func1).toBe('ok')
 
@@ -526,7 +506,7 @@ test('Handles Node builtin imports without the `node:` prefix', async () => {
   const { bundles, import_map: importMapURL, routes } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
   expect(importMapURL).toBe(importMapSpecifier)
   expect(routes.length).toBe(1)
@@ -535,7 +515,7 @@ test('Handles Node builtin imports without the `node:` prefix', async () => {
 
   const bundlePath = join(distPath, bundles[0].asset)
 
-  const { func1 } = await runESZIP(bundlePath)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(func1).toBe('ok')
 
@@ -568,10 +548,12 @@ test('Loads npm modules from bare specifiers', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
-  expect(func1).toBe(
-    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
+  // The bundle runs in the directory it was extracted into, so `process.cwd()`
+  // is not the one this test runs in.
+  expect(func1).toMatch(
+    /^<parent-1><child-1>JavaScript<\/child-1><\/parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>.*<\/cwd><\/grandchild-1><\/child-2><\/parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>.*<\/cwd><\/grandchild-1><\/child-2><\/parent-3>, TmV0bGlmeQ==$/,
   )
 
   await cleanup()
@@ -597,7 +579,7 @@ test('Loads npm modules which use package.json.exports', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(func1).toBe('hello')
 
@@ -624,7 +606,7 @@ test('Loads modules which contain cycles', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(func1).toBe('magix')
 
@@ -660,10 +642,12 @@ test('Loads npm modules in a monorepo setup', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
-  expect(func1).toBe(
-    `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
+  // The bundle runs in the directory it was extracted into, so `process.cwd()`
+  // is not the one this test runs in.
+  expect(func1).toMatch(
+    /^<parent-1><child-1>JavaScript<\/child-1><\/parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>.*<\/cwd><\/grandchild-1><\/child-2><\/parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>.*<\/cwd><\/grandchild-1><\/child-2><\/parent-3>$/,
   )
 
   await cleanup()
@@ -689,7 +673,7 @@ test('Loads JSON modules with `with` attribute', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(func1).toBe(`{"foo":"bar"}`)
 
@@ -776,7 +760,7 @@ test('Supports TSX and process.env', async () => {
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
   process.env.FOO = 'bar'
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runTarball(bundlePath)
 
   expect(Buffer.from(func1, 'base64').toString()).toBe(
     `hippedy hoppedy, createElement is now a production property. Here, take this env var: FOO=bar`,
@@ -805,7 +789,7 @@ test('Loads edge functions from the Frameworks API', async () => {
   const { bundles, function_config: functionConfig, routes } = manifest
 
   expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
+  expect(bundles[0].format).toBe('tar')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(routes[0].excluded_patterns).toEqual(['^/func2/skip/?$'])
@@ -840,9 +824,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
         configPath: join(basePath, '.netlify/edge-functions/config.json'),
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -877,10 +858,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./deno.json')
       expect(entries).toContain('./func1.ts')
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
       await cleanup()
     })
 
@@ -901,9 +878,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         await bundle([join(basePath, 'netlify/edge-functions')], dist, declarations, {
           basePath,
           configPath: join(basePath, '.netlify/edge-functions/config.json'),
-          featureFlags: {
-            edge_bundler_generate_tarball: true,
-          },
         })
 
         const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'))
@@ -943,9 +917,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([sourceDirectory], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         importMapPaths: [join(basePath, 'import_map.json')],
         vendorDirectory: vendorDirectory.path,
         systemLogger,
@@ -955,7 +926,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         systemLogger.mock.calls.find((call) => call[0] === 'Could not track dependencies in edge function:'),
       ).toBeUndefined()
 
-      // The output includes process.cwd() which differs between tarball (runs in temp dir) and eszip
+      // The output includes process.cwd(), and the tarball runs in a temp directory.
       const expectedOutputPattern =
         '<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>'
       const expectedOutputSuffix =
@@ -989,12 +960,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(tarballResult.func1).toContain(expectedOutputSuffix)
       expect(tarballResult.func1).toContain(expectedOutputEnd)
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
-      expect(eszipResult.func1).toBe(
-        `${expectedOutputPattern}${process.cwd()}${expectedOutputSuffix}${process.cwd()}${expectedOutputEnd}`,
-      )
-
       await cleanup()
       await rm(vendorDirectory.path, { force: true, recursive: true })
     })
@@ -1011,9 +976,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1063,9 +1025,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         importMapPaths: [join(basePath, 'import_map.json')],
         systemLogger,
       })
@@ -1103,9 +1062,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         importMapPaths: [join(basePath, 'import_map.json')],
         systemLogger,
       })
@@ -1131,87 +1087,36 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
-    describe('Dry-run tarball generation flag enabled', () => {
-      test('Includes tarball in bundles when generation succeeds', async () => {
-        const systemLogger = vi.fn()
-        const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
-        const declarations: Declaration[] = [
-          {
-            function: 'func1',
-            path: '/func1',
-          },
-        ]
+    test('Fails the build when tarball generation fails', async () => {
+      vi.resetModules()
+      vi.doMock('./formats/tarball.js', () => ({
+        bundle: vi.fn().mockRejectedValue(new Error('Simulated tarball bundling failure')),
+      }))
 
-        await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+      const { bundle: bundleUnderTest } = await import('./bundler.js')
+
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const sourceDirectory = join(basePath, 'netlify/edge-functions')
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      // The tarball is the only bundle we produce, so a failure to generate it
+      // has nothing to fall back to and must surface as a build failure.
+      await expect(
+        bundleUnderTest([sourceDirectory], distPath, declarations, {
           basePath,
           configPath: join(basePath, '.netlify/edge-functions/config.json'),
-          featureFlags: {
-            edge_bundler_dry_run_generate_tarball: true,
-            edge_bundler_generate_tarball: false,
-          },
-          systemLogger,
-        })
+        }),
+      ).rejects.toThrowError('Simulated tarball bundling failure')
 
-        expect(systemLogger).toHaveBeenCalledWith('Dry run: Eszip and tarball bundle generated successfully.')
+      await expect(access(resolve(distPath, 'manifest.json'))).rejects.toThrowError()
 
-        const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-        const manifest = JSON.parse(manifestFile)
-
-        expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
-        expect(manifest.bundles.length).toBe(2)
-        expect(manifest.bundles[0].format).toBe('tar')
-        expect(manifest.bundles[1].format).toBe('eszip2')
-
-        // Verify the tarball is functional
-        const tarballPath = join(distPath, manifest.bundles[0].asset)
-        const tarballResult = await runTarball(tarballPath)
-        expect(tarballResult).toStrictEqual({ func1: 'ok' })
-
-        await cleanup()
-      })
-
-      test('Logs error message when tarball generation failed and does not fail the overall build', async () => {
-        const systemLogger = vi.fn()
-        vi.resetModules()
-        vi.doMock('./formats/tarball.js', () => ({
-          bundle: vi.fn().mockRejectedValue(new Error('Simulated tarball bundling failure')),
-        }))
-
-        const { bundle: bundleUnderTest } = await import('./bundler.js')
-
-        const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
-        const sourceDirectory = join(basePath, 'netlify/edge-functions')
-        const declarations: Declaration[] = [
-          {
-            function: 'func1',
-            path: '/func1',
-          },
-        ]
-
-        await expect(
-          bundleUnderTest([sourceDirectory], distPath, declarations, {
-            basePath,
-            configPath: join(basePath, '.netlify/edge-functions/config.json'),
-            featureFlags: {
-              edge_bundler_dry_run_generate_tarball: true,
-              edge_bundler_generate_tarball: false,
-            },
-            systemLogger,
-          }),
-        ).resolves.toBeDefined()
-
-        expect(systemLogger).toHaveBeenCalledWith(
-          `Dry run: Eszip successful, tarball bundle generation failed: Simulated tarball bundling failure`,
-        )
-
-        const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
-        const manifest = JSON.parse(manifestFile)
-        expect(manifest.bundles.length).toBe(1)
-        expect(manifest.bundles[0].format).toBe('eszip2')
-
-        await cleanup()
-        vi.resetModules()
-      })
+      await cleanup()
+      vi.resetModules()
     })
 
     test('npm + http modules with import assertions', async () => {
@@ -1229,9 +1134,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await bundle([join(basePath, 'functions')], distPath, declarations, {
         basePath,
         configPath: join(basePath, 'functions/config.json'),
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1283,9 +1185,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await expect(
         bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
           basePath,
-          featureFlags: {
-            edge_bundler_generate_tarball: true,
-          },
         }),
       ).resolves.not.toThrow()
 
@@ -1324,9 +1223,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         basePath,
         configPath: join(basePath, '.netlify/edge-functions/config.json'),
         importMapPaths: [resolve(basePath, 'import_map.json')],
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1362,10 +1258,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       // vendor directory content was moved
       expect(entries).toContain('./.root-vendor/hello.ts')
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
       await cleanup()
     })
 
@@ -1383,9 +1275,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1419,10 +1308,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./deno.json')
       expect(entries).toContain('./func1.ts')
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
       await cleanup()
     })
 
@@ -1444,9 +1329,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1473,10 +1355,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./func1.ts')
       expect(entries.some((entry) => entry === './models' || entry === './models/')).toBe(false)
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
       await cleanup()
     })
 
@@ -1494,9 +1372,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       ]
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
       })
       const expectedOutput = {
         func1: 'hello from deno_dom',
@@ -1530,10 +1405,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         : `${denoDomVendorPrefix}deno-wasm_bg.wasm`
       expect(entries).toContain(expectedWasmEntry)
 
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
       await cleanup()
     })
 
@@ -1549,9 +1420,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
         basePath,
-        featureFlags: {
-          edge_bundler_generate_tarball: true,
-        },
         systemLogger,
       })
 
@@ -1569,13 +1437,6 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
-
-      const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath)
-      expect(eszipResult).toStrictEqual(expectedOutput)
-
-      // Both formats should produce identical output.
-      expect(tarballResult).toStrictEqual(eszipResult)
 
       await cleanup()
     })

@@ -14,18 +14,19 @@ import {
   LEGACY_DENO_VERSION_RANGE,
 } from './bridge.js'
 import type { Bundle } from './bundle.js'
+import { wrapBundleError } from './bundle_error.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, mergeDeclarations } from './declaration.js'
 import { load as loadDeployConfig } from './deploy_config.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
-import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleTarball } from './formats/tarball.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction, Logger } from './logger.js'
 import { generateManifestFunctionConfig, generateManifestRoutes, writeManifest } from './manifest.js'
 import { vendorNPMSpecifiers } from './npm_dependencies.js'
+import { wrapNpmImportError } from './npm_import_error.js'
 import { ensureLatestTypes } from './types.js'
 import { nonNullable } from './utils/non_nullable.js'
 import { getPathInHome } from './home_path.js'
@@ -97,10 +98,6 @@ export const bundle = async (
   // Loading any configuration options from the deploy configuration API, if it
   // exists.
   const deployConfig = await loadDeployConfig(configPath, logger)
-
-  // Layers are marked as externals in the ESZIP, so that those specifiers are
-  // not actually included in the bundle.
-  const externals = deployConfig.layers.map((layer) => layer.name)
 
   const internalSrcFolders = (Array.isArray(internalSrcFolder) ? internalSrcFolder : [internalSrcFolder]).filter(
     nonNullable,
@@ -203,10 +200,10 @@ export const bundle = async (
       : functions
 
   // With nothing to bundle there is no code that can ever be invoked, so we
-  // produce neither a bundle nor a manifest. The deploy pipeline treats a
-  // manifest that exists but carries no ESZIP bundle as the deprecated JS format
-  // and can reject the deploy, so a missing manifest - the same path as a site
-  // with no edge functions at all - is safer than an empty one.
+  // produce neither a bundle nor a manifest. The deploy pipeline can reject a
+  // manifest that exists but carries no bundle, so a missing manifest - the
+  // same path as a site with no edge functions at all - is safer than an empty
+  // one.
   if (bundledFunctions.length === 0) {
     // Config extraction may have produced function output that we were holding
     // back; surface it before returning.
@@ -220,62 +217,33 @@ export const bundle = async (
     return { functions, manifest: undefined }
   }
 
-  const bundles: Bundle[] = []
-  let tarballBundleDurationMs: number | undefined
-  let tarballDryRunError: unknown
-  let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>> | undefined
+  // Tarball bundling happens in two steps: the first one produces the bundle
+  // directory, the second one injects the manifest and archives it. We can only
+  // run the second one once the function config has been extracted, since the
+  // in-bundle manifest carries the routes and the function config.
+  const tarballBundleStart = Date.now()
+  let finalizeTarballBundle: Awaited<ReturnType<typeof bundleTarball>>
 
-  if (featureFlags.edge_bundler_generate_tarball || featureFlags.edge_bundler_dry_run_generate_tarball) {
-    const tarballInitialPromise = (async () => {
-      const start = Date.now()
-
-      try {
-        return await bundleTarball({
-          basePath,
-          buildID,
-          debug,
-          deno,
-          distDirectory,
-          functions: bundledFunctions,
-          featureFlags,
-          importMap: importMap.clone(),
-          vendorDirectory: vendor?.directory,
-        })
-      } finally {
-        tarballBundleDurationMs = Date.now() - start
-      }
-    })()
-
-    let tarballPromiseResolved = false
-
-    if (featureFlags.edge_bundler_dry_run_generate_tarball) {
-      try {
-        await tarballInitialPromise
-        tarballPromiseResolved = true
-      } catch (error: unknown) {
-        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle generation')
-      }
-    }
-
-    if (featureFlags.edge_bundler_generate_tarball || tarballPromiseResolved) {
-      finalizeTarballBundle = await tarballInitialPromise
-    }
-  }
-
-  bundles.push(
-    await bundleESZIP({
+  try {
+    finalizeTarballBundle = await bundleTarball({
       basePath,
       buildID,
       debug,
       deno,
       distDirectory,
-      externals,
       functions: bundledFunctions,
       featureFlags,
-      importMap,
+      // `bundleTarball` mutates the import map it is given (it adds the Node.js
+      // built-ins), so we hand it a copy and keep ours pristine for
+      // `distImportMapPath`.
+      importMap: importMap.clone(),
       vendorDirectory: vendor?.directory,
-    }),
-  )
+    })
+  } catch (error: unknown) {
+    throw wrapBundleError(wrapNpmImportError(error), { format: 'tar' })
+  }
+
+  const tarballBundleDurationMs = Date.now() - tarballBundleStart
 
   // When we extracted the config up front, bundling didn't fail, so no more
   // precise error is coming - re-awaiting surfaces the config extraction error
@@ -296,35 +264,12 @@ export const bundle = async (
 
   const { manifestFunctionConfig, manifestRoutes } = manifestData
 
-  if (!tarballDryRunError && finalizeTarballBundle) {
-    try {
-      bundles.unshift(await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes }))
-    } catch (error: unknown) {
-      if (featureFlags.edge_bundler_dry_run_generate_tarball) {
-        tarballDryRunError = error ?? new Error('Unknown error during tarball bundle finalization')
-      } else {
-        throw error
-      }
-    }
-  }
+  let bundles: Bundle[]
 
-  if (featureFlags.edge_bundler_dry_run_generate_tarball) {
-    let tarballLogMsg: string | undefined
-    if (tarballDryRunError) {
-      if (tarballDryRunError instanceof Error) {
-        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${tarballDryRunError.message}`
-      } else {
-        tarballLogMsg = `Dry run: Eszip successful, tarball bundle generation failed: ${String(tarballDryRunError as unknown)}`
-      }
-    } else {
-      tarballLogMsg = 'Dry run: Eszip and tarball bundle generated successfully.'
-    }
-    if (tarballLogMsg) {
-      // Log tarball generation status after eszip bundling succeeds (only set during dry runs).
-      // Reported errors might be multiple lines, so we replace newlines with the literal string '\n' to get a single log line,
-      // while still ensuring it could be expanded into the original multi-line message if needed.
-      logger.system(tarballLogMsg.replaceAll('\n', '\\n'))
-    }
+  try {
+    bundles = [await finalizeTarballBundle({ manifestFunctionConfig, manifestRoutes })]
+  } catch (error: unknown) {
+    throw wrapBundleError(wrapNpmImportError(error), { format: 'tar' })
   }
 
   // The final file name of the bundles contains a SHA256 hash of the contents,
@@ -341,7 +286,7 @@ export const bundle = async (
     manifestRoutes,
     importMap: importMapSpecifier,
     layers: deployConfig.layers,
-    bundlingTiming: tarballBundleDurationMs === undefined ? undefined : { tarball_ms: tarballBundleDurationMs },
+    bundlingTiming: { tarball_ms: tarballBundleDurationMs },
   })
 
   await vendor?.cleanup()

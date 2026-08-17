@@ -6,8 +6,8 @@ import { validateManifest, ManifestValidationError } from './index.js'
 const getBaseManifest = (): Record<string, any> => ({
   bundles: [
     {
-      asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.eszip',
-      format: 'eszip2',
+      asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.tar.gz',
+      format: 'tar',
     },
   ],
   routes: [

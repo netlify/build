@@ -1819,12 +1819,6 @@ export default [
     },
   },
   {
-    files: ['packages/edge-bundler/node/formats/eszip.ts'],
-    rules: {
-      '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
     files: ['packages/edge-bundler/node/formats/javascript.ts'],
     rules: {
       '@typescript-eslint/restrict-template-expressions': 'off',

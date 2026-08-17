@@ -95,6 +95,16 @@ const NORMALIZE_REGEXPS = [
   [/: '\/file\/path'$/gm, ': /file/path'],
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
+  // Deno's parse diagnostic is not stable across the Deno versions edge-bundler
+  // supports (`DENO_VERSION_RANGE`): 2.4.x says "Unexpected eof", 2.5-2.7 say
+  // "Expression expected", and 2.8+ reformat the whole thing as a `SyntaxError`
+  // with a line gutter. Keep the command we ran and collapse the diagnostic, so
+  // these snapshots don't track Deno releases. Deliberately limited to parse
+  // failures: Deno's other bundling errors are stable and worth snapshotting.
+  [
+    /(Command failed with exit code \d+: deno install .*\n)[ \t]*error: (?:SyntaxError|The module's source code could not be parsed)[\s\S]*?(\n[ \t]*Error location)/g,
+    '$1  DENO PARSE ERROR\n$2',
+  ],
   // Stack traces
   [/Require stack:\s+( *-\s+\S*\s{0,1})*/gm, ''],
   [/{ Error:/g, 'Error:'],
