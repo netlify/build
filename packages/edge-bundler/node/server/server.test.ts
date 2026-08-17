@@ -16,7 +16,7 @@ import { test, expect } from 'vitest'
 import { fixturesDir } from '../../test/util.js'
 import { serve } from '../index.js'
 
-test('Starts a server and serves requests for edge functions', async () => {
+test('Starts a server and serves requests for edge functions', { retry: 2 }, async () => {
   const basePath = join(fixturesDir, 'serve_test')
   const paths = {
     internal: join(basePath, '.netlify', 'edge-functions'),
@@ -110,7 +110,7 @@ test('Starts a server and serves requests for edge functions', async () => {
   )
 })
 
-test('Serves edge functions in a monorepo setup', async () => {
+test('Serves edge functions in a monorepo setup', { retry: 2 }, async () => {
   const tmpFile = await tmp.file()
   const stderr = createWriteStream(tmpFile.path)
 

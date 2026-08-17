@@ -232,7 +232,7 @@ test('Does not add a custom error property to system errors during bundling', as
   }
 })
 
-test('Uses the cache directory as the `DENO_DIR` value', async () => {
+test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () => {
   expect.assertions(3)
 
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')

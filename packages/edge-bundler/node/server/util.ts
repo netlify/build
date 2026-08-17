@@ -9,8 +9,8 @@ const SERVER_KILL_TIMEOUT = 1e3
 // 1 second
 const SERVER_POLL_INTERVAL = 1e3
 
-// 10 seconds
-const SERVER_POLL_TIMEOUT = 1e4
+// 30 seconds
+const SERVER_POLL_TIMEOUT = 3e4
 
 const killProcess = (ps: ExecaChildProcess<string>) => {
   // If the process is no longer running, there's nothing left to do.
