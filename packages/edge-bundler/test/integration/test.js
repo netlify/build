@@ -1,13 +1,12 @@
 import assert from 'assert'
 import childProcess from 'child_process'
-import { rm } from 'fs/promises'
+import { rm, cp } from 'fs/promises'
 import { createRequire } from 'module'
 import { join, resolve } from 'path'
 import process from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
-import cpy from 'cpy'
 import { x as tarExtract } from 'tar'
 import tmp from 'tmp-promise'
 
@@ -56,8 +55,16 @@ const bundleFunction = async (bundlerDir) => {
 
   console.log(`Copying test fixture to '${basePath}'...`)
 
-  await cpy(`${functionsDir}/**`, join(basePath, 'functions'))
-  await cpy(`${internalFunctionsDir}/**`, join(basePath, 'internal-functions'))
+  await cp(functionsDir, join(basePath, 'functions'), {
+    recursive: true,
+    force: false,
+    errorOnExist: false,
+  })
+  await cp(internalFunctionsDir, join(basePath, 'internal-functions'), {
+    recursive: true,
+    force: false,
+    errorOnExist: false,
+  })
 
   pathsToCleanup.add(basePath)
 

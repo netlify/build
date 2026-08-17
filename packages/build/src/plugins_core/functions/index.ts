@@ -16,6 +16,7 @@ import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 import type { CoreStepFunction } from '../types.js'
 
 import { getZipError } from './error.js'
+import { getServerEntry } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
@@ -164,6 +165,11 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   const generatedFunctions = getGeneratedFunctions(returnValues)
+  const serverEntry = await getServerEntry({ buildDir, packagePath, featureFlags })
+
+  if (serverEntry) {
+    log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
+  }
 
   logFunctionsToBundle({
     logs,
@@ -180,7 +186,8 @@ const coreStep: CoreStepFunction = async function ({
     userFunctions.length === 0 &&
     internalFunctions.length === 0 &&
     frameworkFunctions.length === 0 &&
-    generatedFunctions.length === 0
+    generatedFunctions.length === 0 &&
+    serverEntry === undefined
   ) {
     return {}
   }
@@ -200,7 +207,10 @@ const coreStep: CoreStepFunction = async function ({
     repositoryRoot,
     userNodeVersion,
     systemLog,
-    generatedFunctions: generatedFunctions.map((func) => func.path),
+    generatedFunctions: [
+      ...generatedFunctions.map((func) => func.path),
+      ...(serverEntry ? [serverEntry.shimPath] : []),
+    ],
   })
 
   const fallback = fallbackCount > 0 ? 'true' : 'false'
@@ -224,9 +234,17 @@ const coreStep: CoreStepFunction = async function ({
 const hasFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC },
+  featureFlags,
   packagePath,
   returnValues,
 }) {
+  if (
+    featureFlags?.netlify_build_server_entry &&
+    (await pathExists(resolve(buildDir, packagePath || '', 'netlify/server')))
+  ) {
+    return true
+  }
+
   const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
