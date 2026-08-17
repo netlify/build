@@ -53,6 +53,10 @@ test('Should error when the option "head" points to an unknown commit', () => {
   expect(() => getGitUtils({ base: BASE, head: UNKNOWN_COMMIT })).toThrowError(/Invalid head commit/)
 })
 
+test('Errors should include the git stderr', () => {
+  expect(() => getGitUtils({ base: BASE, head: UNKNOWN_COMMIT })).toThrowError(/unknown revision/)
+})
+
 const LINES_OF_CODE = 163
 
 test('Should allow using the environment variable CACHED_COMMIT_REF', () => {
