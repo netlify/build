@@ -11,6 +11,10 @@ const NAME_LENGTH = 100
 const SIZE_OFFSET = 124
 const SIZE_LENGTH = 12
 
+// The header checksum is an 8-byte octal string starting at offset 148.
+const CHECKSUM_OFFSET = 148
+const CHECKSUM_LENGTH = 8
+
 // How many entries to inspect before giving up.
 const MAX_ENTRIES = 4096
 
@@ -52,6 +56,12 @@ export const isImageArchive = async (path: string): Promise<boolean> => {
         return false
       }
 
+      // A tar header checksums its own bytes, so a file whose leading bytes
+      // merely imitate a marker name fails here.
+      if (!hasValidChecksum(header)) {
+        return false
+      }
+
       if (name === OCI_LAYOUT_MARKER || name === DOCKER_MANIFEST_MARKER) {
         return true
       }
@@ -80,6 +90,30 @@ const readName = (header: Buffer): string => {
   const end = raw.indexOf(0)
 
   return raw.subarray(0, end === -1 ? NAME_LENGTH : end).toString('utf8')
+}
+
+// The checksum field holds the sum of all header bytes with the field itself
+// read as spaces.
+const hasValidChecksum = (header: Buffer): boolean => {
+  const raw = header.subarray(CHECKSUM_OFFSET, CHECKSUM_OFFSET + CHECKSUM_LENGTH).toString('utf8')
+  const expected = parseInt(raw.replace(/\0/g, '').trim(), 8)
+
+  if (Number.isNaN(expected)) {
+    return false
+  }
+
+  let unsigned = 0
+  let signed = 0
+
+  for (let index = 0; index < BLOCK_SIZE; index++) {
+    const inChecksumField = index >= CHECKSUM_OFFSET && index < CHECKSUM_OFFSET + CHECKSUM_LENGTH
+    const byte = inChecksumField ? 0x20 : header[index]
+
+    unsigned += byte
+    signed += byte < 0x80 ? byte : byte - 0x100
+  }
+
+  return expected === unsigned || expected === signed
 }
 
 const readSize = (header: Buffer): number | undefined => {
