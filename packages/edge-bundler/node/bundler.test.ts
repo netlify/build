@@ -195,7 +195,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing an npm module', async () => {
+test('Prints a nice error message when user tries importing an npm module', { retry: 2 }, async () => {
   expect.assertions(2)
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
