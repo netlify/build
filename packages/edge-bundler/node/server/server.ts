@@ -171,7 +171,7 @@ const prepareServer = ({
       if (processRef.ps !== undefined) {
         await killProcess(processRef.ps)
       }
-    }
+    },
   })
 }
 
