@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { logDbProvisioning, logDbMigrations } from '../../log/messages/core_steps.js'
 import { getPackageJson, type PackageJson } from '../../utils/package.js'
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
-import { readMigrationEntries, getMigrationNames, getMigrationsSrc } from './utils.js'
+import { getDatabaseBranchId, readMigrationEntries, getMigrationNames, getMigrationsSrc } from './utils.js'
 
 const NPM_PACKAGE_NAME = '@netlify/database'
 
@@ -37,7 +37,7 @@ interface TemporaryDatabaseResponse {
   connection_string: string
 }
 
-const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, context, logs }) => {
+const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, context, deployId, logs }) => {
   const siteId = constants.SITE_ID
 
   logDbProvisioning({ logs, branch, context })
@@ -56,7 +56,7 @@ const coreStep: CoreStepFunction = async ({ api, branch, buildDir, constants, co
   if (context !== 'production') {
     const databaseBranch = (await api.createSiteDatabaseBranch({
       site_id: siteId,
-      body: { branch_id: branch },
+      body: { branch_id: getDatabaseBranchId({ branch, deployId }) },
     })) as TemporaryDatabaseResponse
 
     connectionString = databaseBranch.connection_string

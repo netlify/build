@@ -66,3 +66,19 @@ export const getMigrationNames = ({ dirNames, fileNames }: MigrationEntries): st
   ...dirNames,
   ...fileNames.map((f) => f.replace(/\.sql$/, '')),
 ]
+
+/**
+ * Resolves the ID for the deploy's database branch.
+ *
+ * `branch` is absent for deploys made without git — CLI and API deploys — and
+ * an absent ID reached the API as an empty one, which it stored verbatim as a
+ * branch no route could address.
+ *
+ */
+export const getDatabaseBranchId = ({ branch, deployId }: { branch?: string; deployId?: string }): string => {
+  if (branch) {
+    return branch
+  }
+
+  return deployId ?? ''
+}

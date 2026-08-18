@@ -71,6 +71,15 @@ test('Runs the db_setup core step and creates a database branch for non-producti
   t.deepEqual(branchRequests[0].body, { branch_id: 'feat/my-feature' })
 })
 
+test('Always sends a non-empty branch_id, even outside a git repository', async (t) => {
+  const fixture = await new Fixture(test.meta.file, './fixtures/with_db_dependency').withCopyRoot({ git: false })
+  const { requests } = await runWithMockServer(fixture, { context: 'deploy-preview' })
+
+  const branchRequests = requests.filter((r) => r.url === CREATE_DATABASE_BRANCH_PATH)
+  t.is(branchRequests.length, 1)
+  t.truthy(branchRequests[0].body.branch_id)
+})
+
 test('Does not run the db_setup core step when @netlify/database is not in dependencies', async (t) => {
   const fixture = await new Fixture(test.meta.file, './fixtures/without_db_dependency').withCopyRoot({ git: false })
 
