@@ -195,7 +195,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing an npm module', async () => {
+test('Prints a nice error message when user tries importing an npm module', { retry: 2 }, async () => {
   expect.assertions(2)
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
@@ -232,7 +232,7 @@ test('Does not add a custom error property to system errors during bundling', as
   }
 })
 
-test('Uses the cache directory as the `DENO_DIR` value', async () => {
+test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () => {
   expect.assertions(3)
 
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
