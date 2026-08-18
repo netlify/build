@@ -33,7 +33,10 @@ const killProcess = (ps: ExecaChildProcess<string>) => {
           platform() === 'win32' && satisfies(process.version, '>=21') ? false : SERVER_KILL_TIMEOUT,
       })
     } catch {
-      // no-op
+      // If `kill()` itself throws (the EPERM case above), the process was
+      // never signalled, so it may never emit `close`. Resolve here instead
+      // of leaving the promise pending forever.
+      resolve(undefined)
     }
   })
 }

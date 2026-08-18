@@ -182,12 +182,16 @@ test('Serves edge functions in a monorepo setup', { retry: 2 }, async () => {
 
     expect(await readFile(tmpFile.path, 'utf8')).toContain('[func1] Something is on fire')
   } finally {
-    await server.close()
-
-    await new Promise((resolve) => {
-      stderr.close(resolve)
-    })
-
-    await tmpFile.cleanup()
+    try {
+      await server.close()
+    } finally {
+      try {
+        await new Promise((resolve) => {
+          stderr.close(resolve)
+        })
+      } finally {
+        await tmpFile.cleanup()
+      }
+    }
   }
 })
