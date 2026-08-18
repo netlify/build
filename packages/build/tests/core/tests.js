@@ -524,26 +524,21 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     .withFlags({ featureFlags: { buildbot_zisi_trace_nft: true } })
     .runWithBuild()
   await new Fixture(test.meta.file, './fixtures/schedule')
-    .withFlags({ featureFlags: { buildbot_zisi_esbuild_parser: true } })
-    .runWithBuild()
-  await new Fixture(test.meta.file, './fixtures/schedule')
     .withFlags({ featureFlags: { this_is_a_mock_flag: true, and_another_one: true } })
     .runWithBuild()
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 4)
+  t.is(mockZipFunctions.callCount, 3)
 
   t.false(mockZipFunctions.calls[0][2].featureFlags.traceWithNft)
-  t.false(mockZipFunctions.calls[0][2].featureFlags.parseWithEsbuild)
   t.is(mockZipFunctions.calls[0][2].config.test.schedule, '@daily')
   t.is(mockZipFunctions.calls[0][2].featureFlags.this_is_a_mock_flag, undefined)
   t.is(mockZipFunctions.calls[0][2].featureFlags.and_another_one, undefined)
 
   t.true(mockZipFunctions.calls[1][2].featureFlags.traceWithNft)
-  t.true(mockZipFunctions.calls[2][2].featureFlags.parseWithEsbuild)
-  t.true(mockZipFunctions.calls[3][2].featureFlags.this_is_a_mock_flag)
-  t.true(mockZipFunctions.calls[3][2].featureFlags.and_another_one)
+  t.true(mockZipFunctions.calls[2][2].featureFlags.this_is_a_mock_flag)
+  t.true(mockZipFunctions.calls[2][2].featureFlags.and_another_one)
 })
 
 test('Print warning on lingering processes', async (t) => {
