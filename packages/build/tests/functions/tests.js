@@ -122,6 +122,53 @@ test('Functions: cleanup is only triggered when there are internal functions', a
   t.false(output.includes('Cleaning up leftover files from previous builds'))
 })
 
+test('Functions: bundles a Netlify Server entry when the feature flag is on', async (t) => {
+  const fixture = await new Fixture(test.meta.file, './fixtures/server_entry')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_entry: true } })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  t.true(output.includes('Netlify Server detected at netlify/server/index.mjs'))
+
+  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+
+  t.true(functionsDist.includes('manifest.json'))
+  t.true(functionsDist.includes('___netlify-server.zip'))
+
+  const manifest = await readFile(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'), 'utf8')
+  const { functions } = JSON.parse(manifest)
+  const serverEntry = functions.find(({ name }) => name === '___netlify-server')
+
+  t.truthy(serverEntry)
+  t.is(serverEntry.displayName, 'Netlify Server')
+  t.is(serverEntry.generator, 'netlify-server')
+  t.is(serverEntry.routes.length, 1)
+  t.is(serverEntry.routes[0].pattern, '/*')
+  t.true(serverEntry.routes[0].prefer_static)
+})
+
+test('Functions: ignores a Netlify Server entry when the feature flag is off', async (t) => {
+  const fixture = await new Fixture(test.meta.file, './fixtures/server_entry')
+    .withFlags({ debug: false })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  t.false(output.includes('Netlify Server detected'))
+  t.false(await pathExists(resolve(fixture.repositoryRoot, '.netlify/functions/___netlify-server.zip')))
+})
+
+test('Functions: fails the build on multiple Netlify Server entrypoints', async (t) => {
+  const fixture = await new Fixture(test.meta.file, './fixtures/server_entry_multiple')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_entry: true } })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  t.true(output.includes('Found multiple server entrypoints'))
+})
+
 test('Functions: loads functions generated with the Frameworks API', async (t) => {
   const fixture = await new Fixture(test.meta.file, './fixtures/functions_user_and_frameworks')
     .withFlags({ debug: false })

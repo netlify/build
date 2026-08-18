@@ -24,7 +24,6 @@
     "figures": "^6.0.0",
     "get-bin-path": "^11.0.0",
     "get-port": "^7.0.0",
-    "get-stream": "^9.0.0",
-    "typescript": "^5.0.0"
+    "get-stream": "^9.0.0"
   }
 }

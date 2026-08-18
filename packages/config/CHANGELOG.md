@@ -76,6 +76,36 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.2](https://github.com/netlify/build/compare/config-v25.2.1...config-v25.2.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** remove omit.js ([#7168](https://github.com/netlify/build/issues/7168)) ([f94b522](https://github.com/netlify/build/commit/f94b522c56ccf3707d1128a82c767fb3031e1a96))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^10.1.0 to ^10.1.1
+
+## [25.2.1](https://github.com/netlify/build/compare/config-v25.2.0...config-v25.2.1) (2026-08-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.0 to ^15.1.1
+
+## [25.2.0](https://github.com/netlify/build/compare/config-v25.1.1...config-v25.2.0) (2026-08-04)
+
+
+### Features
+
+* add spa_fallback config option ([#7141](https://github.com/netlify/build/issues/7141)) ([1dbf5ff](https://github.com/netlify/build/commit/1dbf5ff0e8adae27438e66f076f38c1b0a46f8b7))
+
 ## [25.1.1](https://github.com/netlify/build/compare/config-v25.1.0...config-v25.1.1) (2026-07-20)
 
 

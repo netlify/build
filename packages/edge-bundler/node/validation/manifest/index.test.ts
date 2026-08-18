@@ -1,18 +1,13 @@
-import chalk from 'chalk'
 import { test, expect, describe } from 'vitest'
 
 import { validateManifest, ManifestValidationError } from './index.js'
-
-// We need to disable all color outputs for the tests as they are different on different platforms, CI, etc.
-// This only works if this is the same instance of chalk that better-ajv-errors uses
-chalk.level = 0
 
 // Factory so we have a new object per test
 const getBaseManifest = (): Record<string, any> => ({
   bundles: [
     {
-      asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js',
-      format: 'js',
+      asset: 'f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.eszip',
+      format: 'eszip2',
     },
   ],
   routes: [

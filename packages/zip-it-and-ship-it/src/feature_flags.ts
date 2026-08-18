@@ -4,9 +4,6 @@ export const defaultFlags = {
   // Build Rust functions from source.
   buildRustSource: Boolean(env.NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE),
 
-  // Use esbuild to trace dependencies in the legacy bundler.
-  parseWithEsbuild: false,
-
   // Use NFT as the default bundler.
   traceWithNft: false,
 
