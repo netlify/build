@@ -5,7 +5,6 @@ import { dirname } from 'path'
 import process from 'process'
 
 import fastSafeStringify from 'fast-safe-stringify'
-import omit from 'omit.js'
 
 import { isUserError } from '../error.js'
 import { resolveConfig } from '../main.js'
@@ -28,7 +27,7 @@ const DEFAULT_OUTPUT = '-'
 // The result is output as JSON on success (exit code 0)
 const handleCliSuccess = async function (result, stable, output) {
   const resultA = serializeApi(result)
-  const resultB = omit.default(resultA, SECRET_PROPERTIES)
+  const resultB = Object.fromEntries(Object.entries(resultA).filter(([key]) => !SECRET_PROPERTIES.includes(key)))
   const stringifyFunc = stable ? fastSafeStringify.stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultB, null, 2)
   await outputResult(resultJson, output)

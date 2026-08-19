@@ -1,5 +1,19 @@
 # Changelog
 
+## [16.0.3](https://github.com/netlify/build/compare/edge-bundler-v16.0.2...edge-bundler-v16.0.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* **edge-bundler:** accept a bootstrap that exports `serve` ([#7176](https://github.com/netlify/build/issues/7176)) ([ede2f2e](https://github.com/netlify/build/commit/ede2f2e979757050c8f2738e541d4e3645d9da09))
+
+## [16.0.2](https://github.com/netlify/build/compare/edge-bundler-v16.0.1...edge-bundler-v16.0.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** replace dependencies with native functionality ([#7174](https://github.com/netlify/build/issues/7174)) ([e510bb1](https://github.com/netlify/build/commit/e510bb1a4e4141c19c8b8986973285dae2ef5472))
+
 ## [16.0.1](https://github.com/netlify/build/compare/edge-bundler-v16.0.0...edge-bundler-v16.0.1) (2026-08-03)
 
 

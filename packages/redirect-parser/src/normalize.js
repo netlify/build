@@ -1,9 +1,9 @@
-import isPlainObj from 'is-plain-obj'
-
 import { normalizeConditions } from './conditions.js'
 import { splitResults } from './results.js'
 import { normalizeStatus } from './status.js'
 import { isUrl } from './url.js'
+
+const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
 
 // Validate and normalize an array of `redirects` objects.
 // This step is performed after `redirects` have been parsed from either
@@ -19,7 +19,7 @@ export const normalizeRedirects = function (redirects, minimal) {
 }
 
 const parseRedirect = function (obj, index, minimal) {
-  if (!isPlainObj(obj)) {
+  if (!isObject(obj)) {
     return new TypeError(`Redirects must be objects not: ${obj}`)
   }
 
@@ -61,7 +61,7 @@ const parseRedirectObject = function (
     throw new Error('Missing "from" field')
   }
 
-  if (!isPlainObj(headers)) {
+  if (!isObject(headers)) {
     throw new Error('"headers" field must be an object')
   }
 
