@@ -1683,6 +1683,7 @@ export default [
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/return-await': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      'n/no-missing-import': 'off',
     },
   },
   {

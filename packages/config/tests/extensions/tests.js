@@ -128,7 +128,8 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  // Installing an extension logs to stderr, which `runConfigServer` prepends to `output`
+  const config = JSON.parse(output.slice(output.indexOf('{')))
 
   // Should have found package.json in buildDir
   t.assert(config.integrations)
@@ -192,7 +193,8 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  // Installing an extension logs to stderr, which `runConfigServer` prepends to `output`
+  const config = JSON.parse(output.slice(output.indexOf('{')))
 
   // Should have found package.json in buildDir even without netlify.toml
   t.assert(config.integrations)
