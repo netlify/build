@@ -12,6 +12,9 @@ export const INVOCATION_MODE = {
 
 export type InvocationMode = ObjectValues<typeof INVOCATION_MODE>
 
+// Default timeout for background functions (15 minutes in seconds).
+export const BACKGROUND_FUNCTION_TIMEOUT = 900
+
 // A function that has been processed and turned into an archive.
 export type FunctionArchive = ZipFunctionResult & {
   mainFile: string

@@ -2353,6 +2353,46 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
+    'Sets `timeout: 900` for background functions (filename suffix)',
+    [...allBundleConfigs, 'bundler_none'],
+    async (options) => {
+      const { files } = await zipFixture('background', {
+        opts: options,
+        length: 3,
+      })
+      files.forEach((result) => {
+        expect(result.timeout).toBe(900)
+      })
+    },
+  )
+  testMany(
+    'Sets `timeout: 900` for background functions when `background: true` is in config',
+    [...allBundleConfigs, 'bundler_none'],
+    async (options) => {
+      const { files } = await zipFixture('simple', {
+        opts: {
+          ...options,
+          config: { function: { background: true } },
+        },
+      })
+      expect(files[0].timeout).toBe(900)
+    },
+  )
+  testMany(
+    'Respects explicit `timeout` for background functions',
+    [...allBundleConfigs, 'bundler_none'],
+    async (options) => {
+      const { files } = await zipFixture('simple', {
+        opts: {
+          ...options,
+          config: { function: { background: true, timeout: 300 } },
+        },
+      })
+      expect(files[0].timeout).toBe(300)
+    },
+  )
+
+  testMany(
     'Throws error when `schedule` helper is used but cron expression not found',
     [...allBundleConfigs, 'bundler_none'],
     async (options) => {
