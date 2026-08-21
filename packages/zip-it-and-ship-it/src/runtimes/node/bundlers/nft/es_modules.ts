@@ -5,10 +5,13 @@ import { NodeFileTraceReasons } from '@vercel/nft'
 import type { FunctionConfig } from '../../../../config.js'
 import { FeatureFlags } from '../../../../feature_flags.js'
 import type { RuntimeCache } from '../../../../utils/cache.js'
+import { FunctionBundlingUserError } from '../../../../utils/error.js'
 import { cachedReadFile } from '../../../../utils/fs.js'
+import { RUNTIME } from '../../../runtime.js'
 import { ModuleFormat, MODULE_FILE_EXTENSION, MODULE_FORMAT } from '../../utils/module_format.js'
 import { getNodeSupportMatrix } from '../../utils/node_version.js'
 import { getPackageJsonIfAvailable, PackageJson } from '../../utils/package_json.js'
+import { NODE_BUNDLER } from '../types.js'
 
 import { transpileESMToCJS } from './transpile.js'
 
@@ -81,6 +84,21 @@ export const processESM = async ({
   }
 
   if (!isEntrypointESM({ basePath, esmPaths, mainFile })) {
+    // The entrypoint is a `.js` file with no ESM syntax. If it lives inside a
+    // `"type": "module"` package scope, the `package.json` is traced into the
+    // bundle verbatim and Node.js will load the file as an ES module at
+    // runtime, where its CommonJS globals are not defined.
+    if (featureFlags.zisi_error_cjs_in_esm_scope && extension === MODULE_FILE_EXTENSION.JS) {
+      const scopePackageJson = await getPackageJsonIfAvailable(dirname(mainFile))
+
+      if (scopePackageJson.type === 'module') {
+        throw new FunctionBundlingUserError(
+          `The function file '${mainFile}' is a CommonJS module, but the closest 'package.json' declares '"type": "module"', so Node.js will fail to load it at runtime. Either use ESM syntax ('import'/'export'), rename the file extension to '.cjs', or remove '"type": "module"' from the 'package.json'.`,
+          { functionName: name, runtime: RUNTIME.JAVASCRIPT, bundler: NODE_BUNDLER.NFT },
+        )
+      }
+    }
+
     return {
       moduleFormat: MODULE_FORMAT.COMMONJS,
     }
