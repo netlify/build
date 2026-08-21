@@ -10,7 +10,7 @@ This module is designed to be preloaded via [--import](https://nodejs.org/docs/l
 on any node execution. For example:
 
 ```
-$> node --import=./lib/bin.js ../build/lib/core/bin.js --debug --tracing.enabled=false --tracing.httpProtocol=https --tracing.host=api.honeycomb.io --tracing.port=443 --tracing.debug=true --tracing.preloadingEnabled=true .
+$> node --import=./lib/bin.js ../build/lib/core/bin.js --debug --tracing.httpProtocol=http --tracing.host=localhost --tracing.port=4317 --tracing.debug=true --tracing.preloadingEnabled=true .
 ```
 
 On the script we're instrumenting we can just rely on `@opentelemetry/api` to create spans and interact with the SDK:
@@ -46,7 +46,7 @@ global property which can be accessed via `@netlify/opentelemetry-utils`. If you
 attributes you can do the following:
 
 ```
-$> node --import=./lib/bin.js my-instrumented-script --tracing.httpProtocol=https --tracing.host=api.honeycomb.io --tracing.port=443 --tracing.debug=true --tracing.preloadingEnabled=true --tracing.baggageFilePath='./my-baggage-filepath' --tracing.traceId=<my-trace-id> --tracing.parentSpanId=<the-span-id-of-the-parent>
+$> node --import=./lib/bin.js my-instrumented-script --tracing.httpProtocol=http --tracing.host=localhost --tracing.port=4317 --tracing.debug=true --tracing.preloadingEnabled=true --tracing.baggageFilePath='./my-baggage-filepath' --tracing.traceId=<my-trace-id> --tracing.parentSpanId=<the-span-id-of-the-parent>
 ```
 
 And on the instrumented script:

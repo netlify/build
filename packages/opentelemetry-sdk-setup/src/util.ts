@@ -2,7 +2,7 @@ import { createWriteStream } from 'node:fs'
 import { readFile, realpath } from 'node:fs/promises'
 
 import { diag, type DiagLogger } from '@opentelemetry/api'
-import { parseKeyPairsIntoRecord } from '@opentelemetry/core/build/src/baggage/utils.js'
+import { parseKeyPairsIntoRecord } from '@opentelemetry/core'
 import { type PackageJson, readPackageUp } from 'read-package-up'
 
 /**
