@@ -107,7 +107,8 @@ test('Should return the modified/created/deleted files', () => {
   expect(deletedFiles).toEqual(['src/install/node/index.js', 'src/install/node/npm.js'])
 })
 
-test('Should preserve filenames ending with a space', () => {
+// Windows strips trailing spaces from filenames at the Win32 layer
+test.skipIf(process.platform === 'win32')('Should preserve filenames ending with a space', () => {
   const cwd = mkdtempSync(join(tmpdir(), 'git-utils-'))
   const gitEnv = {
     ...env,
