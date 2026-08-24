@@ -105,6 +105,31 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.1](https://github.com/netlify/build/compare/build-v36.4.0...build-v36.4.1) (2026-08-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.3 to 16.0.4
+
+## [36.4.0](https://github.com/netlify/build/compare/build-v36.3.5...build-v36.4.0) (2026-08-19)
+
+
+### Features
+
+* add experimental server support ([#7182](https://github.com/netlify/build/issues/7182)) ([c5f0184](https://github.com/netlify/build/commit/c5f0184b44e21d63e85f77e77058a59d3bb227c1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.2 to ^25.2.3
+    * @netlify/functions-utils bumped from ^7.1.4 to ^7.1.5
+    * @netlify/zip-it-and-ship-it bumped from 15.3.4 to 15.4.0
+
 ## [36.3.5](https://github.com/netlify/build/compare/build-v36.3.4...build-v36.3.5) (2026-08-14)
 
 

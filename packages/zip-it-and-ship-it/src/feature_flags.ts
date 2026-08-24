@@ -29,6 +29,7 @@ export const defaultFlags = {
   zisi_add_instrumentation_loader: true,
 
   zisi_netlify_play: false,
+  zisi_container_functions: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>
