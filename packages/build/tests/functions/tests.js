@@ -8,6 +8,7 @@ import test from 'ava'
 import semver from 'semver'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
+import { pathExists } from '../../lib/utils/path_exists.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
