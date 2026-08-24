@@ -216,10 +216,13 @@ const stopPlugin = async function ({
         logs,
         verbose,
       })
-      childProcess.disconnect()
     } catch {
       // The child process may exit before responding, e.g. when it already
       // failed. It is being terminated anyway, so ignore the error
+    } finally {
+      if (childProcess.connected) {
+        childProcess.disconnect()
+      }
     }
   }
 
