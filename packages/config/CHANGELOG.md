@@ -76,6 +76,30 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.3](https://github.com/netlify/build/compare/config-v25.2.2...config-v25.2.3) (2026-08-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.1 to ^15.1.2
+    * @netlify/redirect-parser bumped from ^16.1.0 to ^16.1.1
+
+## [25.2.2](https://github.com/netlify/build/compare/config-v25.2.1...config-v25.2.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** remove omit.js ([#7168](https://github.com/netlify/build/issues/7168)) ([f94b522](https://github.com/netlify/build/commit/f94b522c56ccf3707d1128a82c767fb3031e1a96))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/headers-parser bumped from ^10.1.0 to ^10.1.1
+
 ## [25.2.1](https://github.com/netlify/build/compare/config-v25.2.0...config-v25.2.1) (2026-08-06)
 
 

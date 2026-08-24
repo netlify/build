@@ -190,11 +190,7 @@ test('Throws an error if the skew protection configuration file is invalid', asy
   ).runWithBuildAndIntrospect()
   t.false(success)
   t.true(output.includes('Invalid skew protection configuration'))
-  t.true(
-    output.includes(
-      `sources.0.type: Invalid enum value. Expected 'cookie' | 'header' | 'query', received 'invalid_type'`,
-    ),
-  )
+  t.true(output.includes(`sources.0.type: Invalid option: expected one of "cookie"|"header"|"query"`))
 })
 
 test('Throws an error if the skew protection configuration file is malformed', async (t) => {

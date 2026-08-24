@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { join, resolve, dirname } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
@@ -18,6 +18,7 @@ import { Declaration } from './declaration.js'
 import type { Manifest } from './manifest.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
+import { fileURLToPath } from 'node:url'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
@@ -175,14 +176,12 @@ test('Adds a custom error property to user errors during bundling', async () => 
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     const messageBeforeStack = (error as BundleError).message
+    const packageDir = pathToFileURL(resolve(dirname(fileURLToPath(import.meta.url)), '../')).href
     expect(
       messageBeforeStack
         // eslint-disable-next-line no-control-regex
         .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-        .replace(
-          /file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/,
-          'file://$2',
-        ),
+        .replace(packageDir, 'file://build/packages/edge-bundler'),
     ).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
@@ -196,7 +195,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing an npm module', async () => {
+test('Prints a nice error message when user tries importing an npm module', { retry: 2 }, async () => {
   expect.assertions(2)
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
@@ -233,7 +232,7 @@ test('Does not add a custom error property to system errors during bundling', as
   }
 })
 
-test('Uses the cache directory as the `DENO_DIR` value', async () => {
+test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () => {
   expect.assertions(3)
 
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')

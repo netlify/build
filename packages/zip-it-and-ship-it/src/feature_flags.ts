@@ -4,9 +4,6 @@ export const defaultFlags = {
   // Build Rust functions from source.
   buildRustSource: Boolean(env.NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE),
 
-  // Use esbuild to trace dependencies in the legacy bundler.
-  parseWithEsbuild: false,
-
   // Use NFT as the default bundler.
   traceWithNft: false,
 
@@ -28,6 +25,7 @@ export const defaultFlags = {
   zisi_add_instrumentation_loader: true,
 
   zisi_netlify_play: false,
+  zisi_container_functions: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>

@@ -69,16 +69,16 @@ export const inSourceConfig = functionConfigShape
   .extend({
     method: z
       .union([httpMethods, z.array(httpMethods)], {
-        errorMap: () => ({ message: 'Must be a string or array of strings' }),
+        error: () => ({ message: 'Must be a string or array of strings' }),
       })
       .transform(ensureArray)
       .optional(),
     path: z
-      .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
+      .union([path, z.array(path)], { error: () => ({ message: 'Must be a string or array of strings' }) })
       .transform(ensureArray)
       .optional(),
     excludedPath: z
-      .union([path, z.array(path)], { errorMap: () => ({ message: 'Must be a string or array of strings' }) })
+      .union([path, z.array(path)], { error: () => ({ message: 'Must be a string or array of strings' }) })
       .transform(ensureArray)
       .optional(),
     preferStatic: z.boolean().optional().catch(undefined),

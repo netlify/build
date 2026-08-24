@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "25.2.1",
+  "version": "25.2.3",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -21,9 +21,11 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "test": "ava",
+    "test": "ava && vitest run",
     "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava"
+    "test:ci": "npm run test:ci:ava && npm run test:ci:vitest",
+    "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
+    "test:ci:vitest": "vitest run"
   },
   "keywords": [
     "javascript",
@@ -59,9 +61,9 @@
   "license": "MIT",
   "dependencies": {
     "smol-toml": "^1.5.2",
-    "@netlify/api": "^15.1.1",
-    "@netlify/headers-parser": "^10.1.0",
-    "@netlify/redirect-parser": "^16.1.0",
+    "@netlify/api": "^15.1.2",
+    "@netlify/headers-parser": "^10.1.1",
+    "@netlify/redirect-parser": "^16.1.1",
     "chalk": "^5.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
@@ -74,7 +76,6 @@
     "indent-string": "^5.0.0",
     "is-plain-obj": "^4.0.0",
     "map-obj": "^5.0.0",
-    "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
     "path-type": "^6.0.0",
     "read-package-up": "^11.0.0",
@@ -90,7 +91,8 @@
     "c8": "^10.0.0",
     "has-ansi": "^6.0.0",
     "is-ci": "^4.0.0",
-    "tmp-promise": "^3.0.2"
+    "tmp-promise": "^3.0.2",
+    "vitest": "^3.0.0"
   },
   "engines": {
     "node": ">=22.12.0"
