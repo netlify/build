@@ -3,7 +3,8 @@ import { sep } from 'path'
 
 import { defineConfig } from 'vitest/config'
 
-const tmpdirPattern = new RegExp(tmpdir().split(sep).join('[/\\\\]'))
+const looselyEscape = (str: string): string => str.replace(/[.+()[\]{}^$]/g, '\\$&')
+const tmpdirPattern = new RegExp(tmpdir().split(sep).map(looselyEscape).join('[/\\\\]'))
 
 export default defineConfig({
   test: {
