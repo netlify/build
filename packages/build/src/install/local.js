@@ -1,4 +1,6 @@
-import { packageDirectory } from 'package-directory'
+import { dirname } from 'path'
+
+import { up as packagePath } from 'empathic/package'
 
 import { logInstallLocalPluginsDeps } from '../log/messages/install.js'
 
@@ -57,6 +59,7 @@ const hasPackageDir = function ({ packageDir }) {
 
 // We only install dependencies of local plugins that have their own `package.json`
 const removeMainRoot = async function (localPluginsOptions, buildDir) {
-  const mainPackageDir = await packageDirectory({ cwd: buildDir })
+  const mainPackagePath = packagePath({ cwd: buildDir })
+  const mainPackageDir = mainPackagePath ? dirname(mainPackagePath) : undefined
   return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }

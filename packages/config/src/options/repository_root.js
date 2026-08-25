@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import { findUp } from 'find-up'
+import { dir as findUp } from 'empathic/find'
 
 // Find out repository root among (in priority order):
 //  - `repositoryRoot` option
@@ -11,7 +11,7 @@ export const getRepositoryRoot = async function ({ repositoryRoot, cwd }) {
     return repositoryRoot
   }
 
-  const repositoryRootA = await findUp('.git', { cwd, type: 'directory' })
+  const repositoryRootA = findUp('.git', { cwd })
 
   if (repositoryRootA === undefined) {
     return cwd
