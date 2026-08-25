@@ -1,6 +1,5 @@
-import isPlainObj from 'is-plain-obj'
-
 import { THEME } from '../../log/theme.js'
+import { isPlainObject } from '../../utils/is_plain_object.js'
 
 // Validate `manifest.yml` syntax
 export const validateManifest = function (manifest, rawManifest) {
@@ -19,7 +18,7 @@ ${rawManifest.trim()}`
 }
 
 const validateBasic = function (manifest) {
-  if (!isPlainObj(manifest)) {
+  if (!isPlainObject(manifest)) {
     throw new Error('must be a plain object')
   }
 }
@@ -56,7 +55,7 @@ const validateInputs = function ({ inputs }) {
 }
 
 const isArrayOfObjects = function (objects) {
-  return Array.isArray(objects) && objects.every(isPlainObj)
+  return Array.isArray(objects) && objects.every(isPlainObject)
 }
 
 const validateInput = function (input, index) {
