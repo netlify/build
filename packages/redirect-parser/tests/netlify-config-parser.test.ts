@@ -61,6 +61,11 @@ test.each([
   ],
   ['from_no_slash', { netlifyConfigPath: 'from_no_slash' }, [{ from: 'old-path', path: 'old-path', to: 'new-path' }]],
   [
+    'to_leading_space',
+    { netlifyConfigPath: 'to_leading_space' },
+    [{ from: '/old-path', path: '/old-path', to: 'http://www.example.com/new-path' }],
+  ],
+  [
     'query',
     { netlifyConfigPath: 'query' },
     [{ from: '/old-path', path: '/old-path', to: '/new-path', query: { path: ':path' } }],

@@ -65,6 +65,12 @@ const parseRedirectObject = function (
     throw new Error('"headers" field must be an object')
   }
 
+  // Redirects defined in `netlify.toml` can accidentally carry leading/trailing
+  // whitespace (e.g. a stray space before `https://...`), which silently breaks
+  // scheme detection in `isUrl()` and downstream URL parsing.
+  from = typeof from === 'string' ? from.trim() : from
+  to = typeof to === 'string' ? to.trim() : to
+
   const statusA = normalizeStatus(status)
   const finalTo = addForwardRule(from, statusA, to)
   const { scheme, host, path } = parseFrom(from)
