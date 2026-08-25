@@ -1,40 +1,39 @@
-import { readFile, rm } from 'fs/promises'
+import { existsSync } from 'fs'
+import { copyFile, readFile, rm } from 'fs/promises'
 import { normalize, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
-import cpy from 'cpy'
-import { pathExists } from 'path-exists'
-import sortOn from 'sort-on'
 import { expect, test, vi } from 'vitest'
 
 import { add, list, listAll } from '../src/main.js'
 
 import { getDist, createDist } from './helpers/main.js'
+import { type ListedFunction } from '@netlify/zip-it-and-ship-it'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Should copy a source file to a dist directory', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
+    expect(existsSync(`${dist}/test.mjs`)).toBe(true)
   } finally {
     await rm(dist, { force: true, recursive: true })
   }
 })
 
 test('Should copy a source directory to a dist directory', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await add(`${FIXTURES_DIR}/directory/test`, dist)
-    expect(await pathExists(`${dist}/test/index.js`)).toBe(true)
+    expect(existsSync(`${dist}/test/index.js`)).toBe(true)
   } finally {
     await rm(dist, { force: true, recursive: true })
   }
 })
 
 test('Should throw when source is undefined', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add(undefined, dist)).rejects.toThrow()
   } finally {
@@ -43,7 +42,7 @@ test('Should throw when source is undefined', async () => {
 })
 
 test('Should throw when source is empty array', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add([] as any, dist)).rejects.toThrow()
   } finally {
@@ -52,7 +51,7 @@ test('Should throw when source is empty array', async () => {
 })
 
 test('Should throw when source points to non-existing file', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   try {
     await expect(() => add(`${FIXTURES_DIR}/file/doesNotExist.js`, dist)).rejects.toThrow()
   } finally {
@@ -68,25 +67,25 @@ test('Should copy a source file even if dist directory already exists', async ()
   const dist = await createDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
+    expect(existsSync(`${dist}/test.mjs`)).toBe(true)
   } finally {
     await rm(dist, { force: true, recursive: true })
   }
 })
 
 test('Should overwrite dist file if it already exists', async () => {
-  const dist = await getDist()
+  const dist = getDist()
   const fixtureDir = `${FIXTURES_DIR}/file`
   const testModule = `${dist}/test.mjs`
 
-  await cpy(`${fixtureDir}/test.mjs`, fixtureDir, { rename: 'test.mjs.backup' })
+  await copyFile(`${fixtureDir}/test.mjs`, `${fixtureDir}/test.mjs.backup`)
 
   try {
     await add(`${fixtureDir}/test.mjs`, dist)
 
     const file1 = await readFile(testModule, 'utf8')
 
-    await cpy(`${fixtureDir}/test_2.mjs`, fixtureDir, { rename: 'test.mjs' })
+    await copyFile(`${fixtureDir}/test_2.mjs`, `${fixtureDir}/test.mjs`)
     await add(`${fixtureDir}/test.mjs`, dist)
 
     const file2 = await readFile(testModule, 'utf8')
@@ -94,7 +93,7 @@ test('Should overwrite dist file if it already exists', async () => {
     expect(file1).toContain('one')
     expect(file2).toContain('two')
   } finally {
-    await cpy(`${fixtureDir}/test.mjs.backup`, fixtureDir, { rename: 'test.mjs' })
+    await copyFile(`${fixtureDir}/test.mjs.backup`, `${fixtureDir}/test.mjs`)
     await rm(`${fixtureDir}/test.mjs.backup`, { force: true })
     await rm(dist, { force: true, recursive: true })
   }
@@ -105,6 +104,11 @@ test('Should allow "fail" option to customize failures', async () => {
   await add(undefined, undefined, { fail })
   expect(fail).toHaveBeenCalledExactlyOnceWith('No function source directory was specified')
 })
+
+// Sort by `mainFile`, then `extension`
+const sortFunctions = function (functions: ListedFunction[]) {
+  return [...functions].sort((a, b) => a.mainFile.localeCompare(b.mainFile) || a.extension.localeCompare(b.extension))
+}
 
 const normalizeFiles = function (
   fixtureDir,
@@ -120,7 +124,7 @@ const normalizeFiles = function (
 test('Can list function main files with list()', async () => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await list(fixtureDir)
-  expect(sortOn(functions, ['mainFile', 'extension'])).toEqual(
+  expect(sortFunctions(functions)).toEqual(
     [
       {
         name: 'four',
@@ -149,7 +153,7 @@ test('Can list function main files with list()', async () => {
 test('Can list all function files with listAll()', async () => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await listAll(fixtureDir)
-  expect(sortOn(functions, ['mainFile', 'extension'])).toEqual(
+  expect(sortFunctions(functions)).toEqual(
     [
       {
         name: 'four',

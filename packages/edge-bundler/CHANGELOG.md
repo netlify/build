@@ -1,5 +1,19 @@
 # Changelog
 
+## [16.0.4](https://github.com/netlify/build/compare/edge-bundler-v16.0.3...edge-bundler-v16.0.4) (2026-08-21)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.13 ([#7191](https://github.com/netlify/build/issues/7191)) ([989b62e](https://github.com/netlify/build/commit/989b62eda75e37f0ed7b7015e8fc6941c49cb917))
+
+## [16.0.3](https://github.com/netlify/build/compare/edge-bundler-v16.0.2...edge-bundler-v16.0.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* **edge-bundler:** accept a bootstrap that exports `serve` ([#7176](https://github.com/netlify/build/issues/7176)) ([ede2f2e](https://github.com/netlify/build/commit/ede2f2e979757050c8f2738e541d4e3645d9da09))
+
 ## [16.0.2](https://github.com/netlify/build/compare/edge-bundler-v16.0.1...edge-bundler-v16.0.2) (2026-08-12)
 
 
