@@ -1,8 +1,7 @@
 import { promises as fs } from 'fs'
 import { inspect } from 'util'
 
-import { pathExists } from 'path-exists'
-
+import { pathExists } from '../../utils/path_exists.js'
 import { log, logMessage, logSubHeader } from '../logger.js'
 
 export const logConfigMutations = function (logs, newConfigMutations, debug) {
