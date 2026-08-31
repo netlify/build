@@ -3,7 +3,11 @@ import { rm } from 'fs/promises'
 import { platform, env } from 'process'
 import { PassThrough } from 'stream'
 
-import { ZipArchive } from 'archiver'
+// @ts-expect-error TypeScript is complaining about the values for the `module`
+// and `moduleResolution` configuration properties, but changing those to more
+// modern values causes other packages to fail. Leaving this for now, but we
+// should have a proper fix for this.
+import { ZipArchive } from '@archiver/archiver'
 import nock from 'nock'
 import semver from 'semver'
 import tmp, { DirectoryResult } from 'tmp-promise'

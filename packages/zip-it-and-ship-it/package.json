@@ -41,13 +41,13 @@
     "url": "https://github.com/netlify/build/issues"
   },
   "dependencies": {
+    "@archiver/archiver": "0.2.0",
     "@babel/parser": "^7.22.5",
     "@babel/types": "^7.28.5",
     "@netlify/binary-info": "^1.0.0",
     "@netlify/serverless-functions-api": "2.18.0",
     "@opentelemetry/api": "~1.8.0",
     "@vercel/nft": "^1.11.0",
-    "archiver": "^8.0.0",
     "common-path-prefix": "^3.0.0",
     "copy-file": "^11.0.0",
     "es-module-lexer": "^1.0.0",
@@ -78,7 +78,6 @@
   "devDependencies": {
     "@netlify/types": "2.7.0",
     "@opentelemetry/sdk-trace-base": "~1.24.0",
-    "@types/archiver": "8.0.0",
     "@types/node": "^22.12.0",
     "@types/normalize-path": "3.0.2",
     "@types/resolve": "1.20.6",
