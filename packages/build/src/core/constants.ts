@@ -1,7 +1,7 @@
 import { relative, normalize, join } from 'path'
 
 import { getCacheDir } from '@netlify/cache-utils'
-import { pathExists } from 'path-exists'
+import { pathExists } from '../utils/path_exists.js'
 
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 

@@ -1,4 +1,4 @@
-import isPlainObj from 'is-plain-obj'
+import { isPlainObject } from '../utils/is_plain_object.js'
 
 import { addErrorInfo } from './info.js'
 
@@ -34,8 +34,8 @@ const apiMethodHandler = async function (endpoint, method, parameters, ...args) 
 const redactError = function (error) {
   if (
     error instanceof Error &&
-    isPlainObj(error.data) &&
-    isPlainObj(error.data.headers) &&
+    isPlainObject(error.data) &&
+    isPlainObject(error.data.headers) &&
     typeof error.data.headers.Authorization === 'string'
   ) {
     error.data.headers.Authorization = error.data.headers.Authorization.replace(HEX_REGEXP, 'HEX')
