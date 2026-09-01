@@ -88,7 +88,7 @@ const coreStep: CoreStepFunction = async function ({
       // systemLog is meant for debugging purposes, we should not ever throw if it fails
     }
 
-    throw new Error(`Failed while uploading blobs to deploy store`)
+    throw new Error(`Failed while uploading blobs to deploy store: ${err.message}`)
   }
 
   systemLog(`Done uploading blobs to deploy store.`)
