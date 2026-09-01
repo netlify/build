@@ -1,3 +1,5 @@
+import { readFile } from 'fs/promises'
+
 import { expect, test } from 'vitest'
 
 import { FIXTURES_ESM_DIR, unzipFiles, zipFixture } from './helpers/main.js'
@@ -11,4 +13,5 @@ test('includes a `.env` file resolved from `process.cwd()` by a dependency when 
   const [{ unzipPath }] = await unzipFiles(files)
 
   await expect(`${unzipPath}/.env`).toPathExist()
+  expect(await readFile(`${unzipPath}/.env`, 'utf8')).toBe('MY_SECRET=hello-from-env\n')
 })
