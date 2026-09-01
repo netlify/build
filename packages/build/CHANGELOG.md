@@ -105,6 +105,16 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.4](https://github.com/netlify/build/compare/build-v36.4.3...build-v36.4.4) (2026-09-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.6 to ^7.1.7
+    * @netlify/zip-it-and-ship-it bumped from 15.4.1 to 15.4.2
+
 ## [36.4.3](https://github.com/netlify/build/compare/build-v36.4.2...build-v36.4.3) (2026-08-31)
 
 
