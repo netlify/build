@@ -1,6 +1,12 @@
+import { realpathSync } from 'fs'
 import { tmpdir } from 'os'
 
 import { defineConfig } from 'vitest/config'
+
+const tempDirPaths = [tmpdir(), realpathSync.native(tmpdir())]
+const tempDirPatterns = tempDirPaths.map(
+  (dir) => new RegExp(dir.replaceAll('\\', '/').replace(/[.*+?^${}()|[\]]/g, '\\$&'), 'i'),
+)
 
 export default defineConfig({
   test: {
@@ -10,18 +16,7 @@ export default defineConfig({
     deps: {
       // Disable vitest handling of imports to these paths, especially the tmpdir is important as we extract functions to there
       // and then import them and we want them to be handled as normal Node.js imports without any vite magic
-      external: [
-        /\/fixtures\//,
-        /\/fixtures-esm\//,
-        /\/node_modules\//,
-        /\/dist\//,
-        new RegExp(
-          tmpdir()
-            .replaceAll('\\', '/')
-            .replace(/[.*+?^${}()|[\]]/g, '\\$&'),
-          'i',
-        ),
-      ],
+      external: [/\/fixtures\//, /\/fixtures-esm\//, /\/node_modules\//, /\/dist\//, ...tempDirPatterns],
       interopDefault: false,
     },
     coverage: {

@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { mkdir, readdir, readFile, rm, symlink, writeFile } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
@@ -525,9 +525,9 @@ describe('zip-it-and-ship-it', () => {
       const packageJson = JSON.parse(await readFile(join(unzipPath, 'package.json'), 'utf8'))
       expect(packageJson.type).toBe('module')
 
-      await expect(importFunctionFile(join(unzipPath, 'function.js'))).rejects.toThrow(
-        'module is not defined in ES module scope',
-      )
+      const functionFilePath = join(unzipPath, 'function.js')
+
+      await expect(importFunctionFile(functionFilePath)).rejects.toThrow('module is not defined in ES module scope')
     },
   )
 
