@@ -1,5 +1,5 @@
 import { Fixture } from '@netlify/testing'
-import test from 'ava'
+import { beforeEach, expect, test } from 'vitest'
 
 // Mock fetch for external extension installation requests
 const originalFetch = globalThis.fetch
@@ -41,7 +41,7 @@ const mockFetch = async (url, options) => {
 globalThis.fetch = mockFetch
 
 // Reset installation requests before each test
-test.beforeEach(() => {
+beforeEach(() => {
   installationRequests = []
 })
 
@@ -72,8 +72,8 @@ const AUTO_INSTALLABLE_EXTENSIONS_RESPONSE = {
   ],
 }
 
-test('Auto-install extensions: feature flag disabled returns extensions unchanged', async (t) => {
-  const { output } = await new Fixture(test.meta.file, './fixtures/with_neon_package')
+test('Auto-install extensions: feature flag disabled returns extensions unchanged', async () => {
+  const { output } = await new Fixture(import.meta.url, './fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -88,13 +88,13 @@ test('Auto-install extensions: feature flag disabled returns extensions unchange
   const config = JSON.parse(output)
 
   // Should not have attempted to install any extensions
-  t.false(output.includes('Installing extension'))
-  t.assert(config.integrations)
-  t.is(config.integrations.length, 0)
+  expect(output.includes('Installing extension')).toBe(false)
+  expect(config.integrations).toBeTruthy()
+  expect(config.integrations.length).toBe(0)
 })
 
-test('Auto-install extensions: gracefully handles missing package.json', async (t) => {
-  const { output } = await new Fixture(test.meta.file, './fixtures/no_package_json')
+test('Auto-install extensions: gracefully handles missing package.json', async () => {
+  const { output } = await new Fixture(import.meta.url, './fixtures/no_package_json')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -109,14 +109,14 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
   const config = JSON.parse(output)
 
   // Should not have attempted to install any extensions
-  t.false(output.includes('Installing extension'))
-  t.assert(config.integrations)
-  t.is(config.integrations.length, 0)
+  expect(output.includes('Installing extension')).toBe(false)
+  expect(config.integrations).toBeTruthy()
+  expect(config.integrations.length).toBe(0)
 })
 
-test('Auto-install extensions: correctly reads package.json from buildDir', async (t) => {
+test('Auto-install extensions: correctly reads package.json from buildDir', async () => {
   // This test verifies that the function correctly reads package.json from buildDir
-  const { output } = await new Fixture(test.meta.file, './fixtures/with_neon_package')
+  const { output } = await new Fixture(import.meta.url, './fixtures/with_neon_package')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -131,30 +131,33 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
   const config = JSON.parse(output)
 
   // Should have found package.json in buildDir
-  t.assert(config.integrations)
-  t.assert(config.buildDir)
-  t.true(config.buildDir.includes('with_neon_package'))
+  expect(config.integrations).toBeTruthy()
+  expect(config.buildDir).toBeTruthy()
+  expect(config.buildDir.includes('with_neon_package')).toBe(true)
 
   // Auto-installable extensions API call is mocked by global fetch mock
   // (not visible in requests array since it's intercepted before reaching test server)
 
   // Should have attempted to install the extension (mocked)
-  t.assert(installationRequests.length > 0, 'Should have attempted to install extension')
-  t.assert(
+  expect(installationRequests.length > 0, 'Should have attempted to install extension').toBeTruthy()
+  expect(
     installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
     'Should have called installation endpoint',
-  )
-  t.assert(
+  ).toBeTruthy()
+  expect(
     installationRequests[0].url.includes('neon-extension.netlify.app'),
     'Should have called correct external URL',
-  )
-  t.assert(installationRequests[0].options.method === 'POST', 'Should use POST method')
-  t.assert(installationRequests[0].options.body.includes('account1'), 'Should include team ID in request body')
+  ).toBeTruthy()
+  expect(installationRequests[0].options.method === 'POST', 'Should use POST method').toBeTruthy()
+  expect(
+    installationRequests[0].options.body.includes('account1'),
+    'Should include team ID in request body',
+  ).toBeTruthy()
 })
 
-test('Auto-install extensions: does not install when required packages are missing', async (t) => {
+test('Auto-install extensions: does not install when required packages are missing', async () => {
   // This test uses a fixture that has dependencies but not the extension packages
-  const { output } = await new Fixture(test.meta.file, './fixtures/without_packages')
+  const { output } = await new Fixture(import.meta.url, './fixtures/without_packages')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -169,18 +172,18 @@ test('Auto-install extensions: does not install when required packages are missi
   const config = JSON.parse(output)
 
   // Should not attempt to install extensions since required packages are missing
-  t.false(output.includes('Installing extension'))
-  t.assert(config.integrations)
-  t.is(config.integrations.length, 0)
+  expect(output.includes('Installing extension')).toBe(false)
+  expect(config.integrations).toBeTruthy()
+  expect(config.integrations.length).toBe(0)
 
   // Auto-installable extensions API call is mocked by global fetch mock
   // (not visible in requests array since it's intercepted before reaching test server)
 })
 
-test('Auto-install extensions: correctly reads package.json when no netlify.toml exists', async (t) => {
+test('Auto-install extensions: correctly reads package.json when no netlify.toml exists', async () => {
   // This test verifies buildDir resolution works correctly when there's no netlify.toml
   // but package.json exists with extension packages
-  const { output } = await new Fixture(test.meta.file, './fixtures/no_netlify_toml_with_neon')
+  const { output } = await new Fixture(import.meta.url, './fixtures/no_netlify_toml_with_neon')
     .withFlags({
       siteId: 'test',
       accountId: 'account1',
@@ -195,20 +198,20 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
   const config = JSON.parse(output)
 
   // Should have found package.json in buildDir even without netlify.toml
-  t.assert(config.integrations)
-  t.assert(config.buildDir)
-  t.true(config.buildDir.includes('no_netlify_toml_with_neon'))
+  expect(config.integrations).toBeTruthy()
+  expect(config.buildDir).toBeTruthy()
+  expect(config.buildDir.includes('no_netlify_toml_with_neon')).toBe(true)
 
   // buildDir should be the repository root since there's no build.base config
-  t.true(config.buildDir.endsWith('no_netlify_toml_with_neon'))
+  expect(config.buildDir.endsWith('no_netlify_toml_with_neon')).toBe(true)
 
   // Auto-installable extensions API call is mocked by global fetch mock
   // (not visible in requests array since it's intercepted before reaching test server)
 
   // Should have attempted to install the extension
-  t.assert(installationRequests.length > 0, 'Should have attempted to install extension')
-  t.assert(
+  expect(installationRequests.length > 0, 'Should have attempted to install extension').toBeTruthy()
+  expect(
     installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
     'Should have called installation endpoint',
-  )
+  ).toBeTruthy()
 })
