@@ -1,5 +1,3 @@
-import pFilter from 'p-filter'
-
 import { logDryRunStart, logDryRunStep, logDryRunEnd } from '../log/messages/dry.js'
 import { runsOnlyOnBuildFailure } from '../plugins/events.js'
 
@@ -13,9 +11,21 @@ export const doDryRun = async function ({
   logs,
   featureFlags,
 }) {
-  const successSteps = await pFilter(steps, ({ event, condition }) =>
-    shouldIncludeStep({ buildDir, event, condition, netlifyConfig, constants, buildbotServerSocket, featureFlags }),
+  const includedSteps = await Promise.all(
+    steps.map(async (step) => {
+      const shouldInclude = await shouldIncludeStep({
+        buildDir,
+        event: step.event,
+        condition: step.condition,
+        netlifyConfig,
+        constants,
+        buildbotServerSocket,
+        featureFlags,
+      })
+      return shouldInclude ? step : null
+    }),
   )
+  const successSteps = includedSteps.filter(Boolean)
   const eventWidth = Math.max(...successSteps.map(getEventLength))
   const stepsCount = successSteps.length
 

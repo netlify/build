@@ -1,6 +1,6 @@
 {
   "name": "@netlify/functions-utils",
-  "version": "7.1.4",
+  "version": "7.1.7",
   "description": "Utility for adding Functions files in Netlify Build",
   "type": "module",
   "exports": "./lib/main.js",
@@ -50,14 +50,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/zip-it-and-ship-it": "15.3.4",
-    "cpy": "^11.0.0",
-    "path-exists": "^5.0.0"
+    "@netlify/zip-it-and-ship-it": "15.4.2",
+    "junk": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.12.0",
-    "sort-on": "^6.0.0",
-    "tmp-promise": "^3.0.0",
     "vitest": "^3.0.0"
   },
   "engines": {

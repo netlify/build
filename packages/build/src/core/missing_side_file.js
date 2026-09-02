@@ -1,8 +1,7 @@
 import { relative } from 'path'
 
-import { pathExists } from 'path-exists'
-
 import { logMissingSideFile } from '../log/messages/core.js'
+import { pathExists } from '../utils/path_exists.js'
 
 // Some files like `_headers` and `_redirects` must be copied to the publishing
 // directory to be used in production. When those are present in the repository
