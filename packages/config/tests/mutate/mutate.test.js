@@ -4,7 +4,7 @@ import { join } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
-import test from 'ava'
+import { expect, test } from 'vitest'
 
 import { updateConfig } from '../../lib/index.js'
 import { resolveConfig } from '../../lib/main.js'
@@ -61,103 +61,105 @@ const copyIfExists = async function (fixturePath, tempPath) {
   }
 }
 
-test('updateConfig() saves netlify.toml', async (t) => {
+test('updateConfig() saves netlify.toml', async () => {
   const { configPath } = await runUpdateConfig('save')
-  t.true(existsSync(configPath))
+  expect(existsSync(configPath)).toBe(true)
 })
 
-test('updateConfig() updates the configuration so it can be read again', async (t) => {
+test('updateConfig() updates the configuration so it can be read again', async () => {
   const { configPath } = await runUpdateConfig('update')
-  const output = await new Fixture(test.meta.file, './fixtures/update')
+  const output = await new Fixture(import.meta.url, './fixtures/update')
     .withFlags({ config: configPath })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('updateConfig() is a noop when where are no config mutations', async (t) => {
+test('updateConfig() is a noop when where are no config mutations', async () => {
   const { configPath } = await runUpdateConfig('noop', { configMutations: [] })
-  t.false(existsSync(configPath))
+  expect(existsSync(configPath)).toBe(false)
 })
 
-test('updateConfig() has higher priority than context properties', async (t) => {
+test('updateConfig() has higher priority than context properties', async () => {
   const { configPath } = await runUpdateConfig('context')
-  const output = await new Fixture(test.meta.file, './fixtures/context')
+  const output = await new Fixture(import.meta.url, './fixtures/context')
     .withFlags({ config: configPath })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('updateConfig() merges with the existing netlify.toml', async (t) => {
+test('updateConfig() merges with the existing netlify.toml', async () => {
   const { configPath } = await runUpdateConfig('merge')
-  const output = await new Fixture(test.meta.file, './fixtures/merge').withFlags({ config: configPath }).runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  const output = await new Fixture(import.meta.url, './fixtures/merge')
+    .withFlags({ config: configPath })
+    .runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('updateConfig() deletes _redirects when redirects were changed', async (t) => {
+test('updateConfig() deletes _redirects when redirects were changed', async () => {
   const { redirectsPath } = await runUpdateConfig('redirects_change', { configMutations: [redirectsMutation] })
-  t.is(typeof redirectsPath, 'string')
-  t.false(existsSync(redirectsPath))
+  expect(typeof redirectsPath).toBe('string')
+  expect(existsSync(redirectsPath)).toBe(false)
 })
 
-test('updateConfig() deletes _redirects on changes even if redirects were not changed', async (t) => {
+test('updateConfig() deletes _redirects on changes even if redirects were not changed', async () => {
   const { redirectsPath } = await runUpdateConfig('redirects_no_change')
-  t.is(typeof redirectsPath, 'string')
-  t.false(existsSync(redirectsPath))
+  expect(typeof redirectsPath).toBe('string')
+  expect(existsSync(redirectsPath)).toBe(false)
 })
 
-test('updateConfig() does not delete _redirects if it does not exist', async (t) => {
+test('updateConfig() does not delete _redirects if it does not exist', async () => {
   const { redirectsPath } = await runUpdateConfig('redirects_none')
-  t.is(typeof redirectsPath, 'string')
-  t.false(existsSync(redirectsPath))
+  expect(typeof redirectsPath).toBe('string')
+  expect(existsSync(redirectsPath)).toBe(false)
 })
 
-test('updateConfig() does not delete _redirects if redirectsPath not provided', async (t) => {
+test('updateConfig() does not delete _redirects if redirectsPath not provided', async () => {
   const { redirectsPath } = await runUpdateConfig('redirects_undefined', {
     configMutations: [redirectsMutation],
     redirectsPath: undefined,
   })
-  t.is(typeof redirectsPath, 'string')
-  t.true(existsSync(redirectsPath))
+  expect(typeof redirectsPath).toBe('string')
+  expect(existsSync(redirectsPath)).toBe(true)
 })
 
-test('updateConfig() deletes _headers when headers were changed', async (t) => {
+test('updateConfig() deletes _headers when headers were changed', async () => {
   const { headersPath } = await runUpdateConfig('headers_change', { configMutations: [headersMutation] })
-  t.is(typeof headersPath, 'string')
-  t.false(existsSync(headersPath))
+  expect(typeof headersPath).toBe('string')
+  expect(existsSync(headersPath)).toBe(false)
 })
 
-test('updateConfig() deletes _headers on changes even if headers were not changed', async (t) => {
+test('updateConfig() deletes _headers on changes even if headers were not changed', async () => {
   const { headersPath } = await runUpdateConfig('headers_no_change')
-  t.is(typeof headersPath, 'string')
-  t.false(existsSync(headersPath))
+  expect(typeof headersPath).toBe('string')
+  expect(existsSync(headersPath)).toBe(false)
 })
 
-test('updateConfig() does not delete _headers if it does not exist', async (t) => {
+test('updateConfig() does not delete _headers if it does not exist', async () => {
   const { headersPath } = await runUpdateConfig('headers_none')
-  t.is(typeof headersPath, 'string')
-  t.false(existsSync(headersPath))
+  expect(typeof headersPath).toBe('string')
+  expect(existsSync(headersPath)).toBe(false)
 })
 
-test('updateConfig() does not delete _headers if headersPath not provided', async (t) => {
+test('updateConfig() does not delete _headers if headersPath not provided', async () => {
   const { headersPath } = await runUpdateConfig('headers_undefined', {
     configMutations: [headersMutation],
     headersPath: undefined,
   })
-  t.is(typeof headersPath, 'string')
-  t.true(existsSync(headersPath))
+  expect(typeof headersPath).toBe('string')
+  expect(existsSync(headersPath)).toBe(true)
 })
 
-test('Programmatic resolveConfig with configMutations', async (t) => {
+test('Programmatic resolveConfig with configMutations', async () => {
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
-  t.is(config.functionsDirectory, join(process.cwd(), 'new_functions'))
-  t.is(config.build.functions, join(process.cwd(), 'new_functions'))
+  expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
+  expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
 
-test('Programmatic resolveConfig with configMutations and defaultConfig', async (t) => {
+test('Programmatic resolveConfig with configMutations and defaultConfig', async () => {
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
@@ -168,6 +170,6 @@ test('Programmatic resolveConfig with configMutations and defaultConfig', async 
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
 
-  t.is(config.functionsDirectory, join(process.cwd(), 'new_functions'))
-  t.is(config.build.functions, join(process.cwd(), 'new_functions'))
+  expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
+  expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
