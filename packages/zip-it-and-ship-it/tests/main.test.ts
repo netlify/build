@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
