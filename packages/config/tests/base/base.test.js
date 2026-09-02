@@ -1,18 +1,18 @@
 import { join } from 'path'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
-import test from 'ava'
+import { expect, test } from 'vitest'
 
-test('Base from defaultConfig', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/default_config')
+test('Base from defaultConfig', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/default_config')
     .withFlags({ defaultConfig: { build: { base: 'base' } } })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('Base from configuration file property', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/prop_config').runWithConfig()
-  t.snapshot(normalizeOutput(output))
+test('Base from configuration file property', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/prop_config').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
   const {
     buildDir,
     config: {
@@ -20,22 +20,22 @@ test('Base from configuration file property', async (t) => {
       functionsDirectory,
     },
   } = JSON.parse(output)
-  t.is(base, buildDir)
-  t.true(functionsDirectory.startsWith(buildDir))
-  t.true(edgeFunctions.startsWith(buildDir))
-  t.true(publish.startsWith(buildDir))
+  expect(base).toBe(buildDir)
+  expect(functionsDirectory.startsWith(buildDir)).toBe(true)
+  expect(edgeFunctions.startsWith(buildDir)).toBe(true)
+  expect(publish.startsWith(buildDir)).toBe(true)
 })
 
-test('Base logic is not recursive', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/recursive').runWithConfig()
-  t.snapshot(normalizeOutput(output))
+test('Base logic is not recursive', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/recursive').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('BaseRelDir feature flag', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/prop_config')
+test('BaseRelDir feature flag', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/prop_config')
     .withFlags({ baseRelDir: false })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
   const {
     buildDir,
     config: {
@@ -43,39 +43,39 @@ test('BaseRelDir feature flag', async (t) => {
       functionsDirectory,
     },
   } = JSON.parse(output)
-  t.is(base, buildDir)
+  expect(base).toBe(buildDir)
 
-  t.false(functionsDirectory.startsWith(buildDir))
-  t.false(edgeFunctions.startsWith(buildDir))
-  t.false(publish.startsWith(buildDir))
+  expect(functionsDirectory.startsWith(buildDir)).toBe(false)
+  expect(edgeFunctions.startsWith(buildDir)).toBe(false)
+  expect(publish.startsWith(buildDir)).toBe(false)
 })
 
-test('Base directory does not exist', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/base_invalid').runWithConfig()
-  t.snapshot(normalizeOutput(output))
+test('Base directory does not exist', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/base_invalid').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('Use "base" as default value for "publish"', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish').runWithConfig()
-  t.snapshot(normalizeOutput(output))
+test('Use "base" as default value for "publish"', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/base_without_publish').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('Use "base" as "publish" when it is an empty string', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish')
+test('Use "base" as "publish" when it is an empty string', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/base_without_publish')
     .withFlags({ defaultConfig: { build: { publish: '' } } })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('Use "base" as "publish" when it is /', async (t) => {
-  const output = await new Fixture(test.meta.file, './fixtures/base_without_publish')
+test('Use "base" as "publish" when it is /', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/base_without_publish')
     .withFlags({ defaultConfig: { build: { publish: '/' } } })
     .runWithConfig()
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
-test('Monorepo with package path retrieving _redirects', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with package path retrieving _redirects', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -86,7 +86,7 @@ test('Monorepo with package path retrieving _redirects', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -111,8 +111,8 @@ test('Monorepo with package path retrieving _redirects', async (t) => {
   })
 })
 
-test('Monorepo with redirects from the publish directory', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo-with-root-files').withCopyRoot()
+test('Monorepo with redirects from the publish directory', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -123,7 +123,7 @@ test('Monorepo with redirects from the publish directory', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -148,8 +148,8 @@ test('Monorepo with redirects from the publish directory', async (t) => {
   })
 })
 
-test('Monorepo with redirects from the top should be joined', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo-with-root-files').withCopyRoot()
+test('Monorepo with redirects from the top should be joined', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -160,7 +160,7 @@ test('Monorepo with redirects from the top should be joined', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -194,8 +194,8 @@ test('Monorepo with redirects from the top should be joined', async (t) => {
   })
 })
 
-test('Monorepo with package path retrieving _headers', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with package path retrieving _headers', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -206,7 +206,7 @@ test('Monorepo with package path retrieving _headers', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -228,8 +228,8 @@ test('Monorepo with package path retrieving _headers', async (t) => {
   })
 })
 
-test('Monorepo with serverless functions', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with serverless functions', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
   const output = await fixture
     .withFlags({
@@ -239,7 +239,7 @@ test('Monorepo with serverless functions', async (t) => {
     .runWithConfig()
   const config = JSON.parse(output)
 
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -261,8 +261,8 @@ test('Monorepo with serverless functions', async (t) => {
   })
 })
 
-test('Monorepo with custom serverless function directory', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with custom serverless function directory', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -273,7 +273,7 @@ test('Monorepo with custom serverless function directory', async (t) => {
     .runWithConfig()
   const config = JSON.parse(output)
 
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -292,8 +292,8 @@ test('Monorepo with custom serverless function directory', async (t) => {
   })
 })
 
-test('Monorepo with edge functions', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with edge functions', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -304,7 +304,7 @@ test('Monorepo with edge functions', async (t) => {
     .runWithConfig()
   const config = JSON.parse(output)
 
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -326,8 +326,8 @@ test('Monorepo with edge functions', async (t) => {
   })
 })
 
-test('Monorepo with custom edge function directory', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot()
+test('Monorepo with custom edge function directory', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -338,7 +338,7 @@ test('Monorepo with custom edge function directory', async (t) => {
     .runWithConfig()
   const config = JSON.parse(output)
 
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
       build: {
@@ -360,8 +360,8 @@ test('Monorepo with custom edge function directory', async (t) => {
   })
 })
 
-test('Monorepo with base field', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures').withCopyRoot()
+test('Monorepo with base field', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -373,7 +373,7 @@ test('Monorepo with base field', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: join(repositoryRoot, 'monorepo'),
     config: {
       build: {
@@ -388,8 +388,8 @@ test('Monorepo with base field', async (t) => {
   })
 })
 
-test('Monorepo with base field and build plugin', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures').withCopyRoot()
+test('Monorepo with base field and build plugin', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
   const output = await fixture
@@ -401,7 +401,7 @@ test('Monorepo with base field and build plugin', async (t) => {
     .runWithConfig()
 
   const config = JSON.parse(output)
-  t.like(config, {
+  expect(config).toMatchObject({
     buildDir: join(repositoryRoot, 'monorepo'),
     configPath: join(repositoryRoot, 'monorepo/apps/app-7/netlify.toml'),
     config: {
