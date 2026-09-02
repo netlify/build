@@ -170,8 +170,8 @@ export const getRequires = async function (
   { depth = Number.POSITIVE_INFINITY, filePath }: { depth?: number; filePath: string },
   currentDepth = 1,
 ): Promise<string[]> {
-  const requires = await listImports({
-    featureFlags: { parseWithEsbuild: true },
+  const requires = listImports({
+    featureFlags: {},
     functionName: 'test-function',
     path: filePath,
   })

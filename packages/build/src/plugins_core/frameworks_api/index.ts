@@ -17,11 +17,13 @@ import { filterConfig, loadConfigFile } from './util.js'
 const ALLOWED_PROPERTIES = [
   ['build', 'functions'],
   ['build', 'publish'],
+  ['edge_functions'],
   ['functions', '*'],
   ['functions', '*', '*'],
   ['headers'],
   ['images', 'remote_images'],
   ['redirects'],
+  ['spa_fallback'],
 ]
 
 // For array properties, any values set in this API will be merged with the

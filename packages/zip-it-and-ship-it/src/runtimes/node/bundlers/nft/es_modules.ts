@@ -1,6 +1,6 @@
 import { basename, dirname, extname, resolve } from 'path'
 
-import { NodeFileTraceReasons } from '@vercel/nft'
+import type { NodeFileTraceReasons } from '@vercel/nft'
 
 import type { FunctionConfig } from '../../../../config.js'
 import { FeatureFlags } from '../../../../feature_flags.js'

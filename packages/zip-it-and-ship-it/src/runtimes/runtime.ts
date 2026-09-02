@@ -14,6 +14,7 @@ import type { BundlerReason, NodeBundlerName } from './node/bundlers/types.js'
 import type { StaticAnalysisResult } from './node/in_source_config/index.js'
 
 export const RUNTIME = {
+  CONTAINER: 'container',
   GO: 'go',
   JAVASCRIPT: 'js',
   RUST: 'rs',
@@ -44,6 +45,7 @@ export type GetSrcFilesFunction = (
 ) => Promise<string[]>
 
 export interface ZipFunctionResult {
+  bootstrapVersion?: string
   bundler?: NodeBundlerName
   bundlerReason?: BundlerReason
   bundlerErrors?: object[]

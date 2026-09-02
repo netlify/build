@@ -127,6 +127,99 @@ export const bundle = async (
     importMap.add(vendor.importMap)
   }
 
+  // Extracts the in-source configuration for each function and derives the
+  // manifest's function config and routes from it.
+  const computeManifestData = async (log: Logger) => {
+    const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
+      await getFunctionConfigs({
+        deno,
+        importMap,
+        internalFunctions,
+        log,
+        userFunctions,
+      })
+
+    // Creating a final declarations array by combining the TOML file with the
+    // deploy configuration API and the in-source configuration.
+    const declarations = mergeDeclarations(
+      tomlDeclarations,
+      userFunctionsWithConfig,
+      internalFunctionsWithConfig,
+      deployConfig.declarations,
+      featureFlags,
+    )
+
+    const internalFunctionConfig = createFunctionConfig({
+      internalFunctionsWithConfig,
+      declarations,
+    })
+
+    const manifestFunctionConfig = generateManifestFunctionConfig({
+      functions,
+      internalFunctionConfig,
+      userFunctionConfig: userFunctionsWithConfig,
+    })
+
+    const manifestRoutes = generateManifestRoutes({
+      functions,
+      declarations,
+    })
+
+    return { manifestFunctionConfig, manifestRoutes }
+  }
+
+  const excludeUnroutedFunctions = Boolean(featureFlags.edge_bundler_exclude_unrouted_functions)
+
+  // Excluding unrouted functions is the only reason to extract the config
+  // before bundling - we need the routes to know what to leave out. When we're
+  // not, we keep extracting it after bundling, as we always have, so that the
+  // extra Deno subprocess never runs ahead of the bundle and can't change what
+  // a build failure looks like.
+  //
+  // Config extraction reports the underlying failure to the user before it
+  // throws. When it runs up front we may end up discarding that error in favour
+  // of a bundling error (see below), and printing the detail of an error we
+  // then discard is just noise - so on that path we hold those logs back and
+  // only flush them if we do surface the config error.
+  const heldUserLogs: unknown[][] = []
+  const configLogger: Logger = {
+    system: logger.system,
+    user: (...args: unknown[]) => {
+      heldUserLogs.push(args)
+    },
+  }
+  const manifestDataPromise = excludeUnroutedFunctions ? computeManifestData(configLogger) : undefined
+
+  // A function with no route is never invoked, so bundling it only serves to
+  // eagerly load code that can never run - which can surface import-time
+  // failures. The manifest is still generated from the full set of functions,
+  // but its routes exclude unrouted functions by definition. If config
+  // extraction failed, we have no routes to go on, so we bundle everything and
+  // let bundling report the failure.
+  const routes = manifestDataPromise ? (await manifestDataPromise.catch(() => undefined))?.manifestRoutes : undefined
+  const bundledFunctions =
+    excludeUnroutedFunctions && routes
+      ? functions.filter(({ name }) => !routes.unroutedFunctions.includes(name))
+      : functions
+
+  // With nothing to bundle there is no code that can ever be invoked, so we
+  // produce neither a bundle nor a manifest. The deploy pipeline treats a
+  // manifest that exists but carries no ESZIP bundle as the deprecated JS format
+  // and can reject the deploy, so a missing manifest - the same path as a site
+  // with no edge functions at all - is safer than an empty one.
+  if (bundledFunctions.length === 0) {
+    // Config extraction may have produced function output that we were holding
+    // back; surface it before returning.
+    heldUserLogs.forEach((args) => {
+      logger.user(...args)
+    })
+    logger.system('Skipping bundling because no edge function has a route.')
+
+    await vendor?.cleanup()
+
+    return { functions, manifest: undefined }
+  }
+
   const bundles: Bundle[] = []
   let tarballBundleDurationMs: number | undefined
   let tarballDryRunError: unknown
@@ -143,7 +236,7 @@ export const bundle = async (
           debug,
           deno,
           distDirectory,
-          functions,
+          functions: bundledFunctions,
           featureFlags,
           importMap: importMap.clone(),
           vendorDirectory: vendor?.directory,
@@ -177,47 +270,31 @@ export const bundle = async (
       deno,
       distDirectory,
       externals,
-      functions,
+      functions: bundledFunctions,
       featureFlags,
       importMap,
       vendorDirectory: vendor?.directory,
     }),
   )
 
-  const { internalFunctions: internalFunctionsWithConfig, userFunctions: userFunctionsWithConfig } =
-    await getFunctionConfigs({
-      deno,
-      importMap,
-      internalFunctions,
-      log: logger,
-      userFunctions,
+  // When we extracted the config up front, bundling didn't fail, so no more
+  // precise error is coming - re-awaiting surfaces the config extraction error
+  // if there was one. When we didn't, we extract it now, after bundling, as we
+  // always have. Either way, we reach this point only once bundling has had its
+  // chance to throw, so any logs we held back are no longer masking a bundling
+  // error and should reach the user: on success they are the function's own
+  // output, on failure the detail of the error we are about to surface.
+  let manifestData: Awaited<ReturnType<typeof computeManifestData>>
+
+  try {
+    manifestData = await (manifestDataPromise ?? computeManifestData(logger))
+  } finally {
+    heldUserLogs.forEach((args) => {
+      logger.user(...args)
     })
+  }
 
-  // Creating a final declarations array by combining the TOML file with the
-  // deploy configuration API and the in-source configuration.
-  const declarations = mergeDeclarations(
-    tomlDeclarations,
-    userFunctionsWithConfig,
-    internalFunctionsWithConfig,
-    deployConfig.declarations,
-    featureFlags,
-  )
-
-  const internalFunctionConfig = createFunctionConfig({
-    internalFunctionsWithConfig,
-    declarations,
-  })
-
-  const manifestFunctionConfig = generateManifestFunctionConfig({
-    functions,
-    internalFunctionConfig,
-    userFunctionConfig: userFunctionsWithConfig,
-  })
-
-  const manifestRoutes = generateManifestRoutes({
-    functions,
-    declarations,
-  })
+  const { manifestFunctionConfig, manifestRoutes } = manifestData
 
   if (!tarballDryRunError && finalizeTarballBundle) {
     try {
@@ -378,12 +455,17 @@ interface MergeWithDeclarationConfigOptions {
 // declaration level. We want these properties to live at the function level
 // in their config object, so we translate that for backwards-compatibility.
 const mergeWithDeclarationConfig = ({ functionName, config, declarations }: MergeWithDeclarationConfigOptions) => {
-  const declaration = declarations?.find((decl) => decl.function === functionName)
+  // A function may have several declarations — for example, one synthesized
+  // from its in-source config and one coming from `netlify.toml` or the
+  // Frameworks API. Only the latter can carry `name` and `generator`, so we
+  // look for each field across all of the function's declarations rather than
+  // just the first one, which may well be the in-source one.
+  const functionDeclarations = declarations?.filter((decl) => decl.function === functionName) ?? []
 
   return {
     ...config,
-    name: declaration?.name || config.name,
-    generator: declaration?.generator || config.generator,
+    name: functionDeclarations.find((decl) => decl.name)?.name || config.name,
+    generator: functionDeclarations.find((decl) => decl.generator)?.generator || config.generator,
   }
 }
 

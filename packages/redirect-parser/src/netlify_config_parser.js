@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs'
 
-import { parse as loadToml } from '@iarna/toml'
-import { pathExists } from 'path-exists'
+import { parse as loadToml } from 'smol-toml'
 
 import { splitResults } from './results.js'
 
@@ -9,7 +8,9 @@ import { splitResults } from './results.js'
 // This field is already an array of objects, so it only validates and
 // normalizes it.
 export const parseConfigRedirects = async function (netlifyConfigPath) {
-  if (!(await pathExists(netlifyConfigPath))) {
+  try {
+    await fs.access(netlifyConfigPath)
+  } catch {
     return splitResults([])
   }
 

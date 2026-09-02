@@ -1,15 +1,13 @@
 import { env } from 'process'
 
-import { includeKeys } from 'filter-obj'
-
 import { getParentColorEnv } from '../log/colors.js'
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
 export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   const parentColorEnv = getParentColorEnv()
-  const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
-  return includeKeys(parentEnv, shouldKeepEnv)
+  const parentEnv: Record<string, unknown> = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
+  return Object.fromEntries(Object.entries(parentEnv).filter(([key]) => shouldKeepEnv(key)))
 }
 
 const shouldKeepEnv = function (key: string) {

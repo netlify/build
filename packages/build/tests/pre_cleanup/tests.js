@@ -5,7 +5,7 @@ import { Fixture } from '@netlify/testing'
 import test from 'ava'
 
 test('Build removes blobs directory before starting', async (t) => {
-  const fixture = await new Fixture('./fixtures/with_preexisting_blobs').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/with_preexisting_blobs').withCopyRoot({ git: false })
 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
 
@@ -23,7 +23,7 @@ test('Build removes blobs directory before starting', async (t) => {
 })
 
 test('Build does not log if there is nothing to cleanup', async (t) => {
-  const fixture = await new Fixture('./fixtures/src_empty').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_empty').withCopyRoot({ git: false })
 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
 
@@ -43,7 +43,7 @@ test('Build does not log if there is nothing to cleanup', async (t) => {
 })
 
 test('monorepo > Build removes blobs directory before starting', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot({ git: false })
   const blobsDir = join(fixture.repositoryRoot, 'apps/app-1/.netlify/blobs/deploy')
   await t.notThrowsAsync(access(blobsDir))
 
@@ -60,7 +60,7 @@ test('monorepo > Build removes blobs directory before starting', async (t) => {
 })
 
 test('monorepo > Build does not log if there is nothing to cleanup', async (t) => {
-  const fixture = await new Fixture('./fixtures/monorepo').withCopyRoot({ git: false })
+  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot({ git: false })
 
   const blobsDir = join(fixture.repositoryRoot, 'apps/app-2/.netlify/blobs/deploy')
 

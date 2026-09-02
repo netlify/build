@@ -3,7 +3,6 @@ import path from 'path'
 import process from 'process'
 
 import { execa, type ExecaChildProcess, type Options } from 'execa'
-import pathKey from 'path-key'
 import * as semver from 'semver'
 
 import { download } from './downloader.js'
@@ -13,6 +12,8 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
+const pathKey = (env: Record<string, unknown> = process.env) =>
+  Object.keys(env).findLast((key) => key.toUpperCase() === 'PATH') ?? 'PATH'
 
 export const LEGACY_DENO_VERSION_RANGE = '1.39.0 - 2.2.4'
 
@@ -254,7 +255,7 @@ To install Deno manually: https://ntl.fyi/install-deno`,
     }
 
     // Ensure PATH is always set as otherwise we are not able to find the global deno binary
-    env[pathKey()] = inputEnv[pathKey({ env: inputEnv })] || process.env[pathKey()]
+    env[pathKey()] = inputEnv[pathKey(inputEnv)] || process.env[pathKey()]
 
     return env
   }

@@ -1,5 +1,24 @@
 # Changelog
 
+## [10.1.1](https://github.com/netlify/build/compare/headers-parser-v10.1.0...headers-parser-v10.1.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** replace dependencies with native APIs ([#7147](https://github.com/netlify/build/issues/7147)) ([78986a4](https://github.com/netlify/build/commit/78986a4ece57163d8396ced9bbb48bc61b99a049))
+
+## [10.1.0](https://github.com/netlify/build/compare/headers-parser-v10.0.0...headers-parser-v10.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Bug Fixes
+
+* **deps:** switch from `@iarna/toml` to `smol-toml` ([#6837](https://github.com/netlify/build/issues/6837)) ([5577d4a](https://github.com/netlify/build/commit/5577d4ac3def0bcd17fd4d666a71461a3dd1a078))
+
 ## [10.0.0](https://github.com/netlify/build/compare/headers-parser-v9.0.3...headers-parser-v10.0.0) (2026-06-16)
 
 

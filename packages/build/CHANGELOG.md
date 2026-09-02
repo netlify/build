@@ -105,6 +105,274 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.4](https://github.com/netlify/build/compare/build-v36.4.3...build-v36.4.4) (2026-09-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.6 to ^7.1.7
+    * @netlify/zip-it-and-ship-it bumped from 15.4.1 to 15.4.2
+
+## [36.4.3](https://github.com/netlify/build/compare/build-v36.4.2...build-v36.4.3) (2026-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.7.13 ([#6854](https://github.com/netlify/build/issues/6854)) ([ff182e1](https://github.com/netlify/build/commit/ff182e1b4ba0f166881feff6aea71c7d6f796ed3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.5 to ^7.1.6
+    * @netlify/zip-it-and-ship-it bumped from 15.4.0 to 15.4.1
+
+## [36.4.2](https://github.com/netlify/build/compare/build-v36.4.1...build-v36.4.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* catch errors during plugin shutdown ([#7196](https://github.com/netlify/build/issues/7196)) ([e0fd625](https://github.com/netlify/build/commit/e0fd62590b31d0506eb209708dad36a8a2bb877a))
+* **deps:** migrate to tinyexec and native utils ([#7175](https://github.com/netlify/build/issues/7175)) ([3a49c67](https://github.com/netlify/build/commit/3a49c6744b4f52ec8e6e225bd4ba7bb0d9e5052b))
+* **deps:** remove 9 micro-utility dependencies ([#7095](https://github.com/netlify/build/issues/7095)) ([1011653](https://github.com/netlify/build/commit/10116531367d28e3a12df679aa3c68c184b80c62))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.1 to ^7.1.2
+    * @netlify/git-utils bumped from ^7.1.0 to ^7.1.1
+
+## [36.4.1](https://github.com/netlify/build/compare/build-v36.4.0...build-v36.4.1) (2026-08-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.3 to 16.0.4
+
+## [36.4.0](https://github.com/netlify/build/compare/build-v36.3.5...build-v36.4.0) (2026-08-19)
+
+
+### Features
+
+* add experimental server support ([#7182](https://github.com/netlify/build/issues/7182)) ([c5f0184](https://github.com/netlify/build/commit/c5f0184b44e21d63e85f77e77058a59d3bb227c1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.2 to ^25.2.3
+    * @netlify/functions-utils bumped from ^7.1.4 to ^7.1.5
+    * @netlify/zip-it-and-ship-it bumped from 15.3.4 to 15.4.0
+
+## [36.3.5](https://github.com/netlify/build/compare/build-v36.3.4...build-v36.3.5) (2026-08-14)
+
+
+### Bug Fixes
+
+* remove unused zisi_esbuild_parser feature flag ([#7183](https://github.com/netlify/build/issues/7183)) ([cd395b0](https://github.com/netlify/build/commit/cd395b050fd620adbceb0defdd1b99033d1e8dab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.3 to ^7.1.4
+    * @netlify/zip-it-and-ship-it bumped from 15.3.3 to 15.3.4
+
+## [36.3.4](https://github.com/netlify/build/compare/build-v36.3.3...build-v36.3.4) (2026-08-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.2 to 16.0.3
+
+## [36.3.3](https://github.com/netlify/build/compare/build-v36.3.2...build-v36.3.3) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** de-dupe zod dependencies ([#7169](https://github.com/netlify/build/issues/7169)) ([9979dbd](https://github.com/netlify/build/commit/9979dbd9b2700f4848b02b7a54f9f1980e31369e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.1 to ^25.2.2
+    * @netlify/edge-bundler bumped from 16.0.1 to 16.0.2
+    * @netlify/functions-utils bumped from ^7.1.2 to ^7.1.3
+    * @netlify/zip-it-and-ship-it bumped from 15.3.2 to 15.3.3
+
+## [36.3.2](https://github.com/netlify/build/compare/build-v36.3.1...build-v36.3.2) (2026-08-07)
+
+
+### Bug Fixes
+
+* allow npm remote installs when installing extensions ([#7166](https://github.com/netlify/build/issues/7166)) ([ffd5004](https://github.com/netlify/build/commit/ffd5004768c7c38b4fb4b0036e61fc7c215ee951))
+
+## [36.3.1](https://github.com/netlify/build/compare/build-v36.3.0...build-v36.3.1) (2026-08-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.0 to ^25.2.1
+
+## [36.3.0](https://github.com/netlify/build/compare/build-v36.2.4...build-v36.3.0) (2026-08-04)
+
+
+### Features
+
+* add spa_fallback config option ([#7141](https://github.com/netlify/build/issues/7141)) ([1dbf5ff](https://github.com/netlify/build/commit/1dbf5ff0e8adae27438e66f076f38c1b0a46f8b7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.1.1 to ^25.2.0
+    * @netlify/functions-utils bumped from ^7.1.1 to ^7.1.2
+    * @netlify/zip-it-and-ship-it bumped from 15.3.1 to 15.3.2
+
+## [36.2.4](https://github.com/netlify/build/compare/build-v36.2.3...build-v36.2.4) (2026-08-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/edge-bundler bumped from 16.0.0 to 16.0.1
+    * @netlify/functions-utils bumped from ^7.1.0 to ^7.1.1
+    * @netlify/zip-it-and-ship-it bumped from 15.3.0 to 15.3.1
+
+## [36.2.3](https://github.com/netlify/build/compare/build-v36.2.2...build-v36.2.3) (2026-07-24)
+
+
+### Bug Fixes
+
+* **build:** handle a case when `@netlify/edge-bundler` returns `manifest: undefined` ([6daab50](https://github.com/netlify/build/commit/6daab505f0be765cd9cf946eda40485fc4bd60f0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.1.2 to 16.0.0
+
+## [36.2.2](https://github.com/netlify/build/compare/build-v36.2.1...build-v36.2.2) (2026-07-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.1.1 to 15.1.2
+
+## [36.2.1](https://github.com/netlify/build/compare/build-v36.2.0...build-v36.2.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor edge_functions configuration provided via the Frameworks API ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.1.0 to ^25.1.1
+    * @netlify/edge-bundler bumped from 15.1.0 to 15.1.1
+
+## [36.2.0](https://github.com/netlify/build/compare/build-v36.1.5...build-v36.2.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+
+### Bug Fixes
+
+* **deps:** switch from `@iarna/toml` to `smol-toml` ([#6837](https://github.com/netlify/build/issues/6837)) ([5577d4a](https://github.com/netlify/build/commit/5577d4ac3def0bcd17fd4d666a71461a3dd1a078))
+* **perf:** replace `string-width` with `fast-string-width` ([#7105](https://github.com/netlify/build/issues/7105)) ([d82e1f1](https://github.com/netlify/build/commit/d82e1f1127e15adade12c0591a3863dbef177f2f))
+* remove dead `logModulesWithDynamicImports` ([#7077](https://github.com/netlify/build/issues/7077)) ([1693ad8](https://github.com/netlify/build/commit/1693ad80e11365063db4746e9ea33aed335475dc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/config bumped from ^25.0.1 to ^25.1.0
+    * @netlify/edge-bundler bumped from 15.0.4 to 15.1.0
+    * @netlify/functions-utils bumped from ^7.0.3 to ^7.1.0
+    * @netlify/git-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/opentelemetry-utils bumped from ^3.0.0 to ^3.1.0
+    * @netlify/run-utils bumped from ^7.0.0 to ^7.1.0
+    * @netlify/zip-it-and-ship-it bumped from 15.2.0 to 15.3.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^6.0.0 to ^6.1.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^2.0.0 || ^3.0.0 to ^3.1.0
+
+## [36.1.5](https://github.com/netlify/build/compare/build-v36.1.4...build-v36.1.5) (2026-07-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.3 to 15.0.4
+
+## [36.1.4](https://github.com/netlify/build/compare/build-v36.1.3...build-v36.1.4) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.0.0 to ^25.0.1
+
+## [36.1.3](https://github.com/netlify/build/compare/build-v36.1.2...build-v36.1.3) (2026-07-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.2 to 15.0.3
+
+## [36.1.2](https://github.com/netlify/build/compare/build-v36.1.1...build-v36.1.2) (2026-07-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.0.2 to ^7.0.3
+    * @netlify/zip-it-and-ship-it bumped from 15.1.0 to 15.2.0
+
+## [36.1.1](https://github.com/netlify/build/compare/build-v36.1.0...build-v36.1.1) (2026-07-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 15.0.1 to 15.0.2
+
 ## [36.1.0](https://github.com/netlify/build/compare/build-v36.0.1...build-v36.1.0) (2026-06-30)
 
 

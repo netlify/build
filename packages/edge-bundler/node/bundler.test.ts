@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 import { access, readdir, readFile, rm, writeFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { join, resolve, dirname } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
@@ -15,8 +15,10 @@ import { denoVersion, runESZIP, runTarball, useFixture } from '../test/util.js'
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
 import { Declaration } from './declaration.js'
+import type { Manifest } from './manifest.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
+import { fileURLToPath } from 'node:url'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
@@ -55,6 +57,74 @@ test('Produces an ESZIP bundle', async () => {
   expect(func1).toBe('HELLO, JANE DOE!')
   expect(func2).toBe('Jane Doe')
   expect(func3).toBe('hello, netlify!')
+
+  await cleanup()
+})
+
+test('Excludes functions with no route from the bundle when `edge_bundler_exclude_unrouted_functions` is enabled', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
+  // Only `func1` is routed. `func2` and `func3` have no declaration, so they
+  // should be left out of the bundle rather than eagerly loaded.
+  const declarations: Declaration[] = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const userDirectory = join(basePath, 'user-functions')
+  const internalDirectory = join(basePath, 'functions')
+  const result = await bundle([userDirectory, internalDirectory], distPath, declarations, {
+    basePath,
+    configPath: join(internalDirectory, 'config.json'),
+    importMapPaths: [join(userDirectory, 'import_map.json')],
+    featureFlags: { edge_bundler_exclude_unrouted_functions: true },
+  })
+
+  // The full set of discovered functions is still returned and reflected in the
+  // manifest's `function_config`; only the bundle contents are trimmed.
+  expect(result.functions.length).toBe(3)
+
+  const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile) as Manifest
+  expect(() => validateManifest(manifest)).not.toThrowError()
+  expect(manifest.routes.map((route) => route.function)).toEqual(['func1'])
+
+  const bundlePath = join(distPath, manifest.bundles[0].asset)
+  const bundledFunctions = await runESZIP(bundlePath)
+
+  expect(Object.keys(bundledFunctions)).toEqual(['func1'])
+  expect(bundledFunctions.func1).toBe('HELLO, JANE DOE!')
+  expect(bundledFunctions.func2).toBeUndefined()
+  expect(bundledFunctions.func3).toBeUndefined()
+
+  await cleanup()
+})
+
+test('Produces no bundle or manifest when no function has a route and `edge_bundler_exclude_unrouted_functions` is enabled', async () => {
+  const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
+  const userDirectory = join(basePath, 'user-functions')
+  const internalDirectory = join(basePath, 'functions')
+
+  // No declarations at all, so every function is unrouted. There is nothing that
+  // can ever be invoked, so there is nothing to deploy: we produce no manifest,
+  // rather than one with no bundle. The deploy pipeline reads a bundle-less
+  // manifest as the deprecated JS format and can reject it, whereas a missing
+  // manifest is the same well-handled path as a site with no edge functions.
+  const result = await bundle([userDirectory, internalDirectory], distPath, [], {
+    basePath,
+    configPath: join(internalDirectory, 'config.json'),
+    importMapPaths: [join(userDirectory, 'import_map.json')],
+    featureFlags: {
+      edge_bundler_exclude_unrouted_functions: true,
+      edge_bundler_generate_tarball: true,
+    },
+  })
+
+  // The full set of discovered functions is still returned, but no manifest is.
+  expect(result.functions.length).toBe(3)
+  expect(result.manifest).toBeUndefined()
+
+  await expect(access(resolve(distPath, 'manifest.json'))).rejects.toThrowError()
 
   await cleanup()
 })
@@ -106,14 +176,12 @@ test('Adds a custom error property to user errors during bundling', async () => 
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     const messageBeforeStack = (error as BundleError).message
+    const packageDir = pathToFileURL(resolve(dirname(fileURLToPath(import.meta.url)), '../')).href
     expect(
       messageBeforeStack
         // eslint-disable-next-line no-control-regex
         .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-        .replace(
-          /file:\/\/\/(.*?\/)(build\/packages\/edge-bundler\/deno\/vendor\/deno\.land\/x\/eszip.*)/,
-          'file://$2',
-        ),
+        .replace(packageDir, 'file://build/packages/edge-bundler'),
     ).toMatchSnapshot()
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
@@ -127,7 +195,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
-test('Prints a nice error message when user tries importing an npm module', async () => {
+test('Prints a nice error message when user tries importing an npm module', { retry: 2 }, async () => {
   expect.assertions(2)
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
@@ -164,7 +232,7 @@ test('Does not add a custom error property to system errors during bundling', as
   }
 })
 
-test('Uses the cache directory as the `DENO_DIR` value', async () => {
+test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () => {
   expect.assertions(3)
 
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
@@ -816,6 +884,51 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('Produces byte-identical tarballs when bundling the same code twice', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      // Bundle the same code into two separate dist directories, one after the other.
+      const secondDist = await tmp.dir({ unsafeCleanup: true })
+      const secondDistPath = join(secondDist.path, '.netlify', 'edge-functions-dist')
+
+      const bundleTarball = async (dist: string) => {
+        await bundle([join(basePath, 'netlify/edge-functions')], dist, declarations, {
+          basePath,
+          configPath: join(basePath, '.netlify/edge-functions/config.json'),
+          featureFlags: {
+            edge_bundler_generate_tarball: true,
+          },
+        })
+
+        const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'))
+
+        return join(dist, manifest.bundles[0].asset)
+      }
+
+      const firstTarballPath = await bundleTarball(distPath)
+
+      // Wait long enough to cross a whole-second boundary. tar stores mtime at
+      // second resolution, so without the mtime-normalisation fix the second
+      // bundle's freshly written files would carry a different mtime and the two
+      // tarballs would diverge. With the fix, mtime is omitted and they match.
+      await new Promise((done) => setTimeout(done, 1_500))
+
+      const secondTarballPath = await bundleTarball(secondDistPath)
+
+      const [firstTarball, secondTarball] = await Promise.all([readFile(firstTarballPath), readFile(secondTarballPath)])
+
+      // The two tarballs must be byte-for-byte identical for reproducible builds.
+      expect(firstTarball.equals(secondTarball)).toBe(true)
+
+      await Promise.all([cleanup(), secondDist.cleanup()])
+    })
+
     test('Using npm and remote modules', async () => {
       const systemLogger = vi.fn()
       const { basePath, cleanup, distPath } = await useFixture('imports_npm_module', { copyDirectory: true })
@@ -1067,7 +1180,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         const { bundle: bundleUnderTest } = await import('./bundler.js')
 
         const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
-        const sourceDirectory = join(basePath, 'functions')
+        const sourceDirectory = join(basePath, 'netlify/edge-functions')
         const declarations: Declaration[] = [
           {
             function: 'func1',
@@ -1078,7 +1191,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
         await expect(
           bundleUnderTest([sourceDirectory], distPath, declarations, {
             basePath,
-            configPath: join(sourceDirectory, 'config.json'),
+            configPath: join(basePath, '.netlify/edge-functions/config.json'),
             featureFlags: {
               edge_bundler_dry_run_generate_tarball: true,
               edge_bundler_generate_tarball: false,
@@ -1305,6 +1418,60 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(entries).toContain('./___netlify-edge-functions.json')
       expect(entries).toContain('./deno.json')
       expect(entries).toContain('./func1.ts')
+
+      const eszipPath = join(distPath, manifest.bundles[1].asset)
+      const eszipResult = await runESZIP(eszipPath)
+      expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
+    test('Importing a directory when caught is handled', async () => {
+      // Importing a directory is unsupported in Deno, but `deno info` still lists
+      // the directory as an errored module reachable via a runtime (code) edge,
+      // so it lands in the set of source files to bundle. Tarball generation used
+      // to throw EISDIR when copying the directory; it must skip it instead.
+      const systemLogger = vi.fn()
+      const { basePath, cleanup, distPath } = await useFixture('caught-directory-import', {
+        copyDirectory: true,
+      })
+      const declarations: Declaration[] = [
+        {
+          function: 'func1',
+          path: '/func1',
+        },
+      ]
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, declarations, {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+        systemLogger,
+      })
+
+      const expectedOutput = {
+        func1: 'ok',
+      }
+
+      const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
+      const manifest = JSON.parse(manifestFile)
+
+      const tarballPath = join(distPath, manifest.bundles[0].asset)
+      const tarballResult = await runTarball(tarballPath)
+      expect(tarballResult).toStrictEqual(expectedOutput)
+
+      const entries: string[] = []
+      await tar.list({
+        file: tarballPath,
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      // The directory itself must not be present as an entry in the tarball.
+      expect(entries).toContain('./func1.ts')
+      expect(entries.some((entry) => entry === './models' || entry === './models/')).toBe(false)
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)

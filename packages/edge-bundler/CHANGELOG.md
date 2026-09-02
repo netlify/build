@@ -1,5 +1,91 @@
 # Changelog
 
+## [16.0.4](https://github.com/netlify/build/compare/edge-bundler-v16.0.3...edge-bundler-v16.0.4) (2026-08-21)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.13 ([#7191](https://github.com/netlify/build/issues/7191)) ([989b62e](https://github.com/netlify/build/commit/989b62eda75e37f0ed7b7015e8fc6941c49cb917))
+
+## [16.0.3](https://github.com/netlify/build/compare/edge-bundler-v16.0.2...edge-bundler-v16.0.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* **edge-bundler:** accept a bootstrap that exports `serve` ([#7176](https://github.com/netlify/build/issues/7176)) ([ede2f2e](https://github.com/netlify/build/commit/ede2f2e979757050c8f2738e541d4e3645d9da09))
+
+## [16.0.2](https://github.com/netlify/build/compare/edge-bundler-v16.0.1...edge-bundler-v16.0.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** replace dependencies with native functionality ([#7174](https://github.com/netlify/build/issues/7174)) ([e510bb1](https://github.com/netlify/build/commit/e510bb1a4e4141c19c8b8986973285dae2ef5472))
+
+## [16.0.1](https://github.com/netlify/build/compare/edge-bundler-v16.0.0...edge-bundler-v16.0.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **deps:** update archiver to v8 ([#7150](https://github.com/netlify/build/issues/7150)) ([457a399](https://github.com/netlify/build/commit/457a3999cf4a6b0030a93f92970358f36a70631a))
+
+## [16.0.0](https://github.com/netlify/build/compare/edge-bundler-v15.1.2...edge-bundler-v16.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **edge-bundler:** the `manifest` property returned by `bundle` is now `Manifest | undefined`. It is `undefined` when no function is bundled.
+
+### Features
+
+* **edge-bundler:** exclude unrouted functions from the bundle ([8140b96](https://github.com/netlify/build/commit/8140b969b3a9c2ae1fbaea76a1e1316ae8a34836))
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry config extraction on transient network errors ([#7138](https://github.com/netlify/build/issues/7138)) ([efd3a2b](https://github.com/netlify/build/commit/efd3a2b1aab212ee5e06f3f87b585f07b04813d8))
+
+## [15.1.2](https://github.com/netlify/build/compare/edge-bundler-v15.1.1...edge-bundler-v15.1.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **edge-bundler:** retry `deno info` on transient network errors ([#7133](https://github.com/netlify/build/issues/7133)) ([37d2c10](https://github.com/netlify/build/commit/37d2c104b7a467bd920ceac0a8ff965a05f93233))
+
+## [15.1.1](https://github.com/netlify/build/compare/edge-bundler-v15.1.0...edge-bundler-v15.1.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* honor name and generator across all declarations for an edge function, not just the first match ([#7125](https://github.com/netlify/build/issues/7125)) ([bca93db](https://github.com/netlify/build/commit/bca93db2fe28f1ad4a29646fed6ac4f5107ddfbc))
+
+## [15.1.0](https://github.com/netlify/build/compare/edge-bundler-v15.0.4...edge-bundler-v15.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
+## [15.0.4](https://github.com/netlify/build/compare/edge-bundler-v15.0.3...edge-bundler-v15.0.4) (2026-07-13)
+
+
+### Bug Fixes
+
+* skip directory imports when generating edge function tarballs ([#7126](https://github.com/netlify/build/issues/7126)) ([74ed378](https://github.com/netlify/build/commit/74ed3784574e7863804962ae652a99e3b21bb620))
+
+## [15.0.3](https://github.com/netlify/build/compare/edge-bundler-v15.0.2...edge-bundler-v15.0.3) (2026-07-07)
+
+
+### Bug Fixes
+
+* update @sveltejs/acorn-typescript to 1.0.11 ([#7121](https://github.com/netlify/build/issues/7121)) ([07f8021](https://github.com/netlify/build/commit/07f8021d1f441275cb170577b9ff698e5b77486b))
+
+## [15.0.2](https://github.com/netlify/build/compare/edge-bundler-v15.0.1...edge-bundler-v15.0.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* make edge-bundler tars deterministic ([#7118](https://github.com/netlify/build/issues/7118)) ([c8aee02](https://github.com/netlify/build/commit/c8aee024e8390260e1eedcf0bdfe315b52b8ad76))
+
 ## [15.0.1](https://github.com/netlify/build/compare/edge-bundler-v15.0.0...edge-bundler-v15.0.1) (2026-06-18)
 
 

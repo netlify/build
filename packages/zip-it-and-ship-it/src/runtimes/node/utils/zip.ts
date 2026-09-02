@@ -5,6 +5,7 @@ import os from 'os'
 import { basename, dirname, extname, join } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
+import type { Archiver } from 'archiver'
 import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
@@ -16,7 +17,6 @@ import {
   endZip,
   startTar,
   startZip,
-  ZipArchive,
 } from '../../../archive.js'
 import type { FeatureFlags } from '../../../feature_flags.js'
 import type { RuntimeCache } from '../../../utils/cache.js'
@@ -306,7 +306,7 @@ export const zipNodeJs = function ({
   return createDirectory(options)
 }
 
-const addEntryFileToZip = function (archive: ZipArchive, { contents, filename }: EntryFile) {
+const addEntryFileToZip = function (archive: Archiver, { contents, filename }: EntryFile) {
   const contentBuffer = Buffer.from(contents)
 
   addZipContent(archive, contentBuffer, filename)
@@ -328,7 +328,7 @@ const zipJsFile = function ({
   userNamespace,
 }: {
   aliases?: Map<string, string>
-  archive: ZipArchive
+  archive: Archiver
   commonPrefix: string
   rewrites?: Map<string, string>
   stat: Stats

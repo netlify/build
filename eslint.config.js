@@ -45,6 +45,13 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   node.configs['flat/recommended'],
+  {
+    settings: {
+      n: {
+        resolverConfig: { extensionAlias: { '.js': ['.ts', '.tsx', '.js'] } },
+      },
+    },
+  },
 
   // Import rules
 

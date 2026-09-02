@@ -6,6 +6,7 @@ import { FunctionSource } from '../function.js'
 import type { RuntimeCache } from '../utils/cache.js'
 import { FunctionBundlingUserError } from '../utils/error.js'
 
+import containerRuntime from './container/index.js'
 import goRuntime from './go/index.js'
 import jsRuntime from './node/index.js'
 import { ENTRY_FILE_NAME } from './node/utils/entry_file.js'
@@ -79,7 +80,7 @@ const findFunctionsInRuntime = async function ({
 // The order of this array determines the priority of the runtimes. If a path
 // is used by the first time, it won't be made available to the subsequent
 // runtimes.
-const RUNTIMES = [jsRuntime, goRuntime, rustRuntime]
+const RUNTIMES = [containerRuntime, jsRuntime, goRuntime, rustRuntime]
 
 /**
  * Gets a list of functions found in a list of paths.

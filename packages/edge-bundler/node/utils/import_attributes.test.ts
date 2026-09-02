@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-// eslint-disable-next-line n/no-missing-import
-import { rewriteSourceImportAssertions } from './import_attributes'
+import { rewriteSourceImportAssertions } from './import_attributes.js'
 
 describe('rewriteSourceImportAssertions', () => {
   test('handles static import assertions', () => {
@@ -45,7 +44,6 @@ import f from './c.js';
 import * as abc from './data.json' with { type: 'json' }; import { def } from './data.json' with { type: 'json' };
 `
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -57,7 +55,6 @@ import * as abc from './data.json' with { type: 'json' }; import { def } from '.
     console.assert(true, 'should be true');
 `
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(source)
@@ -71,7 +68,6 @@ import * as abc from './data.json' with { type: 'json' }; import { def } from '.
     export { default } from './data.json' with { type: 'json' };
     export * from './x.json' with { type: 'json' };`
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -127,7 +123,7 @@ export default async function handler(req: Request, context: Context): Response 
 export const config: Config = {
   path: "/hello",
 };`
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -147,7 +143,6 @@ const [,foo]=[1,2]
 import data2 from './data.json' with { type: 'json' };
 `
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -171,7 +166,83 @@ const [,foo]=[1,2]
 import data2 from './data.json' with { type: 'json' };
 `
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles parenthesized `in` expression in a for-loop init', () => {
+    const source = `import data3 from './data.json' assert { type: 'json' };;
+for (var hasFlag = ('flag' in options), i = 0; i < 1; i++) {}
+`
+    const expectedResult = `import data3 from './data.json' with { type: 'json' };;
+for (var hasFlag = ('flag' in options), i = 0; i < 1; i++) {}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles scope leak from an abandoned speculative parse', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+function m() {
+  _ ? (t) : (t = (function () { t >> 5 }));
+}
+var en = 1;
+export { en as X };
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+function m() {
+  _ ? (t) : (t = (function () { t >> 5 }));
+}
+var en = 1;
+export { en as X };
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles exporting an enum declared in the same module', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+enum Direction { Up, Down }
+export { Direction };
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+enum Direction { Up, Down }
+export { Direction };
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles a type predicate on a parameter named `asserts`', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+function isString(asserts: unknown): asserts is string {
+  return typeof asserts === 'string';
+}
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+function isString(asserts: unknown): asserts is string {
+  return typeof asserts === 'string';
+}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles a dynamic import in a generic async arrow function parameter default', () => {
+    const source = `const load = async <T,>(mod = import('./data.json', { assert: { type: 'json' } })) => (await mod) as T;
+`
+    const expectedResult = `const load = async <T,>(mod = import('./data.json', { with: { type: 'json' } })) => (await mod) as T;
+`
+
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -181,7 +252,6 @@ import data2 from './data.json' with { type: 'json' };
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -228,7 +298,6 @@ export const config = {
   path: "/generated-with-http-import",
 };`
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -285,7 +354,6 @@ import css from './styles.css' with {
   type: 'css'
 };`
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
@@ -309,7 +377,6 @@ import css from './styles.css' with {
         const data4 = await import('./data.json', { with: { type: 'json' } });
       }`
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const result = rewriteSourceImportAssertions(source)
 
       expect(result).toEqual(expectedResult)

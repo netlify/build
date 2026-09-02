@@ -4,94 +4,94 @@ import test from 'ava'
 import { buildErrorToTracingAttributes } from '../../lib/error/types.js'
 
 test('exception', async (t) => {
-  const output = await new Fixture('./fixtures/exception').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/exception').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('exception with static properties', async (t) => {
-  const output = await new Fixture('./fixtures/exception_props').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/exception_props').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('exception with circular references', async (t) => {
-  const output = await new Fixture('./fixtures/exception_circular').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/exception_circular').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('exception that are strings', async (t) => {
-  const output = await new Fixture('./fixtures/exception_string').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/exception_string').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('exception that are arrays', async (t) => {
-  const output = await new Fixture('./fixtures/exception_array').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/exception_array').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Do not log secret values on build errors', async (t) => {
-  const output = await new Fixture('./fixtures/log_secret').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/log_secret').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('TOML parsing errors', async (t) => {
-  const output = await new Fixture('./fixtures/toml_parsing').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/toml_parsing').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Invalid error instances', async (t) => {
-  const output = await new Fixture('./fixtures/invalid_instance').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/invalid_instance').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Top-level errors', async (t) => {
-  const output = await new Fixture('./fixtures/top').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/top').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Top function errors local', async (t) => {
-  const output = await new Fixture('./fixtures/function').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/function').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Node module all fields', async (t) => {
-  const output = await new Fixture('./fixtures/full').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/full').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Node module partial fields', async (t) => {
-  const output = await new Fixture('./fixtures/partial').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/partial').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('No repository root', async (t) => {
-  const output = await new Fixture('./fixtures/no_root')
+  const output = await new Fixture(test.meta.file, './fixtures/no_root')
     .withCopyRoot({ git: false })
     .then((fixture) => fixture.runWithBuild())
   t.snapshot(normalizeOutput(output))
 })
 
 test('Process warnings', async (t) => {
-  const output = await new Fixture('./fixtures/warning').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/warning').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Uncaught exception', async (t) => {
-  const output = await new Fixture('./fixtures/uncaught').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/uncaught').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Unhandled promises', async (t) => {
-  const output = await new Fixture('./fixtures/unhandled_promise').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/unhandled_promise').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Exits in plugins', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_exit').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_exit').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Plugin errors can have a toJSON() method', async (t) => {
-  const output = await new Fixture('./fixtures/plugin_error_to_json').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/plugin_error_to_json').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -101,13 +101,13 @@ test('Plugin errors can have a toJSON() method', async (t) => {
 // See https://github.com/netlify/build/issues/3615
 // if (platform !== 'win32') {
 //   test.skip('Early exit', async (t) => {
-//     const output = await new Fixture('./fixtures/early_exit').runWithBuild()
+//     const output = await new Fixture(test.meta.file, './fixtures/early_exit').runWithBuild()
 //     t.snapshot(normalizeOutput(output))
 //   })
 // }
 
 test('Redact API token on errors', async (t) => {
-  const output = await new Fixture('./fixtures/api_token_redact')
+  const output = await new Fixture(test.meta.file, './fixtures/api_token_redact')
     .withFlags({ token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } })
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
@@ -255,13 +255,13 @@ testMatrixAttributeTracing.forEach(({ description, input, expects }) => {
 })
 
 test('Trusted plugins - internal errors are system errors', async (t) => {
-  const fixture = new Fixture('./fixtures/trusted_plugin_uncaught')
+  const fixture = new Fixture(test.meta.file, './fixtures/trusted_plugin_uncaught')
   const { severityCode } = await fixture.runBuildProgrammatic()
   t.deepEqual(severityCode, 4)
 })
 
 test('Trusted plugins - controlled failures are user errors', async (t) => {
-  const fixture = new Fixture('./fixtures/trusted_plugin')
+  const fixture = new Fixture(test.meta.file, './fixtures/trusted_plugin')
   const { severityCode } = await fixture.runBuildProgrammatic()
   t.deepEqual(severityCode, 2)
 })
