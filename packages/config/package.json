@@ -23,7 +23,7 @@
     "build": "tsc",
     "test": "vitest run",
     "test:dev": "vitest",
-    "test:ci": "vitest run --reporter=default"
+    "test:ci": "vitest run --coverage --reporter=default"
   },
   "keywords": [
     "javascript",
