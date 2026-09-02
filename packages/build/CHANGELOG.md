@@ -105,6 +105,57 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.4](https://github.com/netlify/build/compare/build-v36.4.3...build-v36.4.4) (2026-09-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.6 to ^7.1.7
+    * @netlify/zip-it-and-ship-it bumped from 15.4.1 to 15.4.2
+
+## [36.4.3](https://github.com/netlify/build/compare/build-v36.4.2...build-v36.4.3) (2026-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.7.13 ([#6854](https://github.com/netlify/build/issues/6854)) ([ff182e1](https://github.com/netlify/build/commit/ff182e1b4ba0f166881feff6aea71c7d6f796ed3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.5 to ^7.1.6
+    * @netlify/zip-it-and-ship-it bumped from 15.4.0 to 15.4.1
+
+## [36.4.2](https://github.com/netlify/build/compare/build-v36.4.1...build-v36.4.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* catch errors during plugin shutdown ([#7196](https://github.com/netlify/build/issues/7196)) ([e0fd625](https://github.com/netlify/build/commit/e0fd62590b31d0506eb209708dad36a8a2bb877a))
+* **deps:** migrate to tinyexec and native utils ([#7175](https://github.com/netlify/build/issues/7175)) ([3a49c67](https://github.com/netlify/build/commit/3a49c6744b4f52ec8e6e225bd4ba7bb0d9e5052b))
+* **deps:** remove 9 micro-utility dependencies ([#7095](https://github.com/netlify/build/issues/7095)) ([1011653](https://github.com/netlify/build/commit/10116531367d28e3a12df679aa3c68c184b80c62))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.1 to ^7.1.2
+    * @netlify/git-utils bumped from ^7.1.0 to ^7.1.1
+
+## [36.4.1](https://github.com/netlify/build/compare/build-v36.4.0...build-v36.4.1) (2026-08-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.3 to 16.0.4
+
 ## [36.4.0](https://github.com/netlify/build/compare/build-v36.3.5...build-v36.4.0) (2026-08-19)
 
 
