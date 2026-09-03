@@ -33,7 +33,6 @@ export default [
     files: [
       'packages/build/tests/**/tests.js',
       'packages/build/tests/**/*.test.js',
-      'packages/config/tests/**/tests.js',
       'packages/config/tests/**/*.test.js',
     ],
     rules: {
