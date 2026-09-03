@@ -9,6 +9,11 @@ export default defineConfig({
     environment: 'node',
     testTimeout: 100000,
     include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['lib/**'],
+      reporter: ['text', 'lcov'],
+    },
     server: {
       deps: {
         // These are workspace packages symlinked from outside `node_modules`,
