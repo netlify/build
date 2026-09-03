@@ -4,17 +4,17 @@ import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
-import test from 'ava'
+import { expect, test } from 'vitest'
 import tmp from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
-const startDeployServer = function (opts = {}) {
+const startDeployServer = function (opts: { onRequest?: () => Promise<void> } = {}) {
   const useUnixSocket = platform !== 'win32'
-  return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
+  return startTcpServer({ useUnixSocket, response: { succeeded: true }, ...opts })
 }
 
-test('--saveConfig deletes headers file if headers were changed', async (t) => {
+test('--saveConfig deletes headers file if headers were changed', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_headers`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -24,7 +24,7 @@ test('--saveConfig deletes headers file if headers were changed', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const output = await new Fixture(test.meta.file, './fixtures/save_headers')
+      const output = await new Fixture(import.meta.url, './fixtures/save_headers')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -33,7 +33,7 @@ test('--saveConfig deletes headers file if headers were changed', async (t) => {
           branch: 'main',
         })
         .runWithBuild()
-      t.snapshot(normalizeOutput(output))
+      expect(normalizeOutput(output)).toMatchSnapshot()
     } finally {
       await stopServer()
     }
@@ -42,7 +42,7 @@ test('--saveConfig deletes headers file if headers were changed', async (t) => {
   }
 })
 
-test('--saveConfig deletes headers file if any configuration property was changed', async (t) => {
+test('--saveConfig deletes headers file if any configuration property was changed', async () => {
   const fixtureDir = `${FIXTURES_DIR}/delete_headers`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -52,7 +52,7 @@ test('--saveConfig deletes headers file if any configuration property was change
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const output = await new Fixture(test.meta.file, './fixtures/delete_headers')
+      const output = await new Fixture(import.meta.url, './fixtures/delete_headers')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -61,7 +61,7 @@ test('--saveConfig deletes headers file if any configuration property was change
           branch: 'main',
         })
         .runWithBuild()
-      t.snapshot(normalizeOutput(output))
+      expect(normalizeOutput(output)).toMatchSnapshot()
     } finally {
       await stopServer()
     }
@@ -70,7 +70,7 @@ test('--saveConfig deletes headers file if any configuration property was change
   }
 })
 
-test('Erroneous headers created by a build command are handled', async (t) => {
+test('Erroneous headers created by a build command are handled', async () => {
   const fixtureDir = `${FIXTURES_DIR}/headers_command_error`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -79,7 +79,7 @@ test('Erroneous headers created by a build command are handled', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const { output } = await new Fixture(test.meta.file, './fixtures/headers_command_error')
+      const { output } = await new Fixture(import.meta.url, './fixtures/headers_command_error')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -88,7 +88,7 @@ test('Erroneous headers created by a build command are handled', async (t) => {
           branch: 'main',
         })
         .runBuildBinary()
-      t.true(output.includes('Warning: some headers have syntax errors'))
+      expect(output).toContain('Warning: some headers have syntax errors')
     } finally {
       await stopServer()
     }
@@ -97,7 +97,7 @@ test('Erroneous headers created by a build command are handled', async (t) => {
   }
 })
 
-test('Erroneous headers created by a plugin are handled', async (t) => {
+test('Erroneous headers created by a plugin are handled', async () => {
   const fixtureDir = `${FIXTURES_DIR}/headers_plugin_error`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -106,7 +106,7 @@ test('Erroneous headers created by a plugin are handled', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const { output } = await new Fixture(test.meta.file, './fixtures/headers_plugin_error')
+      const { output } = await new Fixture(import.meta.url, './fixtures/headers_plugin_error')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -115,7 +115,7 @@ test('Erroneous headers created by a plugin are handled', async (t) => {
           branch: 'main',
         })
         .runBuildBinary()
-      t.snapshot(normalizeOutput(output))
+      expect(normalizeOutput(output)).toMatchSnapshot()
     } finally {
       await stopServer()
     }
@@ -124,7 +124,7 @@ test('Erroneous headers created by a plugin are handled', async (t) => {
   }
 })
 
-test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
+test('--saveConfig deletes redirects file if redirects were changed', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_redirects`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -134,7 +134,7 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const output = await new Fixture(test.meta.file, './fixtures/save_redirects')
+      const output = await new Fixture(import.meta.url, './fixtures/save_redirects')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -143,7 +143,7 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
           branch: 'main',
         })
         .runWithBuild()
-      t.snapshot(normalizeOutput(output))
+      expect(normalizeOutput(output)).toMatchSnapshot()
     } finally {
       await stopServer()
     }
@@ -152,7 +152,7 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
   }
 })
 
-test('--saveConfig deletes redirects file if any configuration property was changed', async (t) => {
+test('--saveConfig deletes redirects file if any configuration property was changed', async () => {
   const fixtureDir = `${FIXTURES_DIR}/delete_redirects`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -162,7 +162,7 @@ test('--saveConfig deletes redirects file if any configuration property was chan
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      const output = await new Fixture(test.meta.file, './fixtures/delete_redirects')
+      const output = await new Fixture(import.meta.url, './fixtures/delete_redirects')
         .withFlags({
           buildbotServerSocket: address,
           config: configPath,
@@ -171,7 +171,7 @@ test('--saveConfig deletes redirects file if any configuration property was chan
           branch: 'main',
         })
         .runWithBuild()
-      t.snapshot(normalizeOutput(output))
+      expect(normalizeOutput(output)).toMatchSnapshot()
     } finally {
       await stopServer()
     }
@@ -180,14 +180,14 @@ test('--saveConfig deletes redirects file if any configuration property was chan
   }
 })
 
-test('--saveConfig saves the configuration changes as netlify.toml', async (t) => {
+test('--saveConfig saves the configuration changes as netlify.toml', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_changes`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
   await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture(test.meta.file, './fixtures/save_changes')
+    const output = await new Fixture(import.meta.url, './fixtures/save_changes')
       .withFlags({
         buildbotServerSocket: address,
         config: configPath,
@@ -196,13 +196,13 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
         branch: 'main',
       })
       .runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    expect(normalizeOutput(output)).toMatchSnapshot()
   } finally {
     await stopServer()
   }
 })
 
-test('--saveConfig does not truncate high amount of redirects', async (t) => {
+test('--saveConfig does not truncate high amount of redirects', async () => {
   const fixtureDir = `${FIXTURES_DIR}/many_redirects`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -210,11 +210,11 @@ test('--saveConfig does not truncate high amount of redirects', async (t) => {
   const { address, stopServer } = await startDeployServer({
     async onRequest() {
       const newConfigContents = await readFile(configPath, 'utf8')
-      t.true(newConfigContents.includes('999'))
+      expect(newConfigContents).toContain('999')
     },
   })
   try {
-    await new Fixture(test.meta.file, './fixtures/many_redirects')
+    await new Fixture(import.meta.url, './fixtures/many_redirects')
       .withFlags({
         buildbotServerSocket: address,
         config: configPath,
@@ -228,7 +228,7 @@ test('--saveConfig does not truncate high amount of redirects', async (t) => {
   }
 })
 
-test('--saveConfig does not truncate high amount of headers', async (t) => {
+test('--saveConfig does not truncate high amount of headers', async () => {
   const fixtureDir = `${FIXTURES_DIR}/many_headers`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -236,11 +236,11 @@ test('--saveConfig does not truncate high amount of headers', async (t) => {
   const { address, stopServer } = await startDeployServer({
     async onRequest() {
       const newConfigContents = await readFile(configPath, 'utf8')
-      t.true(newConfigContents.includes('999'))
+      expect(newConfigContents).toContain('999')
     },
   })
   try {
-    await new Fixture(test.meta.file, './fixtures/many_headers')
+    await new Fixture(import.meta.url, './fixtures/many_headers')
       .withFlags({
         buildbotServerSocket: address,
         config: configPath,
@@ -254,23 +254,23 @@ test('--saveConfig does not truncate high amount of headers', async (t) => {
   }
 })
 
-test('--saveConfig is required to save the configuration changes as netlify.toml', async (t) => {
+test('--saveConfig is required to save the configuration changes as netlify.toml', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_none`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
   await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture(test.meta.file, './fixtures/save_none')
+    const output = await new Fixture(import.meta.url, './fixtures/save_none')
       .withFlags({ buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' })
       .runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    expect(normalizeOutput(output)).toMatchSnapshot()
   } finally {
     await stopServer()
   }
 })
 
-test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
+test('--saveConfig creates netlify.toml if it does not exist', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_empty`
   const configPath = `${fixtureDir}/netlify.toml`
 
@@ -278,7 +278,7 @@ test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
 
   const { address, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture(test.meta.file, './fixtures/save_empty')
+    const output = await new Fixture(import.meta.url, './fixtures/save_empty')
       .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
@@ -287,21 +287,21 @@ test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
       })
       .runWithBuild()
-    t.snapshot(normalizeOutput(output))
-    t.false(existsSync(configPath))
+    expect(normalizeOutput(output)).toMatchSnapshot()
+    expect(existsSync(configPath)).toBe(false)
   } finally {
     await stopServer()
   }
 })
 
-test('--saveConfig gives higher priority to configuration changes than context properties', async (t) => {
+test('--saveConfig gives higher priority to configuration changes than context properties', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_context`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
   await copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture(test.meta.file, './fixtures/save_context')
+    const output = await new Fixture(import.meta.url, './fixtures/save_context')
       .withFlags({
         buildbotServerSocket: address,
         config: configPath,
@@ -310,13 +310,13 @@ test('--saveConfig gives higher priority to configuration changes than context p
         branch: 'main',
       })
       .runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    expect(normalizeOutput(output)).toMatchSnapshot()
   } finally {
     await stopServer()
   }
 })
 
-test('--saveConfig is performed before deploy', async (t) => {
+test('--saveConfig is performed before deploy', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_deploy`
   const configPath = `${fixtureDir}/netlify.toml`
 
@@ -324,7 +324,7 @@ test('--saveConfig is performed before deploy', async (t) => {
 
   const { address, stopServer } = await startDeployServer()
   try {
-    const output = await new Fixture(test.meta.file, './fixtures/save_deploy')
+    const output = await new Fixture(import.meta.url, './fixtures/save_deploy')
       .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
@@ -333,18 +333,18 @@ test('--saveConfig is performed before deploy', async (t) => {
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
       })
       .runWithBuild()
-    t.snapshot(normalizeOutput(output))
+    expect(normalizeOutput(output)).toMatchSnapshot()
   } finally {
     await stopServer()
   }
 })
 
-test('--saveConfig writes the mutated config to the path in --outputConfigPath', async (t) => {
+test('--saveConfig writes the mutated config to the path in --outputConfigPath', async () => {
   const fixtureDir = `${FIXTURES_DIR}/save_changes`
   const configPath = `${fixtureDir}/netlify.toml`
   const configBeforeBuild = await readFile(configPath, 'utf8')
   const tempConfig = await tmp.file()
-  const output = await new Fixture(test.meta.file, './fixtures/save_changes')
+  const output = await new Fixture(import.meta.url, './fixtures/save_changes')
     .withFlags({
       saveConfig: true,
       outputConfigPath: tempConfig.path,
@@ -354,13 +354,13 @@ test('--saveConfig writes the mutated config to the path in --outputConfigPath',
     })
     .runWithBuild()
 
-  t.snapshot(normalizeOutput(output))
+  expect(normalizeOutput(output)).toMatchSnapshot()
 
   const configAfterBuild = await readFile(configPath, 'utf8')
   const mutatedConfig = await readFile(tempConfig.path, 'utf8')
 
   await tempConfig.cleanup()
 
-  t.is(configAfterBuild, configBeforeBuild)
-  t.true(mutatedConfig.includes('command = "node --version"'))
+  expect(configAfterBuild).toBe(configBeforeBuild)
+  expect(mutatedConfig).toContain('command = "node --version"')
 })
