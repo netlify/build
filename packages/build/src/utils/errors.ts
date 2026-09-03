@@ -1,8 +1,13 @@
 /**
  * Safely extracts a message from a caught value that isn't guaranteed to be an `Error`.
  */
-export const getErrorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : (error?.toString() ?? 'unknown error')
+export const getErrorMessage = (error: unknown): string => {
+  try {
+    return error instanceof Error ? error.message : (error?.toString() ?? 'unknown error')
+  } catch {
+    return 'unknown error'
+  }
+}
 
 type asyncFunction<T> = (...args: unknown[]) => Promise<T>
 /**
