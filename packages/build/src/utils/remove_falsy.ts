@@ -1,10 +1,8 @@
-import { includeKeys } from 'filter-obj'
-
 // Remove falsy values from object
 export const removeFalsy = function <T extends Record<PropertyKey, unknown>>(obj: T): Partial<T> {
-  return includeKeys(obj, isDefined)
+  return Object.fromEntries(Object.entries(obj).filter(([, value]) => isDefined(value))) as Partial<T>
 }
 
-const isDefined = function (_key: PropertyKey, value: unknown): boolean {
+const isDefined = function (value: unknown): boolean {
   return value !== undefined && value !== ''
 }

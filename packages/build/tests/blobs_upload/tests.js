@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
-import { access, readFile } from 'node:fs/promises'
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { platform } from 'node:process'
 import { join } from 'path'
 
@@ -187,6 +187,46 @@ test.serial('Blobs upload step uploads files to deploy store', async (t) => {
   })
 
   t.is(regionAutoRequests.length, 3)
+
+  const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
+  const store = getDeployStore(storeOpts)
+
+  const blob1 = await store.getWithMetadata('something.txt')
+  t.is(blob1.data, 'some value')
+  t.deepEqual(blob1.metadata, {})
+
+  const blob2 = await store.getWithMetadata('with-metadata.txt')
+  t.is(blob2.data, 'another value')
+  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+
+  const blob3 = await store.getWithMetadata('nested/blob')
+  t.is(blob3.data, 'file value')
+  t.deepEqual(blob3.metadata, { some: 'metadata' })
+})
+
+test.serial('Blobs upload step uploads files to dev deploy store', async (t) => {
+  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
+
+  const blobsDir = join(fixture.repositoryRoot, '.netlify', 'v1', 'blobs', 'deploy')
+  await mkdir(join(blobsDir, 'something.txt'), { recursive: true })
+  await mkdir(join(blobsDir, 'with-metadata.txt'), { recursive: true })
+  await mkdir(join(blobsDir, 'nested', 'blob'), { recursive: true })
+  await Promise.all([
+    writeFile(join(blobsDir, 'something.txt', 'blob'), 'some value'),
+    writeFile(join(blobsDir, 'with-metadata.txt', 'blob'), 'another value'),
+    writeFile(join(blobsDir, 'with-metadata.txt', 'blob.meta.json'), JSON.stringify({ meta: 'data', number: 1234 })),
+    writeFile(join(blobsDir, 'nested', 'blob', 'blob'), 'file value'),
+    writeFile(join(blobsDir, 'nested', 'blob', 'blob.meta.json'), JSON.stringify({ some: 'metadata' })),
+  ])
+
+  const output = await fixture
+    .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
+    .runDev(() => Promise.resolve())
+
+  t.true(output.includes('Uploading 3 blobs to deploy store'))
+
+  // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
+  t.is(t.context.blobRequests.set?.length, 6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)

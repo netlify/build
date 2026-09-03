@@ -1,9 +1,22 @@
-import { join } from 'path'
+import { join } from 'node:path'
+import { env } from 'node:process'
+import os from 'node:os'
 
-import envPaths from 'env-paths'
+let configPath: string
+const homedir = os.homedir()
 
-const OSBasedPaths = envPaths('netlify', { suffix: '' })
+switch (process.platform) {
+  case 'darwin':
+    configPath = join(homedir, 'Library/Preferences/netlify')
+    break
+  case 'win32':
+    configPath = join(env.APPDATA ?? join(homedir, 'AppData/Roaming'), 'netlify/Config')
+    break
+  default:
+    configPath = join(env.XDG_CONFIG_HOME ?? join(homedir, '.config'), 'netlify')
+    break
+}
 
-const getPathInHome = (path: string) => join(OSBasedPaths.config, path)
+const getPathInHome = (path: string) => join(configPath, path)
 
 export { getPathInHome }

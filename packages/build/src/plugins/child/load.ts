@@ -1,5 +1,3 @@
-import { includeKeys } from 'filter-obj'
-
 import { getLogic } from './logic.js'
 import { registerTypeScript } from './typescript.js'
 import { validatePlugin } from './validate.js'
@@ -15,7 +13,9 @@ export const load = async function ({ pluginPath, inputs, packageJson, verbose, 
 
   validatePlugin(logic)
 
-  const methods = includeKeys(logic, isEventHandler)
+  const methods = Object.fromEntries(
+    Object.entries(logic as Record<string, unknown>).filter(([, value]) => isEventHandler(value)),
+  )
   const events = Object.keys(methods)
 
   // Context passed to every event handler
@@ -24,6 +24,6 @@ export const load = async function ({ pluginPath, inputs, packageJson, verbose, 
   return { events, context }
 }
 
-const isEventHandler = function (_event: unknown, value: unknown): boolean {
+const isEventHandler = function (value: unknown): boolean {
   return typeof value === 'function'
 }

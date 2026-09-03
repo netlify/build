@@ -1,7 +1,7 @@
 import { readdir, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 // TODO: Remove once we drop support for the legacy `netlify/db/migrations` directory.
 const LEGACY_DB_MIGRATIONS_SRC = 'netlify/db/migrations'

@@ -30,7 +30,11 @@ export default [
   },
   {
     // Allow circular testing package dependency in build and config
-    files: ['packages/build/tests/**/tests.js', 'packages/config/tests/**/tests.js'],
+    files: [
+      'packages/build/tests/**/tests.js',
+      'packages/build/tests/**/*.test.js',
+      'packages/config/tests/**/*.test.js',
+    ],
     rules: {
       'n/no-extraneous-import': 'off',
     },
@@ -750,6 +754,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/src/plugins/child/diff.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/plugins/child/error.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1059,6 +1069,12 @@ export default [
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['packages/build/src/plugins_core/functions_install/index.js'],
+    rules: {
+      'n/no-missing-import': 'off',
     },
   },
   {
