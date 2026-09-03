@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.6](https://github.com/netlify/build/compare/build-v36.4.5...build-v36.4.6) (2026-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/blobs to v11 ([#7206](https://github.com/netlify/build/issues/7206)) ([f75d95f](https://github.com/netlify/build/commit/f75d95f76b88920e9b3e23db22d45154f8921a4e))
+
 ## [36.4.5](https://github.com/netlify/build/compare/build-v36.4.4...build-v36.4.5) (2026-09-03)
 
 
