@@ -79,7 +79,7 @@
     "@netlify/zip-it-and-ship-it": "15.5.0",
     "@sindresorhus/slugify": "^2.0.0",
     "ansis": "^4.1.0",
-    "execa": "^8.0.0",
+    "execa": "^10.0.0",
     "fast-string-width": "^3.0.2",
     "fdir": "^6.0.1",
     "figures": "^6.0.0",
