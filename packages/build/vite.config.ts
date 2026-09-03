@@ -16,7 +16,13 @@ export default defineConfig({
         // and re-transforms them, breaking CJS/ESM interop for their
         // dependencies (e.g. `omit.js`). Force them to load as plain Node
         // modules instead.
-        external: [/@netlify\/config/, /@netlify\/testing/, /packages\/config\//, /packages\/testing\//],
+        external: [
+          /@netlify\/config/,
+          /@netlify\/testing/,
+          /packages\/build\/lib\//,
+          /packages\/config\//,
+          /packages\/testing\//,
+        ],
       },
     },
   },
