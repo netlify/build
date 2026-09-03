@@ -8,21 +8,20 @@ import { CONDITIONS } from './plugin_conditions.js'
 
 /**
  * Internal type from the `plugins.json`
- * @private
  */
-type PluginCompatiblityEntry = {
+export type PluginCompatiblityEntry = {
   version: string
   featureFlag?: string
   overridePinnedVersion?: string
   migrationGuide?: string
+  nodeVersion?: string
   siteDependencies?: Record<string, string>
 }
 
 /**
  * Internal type from the `plugins.json`
- * @private
  */
-type PluginListEntry = {
+export type PluginListEntry = {
   author: string
   description: string
   name: string
@@ -111,7 +110,7 @@ const fetchPluginsList = async function ({
     //    buildbot release.
   } catch (error) {
     logPluginsFetchError(logs, error.message)
-    return oldPluginsList as PluginListEntry[]
+    return oldPluginsList
   }
 }
 
