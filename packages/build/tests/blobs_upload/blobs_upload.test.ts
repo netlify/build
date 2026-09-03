@@ -6,20 +6,24 @@ import { join } from 'path'
 import { getDeployStore } from '@netlify/blobs'
 import { BlobsServer } from '@netlify/blobs/server'
 import { Fixture } from '@netlify/testing'
-import test from 'ava'
 import getPort from 'get-port'
 import { spyOn } from 'tinyspy'
 import tmp from 'tmp-promise'
+import { afterAll, afterEach, beforeAll, beforeEach, expect, test } from 'vitest'
 
 const TOKEN = 'test'
 
-let fetchSpy
+type FetchImplementation = (origFetch: typeof fetch, ...args: Parameters<typeof fetch>) => ReturnType<typeof fetch>
 
-const fetchCustomImplementationStore = new AsyncLocalStorage()
+let fetchSpy: ReturnType<typeof spyOn>
+let blobRequests: Partial<Record<string, string[]>>
+let blobServer: BlobsServer
 
-test.before(() => {
+const fetchCustomImplementationStore = new AsyncLocalStorage<{ fetchImplementation: FetchImplementation }>()
+
+beforeAll(() => {
   const origFetch = globalThis.fetch.bind(globalThis)
-  fetchSpy = spyOn(globalThis, 'fetch', (...args) => {
+  fetchSpy = spyOn(globalThis, 'fetch', (...args: Parameters<typeof fetch>) => {
     const customFetchImpl = fetchCustomImplementationStore.getStore()?.fetchImplementation
     if (customFetchImpl) {
       // we pass origFetch as first argument to allow custom implementation to still use it
@@ -30,182 +34,174 @@ test.before(() => {
   })
 })
 
-test.after(() => {
+afterAll(() => {
   fetchSpy.restore()
 })
 
-test.beforeEach(async (t) => {
+beforeEach(async () => {
   const port = await getPort()
-  t.context.blobRequests = {}
+  blobRequests = {}
 
   const tmpDir = await tmp.dir()
-  t.context.blobServer = new BlobsServer({
+  blobServer = new BlobsServer({
     port,
     token: TOKEN,
     directory: tmpDir.path,
     onRequest: ({ type, url }) => {
-      t.context.blobRequests[type] = t.context.blobRequests[type] || []
-      t.context.blobRequests[type].push(url)
+      blobRequests[type] = [...(blobRequests[type] ?? []), url]
     },
   })
 
-  await t.context.blobServer.start()
+  await blobServer.start()
 
   process.env.NETLIFY_BLOBS_CONTEXT = Buffer.from(
     JSON.stringify({
-      apiURL: `http://localhost:${port}`,
+      apiURL: `http://localhost:${String(port)}`,
     }),
   ).toString('base64')
 })
 
-test.afterEach.always(async (t) => {
-  await t.context.blobServer.stop()
+afterEach(async () => {
+  await blobServer.stop()
   delete process.env.NETLIFY_BLOBS_CONTEXT
 })
 
-test.serial('Blobs upload step uploads files when deploy ID is provided and no files in directory', async (t) => {
-  const {
-    success,
-    logs: { stdout },
-  } = await new Fixture(test.meta.file, './fixtures/src_empty')
+test('Blobs upload step uploads files when deploy ID is provided and no files in directory', async () => {
+  const { success, logs } = await new Fixture(import.meta.url, './fixtures/src_empty')
     // Passing `offline: true` to avoid fetching the configuration from the API
     .withFlags({ deployId: 'abc123', token: TOKEN, offline: true })
     .runBuildProgrammatic()
 
-  t.true(success)
-  t.is(t.context.blobRequests.set, undefined)
+  expect(success).toBe(true)
+  expect(blobRequests.set).toBe(undefined)
 
-  t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
+  expect(logs?.stdout.join('\n')).not.toContain('Uploading blobs to deploy store')
 })
 
-test.serial(
-  'Blobs upload step uploads files when there are files but deploy ID is not provided (legacy API)',
-  async (t) => {
-    const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
+test('Blobs upload step uploads files when there are files but deploy ID is not provided (legacy API)', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
-    const {
-      success,
-      logs: { stdout },
-    } = await fixture.withFlags({ token: TOKEN, offline: true, cwd: fixture.repositoryRoot }).runBuildProgrammatic()
+  const { success, logs } = await fixture
+    .withFlags({ token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
+    .runBuildProgrammatic()
 
-    t.true(success)
+  expect(success).toBe(true)
 
-    const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
-    await t.notThrowsAsync(access(blobsDir))
+  const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
+  await expect(access(blobsDir)).resolves.toBeUndefined()
 
-    t.is(t.context.blobRequests.set, undefined)
+  expect(blobRequests.set).toBe(undefined)
 
-    t.false(stdout.join('\n').includes('Uploading blobs to deploy store'))
-  },
-)
+  expect(logs?.stdout.join('\n')).not.toContain('Uploading blobs to deploy store')
+})
 
-test.serial('Blobs upload step uploads files to deploy store (legacy API)', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
+test('Blobs upload step uploads files to deploy store (legacy API)', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs_legacy').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runBuildProgrammatic()
 
-  t.true(success)
-  t.is(t.context.blobRequests.set.length, 6)
+  expect(success).toBe(true)
+  expect(blobRequests.set).toHaveLength(6)
 
-  const defaultRegionRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const defaultRegionRequests = blobRequests.set?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'us-east-2'
   })
 
-  t.is(defaultRegionRequests.length, 3)
+  expect(defaultRegionRequests).toHaveLength(3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
-  t.is(blob1.data, 'some value')
-  t.deepEqual(blob1.metadata, {})
+  expect(blob1?.data).toBe('some value')
+  expect(blob1?.metadata).toEqual({})
 
   const blob2 = await store.getWithMetadata('with-metadata.txt')
-  t.is(blob2.data, 'another value')
-  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  expect(blob2?.data).toBe('another value')
+  expect(blob2?.metadata).toEqual({ meta: 'data', number: 1234 })
 
   const blob3 = await store.getWithMetadata('nested/file.txt')
-  t.is(blob3.data, 'file value')
-  t.deepEqual(blob3.metadata, { some: 'metadata' })
+  expect(blob3?.data).toBe('file value')
+  expect(blob3?.metadata).toEqual({ some: 'metadata' })
 })
 
-test.serial('Blobs upload step uploads files to deploy store (legacy deploy config API)', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs_legacy_deploy_config').withCopyRoot({
+test('Blobs upload step uploads files to deploy store (legacy deploy config API)', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs_legacy_deploy_config').withCopyRoot({
     git: false,
   })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runBuildProgrammatic()
-  t.true(success)
-  t.is(t.context.blobRequests.set.length, 6)
+  expect(success).toBe(true)
+  expect(blobRequests.set).toHaveLength(6)
 
-  const regionAutoRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const regionAutoRequests = blobRequests.set?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'auto'
   })
 
-  t.is(regionAutoRequests.length, 3)
+  expect(regionAutoRequests).toHaveLength(3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
-  t.is(blob1.data, 'some value')
-  t.deepEqual(blob1.metadata, {})
+  expect(blob1?.data).toBe('some value')
+  expect(blob1?.metadata).toEqual({})
 
   const blob2 = await store.getWithMetadata('with-metadata.txt')
-  t.is(blob2.data, 'another value')
-  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  expect(blob2?.data).toBe('another value')
+  expect(blob2?.metadata).toEqual({ meta: 'data', number: 1234 })
 
   const blob3 = await store.getWithMetadata('nested/file.txt')
-  t.is(blob3.data, 'file value')
-  t.deepEqual(blob3.metadata, { some: 'metadata' })
+  expect(blob3?.data).toBe('file value')
+  expect(blob3?.metadata).toEqual({ some: 'metadata' })
 })
 
-test.serial('Blobs upload step uploads files to deploy store', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
+test('Blobs upload step uploads files to deploy store', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runBuildProgrammatic()
 
-  t.true(success)
+  expect(success).toBe(true)
 
   // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
-  t.is(t.context.blobRequests.set.length, 6)
+  expect(blobRequests.set).toHaveLength(6)
 
-  const regionAutoRequests = t.context.blobRequests.set.filter((urlPath) => {
+  const regionAutoRequests = blobRequests.set?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'auto'
   })
 
-  t.is(regionAutoRequests.length, 3)
+  expect(regionAutoRequests).toHaveLength(3)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
-  t.is(blob1.data, 'some value')
-  t.deepEqual(blob1.metadata, {})
+  expect(blob1?.data).toBe('some value')
+  expect(blob1?.metadata).toEqual({})
 
   const blob2 = await store.getWithMetadata('with-metadata.txt')
-  t.is(blob2.data, 'another value')
-  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  expect(blob2?.data).toBe('another value')
+  expect(blob2?.metadata).toEqual({ meta: 'data', number: 1234 })
 
   const blob3 = await store.getWithMetadata('nested/blob')
-  t.is(blob3.data, 'file value')
-  t.deepEqual(blob3.metadata, { some: 'metadata' })
+  expect(blob3?.data).toBe('file value')
+  expect(blob3?.metadata).toEqual({ some: 'metadata' })
 })
 
-test.serial('Blobs upload step uploads files to dev deploy store', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
+test('Blobs upload step uploads files to dev deploy store', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'v1', 'blobs', 'deploy')
   await mkdir(join(blobsDir, 'something.txt'), { recursive: true })
@@ -223,29 +219,29 @@ test.serial('Blobs upload step uploads files to dev deploy store', async (t) => 
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runDev(() => Promise.resolve())
 
-  t.true(output.includes('Uploading 3 blobs to deploy store'))
+  expect(output.includes('Uploading 3 blobs to deploy store')).toBe(true)
 
   // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
-  t.is(t.context.blobRequests.set?.length, 6)
+  expect(blobRequests.set).toHaveLength(6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
-  t.is(blob1.data, 'some value')
-  t.deepEqual(blob1.metadata, {})
+  expect(blob1?.data).toBe('some value')
+  expect(blob1?.metadata).toEqual({})
 
   const blob2 = await store.getWithMetadata('with-metadata.txt')
-  t.is(blob2.data, 'another value')
-  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  expect(blob2?.data).toBe('another value')
+  expect(blob2?.metadata).toEqual({ meta: 'data', number: 1234 })
 
   const blob3 = await store.getWithMetadata('nested/blob')
-  t.is(blob3.data, 'file value')
-  t.deepEqual(blob3.metadata, { some: 'metadata' })
+  expect(blob3?.data).toBe('file value')
+  expect(blob3?.metadata).toEqual({ some: 'metadata' })
 })
 
-test.serial('Blobs upload step cancels deploy if blob metadata is malformed', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_malformed_blobs_metadata').withCopyRoot({
+test('Blobs upload step cancels deploy if blob metadata is malformed', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_malformed_blobs_metadata').withCopyRoot({
     git: false,
   })
   const { success, severityCode } = await fixture
@@ -253,48 +249,45 @@ test.serial('Blobs upload step cancels deploy if blob metadata is malformed', as
     .runBuildProgrammatic()
 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'v1', 'blobs', 'deploy')
-  await t.notThrowsAsync(access(blobsDir))
+  await expect(access(blobsDir)).resolves.toBeUndefined()
 
-  t.is(t.context.blobRequests.set, undefined)
+  expect(blobRequests.set).toBe(undefined)
 
-  t.false(success)
-  t.is(severityCode, 4)
+  expect(success).toBe(false)
+  expect(severityCode).toBe(4)
 })
 
-test.serial('monorepo > blobs upload, uploads files to deploy store', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/monorepo').withCopyRoot({ git: false })
+test('monorepo > blobs upload, uploads files to deploy store', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot({ git: false })
   const { success } = await fixture
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, packagePath: 'apps/app-1' })
     .runBuildProgrammatic()
 
-  t.true(success)
-  t.is(t.context.blobRequests.set.length, 6)
+  expect(success).toBe(true)
+  expect(blobRequests.set).toHaveLength(6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
 
   const blob1 = await store.getWithMetadata('something.txt')
-  t.is(blob1.data, 'some value')
-  t.deepEqual(blob1.metadata, {})
+  expect(blob1?.data).toBe('some value')
+  expect(blob1?.metadata).toEqual({})
 
   const blob2 = await store.getWithMetadata('with-metadata.txt')
-  t.is(blob2.data, 'another value')
-  t.deepEqual(blob2.metadata, { meta: 'data', number: 1234 })
+  expect(blob2?.data).toBe('another value')
+  expect(blob2?.metadata).toEqual({ meta: 'data', number: 1234 })
 
   const blob3 = await store.getWithMetadata('nested/file.txt')
-  t.is(blob3.data, 'file value')
-  t.deepEqual(blob3.metadata, { some: 'metadata' })
+  expect(blob3?.data).toBe('file value')
+  expect(blob3?.metadata).toEqual({ some: 'metadata' })
 })
 
-test.serial('Blobs upload failure print full error stack and cause to systemlog', async (t) => {
-  const fixture = await new Fixture(test.meta.file, './fixtures/src_with_blobs').withCopyRoot({ git: false })
+test('Blobs upload failure print full error stack and cause to systemlog', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/src_with_blobs').withCopyRoot({ git: false })
 
   const systemLogFile = await tmp.file()
 
-  const {
-    success,
-    logs: { stdout, stderr },
-  } = await fetchCustomImplementationStore.run(
+  const { success, logs } = await fetchCustomImplementationStore.run(
     {
       fetchImplementation: (origFetch, ...args) => {
         if (
@@ -324,16 +317,16 @@ test.serial('Blobs upload failure print full error stack and cause to systemlog'
         .runBuildProgrammatic(),
   )
 
-  t.false(success)
+  expect(success).toBe(false)
 
   // No file descriptors on Windows, so system logging doesn't work.
   if (platform !== 'win32') {
     const systemLog = await readFile(systemLogFile.path, { encoding: 'utf8' })
     // nested internal error visible in system log
-    t.true(systemLog.includes('Nested internal error'))
+    expect(systemLog.includes('Nested internal error')).toBe(true)
   }
 
   // internals don't leak to regular output
-  t.false(stdout.join('\n').includes('Nested internal error'))
-  t.false(stderr.join('\n').includes('Nested internal error'))
+  expect(logs?.stdout.join('\n')).not.toContain('Nested internal error')
+  expect(logs?.stderr.join('\n')).not.toContain('Nested internal error')
 })
