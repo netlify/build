@@ -2,8 +2,8 @@ import { env } from 'process'
 
 import { type TestAPI, describe, test } from 'vitest'
 
-import type { Config } from '../../src/config'
-import type { FeatureFlags } from '../../src/feature_flags'
+import type { Config } from '../../src/config.js'
+import type { FeatureFlags } from '../../src/feature_flags.js'
 import { NodeBundlerName, NODE_BUNDLER } from '../../src/main.js'
 
 interface TestRunnerOptions {

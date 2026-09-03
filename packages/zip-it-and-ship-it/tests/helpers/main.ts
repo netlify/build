@@ -164,33 +164,32 @@ const replaceUnzipPath = function ({ path }: { path: string }): string {
 }
 
 // Returns a list of paths included using `require` calls. Relative requires
-// will be traversed recursively up to a depth defined by `depth`. All the
-// required paths — relative or not — will be returned in a flattened array.
-export const getRequires = async function (
-  { depth = Number.POSITIVE_INFINITY, filePath }: { depth?: number; filePath: string },
-  currentDepth = 1,
-): Promise<string[]> {
-  const requires = await listImports({
-    featureFlags: {},
-    functionName: 'test-function',
-    path: filePath,
-  })
+// will be traversed. All the required paths, relative or not, will be
+// returned in a flattened array.
+export const getRequires = function ({ filePath }: { filePath: string }): string[] {
+  const result: string[] = []
+  const stack = [filePath]
 
-  if (currentDepth >= depth) {
-    return requires
-  }
+  while (stack.length > 0) {
+    const path = stack.pop()!
+    const requires = listImports({
+      featureFlags: {},
+      functionName: 'test-function',
+      path,
+    })
 
-  const result = requires
-  const basePath = dirname(filePath)
-  for (const requirePath of requires) {
-    if (!requirePath.startsWith('.')) {
-      continue
+    result.push(...requires)
+
+    const basePath = dirname(path)
+    for (let i = requires.length - 1; i >= 0; i--) {
+      const requirePath = requires[i]
+
+      if (!requirePath.startsWith('.')) {
+        continue
+      }
+
+      stack.push(resolve(basePath, requirePath))
     }
-
-    const fullRequirePath = resolve(basePath, requirePath)
-
-    const subRequires = await getRequires({ depth, filePath: fullRequirePath }, currentDepth + 1)
-    result.push(...subRequires)
   }
 
   return result

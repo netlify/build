@@ -9,7 +9,7 @@ import { gte, satisfies } from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
-import { NetlifyConfig } from '../index.js'
+import { NetlifyConfig } from '../types/config/netlify_config.js'
 import { BufferedLogs } from '../log/logger.js'
 import {
   logIncompatiblePlugins,

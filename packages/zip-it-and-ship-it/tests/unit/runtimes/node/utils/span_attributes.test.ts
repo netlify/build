@@ -34,7 +34,7 @@ describe('getFunctionBundleSpanAttributes', () => {
 
   test('leaves the generator attribute undefined for functions without one', () => {
     const attributes = getFunctionBundleSpanAttributes({
-      featureFlags: {} as FeatureFlags,
+      featureFlags: {},
       name: 'fn',
       generator: undefined,
       runtimeName: 'js',

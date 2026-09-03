@@ -1,3 +1,4 @@
+// eslint-disable-next-line import-x/no-named-as-default
 import Ajv from 'ajv'
 import type { ValidateFunction } from 'ajv/dist/core.js'
 import ajvErrors from 'ajv-errors'

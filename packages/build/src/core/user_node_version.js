@@ -1,7 +1,7 @@
 import { version as currentVersion, execPath } from 'process'
 
 import { execa } from 'execa'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { addErrorInfo } from '../error/info.js'
 

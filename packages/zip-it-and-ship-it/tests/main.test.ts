@@ -6,10 +6,11 @@ import cpy from 'cpy'
 import decompress from 'decompress'
 import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
+// eslint-disable-next-line import-x/no-named-as-default
 import glob from 'fast-glob'
 import isCI from 'is-ci'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
+import * as semver from 'semver'
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 import unixify from 'unixify'
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
@@ -115,7 +116,7 @@ describe('zip-it-and-ship-it', () => {
       const fixtureDir = 'node-module-native-buildtime'
       const { files } = await zipNode(fixtureDir, { opts })
       const [{ runtime, unzipPath }] = files
-      const requires = await getRequires({ filePath: resolve(unzipPath, 'function.js') })
+      const requires = getRequires({ filePath: resolve(unzipPath, 'function.js') })
       const normalizedRequires = new Set(requires.map((path) => unixify(path)))
 
       expect(runtime).toBe('js')
@@ -155,7 +156,7 @@ describe('zip-it-and-ship-it', () => {
       const { files } = await zipNode(fixtureDir, {
         opts: options,
       })
-      const requires = await getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
+      const requires = getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
       const normalizedRequires = new Set(requires.map((path) => unixify(path)))
       const modulePath = resolve(FIXTURES_DIR, `${fixtureDir}/node_modules/test`)
 
@@ -815,7 +816,7 @@ describe('zip-it-and-ship-it', () => {
     const { files } = await zipNode('node-module-included-try-catch', {
       opts: options,
     })
-    const requires = await getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
+    const requires = getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
 
     expect(requires.includes('test')).toBe(false)
     await expect(`${files[0].unzipPath}/node_modules/test`).not.toPathExist()
@@ -835,7 +836,7 @@ describe('zip-it-and-ship-it', () => {
       const { files } = await zipNode('node-module-included-try-catch', {
         opts,
       })
-      const requires = await getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
+      const requires = getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
 
       expect(requires.includes('test')).toBe(true)
       await expect(`${files[0].unzipPath}/node_modules/test`).toPathExist()
@@ -856,7 +857,7 @@ describe('zip-it-and-ship-it', () => {
       const { files } = await zipNode('node-module-included-try-catch', {
         opts,
       })
-      const requires = await getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
+      const requires = getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
 
       expect(requires.includes('test')).toBe(true)
       await expect(`${files[0].unzipPath}/function/node_modules/test`).not.toPathExist()
@@ -1232,11 +1233,11 @@ describe('zip-it-and-ship-it', () => {
       expect(func2).toBeDefined()
       expect(func1).toBeDefined()
 
-      const requires = await Promise.all([
+      const requires = [
         getRequires({ filePath: resolve(anotherFunc.unzipPath, 'another_function.js') }),
         getRequires({ filePath: resolve(func2.unzipPath, 'function_two.js') }),
         getRequires({ filePath: resolve(func1.unzipPath, 'function_one.js') }),
-      ])
+      ]
 
       expect(requires[0]).toEqual(['test-1'])
       expect(requires[1]).toEqual(['test-1', 'test-2'])
@@ -1278,11 +1279,11 @@ describe('zip-it-and-ship-it', () => {
       expect(func2).toBeDefined()
       expect(func1).toBeDefined()
 
-      const requires = await Promise.all([
+      const requires = [
         getRequires({ filePath: resolve(anotherFunc.unzipPath, 'another_function.js') }),
         getRequires({ filePath: resolve(func2.unzipPath, 'function_two.js') }),
         getRequires({ filePath: resolve(func1.unzipPath, 'function_one.js') }),
-      ])
+      ]
 
       expect(requires[0]).toEqual(externalNodeModules)
       expect(requires[1]).toEqual(externalNodeModules)
@@ -1729,7 +1730,7 @@ describe('zip-it-and-ship-it', () => {
 
   test('Uses the default Node bundler if no configuration object is supplied', async () => {
     const { files } = await zipNode('local-node-module')
-    const requires = await getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
+    const requires = getRequires({ filePath: resolve(files[0].unzipPath, 'function.js') })
 
     expect(requires).toEqual(['test'])
     expect(files[0].bundler).toBe('zisi')

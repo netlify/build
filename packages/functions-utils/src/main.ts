@@ -28,7 +28,7 @@ export const add = async function (src?: string, dist?: string, { fail = default
   })
 }
 
-export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {
+export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -40,7 +40,7 @@ export const list = async function (functionsSrc, { fail = defaultFail } = {} as
   }
 }
 
-export const listAll = async function (functionsSrc, { fail = defaultFail } = {} as any) {
+export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -52,6 +52,6 @@ export const listAll = async function (functionsSrc, { fail = defaultFail } = {}
   }
 }
 
-const defaultFail = function (message) {
+const defaultFail = function (message, _opts?: unknown) {
   throw new Error(message)
 }

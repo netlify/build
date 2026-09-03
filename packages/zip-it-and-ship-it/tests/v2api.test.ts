@@ -4,6 +4,7 @@ import { platform } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
+// eslint-disable-next-line import-x/no-named-as-default
 import glob from 'fast-glob'
 import { pathExists } from 'path-exists'
 import { dir as getTmpDir } from 'tmp-promise'

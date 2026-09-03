@@ -128,7 +128,7 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         generatedFunctions: getGeneratedFunctions(returnValues),
       }
     } catch (error) {
-      const { severity } = await handleBuildError(error, errorParams as any)
+      const { severity } = await handleBuildError(error, errorParams)
       const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
       const { success, severityCode, status } = getSeverity(severity)
       span.setAttributes({

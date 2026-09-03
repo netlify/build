@@ -4,7 +4,7 @@ import { platform } from 'process'
 
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 test('Does not mutate read-only properties', async (t) => {
   const { netlifyConfig } = await new Fixture(

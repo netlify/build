@@ -3,7 +3,7 @@ import path from 'path'
 import process from 'process'
 
 import { execa, type ExecaChildProcess, type Options } from 'execa'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { download } from './downloader.js'
 import { FeatureFlags } from './feature_flags.js'

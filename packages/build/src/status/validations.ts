@@ -1,4 +1,4 @@
-import { DynamicMethods } from 'packages/js-client/lib/types.js'
+import { type DynamicMethods } from '@netlify/api/lib/types.js'
 
 import { SecretScanResult } from '../plugins_core/secrets_scanning/utils.js'
 import { SystemLogger } from '../plugins_core/types.js'
