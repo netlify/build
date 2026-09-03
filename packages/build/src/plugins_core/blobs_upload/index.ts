@@ -4,6 +4,7 @@ import { inspect } from 'node:util'
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
 import { logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { getErrorMessage } from '../../utils/errors.js'
 import { getBlobs } from '../../utils/frameworks_api.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
@@ -78,7 +79,9 @@ const coreStep: CoreStepFunction = async function ({
       }),
     )
   } catch (err) {
-    logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
+    const errorMessage = getErrorMessage(err)
+
+    logError(logs, `Error uploading blobs to deploy store: ${errorMessage}`)
 
     try {
       systemLog(
@@ -88,7 +91,7 @@ const coreStep: CoreStepFunction = async function ({
       // systemLog is meant for debugging purposes, we should not ever throw if it fails
     }
 
-    throw new Error(`Failed while uploading blobs to deploy store: ${err.message}`, { cause: err })
+    throw new Error(`Failed while uploading blobs to deploy store: ${errorMessage}`, { cause: err })
   }
 
   systemLog(`Done uploading blobs to deploy store.`)

@@ -2,6 +2,7 @@ import { getDeployStore, type GetDeployStoreOptions } from '@netlify/blobs'
 
 import { log, logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { getErrorMessage } from '../../utils/errors.js'
 import { getBlobs } from '../../utils/frameworks_api.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
@@ -84,9 +85,11 @@ const coreStep: CoreStepFunction = async function ({
       }),
     )
   } catch (err) {
-    logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
+    const errorMessage = getErrorMessage(err)
 
-    throw new Error(`Failed while uploading blobs to deploy store: ${err.message}`, { cause: err })
+    logError(logs, `Error uploading blobs to deploy store: ${errorMessage}`)
+
+    throw new Error(`Failed while uploading blobs to deploy store: ${errorMessage}`, { cause: err })
   }
 
   if (!quiet) {
