@@ -67,6 +67,22 @@ test('git worktree .git file is treated as repository root', async () => {
   }
 })
 
+test('nearest worktree .git file wins over a parent .git directory', async () => {
+  const parent = await mkdtemp(join(tmpdir(), 'netlify-config-nested-wt-'))
+  try {
+    await mkdir(join(parent, '.git'))
+    const worktree = join(parent, 'wt')
+    await mkdir(worktree)
+    await writeFile(join(worktree, '.git'), 'gitdir: /tmp/main/.git/worktrees/wt\n')
+    const nested = join(worktree, 'apps', 'site')
+    await mkdir(nested, { recursive: true })
+    const repositoryRoot = await getRepositoryRoot({ cwd: nested })
+    expect(resolve(repositoryRoot)).toBe(resolve(worktree))
+  } finally {
+    await rm(parent, { recursive: true, force: true })
+  }
+})
+
 test('--cwd non-existing', async () => {
   const output = await new Fixture()
     .withFlags({ cwd: '/invalid', repositoryRoot: `${FIXTURES_DIR}/empty` })
