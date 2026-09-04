@@ -211,7 +211,7 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           files:
-            packages/build/coverage/coverage-final.json, packages/config/coverage/lcov.info,
+            packages/build/coverage/lcov.info, packages/config/coverage/lcov.info,
             packages/cache-utils/coverage/coverage-final.json, packages/function-utils/coverage/coverage-final.json,
             packages/git-utils/coverage/coverage-final.json, packages/run-utils/coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}

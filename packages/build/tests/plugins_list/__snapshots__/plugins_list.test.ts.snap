@@ -1,0 +1,3185 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Can execute local binaries when using .netlify/plugins/ 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache_bin
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache_bin
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache_bin/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache_bin
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+1.0.0
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Can require site dependencies when using .netlify/plugins/ 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache_site_deps
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache_site_deps
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache_site_deps/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache_site_deps
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+true
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Can use local plugins even when some plugins are cached 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache_local
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache_local
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache_local/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache_local
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+   - ./plugin.js@1.0.0 from netlify.toml
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+./plugin.js (onPostBuild event)                               
+────────────────────────────────────────────────────────────────
+
+test
+
+(./plugin.js onPostBuild completed in 1ms)
+Build step duration: ./plugin.js onPostBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Compatibility order take precedence over the \`featureFlag\` property 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin versions if already pinned 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (pinned 0, latest 1-0-0, expected 0, compatible 1-0-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-3-0: latest version is 1-0-0
+     To upgrade this plugin, please uninstall and re-install it from the Netlify plugins directory (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin versions if the build failed 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_build_failed
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_build_failed
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_build_failed/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/plugins_list/fixtures/pin_build_failed
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/plugins_list/fixtures/pin_build_failed
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+node: bad option: --invalid"
+`;
+
+exports[`Do not pin plugin versions if the build was installed in package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_module
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_module
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_module/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_module
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-test
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-test@1.0.0 from netlify.toml and package.json
+
+netlify-plugin-test (onPreBuild event)                        
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-test onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-test onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin versions if the plugin failed 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_plugin_failed
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_plugin_failed
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_plugin_failed
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+Plugin "netlify-plugin-contextual-env" failed                 
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        netlify-plugin-contextual-env
+  Version:        1.0.0
+  Repository:     test
+  npm link:       https://www.npmjs.com/package/netlify-plugin-contextual-env
+
+  Error location
+  In "onPreBuild" event in "netlify-plugin-contextual-env" from Netlify app
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_plugin_failed
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin versions without a siteId 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin versions without an API token 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not pin plugin with prerelease versions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_prerelease
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_prerelease
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_prerelease
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 1-2-3-rc from Netlify app (latest 1-2-3-rc, expected 1-2-3-rc, compatible 1-2-3-rc)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Do not use plugins cached in .netlify/plugins/ if outdated 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache_outdated
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache_outdated
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache_outdated/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache_outdated
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if already pinned 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (pinned 0, latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if installed in UI 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_ui
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_ui
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_ui
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if installed in package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_module
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_module
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_module/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_module
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 1-0-1 from netlify.toml and package.json (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if there are no API token 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if there are no matching plugin runs 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if there are no matching plugin runs version 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if there are no plugin runs 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not pin netlify.toml-only plugin versions if there are no site ID 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not print incompatible plugins installed in package.json if major version is same 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json_same_major
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json_same_major
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json_same_major/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json_same_major
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-4-0 from netlify.toml and package.json (latest 0-4-0, expected 0-4-1, compatible 0-4-1)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not print incompatible plugins installed in package.json if not using the compatibility field 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 1-0-0 from netlify.toml and package.json (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not report 404 updatePlugin API error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Fails the build when pinning netlify.toml-only plugin versions and the API request fails 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+API error on "getLatestPluginRuns"                            
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Bad Request
+
+  Error location
+  While calling the Netlify API endpoint 'getLatestPluginRuns' with:
+  {
+    "site_id": "test",
+    "packages": [
+      "netlify-plugin-contextual-env"
+    ],
+    "state": "success"
+  }
+
+  Error properties
+  {
+    name: 'JSONHTTPError',
+    status: 400,
+    json: [ { package: 'netlify-plugin-contextual-env', version: '1.0.0' } ]
+  }
+
+  Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env"
+`;
+
+exports[`Fetches the list of plugin versions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Install plugins in .netlify/plugins/ when not cached 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/valid_package
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/valid_package
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/valid_package/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/valid_package
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Only pin plugin versions in production 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: false
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Only prints the list of plugin versions in verbose mode 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: false
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache/netlify.toml
+
+> Context
+  production
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)"
+`;
+
+exports[`Pin netlify.toml-only plugin versions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_config_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_config_success
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/pin_config_success/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_config_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (pinned 0.3, latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Pin plugin versions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Pinning plugin versions takes into account the compatibility field 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (pinned 0, latest 1-0-0, expected 0-3-0, compatible 100-0-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-3-0: latest version is 1-0-0
+     To upgrade this plugin, please uninstall and re-install it from the Netlify plugins directory (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugin pinned versions that are feature flagged are not ignored if pinned but no matching feature flag 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (pinned 0-3-0, latest 0-2-0, expected 0-3-0, compatible 0-2-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugin versions can be feature flagged 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugin versions that are feature flagged are ignored if no matching feature flag 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-2-0, expected 0-2-0, compatible 0-2-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify compatibility.migrationGuide 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-1-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-1-0 from netlify.toml (latest 0-3-0, expected 0-1-0, compatible 0-1-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-1-0: latest version is 0-3-0
+     Migration guide: http://test.com
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify matching compatibility.nodeVersion 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify matching compatibility.siteDependencies 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify multiple matching compatibility conditions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify multiple non-matching compatibility conditions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify non-existing compatibility.siteDependencies 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify non-matching compatibility.nodeVersion 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-1-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-1-0 from netlify.toml (latest 0-3-0, expected 0-1-0, compatible 0-1-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-1-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify non-matching compatibility.siteDependencies 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins can specify non-matching compatibility.siteDependencies range 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies_range
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies_range
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies_range/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_site_dependencies_range
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (latest 0-3-0, expected 0-2-0, compatible 0-2-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins compatibility defaults to version field 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins does not ignore compatibility entries without conditions if pinned 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (pinned 0-2-0, latest 0-3-0, expected 0-2-0, compatible 0-3-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins ignore compatibility conditions if pinned 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-2-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml (pinned 0-2-0, latest 0-3-0, expected 0-2-0, compatible 0-3-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Plugins ignore compatibility entries without conditions unless pinned 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_compat_node_version/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_compat_node_version
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-1-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-1-0 from netlify.toml (latest 0-3-0, expected 0-1-0, compatible 0-1-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-1-0: latest version is 0-3-0
+     To upgrade this plugin, please remove it from "netlify.toml" and install it from the Netlify plugins directory instead (https://app.netlify.com/plugins)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Print a warning when using plugins not in plugins.json nor package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/invalid_package
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/invalid_package
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/invalid_package/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/invalid_package
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: power-cartesian-product
+
+> Context
+  production
+
+> Available plugins
+
+"
+`;
+
+exports[`Prints incompatible plugins installed in package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_incompatible_package_json
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 1-0-0 from netlify.toml and package.json (latest 0-3-0, expected 0-2-0, compatible 0-2-0)
+
+> Incompatible plugins
+   - netlify-plugin-contextual-env 1-0-0: version 1.0.0 is the most recent version compatible with Node.js <100
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Prints outdated plugins installed in package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_outdated_package_json
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_outdated_package_json
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_outdated_package_json/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_outdated_package_json
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-2-0 from netlify.toml and package.json (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+> Outdated plugins
+   - netlify-plugin-contextual-env 0-2-0: latest version is 0-3-0
+     To upgrade this plugin, please update its version in "package.json"
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Report updatePlugin API error without failing the build 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/pin_success
+  sendStatus: true
+  siteId: test
+  testOpts:
+    host: /test/socket
+    pluginsListUrl: /test/socket
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/pin_success
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from Netlify app (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+API error on "updatePlugin"                                   
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Bad Request
+
+  Error location
+  While calling the Netlify API endpoint 'updatePlugin' with:
+  {
+    "package": "netlify-plugin-contextual-env",
+    "site_id": "test",
+    "body": {
+      "pinned_version": "0.3"
+    }
+  }
+
+  Error properties
+  { name: 'JSONHTTPError', status: 400, json: {} }
+
+  Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/pin_success
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: netlify-plugin-contextual-env
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Use plugins cached in .netlify/plugins/ 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Uses fallback when the plugins fetch fails 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+Warning: could not fetch latest plugins list. Plugins versions might not be the latest.
+Request failed with a response code: 500
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Uses fallback when the plugins fetch succeeds with an invalid response 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+Warning: could not fetch latest plugins list. Plugins versions might not be the latest.
+Request succeeded but with an invalid response:
+{
+  "error": "test"
+}
+
+> Available plugins
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+test
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Works with .netlify being a regular file 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins_list/fixtures/plugins_cache_regular_file
+  testOpts:
+    pluginsListUrl: /test/socket
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins_list/fixtures/plugins_cache_regular_file
+
+> Config file
+  packages/build/tests/plugins_list/fixtures/plugins_cache_regular_file/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins_list/fixtures/plugins_cache_regular_file
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-contextual-env
+
+> Context
+  production
+
+> Available plugins
+
+> Installing plugins
+   - netlify-plugin-contextual-env 0-3-0
+
+> Loading plugins
+   - netlify-plugin-contextual-env 0-3-0 from netlify.toml (latest 0-3-0, expected 0-3-0, compatible 0-3-0)
+
+netlify-plugin-contextual-env (onPreBuild event)              
+────────────────────────────────────────────────────────────────
+
+Nothing found... keeping default ENVs
+
+(netlify-plugin-contextual-env onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-contextual-env onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;

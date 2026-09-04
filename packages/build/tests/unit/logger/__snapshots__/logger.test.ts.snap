@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`System logger does not write to file descriptor when \`debug: true\` 1`] = `
+"Hello world {"object":true,"problem":false} Something went wrong Error: Something went wrong
+STACK TRACE
+STACK TRACE"
+`;
+
+exports[`System logger writes to file descriptor 1`] = `
+"Hello world {"object":true,"problem":false} Something went wrong Error: Something went wrong
+STACK TRACE
+"
+`;

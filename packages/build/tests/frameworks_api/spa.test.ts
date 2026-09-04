@@ -8,7 +8,7 @@ test('Honors `spa_fallback` declared through the Frameworks API config file', as
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.spa_fallback).toBe(true)
+  expect(netlifyConfig?.spa_fallback).toBe(true)
 })
 
 test('`netlify.toml` takes precedence over the Frameworks API for `spa_fallback`', async () => {
@@ -18,5 +18,5 @@ test('`netlify.toml` takes precedence over the Frameworks API for `spa_fallback`
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.spa_fallback).toBe(false)
+  expect(netlifyConfig?.spa_fallback).toBe(false)
 })
