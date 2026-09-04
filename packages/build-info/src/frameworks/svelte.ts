@@ -5,6 +5,7 @@ export class Svelte extends BaseFramework implements Framework {
   name = 'Svelte'
   npmDependencies = ['svelte']
   excludedNpmDependencies = ['sapper', '@sveltejs/kit']
+  configFiles = ['svelte.config.js']
   category = Category.FrontendFramework
   staticAssetsDirectory = 'static'
 
