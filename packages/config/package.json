@@ -59,6 +59,7 @@
   "license": "MIT",
   "dependencies": {
     "@netlify/api": "^15.1.2",
+    "@opentelemetry/api": "~1.8.0",
     "@netlify/headers-parser": "^10.1.1",
     "@netlify/redirect-parser": "^16.1.1",
     "chalk": "^5.0.0",
@@ -90,6 +91,14 @@
     "is-ci": "^4.0.0",
     "tmp-promise": "^3.0.2",
     "vitest": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@netlify/opentelemetry-sdk-setup": "^2.0.0 || ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@netlify/opentelemetry-sdk-setup": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"
