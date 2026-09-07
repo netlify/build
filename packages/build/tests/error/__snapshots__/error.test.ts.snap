@@ -575,7 +575,6 @@ Netlify Build Complete
 Build step duration: Netlify Build completed in 1ms
 
 Warning: test
-STACK TRACE
 STACK TRACE"
 `;
 
