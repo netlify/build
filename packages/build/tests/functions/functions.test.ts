@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import type { FunctionResult, Manifest } from '@netlify/zip-it-and-ship-it'
 import semver from 'semver'
-import { assert, expect, test } from 'vitest'
+import { expect, test } from 'vitest'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
 import { importJsonFile } from '../../lib/utils/json.js'
@@ -150,9 +150,8 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   const { functions } = await importJsonFile<Manifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
-  const serverEntry = functions.find(({ name }) => name === '___netlify-server')
+  const serverEntry = functions.find(({ name }) => name === '___netlify-server')!
 
-  assert.isDefined(serverEntry)
   expect(serverEntry.displayName).toBe('Netlify Server')
   expect(serverEntry.generator).toBe('netlify-server')
   expect(serverEntry.routes).toHaveLength(1)

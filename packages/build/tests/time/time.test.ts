@@ -2,7 +2,7 @@ import dns from 'dns'
 
 import { intercept, cleanAll } from '@netlify/nock-udp'
 import { Fixture } from '@netlify/testing'
-import { afterAll, assert, beforeEach, expect, test, vi } from 'vitest'
+import { afterAll, beforeEach, expect, test, vi } from 'vitest'
 
 const origLookup = dns.lookup
 
@@ -62,9 +62,8 @@ test('Sends a `bundler: "zisi"` tag when bundler set to zisi', async ({ task }) 
   const timerRequests = await getAllTimerRequests(task.name, './fixtures/functions_zisi')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
-  )
+  )!
 
-  assert.isDefined(functionsBundlingRequest)
   expect(functionsBundlingRequest).toContain('bundler:zisi')
   expect(functionsBundlingRequest).not.toContain('bundler:zisi,bundler:zisi')
 })
@@ -73,9 +72,8 @@ test('Sends a `bundler: "nft"` tag when bundler set to nft', async ({ task }) =>
   const timerRequests = await getAllTimerRequests(task.name, './fixtures/functions_nft')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
-  )
+  )!
 
-  assert.isDefined(functionsBundlingRequest)
   expect(functionsBundlingRequest).toContain('bundler:nft')
   expect(functionsBundlingRequest).not.toContain('bundler:nft,bundler:nft')
 })
@@ -84,9 +82,8 @@ test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbui
   const timerRequests = await getAllTimerRequests(task.name, './fixtures/functions_esbuild')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
-  )
+  )!
 
-  assert.isDefined(functionsBundlingRequest)
   expect(functionsBundlingRequest).toContain('bundler:nft,bundler:esbuild')
 })
 
