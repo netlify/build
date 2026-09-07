@@ -1,4 +1,4 @@
-import semver from 'semver'
+import * as semver from 'semver'
 
 // Compare two versions by their major versions.
 // Takes into account the special rules for `0.*.*` and `0.0.*` versions.

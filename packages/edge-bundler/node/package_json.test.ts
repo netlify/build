@@ -1,4 +1,4 @@
-import semver from 'semver'
+import * as semver from 'semver'
 import { test, expect } from 'vitest'
 
 import { getPackageVersion } from './package_json.js'

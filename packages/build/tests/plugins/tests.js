@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
-import tmp, { tmpName } from 'tmp-promise'
+import * as tmp from 'tmp-promise'
+import { tmpName } from 'tmp-promise'
 
 import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
 

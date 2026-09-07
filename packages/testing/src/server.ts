@@ -56,7 +56,7 @@ const requestHandler = async (req: IncomingMessage, res: ServerResponse, request
     await setTimeoutPromise(wait)
   }
 
-  const requestBody = await getRequestBody(req as any)
+  const requestBody = await getRequestBody(req)
 
   const headersA = Object.keys(req.headers).sort().join(' ')
   if (req.url && req.method) {

@@ -1,6 +1,6 @@
 import { execPath, version as currentVersion } from 'process'
 
-import semver from 'semver'
+import * as semver from 'semver'
 import link from 'terminal-link'
 
 import { logWarning, logWarningSubHeader } from '../log/logger.js'

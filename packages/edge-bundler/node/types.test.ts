@@ -2,7 +2,7 @@ import { readFile, rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import nock from 'nock'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
 import { testLogger } from '../test/util.js'

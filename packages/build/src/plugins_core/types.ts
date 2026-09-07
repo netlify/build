@@ -1,4 +1,4 @@
-import { type DynamicMethods } from 'packages/js-client/lib/types.js'
+import { type DynamicMethods } from '@netlify/api/lib/types.js'
 
 import type { NetlifyPluginConstants } from '../core/constants.js'
 import type { BufferedLogs } from '../log/logger.js'

@@ -25,7 +25,6 @@ export default [
       ],
 
       // Silencing false positives
-      'import/no-unresolved': ['off'],
     },
   },
   {
@@ -43,17 +42,10 @@ export default [
   /* Per-file rule suppressions */
 
   {
-    files: ['commitlint.config.cjs'],
-    rules: {
-      'no-undef': 'off',
-    },
-  },
-  {
     files: ['packages/build-info/src/browser/file-system.test.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
@@ -116,7 +108,6 @@ export default [
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
@@ -171,7 +162,6 @@ export default [
     files: ['packages/build-info/src/frameworks/nuxt.test.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {
@@ -236,12 +226,6 @@ export default [
     files: ['packages/build-info/src/node/file-system.ts'],
     rules: {
       '@typescript-eslint/return-await': 'off',
-    },
-  },
-  {
-    files: ['packages/build-info/src/node/get-build-info.test.ts'],
-    rules: {
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {
@@ -384,25 +368,16 @@ export default [
     files: ['packages/build/src/core/bin.js'],
     rules: {
       'n/hashbang': 'off',
-      'n/no-missing-import': 'off',
     },
   },
   {
     files: ['packages/build/src/core/build.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -417,27 +392,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/core/dev.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/dry.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/core/feature_flags.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/lingering.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -447,19 +404,11 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/missing_side_file.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
     files: ['packages/build/src/core/normalize_flags.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -476,12 +425,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/core/user_node_version.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/env/changes.js'],
     rules: {
       '@typescript-eslint/no-dynamic-delete': 'off',
@@ -491,27 +434,11 @@ export default [
     files: ['packages/build/src/env/main.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/error/api.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/error/build.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
     files: ['packages/build/src/error/handle.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
     },
   },
@@ -521,18 +448,6 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/error/monitor/print.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/error/monitor/report.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -558,11 +473,9 @@ export default [
   {
     files: ['packages/build/src/error/parse/parse.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
   {
@@ -573,12 +486,6 @@ export default [
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/error/parse/properties.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -619,24 +526,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/index.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/install/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/install/missing.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/description.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-return': 'off',
@@ -649,7 +538,6 @@ export default [
   {
     files: ['packages/build/src/log/logger.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/prefer-optional-chain': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -662,7 +550,6 @@ export default [
   {
     files: ['packages/build/src/log/messages/compatibility.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -672,15 +559,8 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/log/messages/config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/messages/core.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
@@ -688,51 +568,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/log/messages/core_steps.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/dry.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/install.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/ipc.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/mutations.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/messages/plugins.ts'],
     rules: {
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/status.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/steps.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -754,64 +592,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/child/diff.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/child/load.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/logic.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/run.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/status.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/typescript.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/utils.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/validate.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -829,15 +612,8 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/expected_version.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
@@ -845,12 +621,6 @@ export default [
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/ipc.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -863,40 +633,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/load.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/check.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/load.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/manifest/main.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/path.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/validate.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -915,7 +654,6 @@ export default [
   {
     files: ['packages/build/src/plugins/options.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -923,35 +661,20 @@ export default [
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/pinned_version.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
     files: ['packages/build/src/plugins/plugin_conditions.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
   {
-    files: ['packages/build/src/plugins/resolve.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/spawn.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -970,25 +693,12 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/build_command.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins_core/deploy/buildbot_client.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins_core/deploy/index.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1000,20 +710,12 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/db_setup/index.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins_core/edge_functions/index.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-confusing-void-expression': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
@@ -1022,7 +724,6 @@ export default [
   {
     files: ['packages/build/src/plugins_core/edge_functions/validate_manifest/validate_edge_functions_manifest.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/require-await': 'off',
     },
   },
@@ -1042,16 +743,8 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/functions/error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins_core/functions/index.ts'],
     rules: {
-      'import/named': 'off',
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
@@ -1059,22 +752,10 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/functions/utils.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins_core/functions/zisi.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins_core/functions_install/index.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1086,7 +767,6 @@ export default [
   {
     files: ['packages/build/src/plugins_core/secrets_scanning/index.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
@@ -1112,7 +792,6 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
       '@typescript-eslint/prefer-promise-reject-errors': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/consistent-indexed-object-style': 'off',
@@ -1121,7 +800,6 @@ export default [
   {
     files: ['packages/build/src/plugins_core/types.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
@@ -1134,34 +812,14 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/status/load_error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/status/report.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/status/success.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/status/validations.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
   {
     files: ['packages/build/src/steps/core_step.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -1170,16 +828,13 @@ export default [
   {
     files: ['packages/build/src/steps/error.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
   {
     files: ['packages/build/src/steps/get.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -1189,31 +844,16 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/steps/plugin.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/steps/return.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/steps/run_core_steps.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
   {
     files: ['packages/build/src/steps/run_step.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
@@ -1222,19 +862,6 @@ export default [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/steps/run_steps.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/steps/update_config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1295,34 +922,9 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/utils/json.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/test-d/config/inputs.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/test-d/config/netlify_config.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/prefer-optional-chain': 'off',
-    },
-  },
-  {
-    files: ['packages/build/test-d/netlify_plugin.ts'],
-    rules: {
-      null: 'off',
-    },
-  },
-  {
-    files: ['packages/build/test-d/netlify_plugin_options.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1360,12 +962,6 @@ export default [
     files: ['packages/cache-utils/src/expire.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off',
-    },
-  },
-  {
-    files: ['packages/cache-utils/src/fs.ts'],
-    rules: {
-      null: 'off',
     },
   },
   {
@@ -1409,9 +1005,6 @@ export default [
   {
     files: ['packages/cache-utils/tests/dir.test.ts'],
     rules: {
-      'import/named': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
@@ -1426,27 +1019,11 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/api/build_settings.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/api/client.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/api/site_info.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
     },
@@ -1464,7 +1041,6 @@ export default [
   {
     files: ['packages/config/src/bin/flags.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
@@ -1477,7 +1053,6 @@ export default [
     files: ['packages/config/src/bin/main.js'],
     rules: {
       'n/hashbang': 'off',
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1489,7 +1064,6 @@ export default [
   {
     files: ['packages/config/src/context.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -1499,7 +1073,6 @@ export default [
   {
     files: ['packages/config/src/edge_functions.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -1520,15 +1093,8 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/env/git.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/env/main.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
@@ -1549,7 +1115,6 @@ export default [
   {
     files: ['packages/config/src/files.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
@@ -1558,40 +1123,8 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/functions_config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/index.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/integrations.ts'],
-    rules: {
-      '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-unnecessary-condition': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/log/messages.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/log/options.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/main.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -1603,36 +1136,16 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/merge.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/merge_normalize.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
   {
-    files: ['packages/config/src/mutations/apply.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/mutations/update.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/normalize.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
@@ -1642,21 +1155,8 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/options/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/origin.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/parse.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
@@ -1671,16 +1171,9 @@ export default [
   {
     files: ['packages/config/src/redirects.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/simplify.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1702,24 +1195,6 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/identical.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/validations.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1783,7 +1258,6 @@ export default [
   {
     files: ['packages/edge-bundler/node/declaration.ts'],
     rules: {
-      null: 'off',
       '@typescript-eslint/consistent-generic-constructors': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
     },
@@ -1872,7 +1346,6 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
-      null: 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
     },
   },
@@ -1881,7 +1354,6 @@ export default [
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/prefer-reduce-type-parameter': 'off',
     },
@@ -1960,12 +1432,10 @@ export default [
   {
     files: ['packages/edge-bundler/node/validation/manifest/index.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      null: 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
   },
@@ -1993,10 +1463,7 @@ export default [
     files: ['packages/functions-utils/src/main.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
     },
   },
@@ -2032,7 +1499,6 @@ export default [
   {
     files: ['packages/git-utils/src/exec.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -2120,7 +1586,6 @@ export default [
   {
     files: ['packages/js-client/src/index.test.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -2133,18 +1598,11 @@ export default [
   {
     files: ['packages/js-client/src/index.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['packages/js-client/src/methods/response.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -2154,17 +1612,9 @@ export default [
     },
   },
   {
-    files: ['packages/js-client/src/operations.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/js-client/src/operations.test.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      null: 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
     },
   },
@@ -2229,7 +1679,6 @@ export default [
   {
     files: ['packages/opentelemetry-sdk-setup/src/util.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-confusing-void-expression': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -2263,7 +1712,6 @@ export default [
   {
     files: ['packages/redirect-parser/src/all.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -2272,7 +1720,6 @@ export default [
   {
     files: ['packages/redirect-parser/src/merge.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
     },
@@ -2360,10 +1807,7 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
@@ -2474,7 +1918,6 @@ export default [
     rules: {
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
-      null: 'off',
     },
   },
   {
@@ -2499,7 +1942,6 @@ export default [
   {
     files: ['packages/zip-it-and-ship-it/src/runtimes/node/bundlers/nft/index.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
     },
@@ -2675,12 +2117,6 @@ export default [
     },
   },
   {
-    files: ['packages/zip-it-and-ship-it/src/utils/matching.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
     files: ['packages/zip-it-and-ship-it/src/utils/remove_undefined.ts'],
     rules: {
       '@typescript-eslint/consistent-indexed-object-style': 'off',
@@ -2696,7 +2132,6 @@ export default [
     files: ['packages/zip-it-and-ship-it/src/zip.ts'],
     rules: {
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {
@@ -2712,7 +2147,6 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
     },
   },
@@ -2749,7 +2183,6 @@ export default [
   {
     files: ['packages/zip-it-and-ship-it/tests/helpers/test_many.ts'],
     rules: {
-      'n/no-missing-import': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-confusing-void-expression': 'off',
@@ -2763,13 +2196,6 @@ export default [
     },
   },
   {
-    files: ['packages/zip-it-and-ship-it/tests/list_functions_files.test.ts'],
-    rules: {
-      '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  {
     files: ['packages/zip-it-and-ship-it/tests/main.test.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -2778,7 +2204,6 @@ export default [
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       'vitest/expect-expect': 'off',
@@ -2793,14 +2218,12 @@ export default [
     rules: {
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {
     files: ['packages/zip-it-and-ship-it/tests/telemetry.test.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {
@@ -2816,7 +2239,6 @@ export default [
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/non-nullable-type-assertion-style': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
     },
@@ -2824,41 +2246,39 @@ export default [
   {
     files: ['packages/zip-it-and-ship-it/tests/zip_function.test.ts'],
     rules: {
-      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
+  // TODO (43081j): removing these will make ESLint auto-fix them by
+  // removing useless defaults (e.g. `const {x = 5} = fn()` when `fn` _always_
+  // returns an `x`.
+  // They need individually investigating and removing from this list.
   {
-    files: ['packages/build/tests/core/tests.js'],
+    files: [
+      'packages/build/src/error/parse/parse.ts',
+      'packages/build/src/error/types.ts',
+      'packages/build/src/plugins/child/utils.ts',
+      'packages/build/src/plugins/compatibility.ts',
+      'packages/build/src/plugins/list.ts',
+      'packages/build/src/plugins_core/frameworks_api/index.ts',
+      'packages/build/src/plugins_core/functions/zisi.ts',
+      'packages/build/src/time/main.ts',
+      'packages/config/src/case.ts',
+      'packages/config/src/env/main.ts',
+      'packages/functions-utils/src/main.ts',
+      'packages/redirect-parser/src/all.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/bundler.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/index.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/bundlers/esbuild/src_files.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/index.ts',
+      'packages/zip-it-and-ship-it/src/runtimes/node/parser/index.ts',
+      'packages/zip-it-and-ship-it/tests/main.test.ts',
+    ],
     rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/error_reporting/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/monitor/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/plugins_events/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/time/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
+      '@typescript-eslint/no-useless-default-assignment': 'off',
     },
   },
   {

@@ -6,7 +6,7 @@ import { pathToFileURL } from 'url'
 
 import { lt } from 'semver'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'

@@ -9,7 +9,7 @@ import { Fixture } from '@netlify/testing'
 import test from 'ava'
 import getPort from 'get-port'
 import { spyOn } from 'tinyspy'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 const TOKEN = 'test'
 

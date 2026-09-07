@@ -1,7 +1,7 @@
 import { mkdir } from 'fs/promises'
 import { basename, join } from 'path'
 
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import toml from 'toml'
 
 import type { FunctionConfig } from '../../config.js'

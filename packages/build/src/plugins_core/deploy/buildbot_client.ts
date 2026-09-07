@@ -97,7 +97,7 @@ const writePayload = addAsyncErrorMessage(async (buildbotClient: net.Socket, pay
 }, 'Could not send payload to buildbot')
 
 const getNextParsedResponsePromise = addAsyncErrorMessage<BuildbotResponse>(async (buildbotClient: net.Socket) => {
-  const [data] = await once(buildbotClient, 'data')
+  const [data] = (await once(buildbotClient, 'data')) as [string]
   return JSON.parse(data) as BuildbotResponse
 }, 'Invalid response from buildbot')
 

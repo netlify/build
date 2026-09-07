@@ -1,5 +1,6 @@
 import { normalize, resolve } from 'path'
 
+// eslint-disable-next-line import-x/no-named-as-default
 import glob from 'fast-glob'
 
 import { minimatch } from '../../../utils/matching.js'

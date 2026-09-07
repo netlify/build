@@ -2,7 +2,7 @@ import fs from 'fs'
 import { platform } from 'os'
 import { join } from 'path'
 
-import memfs from 'memfs'
+import * as memfs from 'memfs'
 import { vi } from 'vitest'
 
 export const osHomeDir = platform() === 'win32' ? 'C:\\Users\\test-user' : '/home/test-user'

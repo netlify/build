@@ -10,7 +10,7 @@ import process from 'process'
 // should have a proper fix for this.
 import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { fixturesDir } from '../../test/util.js'

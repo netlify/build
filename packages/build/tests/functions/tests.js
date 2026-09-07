@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import test from 'ava'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
 import { pathExists } from '../../lib/utils/path_exists.js'

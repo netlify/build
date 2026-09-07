@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import commonPathPrefix from 'common-path-prefix'
 import pRetry, { AbortError } from 'p-retry'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { DenoBridge } from '../bridge.js'
 import { Bundle, BundleFormat } from '../bundle.js'
@@ -58,7 +58,6 @@ export const bundle = async ({
   vendorDirectory,
 }: BundleTarballOptions): Promise<(arg: FinalizeTarballBundleOptions) => Promise<Bundle>> => {
   const bundleDir = await tmp.dir({ unsafeCleanup: true })
-  const cleanup = [bundleDir.cleanup]
 
   const initialManifest: Omit<Manifest, 'function_config' | 'routes' | 'post_cache_routes'> = {
     functions: {},
@@ -218,7 +217,7 @@ export const bundle = async ({
 
     const hash = await getFileHash(tarballPath)
 
-    await Promise.allSettled(cleanup.map((task) => task()))
+    await Promise.allSettled([bundleDir.cleanup()])
 
     return {
       extension: TARBALL_EXTENSION,

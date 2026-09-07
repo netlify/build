@@ -6,7 +6,7 @@ import { getParentColorEnv } from '../log/colors.js'
 // When run locally, this tries to emulate the production environment.
 export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   const parentColorEnv = getParentColorEnv()
-  const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
+  const parentEnv: Record<string, unknown> = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
   return Object.fromEntries(Object.entries(parentEnv).filter(([key]) => shouldKeepEnv(key)))
 }
 

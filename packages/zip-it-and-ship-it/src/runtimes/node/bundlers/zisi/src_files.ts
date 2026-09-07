@@ -115,7 +115,7 @@ const getFileDependencies = async function ({
   state.localFiles.add(path)
 
   const basedir = dirname(path)
-  const dependencies = await listImports({ featureFlags, functionName, path })
+  const dependencies = listImports({ featureFlags, functionName, path })
 
   const depsPaths = await Promise.all(
     dependencies.filter(nonNullable).map((dependency) =>

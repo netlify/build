@@ -3,7 +3,7 @@ import { rm } from 'fs/promises'
 import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
 
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { fixturesDir, useFixture } from '../test/util.js'

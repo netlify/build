@@ -7,7 +7,15 @@ import { promisify } from 'util'
 import getPort from 'get-port'
 
 // Start a TCP server to mock calls.
-export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest = undefined } = {}) {
+export const startTcpServer = async function ({
+  response = '',
+  useUnixSocket = true,
+  onRequest,
+}: {
+  response?: string
+  useUnixSocket?: boolean
+  onRequest?: (request: string | Record<string, unknown>) => Promise<void>
+} = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests, onRequest }))

@@ -4,7 +4,7 @@ import { PassThrough } from 'stream'
 
 import { execa } from 'execa'
 import nock from 'nock'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { beforeEach, afterEach, test, expect, type TestContext as VitestTestContext, vi } from 'vitest'
 
 import { fixturesDir, testLogger } from '../test/util.js'
@@ -48,6 +48,7 @@ afterEach(async (ctx: TestContext) => {
 })
 
 test('tries downloading binary up to 4 times', async (ctx: TestContext) => {
+  // eslint-disable-next-line import-x/no-named-as-default-member
   nock.disableNetConnect()
 
   const version = '99.99.99'
@@ -90,6 +91,7 @@ test('tries downloading binary up to 4 times', async (ctx: TestContext) => {
 test('fails downloading binary after 4th time', async (ctx: TestContext) => {
   expect.assertions(2)
 
+  // eslint-disable-next-line import-x/no-named-as-default-member
   nock.disableNetConnect()
 
   const version = '99.99.99'
@@ -128,6 +130,7 @@ test('fails downloading binary after 4th time', async (ctx: TestContext) => {
 test('fails downloading if response stream throws error', async (ctx: TestContext) => {
   expect.assertions(2)
 
+  // eslint-disable-next-line import-x/no-named-as-default-member
   nock.disableNetConnect()
 
   const version = '99.99.99'
