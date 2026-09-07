@@ -7,23 +7,21 @@ import { getDeployStore } from '@netlify/blobs'
 import { BlobsServer } from '@netlify/blobs/server'
 import { Fixture } from '@netlify/testing'
 import getPort from 'get-port'
-import { spyOn } from 'tinyspy'
 import tmp from 'tmp-promise'
-import { afterAll, afterEach, beforeAll, beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 const TOKEN = 'test'
 
 type FetchImplementation = (origFetch: typeof fetch, ...args: Parameters<typeof fetch>) => ReturnType<typeof fetch>
 
-let fetchSpy: ReturnType<typeof spyOn>
 let blobRequests: Partial<Record<string, string[]>>
 let blobServer: BlobsServer
 
 const fetchCustomImplementationStore = new AsyncLocalStorage<{ fetchImplementation: FetchImplementation }>()
 
-beforeAll(() => {
+beforeEach(async () => {
   const origFetch = globalThis.fetch.bind(globalThis)
-  fetchSpy = spyOn(globalThis, 'fetch', (...args: Parameters<typeof fetch>) => {
+  vi.spyOn(globalThis, 'fetch').mockImplementation((...args) => {
     const customFetchImpl = fetchCustomImplementationStore.getStore()?.fetchImplementation
     if (customFetchImpl) {
       // we pass origFetch as first argument to allow custom implementation to still use it
@@ -32,13 +30,7 @@ beforeAll(() => {
 
     return origFetch(...args)
   })
-})
 
-afterAll(() => {
-  fetchSpy.restore()
-})
-
-beforeEach(async () => {
   const port = await getPort()
   blobRequests = {}
 

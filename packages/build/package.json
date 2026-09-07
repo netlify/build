@@ -122,7 +122,6 @@
     "has-ansi": "^6.0.0",
     "micro-memoize": "^5.1.1",
     "process-exists": "^5.0.0",
-    "tinyspy": "^4.0.3",
     "tmp-promise": "^3.0.2",
     "tsd": "^0.33.0",
     "vitest": "^3.0.0",
