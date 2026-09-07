@@ -105,6 +105,54 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.6](https://github.com/netlify/build/compare/build-v36.4.5...build-v36.4.6) (2026-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/blobs to v11 ([#7206](https://github.com/netlify/build/issues/7206)) ([f75d95f](https://github.com/netlify/build/commit/f75d95f76b88920e9b3e23db22d45154f8921a4e))
+
+## [36.4.5](https://github.com/netlify/build/compare/build-v36.4.4...build-v36.4.5) (2026-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency supports-color to v11 ([#7172](https://github.com/netlify/build/issues/7172)) ([379234c](https://github.com/netlify/build/commit/379234cbf476a1656569ed47f4c863dff05de57a))
+* improve error logging for failed blob uploads ([#7203](https://github.com/netlify/build/issues/7203)) ([cc0bd34](https://github.com/netlify/build/commit/cc0bd34da6465a2906ac80ae0b180d7cf75b42e0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.7 to ^7.1.8
+    * @netlify/zip-it-and-ship-it bumped from 15.4.2 to 15.5.0
+
+## [36.4.4](https://github.com/netlify/build/compare/build-v36.4.3...build-v36.4.4) (2026-09-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.6 to ^7.1.7
+    * @netlify/zip-it-and-ship-it bumped from 15.4.1 to 15.4.2
+
+## [36.4.3](https://github.com/netlify/build/compare/build-v36.4.2...build-v36.4.3) (2026-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.7.13 ([#6854](https://github.com/netlify/build/issues/6854)) ([ff182e1](https://github.com/netlify/build/commit/ff182e1b4ba0f166881feff6aea71c7d6f796ed3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.5 to ^7.1.6
+    * @netlify/zip-it-and-ship-it bumped from 15.4.0 to 15.4.1
+
 ## [36.4.2](https://github.com/netlify/build/compare/build-v36.4.1...build-v36.4.2) (2026-08-25)
 
 

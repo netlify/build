@@ -21,6 +21,10 @@ export const defaultFlags = {
   // If multiple glob stars are in includedFiles, fail the build instead of warning.
   zisi_esbuild_fail_double_glob: false,
 
+  // Fail the build when a CommonJS function file sits inside a `"type": "module"`
+  // package scope, instead of producing a bundle that fails at runtime.
+  zisi_error_cjs_in_esm_scope: false,
+
   // Adds the `___netlify-telemetry.mjs` file to the function bundle.
   zisi_add_instrumentation_loader: true,
 

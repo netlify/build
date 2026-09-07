@@ -1,0 +1,2081 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Does not throw when using UI plugins together with context-specific plugin configuration in a different context but with inputs 1`] = `
+"
+"netlify-plugin-test" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
+To run "netlify-plugin-test" in the production context only, uninstall the plugin from the site plugins list.
+
+{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [
+      {
+        "inputs": {},
+        "origin": "ui",
+        "package": "netlify-plugin-test"
+      }
+    ],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs/netlify.toml",
+  "context": "development",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "development"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/build_context_plugins_warn_inputs",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Does not warn when using context-free plugin configuration together with context-specific plugin configuration 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [
+      {
+        "inputs": {},
+        "origin": "config",
+        "package": "netlify-plugin-test"
+      }
+    ],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_global",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Does not warn when using no context-free plugin configuration together with context-specific plugin configuration 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [
+      {
+        "inputs": {},
+        "origin": "config",
+        "package": "netlify-plugin-test"
+      }
+    ],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/build_context_plugins_nowarn_none",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Throws when using UI plugins together with context-specific plugin configuration in a different context 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_plugins_warn/netlify.toml:
+
+"netlify-plugin-test" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
+To run "netlify-plugin-test" in the production context only, uninstall the plugin from the site plugins list.
+To run "netlify-plugin-test" in all contexts, please remove the following section from "netlify.toml".
+
+  [[context.production.plugins]]
+  package = "netlify-plugin-test"
+"
+`;
+
+exports[`Validates defaultConfig 1`] = `
+"When resolving config:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = false
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`Validates inlineConfig 1`] = `
+"When resolving config:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = false
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`Warns when using UI plugins together with context-specific plugin configuration 1`] = `
+"
+"netlify-plugin-test" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
+To run "netlify-plugin-test" in the production context only, uninstall the plugin from the site plugins list.
+
+{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/build_context_plugins_warn",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/build_context_plugins_warn",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [
+      {
+        "inputs": {},
+        "origin": "config",
+        "package": "netlify-plugin-test"
+      }
+    ],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/build_context_plugins_warn/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/build_context_plugins_warn",
+  "siteInfo": {}
+}"
+`;
+
+exports[`build.base: parent directory 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_base_parent/netlify.toml:
+Configuration property "build.base" "base_dir" must be inside the repository root directory."
+`;
+
+exports[`build.base: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_base_string/netlify.toml:
+Configuration property build.base must be a string.
+
+Invalid syntax
+
+  [build]
+  base = true
+
+Valid syntax
+
+  [build]
+  base = "packages/project""
+`;
+
+exports[`build.command is validated even when not used due to merging 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_command_merge/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = false
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.command: array 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_command_array/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = [
+    true
+  ]
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.command: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_command_string/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = true
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.context properties are validated like top-level ones 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_validation/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = false
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.context properties are validated like top-level ones even on different context 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_validation/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = false
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.context.CONTEXT: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_nested_object/netlify.toml:
+Configuration property context.production must be a plain object.
+
+Invalid syntax
+
+  [context]
+  production = false
+
+Valid syntax
+
+  [context]
+
+    [context.production]
+    publish = "dist""
+`;
+
+exports[`build.context: nested property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_nested_property/netlify.toml:
+Configuration property build.command must be a string
+
+Invalid syntax
+
+  [build]
+  command = true
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`build.context: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_object/netlify.toml:
+Configuration property context must be a plain object.
+
+Invalid syntax
+
+  context = false
+
+Valid syntax
+
+  [context]
+
+    [context.production]
+    publish = "dist""
+`;
+
+exports[`build.context: property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_context_property/netlify.toml:
+Configuration property build.base must be a string.
+
+Invalid syntax
+
+  [build]
+  base = true
+
+Valid syntax
+
+  [build]
+  base = "packages/project""
+`;
+
+exports[`build.edge_functions: parent directory 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_edge_functions_parent/netlify.toml:
+Configuration property "build.edge_functions" "edge_functions_dir" must be inside the repository root directory."
+`;
+
+exports[`build.edge_functions: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_edge_functions_string/netlify.toml:
+Configuration property build.edge_functions must be a string.
+
+Invalid syntax
+
+  [build]
+  edge_functions = true
+
+Valid syntax
+
+  [build]
+  edge_functions = "edge-functions""
+`;
+
+exports[`build.functions: parent directory 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_functions_parent/netlify.toml:
+Configuration property "functionsDirectory" "functions_dir" must be inside the repository root directory."
+`;
+
+exports[`build.functions: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_functions_string/netlify.toml:
+Configuration property functions.directory must be a string.
+
+Invalid syntax
+
+  [functions]
+  directory = true
+
+Valid syntax
+
+  [functions]
+  directory = "my-functions""
+`;
+
+exports[`build.ignore: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_ignore_string/netlify.toml:
+Configuration property build.ignore must be a string.
+
+Invalid syntax
+
+  [build]
+
+    [build.ignore]
+    paths = [
+      "test"
+    ]
+
+Valid syntax
+
+  [build]
+  ignore = "ignore""
+`;
+
+exports[`build.publish: can be outside of build directory 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/build_publish_parent_build/base",
+  "config": {
+    "build": {
+      "base": "packages/config/tests/validate/fixtures/build_publish_parent_build/base",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/build_publish_parent_build/publish",
+      "publishOrigin": "config",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/build_publish_parent_build/base/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/build_publish_parent_build/publish/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/build_publish_parent_build/publish/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/build_publish_parent_build",
+  "siteInfo": {}
+}"
+`;
+
+exports[`build.publish: cannot be outside of root repository 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_publish_parent_root/base/netlify.toml:
+Configuration property "build.publish" "publish" must be inside the repository root directory."
+`;
+
+exports[`build.publish: parent directory 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_publish_parent/netlify.toml:
+Configuration property "build.publish" "publish_dir" must be inside the repository root directory."
+`;
+
+exports[`build.publish: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_publish_string/netlify.toml:
+Configuration property build.publish must be a string.
+
+Invalid syntax
+
+  [build]
+  publish = true
+
+Valid syntax
+
+  [build]
+  publish = "dist""
+`;
+
+exports[`build: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/build_object/netlify.toml:
+Configuration property build must be a plain object.
+
+Invalid syntax
+
+  build = true
+
+Valid syntax
+
+  [build]
+  command = "npm run build""
+`;
+
+exports[`edge_functions.any.excludedPath: invalid path 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_excluded_path_invalid/netlify.toml:
+Configuration property edge_functions[0].excludedPath must be a string or array of strings.
+
+Invalid syntax
+
+  [[edge_functions]]
+  excludedPath = [
+    42
+  ]
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  excludedPath = [
+    "/external/path"
+  ]
+  function = "customise""
+`;
+
+exports[`edge_functions.any.function: not a string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_not_a_string/netlify.toml:
+Configuration property edge_functions[0].function must be a string.
+
+Invalid syntax
+
+  [[edge_functions]]
+  function = true
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.generator: not allowed in netlify.toml 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_reserved_generator/netlify.toml:
+Configuration property edge_functions[0] has unknown properties. Valid properties are:
+  - path
+  - excludedPath
+  - pattern
+  - excludedPattern
+  - function
+  - cache
+  - method
+  - header
+  - name
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "test"
+  generator = "package-name@1.0.0"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.header: allowed values 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/edge_functions_header_allowed",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/edge_functions_header_allowed",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "edge_functions": [
+      {
+        "function": "function2",
+        "header": {
+          "x-bar": "some-value",
+          "x-foo": true
+        },
+        "path": "/external/path"
+      }
+    ],
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/edge_functions_header_allowed/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/edge_functions_header_allowed/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/edge_functions_header_allowed/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/edge_functions_header_allowed",
+  "siteInfo": {}
+}"
+`;
+
+exports[`edge_functions.any.header: disallowed values 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_header_disallowed/netlify.toml:
+Configuration property edge_functions[0].header must be an object with string keys and boolean or string values.
+
+Invalid syntax
+
+  [[edge_functions]]
+
+    [edge_functions.header]
+    x-bar = [
+      true,
+      false
+    ]
+    x-foo = true
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+
+    [edge_functions.header]
+    x-must-be-present = true
+    x-must-not-be-present = false
+    x-must-match-value = "^(value1|value2)$""
+`;
+
+exports[`edge_functions.any.method: disallowed values 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_method_disallowed/netlify.toml:
+Configuration property edge_functions[0].method must be one of or array of: GET, POST, PUT, PATCH, DELETE, OPTIONS
+
+Invalid syntax
+
+  [[edge_functions]]
+  method = [
+    "GET",
+    "HEAD"
+  ]
+
+Valid syntax
+
+  [[edge_functions]]
+  method = [
+    "PUT",
+    "DELETE"
+  ]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.mode: allowed values 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "edge_functions": [
+      {
+        "cache": "manual",
+        "function": "function1",
+        "path": "/external/path"
+      }
+    ],
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/edge_functions_mode_allowed",
+  "siteInfo": {}
+}"
+`;
+
+exports[`edge_functions.any.mode: disallowed values 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_mode_disallowed/netlify.toml:
+Configuration property edge_functions[0].cache must be one of: manual, off
+
+Invalid syntax
+
+  [[edge_functions]]
+  cache = "this-wont-work"
+
+Valid syntax
+
+  [[edge_functions]]
+  cache = "manual"
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.name: allowed in netlify.toml 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/validate/fixtures/edge_functions_name",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/validate/fixtures/edge_functions_name",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "edge_functions": [
+      {
+        "function": "test",
+        "name": "My edge function",
+        "path": "/external/path"
+      }
+    ],
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/validate/fixtures/edge_functions_name/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/validate/fixtures/edge_functions_name/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/validate/fixtures/edge_functions_name/_redirects",
+  "repositoryRoot": "packages/config/tests/validate/fixtures/edge_functions_name",
+  "siteInfo": {}
+}"
+`;
+
+exports[`edge_functions.any.path: invalid path 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_invalid_path/netlify.toml:
+Configuration property edge_functions[0].path must be a valid path.
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = "test"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.test: excludedPattern and excludedPath are exclusive 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_excluded_pattern_path_exclusive/netlify.toml:
+Configuration property edge_functions[0] "excludedPath" and "excludedPattern" are mutually exclusive.
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  excludedPattern = "^/test$"
+  excludedPath = "/external/path"
+  function = "test"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+  excludedPath = "/external/path""
+`;
+
+exports[`edge_functions.any.test: pattern and path are exclusive 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_pattern_path_exclusive/netlify.toml:
+Configuration property edge_functions[0] "path" and "pattern" are mutually exclusive.
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  pattern = "test"
+  function = "test"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any: missing properties 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_missing_props/netlify.toml:
+Configuration property edge_functions[1] "function" property is required.
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any: unknown properties 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_unknown_props/netlify.toml:
+Configuration property edge_functions[0] has unknown properties. Valid properties are:
+  - path
+  - excludedPath
+  - pattern
+  - excludedPattern
+  - function
+  - cache
+  - method
+  - header
+  - name
+
+Invalid syntax
+
+  [[edge_functions]]
+  wohoo = "test"
+  path = "/external/path"
+  func = "test"
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions: not array 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_not_array/netlify.toml:
+Configuration property edge_functions must be an array of objects.
+
+Invalid syntax
+
+  [edge_functions]
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "auth""
+`;
+
+exports[`edge_functions: not array of objects 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_not_array_of_objects/netlify.toml:
+Configuration property edge_functions must be an array of objects.
+
+Invalid syntax
+
+  edge_functions = [
+    "one",
+    "two"
+  ]
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "auth""
+`;
+
+exports[`functions block: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_function_block/netlify.toml:
+Configuration property functions.my_function must be an object.
+
+Invalid syntax
+
+  [functions]
+  my_function = "I should not be a string"
+
+Valid syntax
+
+  [functions]
+
+    [functions.my_function]
+    external_node_modules = [
+      "module-one",
+      "module-two"
+    ]"
+`;
+
+exports[`functions.deno_import_map: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/functions_deno_import_map/netlify.toml:
+Configuration property functions.*.deno_import_map must be a string.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    deno_import_map = [
+      "not",
+      "a",
+      "string"
+    ]
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    deno_import_map = "path/to/import_map.json""
+`;
+
+exports[`functions.directory: defined on the main functions object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_nested_directory/netlify.toml:
+Configuration property functions.my-function.directory must be defined on the main \`functions\` object.
+
+Invalid syntax
+
+  [functions]
+
+    [functions.my-function]
+    directory = "my-function-directory"
+
+Valid syntax
+
+  [functions]
+  directory = "my-functions""
+`;
+
+exports[`functions.external_node_modules: array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_external_modules/netlify.toml:
+Configuration property functions.*.external_node_modules must be an array of strings.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    external_node_modules = "not-an-array"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    external_node_modules = [
+      "module-one",
+      "module-two"
+    ]"
+`;
+
+exports[`functions.ignored_node_modules: array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_ignored_modules/netlify.toml:
+Configuration property functions.*.ignored_node_modules must be an array of strings.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    ignored_node_modules = 123456
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    ignored_node_modules = [
+      "module-one",
+      "module-two"
+    ]"
+`;
+
+exports[`functions.included_files: is array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_included_files/netlify.toml:
+Configuration property functions.*.included_files must be an array of strings.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    included_files = "not-an-array"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    included_files = [
+      "directory-one/file1",
+      "directory-two/**/*.jpg"
+    ]"
+`;
+
+exports[`functions.node_bundler: one of supported bundlers 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_node_bundler/netlify.toml:
+Configuration property functions.*.node_bundler must be one of: esbuild, nft, zisi, none
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    node_bundler = "magicpack"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    node_bundler = "esbuild""
+`;
+
+exports[`functions: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_root/netlify.toml:
+Configuration property functions must be an object.
+
+Invalid syntax
+
+  functions = "uh-oh! I am not an object"
+
+Valid syntax
+
+  [functions]
+  external_node_modules = [
+    "module-one",
+    "module-two"
+  ]"
+`;
+
+exports[`plugins.any.enabled removed 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_enabled/netlify.toml:
+Configuration property plugins[0] has unknown properties. Valid properties are:
+  - package
+  - pinned_version
+  - inputs
+
+Invalid syntax
+
+  [[plugins]]
+  origin = "config"
+  package = "./plugin.js"
+  enabled = true
+
+    [plugins.inputs]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+    [plugins.inputs]
+    port = 80"
+`;
+
+exports[`plugins.any.id backward compatibility 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_id_compat/netlify.toml:
+Configuration property plugins[0] has unknown properties. Valid properties are:
+  - package
+  - pinned_version
+  - inputs
+
+Invalid syntax
+
+  [[plugins]]
+  origin = "config"
+  id = "test"
+
+    [plugins.inputs]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+    [plugins.inputs]
+    port = 80"
+`;
+
+exports[`plugins.any.inputs: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_inputs_object/netlify.toml:
+Configuration property plugins[0].inputs must be a plain object.
+
+Invalid syntax
+
+  [[plugins]]
+  inputs = true
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+    [plugins.inputs]
+    port = 80"
+`;
+
+exports[`plugins.any.package: required 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_package_required/netlify.toml:
+Configuration property plugins[0] "package" property is required.
+
+Invalid syntax
+
+  [[plugins]]
+  origin = "config"
+
+    [plugins.inputs]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one""
+`;
+
+exports[`plugins.any.package: should not include a URI scheme 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_package_scheme/netlify.toml:
+Configuration property plugins[0].package must be a npm package name only.
+
+Invalid syntax
+
+  [[plugins]]
+  package = "git@github.com:netlify/plugin-example.git"
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one""
+`;
+
+exports[`plugins.any.package: should not include a version 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_package_version/netlify.toml:
+Configuration property plugins[0].package must be a npm package name only.
+
+Invalid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-example@1.0.0"
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one""
+`;
+
+exports[`plugins.any.package: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_package_string/netlify.toml:
+Configuration property plugins[0].package must be a string.
+
+Invalid syntax
+
+  [[plugins]]
+  package = true
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one""
+`;
+
+exports[`plugins.any.pinned_version: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_pinned_version_string/netlify.toml:
+Configuration property plugins[0].pinned_version must be a string.
+
+Invalid syntax
+
+  [[plugins]]
+  pinned_version = 1
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+  pinned_version = "1""
+`;
+
+exports[`plugins.any: unknown property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_unknown/netlify.toml:
+Configuration property plugins[0] has unknown properties. Valid properties are:
+  - package
+  - pinned_version
+  - inputs
+
+Invalid syntax
+
+  [[plugins]]
+  origin = "config"
+  test = true
+
+    [plugins.inputs]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+    [plugins.inputs]
+    port = 80"
+`;
+
+exports[`plugins: do not allow duplicates 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_duplicate/netlify.toml:
+Plugin "./plugin.js" must not be specified twice in netlify.toml"
+`;
+
+exports[`plugins: do not allow duplicates in the UI 1`] = `
+"When resolving config:
+Plugin "test" must not be specified twice in the app"
+`;
+
+exports[`plugins: not array 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_not_array/netlify.toml:
+Configuration property plugins must be an array of objects.
+
+Invalid syntax
+
+  [plugins]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+  [[plugins]]
+  package = "netlify-plugin-two""
+`;
+
+exports[`plugins: not array of objects 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/plugins_not_objects/netlify.toml:
+Configuration property plugins must be an array of objects.
+
+Invalid syntax
+
+  plugins = [
+    true
+  ]
+
+Valid syntax
+
+  [[plugins]]
+  package = "netlify-plugin-one"
+
+  [[plugins]]
+  package = "netlify-plugin-two""
+`;
+
+exports[`spa_fallback: boolean 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/spa_fallback_boolean/netlify.toml:
+Configuration property spa_fallback must be a boolean.
+
+Invalid syntax
+
+  spa_fallback = "true"
+
+Valid syntax
+
+  spa_fallback = true"
+`;
