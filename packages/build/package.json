@@ -28,9 +28,7 @@
     "test:types": "tsd",
     "test": "tsd && vitest run",
     "test:dev": "vitest",
-    "test:ci": "npm run test:ci:types && npm run test:ci:vitest",
-    "test:ci:types": "tsd",
-    "test:ci:vitest": "vitest run --coverage"
+    "test:ci": "tsd && vitest run --coverage"
   },
   "keywords": [
     "nodejs",
