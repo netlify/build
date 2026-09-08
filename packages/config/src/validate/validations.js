@@ -1,4 +1,4 @@
-import CronParser from 'cron-parser'
+import { CronExpressionParser } from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
@@ -20,7 +20,7 @@ import {
  */
 const isValidCronExpression = (cron) => {
   try {
-    CronParser.parseExpression(cron)
+    CronExpressionParser.parse(cron)
     return true
   } catch {
     return false
