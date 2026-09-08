@@ -135,6 +135,14 @@ test('Exit code is 2 on user error', async (t) => {
   t.is(exitCode, 2)
 })
 
+test('Invalid initial configuration preserves the validation error', async (t) => {
+  const { output } = await new Fixture(test.meta.file, './fixtures/invalid_edge_functions_path').runBuildBinary()
+
+  t.true(output.includes('Configuration error'))
+  t.true(output.includes('Configuration property edge_functions[0].path must be a string.'))
+  t.false(output.includes("Cannot read properties of undefined (reading 'packageName')"))
+})
+
 test('Exit code is 3 on plugin error', async (t) => {
   const { exitCode } = await new Fixture(test.meta.file, './fixtures/plugin_error').runBuildBinary()
   t.is(exitCode, 3)
