@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should print error on empty manifest 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'bundler_version'
+
+> 1 | {}
+    | ^ ☹️  bundler_version is missing here!"
+`;
+
+exports[`should print error on invalid manifest 1`] = `
+"Validation of Edge Functions manifest failed
+TYPE must be object
+
+> 1 | "json"
+    | ^^^^^^ 👈🏽  type must be object"
+`;
