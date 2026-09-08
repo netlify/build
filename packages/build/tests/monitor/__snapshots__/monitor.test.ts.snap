@@ -1,0 +1,1819 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Normalizes error messages resulting from bundling Rust serverless functions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/serverless_function
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/serverless_function
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from netlify/functions directory:
+ - hello.ts
+
+
+Bundling of function "trouble" failed                         
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 101: cargo build --target x86_64-unknown-linux-musl --release
+    Updating crates.io index
+  Downloading crates ...
+  Downloaded tokio v1.0.0
+  Downloaded tower v1.0.0
+  Downloaded serde v1.0.0
+   Compiling tokio v1.0.0
+   Compiling tower v1.0.0
+   Compiling serde v1.0.0 (/external/path)
+  error: expected one of \`!\` or \`::\`, found keyword \`use\`
+STACK TRACE
+  |
+  1 | KB
+  |   - expected one of \`!\` or \`::\`
+  2 | use aws_lambda_events::{
+  | ^^^ unexpected token
+
+  Error location
+  While bundling function "trouble"
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+Error monitoring payload:
+{
+  "errorClass": "functionsBundling",
+  "errorMessage": "Command failed with exit code 101: cargo build --target x86_64-unknown-linux-musl --release/n  Updating crates.io index/nDownloading crates .../nDownloaded tokio v1.0.0/nDownloaded tower v1.0.0/nDownloaded serde v1.0.0/n Compiling tokio v1.0.0/n Compiling tower v1.0.0/n Compiling serde v1.0.0 (/external/path)/nerror: expected one of \`!\` or \`::\`, found keyword \`use\`/n--> src/main.rs:2:1/n|/n1 | KB/n|   - expected one of \`!\` or \`::\`/n2 | use aws_lambda_events::{/n| ^^^ unexpected token",
+  "context": "Bundling of serverless function failed",
+  "groupingHash": "Bundling of serverless function failed/nCommand failed with exit code 0: cargo build --target x0_0-unknown-linux-musl --release/n  Updating crates.io index/nDownloading crates .../nDownloaded cratesCompiled crates/file/path/nerror: expected one of \`\` or \`\`, found keyword \`\`/n--> /external/path | KB/n|   - expected one of \`\` or \`\`/n0 | use aws_lambda_events::{/n| ^^^ unexpected token",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "functionName": "trouble",
+    "runtime": "rs"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Bundling of serverless function failed/nCommand failed with exit code 0: cargo build --target x0_0-unknown-linux-musl --release/n  Updating crates.io index/nDownloading crates .../nDownloaded cratesCompiled crates/file/path/nerror: expected one of \`\` or \`\`, found keyword \`\`/n--> /external/path | KB/n|   - expected one of \`\` or \`\`/n0 | use aws_lambda_events::{/n| ^^^ unexpected token"
+  }
+}"
+`;
+
+exports[`Normalizes error messages resulting from bundling TypeScript serverless functions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/serverless_function
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/serverless_function
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from netlify/functions directory:
+ - hello.ts
+
+
+Bundling of function "trouble" failed                         
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Build failed with 2 errors:
+    .netlify/functions-internal/server/chunks/app/server.mjs:80:80: ERROR: Cannot assign to "foo" because it is a constant
+    .netlify/functions-internal/server/node_modules/some-module/dist/mod.cjs.js:80:80: ERROR: No loader is configured for ".node" files: .netlify/functions-internal/server/node_modules/some-module/dist/binary.node
+
+  Error location
+  While bundling function "trouble"
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+Error monitoring payload:
+{
+  "errorClass": "functionsBundling",
+  "errorMessage": "Build failed with 2 errors:/n  .netlify/functions-internal/server/chunks/app/server.mjs:80:80: ERROR: Cannot assign to /"foo/" because it is a constant/n  .netlify/functions-internal/server/node_modules/some-module/dist/mod.cjs.js:80:80: ERROR: No loader is configured for /".node/" files: .netlify/functions-internal/server/node_modules/some-module/dist/binary.node",
+  "context": "Bundling of serverless function failed",
+  "groupingHash": "Bundling of serverless function failed/nBuild failed with 0 errors:/n  /external/path ERROR: Cannot assign to /"/" because it is a constant/n  /external/path ERROR: No loader is configured for /"/" files: /external/path",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "bundler": "esbuild",
+    "functionName": "trouble",
+    "runtime": "js"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Bundling of serverless function failed/nBuild failed with 0 errors:/n  /external/path ERROR: Cannot assign to /"/" because it is a constant/n  /external/path ERROR: No loader is configured for /"/" files: /external/path"
+  }
+}"
+`;
+
+exports[`Normalizes error messages resulting from bundling edge functions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: false
+
+> Current directory
+  packages/build/tests/monitor/fixtures/edge_function_error
+
+> Config file
+  No config file was defined: using default values.
+
+> Context
+  production
+
+Edge Functions bundling                                       
+────────────────────────────────────────────────────────────────
+
+Packaging Edge Functions from netlify/edge-functions directory:
+ - trouble
+
+Bundling of edge function failed                              
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 1: deno run --allow-all --no-config --import-map=packages/edge-bundler/deno/vendor/import_map.json --quiet packages/edge-bundler/deno/bundle.ts {"basePath":"packages/build/tests/monitor/fixtures/edge_function_error","destPath":"packages/build/tests/monitor/fixtures/edge_function_error/.netlify/edge-functions-dist/HEXADECIMAL_ID.eszip","externals":[],"functions":[{"name":"trouble","path":"packages/build/tests/monitor/fixtures/edge_function_error/netlify/edge-functions/trouble.ts"}],"importMapData":"{/"imports/":{/"@netlify/edge-functions/":/"https://edge.netlify.com/v1.0.0/index.ts/",/"netlify:edge/":/"https://edge.netlify.com/v1.0.0/index.ts?v=legacy/"},/"scopes/":{}}"}
+  error: Uncaught (in promise) Error: Error: Could not find file: packages/build/tests/monitor/fixtures/edge_function_error/netlify/edge-functions/file.ts
+        const ret = new Error(getStringFromWasm0(arg0, arg1));
+                    ^
+STACK TRACE
+
+  Error location
+  While bundling edge function
+
+  Resolved config
+  build:
+    edge_functions: packages/build/tests/monitor/fixtures/edge_function_error/netlify/edge-functions
+    publish: packages/build/tests/monitor/fixtures/edge_function_error
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "functionsBundling",
+  "errorMessage": "Command failed with exit code 1: deno run --allow-all --no-config --import-map=packages/edge-bundler/deno/vendor/import_map.json --quiet packages/edge-bundler/deno/bundle.ts {/"basePath/":/"packages/build/tests/monitor/fixtures/edge_function_error",/"destPath/":/"packages/build/tests/monitor/fixtures/edge_function_error/.netlify/edge-functions-dist/HEXADECIMAL_ID.eszip",/"externals/":[],/"functions/":[{/"name/":/"trouble/",/"path/":/"packages/build/tests/monitor/fixtures/edge_function_error/netlify/edge-functions/trouble.ts"}],/"importMapData/":/"{//"imports//":{//"@netlify/edge-functions//"://"https://edge.netlify.com/v1.0.0/index.ts//",//"netlify:edge//"://"https://edge.netlify.com/v1.0.0/index.ts?v=legacy//"},//"scopes//":{}}/"}/nerror: Uncaught (in promise) Error: Error: Could not find file: packages/build/tests/monitor/fixtures/edge_function_error/netlify/edge-functions/file.ts/n      const ret = new Error(getStringFromWasm0(arg0, arg1));/n                  ^/n    at __wbg_new_HEXADECIMAL_ID (packages/edge-bundler/deno/vendor/deno.land/x/eszip@v1.0.0/eszip_wasm.generated.js:80:80)/n    at <anonymous> (wasm://wasm/HEXADECIMAL_ID:1:80)/n    at <anonymous> (wasm://wasm/HEXADECIMAL_ID:1:80)/n    at <anonymous> (wasm://wasm/HEXADECIMAL_ID:1:80)/n    at __wbg_adapter_40 (packages/edge-bundler/deno/vendor/deno.land/x/eszip@v1.0.0/eszip_wasm.generated.js:80:8)/n    at real (packages/edge-bundler/deno/vendor/deno.land/x/eszip@v1.0.0/eszip_wasm.generated.js:80:80)",
+  "context": "Bundling of edge function failed",
+  "groupingHash": "Bundling of edge function failed/nCommand failed with exit code 0: deno run --allow-all --no-config /external/path --quiet /external/path {/"/":/"/",/"/":/"/",/"/":[],/"/":[{/"/":/"/",/"/":/"/"}],/"/":/"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"}/nerror: Uncaught (in promise) Error: Error: Could not find file: /external/path      const ret = new Error(getStringFromWasm0(arg0, arg0));/n                  ^/n    at __wbg_new_hex /external/path    at <anonymous> /external/path    at <anonymous> /external/path    at <anonymous> /external/path    at __wbg_adapter_0 /external/path    at real /external/path",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "format": "eszip",
+    "runtime": "deno",
+    "functionType": "edge"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Bundling of edge function failed/nCommand failed with exit code 0: deno run --allow-all --no-config /external/path --quiet /external/path {/"/":/"/",/"/":/"/",/"/":[],/"/":[{/"/":/"/",/"/":/"/"}],/"/":/"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"/external/path"/"}/nerror: Uncaught (in promise) Error: Error: Could not find file: /external/path      const ret = new Error(getStringFromWasm0(arg0, arg0));/n                  ^/n    at __wbg_new_hex /external/path    at <anonymous> /external/path    at <anonymous> /external/path    at <anonymous> /external/path    at __wbg_adapter_0 /external/path    at real /external/path"
+  }
+}"
+`;
+
+exports[`Report API error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  deployId: test
+  repositoryRoot: packages/build/tests/monitor/fixtures/cancel_build
+  testOpts:
+    env: true
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/cancel_build
+
+> Config file
+  packages/build/tests/monitor/fixtures/cancel_build/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/cancel_build
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+API error on "cancelSiteDeploy"                               
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Unauthorized
+
+  Error location
+  While calling the Netlify API endpoint 'cancelSiteDeploy' with:
+  {
+    "deploy_id": "test"
+  }
+
+  Error properties
+  {
+    name: 'JSONHTTPError',
+    status: 401,
+    json: { code: 401, message: 'Access Denied' }
+  }
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/cancel_build
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "api",
+  "errorMessage": "Unauthorized",
+  "context": "API error on /"cancelSiteDeploy/"",
+  "groupingHash": "API error on /"cancelSiteDeploy/"/external/path",
+  "severity": "error",
+  "unhandled": true,
+  "location": {
+    "endpoint": "cancelSiteDeploy",
+    "parameters": {
+      "deploy_id": "test"
+    }
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "API error on /"cancelSiteDeploy/"/external/path"
+  }
+}"
+`;
+
+exports[`Report BUILD_ID 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: "true"
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "test",
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report CLI mode as releaseStage 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  mode: cli
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: "true"
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report IPC error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/ipc
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/ipc
+
+> Config file
+  packages/build/tests/monitor/fixtures/ipc/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/ipc
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Plugin exited with exit code 0 and signal null.
+  The plugin might have exited due to a bug terminating the process, such as an infinite loop.
+  The plugin might also have explicitly terminated the process, for example with process.exit().
+  Plugin methods should instead:
+    - on success: return
+    - on failure: call utils.build.failPlugin() or utils.build.failBuild()
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/ipc
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "ipc",
+  "errorMessage": "Plugin exited with exit code 0 and signal null./nThe plugin might have exited due to a bug terminating the process, such as an infinite loop./nThe plugin might also have explicitly terminated the process, for example with process.exit()./nPlugin methods should instead:/n  - on success: return/n  - on failure: call utils.build.failPlugin() or utils.build.failBuild()",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/nPlugin exited with exit code 0 and signal null./nThe plugin might have exited due to a bug terminating the process, such as an infinite loop./nThe plugin might also have explicitly terminated the process, for example with process.exit()./nPlugin methods should instead:/n  - on success: return/n  - on failure: call utils.build.failPlugin() or utils.build.failBuild()",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/nPlugin exited with exit code 0 and signal null./nThe plugin might have exited due to a bug terminating the process, such as an infinite loop./nThe plugin might also have explicitly terminated the process, for example with process.exit()./nPlugin methods should instead:/n  - on success: return/n  - on failure: call utils.build.failPlugin() or utils.build.failBuild()"
+  }
+}"
+`;
+
+exports[`Report build logs URLs 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: "true"
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildLogs": "https://app.netlify.com/sites/testSiteName/deploys/testDeployId",
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report build.command failure 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report buildbot mode as releaseStage 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  mode: buildbot
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: "true"
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report configuration user error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/config
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+Configuration error                                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  When resolving config file packages/build/tests/monitor/fixtures/config/netlify.toml:
+  Configuration property build must be a plain object.
+
+  Invalid syntax
+
+    build = false
+
+  Valid syntax
+
+    [build]
+    command = "npm run build"
+
+
+Error monitoring payload:
+{
+  "errorClass": "resolveConfig",
+  "errorMessage": "When resolving config file packages/build/tests/monitor/fixtures/config/netlify.toml:/nConfiguration property build must be a plain object./n/nInvalid syntax/n/n  build = false/n/nValid syntax/n/n  [build]/n  command = /"npm run build/"",
+  "context": "Configuration error",
+  "groupingHash": "Configuration error/nWhen resolving config file /external/path property build must be a plain object./n/nInvalid syntax/n/n  build = false/n/nValid syntax/n/n  [build]/n  command = /"npm run build/"",
+  "severity": "info",
+  "unhandled": false,
+  "pluginPackageJson": false,
+  "other": {
+    "groupingHash": "Configuration error/nWhen resolving config file /external/path property build must be a plain object./n/nInvalid syntax/n/n  build = false/n/nValid syntax/n/n  [build]/n  command = /"npm run build/""
+  }
+}"
+`;
+
+exports[`Report dependencies error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/dependencies
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/dependencies
+
+> Config file
+  packages/build/tests/monitor/fixtures/dependencies/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/dependencies
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/dependencies/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - test.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"test","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Report plugin homepage 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_homepage
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_homepage
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_homepage/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_homepage
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/test/test.git
+  Report issues:  https://github.com/test/test/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_homepage
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginInternal",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/test/test.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/ntest"
+  }
+}"
+`;
+
+exports[`Report plugin homepage without a repository 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_homepage_no_repo
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_homepage_no_repo
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_homepage_no_repo/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_homepage_no_repo
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Report issues:  https://test.com
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_homepage_no_repo
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginInternal",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "https://test.com",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/ntest"
+  }
+}"
+`;
+
+exports[`Report plugin input error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_input
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_input
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_input/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_input
+    publishOrigin: default
+  plugins:
+    - inputs:
+        test: true
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+Plugin "./plugin.js" invalid input "test"                     
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Plugin "./plugin.js" does not accept any inputs but you specified: "test"
+  Check your plugin configuration to be sure that:
+    - the input name is spelled correctly
+    - the input is included in the plugin's available configuration options
+    - the plugin's input requirements have not changed
+
+  Plugin inputs
+  test: true
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  While loading "./plugin.js" from netlify.toml
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_input
+    publishOrigin: default
+  plugins:
+    - inputs:
+        test: true
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginInput",
+  "errorMessage": "Plugin /"./plugin.js/" does not accept any inputs but you specified: /"test/"/external/path your plugin configuration to be sure that:/n  - the input name is spelled correctly/n  - the input is included in the plugin's available configuration options/n  - the plugin's input requirements have not changed/n/nPlugin inputs/ntest: true",
+  "context": "Plugin /"./plugin.js/" invalid input /"test/"",
+  "groupingHash": "Plugin /"./plugin.js/" invalid input /"test/"/external/path /"/external/path" does not accept any inputs but you specified: /external/path your plugin configuration to be sure that:/n  - the input name is spelled correctly/n  - the input is included in the plugin's available configuration options/n  - the plugin's input requirements have not changed/n",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "load",
+    "packageName": "./plugin.js",
+    "input": "test",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" invalid input /"test/"/external/path /"/external/path" does not accept any inputs but you specified: /external/path your plugin configuration to be sure that:/n  - the input name is spelled correctly/n  - the input is included in the plugin's available configuration options/n  - the plugin's input requirements have not changed/n"
+  }
+}"
+`;
+
+exports[`Report plugin internal error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_internal
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_internal
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_internal/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_internal
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_internal
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginInternal",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/ntest"
+  }
+}"
+`;
+
+exports[`Report plugin origin 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_origin
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_origin
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_origin/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_origin
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from Netlify app
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from Netlify app
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_origin
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: ui
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginInternal",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "ui"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/ntest"
+  }
+}"
+`;
+
+exports[`Report plugin validation error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/plugin_validation
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/plugin_validation
+
+> Config file
+  packages/build/tests/monitor/fixtures/plugin_validation/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_validation
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" internal error                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: Invalid event 'invalid'.
+  Please use a valid event name. One of:
+   - onPreBuild
+   - onBuild
+   - onPostBuild
+   - onSuccess
+   - onError
+   - onEnd
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  While loading "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/plugin_validation
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "pluginValidation",
+  "errorMessage": "Invalid event 'invalid'./nPlease use a valid event name. One of:/n - onPreBuild/n - onBuild/n - onPostBuild/n - onSuccess/n - onError/n - onEnd",
+  "context": "Plugin /"./plugin.js/" internal error",
+  "groupingHash": "Plugin /"./plugin.js/" internal error/nInvalid event 'invalid'./nPlease use a valid event name. One of:/n - onPreBuild/n - onBuild/n - onPostBuild/n - onSuccess/n - onError/n - onEnd",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "load",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" internal error/nInvalid event 'invalid'./nPlease use a valid event name. One of:/n - onPreBuild/n - onBuild/n - onPostBuild/n - onSuccess/n - onError/n - onEnd"
+  }
+}"
+`;
+
+exports[`Report programmatic mode as releaseStage 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  mode: require
+  repositoryRoot: packages/build/tests/monitor/fixtures/command
+  testOpts:
+    errorMonitor: "true"
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/monitor/fixtures/command
+
+> Config file
+  packages/build/tests/monitor/fixtures/command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In build.command from netlify.toml:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: config
+    publish: packages/build/tests/monitor/fixtures/command
+    publishOrigin: default
+
+Error monitoring payload:
+{
+  "errorClass": "buildCommand",
+  "errorMessage": "Command failed with exit code 9: node --invalid",
+  "context": "node --invalid",
+  "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "buildCommand": "node --invalid",
+    "buildCommandOrigin": "config",
+    "configPath": "packages/build/tests/monitor/fixtures/command/netlify.toml"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "node --invalid/nCommand failed with exit code 0: node --invalid"
+  }
+}
+
+node: bad option: --invalid"
+`;
+
+exports[`Report utils.build.cancelBuild() 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/cancel_build
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/cancel_build
+
+> Config file
+  packages/build/tests/monitor/fixtures/cancel_build/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/cancel_build
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Build canceled by ./plugin.js                                 
+────────────────────────────────────────────────────────────────
+
+  test
+
+
+Error monitoring payload:
+{
+  "errorClass": "cancelBuild",
+  "errorMessage": "test",
+  "context": "Build canceled by ./plugin.js",
+  "groupingHash": "Build canceled by ./plugin.js/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Build canceled by ./plugin.js/ntest"
+  }
+}"
+`;
+
+exports[`Report utils.build.failBuild() 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/monitor_fail_build
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/monitor_fail_build
+
+> Config file
+  packages/build/tests/monitor/fixtures/monitor_fail_build/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/monitor_fail_build
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" failed                                   
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/monitor_fail_build
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "failBuild",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" failed",
+  "groupingHash": "Plugin /"./plugin.js/" failed/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" failed/ntest"
+  }
+}"
+`;
+
+exports[`Report utils.build.failPlugin() 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/monitor_fail_plugin
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/monitor_fail_plugin
+
+> Config file
+  packages/build/tests/monitor/fixtures/monitor_fail_plugin/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/monitor_fail_plugin
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Plugin "./plugin.js" failed                                   
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin.js
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin.js" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/monitor_fail_plugin
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+Error monitoring payload:
+{
+  "errorClass": "failPlugin",
+  "errorMessage": "test",
+  "context": "Plugin /"./plugin.js/" failed",
+  "groupingHash": "Plugin /"./plugin.js/" failed/ntest",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "event": "onPreBuild",
+    "packageName": "./plugin.js",
+    "loadedFrom": "local",
+    "origin": "config"
+  },
+  "packageName": "./plugin.js",
+  "pluginPackageJson": true,
+  "homepage": "git+https://github.com/netlify/build.git",
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "Plugin /"./plugin.js/" failed/ntest"
+  }
+}
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`When an error has a \`normalizedMessage\` property, its value is used as the grouping hash 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/monitor/fixtures/serverless_function
+  testOpts:
+    errorMonitor: true
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/monitor/fixtures/serverless_function
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from netlify/functions directory:
+ - hello.ts
+
+
+Bundling of function "trouble" failed                         
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Cannot assign value "foo" to const "bar"
+
+  Error location
+  While bundling function "trouble"
+
+  Resolved config
+  build:
+    publish: packages/build/tests/monitor/fixtures/serverless_function
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/monitor/fixtures/serverless_function/netlify/functions
+
+Error monitoring payload:
+{
+  "errorClass": "functionsBundling",
+  "errorMessage": "Cannot assign value /"foo/" to const /"bar/"",
+  "context": "Bundling of serverless function failed",
+  "groupingHash": "custom-grouping-hash",
+  "severity": "info",
+  "unhandled": false,
+  "location": {
+    "bundler": "esbuild",
+    "functionName": "trouble",
+    "runtime": "js"
+  },
+  "pluginPackageJson": false,
+  "BUILD_ID": "0",
+  "other": {
+    "groupingHash": "custom-grouping-hash"
+  }
+}"
+`;

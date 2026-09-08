@@ -4,7 +4,7 @@ import { promisify } from 'util'
 
 import getStream from 'get-stream'
 
-type Handler = { path: string; response?: object; status?: number; wait?: number }
+type Handler = { path: string; response?: object | string; status?: number; wait?: number }
 export type ServerHandler = Handler | Handler[]
 
 export type Request = {

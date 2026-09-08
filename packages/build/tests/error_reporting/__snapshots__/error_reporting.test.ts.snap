@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Does send tracking on edge functions bundling error 1`] = `"buildbot.build.stage.error:0|c|#stage:edge_functions_bundling,parent:run_netlify_build"`;
+
+exports[`Does send tracking on functions bundling error 1`] = `"buildbot.build.stage.error:0|c|#stage:functions_bundling,parent:run_netlify_build"`;
+
+exports[`Does send tracking on internal plugin error 1`] = `"buildbot.build.stage.error:0|c|#stage:onBuild,parent:netlify_plugin_nextjs"`;

@@ -29,12 +29,8 @@ export default [
     },
   },
   {
-    // Allow circular testing package dependency in build and config
-    files: [
-      'packages/build/tests/**/tests.js',
-      'packages/build/tests/**/*.test.js',
-      'packages/config/tests/**/*.test.js',
-    ],
+    // Allow circular testing package dependency in config
+    files: ['packages/config/tests/**/*.test.js'],
     rules: {
       'n/no-extraneous-import': 'off',
     },
