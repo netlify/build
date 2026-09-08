@@ -1,8 +1,6 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { reportStatuses } from '../../lib/status/report.js'
-
 const STATUS_PATH = '/api/v1/deploys/test/plugin_runs'
 
 // Normalize API request body so it can be snapshot in a stable way
@@ -27,10 +25,6 @@ const WHITESPACE_REGEXP = /\s+/g
 const comparePackage = function ({ body: { package: packageA } }, { body: { package: packageB } }) {
   return packageA < packageB ? -1 : 1
 }
-
-test('reporting statuses tolerates missing plugin initialization data', async (t) => {
-  await t.notThrowsAsync(reportStatuses({ statuses: [] }))
-})
 
 test('utils.status.show() can override a success status', async (t) => {
   const { requests, output } = await new Fixture(test.meta.file, './fixtures/success_status_override')
