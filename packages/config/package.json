@@ -61,7 +61,7 @@
     "@netlify/api": "^15.1.2",
     "@netlify/headers-parser": "^10.1.1",
     "@netlify/redirect-parser": "^16.1.1",
-    "chalk": "^5.0.0",
+    "chalk": "^6.0.0",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
     "dot-prop": "^9.0.0",
