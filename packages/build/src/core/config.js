@@ -2,7 +2,7 @@ import { resolveConfig, restoreConfig, updateConfig } from '@netlify/config'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
-import { changeErrorType } from '../error/info.js'
+import { addErrorInfo, changeErrorType } from '../error/info.js'
 import { logBuildDir, logConfig, logConfigPath, logContext } from '../log/messages/config.js'
 import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
 import { measureDuration } from '../time/main.js'
@@ -124,7 +124,12 @@ export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
 const resolveInitialConfig = async function (configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags) {
-  return await resolveConfig({ ...configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags })
+  try {
+    return await resolveConfig({ ...configOpts, cachedConfig, defaultConfig, cachedConfigPath, featureFlags })
+  } catch (error) {
+    addErrorInfo(error, { type: 'resolveConfig' })
+    throw error
+  }
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {

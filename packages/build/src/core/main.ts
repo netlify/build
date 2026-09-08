@@ -148,7 +148,11 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
         testOpts,
         errorParams,
       })
-      await reportError(error, statsdOpts, framework)
+      try {
+        await reportError(error, statsdOpts, framework)
+      } catch (reportingError) {
+        await handleBuildError(reportingError, errorParams)
+      }
 
       return { success, severityCode, logs }
     } finally {

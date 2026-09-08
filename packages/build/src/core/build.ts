@@ -1,5 +1,6 @@
 import { addAttributesToActiveSpan } from '@netlify/opentelemetry-utils'
 
+import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
 import { getBufferLogs, getSystemLogger } from '../log/logger.js'
@@ -383,20 +384,24 @@ export const runAndReportBuild = async function ({
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
-    await reportStatuses({
-      statuses,
-      childEnv,
-      api,
-      mode,
-      pluginsOptions,
-      netlifyConfig,
-      errorMonitor,
-      deployId,
-      logs,
-      debug,
-      sendStatus,
-      testOpts,
-    })
+    try {
+      await reportStatuses({
+        statuses,
+        childEnv,
+        api,
+        mode,
+        pluginsOptions,
+        netlifyConfig,
+        errorMonitor,
+        deployId,
+        logs,
+        debug,
+        sendStatus,
+        testOpts,
+      })
+    } catch (statusError) {
+      await handleBuildError(statusError, errorParams)
+    }
     throw error
   }
 }
