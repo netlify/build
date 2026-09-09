@@ -2,7 +2,6 @@ import { resolveConfig, restoreConfig, updateConfig } from '@netlify/config'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
-import { changeErrorType } from '../error/info.js'
 import { logBuildDir, logConfig, logConfigPath, logContext } from '../log/messages/config.js'
 import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
 import { measureDuration } from '../time/main.js'
@@ -139,21 +138,16 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // normalized.
 // We use `debug: false` to avoid any debug logs. Otherwise, every configuration
 // change would create debug logs which would be too verbose.
-// Errors are propagated and assigned to the specific plugin or core step
-// which changed the configuration.
-export const resolveUpdatedConfig = async function (configOpts, configMutations, defaultConfig) {
-  try {
-    const resolved = await resolveConfig({
-      ...configOpts,
-      configMutations,
-      defaultConfig,
-      debug: false,
-    })
-    return resolved
-  } catch (error) {
-    changeErrorType(error, 'resolveConfig', 'pluginValidation')
-    throw error
-  }
+// Errors are propagated and assigned by the caller to the specific plugin or
+// core step which changed the configuration.
+export const resolveUpdatedConfig = async function (configOpts, configMutations, defaultConfig, configMutationsOrigin) {
+  return await resolveConfig({
+    ...configOpts,
+    configMutations,
+    configMutationsOrigin,
+    defaultConfig,
+    debug: false,
+  })
 }
 
 // If the configuration was changed, persist it to `netlify.toml`.

@@ -22,6 +22,7 @@ export const updateNetlifyConfig = async function ({
   systemLog,
   debug,
   source = '',
+  configMutationsOrigin = source || undefined,
 }) {
   if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, headersPath, redirectsPath }))) {
     return { netlifyConfig, configMutations }
@@ -46,7 +47,7 @@ export const updateNetlifyConfig = async function ({
     config: netlifyConfigA,
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
-  } = await resolveUpdatedConfig(configOpts, mergedConfigMutations, defaultConfig)
+  } = await resolveUpdatedConfig(configOpts, mergedConfigMutations, defaultConfig, configMutationsOrigin)
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
 
   errorParams.netlifyConfig = netlifyConfigA
@@ -91,7 +92,9 @@ const validateConfigMutations = function (newConfigMutations) {
   try {
     newConfigMutations.forEach(validateConfigMutation)
   } catch (error) {
-    addErrorInfo(error, { type: 'pluginValidation' })
+    // Same type as the configuration errors thrown by `@netlify/config`, so
+    // that the caller attributes both of them the same way.
+    addErrorInfo(error, { type: 'resolveConfig' })
     throw error
   }
 }

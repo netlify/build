@@ -1,6 +1,6 @@
 import { context, propagation } from '@opentelemetry/api'
 
-import { addErrorInfo } from '../error/info.js'
+import { addErrorInfo, changeErrorType } from '../error/info.js'
 import { addOutputFlusher } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { getStandardStreams } from '../log/output_flusher.js'
@@ -106,6 +106,10 @@ export const firePluginStep = async function ({
       returnValue,
     }
   } catch (newError) {
+    // A configuration error at this point comes from the mutations performed by
+    // the plugin, so it's a plugin bug rather than a user error.
+    changeErrorType(newError, 'resolveConfig', 'pluginValidation')
+
     const errorType = getPluginErrorType(newError, loadedFrom, packageName)
     addErrorInfo(newError, {
       ...errorType,
