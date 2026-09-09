@@ -4,7 +4,7 @@ import { copyFile } from 'copy-file'
 import { type Span, trace } from '@opentelemetry/api'
 import { wrapTracer } from '@opentelemetry/api/experimental'
 
-import { INVOCATION_MODE } from '../../function.js'
+import { BACKGROUND_FUNCTION_TIMEOUT, INVOCATION_MODE } from '../../function.js'
 import { Priority } from '../../priority.js'
 import { getTrafficRulesConfig } from '../../rate_limit.js'
 import getInternalValue from '../../utils/get_internal_value.js'
@@ -205,7 +205,9 @@ const zipFunction: ZipFunction = async function ({
     displayName: mergedConfig?.name,
     entryFilename: zipResult.entryFilename,
     generator,
-    timeout: mergedConfig?.timeout,
+    timeout: invocationMode === INVOCATION_MODE.Background
+      ? (mergedConfig?.timeout ?? BACKGROUND_FUNCTION_TIMEOUT)
+      : mergedConfig?.timeout,
     inputs,
     includedFiles,
     staticAnalysisResult,
