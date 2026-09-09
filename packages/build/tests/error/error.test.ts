@@ -1,6 +1,8 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { test, expect } from 'vitest'
 
+import { addErrorInfo } from '../../lib/error/info.js'
+import { getFullErrorInfo } from '../../lib/error/parse/parse.js'
 import { buildErrorToTracingAttributes, type BuildError, type BasicErrorInfo } from '../../lib/error/types.js'
 
 test('exception', async () => {
@@ -268,4 +270,14 @@ test('Trusted plugins - controlled failures are user errors', async () => {
   const fixture = new Fixture(import.meta.url, './fixtures/trusted_plugin')
   const { severityCode } = (await fixture.runBuildProgrammatic()) as { severityCode: number }
   expect(severityCode).toEqual(2)
+})
+
+test('Reporting an error does not fail when its type expects a location that was not set', () => {
+  const error = new Error('Some error')
+  addErrorInfo(error, { type: 'pluginValidation' })
+
+  const { title, message } = getFullErrorInfo({ error, colors: false, debug: false })
+
+  expect(title).toBe('Core internal error')
+  expect(message).toContain('Some error')
 })
