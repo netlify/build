@@ -73,7 +73,7 @@ const coreStep: CoreStepFunction = async function ({
   } catch (err) {
     systemLog(`Failed to read Frameworks API: ${err.message}`)
 
-    throw new Error('An error occured while processing the platform configurarion defined by your framework')
+    throw new Error('An error occurred while processing the platform configuration defined by your framework')
   }
 
   if (!config) {

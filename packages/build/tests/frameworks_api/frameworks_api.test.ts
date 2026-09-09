@@ -154,8 +154,9 @@ test('Throws an error if the deploy configuration file is malformed', async () =
   ).runWithBuildAndIntrospect()
   expect(success).toBe(false)
   expect(output).toContain(
-    `Error: An error occured while processing the platform configurarion defined by your framework`,
+    `Error: An error occurred while processing the platform configuration defined by your framework`,
   )
+  expect(output).toContain(`Failed to read Frameworks API: Unexpected token 'o', "not json" is not valid JSON`)
 })
 
 test('Does not throw an error if the deploy configuration file is missing', async () => {
