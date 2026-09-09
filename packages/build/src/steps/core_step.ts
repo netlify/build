@@ -1,5 +1,5 @@
 import { setEnvChanges } from '../env/changes.js'
-import { addErrorInfo, changeErrorType, isBuildError } from '../error/info.js'
+import { addErrorInfo, isBuildError } from '../error/info.js'
 import { addOutputFlusher } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
@@ -108,6 +108,7 @@ export const fireCoreStep = async function ({
       systemLog,
       debug,
       configMutationsOrigin: configMutationsOrigin ?? coreStepName,
+      configErrorType: 'coreStepConfig',
     })
     return {
       newEnvChanges,
@@ -122,9 +123,6 @@ export const fireCoreStep = async function ({
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreStep', location: { coreStepName } })
     }
-
-    // Configuration errors here come from this core step's own mutations.
-    changeErrorType(newError, 'resolveConfig', 'coreStepConfig')
 
     // always add the current stage
     addErrorInfo(newError, { stage: coreStepId })

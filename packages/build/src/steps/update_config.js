@@ -23,12 +23,13 @@ export const updateNetlifyConfig = async function ({
   debug,
   source = '',
   configMutationsOrigin = source || undefined,
+  configErrorType = 'resolveConfig',
 }) {
   if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, headersPath, redirectsPath }))) {
     return { netlifyConfig, configMutations }
   }
 
-  validateConfigMutations(newConfigMutations)
+  validateConfigMutations(newConfigMutations, configErrorType)
 
   // Don't log configuration mutations performed by code that has been authored
   // by Netlify (i.e. core steps or build plugins in the `@netlify/` scope),
@@ -47,7 +48,13 @@ export const updateNetlifyConfig = async function ({
     config: netlifyConfigA,
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
-  } = await resolveUpdatedConfig(configOpts, mergedConfigMutations, defaultConfig, configMutationsOrigin)
+  } = await resolveUpdatedConfig(
+    configOpts,
+    mergedConfigMutations,
+    defaultConfig,
+    configMutationsOrigin,
+    configErrorType,
+  )
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
 
   errorParams.netlifyConfig = netlifyConfigA
@@ -88,12 +95,11 @@ export const listConfigSideFiles = async function (sideFiles) {
 }
 
 // Validate each new configuration change
-const validateConfigMutations = function (newConfigMutations) {
+const validateConfigMutations = function (newConfigMutations, errorType) {
   try {
     newConfigMutations.forEach(validateConfigMutation)
   } catch (error) {
-    // Same type as `@netlify/config` errors, so callers attribute both alike.
-    addErrorInfo(error, { type: 'resolveConfig' })
+    addErrorInfo(error, { type: errorType })
     throw error
   }
 }
