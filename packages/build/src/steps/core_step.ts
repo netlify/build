@@ -108,7 +108,6 @@ export const fireCoreStep = async function ({
       systemLog,
       debug,
       configMutationsOrigin: configMutationsOrigin ?? coreStepName,
-      configErrorType: 'coreStepConfig',
     })
     return {
       newEnvChanges,

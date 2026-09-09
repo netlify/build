@@ -299,7 +299,6 @@ type ErrorTypeMap =
   | 'corePlugin'
   | 'trustedPlugin'
   | 'coreStep'
-  | 'coreStepConfig'
   | 'api'
   | 'deploy'
   | 'deployInternal'
@@ -481,14 +480,6 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     rawStack: true,
     locationType: 'coreStep',
     severity: 'error',
-  },
-  /**
-   * User configuration error caused by a core step's configuration change
-   */
-  coreStepConfig: {
-    title: 'Configuration error',
-    stackType: 'none',
-    severity: 'info',
   },
   /**
    * Request error when `@netlify/build` was calling Netlify API
