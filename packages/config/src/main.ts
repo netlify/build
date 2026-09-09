@@ -84,6 +84,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     defaultConfig,
     inlineConfig,
     configMutations,
+    configMutationsOrigin,
     cwd,
     context,
     repositoryRoot,
@@ -150,6 +151,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     branch,
     defaultConfig: defaultConfigA,
     inlineConfig: inlineConfigA,
+    configMutationsOrigin,
     baseRelDir: baseRelDirA,
     logs,
     featureFlags,
@@ -242,6 +244,7 @@ const loadConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
+  configMutationsOrigin,
   baseRelDir,
   logs,
   featureFlags,
@@ -255,6 +258,7 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
+    configMutationsOrigin,
     baseRelDir,
     packagePath,
     configBase: initialBase,
@@ -286,6 +290,7 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
+    configMutationsOrigin,
     baseRelDir,
     configBase: base,
     base,
@@ -313,6 +318,7 @@ const getFullConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
+  configMutationsOrigin,
   baseRelDir,
   configBase,
   base,
@@ -334,8 +340,15 @@ const getFullConfig = async function ({
     const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
+    // When the failure comes from configuration mutations applied on top of the
+    // config file, pointing at the file would be misleading, since the invalid
+    // value isn't there.
     const configName = configPath === undefined ? '' : ` file ${configPath}`
-    error.message = `When resolving config${configName}:\n${error.message}`
+    const stage =
+      configMutationsOrigin === undefined
+        ? `resolving config${configName}`
+        : `applying configuration from ${configMutationsOrigin}`
+    error.message = `When ${stage}:\n${error.message}`
     throw error
   }
 }
