@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [36.4.8](https://github.com/netlify/build/compare/build-v36.4.7...build-v36.4.8) (2026-09-09)
+
+
+### Bug Fixes
+
+* don't swallow Frameworks API config validation errors ([#7218](https://github.com/netlify/build/issues/7218)) ([36ce357](https://github.com/netlify/build/commit/36ce3579e65c4ce21720b1a3556e790b86852969))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.4 to ^25.2.5
+
 ## [36.4.7](https://github.com/netlify/build/compare/build-v36.4.6...build-v36.4.7) (2026-09-08)
 
 

@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.5](https://github.com/netlify/build/compare/config-v25.2.4...config-v25.2.5) (2026-09-09)
+
+
+### Bug Fixes
+
+* don't swallow Frameworks API config validation errors ([#7218](https://github.com/netlify/build/issues/7218)) ([36ce357](https://github.com/netlify/build/commit/36ce3579e65c4ce21720b1a3556e790b86852969))
+
 ## [25.2.4](https://github.com/netlify/build/compare/config-v25.2.3...config-v25.2.4) (2026-09-08)
 
 
