@@ -1,7 +1,7 @@
 import { serializeObject } from '../../log/serialize.js'
 import { getErrorInfo } from '../info.js'
 import type { BuildError, BasicErrorInfo, ErrorInfo, TitleFunction } from '../types.js'
-import { getTypeInfo } from '../types.js'
+import { DEFAULT_TITLE, getTypeInfo } from '../types.js'
 
 import { getLocationInfo } from './location.js'
 import { normalizeError } from './normalize.js'
@@ -101,5 +101,12 @@ const getTitle = function (title: TitleFunction | string, errorInfo: ErrorInfo) 
     return title
   }
 
-  return title(errorInfo)
+  try {
+    return title(errorInfo)
+  } catch {
+    // Some titles are built from error information that whoever assigned the
+    // error type is expected to provide. Reporting an error must not fail when
+    // that information is missing, otherwise the original error is lost.
+    return DEFAULT_TITLE
+  }
 }
