@@ -13,7 +13,9 @@ let manifestValidator: ValidateFunction<Manifest>
 
 const initializeValidator = () => {
   if (manifestValidator === undefined) {
+    // @ts-expect-error (error TS2351: This expression is not constructable)
     const ajv = new Ajv({ allErrors: true })
+    // @ts-expect-error (error TS2349: This expression is not callable)
     ajvErrors(ajv)
 
     // regex pattern for manifest route pattern
