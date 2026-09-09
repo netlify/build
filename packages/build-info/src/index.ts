@@ -5,6 +5,7 @@ export type {
   DetectedFramework,
   FrameworkInfo,
   PollingStrategy,
+  FrameworkId,
   VersionAccuracy,
 } from './frameworks/framework.js'
 export * from './get-framework.js'
