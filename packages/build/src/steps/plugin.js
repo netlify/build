@@ -106,8 +106,7 @@ export const firePluginStep = async function ({
       returnValue,
     }
   } catch (newError) {
-    // A configuration error at this point comes from the mutations performed by
-    // the plugin, so it's a plugin bug rather than a user error.
+    // Configuration errors here come from the plugin's mutations, not the user.
     changeErrorType(newError, 'resolveConfig', 'pluginValidation')
 
     const errorType = getPluginErrorType(newError, loadedFrom, packageName)

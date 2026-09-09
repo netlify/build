@@ -123,8 +123,7 @@ export const fireCoreStep = async function ({
       addErrorInfo(newError, { type: 'coreStep', location: { coreStepName } })
     }
 
-    // The error message already points at the core step that changed the
-    // configuration, so `coreStepConfig` has no location of its own to report.
+    // Configuration errors here come from this core step's own mutations.
     changeErrorType(newError, 'resolveConfig', 'coreStepConfig')
 
     // always add the current stage

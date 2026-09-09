@@ -92,8 +92,7 @@ const validateConfigMutations = function (newConfigMutations) {
   try {
     newConfigMutations.forEach(validateConfigMutation)
   } catch (error) {
-    // Same type as the configuration errors thrown by `@netlify/config`, so
-    // that the caller attributes both of them the same way.
+    // Same type as `@netlify/config` errors, so callers attribute both alike.
     addErrorInfo(error, { type: 'resolveConfig' })
     throw error
   }

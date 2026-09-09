@@ -104,9 +104,7 @@ const getTitle = function (title: TitleFunction | string, errorInfo: ErrorInfo) 
   try {
     return title(errorInfo)
   } catch {
-    // Some titles are built from error information that whoever assigned the
-    // error type is expected to provide. Reporting an error must not fail when
-    // that information is missing, otherwise the original error is lost.
+    // A title built from missing error information must not lose the error.
     return DEFAULT_TITLE
   }
 }

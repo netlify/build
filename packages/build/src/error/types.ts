@@ -483,7 +483,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
     severity: 'error',
   },
   /**
-   * User configuration error caused by a configuration change from a core step
+   * User configuration error caused by a core step's configuration change
    */
   coreStepConfig: {
     title: 'Configuration error',
@@ -544,5 +544,5 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
 
-// Used when a title cannot be built from the information carried by the error
+// Fallback when a title cannot be built from the error information
 export const DEFAULT_TITLE = TYPES[DEFAULT_TYPE].title as string

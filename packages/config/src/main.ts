@@ -340,10 +340,8 @@ const getFullConfig = async function ({
     const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
-    // When the failure comes from configuration mutations applied on top of the
-    // config file, pointing at the file would be misleading, since the invalid
-    // value isn't there.
     const configName = configPath === undefined ? '' : ` file ${configPath}`
+    // The invalid value is not in the config file when it came from a mutation.
     const stage =
       configMutationsOrigin === undefined
         ? `resolving config${configName}`
