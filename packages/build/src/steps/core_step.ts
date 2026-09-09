@@ -1,5 +1,5 @@
 import { setEnvChanges } from '../env/changes.js'
-import { addDefaultErrorInfo, addErrorInfo, changeErrorType, isBuildError } from '../error/info.js'
+import { addErrorInfo, changeErrorType, isBuildError } from '../error/info.js'
 import { addOutputFlusher } from '../log/logger.js'
 
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
@@ -124,10 +124,8 @@ export const fireCoreStep = async function ({
     }
 
     // The error message already points at the core step that changed the
-    // configuration, so `coreStepConfig` has no location to print. The location
-    // is still set, for the sake of tracing attributes.
+    // configuration, so `coreStepConfig` has no location of its own to report.
     changeErrorType(newError, 'resolveConfig', 'coreStepConfig')
-    addDefaultErrorInfo(newError, { location: { coreStepName } })
 
     // always add the current stage
     addErrorInfo(newError, { stage: coreStepId })
