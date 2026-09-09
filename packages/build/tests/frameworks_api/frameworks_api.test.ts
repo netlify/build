@@ -159,6 +159,18 @@ test('Throws an error if the deploy configuration file is malformed', async () =
   expect(output).toContain(`Failed to read Frameworks API: Unexpected token 'o', "not json" is not valid JSON`)
 })
 
+test('Throws and error if the deploy configured does not match schema', async () => {
+  const { output, success } = await new Fixture(
+    import.meta.url,
+    './fixtures/invalid_config_schema',
+  ).runWithBuildAndIntrospect()
+  expect(success).toBe(false)
+  expect(output).toContain(
+    `Error: An error occurred while processing the platform configuration defined by your framework`,
+  )
+  // TODO: add proper error assertion here when this is addressed
+})
+
 test('Does not throw an error if the deploy configuration file is missing', async () => {
   const { success } = await new Fixture(import.meta.url, './fixtures/missing_config').runWithBuildAndIntrospect()
   expect(success).toBe(true)
