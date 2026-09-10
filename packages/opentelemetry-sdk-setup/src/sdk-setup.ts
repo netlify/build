@@ -1,8 +1,11 @@
-import { HoneycombSDK } from '@honeycombio/opentelemetry-node'
 import { setMultiSpanAttributes } from '@netlify/opentelemetry-utils'
 import { DiagLogLevel, TraceFlags, context, diag, trace } from '@opentelemetry/api'
-import { Resource } from '@opentelemetry/resources'
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
+import { ALLOW_ALL_BAGGAGE_KEYS, BaggageSpanProcessor } from '@opentelemetry/baggage-span-processor'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
+import { resourceFromAttributes } from '@opentelemetry/resources'
+import { BatchSpanProcessor, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base'
+import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
 import type { PackageJson } from 'read-package-up'
 
 import { getDiagLogger, loadBaggageFromFile } from './util.js'
@@ -13,8 +16,6 @@ export type TracingOptions = {
   httpProtocol: string
   host: string
   port: number
-  /** API Key used for a dedicated trace provider */
-  apiKey: string
   /** Sample rate being used for this trace, this allows for consistent probability sampling */
   sampleRate: number
   /** Properties of the root span and trace id used to stitch context */
@@ -28,7 +29,7 @@ export type TracingOptions = {
   systemLogFile?: number
 }
 
-let sdk: HoneycombSDK | undefined
+let sdk: NodeTracerProvider | undefined
 
 /** Starts the tracing SDK, if there's already a tracing service this will be a no-op */
 export const startTracing = async function (options: TracingOptions, packageJson: PackageJson) {
@@ -37,18 +38,28 @@ export const startTracing = async function (options: TracingOptions, packageJson
 
   const serviceName = process.env.OTEL_SERVICE_NAME || packageJson.name
 
-  sdk = new HoneycombSDK({
-    resource: new Resource({
-      [SEMRESATTRS_SERVICE_NAME]: serviceName,
-      [SEMRESATTRS_SERVICE_VERSION]: process.env.OTEL_SERVICE_VERSION || packageJson.version,
+  // `sampleRate` is a 1-in-N rate, whereas the OTEL sampler takes a 0..1 ratio. Both are
+  // deterministic on trace ID, so sibling processes sharing a trace sample consistently.
+  const sampleRatio = options.sampleRate > 0 ? 1 / options.sampleRate : 1
+
+  sdk = new NodeTracerProvider({
+    // We don't run any resource detectors so that we fully control the attributes we export
+    resource: resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: serviceName,
+      [ATTR_SERVICE_VERSION]: process.env.OTEL_SERVICE_VERSION || packageJson.version,
     }),
-    serviceName,
-    protocol: 'grpc',
-    apiKey: options.apiKey,
-    endpoint: `${options.httpProtocol}://${options.host}:${options.port}`,
-    sampleRate: options.sampleRate,
-    // Turn off auto resource detection so that we fully control the attributes we export
-    autoDetectResources: false,
+    // Deliberately not wrapped in a ParentBasedSampler: we always re-derive the decision from the
+    // trace ID rather than inheriting the parent's sampled flag. Since the decision is deterministic
+    // per trace ID, every process in a trace still agrees. Inheriting instead would drop all spans
+    // whenever an incoming parent context is unsampled.
+    sampler: new TraceIdRatioBasedSampler(sampleRatio),
+    spanProcessors: [
+      // Copies baggage entries (build.id, site.id, deploy.id, ...) onto every span as attributes
+      new BaggageSpanProcessor(ALLOW_ALL_BAGGAGE_KEYS),
+      new BatchSpanProcessor(
+        new OTLPTraceExporter({ url: `${options.httpProtocol}://${options.host}:${options.port}` }),
+      ),
+    ],
   })
 
   // Set the diagnostics logger to our system logger. We also need to suppress the override msg
@@ -58,7 +69,8 @@ export const startTracing = async function (options: TracingOptions, packageJson
     suppressOverrideMessage: true,
   })
 
-  sdk.start()
+  // Registers as the global tracer provider, so instrumented code reaches it via `@opentelemetry/api`
+  sdk.register()
 
   // Loads the contents of the passed baggageFilePath into the baggage
   const baggageAttributes = await loadBaggageFromFile(options.baggageFilePath)
