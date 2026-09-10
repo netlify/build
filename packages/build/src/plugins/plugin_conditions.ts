@@ -42,7 +42,8 @@ const siteDependenciesTest = async function (
   const pkgJsonPath = packagePath && join(buildDir, packagePath, 'package.json')
   if (pkgJsonPath) {
     try {
-      const { devDependencies: devDepsPgk = {}, dependencies: depsPkg = {} } = await importJsonFile(pkgJsonPath)
+      const { devDependencies: devDepsPgk = {}, dependencies: depsPkg = {} } =
+        await importJsonFile<PackageJson>(pkgJsonPath)
       siteDependencies = { ...siteDependencies, ...devDepsPgk, ...depsPkg }
     } catch {
       // noop
@@ -84,7 +85,7 @@ const siteDependencyTest = async function ({
   try {
     // if this is a range we need to get the exact version
     const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, join(buildDir, packagePath ?? ''))
-    const { version } = await importJsonFile(packageJsonPath)
+    const { version } = await importJsonFile<PackageJson>(packageJsonPath)
     if (!version) {
       return false
     }

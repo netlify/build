@@ -192,7 +192,7 @@ export function findLikelySecrets({
   /**
    * Text to check
    */
-  text: string
+  text: string | null | undefined
   /**
    * Optional array of values to exclude from matching
    */
