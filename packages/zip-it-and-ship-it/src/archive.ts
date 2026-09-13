@@ -2,8 +2,8 @@ import { Buffer } from 'buffer'
 import { createWriteStream, Stats, readlinkSync } from 'fs'
 import { Writable } from 'stream'
 
-import type { Archiver } from 'archiver'
-import { TarArchive, ZipArchive } from 'archiver'
+import type { Archiver } from '@archiver/archiver'
+import { TarArchive, ZipArchive } from '@archiver/archiver'
 
 import { ObjectValues } from './types/utils.js'
 
