@@ -104,7 +104,7 @@ const NORMALIZE_REGEXPS = [
   [/(?:\/n|\s)+at eventLoopTick (?:\([^)]*\)|\/external\/path)/g, ''],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
-  [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
+  [/STACK TRACE(\nSTACK TRACE)+/g, 'STACK TRACE'],
   [/( \/file\/path){2,}/g, ' /file/path'],
   // Ports
   [/:\d{2,}/g, ':80'],

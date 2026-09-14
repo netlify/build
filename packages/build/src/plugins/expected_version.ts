@@ -145,7 +145,7 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
 
 const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
-  const { version } = await importJsonFile(packageJsonPath)
+  const { version } = await importJsonFile<PackageJson>(packageJsonPath)
   if (!version) {
     // this should never happen
     throw new Error('No version specified for the plugin!')

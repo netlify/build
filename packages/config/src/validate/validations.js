@@ -1,5 +1,4 @@
-// eslint-disable-next-line import-x/default
-import CronParser from 'cron-parser'
+import { CronExpressionParser } from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
@@ -21,8 +20,7 @@ import {
  */
 const isValidCronExpression = (cron) => {
   try {
-    // eslint-disable-next-line import-x/no-named-as-default-member
-    CronParser.parseExpression(cron)
+    CronExpressionParser.parse(cron)
     return true
   } catch {
     return false

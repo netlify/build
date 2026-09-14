@@ -6,7 +6,9 @@ import { reportError } from '../error/report.js'
 import { getLogsOutput, getSystemLogger } from '../log/logger.js'
 import type { BufferedLogs } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
-import { getGeneratedFunctions } from '../steps/return_values.js'
+import type { ConfigMutation } from '../plugins/child/diff.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
+import { type GeneratedFunction, getGeneratedFunctions } from '../steps/return_values.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
 import { RootExecutionAttributes } from '../tracing/main.js'
@@ -28,8 +30,9 @@ export async function buildSite(flags: Partial<BuildFlags> = {}): Promise<{
   success: boolean
   severityCode: number
   logs: BufferedLogs | undefined
-  netlifyConfig?: any
-  configMutations?: any
+  netlifyConfig?: NetlifyConfig
+  configMutations?: ConfigMutation[]
+  generatedFunctions?: GeneratedFunction[]
 }> {
   const {
     errorMonitor,
