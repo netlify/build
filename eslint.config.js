@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url'
 import { includeIgnoreFile } from '@eslint/compat'
 import eslint from '@eslint/js'
 import vitest from '@vitest/eslint-plugin'
-import ava from 'eslint-plugin-ava'
 import * as importPlugin from 'eslint-plugin-import'
 import node from 'eslint-plugin-n'
 import tseslint from 'typescript-eslint'
@@ -75,6 +74,15 @@ export default tseslint.config(
     },
   },
 
+  // TODO(jg): remove once eslint-plugin-n can handle
+  // (or be configured to handle) package exports
+  {
+    files: ['packages/build/tests/**/*.ts'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+
   // Project-specific rules
   {
     ignores: ['packages/**/dist', 'packages/**/lib', 'packages/edge-bundler/deno/**'],
@@ -123,13 +131,6 @@ export default tseslint.config(
       'vitest/no-disabled-tests': ['error'],
       'vitest/no-focused-tests': ['error'],
       'vitest/no-commented-out-tests': ['error'],
-    },
-  },
-  {
-    files: ['**/tests.js', '**/*.tests.js'],
-    plugins: { ava },
-    rules: {
-      'ava/no-only-test': 'error',
     },
   },
 

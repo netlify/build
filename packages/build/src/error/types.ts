@@ -534,3 +534,6 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
+
+// Fallback when a title cannot be built from the error information
+export const DEFAULT_TITLE = TYPES[DEFAULT_TYPE].title as string
