@@ -586,6 +586,53 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
+    'Errors at bundle time when an ESM V2 function inside a `"type": "module"` package scope conditionally references CJS globals and the `zisi_error_cjs_in_esm_scope` flag is on',
+    ['bundler_default', 'bundler_nft', 'bundler_esbuild'],
+    async (options) => {
+      const fixtureName = 'node-cjs-conditional-globals-in-esm-scope-v2'
+      const opts = merge(options, {
+        featureFlags: { zisi_error_cjs_in_esm_scope: true },
+      })
+
+      try {
+        await zipFixture(fixtureName, { opts })
+
+        expect.fail('Bundling should have thrown')
+      } catch (error) {
+        expect(error).instanceOf(FunctionBundlingUserError)
+
+        const { customErrorInfo, message } = error as FunctionBundlingUserError
+
+        expect(message).toMatch('is a CommonJS module, but the closest \'package.json\' declares \'"type": "module"\'')
+        expect(customErrorInfo.type).toBe('functionsBundling')
+        expect(customErrorInfo.location.bundler).toBe('nft')
+        expect(customErrorInfo.location.functionName).toBe('function')
+        expect(customErrorInfo.location.runtime).toBe('js')
+      }
+    },
+  )
+
+  testMany(
+    'Produces a working bundle for an ESM V2 function inside a `"type": "module"` package scope that uses `module` and `exports` as local names and the `zisi_error_cjs_in_esm_scope` flag is on',
+    ['bundler_default', 'bundler_nft', 'bundler_esbuild'],
+    async (options) => {
+      const fixtureName = 'node-cjs-shadowed-names-in-esm-scope-v2'
+      const opts = merge(options, {
+        featureFlags: { zisi_error_cjs_in_esm_scope: true },
+      })
+      const { files } = await zipFixture(fixtureName, { opts })
+      const unzippedFunctions = await unzipFiles(files)
+
+      const func = await importFunctionFile(`${unzippedFunctions[0].unzipPath}/${files[0].entryFilename}`)
+      const { body: bodyStream, statusCode } = await invokeLambda(func)
+      const body = await readAsBuffer(bodyStream)
+
+      expect(statusCode).toBe(200)
+      expect(body).toBe('Hello world')
+    },
+  )
+
+  testMany(
     'Produces a working bundle when bundling a CJS function inside a `"type": "module"` package scope (zisi)',
     ['bundler_default'],
     async (options) => {
