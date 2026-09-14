@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import type { FunctionResult, Manifest } from '@netlify/zip-it-and-ship-it'
-import semver from 'semver'
+import * as semver from 'semver'
 import { expect, test } from 'vitest'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'

@@ -1,6 +1,7 @@
 import { join } from 'path'
 
 import decompress from 'decompress'
+// eslint-disable-next-line import-x/no-named-as-default
 import glob from 'fast-glob'
 import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'

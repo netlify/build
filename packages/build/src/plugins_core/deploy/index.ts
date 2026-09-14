@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-missing-import
 import { saveUpdatedConfig, restoreUpdatedConfig } from '../../core/config.js'
 import { logDeploySuccess } from '../../log/messages/plugins.js'
 import type { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'

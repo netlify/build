@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { execa } from 'execa'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'

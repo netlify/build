@@ -3,7 +3,7 @@ import { join } from 'path'
 import { cwd } from 'process'
 import { pathToFileURL } from 'url'
 
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { describe, test, expect } from 'vitest'
 
 import { ImportMap } from './import_map.js'

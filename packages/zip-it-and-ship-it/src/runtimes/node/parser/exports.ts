@@ -75,7 +75,7 @@ export const traverseNodes = (nodes: Statement[], getAllBindings: BindingMethod)
 
     if (node.type === 'ExportDefaultDeclaration') {
       hasDefaultExport = true
-      defaultExportExpression = node.declaration as Expression
+      defaultExportExpression = node.declaration
 
       return
     }

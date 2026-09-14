@@ -1,4 +1,4 @@
-import semver from 'semver'
+import * as semver from 'semver'
 
 export interface NodeVersionSupport {
   esm: boolean

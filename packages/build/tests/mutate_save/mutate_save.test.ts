@@ -4,8 +4,8 @@ import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
+import * as tmp from 'tmp-promise'
 import { expect, test } from 'vitest'
-import tmp from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 

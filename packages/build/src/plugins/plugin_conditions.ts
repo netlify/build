@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 import { type PackageJson } from 'read-package-up'
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'

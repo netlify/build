@@ -5,8 +5,8 @@ import { PassThrough } from 'stream'
 
 import { ZipArchive } from 'archiver'
 import nock from 'nock'
-import semver from 'semver'
-import tmp from 'tmp-promise'
+import * as semver from 'semver'
+import * as tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
