@@ -18,9 +18,9 @@ import type { Manifest } from './manifest.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
 import { fileURLToPath } from 'node:url'
-import { tmpdir } from 'node:os';
-import { mkdtemp } from 'node:fs/promises';
-import { randomUUID } from 'node:crypto';
+import { tmpdir } from 'node:os'
+import { mkdtemp } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
