@@ -57,7 +57,14 @@ export const bundle = async ({
   importMap,
   vendorDirectory,
 }: BundleTarballOptions): Promise<(arg: FinalizeTarballBundleOptions) => Promise<Bundle>> => {
-  const bundleDir = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'edge-bundler-tarball-')))
+  const tempDir = await fs.mkdtemp(path.join(tmpdir(), 'edge-bundler-tarball-'))
+  let bundleDir: string
+  try {
+    bundleDir = await fs.realpath(tempDir)
+  } catch (error) {
+    await fs.rm(tempDir, { recursive: true, force: true })
+    throw error
+  }
   const cleanup = [() => fs.rm(bundleDir, { recursive: true, force: true })]
 
   const initialManifest: Omit<Manifest, 'function_config' | 'routes' | 'post_cache_routes'> = {
