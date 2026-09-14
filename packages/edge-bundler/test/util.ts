@@ -31,7 +31,7 @@ export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixt
   const distPath = join(tmpDistDir, '.netlify', 'edge-functions-dist')
 
   if (copyDirectory) {
-    const tmpFixtureDir = await fs.mkdtemp(join(tmpdir(), 'edge-bundler-fixture-'))
+    const tmpFixtureDir = await fs.realpath(await fs.mkdtemp(join(tmpdir(), 'edge-bundler-fixture-')))
 
     await fs.cp(fixtureDir, tmpFixtureDir, {
       recursive: true,
