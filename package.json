@@ -83,6 +83,7 @@
     "nx@22.7.6": true,
     "protobufjs@7.6.4": true,
     "unix-dgram@2.0.7": true,
+    "unrs-resolver@1.12.2": true,
     "yarn@1.22.22": true
   }
 }
