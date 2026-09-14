@@ -56,20 +56,6 @@ const refExists = function ({ error }) {
   return error === undefined
 }
 
-const throwError = function (
-  name: string,
-  {
-    ref,
-    error,
-  }: {
-    ref: string
-    error?: {
-      stderr?: string
-      message?: string
-    }
-  },
-) {
-  const messages = [error?.message, error?.stderr].filter(Boolean).join('\n')
-  const messageA = `Invalid ${name} commit ${ref}\n${messages}`
-  throw new Error(messageA)
+const throwError = function (name: string, { ref, error }: { ref: string; error?: Error }) {
+  throw new Error(`Invalid ${name} commit ${ref}\n${error?.message ?? ''}`)
 }

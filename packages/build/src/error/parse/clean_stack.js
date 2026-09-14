@@ -1,8 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 import { cwd } from 'process'
 
-import cleanStack from 'clean-stack'
-
 // Clean stack traces:
 //  - remove our internal code, e.g. the logic spawning plugins
 //  - remove node modules and Node.js internals
@@ -37,13 +35,7 @@ const cleanStackLine = function (lines, line) {
     return lines
   }
 
-  const lineC = cleanStack(lineB)
-
-  if (lineC === '') {
-    return lines
-  }
-
-  return `${lines}\n${lineC}`
+  return `${lines}\n${lineB}`
 }
 
 // `process.cwd()` can sometimes fail: directory name too long, current
@@ -61,7 +53,12 @@ const STACK_LINE_REGEXP = /^\s+at /
 
 const shouldRemoveStackLine = function (line) {
   const lineA = normalizePathSlashes(line)
-  return INTERNAL_STACK_STRINGS.some((stackString) => lineA.includes(stackString)) || INTERNAL_STACK_REGEXP.test(lineA)
+
+  return (
+    INTERNAL_STACK_STRINGS.some((stackString) => lineA.includes(stackString)) ||
+    INTERNAL_STACK_REGEXP.test(lineA) ||
+    NODE_STACK_REGEXP.test(lineA)
+  )
 }
 
 const INTERNAL_STACK_STRINGS = [
@@ -71,9 +68,9 @@ const INTERNAL_STACK_STRINGS = [
   // nyc internal code
   'node_modules/append-transform',
   'node_modules/signal-exit',
-  // Node internals
-  '(node:',
 ]
+
+const NODE_STACK_REGEXP = /\bnode:|\(native\)|\bat native\b/
 
 // This is only needed for local builds and tests
 const INTERNAL_STACK_REGEXP = /(lib\/|tests\/helpers\/|tests\/.*\/tests.js|node_modules)/

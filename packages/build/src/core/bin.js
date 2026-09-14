@@ -3,7 +3,6 @@
 import { readFileSync } from 'fs'
 import process from 'process'
 
-import { includeKeys } from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
@@ -21,7 +20,7 @@ const packJson = JSON.parse(readFileSync(new URL('../../package.json', import.me
 // sense only in CLI, such as CLI flags parsing and exit code.
 const runCli = async function () {
   const flags = parseFlags()
-  const flagsA = includeKeys(flags, isUserFlag)
+  const flagsA = Object.fromEntries(Object.entries(flags).filter(isUserFlag))
 
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
@@ -52,7 +51,7 @@ NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function (key, value) {
+const isUserFlag = function ([key, value]) {
   return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 

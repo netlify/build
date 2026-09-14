@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
 
 import { bundle, find } from '@netlify/edge-bundler'
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 import { Metric } from '../../core/report_metrics.js'
 import { log, reduceLogLines } from '../../log/logger.js'

@@ -54,7 +54,11 @@ const getLocalEntryPoint = (
     formatImportError = defaultFormatImportError,
   }: GetLocalEntryPointOptions,
 ) => {
-  const bootImport = `import { boot } from "${bootstrapURL}";`
+  // A namespace import because the export we want is named differently
+  // depending on how old `bootstrapURL` is: the bootstrap's `server.ts` exports
+  // `serve`, and the `index-combined.ts` entry point it replaced re-exported the
+  // same function as `boot`.
+  const bootImport = `import * as bootstrap from "${bootstrapURL}";`
   const declaration = `const functions = {}; const metadata = { functions: {} };`
   const imports = functions.map((func) => {
     const url = pathToFileURL(func.path)
@@ -78,7 +82,9 @@ const getLocalEntryPoint = (
       }
       `
   })
-  const bootCall = `boot(() => Promise.resolve(functions));`
+  const bootCall = `const boot = bootstrap.serve ?? bootstrap.boot;
+
+boot(() => Promise.resolve(functions));`
 
   return [bootImport, declaration, ...imports, bootCall].join('\n\n')
 }

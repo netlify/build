@@ -18,7 +18,7 @@ test('Injects an SPA fallback redirect when `spa_fallback` is `true`', async () 
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.redirects).toEqual([SPA_FALLBACK_REDIRECT])
+  expect(netlifyConfig?.redirects).toEqual([SPA_FALLBACK_REDIRECT])
 })
 
 test('Does not inject an SPA fallback redirect when `spa_fallback` is `false`', async () => {
@@ -28,7 +28,7 @@ test('Does not inject an SPA fallback redirect when `spa_fallback` is `false`', 
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.redirects).toEqual([])
+  expect(netlifyConfig?.redirects).toEqual([])
 })
 
 test('Does not inject an SPA fallback redirect when `spa_fallback` is not set', async () => {
@@ -38,7 +38,7 @@ test('Does not inject an SPA fallback redirect when `spa_fallback` is not set', 
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.redirects).toEqual([])
+  expect(netlifyConfig?.redirects).toEqual([])
 })
 
 test('Does not override a mismatched catch-all redirect already declared by the user, and warns about it', async () => {
@@ -48,7 +48,7 @@ test('Does not override a mismatched catch-all redirect already declared by the 
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.redirects).toEqual([{ ...SPA_FALLBACK_REDIRECT, to: '/200.html' }])
+  expect(netlifyConfig?.redirects).toEqual([{ ...SPA_FALLBACK_REDIRECT, to: '/200.html' }])
   expect(output).toContain('a catch-all redirect ("/*") already exists that does not rewrite to "/index.html"')
 })
 
@@ -59,6 +59,6 @@ test('Does not warn when the existing catch-all redirect already matches what Ne
   ).runWithBuildAndIntrospect()
 
   expect(success).toBe(true)
-  expect(netlifyConfig.redirects).toEqual([SPA_FALLBACK_REDIRECT])
+  expect(netlifyConfig?.redirects).toEqual([SPA_FALLBACK_REDIRECT])
   expect(output).not.toContain('already exists')
 })

@@ -98,9 +98,13 @@ const NORMALIZE_REGEXPS = [
   // Stack traces
   [/Require stack:\s+( *-\s+\S*\s{0,1})*/gm, ''],
   [/{ Error:/g, 'Error:'],
+  // Deno's async/WASM stack traces can nondeterministically include an internal
+  // event-loop frame that may appear inside escaped JSON strings,
+  // so the line-based stack trace rules below won't catch it.
+  [/(?:\/n|\s)+at eventLoopTick (?:\([^)]*\)|\/external\/path)/g, ''],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
-  [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
+  [/STACK TRACE(\nSTACK TRACE)+/g, 'STACK TRACE'],
   [/( \/file\/path){2,}/g, ' /file/path'],
   // Ports
   [/:\d{2,}/g, ':80'],

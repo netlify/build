@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.1](https://github.com/netlify/build/compare/headers-parser-v10.1.0...headers-parser-v10.1.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* **deps:** replace dependencies with native APIs ([#7147](https://github.com/netlify/build/issues/7147)) ([78986a4](https://github.com/netlify/build/commit/78986a4ece57163d8396ced9bbb48bc61b99a049))
+
 ## [10.1.0](https://github.com/netlify/build/compare/headers-parser-v10.0.0...headers-parser-v10.1.0) (2026-07-17)
 
 

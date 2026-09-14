@@ -1,10 +1,9 @@
 import { promises as fs } from 'fs'
 import { resolve } from 'path'
 
-import isPlainObject from 'is-plain-obj'
-
 import type { NetlifyConfig } from '../../index.js'
 import { FRAMEWORKS_API_CONFIG_PATH } from '../../utils/frameworks_api.js'
+import { isPlainObject } from '../../utils/is_plain_object.js'
 import { SystemLogger } from '../types.js'
 
 export const loadConfigFile = async (buildDir: string, packagePath?: string) => {

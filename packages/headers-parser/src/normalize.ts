@@ -1,10 +1,9 @@
-import isPlainObj from 'is-plain-obj'
-import mapObj from 'map-obj'
-import type { Mapper } from 'map-obj'
-
 import { getForRegExp } from './for_regexp.js'
 import { splitResults } from './results.js'
 import type { Header, MinimalHeader } from './types.js'
+
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
 
 export interface MinimalNormalizedHeaders {
   headers: MinimalHeader[]
@@ -50,7 +49,7 @@ function parseHeader(
   index: number,
   minimal: boolean,
 ): undefined | Error | MinimalHeader | Header {
-  if (!isPlainObj(header)) {
+  if (!isObject(header)) {
     return new TypeError(`Header must be an object not: ${header}`)
   }
 
@@ -112,15 +111,15 @@ const normalizePath = function (rawPath?: string): string {
 
 // Normalize and validate the `values` field
 const normalizeValues = function (rawValues: Record<string, string | string[]>): Record<string, string> {
-  if (!isPlainObj(rawValues)) {
+  if (!isObject(rawValues)) {
     throw new TypeError(`"values" must be an object not: ${rawValues}`)
   }
 
-  return mapObj(rawValues, normalizeValue)
+  return Object.fromEntries(Object.entries(rawValues).map(([rawKey, rawValue]) => normalizeValue(rawKey, rawValue)))
 }
 
 // Normalize and validate each header `values`
-const normalizeValue: Mapper<Record<string, string | string[]>, string, string> = function (rawKey, rawValue) {
+const normalizeValue = function (rawKey: string, rawValue: string | string[]): [string, string] {
   const key: string = rawKey.trim()
   if (key === '' || key === 'undefined') {
     throw new Error('Empty header name')

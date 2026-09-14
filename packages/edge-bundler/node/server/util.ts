@@ -9,8 +9,8 @@ const SERVER_KILL_TIMEOUT = 1e3
 // 1 second
 const SERVER_POLL_INTERVAL = 1e3
 
-// 10 seconds
-const SERVER_POLL_TIMEOUT = 1e4
+// 30 seconds
+const SERVER_POLL_TIMEOUT = 3e4
 
 const killProcess = (ps: ExecaChildProcess<string>) => {
   // If the process is no longer running, there's nothing left to do.
@@ -33,23 +33,27 @@ const killProcess = (ps: ExecaChildProcess<string>) => {
           platform() === 'win32' && satisfies(process.version, '>=21') ? false : SERVER_KILL_TIMEOUT,
       })
     } catch {
-      // no-op
+      // If `kill()` itself throws (the EPERM case above), the process was
+      // never signalled, so it may never emit `close`. Resolve here instead
+      // of leaving the promise pending forever.
+      resolve(undefined)
     }
   })
 }
 
 const waitForServer = async (port: number, ps?: ExecaChildProcess<string>) => {
   const deadline = Date.now() + SERVER_POLL_TIMEOUT
+  const signal = AbortSignal.timeout(SERVER_POLL_TIMEOUT)
 
   while (Date.now() < deadline) {
-    // If the process has been killed or if it exited with an error, the
-    // server will never become ready.
-    if (ps?.killed || (ps?.exitCode && ps.exitCode > 0)) {
+    // If the process has been killed or exited, the server will never become
+    // ready
+    if (ps?.killed || ps?.exitCode !== null || ps?.signalCode !== null) {
       return false
     }
 
     try {
-      await fetch(`http://127.0.0.1:${port}`)
+      await fetch(`http://127.0.0.1:${port}`, { signal })
 
       return true
     } catch {

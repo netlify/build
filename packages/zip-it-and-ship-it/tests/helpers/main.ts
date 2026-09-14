@@ -171,7 +171,7 @@ export const getRequires = async function (
   currentDepth = 1,
 ): Promise<string[]> {
   const requires = await listImports({
-    featureFlags: { parseWithEsbuild: true },
+    featureFlags: {},
     functionName: 'test-function',
     path: filePath,
   })

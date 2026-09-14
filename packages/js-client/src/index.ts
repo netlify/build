@@ -1,4 +1,4 @@
-import pWaitFor from 'p-wait-for'
+import { setTimeout } from 'node:timers/promises'
 
 import { getMethods } from './methods/index.js'
 import { openApiSpec } from './open_api.js'
@@ -105,22 +105,25 @@ export class NetlifyAPI {
     const { id } = ticket
 
     // ticket capture
-    let authorizedTicket
-    const checkTicket = async () => {
-      const t = await this.showTicket({ ticketId: id })
+    let authorizedTicket: Awaited<ReturnType<typeof this.showTicket>>
+    const signal = AbortSignal.timeout(timeout)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (true) {
+      const t = await this.showTicket({ ticketId: id }, { signal })
       if (t.authorized) {
         authorizedTicket = t
+        break
       }
-      return Boolean(t.authorized)
+      try {
+        await setTimeout(poll, undefined, { signal })
+      } catch {
+        const error = new Error('Timeout while waiting for ticket grant')
+        error.name = 'TimeoutError'
+        throw error
+      }
     }
 
-    await pWaitFor(checkTicket, {
-      interval: poll,
-      timeout,
-      message: 'Timeout while waiting for ticket grant',
-    } as any)
-
-    const accessTokenResponse = await this.exchangeTicket({ ticketId: authorizedTicket.id })
+    const accessTokenResponse = await this.exchangeTicket({ ticketId: authorizedTicket.id! })
     // See https://open-api.netlify.com/#/default/exchangeTicket for shape
     this.accessToken = accessTokenResponse.access_token
     return accessTokenResponse.access_token

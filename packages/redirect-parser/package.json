@@ -1,6 +1,6 @@
 {
   "name": "@netlify/redirect-parser",
-  "version": "16.1.0",
+  "version": "16.1.1",
   "description": "Parses netlify redirects into a js object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -27,9 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "smol-toml": "^1.5.2",
-    "fast-safe-stringify": "^2.1.1",
-    "is-plain-obj": "^4.0.0",
-    "path-exists": "^5.0.0"
+    "fast-safe-stringify": "^2.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.12.0",
