@@ -1,13 +1,16 @@
 import assert from 'assert'
 import childProcess from 'child_process'
+import { createReadStream } from 'fs'
 import { rm, cp } from 'fs/promises'
 import { createRequire } from 'module'
 import { join, resolve } from 'path'
 import process from 'process'
+import { pipeline } from 'stream/promises'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
+import { createGunzip } from 'zlib'
 
-import { x as tarExtract } from 'tar'
+import { unpackTar } from 'modern-tar/fs'
 import tmp from 'tmp-promise'
 
 const exec = promisify(childProcess.exec)
@@ -35,7 +38,7 @@ const installPackage = async () => {
 
   console.log(`Uncompressing the tarball at '${filename}'...`)
 
-  await tarExtract({ C: path, file: filename, strip: 1 })
+  await pipeline(createReadStream(filename), createGunzip(), unpackTar(path, { strip: 1 }))
 
   pathsToCleanup.add(path)
   pathsToCleanup.add(filename)
