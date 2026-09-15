@@ -6,7 +6,6 @@ import { pathToFileURL } from 'url'
 
 import { lt } from 'semver'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
@@ -19,6 +18,9 @@ import type { Manifest } from './manifest.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
 import { fileURLToPath } from 'node:url'
+import { tmpdir } from 'node:os'
+import { mkdtemp } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
@@ -237,7 +239,7 @@ test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () 
 
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
   const sourceDirectory = join(basePath, 'functions')
-  const cacheDir = await tmp.dir()
+  const cacheDir = await mkdtemp(join(tmpdir(), 'edge-bundler-cache-'))
   const declarations: Declaration[] = [
     {
       function: 'func1',
@@ -246,7 +248,7 @@ test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () 
   ]
   const options: BundleOptions = {
     basePath,
-    cacheDirectory: cacheDir.path,
+    cacheDirectory: cacheDir,
     configPath: join(sourceDirectory, 'config.json'),
   }
 
@@ -256,7 +258,7 @@ test('Uses the cache directory as the `DENO_DIR` value', { retry: 2 }, async () 
   expect(result.functions.length).toBe(1)
   expect(outFiles.length).toBe(2)
 
-  const denoDir = await readdir(join(cacheDir.path, 'deno_dir'))
+  const denoDir = await readdir(join(cacheDir, 'deno_dir'))
 
   expect(denoDir.includes('gen')).toBe(true)
 
@@ -304,14 +306,14 @@ test('Ignores any user-defined `deno.json` files', async () => {
 
   // Creating an import map file that rewires the URL of the Deno registry to
   // an invalid location.
-  const importMapFile = await tmp.file()
+  const importMapFile = join(tmpdir(), randomUUID())
   const importMap = {
     imports: {
       'https://deno.land/': 'https://black.hole/',
     },
   }
 
-  await writeFile(importMapFile.path, JSON.stringify(importMap))
+  await writeFile(importMapFile, JSON.stringify(importMap))
 
   // Deno configuration files need to be in the current working directory.
   // There's not a great way for us to set the working directory of the `deno`
@@ -319,7 +321,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
   // is the current working directory now and then clean it up.
   const denoConfigPath = join(process.cwd(), 'deno.json')
   const denoConfig = {
-    importMap: importMapFile.path,
+    importMap: importMapFile,
   }
 
   try {
@@ -345,7 +347,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
 
   await cleanup()
   await rm(denoConfigPath, { force: true, recursive: true, maxRetries: 10 })
-  await rm(importMapFile.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(importMapFile, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Processes a function that imports a custom layer', async () => {
@@ -430,7 +432,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
   const sourceDirectory = join(basePath, 'user-functions')
 
   // Creating import map file
-  const importMap = await tmp.file()
+  const importMap = join(tmpdir(), randomUUID())
   const importMapContents = {
     imports: {
       helper: pathToFileURL(join(basePath, 'helper.ts')).toString(),
@@ -442,7 +444,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
     },
   }
 
-  await writeFile(importMap.path, JSON.stringify(importMapContents))
+  await writeFile(importMap, JSON.stringify(importMapContents))
 
   const nonExistingImportMapPath = join(distPath, 'some-file-that-does-not-exist.json')
   const result = await bundle(
@@ -456,7 +458,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
     ],
     {
       basePath,
-      importMapPaths: [nonExistingImportMapPath, importMap.path],
+      importMapPaths: [nonExistingImportMapPath, importMap],
       systemLogger,
     },
   )
@@ -467,7 +469,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
   expect(systemLogger).toHaveBeenCalledWith(`Did not find an import map file at '${nonExistingImportMapPath}'.`)
 
   await cleanup()
-  await importMap.cleanup()
+  await rm(importMap, { force: true })
 })
 
 test('Handles imports with the `node:` prefix', async () => {
@@ -552,12 +554,12 @@ test('Loads npm modules from bare specifiers', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
     importMapPaths: [join(basePath, 'import_map.json')],
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
     systemLogger,
   })
 
@@ -568,14 +570,14 @@ test('Loads npm modules from bare specifiers', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(func1).toBe(
     `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>, TmV0bGlmeQ==`,
   )
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Loads npm modules which use package.json.exports', async () => {
@@ -587,22 +589,22 @@ test('Loads npm modules which use package.json.exports', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
   })
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(func1).toBe('hello')
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Loads modules which contain cycles', async () => {
@@ -614,22 +616,22 @@ test('Loads modules which contain cycles', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
   })
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(func1).toBe('magix')
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Loads npm modules in a monorepo setup', async () => {
@@ -643,13 +645,13 @@ test('Loads npm modules in a monorepo setup', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
     importMapPaths: [join(basePath, 'import_map.json')],
     rootPath,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
     systemLogger,
   })
 
@@ -660,14 +662,14 @@ test('Loads npm modules in a monorepo setup', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(func1).toBe(
     `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
   )
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Loads JSON modules with `with` attribute', async () => {
@@ -679,34 +681,34 @@ test('Loads JSON modules with `with` attribute', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
   })
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(func1).toBe(`{"foo":"bar"}`)
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Is backwards compatible with Deno 1.x', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_deno_1x_features')
   const sourceDirectory = join(basePath, 'functions')
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
   const systemLogger = vi.fn()
 
   await bundle([sourceDirectory], distPath, [], {
     basePath,
     systemLogger,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
   })
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -753,7 +755,7 @@ test('Is backwards compatible with Deno 1.x', async () => {
   })
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
 })
 
 test('Supports TSX and process.env', async () => {
@@ -765,25 +767,25 @@ test('Supports TSX and process.env', async () => {
       path: '/func1',
     },
   ]
-  const vendorDirectory = await tmp.dir()
+  const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
   await bundle([sourceDirectory], distPath, declarations, {
     basePath,
-    vendorDirectory: vendorDirectory.path,
+    vendorDirectory: vendorDirectory,
   })
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const bundlePath = join(distPath, manifest.bundles[0].asset)
   process.env.FOO = 'bar'
-  const { func1 } = await runESZIP(bundlePath, vendorDirectory.path)
+  const { func1 } = await runESZIP(bundlePath, vendorDirectory)
 
   expect(Buffer.from(func1, 'base64').toString()).toBe(
     `hippedy hoppedy, createElement is now a production property. Here, take this env var: FOO=bar`,
   )
 
   await cleanup()
-  await rm(vendorDirectory.path, { force: true, recursive: true })
+  await rm(vendorDirectory, { force: true, recursive: true })
   delete process.env.FOO
 })
 
@@ -894,8 +896,8 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       ]
 
       // Bundle the same code into two separate dist directories, one after the other.
-      const secondDist = await tmp.dir({ unsafeCleanup: true })
-      const secondDistPath = join(secondDist.path, '.netlify', 'edge-functions-dist')
+      const secondDist = await mkdtemp(join(tmpdir(), 'edge-bundler-dist-'))
+      const secondDistPath = join(secondDist, '.netlify', 'edge-functions-dist')
 
       const bundleTarball = async (dist: string) => {
         await bundle([join(basePath, 'netlify/edge-functions')], dist, declarations, {
@@ -926,7 +928,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       // The two tarballs must be byte-for-byte identical for reproducible builds.
       expect(firstTarball.equals(secondTarball)).toBe(true)
 
-      await Promise.all([cleanup(), secondDist.cleanup()])
+      await Promise.all([cleanup(), rm(secondDist, { force: true, recursive: true })])
     })
 
     test('Using npm and remote modules', async () => {
@@ -939,7 +941,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
           path: '/func1',
         },
       ]
-      const vendorDirectory = await tmp.dir()
+      const vendorDirectory = await mkdtemp(join(tmpdir(), 'edge-bundler-vendor-'))
 
       await bundle([sourceDirectory], distPath, declarations, {
         basePath,
@@ -947,7 +949,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
           edge_bundler_generate_tarball: true,
         },
         importMapPaths: [join(basePath, 'import_map.json')],
-        vendorDirectory: vendorDirectory.path,
+        vendorDirectory: vendorDirectory,
         systemLogger,
       })
 
@@ -968,20 +970,20 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify vendored npm imports were rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
-      await tar.extract({ cwd: tmpDir.path, file: tarballPath })
+      const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
+      await tar.extract({ cwd: tmpDir, file: tarballPath })
 
       // Get the function path from the manifest
-      const manifestContent = await readFile(join(tmpDir.path, '___netlify-edge-functions.json'), 'utf8')
+      const manifestContent = await readFile(join(tmpDir, '___netlify-edge-functions.json'), 'utf8')
       const tarballManifest = JSON.parse(manifestContent)
       const funcPath = tarballManifest.functions.func1
 
-      const sourceContent = await readFile(join(tmpDir.path, funcPath), 'utf8')
+      const sourceContent = await readFile(join(tmpDir, funcPath), 'utf8')
 
       // Bare specifier "parent-1" should not be rewritten to a relative path
       expect(sourceContent).toContain("from 'parent-1'")
 
-      await tmpDir.cleanup()
+      await rm(tmpDir, { force: true, recursive: true })
 
       const tarballResult = await runTarball(tarballPath)
       // Tarball runs in a temp directory, so cwd will be different
@@ -990,13 +992,13 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       expect(tarballResult.func1).toContain(expectedOutputEnd)
 
       const eszipPath = join(distPath, manifest.bundles[1].asset)
-      const eszipResult = await runESZIP(eszipPath, vendorDirectory.path)
+      const eszipResult = await runESZIP(eszipPath, vendorDirectory)
       expect(eszipResult.func1).toBe(
         `${expectedOutputPattern}${process.cwd()}${expectedOutputSuffix}${process.cwd()}${expectedOutputEnd}`,
       )
 
       await cleanup()
-      await rm(vendorDirectory.path, { force: true, recursive: true })
+      await rm(vendorDirectory, { force: true, recursive: true })
     })
 
     test('With imports from sibling directories', async () => {
@@ -1075,10 +1077,10 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
-      await tar.extract({ cwd: tmpDir.path, file: tarballPath })
+      const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
+      await tar.extract({ cwd: tmpDir, file: tarballPath })
 
-      const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
+      const sourceContent = await readFile(join(tmpDir, 'func1.ts'), 'utf8')
 
       // The bare specifier "my-encoding" should NOT be rewritten to the resolved URL
       expect(sourceContent).toContain('from "my-encoding"')
@@ -1087,7 +1089,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult.func1).toBe('TmV0bGlmeSBFZGdlIEZ1bmN0aW9ucw==')
 
-      await tmpDir.cleanup()
+      await rm(tmpDir, { force: true, recursive: true })
       await cleanup()
     })
 
@@ -1115,10 +1117,10 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Extract tarball and verify source file has been rewritten
-      const tmpDir = await tmp.dir({ unsafeCleanup: true, prefix: 'tarball-gen' })
-      await tar.extract({ cwd: tmpDir.path, file: tarballPath })
+      const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
+      await tar.extract({ cwd: tmpDir, file: tarballPath })
 
-      const sourceContent = await readFile(join(tmpDir.path, 'func1.ts'), 'utf8')
+      const sourceContent = await readFile(join(tmpDir, 'func1.ts'), 'utf8')
 
       // The bare specifier "my-encoding" should be rewritten to the resolved URL
       expect(sourceContent).toContain(`import dict from './dict.json' with { type: "json" }`)
@@ -1127,7 +1129,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult.func1).toBe('{"foo":"bar"}')
 
-      await tmpDir.cleanup()
+      await rm(tmpDir, { force: true, recursive: true })
       await cleanup()
     })
 

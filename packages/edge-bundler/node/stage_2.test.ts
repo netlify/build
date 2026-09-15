@@ -1,9 +1,9 @@
-import { rm, writeFile } from 'fs/promises'
+import { mkdtemp, rm, writeFile } from 'fs/promises'
+import { tmpdir } from 'os'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
-import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { getLocalEntryPoint } from './formats/javascript.js'
@@ -13,7 +13,7 @@ import { getLocalEntryPoint } from './formats/javascript.js'
 // as `boot`, and older bootstrap URLs still serve it, so the generated stage 2
 // has to cope with either name.
 test.each(['serve', 'boot'])('`getLocalEntryPoint` boots a bootstrap exporting `%s`', async (exportName) => {
-  const { path: tmpDir } = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-stage2-'))
 
   // This is a fake bootstrap that we'll create just for the purpose of logging
   // the functions and the metadata that are sent to the `boot` function.

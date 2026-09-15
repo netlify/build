@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { createWriteStream } from 'fs'
-import { readFile } from 'fs/promises'
+import { readFile, rm } from 'fs/promises'
+import { tmpdir } from 'os'
 import { join } from 'path'
 import process from 'process'
 
@@ -10,7 +11,6 @@ import process from 'process'
 // should have a proper fix for this.
 import { getURL as getBootstrapURL } from '@netlify/edge-functions-bootstrap/version'
 import getPort from 'get-port'
-import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { fixturesDir } from '../../test/util.js'
@@ -115,8 +115,8 @@ test('Starts a server and serves requests for edge functions', { retry: 2 }, asy
 })
 
 test('Serves edge functions in a monorepo setup', { retry: 2 }, async () => {
-  const tmpFile = await tmp.file()
-  const stderr = createWriteStream(tmpFile.path)
+  const stderrPath = join(tmpdir(), crypto.randomUUID())
+  const stderr = createWriteStream(stderrPath)
 
   const rootPath = join(fixturesDir, 'monorepo_npm_module')
   const basePath = join(rootPath, 'packages', 'frontend')
@@ -180,7 +180,7 @@ test('Serves edge functions in a monorepo setup', { retry: 2 }, async () => {
       `<parent-1><child-1>JavaScript</child-1></parent-1>, <parent-2><child-2><grandchild-1>APIs<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-2>, <parent-3><child-2><grandchild-1>Markup<cwd>${process.cwd()}</cwd></grandchild-1></child-2></parent-3>`,
     )
 
-    expect(await readFile(tmpFile.path, 'utf8')).toContain('[func1] Something is on fire')
+    expect(await readFile(stderrPath, 'utf8')).toContain('[func1] Something is on fire')
   } finally {
     try {
       await server.close()
@@ -190,7 +190,7 @@ test('Serves edge functions in a monorepo setup', { retry: 2 }, async () => {
           stderr.close(resolve)
         })
       } finally {
-        await tmpFile.cleanup()
+        await rm(stderrPath, { force: true })
       }
     }
   }

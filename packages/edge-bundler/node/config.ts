@@ -1,10 +1,11 @@
+import { randomUUID } from 'crypto'
 import { promises as fs } from 'fs'
+import { tmpdir } from 'os'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
 import pRetry from 'p-retry'
 import { SemVer } from 'semver'
-import tmp from 'tmp-promise'
 
 import { DenoBridge } from './bridge.js'
 import { BundleError } from './bundle_error.js'
@@ -95,7 +96,7 @@ export const getFunctionConfig = async ({
   // it to a temporary file, which we then read in the Node side. This allows
   // the config function to write to stdout and stderr without that interfering
   // with the extractor.
-  const collector = await tmp.file()
+  const collectorPath = join(tmpdir(), randomUUID())
 
   // Retrieving the version of Deno.
   const result = await deno.getBinaryVersion((await deno.getBinaryPath({ silent: true })).path)
@@ -112,14 +113,14 @@ export const getFunctionConfig = async ({
         version.major >= 2 ? '--allow-import' : '',
         '--allow-net',
         '--allow-read',
-        `--allow-write=${collector.path}`,
+        `--allow-write=${collectorPath}`,
         `--import-map=${importMap.toDataURL()}`,
         '--no-config',
         '--node-modules-dir=false',
         '--quiet',
         extractorPath,
         pathToFileURL(functionPath).href,
-        pathToFileURL(collector.path).href,
+        pathToFileURL(collectorPath).href,
         JSON.stringify(ConfigExitCode),
       ].filter(Boolean),
       { rejectOnExitCode: false },
@@ -172,12 +173,12 @@ export const getFunctionConfig = async ({
   let collectorData: FunctionConfig = {}
 
   try {
-    const collectorDataJSON = await fs.readFile(collector.path, 'utf8')
+    const collectorDataJSON = await fs.readFile(collectorPath, 'utf8')
     collectorData = JSON.parse(collectorDataJSON) as FunctionConfig
   } catch {
     handleConfigError(functionPath, ConfigExitCode.UnhandledError, stderr, log)
   } finally {
-    await collector.cleanup()
+    await fs.rm(collectorPath, { force: true })
   }
 
   if (!isValidOnError(collectorData.onError)) {

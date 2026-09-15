@@ -1,9 +1,9 @@
 import { promises as fs } from 'fs'
-import { rm } from 'fs/promises'
+import { mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
 import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
 
-import tmp from 'tmp-promise'
 import { test, expect, vi, describe } from 'vitest'
 
 import { fixturesDir, useFixture } from '../test/util.js'
@@ -180,7 +180,7 @@ const functions: TestFunctions[] = [
 ]
 describe('`getFunctionConfig` extracts configuration properties from function file', () => {
   test.each(functions)('$testName', async (func) => {
-    const { path: tmpDir } = await tmp.dir()
+    const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-config-'))
     const deno = new DenoBridge({
       cacheDirectory: tmpDir,
     })
@@ -360,7 +360,7 @@ test('Loads function paths from the in-source `config` function', async () => {
 })
 
 test('Passes validation if default export exists and is a function', async () => {
-  const { path: tmpDir } = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-config-'))
   const deno = new DenoBridge({
     cacheDirectory: tmpDir,
   })
@@ -394,7 +394,7 @@ test('Passes validation if default export exists and is a function', async () =>
 })
 
 test('Fails validation if default export is not function', async () => {
-  const { path: tmpDir } = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-config-'))
   const deno = new DenoBridge({
     cacheDirectory: tmpDir,
   })
@@ -428,7 +428,7 @@ test('Fails validation if default export is not function', async () => {
 })
 
 test('Fails validation if default export is not present', async () => {
-  const { path: tmpDir } = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-config-'))
   const deno = new DenoBridge({
     cacheDirectory: tmpDir,
   })

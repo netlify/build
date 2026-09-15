@@ -1,18 +1,19 @@
 import { Buffer } from 'buffer'
-import { rm } from 'fs/promises'
+import { mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { platform, env } from 'process'
 import { PassThrough } from 'stream'
 
 import { ZipArchive } from 'archiver'
 import nock from 'nock'
 import semver from 'semver'
-import tmp, { DirectoryResult } from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
 
-const getMockDenoBridge = async function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
+const getMockDenoBridge = async function (tmpDir: string, mockBinaryOutput: string) {
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = new ZipArchive({ zlib: { level: 9 } })
@@ -31,13 +32,13 @@ const getMockDenoBridge = async function (tmpDir: DirectoryResult, mockBinaryOut
     .reply(200, () => data)
 
   return new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     useGlobal: false,
   })
 }
 
 test('Does not inherit environment variables if `extendEnv` is false', async () => {
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-bridge-'))
   const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
@@ -65,11 +66,11 @@ test('Does not inherit environment variables if `extendEnv` is false', async () 
 
   expect(output).toBe('LULU=LALA')
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Does inherit environment variables if `extendEnv` is true', async () => {
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-bridge-'))
   const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
@@ -98,11 +99,11 @@ test('Does inherit environment variables if `extendEnv` is true', async () => {
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Does inherit environment variables if `extendEnv` is not set', async () => {
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-bridge-'))
   const deno = await getMockDenoBridge(
     tmpDir,
     `#!/usr/bin/env sh
@@ -131,11 +132,11 @@ test('Does inherit environment variables if `extendEnv` is not set', async () =>
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Provides actionable error message when downloaded binary cannot be executed', async () => {
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-bridge-'))
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = new ZipArchive({ zlib: { level: 9 } })
@@ -155,7 +156,7 @@ test('Provides actionable error message when downloaded binary cannot be execute
     .reply(200, () => data)
 
   const deno = new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     useGlobal: false,
   })
 
@@ -169,12 +170,12 @@ test('Provides actionable error message when downloaded binary cannot be execute
     expect(errorMessage).toContain('Failed to set up Deno for Edge Functions')
     expect(errorMessage).toMatch(/Error:/)
     expect(errorMessage).toMatch(/Downloaded to: .+deno(\.exe)?/)
-    expect(errorMessage).toContain(tmpDir.path)
+    expect(errorMessage).toContain(tmpDir)
     expect(errorMessage).toMatch(/Platform: (darwin|linux|win32)\/(x64|arm64|ia32)/)
     expect(errorMessage).toContain('This may be caused by permissions, antivirus software, or platform incompatibility')
     expect(errorMessage).toContain('Try clearing the Deno cache directory and retrying')
     expect(errorMessage).toContain('https://ntl.fyi/install-deno')
   }
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
