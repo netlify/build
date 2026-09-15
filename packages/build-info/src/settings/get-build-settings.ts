@@ -1,4 +1,4 @@
-import { type Framework } from '../frameworks/framework.js'
+import { FrameworkId, type Framework } from '../frameworks/framework.js'
 import { type Project } from '../project.js'
 
 export type Settings = {
@@ -12,7 +12,7 @@ export type Settings = {
   frameworkPort?: number
   /** the detected framework */
   framework: {
-    id: string
+    id: FrameworkId
     name: string
   }
   buildSystem?: {
