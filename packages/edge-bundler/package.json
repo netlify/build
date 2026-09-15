@@ -66,11 +66,11 @@
     "esbuild": "0.28.1",
     "execa": "^8.0.0",
     "find-up": "^7.0.0",
+    "modern-tar": "^0.8.5",
     "node-stream-zip": "^1.15.0",
     "p-retry": "^6.0.0",
     "parse-imports": "^2.2.1",
     "semver": "^7.3.8",
-    "tar": "^7.5.12",
     "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2"
   }
