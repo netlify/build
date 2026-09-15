@@ -4,7 +4,7 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 
 import { trace, TraceFlags } from '@opentelemetry/api'
-import { Span } from '@opentelemetry/sdk-trace-base'
+import type { Span } from '@opentelemetry/sdk-trace-base'
 import { expect, test, beforeEach, beforeAll, afterAll } from 'vitest'
 
 import { startTracing, stopTracing } from '../src/sdk-setup.js'
@@ -23,7 +23,7 @@ const sampledTraceId = 'e1819d7355971fd50456e41dbed71e58'
 
 const testSpanMatrix = [
   {
-    description: 'when sampled, only include the SampleRate attribute by default',
+    description: 'when sampled, no attributes are set by default',
     input: {
       traceId: sampledTraceId,
       sampleRate: 4,
@@ -32,7 +32,7 @@ const testSpanMatrix = [
       parentSpanId: spanId,
       traceId: sampledTraceId,
       traceFlags: TraceFlags.SAMPLED,
-      attributes: { SampleRate: 4 },
+      attributes: {},
       checkResource: true,
     },
   },
@@ -63,7 +63,7 @@ const testSpanMatrix = [
       parentSpanId: spanId,
       traceId: sampledTraceId,
       traceFlags: TraceFlags.SAMPLED,
-      attributes: { SampleRate: 4 },
+      attributes: {},
       checkResource: true,
     },
   },
@@ -81,7 +81,6 @@ test.each(testSpanMatrix)('Tracing spans - $description', async ({ input, expect
       traceFlags: input.traceFlags,
       parentSpanId: spanId,
       baggageFilePath: '',
-      apiKey: '-',
       debug: false,
     },
     {
@@ -95,7 +94,7 @@ test.each(testSpanMatrix)('Tracing spans - $description', async ({ input, expect
 
   expect(span.spanContext().traceId).toEqual(expects.traceId)
   expect(span.spanContext().traceFlags).toEqual(expects.traceFlags)
-  expect(span.parentSpanId).toEqual(expects.parentSpanId)
+  expect(span.parentSpanContext?.spanId).toEqual(expects.parentSpanId)
   expect(span.attributes).toStrictEqual(expects.attributes)
   if (expects.checkResource) {
     expect(span.resource.attributes).toMatchObject({
@@ -114,7 +113,6 @@ test('Tracing - trace id and resource definition', async () => {
       port: 4127,
       sampleRate: 1,
       baggageFilePath: '',
-      apiKey: '-',
       debug: false,
     },
     {
@@ -127,7 +125,7 @@ test('Tracing - trace id and resource definition', async () => {
   const span = tracer.startSpan('test', {}, ctx) as Span
 
   expect(span.spanContext().traceId).toBeDefined()
-  expect(span.parentSpanId).toBeUndefined()
+  expect(span.parentSpanContext?.spanId).toBeUndefined()
 })
 
 test('Tracing - package.json extraction for executable', async () => {
