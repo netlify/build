@@ -105,6 +105,28 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.9 to ^7.1.10
+    * @netlify/opentelemetry-utils bumped from ^3.1.0 to ^4.0.0
+    * @netlify/zip-it-and-ship-it bumped from 15.5.1 to 16.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.0
+
 ## [36.4.8](https://github.com/netlify/build/compare/build-v36.4.7...build-v36.4.8) (2026-09-09)
 
 
