@@ -60,7 +60,7 @@ export const getStandardStreams = (outputFlusher?: OutputFlusher): StandardStrea
 
   return {
     outputFlusher,
-    stdout: new OutputFlusherTransform(outputFlusher).pipe(stdout),
-    stderr: new OutputFlusherTransform(outputFlusher).pipe(stderr),
+    stdout,
+    stderr,
   }
 }
