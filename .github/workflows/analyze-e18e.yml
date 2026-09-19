@@ -20,6 +20,7 @@ jobs:
         with:
           mode: artifact
           duplicate-threshold: 999 # disable, would be too noisy here 😬
+          size-threshold: -1 # always report install size, so we hear about shrinkages too 🎉
       - name: Upload Artifact
         if: steps.analyze.outputs.artifact-path
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

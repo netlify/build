@@ -1,5 +1,23 @@
 # Changelog
 
+## [7.1.10](https://github.com/netlify/build/compare/functions-utils-v7.1.9...functions-utils-v7.1.10) (2026-09-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.5.1 to 16.0.0
+
+## [7.1.9](https://github.com/netlify/build/compare/functions-utils-v7.1.8...functions-utils-v7.1.9) (2026-09-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/zip-it-and-ship-it bumped from 15.5.0 to 15.5.1
+
 ## [7.1.8](https://github.com/netlify/build/compare/functions-utils-v7.1.7...functions-utils-v7.1.8) (2026-09-03)
 
 

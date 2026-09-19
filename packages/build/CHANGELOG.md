@@ -105,6 +105,58 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.9 to ^7.1.10
+    * @netlify/opentelemetry-utils bumped from ^3.1.0 to ^4.0.0
+    * @netlify/zip-it-and-ship-it bumped from 15.5.1 to 16.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.0
+
+## [36.4.8](https://github.com/netlify/build/compare/build-v36.4.7...build-v36.4.8) (2026-09-09)
+
+
+### Bug Fixes
+
+* don't swallow Frameworks API config validation errors ([#7218](https://github.com/netlify/build/issues/7218)) ([36ce357](https://github.com/netlify/build/commit/36ce3579e65c4ce21720b1a3556e790b86852969))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.4 to ^25.2.5
+
+## [36.4.7](https://github.com/netlify/build/compare/build-v36.4.6...build-v36.4.7) (2026-09-08)
+
+
+### Bug Fixes
+
+* correct buildSite return types and declare generatedFunctions ([#7213](https://github.com/netlify/build/issues/7213)) ([5531e86](https://github.com/netlify/build/commit/5531e86398ad4e12ab61b5aaabb79fffba9bfec9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.3 to ^25.2.4
+    * @netlify/functions-utils bumped from ^7.1.8 to ^7.1.9
+    * @netlify/zip-it-and-ship-it bumped from 15.5.0 to 15.5.1
+
 ## [36.4.6](https://github.com/netlify/build/compare/build-v36.4.5...build-v36.4.6) (2026-09-03)
 
 
