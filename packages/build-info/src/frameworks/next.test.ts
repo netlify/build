@@ -53,11 +53,26 @@ describe('Next.js Plugin', () => {
   })
 
   test('Should not install plugin when NETLIFY_NEXT_PLUGIN_SKIP is set', async ({ fs, cwd }) => {
-    const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
+    const project = new Project(fs, cwd).setNodeVersion('v10.13.0').setEnvironment(process.env)
     vi.stubEnv('NETLIFY_NEXT_PLUGIN_SKIP', 'true')
     const frameworks = await project.detectFrameworks()
     expect(frameworks?.[0].id).toBe('next')
     expect(frameworks?.[0].plugins).toHaveLength(0)
+  })
+
+  test('respects the project environment when skipping the plugin', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('22').setEnvironment({ NETLIFY_NEXT_PLUGIN_SKIP: 'true' })
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual([])
+  })
+
+  test('does not inherit the skip setting from another environment', async ({ fs, cwd }) => {
+    vi.stubEnv('NETLIFY_NEXT_PLUGIN_SKIP', 'true')
+    const project = new Project(fs, cwd).setNodeVersion('22').setEnvironment({})
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual(['@netlify/plugin-nextjs'])
   })
 })
 
