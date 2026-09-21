@@ -8,19 +8,19 @@ import { GithubProvider, WebFS } from './file-system.js'
 
 describe('WebFS.resolve', () => {
   test.each([
-    [],
-    [''],
-    ['apps', 'web'],
-    ['/repo', '/repo/app'],
-    ['/repo', '/other', 'app'],
-    ['/repo/app', '/', 'other'],
-    ['ignored', '/repo', '../app'],
-    ['..', 'app'],
-    ['/repo/app/'],
-    ['app/'],
-    ['/../../app'],
-    ['/'],
-  ])('resolves %j like a POSIX filesystem', (...paths) => {
+    [[]],
+    [['']],
+    [['apps', 'web']],
+    [['/repo', '/repo/app']],
+    [['/repo', '/other', 'app']],
+    [['/repo/app', '/', 'other']],
+    [['ignored', '/repo', '../app']],
+    [['..', 'app']],
+    [['/repo/app/']],
+    [['app/']],
+    [['/../../app']],
+    [['/']],
+  ])('resolves %j like posix.resolve does', (paths) => {
     const fs = new WebFS(new GithubProvider('netlify/build'))
     fs.cwd = '/repo'
     expect(fs.resolve(...paths)).toBe(posix.resolve(fs.cwd, ...paths))

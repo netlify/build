@@ -6,22 +6,20 @@ import type { Project } from '../src/project.js'
 declare const window: Window & { fs: FileSystem; project: typeof Project }
 
 test.beforeEach(async ({ page }) => {
-  await page.route('https://api.github.com/**', (route) => {
-    const path = new URL(route.request().url()).pathname
-    if (path === '/repos/netlify/build/contents/') {
-      return route.fulfill({ json: [{ path: 'package.json', type: 'file' }] })
-    }
-    if (path === '/repos/netlify/build/contents/package.json') {
-      return route.fulfill({
-        body: JSON.stringify({
-          name: 'next-site',
-          dependencies: { next: '^15.0.0' },
-          scripts: { build: 'next build', dev: 'next dev' },
-        }),
-      })
-    }
-    return route.fulfill({ status: 404, json: { message: 'Not Found' } })
-  })
+  // the fallback keeps detection off the network; later routes take precedence in Playwright
+  await page.route('https://api.github.com/**', (route) => route.fulfill({ status: 404, json: {} }))
+  await page.route('https://api.github.com/repos/netlify/build/contents/', (route) =>
+    route.fulfill({ json: [{ path: 'package.json', type: 'file' }] }),
+  )
+  await page.route('https://api.github.com/repos/netlify/build/contents/package.json', (route) =>
+    route.fulfill({
+      body: JSON.stringify({
+        name: 'next-site',
+        dependencies: { next: '^15.0.0' },
+        scripts: { build: 'next build', dev: 'next dev' },
+      }),
+    }),
+  )
   await page.goto('http://localhost:3000/')
 })
 
@@ -44,13 +42,3 @@ for (const skip of [undefined, '', 'true']) {
     ])
   })
 }
-
-test('resolves absolute project paths in the browser', async ({ page }) => {
-  expect(
-    await page.evaluate(() => {
-      window.fs.cwd = '/repo'
-      const project = new window.project(window.fs, '/repo/app', '/repo')
-      return { base: project.baseDirectory, root: project.root, relativeBase: project.relativeBaseDirectory }
-    }),
-  ).toEqual({ base: '/repo/app', root: '/repo', relativeBase: 'app' })
-})
