@@ -16,7 +16,7 @@ interface TcpServerOptions<TRequest> {
 export const startTcpServer = async function <TRequest>({
   response = '',
   useUnixSocket = true,
-  onRequest = undefined,
+  onRequest,
 }: TcpServerOptions<TRequest> = {}) {
   const requests: TRequest[] = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
