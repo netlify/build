@@ -1,11 +1,12 @@
 // @ts-check
+/* eslint-disable import-x/no-named-as-default-member */
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { includeIgnoreFile } from '@eslint/compat'
 import eslint from '@eslint/js'
 import vitest from '@vitest/eslint-plugin'
-import * as importPlugin from 'eslint-plugin-import'
+import importPlugin from 'eslint-plugin-import-x'
 import node from 'eslint-plugin-n'
 import tseslint from 'typescript-eslint'
 
@@ -43,10 +44,18 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   node.configs['flat/recommended'],
+  {
+    settings: {
+      n: {
+        resolverConfig: { extensionAlias: { '.js': ['.ts', '.tsx', '.js'] } },
+      },
+    },
+  },
 
   // Import rules
 
   importPlugin.flatConfigs?.recommended,
+  importPlugin.flatConfigs?.typescript,
   {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
@@ -54,14 +63,21 @@ export default tseslint.config(
       sourceType: 'module',
     },
     rules: {
-      'import/extensions': ['error', 'ignorePackages'], // This requires for esm modules .js file extensions on relative paths
-      'import/no-absolute-path': ['error'],
-      'import/no-cycle': ['error', { ignoreExternal: true }],
-      'import/no-duplicates': ['error', { considerQueryString: true }],
-      'import/no-mutable-exports': ['error'],
-      'import/no-self-import': ['error'],
-      'import/no-useless-path-segments': ['error'],
-      'import/order': [
+      'import-x/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          js: 'always',
+          ts: 'never',
+        },
+      ], // This requires for esm modules .js file extensions on relative paths
+      'import-x/no-absolute-path': ['error'],
+      'import-x/no-cycle': ['error', { ignoreExternal: true }],
+      'import-x/no-duplicates': ['error', { considerQueryString: true }],
+      'import-x/no-mutable-exports': ['error'],
+      'import-x/no-self-import': ['error'],
+      'import-x/no-useless-path-segments': ['error'],
+      'import-x/order': [
         'error',
         {
           'newlines-between': 'always',
@@ -131,6 +147,8 @@ export default tseslint.config(
       'vitest/no-disabled-tests': ['error'],
       'vitest/no-focused-tests': ['error'],
       'vitest/no-commented-out-tests': ['error'],
+      'vitest/no-standalone-expect': 'off',
+      'vitest/no-conditional-expect': 'off',
     },
   },
 

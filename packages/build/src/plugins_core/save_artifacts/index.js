@@ -1,5 +1,4 @@
 import { saveUpdatedConfig } from '../../core/config.js'
-// eslint-disable-next-line n/no-missing-import
 import { shouldDeploy } from '../deploy/index.js'
 
 const coreStep = async function ({

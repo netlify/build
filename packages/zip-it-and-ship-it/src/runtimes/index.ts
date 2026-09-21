@@ -31,7 +31,7 @@ type FunctionTupleWithoutConfig = [string, FunctionWithoutConfig]
  */
 const findFunctionsInRuntime = async function ({
   cache,
-  dedupe = false,
+  dedupe,
   featureFlags,
   paths,
   runtime,

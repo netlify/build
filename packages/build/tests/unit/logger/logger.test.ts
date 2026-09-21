@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 
 import { normalizeOutput } from '@netlify/testing'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { type BufferedLogs, getSystemLogger } from '../../../lib/log/logger.js'

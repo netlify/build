@@ -1,4 +1,4 @@
-import semver from 'semver'
+import * as semver from 'semver'
 
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'

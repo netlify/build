@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url'
 
 import { DenoBridge, type Manifest } from '@netlify/edge-bundler'
 import { Fixture, normalizeOutput } from '@netlify/testing'
-import semver from 'semver'
-import tmp from 'tmp-promise'
+import * as semver from 'semver'
+import * as tmp from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { importJsonFile } from '../../lib/utils/json.js'

@@ -3,7 +3,7 @@ import { dirname, resolve } from 'path'
 import { platform } from 'process'
 
 import { Fixture } from '@netlify/testing'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 test('Does not mutate read-only properties', async () => {

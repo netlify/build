@@ -7,7 +7,7 @@ import { getDeployStore } from '@netlify/blobs'
 import { BlobsServer } from '@netlify/blobs/server'
 import { Fixture } from '@netlify/testing'
 import getPort from 'get-port'
-import tmp from 'tmp-promise'
+import * as tmp from 'tmp-promise'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 const TOKEN = 'test'

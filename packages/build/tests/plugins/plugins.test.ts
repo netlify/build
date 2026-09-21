@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
 import getPort from 'get-port'
-import tmp, { tmpName } from 'tmp-promise'
+import { tmpName, file as tmpFile } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { DEFAULT_FEATURE_FLAGS } from '../../lib/core/feature_flags.js'
@@ -343,7 +343,7 @@ test('Plugin events that do not emit to stderr/stdout are hidden from the logs',
 })
 
 test('Plugin errors that occur during the loading phase are piped to system logs', async () => {
-  const systemLogFile = await tmp.file()
+  const systemLogFile = await tmpFile()
   const output = await new Fixture(import.meta.url, './fixtures/syntax_error')
     .withFlags({
       debug: false,
