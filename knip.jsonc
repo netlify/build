@@ -9,7 +9,10 @@
     "config": ["commitlint.config.js"],
   },
   "workspaces": {
-    ".": {},
+    ".": {
+      // Run by hand to measure type debt, so nothing imports them.
+      "entry": ["scripts/type-debt/*.ts"],
+    },
     "packages/*": {},
     "packages/build": {
       "entry": [
