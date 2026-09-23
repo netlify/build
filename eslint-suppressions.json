@@ -1651,21 +1651,6 @@
       "count": 1
     }
   },
-  "packages/config/tests/api/cached_site_info.test.ts": {
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    }
-  },
-  "packages/config/tests/errors/api_errors.test.ts": {
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    }
-  },
-  "packages/config/tests/extensions/build_plugin_url.test.ts": {
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    }
-  },
   "packages/edge-bundler/node/bridge.test.ts": {
     "@typescript-eslint/no-unnecessary-condition": {
       "count": 9

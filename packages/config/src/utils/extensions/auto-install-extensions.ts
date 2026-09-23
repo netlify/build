@@ -1,8 +1,11 @@
 import { createRequire } from 'module'
 import { join } from 'path'
 
+import * as z from 'zod'
+
 import { getExtensions } from '../../api/site_info.js'
 import type { Extension } from '../../types/api.js'
+import type { Logs } from '../../types/logs.js'
 import type { ModeOption, TestOptions } from '../../types/options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
@@ -19,14 +22,17 @@ type AutoInstallOptions = {
   mode: ModeOption
   extensionApiBaseUrl: string
   debug: boolean
+  logs: Logs | undefined
 }
 
-type PackageJson = { dependencies?: unknown }
+// Only the dependency names are read.
+const packageJsonSchema = z.looseObject({ dependencies: z.record(z.string(), z.unknown()).exactOptional() })
 
-// An empty object when there is no `package.json`.
-const getPackageJson = function (directory: string): PackageJson {
+// Without a `package.json`, or with `dependencies` that aren't an object, there are no dependencies.
+const getDependencies = function (directory: string): Record<string, unknown> {
   try {
-    return createRequire(join(directory, 'package.json'))('./package.json') as PackageJson
+    const packageJson: unknown = createRequire(join(directory, 'package.json'))('./package.json')
+    return packageJsonSchema.safeParse(packageJson).data?.dependencies ?? {}
   } catch {
     return {}
   }
@@ -49,6 +55,7 @@ export async function handleAutoInstallExtensions({
   mode,
   extensionApiBaseUrl,
   debug,
+  logs,
 }: AutoInstallOptions): Promise<Extension[]> {
   if (!featureFlags['auto_install_required_extensions_v2']) {
     return extensions
@@ -68,12 +75,12 @@ export async function handleAutoInstallExtensions({
   }
 
   try {
-    const { dependencies } = getPackageJson(buildDir)
-    if (typeof dependencies !== 'object' || dependencies === null || Object.keys(dependencies).length === 0) {
+    const dependencies = getDependencies(buildDir)
+    if (Object.keys(dependencies).length === 0) {
       return extensions
     }
 
-    const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
+    const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta(logs)
     const installedSlugs = new Set(extensions.map(({ slug }) => slug))
     const extensionsToInstall = autoInstallableExtensions.filter(
       ({ slug, packages }) =>
