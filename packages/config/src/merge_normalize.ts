@@ -1,43 +1,44 @@
 import { normalizeConfigCase } from './case.js'
 import { normalizeConfig } from './normalize.js'
 import { addOrigins, CONFIG_ORIGIN } from './origin.js'
+import type { ConfigOrigin, NormalizedNetlifyConfig, PartialNetlifyConfig } from './types/config.js'
 import { validateIdenticalPlugins } from './validate/identical.js'
 import {
+  validateConfigFile,
+  validatePostNormalizeConfig,
   validatePreCaseNormalize,
   validatePreMergeConfig,
-  validateConfigFile,
   validatePreNormalizeConfig,
-  validatePostNormalizeConfig,
 } from './validate/main.js'
 
 /**
- * Perform validation and normalization logic to apply to all of:
- *  - config, defaultConfig, inlineConfig
- *  - context-specific configs
- * Therefore, this is performing before merging those together.
+ * Validate and normalize a single source (`netlify.toml`, `defaultConfig`, `inlineConfig`) or one
+ * of its contexts, before sources are merged.
  */
-export const normalizeBeforeConfigMerge = function (config: $TSFixMe, origin) {
+export const normalizeBeforeConfigMerge = function (
+  config: PartialNetlifyConfig,
+  origin: ConfigOrigin,
+): PartialNetlifyConfig {
   validatePreCaseNormalize(config)
-  const configA = normalizeConfigCase(config)
-  validatePreMergeConfig(configA)
+  const caseNormalized = normalizeConfigCase(config)
+  validatePreMergeConfig(caseNormalized)
 
-  // Some properties are only allowed to be set from the user's `netlify.toml`
-  // file, so they are validated exclusively against that origin.
   if (origin === CONFIG_ORIGIN) {
-    validateConfigFile(configA)
+    validateConfigFile(caseNormalized)
   }
 
-  const configB = addOrigins(configA, origin) as $TSFixMe
-  validateIdenticalPlugins(configB)
-  return configB
+  const withOrigins = addOrigins(caseNormalized, origin)
+  validateIdenticalPlugins(withOrigins)
+  return withOrigins
 }
 
-/**
- * Validation and normalization logic performed after merging
- */
-export const normalizeAfterConfigMerge = function (config: $TSFixMe, packagePath?: string) {
+/** Validate and normalize the merge of all sources. */
+export const normalizeAfterConfigMerge = function (
+  config: PartialNetlifyConfig,
+  packagePath?: string,
+): NormalizedNetlifyConfig {
   validatePreNormalizeConfig(config)
-  const configA = normalizeConfig(config, packagePath)
-  validatePostNormalizeConfig(configA)
-  return configA
+  const normalized = normalizeConfig(config, packagePath)
+  validatePostNormalizeConfig(normalized)
+  return normalized
 }
