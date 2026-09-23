@@ -1,7 +1,7 @@
 # Type-safety remediation plan for `netlify/build`
 
 Status: proposal. Every number here was measured on `224d0ab` with TypeScript 5.9.3, with all
-workspace packages built (`npx lerna run build`), so each package's baseline is 0 errors. §10
+workspace packages built (`npx lerna run build`), so each package's baseline is 0 errors. §11
 explains how to reproduce the numbers.
 
 ---
@@ -33,9 +33,11 @@ explains how to reproduce the numbers.
   cycle, between two files (`steps/error` ↔ `steps/plugin`). Larger cycles appear only when
   type-only imports are counted, and TypeScript doesn't need an acyclic graph to type-check
   or to convert files. `packages/config` has no runtime cycle.
-- **Do not ratchet on raw totals.** Making types accurate often *raises* a package's error
-  count. The guardrail proposed here (§5) is a baseline per file and error code, where a PR
-  that adds errors updates the baseline and reviewers see the diff.
+- **Chosen approach.** Rewrite `@netlify/config` against its existing public contract,
+  after first adding black-box tests for the parts of that contract that aren't tested yet.
+  For `@netlify/build`, rewrite only the orchestration layer, where most of the typing debt
+  sits, and type the rest incrementally. §5 explains why, and §7–§8 give the sequence.
+  `@netlify/config` goes first. `@netlify/build` waits for a separate go-ahead.
 
 ---
 
@@ -327,236 +329,221 @@ The compiler already reports these, or they're visible by reading the code:
 
 ---
 
-## 5. Guardrails
+## 5. Approach: rewrite `config`, rewrite the middle of `build`
 
-Put these in place before the typing work, so progress is measurable and doesn't slip back.
+**`@netlify/config`: rewrite it.** It's about 4,500 lines across about 60 small modules,
+and it's mostly a deterministic transformation: read `netlify.toml` and the other config
+sources, merge them, apply contexts and branches, normalize, resolve paths, validate. Its
+public surface is small: `resolveConfig`, 7 helper functions used by `@netlify/build`, and
+the `netlify-config` binary. It already has 331 tests, most of which go through the public
+entry points and compare the full output against snapshots, so they catch behaviour drift.
 
-**G1. A type-debt baseline per file and error code, checked in CI.**
-`scripts/type-debt/diagnostics.ts` type-checks a package with extra flags and compares the
-result to a committed JSON baseline of error counts per file and error code. CI runs it for
-each package with the end-state flag set (every disabled flag plus `checkJs`) after the
-existing build step. It fails when any file/code count goes up. A PR that correctly adds
-errors, for example by replacing an `any` with a real type, runs `--update`, and reviewers
-see the baseline diff. This enables every target flag for new code immediately, without
-touching the tsconfigs that `npm run build` uses and without one PR per flag.
+Typing it in place would leave its main difficulties in place: one variable holding three
+different config shapes over the pipeline, objects mutated in place, a validator that
+recurses over wildcards, and `main.ts` threading dozens of loosely typed options through two
+loading passes. A rewrite can make each stage a function with explicit input and output
+types. Breaking the netlify-cli type check happens either way (§3), so the rewrite costs
+nothing extra downstream.
 
-**G2. Replace `eslint_temporary_suppressions.js` with ESLint's bulk suppressions.** The
+Much of the leaf logic (small helpers, the validation rule tables, the environment variable
+rules) will carry over almost line for line, with types added. The redesign is in the
+pipeline, the options, the config types, context merging, origin tracking and the
+validation engine.
+
+**`@netlify/build`: rewrite the orchestration layer only.** It's about 16,000 lines, and
+its contract goes far beyond its types:
+- the runtime API that third-party plugins use in child processes;
+- log output, pinned by 490 snapshots;
+- how errors are classified, and the resulting severity and exit codes;
+- telemetry and timing metrics;
+- about 15 built-in build steps, each wrapping another package.
+
+It runs in every Netlify build. The typing debt, though, is concentrated in the
+orchestration layer (§4). So rewrite that layer with an explicit, typed context, and keep
+the built-in steps, the plugin child process and the log message modules, typing and
+converting those incrementally.
+
+---
+
+## 6. Guardrails
+
+**G1. Replace `eslint_temporary_suppressions.js` with ESLint's bulk suppressions.** The
 installed ESLint (9.39) supports `--suppress-all` and `--prune-suppressions`, which keep an
-`eslint-suppressions.json` file up to date automatically. Hand-editing the 2,874-line file in
-every conversion PR would make it a merge-conflict hotspot. Keep the file's global section
-(the rule settings at the top that apply everywhere). Move only the per-file blocks.
+`eslint-suppressions.json` file up to date automatically. Hand-editing the 2,874-line file
+in every PR would make it a merge-conflict hotspot. Keep the file's global section. Move
+only the per-file blocks.
 
-**G3. Compile netlify-cli against these packages in CI.** Pack `@netlify/build` and
+**G2. Compile netlify-cli against these packages in CI.** Pack `@netlify/build` and
 `@netlify/config`, install the tarballs into a checkout of netlify-cli's default branch, and
-run the CLI's type check. Required before any change to a public type. Also add `tsd` tests
-for `@netlify/config`'s exports (`Config`, `resolveConfig`), since only `@netlify/build` has
-them today (`test-d/`).
+run the CLI's type check. Required before any public type change ships.
 
-**G4. Block new `.js` and new runtime cycles.** `typescript-nudge.yml` only posts a comment
-today. Make it fail on *newly added* `.js` files under `packages/*/src/` (keep the comment
-for modified ones). Since `import/no-cycle` misses cycles that go through `.js` → `.ts`
-imports, check cycles in the emitted code instead: `scripts/type-debt/analyze.ts` reports
-cycles in the emitted `lib/` output, so fail CI when a new one appears.
+**G3. Block new `.js` and new runtime cycles.** `typescript-nudge.yml` only posts a comment
+today. Make it fail on *newly added* `.js` files under `packages/*/src/`. Since
+`import/no-cycle` misses cycles that go through `.js` → `.ts` imports, check the emitted
+code instead: `scripts/type-debt/analyze.ts` reports cycles in `lib/`, so fail CI when a new
+one appears.
 
-**G5. Run the test tsconfig in CI.** `tsconfig.test.json` isn't type-checked in any
-workflow, and `config`'s tests are `.js`. So today nothing checks new internal types against
-how the tests call the code. Add the test type check to CI, next to G1.
+**G4. Type-check tests in CI.** No workflow runs `tsconfig.test.json`.
 
-Not a guardrail, and leave it alone for now: `packages/build/tsconfig.json` and
-`packages/build-info/tsconfig.json` have no `include`. That picks up malformed test fixtures
-if someone runs `tsc -p tsconfig.json` by hand. But ESLint uses these files
-(`eslint.config.js:35`) to get type information for test files, so restricting them to
-`src` would take the tests out of typed linting. If cleaning up, make them solution-style
-(`"files": []` plus `references`) and add `tsconfig.test.json` to ESLint's project list.
+Leave `packages/build/tsconfig.json` and `packages/build-info/tsconfig.json` alone. They
+have no `include`, but ESLint uses them to get type information for test files
+(`eslint.config.js:35`).
 
 ---
 
-## 6. Sequencing
+## 7. `@netlify/config`
 
-The first PRs, in order:
+### The contract
 
-| # | PR | Files | Depends on |
-|---|---|---|---|
-| 1 | Fix the monorepo-only import path; add the `@netlify/api` dependency | `build/src/status/validations.ts`, `build/src/plugins_core/types.ts`, `build/package.json` | — |
-| 2 | Guardrails G1–G5 | CI workflows, `scripts/type-debt/`, `eslint.config.js`, suppressions file | — |
-| 3 | `measureDuration` signature, `Timer` type, `tags` fix, `tFireStep` result union | `build/src/time/{main,report,aggregate}.ts`, `build/src/steps/run_step.ts`, `build/src/core/build.ts`, `build/src/steps/run_core_steps.ts` | 2 (G1) |
-| 4 | Enable `checkJs` in `config` (46 errors) and `build` (57) | see below | 2 |
-| 5 | `@netlify/config` public types, coordinated with netlify-cli | see below | 2 (G3) |
+The rewrite must preserve all of the following. The tests in step 1 exist to pin them down.
 
-PRs 1, 2 and 4 can run in parallel with each other. PR 3 and PR 5 touch different packages
-and can also run in parallel.
+- **Exports:** `resolveConfig`, `mergeConfigs`, `cleanupConfig`, `applyMutations`,
+  `updateConfig`, `restoreConfig`, `EVENTS`, `DEV_EVENTS`. `@netlify/build` uses every one
+  of them, and netlify-cli uses `resolveConfig`.
+- **The `resolveConfig` result:** every field, including the defaults filled in, the
+  origins recorded (`commandOrigin`, `publishOrigin`, `headersOrigin`, …), absolute paths,
+  parsed headers and redirects, and the environment variables with their `sources`.
+- **Options:** every option `resolveConfig` accepts, including `cachedConfig`/
+  `cachedConfigPath` (which may come from an older version of the package),
+  `configMutations`, `featureFlags`, and the `testOpts` hooks other packages' tests rely on
+  (`host`, `scheme`, `env`).
+- **Errors:** user errors carry `customErrorInfo: { type: 'resolveConfig' }`. netlify-cli
+  checks exactly this, and so does the binary when choosing exit code 1 over 2. Messages
+  are prefixed with `When resolving config file <path>:` (or
+  `When applying configuration from <origin>:` for mutations), and validation errors
+  include the invalid and valid syntax.
+- **Logs:** what is printed, to stdout or stderr, in buffered and unbuffered mode, with or
+  without debug. The `logs.outputFlusher` hook is called before printing.
+- **Files:** `updateConfig` writes `netlify.toml`, deletes `_headers`/`_redirects`, and
+  backs all three up under `<buildDir>/.netlify/deploy/`. `restoreConfig` puts them back.
+- **Network:** which Netlify API endpoints are called and when (site, accounts, environment
+  variables, build settings), the extension API URL chosen for a given `host` (staging,
+  production or custom), request headers (`Netlify-Config-Mode`, `User-Agent`, the build-bot
+  token header behind a feature flag), and the auto-install flow for extensions.
+- **The binary:** flags, JSON output (`--stable`, `--output`), the `token` removed from the
+  output, and exit codes 0, 1 and 2.
+- **Quirks kept on purpose.** Changing any of these is a separate decision:
+  - When `build.base` changes the base directory, the second loading pass ignores `--config`
+    and `packagePath`.
+  - `mergeConfigs(..., { concatenateArrays: true })` puts the *later* config's items first.
+  - A failure to fetch environment variables from the API is silently ignored.
 
-### PR 4: `checkJs`
+### Step 1: contract tests
 
-Fix the errors, then set `checkJs: true` in the package tsconfig, so the build itself starts
-checking the `.js` files. Where the errors are:
+Written before the rewrite and committed first, so the rewrite is checked against them.
+Rules:
 
-- `config` (46): `options/main.js` 12, `log/cleanup.js` 8, `simplify.js` 6, `origin.js` 5,
-  `validate/main.js` 4, `bin/main.js` 3, `api/client.js` 2, and one each in
-  `validate/helpers.js`, `mutations/update.js`, `mutations/apply.js`, `merge.js`,
-  `log/logger.js`, `cached_config.js`.
-- `build` (57): `steps/run_steps.js` 16, `plugins/ipc.js` 6, `error/api.js` 5,
-  `log/messages/core_steps.js` 4, `log/messages/config.js` 4, `error/monitor/print.js` 3,
-  then 1–2 each in 15 other files. Most are TS2339 (property does not exist).
+- Tests use only the package entry point (`@netlify/config`), the binary, and the file
+  system and network around them. No imports from `lib/` or `src/`, and no test hooks that
+  exist only to observe internals.
+- Network calls go to the local test server (`testOpts.host`/`scheme`) or are intercepted at
+  `fetch`, the existing pattern for the extension API.
+- Config fixtures on disk, with snapshots of the full output, as the existing suite does.
 
-Split by file if several people take it. None of these files is touched by PR 3 or PR 5.
+What's added:
 
-### PR 5: `@netlify/config` public types
+| Area | Behaviour not covered today |
+|---|---|
+| Validation | `functions.*.memory`, `region`, `vcpu`, `schedule`; `functions.directory` not a string; `database`, `database.migrations`, `database.migrations.path`; `edge_functions.*` `path`, `pattern`, `excludedPattern`, `name` and `generator` of the wrong type; `cache` with an invalid value |
+| Errors | `customErrorInfo.type === 'resolveConfig'` on user errors (invalid TOML, failed validation, missing `--config` file) |
+| Exports | `mergeConfigs` (array override, `concatenateArrays` order, plugin merging, undefined `build` properties dropped); `cleanupConfig` (allow-list, environment variable names only, buildbot variables removed, only boolean plugin inputs, `headers`/`redirects` truncated to 100); `applyMutations` (array-index keys, read-only properties, event order, top-level `functions` properties); `restoreConfig` after `updateConfig`; `EVENTS`/`DEV_EVENTS` |
+| Logs | `logs.outputFlusher.flush()` called before printing |
+| Loading | the second-pass quirk above |
+| Paths | the default `netlify/database/migrations` directory |
+| Environment | variables marked `internal` in a cached config are kept; failed environment variable fetch is ignored |
+| Extensions | extension API URL for staging, production and custom hosts (observed at `fetch`, replacing the `testOpts.setBaseUrl` hook); dev-mode `path` pointing at a directory; build plugin URL not ending in `.tgz`; auto-install skipped without an `accountId`, install failure versus `409`, failed metadata fetch |
 
-1. Add the staged config types (§4) and the supporting types in `config/src/types/`.
-2. Type `resolveConfig`'s argument (`src/main.ts:52`) and replace the `any`s in `Config`
-   (`src/main.ts:29-45`). Use the CLI's `CachedConfig` (`cli/src/lib/build.ts:16`) as the
-   spec for the output. Every difference between the two is either a CLI bug or a
-   guarantee `@netlify/config` doesn't actually make, and each one should be decided on
-   purpose.
-3. Export the types from `src/index.ts`, along with `SiteInfo`, `MinimalAccount`,
-   `Extension`, `ModeOption` and `TestOptions`.
-4. Leave `EVENTS`/`DEV_EVENTS` as `string[]`. Making them `as const` breaks
-   `EVENTS.includes(propName)` in `build/src/plugins/child/validate.js:25`. If a literal
-   type is wanted, add a type guard.
-5. Add `site_env` to `MinimalAccount`, or change `env/main.ts:196` to stop reading it.
-6. Release as semver-major for `@netlify/config`, or land a CLI PR first that accepts both
-   the old and new types. G3 shows which.
+Existing tests that import from `lib/` (`load.test.js`, `mutate.test.js`, `api.test.js`)
+switch to the package entry point, with the extension API URLs written out as literals.
 
-This PR mostly benefits netlify-cli. Inside `@netlify/build`, the config comes in through
-`tLoadConfig` (`build/src/core/config.js`), so `@netlify/build` gets the benefit only after
-PR 3 and the conversion of `core/config.js`.
+### Step 2: the rewrite
 
-### After the first PRs: `@netlify/build` annotation, split by who owns which files
+Stacked commits on top of step 1. Each commit keeps the whole suite green.
 
-Assign each work package to one owner, split by file, so they don't conflict:
+1. **Types:** `src/types/` holds `PartialNetlifyConfig`, `NormalizedNetlifyConfig` and
+   `ResolvedNetlifyConfig` (§4), plus `ResolveConfigOptions`, `Config`, `ConfigMutation`,
+   `ConfigOrigin`, `Logs` and the site, account and extension types. Reuse the published
+   types from `@netlify/headers-parser`, `@netlify/redirect-parser` and `@netlify/api`.
+2. **Options:** one typed function turns `ResolveConfigOptions` into fully resolved options
+   (defaults, repository root, branch, base, feature flags), replacing `options/*.js`.
+3. **Sources:** loading and parsing each config source (file, UI `defaultConfig`,
+   `inlineConfig`, config mutations, cached config), each returning a
+   `PartialNetlifyConfig` tagged with its origin.
+4. **Validation:** a typed engine over the same rule tables and messages.
+5. **Merging:** contexts and branches, with origins recorded, producing a
+   `NormalizedNetlifyConfig`.
+6. **Paths, headers and redirects:** produce the `ResolvedNetlifyConfig`.
+7. **Site info, environment variables and extensions**, including auto-install.
+8. **Mutations:** `applyMutations`, `updateConfig`, `restoreConfig`, `simplifyConfig`.
+9. **Logging and the binary.**
+10. **`resolveConfig`:** the pipeline assembled from the stages above, with both loading
+    passes explicit.
+11. **Public types:** exported from `src/index.ts`. Delete `tsfixme.d.ts`, and enable every
+    strict flag in the package's tsconfig.
 
-| Work package | Owns these files | Depends on |
-|---|---|---|
-| **A. Pipeline context** | `core/{build,main,normalize_flags,types}.ts`, new `core/context.ts`, `steps/run_core_steps.ts` | PR 3, PR 5 |
-| **B. Step execution** | `steps/{run_step,core_step,error,get}.ts`, new `steps/types.ts` | A's `core/context.ts` merged |
-| **C. Plugins** | new `plugins/types.ts`, `plugins/{options,spawn,expected_version,node_version}.ts`, `log/messages/compatibility.ts`, `telemetry/main.ts`, `error/parse/plugin.ts`, `plugins/child/load.ts` | PR 3 |
-| **D. Standalone functions** | `error/parse/{parse,serialize_log,serialize_status,location}.ts`, `error/types.ts`, `core/constants.ts`, `plugins_core/{functions,edge_functions,deploy}/*.ts` | PR 3 |
+Verification: the config suite, the `@netlify/build` test suite (it runs `@netlify/config`
+end to end), and netlify-cli's type check against the packed package (G2).
 
-- **A** builds the context chain from §4. It removes the `as any` casts and `: any`
-  annotations listed in §2 in the same PRs, and fixes `ResolvedFlags.dry` and
-  `statsdOpts.host`.
-- **B** adds the `StepContext` type and the `tFireStep` result union, fixes the
-  `eventHandlers` annotations in `steps/get.ts`, and fixes the three undeclared attribute
-  names (TS2551).
-- **C** defines a `PluginOptions` type in which `loadedFrom` and `origin` are unions of
-  string literals. Expect this to reveal cases that `getPluginOrigin`/`getInstallType`
-  don't handle. C annotates `tGetPluginsOptions`'s context argument only once A's types
-  exist.
-- **D** annotates against types that already exist: `BuildError` and `ErrorInfo` in
-  `error/types.ts`, and `CoreStepCondition` and `CoreStepFunctionArgs` in
-  `plugins_core/types.ts:10,58`. It adds a `GetConstantsOptions` type in
-  `core/constants.ts`. `functionsDirectory` goes on an internal type there, not on the
-  public `NetlifyConfig`, which the `test-d/` type tests cover.
-
-C and D can start as soon as PR 3 lands, and run in parallel with each other and with A.
-
-### `.js` → `.ts` conversion
-
-Convert in the wave order given in the appendix. A file's wave comes after the waves of all
-the `.js` files it imports, so types flow in from already-converted code. Files within a
-wave are independent of each other.
-
-Rules for every conversion:
-
-- **Two PRs: a pure rename, then the annotations.** The repo squash-merges, so a file that's
-  renamed and heavily edited in one PR can drop below git's rename-detection threshold and
-  lose its blame history.
-- **Break the runtime cycle before converting `build/src/steps/plugin.js`.**
-  `steps/plugin.js` imports `getPluginErrorType` from `steps/error.ts`, and `steps/error.ts`
-  imports `isTrustedPlugin` from `steps/plugin.js`. Move `isTrustedPlugin` into a module
-  with no imports back into `steps/`. Converting a file from `.js` to `.ts` makes TypeScript
-  drop imports that are used only as types (it never drops them in `.js` files). That can
-  change the order modules load in, and the only place that matters is around this cycle.
-- **Don't change behaviour.** `config`'s validation messages are pinned by 66 snapshots
-  (`config/tests/validate/__snapshots__/validate.test.js.snap`, 2,081 lines). Replacing
-  `validate/*.js` with zod schemas would change those user-facing messages. That's a
-  product decision, separate from typing.
-- Each conversion PR runs `diagnostics.ts --update` to record the improvement and
-  `eslint --prune-suppressions` to drop suppressions that no longer apply.
-
-**`config`** (34 files, 5 waves, no runtime cycle). Convert these first, because they define
-types the rest use: `options/main.js` (the two-step options shape), `log/logger.js` (`Logs`),
-`origin.js` (`ConfigOrigin`), `functions_config.js` (`FunctionConfig`). Save the validator
-pair for last: `validate/main.js` (43 errors), which recurses over `*` wildcards and passes
-an object that it keeps modifying through `...rest` spreads, and `validate/validations.js`
-(42). `merge.js`, `log/cleanup.js`, `mutations/apply.js` and `mutations/update.js` are
-public API, so type them against PR 5's types.
-
-**`build`** (68 files, 5 waves). The heaviest are `core/config.js` (66 errors, wave 2; it
-produces `ResolvedConfigContext`, so convert it right after work package A),
-`steps/run_steps.js` (52, the only caller of `runStep`), `status/report.js` (52),
-`plugins/resolve.js` (48), `plugins/pinned_version.js` (44) and `plugins/load.js` (39).
-
-**`js-client` and `redirect-parser`** (15 files, 784 LOC). Small, but `js-client` is published
-as `@netlify/api`, so its types reach consumers. Both packages have to be converted before
-`allowJs` can be turned off.
-
-### Turning on flags in the real tsconfigs
-
-For each package and each flag: when `diagnostics.ts <pkg> --<flag>` reports no errors,
-enable the flag in that package's tsconfig. G1 already holds new code to the flag in the
-meantime. When every package has the flag on, move it into `tsconfig.base.json` and delete
-the per-package lines. Do this for one flag at a time. For each package, pick the order from
-the costs in §2, measured again at the time, since they will have risen.
+Release: semver-major for `@netlify/config`, because the public types change. Coordinate the
+release with a netlify-cli PR that adopts the new types.
 
 ---
 
-## 7. Where parallel work would collide
+## 8. `@netlify/build` (after a separate go-ahead)
 
-| Shared file | Touched by | How to resolve |
-|---|---|---|
-| `build/src/time/main.ts` | PR 3, work package C (`Timer` in telemetry/aggregation) | PR 3 lands first |
-| `build/src/core/build.ts`, `steps/run_core_steps.ts` | PR 3, A | PR 3 lands first, A owns them afterwards |
-| `build/src/steps/run_step.ts` | PR 3, B | PR 3 lands first, B owns it afterwards |
-| `build/src/steps/error.ts` | B, the runtime-cycle fix | B owns it, and the cycle fix goes through B |
-| `build/src/plugins/options.ts` | A (context argument), C | C owns it and annotates the argument once A's types exist |
-| `eslint_temporary_suppressions.js` | every conversion PR | G2 removes the hotspot |
-| `tsconfig.base.json` / package tsconfigs | flag PRs | G1 makes flag PRs rare and one at a time |
-| Type-debt baseline JSON | every typing PR | one baseline file per package, updated by the tool |
+- **First, independent of the rewrite:**
+  - Fix the published `packages/js-client/lib/types.js` import and add `@netlify/api` as a
+    dependency (§3).
+  - Break the runtime cycle between `steps/error.ts` and `steps/plugin.js`.
+  - Turn on `checkJs` (57 errors).
+- **Rewrite the orchestration layer:** `core/build.ts`, `core/main.ts`,
+  `core/normalize_flags.ts`, `steps/run_steps.js`, `steps/run_step.ts`,
+  `steps/core_step.ts`, `steps/run_core_steps.ts`, `time/main.ts` (`measureDuration`) and
+  `core/config.js`. Replace the growing, renamed context object with typed context types
+  (§4). Consume the new `@netlify/config` types.
+- **Everything else, incrementally:**
+  - Type the plugin code (`plugins/*`, a `PluginOptions` type with literal-string unions for
+    `loadedFrom` and `origin`).
+  - Annotate the standalone functions against types that already exist (`error/`,
+    `core/constants.ts`, `plugins_core/*`).
+  - Convert the leaf `.js` files in wave order (appendix), with a pure-rename PR before each
+    annotation PR.
 
 ---
 
-## 8. End state
+## 9. End state
 
-- `tsconfig.base.json` no longer has the block of disabled checks, so `strict: true`
-  applies in full, plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
+- `tsconfig.base.json` no longer has the block of disabled checks. `strict: true` applies
+  in full, plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
   `noImplicitReturns`, `noImplicitOverride` and `noPropertyAccessFromIndexSignature`.
-  `allowJs` is off once all 117 `.js` files are converted.
-- Package tsconfigs contain only `extends`, output settings and `include`/`references`, with
-  no strictness overrides. `edge-bundler`'s separate tsconfig, which uses
-  `moduleResolution: "node"` and targets ES2023, moves onto the base. That changes its
-  module resolution and emit target, so it's its own project with its own testing.
+  `allowJs` is off once all `.js` files are gone, including those in `js-client` and
+  `redirect-parser`.
+- Package tsconfigs contain no strictness overrides. `edge-bundler`'s separate tsconfig
+  moves onto the base as its own project, since that changes its module resolution and
+  emit target.
 - `tsfixme.d.ts` is deleted, and the ESLint suppressions file is empty.
-- The two `@ts-expect-error`s at `config/src/api/site_info.ts:126,153` stay. They cover
-  parameters of the internal `@netlify/api` API that aren't in its types, so the fix belongs
-  in `@netlify/api`.
+- The two `@ts-expect-error`s at `config/src/api/site_info.ts:126,153` stay. The fix for
+  them belongs in `@netlify/api`.
 
 ---
 
-## 9. Risks
+## 10. Risks
 
-- **Downstream breakage.** Covered by G3 and the release decision in PR 5. This applies to
-  `startDev`'s types as well as `resolveConfig`'s.
-- **Type checks passing while checking nothing.** An interface added next to a remaining
-  `as any` cast, or behind an untyped `measureDuration`, makes `tsc` pass without checking
-  anything. Review typing PRs for casts that are left in place.
-- **Behaviour changes hidden in typing PRs.** Candidates: the two forms of
-  `explicitSecretKeys`, turning `errorParams` into a class, zod-based validation, the order
-  modules load in around the one runtime cycle. Keep each behaviour change in its own PR
-  with its own tests.
-- **Real bugs will turn up.** §4 lists the ones already visible. More should come from the
-  literal-string unions in `PluginOptions` and from `useUnknownInCatchVariables`
-  (`config/src/main.ts:349`, `config/src/api/site_info.ts:133,158`, where `error.message` is
-  read from an `unknown`). Leave review time for them. Finding them is the point.
-- **Error counts overstate progress.** Most of the implicit-any errors disappear once about a
-  dozen function signatures are annotated. What takes the time is making the types
-  *accurate*, and a count doesn't show that. Track the baseline, but judge progress by
-  what the types now guarantee.
+- **Behaviour drift in the rewrite.** Mitigated by the contract tests, the `@netlify/build`
+  suite and the netlify-cli type check. What's left is behaviour none of them exercise. The
+  riskiest areas are option precedence, cached configs written by older versions, and the
+  `netlify.toml` round trip in `updateConfig`.
+- **Downstream breakage.** Covered by G2 and the major release.
+- **Type checks passing while checking nothing.** An interface next to a remaining `as any`
+  cast, or behind an untyped `measureDuration`, makes `tsc` pass without checking anything.
+  Review typing PRs for casts left in place.
+- **Behaviour changes hidden in typing work.** Candidates: the two forms of
+  `explicitSecretKeys`, turning `errorParams` into a class, zod-based validation, module
+  load order around the runtime cycle. Keep each behaviour change in its own PR.
 
 ---
 
-## 10. Reproducing the numbers
+## 11. Reproducing the numbers
 
 ```bash
 npm install && npx lerna run build
@@ -567,9 +554,6 @@ node scripts/type-debt/analyze.ts build config
 # errors under extra flags, grouped by file, error code or enclosing function
 node scripts/type-debt/diagnostics.ts build --noImplicitAny --by function
 node scripts/type-debt/diagnostics.ts config --checkJs --noImplicitAny --by file
-
-# baseline check (G1): writes the file on first run, then fails on any per-file/per-code increase
-node scripts/type-debt/diagnostics.ts build --checkJs --noImplicitAny --baseline type-debt/build.json
 ```
 
 Both scripts use the TypeScript compiler API and read each package's own tsconfig
