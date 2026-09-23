@@ -1,10 +1,18 @@
 import { promises as fs } from 'fs'
 import { inspect } from 'util'
 
+import type { ConfigMutation } from '../../plugins/child/diff.js'
+import type { SystemLogger } from '../../plugins_core/types.js'
 import { pathExists } from '../../utils/path_exists.js'
-import { log, logMessage, logSubHeader } from '../logger.js'
+import { type Logs, log, logMessage, logSubHeader } from '../logger.js'
 
-export const logConfigMutations = function (logs, newConfigMutations, debug) {
+type LoggedConfigMutation = Pick<ConfigMutation, 'keysString' | 'value'>
+
+export const logConfigMutations = function (
+  logs: Logs | undefined,
+  newConfigMutations: LoggedConfigMutation[],
+  debug: boolean,
+) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
   configMutationsToLog.forEach(({ keysString, value }) => {
     const message = getConfigMutationLog(keysString, value)
@@ -13,7 +21,7 @@ export const logConfigMutations = function (logs, newConfigMutations, debug) {
   })
 }
 
-export const systemLogConfigMutations = function (systemLog, configMutations) {
+export const systemLogConfigMutations = function (systemLog: SystemLogger, configMutations: LoggedConfigMutation[]) {
   configMutations.forEach(({ keysString, value }) => {
     const message = getConfigMutationLog(keysString, value)
 
@@ -22,7 +30,7 @@ export const systemLogConfigMutations = function (systemLog, configMutations) {
 }
 
 // Some configuration mutations are only logged in debug mode
-const shouldLogConfigMutation = function ({ keysString }) {
+const shouldLogConfigMutation = function ({ keysString }: LoggedConfigMutation) {
   return !HIDDEN_PROPS.some((hiddenProp) => keysString.startsWith(hiddenProp))
 }
 
@@ -31,19 +39,27 @@ const shouldLogConfigMutation = function ({ keysString }) {
 // many function files like Essential Next.js
 const HIDDEN_PROPS = ['functions']
 
-const getConfigMutationLog = function (keysString, value) {
+const getConfigMutationLog = function (keysString: string, value: unknown) {
   const newValue = shouldHideConfigValue(keysString) ? '' : ` to ${inspect(value, { colors: false })}`
 
   return `Netlify configuration property "${keysString}" value changed${newValue}.`
 }
 
-const shouldHideConfigValue = function (keysString) {
+const shouldHideConfigValue = function (keysString: string) {
   return SECRET_PROPS.some((secretProp) => keysString.startsWith(secretProp))
 }
 
 const SECRET_PROPS = ['build.environment']
 
-export const logConfigOnUpload = async function ({ logs, configPath, debug }) {
+export const logConfigOnUpload = async function ({
+  logs,
+  configPath,
+  debug,
+}: {
+  logs: Logs | undefined
+  configPath: string
+  debug: boolean
+}) {
   if (!debug) {
     return
   }
@@ -59,7 +75,15 @@ export const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   logMessage(logs, configContents.trim())
 }
 
-export const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
+export const logHeadersOnUpload = async function ({
+  logs,
+  headersPath,
+  debug,
+}: {
+  logs: Logs | undefined
+  headersPath: string
+  debug: boolean
+}) {
   if (!debug) {
     return
   }
@@ -75,7 +99,15 @@ export const logHeadersOnUpload = async function ({ logs, headersPath, debug }) 
   logMessage(logs, headersContents.trim())
 }
 
-export const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
+export const logRedirectsOnUpload = async function ({
+  logs,
+  redirectsPath,
+  debug,
+}: {
+  logs: Logs | undefined
+  redirectsPath: string
+  debug: boolean
+}) {
   if (!debug) {
     return
   }

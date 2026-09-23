@@ -441,7 +441,7 @@
   },
   "packages/build/src/core/config.js": {
     "n/no-missing-import": {
-      "count": 5
+      "count": 7
     }
   },
   "packages/build/src/core/constants.ts": {
@@ -471,7 +471,7 @@
   },
   "packages/build/src/core/dry.js": {
     "n/no-missing-import": {
-      "count": 1
+      "count": 2
     }
   },
   "packages/build/src/core/feature_flags.ts": {
@@ -511,7 +511,7 @@
       "count": 2
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
+      "count": 2
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 7
@@ -520,9 +520,6 @@
       "count": 9
     },
     "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -736,7 +733,7 @@
   },
   "packages/build/src/log/logger.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 5
+      "count": 3
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 3
@@ -774,11 +771,6 @@
       "count": 2
     }
   },
-  "packages/build/src/log/messages/config.js": {
-    "n/no-missing-import": {
-      "count": 4
-    }
-  },
   "packages/build/src/log/messages/core.ts": {
     "@typescript-eslint/no-unsafe-argument": {
       "count": 11
@@ -791,19 +783,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 6
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/log/messages/core_steps.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/build/src/log/messages/dry.js": {
-    "n/no-missing-import": {
-      "count": 2
     }
   },
   "packages/build/src/log/messages/install.js": {
@@ -811,29 +790,9 @@
       "count": 1
     }
   },
-  "packages/build/src/log/messages/ipc.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/log/messages/mutations.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
   "packages/build/src/log/messages/plugins.ts": {
     "@typescript-eslint/restrict-template-expressions": {
       "count": 4
-    }
-  },
-  "packages/build/src/log/messages/status.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/build/src/log/messages/steps.js": {
-    "n/no-missing-import": {
-      "count": 3
     }
   },
   "packages/build/src/log/output_flusher.ts": {
@@ -876,7 +835,7 @@
   },
   "packages/build/src/plugins/child/run.js": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 4
     }
   },
   "packages/build/src/plugins/child/typescript.js": {
@@ -933,7 +892,7 @@
   },
   "packages/build/src/plugins/ipc.js": {
     "n/no-missing-import": {
-      "count": 2
+      "count": 3
     }
   },
   "packages/build/src/plugins/list.ts": {
@@ -952,7 +911,7 @@
   },
   "packages/build/src/plugins/load.js": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 4
     }
   },
   "packages/build/src/plugins/manifest/check.js": {
@@ -967,10 +926,10 @@
   },
   "packages/build/src/plugins/manifest/main.ts": {
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 6
+      "count": 5
     },
     "n/no-missing-import": {
-      "count": 4
+      "count": 3
     }
   },
   "packages/build/src/plugins/manifest/path.js": {
@@ -1092,12 +1051,7 @@
   },
   "packages/build/src/plugins_core/build_command.js": {
     "n/no-missing-import": {
-      "count": 3
-    }
-  },
-  "packages/build/src/plugins_core/db_setup/index.ts": {
-    "n/no-missing-import": {
-      "count": 1
+      "count": 4
     }
   },
   "packages/build/src/plugins_core/deploy/buildbot_client.ts": {
@@ -1145,7 +1099,7 @@
       "count": 1
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/build/src/plugins_core/edge_functions/validate_manifest/validate_edge_functions_manifest.ts": {
@@ -1194,7 +1148,7 @@
       "count": 3
     },
     "n/no-missing-import": {
-      "count": 3
+      "count": 2
     }
   },
   "packages/build/src/plugins_core/functions/utils.js": {
@@ -1247,9 +1201,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 4
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/plugins_core/secrets_scanning/utils.ts": {
@@ -1300,19 +1251,9 @@
       "count": 1
     }
   },
-  "packages/build/src/status/load_error.js": {
-    "n/no-missing-import": {
-      "count": 3
-    }
-  },
   "packages/build/src/status/report.js": {
     "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/status/success.js": {
-    "n/no-missing-import": {
-      "count": 1
+      "count": 3
     }
   },
   "packages/build/src/status/validations.ts": {
@@ -1367,7 +1308,7 @@
   },
   "packages/build/src/steps/plugin.js": {
     "n/no-missing-import": {
-      "count": 6
+      "count": 8
     }
   },
   "packages/build/src/steps/return.js": {
@@ -1412,17 +1353,17 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 3
+      "count": 2
     }
   },
   "packages/build/src/steps/run_steps.js": {
     "n/no-missing-import": {
-      "count": 2
+      "count": 3
     }
   },
   "packages/build/src/steps/update_config.js": {
     "n/no-missing-import": {
-      "count": 2
+      "count": 4
     }
   },
   "packages/build/src/telemetry/main.ts": {

@@ -1,11 +1,24 @@
 import path from 'path'
 
-import { RUNTIME } from '@netlify/zip-it-and-ship-it'
+import { type FunctionResult, type NodeBundlerName, RUNTIME } from '@netlify/zip-it-and-ship-it'
 
-import { log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
+import type { ScanResults, groupScanResultsByKeyAndScanType } from '../../plugins_core/secrets_scanning/utils.js'
+import type { SystemLogger } from '../../plugins_core/types.js'
+import type { GeneratedFunction } from '../../steps/return_values.js'
+import { type Logs, log, logArray, logError, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
-const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
+const logBundleResultFunctions = ({
+  functions,
+  headerMessage,
+  logs,
+  error,
+}: {
+  functions: FunctionResult[]
+  headerMessage: string
+  logs: Logs | undefined
+  error: boolean
+}) => {
   const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath))
 
   if (error) {
@@ -19,12 +32,8 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
 
 /**
  * Logs the result of bundling functions (user facing)
- *
- * @param {object} options
- * @param {any} options.logs
- * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
  */
-export const logBundleResults = ({ logs, results = [] }) => {
+export const logBundleResults = ({ logs, results = [] }: { logs: Logs | undefined; results?: FunctionResult[] }) => {
   const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
   const resultsWithWarnings = results.filter(
     ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
@@ -53,17 +62,14 @@ export const logBundleResults = ({ logs, results = [] }) => {
  * Sibling of `logBundleResults`. Derives structured telemetry from the same
  * `results` array and emits it to the system log and the active span. Returns
  * summary stats the caller can use for metric tags.
- *
- * @param {object} options
- * @param {import("@netlify/zip-it-and-ship-it").FunctionResult[]} options.results
- * @param {(...args: unknown[]) => void} options.systemLog
- * @returns {{
- *   bundlers: import("@netlify/zip-it-and-ship-it").NodeBundlerName[],
- *   fallbackCount: number,
- *   warningsCount: number,
- * }}
  */
-export const trackBundleResults = ({ results = [], systemLog }) => {
+export const trackBundleResults = ({
+  results = [],
+  systemLog,
+}: {
+  results?: FunctionResult[]
+  systemLog: SystemLogger
+}): { bundlers: NodeBundlerName[]; fallbackCount: number; warningsCount: number } => {
   // `bundlerErrors` is only set when the user requested `esbuild_zisi` (esbuild
   // with zisi fallback), esbuild failed, and zisi succeeded. The final
   // `bundler` reflects the fallback, so this is our "silent fallback" signal.
@@ -79,9 +85,12 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
 
   // Exclude both `null` (non-JS runtimes) and `undefined` (prebuilt `.zip`
   // JS functions, which zip-it-and-ship-it passes through with no bundler).
-  const jsResults = perFunction.filter((p) => p.bundler != null)
-  const bundlers = [...new Set(jsResults.map((p) => p.bundler))]
-  const bundlerCounts = jsResults.reduce((acc, p) => ({ ...acc, [p.bundler]: (acc[p.bundler] ?? 0) + 1 }), {})
+  const jsBundlers = perFunction.map((p) => p.bundler).filter((bundler) => bundler != null)
+  const bundlers = [...new Set(jsBundlers)]
+  const bundlerCounts = jsBundlers.reduce<Partial<Record<NodeBundlerName, number>>>(
+    (acc, bundler) => ({ ...acc, [bundler]: (acc[bundler] ?? 0) + 1 }),
+    {},
+  )
   const fallbackCount = perFunction.filter((p) => p.hadFallback).length
   const warningsCount = perFunction.filter((p) => p.hadWarnings).length
 
@@ -97,8 +106,8 @@ export const trackBundleResults = ({ results = [], systemLog }) => {
   return { bundlers, fallbackCount, warningsCount }
 }
 
-export const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
-  log(logs, `The Netlify Functions setting targets a non-existing directory: ${relativeFunctionsSrc}`)
+export const logFunctionsNonExistingDir = function (logs: Logs | undefined, relativeFunctionsSrc: string | undefined) {
+  log(logs, `The Netlify Functions setting targets a non-existing directory: ${String(relativeFunctionsSrc)}`)
 }
 
 // Print the list of Netlify Functions about to be bundled
@@ -112,18 +121,29 @@ export const logFunctionsToBundle = function ({
   frameworkFunctions,
   generatedFunctions,
   type = 'Functions',
+}: {
+  logs: Logs | undefined
+  userFunctions: string[]
+  userFunctionsSrc: string | undefined
+  userFunctionsSrcExists: boolean
+  internalFunctions: string[]
+  internalFunctionsSrc: string | undefined
+  frameworkFunctions: string[]
+  generatedFunctions: Record<string, GeneratedFunction[]>
+  type?: string
 }) {
   let needsSpace = false
 
-  for (const id in generatedFunctions) {
-    if (generatedFunctions[id].length === 0) {
+  for (const functions of Object.values(generatedFunctions)) {
+    const firstFunction = functions.at(0)
+    if (firstFunction === undefined) {
       continue
     }
 
     // Getting the generator block from the first function, since it will be
     // the same for all of them.
-    const { generator } = generatedFunctions[id][0]
-    const functionNames = generatedFunctions[id].map((func) => path.basename(func.path))
+    const { generator } = firstFunction
+    const functionNames = functions.map((func) => path.basename(func.path))
 
     if (needsSpace) log(logs, '')
 
@@ -168,7 +188,15 @@ export const logFunctionsToBundle = function ({
 }
 
 // Print the database provisioning message
-export const logDbProvisioning = function ({ logs, branch, context }) {
+export const logDbProvisioning = function ({
+  logs,
+  branch,
+  context,
+}: {
+  logs: Logs | undefined
+  branch: string
+  context: string
+}) {
   log(logs, `Provisioning database`)
 
   if (context !== 'production') {
@@ -177,7 +205,15 @@ export const logDbProvisioning = function ({ logs, branch, context }) {
 }
 
 // Print the list of database migrations about to be copied
-export const logDbMigrations = function ({ logs, migrations, srcDir }) {
+export const logDbMigrations = function ({
+  logs,
+  migrations,
+  srcDir,
+}: {
+  logs: Logs | undefined
+  migrations: string[]
+  srcDir: string
+}) {
   if (migrations.length === 0) {
     log(logs, `No migrations found in ${THEME.highlightWords(srcDir)} directory`)
     return
@@ -187,34 +223,44 @@ export const logDbMigrations = function ({ logs, migrations, srcDir }) {
   logArray(logs, migrations, { indent: false })
 }
 
-export const logSecretsScanSkipMessage = function (logs, msg) {
+export const logSecretsScanSkipMessage = function (logs: Logs | undefined, msg: string) {
   log(logs, msg, { color: THEME.warningHighlightWords })
 }
 
-export const logSecretsScanSuccessMessage = function (logs, msg) {
+export const logSecretsScanSuccessMessage = function (logs: Logs | undefined, msg: string) {
   log(logs, msg, { color: THEME.highlightWords })
 }
 
-export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, groupedResults }) {
+export const logSecretsScanFailBuildMessage = function ({
+  logs,
+  scanResults,
+  groupedResults,
+}: {
+  logs: Logs | undefined
+  scanResults: ScanResults
+  groupedResults: ReturnType<typeof groupScanResultsByKeyAndScanType>
+}) {
   const { secretMatches, enhancedSecretMatches } = groupedResults
-  const secretMatchesKeys = Object.keys(secretMatches)
-  const enhancedSecretMatchesKeys = Object.keys(enhancedSecretMatches)
+  const secretMatchesEntries = Object.entries(secretMatches)
+  const enhancedSecretMatchesEntries = Object.entries(enhancedSecretMatches)
+  const secretMatchesKeys = secretMatchesEntries.map(([key]) => key)
+  const enhancedSecretMatchesKeys = enhancedSecretMatchesEntries.map(([key]) => key)
 
   logErrorSubHeader(
     logs,
-    `Scanning complete. ${scanResults.scannedFilesCount} file(s) scanned. Secrets scanning found ${secretMatchesKeys.length} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${enhancedSecretMatchesKeys.length} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
+    `Scanning complete. ${String(scanResults.scannedFilesCount)} file(s) scanned. Secrets scanning found ${String(secretMatchesKeys.length)} instance(s) of secrets${enhancedSecretMatchesKeys.length > 0 ? ` and ${String(enhancedSecretMatchesKeys.length)} instance(s) of likely secrets` : ''} in build output or repo code.\n`,
   )
 
   // Explicit secret matches
-  secretMatchesKeys.forEach((key) => {
+  secretMatchesEntries.forEach(([key, matches]) => {
     logError(logs, `Secret env var "${key}"'s value detected:`)
 
-    secretMatches[key]
+    matches
       .sort((a, b) => {
         return a.file > b.file ? 0 : 1
       })
       .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+        logError(logs, `found value at line ${String(lineNumber)} in ${file}`, { indent: true })
       })
   })
 
@@ -230,15 +276,15 @@ export const logSecretsScanFailBuildMessage = function ({ logs, scanResults, gro
   }
 
   // Likely secret matches from enhanced scan
-  enhancedSecretMatchesKeys.forEach((key, index) => {
+  enhancedSecretMatchesEntries.forEach(([key, matches], index) => {
     logError(logs, `${index === 0 && secretMatchesKeys.length ? '\n' : ''}"${key}***" detected as a likely secret:`)
 
-    enhancedSecretMatches[key]
+    matches
       .sort((a, b) => {
         return a.file > b.file ? 0 : 1
       })
       .forEach(({ lineNumber, file }) => {
-        logError(logs, `found value at line ${lineNumber} in ${file}`, { indent: true })
+        logError(logs, `found value at line ${String(lineNumber)} in ${file}`, { indent: true })
       })
   })
 

@@ -111,7 +111,7 @@ export const logMessage = function (logs: Logs | undefined, string: string, opts
 }
 
 // Print an object
-export const logObject = function (logs: Logs | undefined, object, opts) {
+export const logObject = function (logs: Logs | undefined, object: object, opts?: object) {
   logMessage(logs, serializeObject(object), opts)
 }
 
