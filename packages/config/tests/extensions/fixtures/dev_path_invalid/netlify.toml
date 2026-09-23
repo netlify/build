@@ -1,0 +1,5 @@
+[[integrations]]
+name = "zip-extension"
+
+  [integrations.dev]
+  path = "extension.zip"
