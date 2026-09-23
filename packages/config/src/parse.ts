@@ -2,14 +2,18 @@ import { existsSync, promises as fs } from 'fs'
 
 import { throwUserError } from './error.js'
 import { throwOnInvalidTomlSequence } from './log/messages.js'
+import type { PartialNetlifyConfig } from './types/config.js'
 import { parseToml } from './utils/toml.js'
 
 /**
- * Load the configuration file and parse it (TOML)
- * @param configPath The path to the toml file
- * @returns
+ * Unknown backslash escapes in `"` and `"""` strings (not `'` and `'''`) are invalid TOML; catch them
+ * first so the error can suggest the escaped form. `"""` strings may end lines with a backslash.
  */
-export const parseConfig = async function (configPath?: string) {
+const INVALID_TOML_BACKSLASH =
+  /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
+
+/** Read and parse the configuration file. Without a path, the configuration is empty. */
+export const parseConfig = async function (configPath?: string): Promise<PartialNetlifyConfig> {
   if (configPath === undefined) {
     return {}
   }
@@ -18,37 +22,31 @@ export const parseConfig = async function (configPath?: string) {
     throwUserError('Configuration file does not exist')
   }
 
-  return await readConfigPath(configPath)
+  return await readConfigFile(configPath)
 }
 
-/**
- * Same but `configPath` is required and `configPath` might point to a
- * non-existing file.
- */
-export const parseOptionalConfig = async function (configPath) {
+/** Read and parse the configuration file if it exists. */
+export const parseOptionalConfig = async function (configPath: string): Promise<PartialNetlifyConfig> {
   if (!existsSync(configPath)) {
     return {}
   }
 
-  return await readConfigPath(configPath)
+  return await readConfigFile(configPath)
 }
 
-const readConfigPath = async function (configPath) {
+// A TOML document is always a table. Its properties are validated later.
+const readConfigFile = async function (configPath: string): Promise<PartialNetlifyConfig> {
   const configString = await readConfig(configPath)
-
-  validateTomlBlackslashes(configString)
+  validateTomlBackslashes(configString)
 
   try {
-    return parseToml(configString)
+    return parseToml(configString) as PartialNetlifyConfig
   } catch (error) {
     throwUserError('Could not parse configuration file', error)
   }
 }
 
-/**
- * Reach the configuration file's raw content
- */
-const readConfig = async function (configPath) {
+const readConfig = async function (configPath: string): Promise<string> {
   try {
     return await fs.readFile(configPath, 'utf8')
   } catch (error) {
@@ -56,22 +54,12 @@ const readConfig = async function (configPath) {
   }
 }
 
-const validateTomlBlackslashes = function (configString) {
-  const result = INVALID_TOML_BLACKSLASH.exec(configString)
+const validateTomlBackslashes = function (configString: string) {
+  const result = INVALID_TOML_BACKSLASH.exec(configString)
   if (result === null) {
     return
   }
 
-  const [, invalidTripleSequence, invalidSequence = invalidTripleSequence] = result
+  const [, invalidTripleQuotedSequence, invalidSequence = invalidTripleQuotedSequence] = result
   throwOnInvalidTomlSequence(invalidSequence)
 }
-
-/**
- * The TOML specification forbids unrecognized backslash sequences. However,
- * `toml-node` does not respect the specification and do not fail on those.
- * Therefore, we print a warning message.
- * This only applies to " and """ strings, not ' nor '''
- * Also, """ strings can use trailing backslashes.
- */
-const INVALID_TOML_BLACKSLASH =
-  /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
