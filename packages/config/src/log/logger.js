@@ -1,7 +1,5 @@
 import figures from 'figures'
 
-// FIXME: This error will go away once this file is converted to TypeScript.
-// eslint-disable-next-line n/no-missing-import
 import { serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
