@@ -8,17 +8,14 @@ import { isSoftFailEvent } from '../events.js'
 import { isReservedEnvironmentVariableKey } from '../../utils/environment.js'
 import type { NetlifyPluginConstants } from '../../core/constants.js'
 import type { ReturnValue } from '../../steps/return_values.ts'
+import type { NetlifyPluginBuildUtil } from '../../types/options/netlify_plugin_build_util.js'
 import type { NetlifyPluginUtils } from '../../types/options/netlify_plugin_utils.js'
 import type { NetlifyPluginFunctionsUtil } from '../../types/options/netlify_plugin_functions_util.js'
 
 import { addLazyProp } from './lazy.js'
-import { show } from './status.js'
+import { show, type RunState } from './status.js'
 
-type BuildEvent = 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onError' | 'onSuccess' | 'onEnd'
-
-type RunState = Record<string, unknown>
-
-type DeployEnvVarsData = { key: string; value: string; isSecret: boolean; scopes: string[] }[]
+export type DeployEnvVarsData = { key: string; value: string; isSecret: boolean; scopes: string[] }[]
 
 // Retrieve the `utils` argument.
 export const getUtils = function ({
@@ -28,12 +25,13 @@ export const getUtils = function ({
   runState,
   deployEnvVars = [],
 }: {
-  event: BuildEvent
+  event: string
   constants: NetlifyPluginConstants
   generatedFunctions?: ReturnValue['generatedFunctions']
   runState: RunState
   deployEnvVars: DeployEnvVarsData
 }): NetlifyPluginUtils {
+  // `NetlifyPluginRunUtil` wrongly types the result as a `Promise<ExecaChildProcess>`, so no single cast can bridge them
   const run = Object.assign(baseRun, { command: runCommand }) as unknown as NetlifyPluginUtils['run']
   const build = getBuildUtils(event)
   const cache = getCacheUtils(CACHE_DIR)
@@ -42,6 +40,7 @@ export const getUtils = function ({
   const status = getStatusUtils(runState)
   const utils = { build, cache, deploy, functions, run, status }
   addLazyProp(utils, 'git', () => getGitUtils())
+  // `addLazyProp()` just defined `git`
   return utils as typeof utils & { git: NetlifyPluginUtils['git'] }
 }
 
@@ -83,16 +82,17 @@ const getDeployUtils = ({ deployEnvVars }: { deployEnvVars: DeployEnvVarsData })
   return Object.freeze({ env: Object.freeze(env) })
 }
 
-const getBuildUtils = function (event: 'onPreBuild' | 'onBuild' | 'onPostBuild' | 'onError' | 'onSuccess' | 'onEnd') {
-  if (isSoftFailEvent(event)) {
-    return {
-      failPlugin,
-      failBuild: failPluginWithWarning.bind(null, 'failBuild', event),
-      cancelBuild: failPluginWithWarning.bind(null, 'cancelBuild', event),
-    }
-  }
-
-  return { failBuild, failPlugin, cancelBuild }
+const getBuildUtils = function (event: string): NetlifyPluginBuildUtil {
+  const buildUtils = isSoftFailEvent(event)
+    ? {
+        failPlugin,
+        failBuild: failPluginWithWarning.bind(null, 'failBuild', event),
+        cancelBuild: failPluginWithWarning.bind(null, 'cancelBuild', event),
+      }
+    : { failBuild, failPlugin, cancelBuild }
+  // `../error.ts` types `opts` as required and `failPluginWithWarning()` as returning, but `opts` is optional and
+  // every one of these throws
+  return buildUtils as NetlifyPluginBuildUtil
 }
 
 const getCacheUtils = function (CACHE_DIR: string) {
@@ -113,6 +113,6 @@ const getFunctionsUtils = function (
   return { add, list, listAll, generate }
 }
 
-const getStatusUtils = function (runState) {
+const getStatusUtils = function (runState: RunState): NetlifyPluginUtils['status'] {
   return { show: show.bind(undefined, runState) }
 }
