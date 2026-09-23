@@ -59,7 +59,8 @@ const PLUGINS_LIST_TIMEOUT = 6e4
 export const getPluginsList = async function ({
   debug,
   logs,
-  testOpts: { pluginsListUrl } = {},
+  // A default, unlike `??`, keeps a `null` URL as before
+  testOpts: { pluginsListUrl = pluginsUrl } = {},
 }: {
   testOpts?: { pluginsListUrl?: string | undefined }
   debug?: boolean | undefined
@@ -71,8 +72,7 @@ export const getPluginsList = async function ({
     return {}
   }
 
-  const pluginsListUrlA = pluginsListUrl === undefined ? pluginsUrl : pluginsListUrl
-  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl: pluginsListUrlA })
+  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl })
   const pluginsListA = normalizePluginsList(pluginsList)
   logPluginsList({ pluginsList: pluginsListA, debug, logs })
   return pluginsListA
