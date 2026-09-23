@@ -1,15 +1,15 @@
-// Some properties can be optionally capitalized. We normalize them to lowercase
+import type { PartialNetlifyConfig } from './types/config.js'
+
+/**
+ * Some properties may be capitalized, e.g. `[Build]` or `Command`. Lower-case them. When both
+ * spellings are present, the lower-case one wins.
+ */
 export const normalizeConfigCase = function ({
   Build,
-  build = Build,
+  build = Build as PartialNetlifyConfig['build'],
   ...config
-}: {
-  Build: Record<string, unknown>
-  build: Record<string, unknown>
-  [key: string]: unknown
-}): Record<string, unknown> {
-  const buildA = normalizeBuildCase(build)
-  return { ...config, build: buildA }
+}: PartialNetlifyConfig): PartialNetlifyConfig {
+  return { ...config, build: normalizeBuildCase(build) }
 }
 
 const normalizeBuildCase = ({
@@ -30,16 +30,14 @@ const normalizeBuildCase = ({
   Publish,
   publish = Publish,
   ...build
-}: Record<string, unknown> = {}): Record<string, unknown> => {
-  return {
-    ...build,
-    base,
-    command,
-    edge_functions: edgeFunctions,
-    environment,
-    functions,
-    ignore,
-    processing,
-    publish,
-  }
-}
+}: Record<string, unknown> = {}): Record<string, unknown> => ({
+  ...build,
+  base,
+  command,
+  edge_functions: edgeFunctions,
+  environment,
+  functions,
+  ignore,
+  processing,
+  publish,
+})
