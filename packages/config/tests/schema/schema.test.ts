@@ -2,11 +2,10 @@ import { existsSync, readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 
+import { resolveConfig } from '@netlify/config'
 import { Ajv, type SchemaObject } from 'ajv'
 import { parse as loadToml } from 'smol-toml'
 import { describe, expect, test } from 'vitest'
-
-import { resolveConfig } from '../../src/main.js'
 
 // The JSON schema published for `netlify.toml` must agree with the validation
 // that `@netlify/config` performs. Every `netlify.toml` used by the tests of

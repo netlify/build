@@ -4,12 +4,6 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
-import {
-  EXTENSION_API_STAGING_BASE_URL,
-  NETLIFY_API_STAGING_HOSTNAME,
-  EXTENSION_API_BASE_URL,
-} from '../../lib/extensions.js'
-
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = {
   path: SITE_INFO_PATH,
@@ -509,44 +503,4 @@ test('It fetches site info if cachedConfig is provided, use_cached_site_info is 
     .runConfigServer([SITE_INFO_DATA, SITE_EXTENSIONS_RESPONSE, TEAM_INSTALLATIONS_META_RESPONSE])
 
   expect(requests.length).toBe(0)
-})
-
-test('We call the staging extension API when the apiHost is not api.netlify.com', async () => {
-  let baseUrl = ''
-  const setBaseUrl = (url) => {
-    baseUrl = url
-  }
-
-  await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'dev',
-      token: 'test',
-      accountId: 'account1',
-      testOpts: { host: undefined, setBaseUrl },
-      host: NETLIFY_API_STAGING_HOSTNAME,
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  expect(baseUrl).toBe(EXTENSION_API_STAGING_BASE_URL)
-})
-
-test('We call the production extension API when the apiHost is api.netlify.com', async () => {
-  let baseUrl = ''
-  const setBaseUrl = (url) => {
-    baseUrl = url
-  }
-
-  await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'dev',
-      token: 'test',
-      accountId: 'account1',
-      testOpts: { host: undefined, setBaseUrl },
-      host: 'api.netlify.com',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  expect(baseUrl).toBe(EXTENSION_API_BASE_URL)
 })

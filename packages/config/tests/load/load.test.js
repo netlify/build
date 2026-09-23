@@ -5,10 +5,9 @@ import { join, relative } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
+import { resolveConfig } from '@netlify/config'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
-
-import { resolveConfig } from '../../lib/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const getTmpName = () => join(tmpdir(), randomUUID())
