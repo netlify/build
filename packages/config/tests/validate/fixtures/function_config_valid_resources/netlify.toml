@@ -1,0 +1,11 @@
+[functions."*"]
+memory = "2gb"
+region = "cmh"
+
+[functions.small]
+memory = 512
+vcpu = 0.5
+
+[functions.large]
+vcpu = 2
+schedule = "5 4 * * *"

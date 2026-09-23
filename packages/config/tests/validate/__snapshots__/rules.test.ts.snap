@@ -1,0 +1,248 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`database.migrations.path: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/database_migrations_path_not_string/netlify.toml:
+Configuration property database.migrations.path must be a string.
+
+Invalid syntax
+
+  [database]
+
+    [database.migrations]
+    path = 1
+
+Valid syntax
+
+  [database]
+
+    [database.migrations]
+    path = "netlify/database/migrations""
+`;
+
+exports[`database.migrations: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/database_migrations_not_object/netlify.toml:
+Configuration property database.migrations must be a plain object.
+
+Invalid syntax
+
+  [database]
+  migrations = "migrations"
+
+Valid syntax
+
+  [database]
+
+    [database.migrations]
+    path = "netlify/database/migrations""
+`;
+
+exports[`database: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/database_not_object/netlify.toml:
+Configuration property database must be a plain object.
+
+Invalid syntax
+
+  database = "db"
+
+Valid syntax
+
+  [database]
+
+    [database.migrations]
+    path = "netlify/database/migrations""
+`;
+
+exports[`edge_functions.any.excludedPattern: string or array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_excluded_pattern_invalid/netlify.toml:
+Configuration property edge_functions[0].excludedPattern must be a string or array of strings.
+
+Invalid syntax
+
+  [[edge_functions]]
+  excludedPattern = 1
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path)"
+  excludedPattern = [
+    "^/products/(.*)/.jpg$"
+  ]
+  function = "customise""
+`;
+
+exports[`edge_functions.any.generator: string, when set by another origin than netlify.toml 1`] = `
+"When resolving config:
+Configuration property edge_functions[0].generator must be a string.
+
+Invalid syntax
+
+  [[edge_functions]]
+  generator = 1
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+  generator = "package-name@1.0.0""
+`;
+
+exports[`edge_functions.any.name: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_name_not_string/netlify.toml:
+Configuration property edge_functions[0].name must be a string.
+
+Invalid syntax
+
+  [[edge_functions]]
+  name = 1
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello"
+  name = "Hello""
+`;
+
+exports[`edge_functions.any.path: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_path_not_string/netlify.toml:
+Configuration property edge_functions[0].path must be a string.
+
+Invalid syntax
+
+  [[edge_functions]]
+  path = 1
+
+Valid syntax
+
+  [[edge_functions]]
+  path = "/external/path"
+  function = "hello""
+`;
+
+exports[`edge_functions.any.pattern: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/edge_functions_pattern_not_string/netlify.toml:
+Configuration property edge_functions[0].pattern must be a string.
+
+Invalid syntax
+
+  [[edge_functions]]
+  pattern = 1
+
+Valid syntax
+
+  [[edge_functions]]
+  pattern = "/external/path)"
+  function = "hello""
+`;
+
+exports[`functions.*.memory: number or string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_memory/netlify.toml:
+Configuration property functions.*.memory must be a number (in MB) or a string with a unit (e.g. "2gb").
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = true
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "2gb""
+`;
+
+exports[`functions.*.region: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_region/netlify.toml:
+Configuration property functions.*.region must be a string.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    region = 1
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    region = "cmh""
+`;
+
+exports[`functions.*.schedule: cron expression 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_schedule/netlify.toml:
+Configuration property functions.api.schedule must be a valid cron expression (see https://ntl.fyi/cron-syntax).
+
+Invalid syntax
+
+  [functions]
+
+    [functions.api]
+    schedule = "not a cron expression"
+
+Valid syntax
+
+  [functions]
+
+    [functions.api]
+    schedule = "5 4 * * *""
+`;
+
+exports[`functions.*.vcpu: not below 0.5 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_vcpu_below_min/netlify.toml:
+Configuration property functions.*.vcpu must be a number between 0.5 and 2.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    vcpu = 0.4
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    vcpu = 1.5"
+`;
+
+exports[`functions.*.vcpu: number between 0.5 and 2 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_vcpu/netlify.toml:
+Configuration property functions.api.vcpu must be a number between 0.5 and 2.
+
+Invalid syntax
+
+  [functions]
+
+    [functions.api]
+    vcpu = 3
+
+Valid syntax
+
+  [functions]
+
+    [functions.api]
+    vcpu = 1.5"
+`;
+
+exports[`functions.directory: string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/functions_directory_not_string/netlify.toml:
+Configuration property functions.directory must be a string.
+
+Invalid syntax
+
+  [functions]
+  directory = 1
+
+Valid syntax
+
+  [functions]
+  directory = "my-functions""
+`;
