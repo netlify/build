@@ -18,5 +18,5 @@ export interface Validation {
     | Record<string, unknown>
     | ((value: unknown, key: PathSegment, path: PathSegment[]) => Record<string, unknown>)
   /** Reshapes the invalid configuration shown in the error message. */
-  formatInvalid?: (invalid: unknown) => unknown
+  formatInvalid?: ((invalid: unknown) => unknown) | undefined
 }

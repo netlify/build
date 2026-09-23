@@ -7,7 +7,7 @@ const ORIGIN_NAMES: Partial<Record<string, string>> = { config: 'netlify.toml', 
  * A plugin may only be configured once per origin (`netlify.toml` or the UI). Contexts may
  * configure it again, but they aren't merged yet at this point, so this doesn't look at them.
  */
-export const validateIdenticalPlugins = function ({ plugins = [] }: { plugins?: PluginConfig[] }) {
+export const validateIdenticalPlugins = function ({ plugins = [] }: { plugins?: PluginConfig[] | undefined }) {
   plugins.forEach(({ package: packageName, origin }, index) => {
     const isDuplicate = plugins
       .slice(index + 1)

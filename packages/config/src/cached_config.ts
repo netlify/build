@@ -36,4 +36,6 @@ const parseCachedConfig = async function (cachedConfig: Config | undefined, cach
   if (cachedConfigPath !== undefined) {
     return JSON.parse(await fs.readFile(cachedConfigPath, 'utf8')) as Config
   }
+
+  return undefined
 }

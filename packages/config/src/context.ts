@@ -91,7 +91,7 @@ const findMatchingContextProps = function (
     return []
   }
 
-  const exactMatch = contextProps[key] as PartialNetlifyConfig | undefined
+  const exactMatch = contextProps[key]
   if (exactMatch) {
     return [exactMatch]
   }

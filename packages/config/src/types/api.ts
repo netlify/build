@@ -11,8 +11,8 @@ export type SiteBuildSettings = NonNullable<ApiSite['build_settings']> & {
 /** A plugin installed in the UI. */
 export interface UiPluginConfig {
   package: string
-  inputs?: Record<string, unknown>
-  pinned_version?: string
+  inputs?: Record<string, unknown> | undefined
+  pinned_version?: string | undefined
 }
 
 /** A site as returned by the Netlify API, or the subset known without calling it. */
@@ -41,8 +41,8 @@ export interface MinimalAccount {
 
 /** An extension installed on the site, as returned by the extension API. */
 export interface Extension {
-  author?: string
-  extension_token?: string
+  author?: string | undefined
+  extension_token?: string | undefined
   has_build: boolean
   name: string
   slug: string
@@ -59,5 +59,5 @@ export type ExtensionWithDev = Omit<Extension, 'author' | 'extension_token' | 'v
   extension_token: string
   version: string
   buildPlugin: ExtensionBuildPlugin | null
-  dev?: { path: string; force_run_in_build?: boolean } | null
+  dev?: { path: string; force_run_in_build?: boolean } | null | undefined
 }

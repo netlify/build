@@ -13,7 +13,7 @@ type MergeExtensionsOptions = {
   /** Extensions installed on the site, from the extension API. */
   apiExtensions: Extension[]
   /** Extensions under development, from `netlify.toml`. Only used in the `dev` context. */
-  configExtensions?: ConfigExtension[]
+  configExtensions?: ConfigExtension[] | undefined
   /** Resolves relative `dev.path`s. */
   buildDir: string
   context: string

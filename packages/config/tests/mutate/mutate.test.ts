@@ -27,7 +27,6 @@ const runUpdateConfig = async function (
   { configMutations = [buildCommandMutation], ...opts }: RunUpdateConfigOptions = {},
 ) {
   const { configPath, headersPath, redirectsPath, buildDir } = await initFixtureDir(fixtureName)
-  // @ts-expect-error: `updateConfig`'s path options don't accept `undefined` yet
   await updateConfig(configMutations, {
     buildDir,
     configPath,
