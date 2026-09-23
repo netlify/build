@@ -1,10 +1,10 @@
 import { pluginsUrl, pluginsList as oldPluginsList } from '@netlify/plugins-list'
 import { isPlainObject } from '../utils/is_plain_object.js'
 
-import { BufferedLogs } from '../log/logger.js'
+import type { Logs } from '../log/logger.js'
 import { logPluginsList, logPluginsFetchError } from '../log/messages/plugins.js'
 
-import { CONDITIONS } from './plugin_conditions.js'
+import { CONDITIONS, type PluginCondition } from './plugin_conditions.js'
 
 /**
  * Internal type from the `plugins.json`
@@ -38,13 +38,10 @@ export type PluginListEntry = {
 export type PluginList = Record<string, PluginVersion[]>
 export type PluginVersion = {
   version: string
-  migrationGuide?: string
-  featureFlag?: string
-  overridePinnedVersion?: string
-  conditions: {
-    type: keyof typeof CONDITIONS
-    condition: string | Record<string, string>
-  }[]
+  migrationGuide?: string | undefined
+  featureFlag?: string | undefined
+  overridePinnedVersion?: string | undefined
+  conditions: PluginCondition[]
 }
 
 /** 1 minute HTTP request timeout */
@@ -64,9 +61,9 @@ export const getPluginsList = async function ({
   logs,
   testOpts: { pluginsListUrl } = {},
 }: {
-  testOpts?: { pluginsListUrl?: string }
-  debug?: boolean
-  logs?: BufferedLogs
+  testOpts?: { pluginsListUrl?: string | undefined }
+  debug?: boolean | undefined
+  logs?: Logs | undefined
 }): Promise<PluginList> {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
@@ -85,7 +82,7 @@ const fetchPluginsList = async function ({
   logs,
   pluginsListUrl,
 }: {
-  logs?: BufferedLogs
+  logs: Logs | undefined
   pluginsListUrl: string
 }): Promise<PluginListEntry[]> {
   try {
@@ -95,7 +92,7 @@ const fetchPluginsList = async function ({
       throw new Error(`Request failed with a response code: ${response.status.toString()}`)
     }
 
-    const body = await response.json()
+    const body: unknown = await response.json()
 
     if (!isValidPluginsList(body)) {
       throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
@@ -109,19 +106,18 @@ const fetchPluginsList = async function ({
     //  - Releasing it requires a @netlify/buld release, which requires itself a
     //    buildbot release.
   } catch (error) {
-    logPluginsFetchError(logs, error.message)
+    // `fetch()`, `AbortSignal.timeout()`, `response.json()` and the `throw`s above only throw `Error` instances
+    logPluginsFetchError(logs, error instanceof Error ? error.message : String(error))
     return oldPluginsList
   }
 }
 
-const isValidPluginsList = function (pluginsList): pluginsList is PluginListEntry[] {
+const isValidPluginsList = function (pluginsList: unknown): pluginsList is PluginListEntry[] {
   return Array.isArray(pluginsList) && pluginsList.every(isPlainObject)
 }
 
-const normalizePluginsList = function (pluginsList: PluginListEntry[]) {
-  return Object.fromEntries<ReturnType<typeof normalizePluginItem>[1]>(
-    pluginsList.map(normalizePluginItem),
-  ) as PluginList
+const normalizePluginsList = function (pluginsList: PluginListEntry[]): PluginList {
+  return Object.fromEntries(pluginsList.map(normalizePluginItem))
 }
 
 // When `compatability` array is present it takes precedence, otherwise top-level `version` field is used as latest version
@@ -138,7 +134,7 @@ const normalizeCompatVersion = function ({
   featureFlag,
   overridePinnedVersion,
   ...otherProperties
-}: PluginCompatiblityEntry) {
+}: PluginCompatiblityEntry): PluginVersion {
   const conditions = Object.entries(otherProperties).filter(isCondition).map(normalizeCondition)
   return { version, migrationGuide, overridePinnedVersion, featureFlag, conditions }
 }
@@ -147,6 +143,7 @@ const isCondition = function ([type]: [string, ...unknown[]]) {
   return type in CONDITIONS
 }
 
-const normalizeCondition = function ([type, condition]: [string, string | Record<string, string>]) {
-  return { type, condition }
+const normalizeCondition = function ([type, condition]: [string, string | Record<string, string>]): PluginCondition {
+  // `isCondition()` only keeps `CONDITIONS` keys, whose `plugins.json` values `PluginCompatiblityEntry` describes
+  return { type, condition } as PluginCondition
 }

@@ -1,7 +1,7 @@
 import type { PluginList } from '../../plugins/list.js'
-import { BufferedLogs, log, logArray, logSubHeader, logWarning } from '../logger.js'
+import { type Logs, log, logArray, logSubHeader, logWarning } from '../logger.js'
 
-export const logPluginsFetchError = function (logs: BufferedLogs | undefined, message: string): void {
+export const logPluginsFetchError = function (logs: Logs | undefined, message: string): void {
   logWarning(
     logs,
     `
@@ -16,7 +16,7 @@ export const logPluginsList = function ({
   logs,
 }: {
   pluginsList: PluginList
-  logs: BufferedLogs | undefined
+  logs: Logs | undefined
   debug?: boolean | undefined
 }): void {
   if (!debug) {
@@ -41,6 +41,6 @@ export const logFailPluginWarning = function (methodName: string, event: string)
   )
 }
 
-export const logDeploySuccess = function (logs?: BufferedLogs) {
+export const logDeploySuccess = function (logs?: Logs) {
   log(logs, 'Site deploy was successfully initiated')
 }

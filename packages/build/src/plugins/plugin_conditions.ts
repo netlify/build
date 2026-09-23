@@ -6,20 +6,29 @@ import semver from 'semver'
 import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'
 
-import { type PluginVersion } from './list.js'
-
 type ConditionContext = {
   nodeVersion: string
   packageJson: PackageJson
   buildDir: string
-  packagePath?: string
+  packagePath?: string | undefined
 }
 
-type PluginCondition = PluginVersion['conditions'][number]['condition']
+type ConditionValues = {
+  nodeVersion: string
+  siteDependencies: Record<string, string>
+}
 
-export type Condition = {
-  test: (condition: PluginCondition, ctx: ConditionContext) => boolean | Promise<boolean>
-  warning: (condition: PluginCondition) => void
+type ConditionType = keyof ConditionValues
+
+export type PluginCondition<Type extends ConditionType = ConditionType> = {
+  [T in Type]: { type: T; condition: ConditionValues[T] }
+}[Type]
+
+type Conditions = {
+  [T in ConditionType]: {
+    test: (condition: ConditionValues[T], ctx: ConditionContext) => boolean | Promise<boolean>
+    warning: (condition: ConditionValues[T]) => string
+  }
 }
 
 /**
@@ -69,7 +78,7 @@ const siteDependencyTest = async function ({
   dependencyName: string
   allowedVersion: string
   buildDir: string
-  packagePath?: string
+  packagePath?: string | undefined
   siteDependencies: Record<string, string | undefined>
 }): Promise<boolean> {
   const siteDependency = siteDependencies[dependencyName]
@@ -95,15 +104,29 @@ const siteDependencyTest = async function ({
   }
 }
 
-const siteDependenciesWarning = function (allowedSiteDependencies) {
+const siteDependenciesWarning = function (allowedSiteDependencies: Record<string, string>) {
   return Object.entries(allowedSiteDependencies).map(siteDependencyWarning).join(',')
 }
 
-const siteDependencyWarning = function ([dependencyName, allowedVersion]) {
+const siteDependencyWarning = function ([dependencyName, allowedVersion]: [string, string]) {
   return `${dependencyName}@${allowedVersion}`
 }
 
-export const CONDITIONS = {
+export const CONDITIONS: Conditions = {
   nodeVersion: { test: nodeVersionTest, warning: nodeVersionWarning },
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
-} satisfies Record<string, Condition>
+}
+
+export const testCondition = function <Type extends ConditionType>(
+  { type, condition }: PluginCondition<Type>,
+  ctx: ConditionContext,
+): boolean | Promise<boolean> {
+  return CONDITIONS[type].test(condition, ctx)
+}
+
+export const getConditionWarning = function <Type extends ConditionType>({
+  type,
+  condition,
+}: PluginCondition<Type>): string {
+  return CONDITIONS[type].warning(condition)
+}

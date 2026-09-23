@@ -9,7 +9,7 @@ export const captureStandardError = (
   eventName: string,
   featureFlags: FeatureFlags,
 ) => {
-  if (!featureFlags.netlify_build_plugin_system_log) {
+  if (!featureFlags['netlify_build_plugin_system_log']) {
     return () => {
       // no-op
     }

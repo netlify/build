@@ -5,12 +5,14 @@ import { fileURLToPath, pathToFileURL } from 'url'
 
 import { trace } from '@opentelemetry/api'
 import { type ExecaChildProcess, execaNode } from 'execa'
+import type { PackageJson } from 'read-package-up'
 import { gte, satisfies } from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
+import type { ExtensionMetadata } from '../error/types.js'
 import { NetlifyConfig } from '../index.js'
-import { BufferedLogs } from '../log/logger.js'
+import type { Logs } from '../log/logger.js'
 import {
   logIncompatiblePlugins,
   logLoadingIntegration,
@@ -27,7 +29,20 @@ import { getSpawnInfo } from './options.js'
 import { captureStandardError } from './system_log.js'
 import { isTrustedPlugin } from './trusted.js'
 
-export type ChildProcess = ExecaChildProcess<string>
+export type ChildProcess = ExecaChildProcess
+
+// What `getPluginsOptions()` returns
+export type LoadedPluginOptions = PluginsOptions & {
+  pluginPath: string
+  pluginDir: string
+  packageDir?: string | undefined
+  pluginPackageJson: PackageJson
+  inputs: Record<string, unknown>
+  // Extensions' build plugins have no Node.js version from `addPluginsNodeVersion()`
+  nodePath?: string | undefined
+  nodeVersion?: string | undefined
+  integration?: ExtensionMetadata | undefined
+}
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 const require = createRequire(import.meta.url)
@@ -48,6 +63,16 @@ const tStartPlugins = async function ({
   systemLog,
   systemLogFile,
   featureFlags,
+}: {
+  pluginsOptions: LoadedPluginOptions[]
+  buildDir: string
+  childEnv: NodeJS.ProcessEnv
+  logs: Logs | undefined
+  debug: boolean
+  quiet: boolean | undefined
+  systemLog: SystemLogger
+  systemLogFile: number | undefined
+  featureFlags: FeatureFlags
 }) {
   if (!quiet) {
     logRuntime(logs, pluginsOptions)
@@ -89,15 +114,15 @@ const startPlugin = async function ({
   pluginPackageJson,
   featureFlags,
 }: {
-  nodeVersion: string
-  nodePath: string
+  nodeVersion: string | undefined
+  nodePath: string | undefined
   pluginDir: string
   /** The process cwd that is used to spawn the child process */
   buildDir: string
-  childEnv: Record<string, string>
-  pluginPackageJson: Record<string, string>
+  childEnv: NodeJS.ProcessEnv
+  pluginPackageJson: PackageJson
   systemLog: SystemLogger
-  systemLogFile: number
+  systemLogFile: number | undefined
   featureFlags: FeatureFlags
 }) {
   const ctx = trace.getActiveSpan()?.spanContext()
@@ -105,10 +130,10 @@ const startPlugin = async function ({
   // the baggage will be passed to the child process when sending the run event
   const args = [
     ...process.argv.filter((arg) => arg.startsWith('--tracing')),
-    `--tracing.traceId=${ctx?.traceId}`,
-    `--tracing.parentSpanId=${ctx?.spanId}`,
-    `--tracing.traceFlags=${ctx?.traceFlags}`,
-    `--tracing.enabled=${!!isTrustedPlugin(pluginPackageJson?.name)}`,
+    `--tracing.traceId=${String(ctx?.traceId)}`,
+    `--tracing.parentSpanId=${String(ctx?.spanId)}`,
+    `--tracing.traceFlags=${String(ctx?.traceFlags)}`,
+    `--tracing.enabled=${String(!!isTrustedPlugin(pluginPackageJson.name))}`,
   ]
 
   const nodeOptions: string[] = []
@@ -118,7 +143,8 @@ const startPlugin = async function ({
   try {
     // the --import preloading is only available in node 18.18.0 and above
     // plugins that run on a lower node version will not be able to be instrumented with opentelemetry
-    if (gte(nodeVersion, '18.18.0')) {
+    // `gte()` throws on an `undefined` version, which this `catch` ignores
+    if (nodeVersion !== undefined && gte(nodeVersion, '18.18.0')) {
       const entry = require.resolve('@netlify/opentelemetry-sdk-setup/bin.js')
       // on windows only file:// urls are allowed
       nodeOptions.push('--import', pathToFileURL(entry).toString())
@@ -131,19 +157,18 @@ const startPlugin = async function ({
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
-    nodePath,
+    // `execa` treats `undefined` options like missing ones
+    ...(nodePath === undefined ? {} : { nodePath, execPath: nodePath }),
     nodeOptions,
-    execPath: nodePath,
     env: {
       ...childEnv,
-      OTEL_SERVICE_NAME: pluginPackageJson?.name,
-      OTEL_SERVICE_VERSION: pluginPackageJson?.version,
+      OTEL_SERVICE_NAME: pluginPackageJson.name,
+      OTEL_SERVICE_VERSION: pluginPackageJson.version,
     },
     extendEnv: false,
-    stdio:
-      isTrustedPlugin(pluginPackageJson?.name) && systemLogFile
-        ? ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile]
-        : undefined,
+    ...(isTrustedPlugin(pluginPackageJson.name) && systemLogFile
+      ? { stdio: ['pipe', 'pipe', 'pipe', 'ipc', systemLogFile] }
+      : {}),
   })
   const readyEvent = 'ready'
   const cleanup = captureStandardError(childProcess, systemLog, readyEvent, featureFlags)
@@ -152,7 +177,7 @@ const startPlugin = async function ({
     await getEventFromChild(childProcess, readyEvent)
     return { childProcess }
   } catch (error) {
-    if (featureFlags.netlify_build_plugin_system_log) {
+    if (featureFlags['netlify_build_plugin_system_log']) {
       // Wait for stderr to be flushed.
       await setTimeout(0)
     }
@@ -173,9 +198,9 @@ export const stopPlugins = async function ({
   pluginOptions,
   netlifyConfig,
 }: {
-  logs: BufferedLogs
+  logs: Logs | undefined
   verbose: boolean
-  childProcesses: { childProcess: ExecaChildProcess }[]
+  childProcesses: { childProcess: ChildProcess }[]
   pluginOptions: PluginsOptions[]
   netlifyConfig: NetlifyConfig
 }) {
@@ -189,16 +214,22 @@ export const stopPlugins = async function ({
 const stopPlugin = async function ({
   childProcess,
   logs,
-  pluginOptions: { packageName, inputs, pluginPath, pluginPackageJson: packageJson = {} },
+  pluginOptions,
   netlifyConfig,
   verbose,
 }: {
-  childProcess: ExecaChildProcess
-  pluginOptions: PluginsOptions
+  childProcess: ChildProcess
+  // `childProcesses` has one entry per plugin, but this keeps the error a missing one used to throw
+  pluginOptions: PluginsOptions | undefined
   netlifyConfig: NetlifyConfig
   verbose: boolean
-  logs: BufferedLogs
+  logs: Logs | undefined
 }) {
+  if (pluginOptions === undefined) {
+    throw new TypeError("Cannot read properties of undefined (reading 'packageName')")
+  }
+
+  const { packageName, inputs, pluginPath, pluginPackageJson: packageJson = {} } = pluginOptions
   if (childProcess.connected) {
     try {
       // reliable stop tracing inside child processes
@@ -232,9 +263,11 @@ const stopPlugin = async function ({
   // We also disable execa's `forceKillAfterTimeout` in this case
   // which can cause unhandled rejection.
   try {
-    childProcess.kill('SIGTERM', {
-      forceKillAfterTimeout: platform() === 'win32' && satisfies(process.version, '>=21') ? false : undefined,
-    })
+    // `execa` treats an `undefined` `forceKillAfterTimeout` like a missing one
+    childProcess.kill(
+      'SIGTERM',
+      platform() === 'win32' && satisfies(process.version, '>=21') ? { forceKillAfterTimeout: false } : {},
+    )
   } catch {
     // no-op
   }

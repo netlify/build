@@ -1,21 +1,25 @@
 import { execPath, version as currentVersion } from 'process'
 
+import type { PackageJson } from 'read-package-up'
 import semver from 'semver'
 import link from 'terminal-link'
 
-import { logWarning, logWarningSubHeader } from '../log/logger.js'
+import { type Logs, logWarning, logWarningSubHeader } from '../log/logger.js'
 
-export type PluginsLoadedFrom = 'auto_install' | 'local' | 'package.json'
+export type PluginsLoadedFrom = 'auto_install' | 'core' | 'local' | 'package.json'
 
 export type PluginsOptions = {
   packageName: string
-  pluginPath?: any
-  pinnedVersion?: any
-  loadedFrom: PluginsLoadedFrom
-  origin: 'config' | string
-  inputs: Record<string, any>
-  pluginPackageJson?: Record<string, any>
+  pluginPath?: string | undefined
+  pinnedVersion?: string | undefined
+  // Extensions' build plugins are only `local` when developed locally, and have no `origin` nor `inputs`
+  loadedFrom: PluginsLoadedFrom | undefined
+  origin?: string | undefined
+  inputs?: Record<string, unknown> | undefined
+  pluginPackageJson?: PackageJson | undefined
 }
+
+export type NodeVersionOptions = { nodePath: string; nodeVersion: string }
 
 /**
  * This node version is minimum required to run the plugins code.
@@ -30,9 +34,20 @@ const MINIMUM_REQUIRED_NODE_VERSION = '>=22.12.0'
  * usually the system's Node.js version.
  * If the user Node version does not satisfy our supported engine range use our own system Node version
  */
-export const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion, logs }) {
-  const currentNodeVersion = semver.clean(currentVersion)
-  return Promise.all(
+export const addPluginsNodeVersion = function <T extends PluginsOptions>({
+  pluginsOptions,
+  nodePath,
+  userNodeVersion,
+  logs,
+}: {
+  pluginsOptions: T[]
+  nodePath: string
+  userNodeVersion: string
+  logs: Logs | undefined
+}): Promise<(T & NodeVersionOptions)[]> {
+  // Unreachable fallback: `process.version` is always a valid version
+  const currentNodeVersion = semver.clean(currentVersion) ?? currentVersion
+  return Promise.resolve(
     pluginsOptions.map((pluginOptions) =>
       addPluginNodeVersion({
         pluginOptions,
@@ -45,7 +60,7 @@ export const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userN
   )
 }
 
-const addPluginNodeVersion = async function ({
+const addPluginNodeVersion = function <T extends PluginsOptions>({
   pluginOptions,
   pluginOptions: { loadedFrom, packageName },
   currentNodeVersion,
@@ -53,9 +68,12 @@ const addPluginNodeVersion = async function ({
   nodePath,
   logs,
 }: {
-  pluginOptions: PluginsOptions
-  [key: string]: any
-}) {
+  pluginOptions: T
+  currentNodeVersion: string
+  userNodeVersion: string
+  nodePath: string
+  logs: Logs | undefined
+}): T & NodeVersionOptions {
   const systemNode = { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
   const userNode = { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
 

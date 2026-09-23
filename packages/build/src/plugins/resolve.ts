@@ -1,12 +1,45 @@
 import { join } from 'node:path'
 
+import type { resolveConfig } from '@netlify/config'
+import type { PackageJson } from 'read-package-up'
+
+import type { FeatureFlags } from '../core/feature_flags.js'
+import type { Mode } from '../core/types.js'
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins, installIntegrationPlugins } from '../install/missing.js'
+import type { Logs } from '../log/logger.js'
+import type { addCorePlugins } from '../plugins_core/add.js'
+import type { SystemLogger } from '../plugins_core/types.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
-import { addExpectedVersions } from './expected_version.js'
-import { addPluginsNodeVersion } from './node_version.js'
+import {
+  type ExpectedVersionTestOptions,
+  type ExpectedVersions,
+  type MaybeExpectedVersions,
+  addExpectedVersions,
+} from './expected_version.js'
+import { type NodeVersionOptions, type PluginsLoadedFrom, addPluginsNodeVersion } from './node_version.js'
 import { addPinnedVersions } from './pinned_version.js'
+
+type Integration = Awaited<ReturnType<typeof resolveConfig>>['integrations'][number]
+
+type AddedPluginOptions = ReturnType<typeof addCorePlugins>[number]
+
+type ResolvedPluginOptions = Omit<AddedPluginOptions, 'loadedFrom'> & { loadedFrom: PluginsLoadedFrom }
+
+type ExpectedPluginOptions = ResolvedPluginOptions & NodeVersionOptions & MaybeExpectedVersions
+
+type MissingPluginOptions = ResolvedPluginOptions & NodeVersionOptions & ExpectedVersions
+
+type IntegrationPluginOptions = {
+  integration: Integration
+  isIntegration: true
+  loadedFrom: 'local' | undefined
+  packageName: string
+  pluginPath: string
+}
+
+type PinnedVersionsOptions = Parameters<typeof addPinnedVersions>[0]
 
 const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
@@ -34,6 +67,25 @@ export const resolvePluginsPath = async function ({
   context,
   systemLog,
   pluginsEnv,
+}: {
+  pluginsOptions: AddedPluginOptions[]
+  siteInfo: PinnedVersionsOptions['siteInfo']
+  buildDir: string
+  packagePath: string | undefined
+  nodePath: string
+  packageJson: PackageJson
+  userNodeVersion: string
+  mode: Mode
+  api: PinnedVersionsOptions['api']
+  logs: Logs | undefined
+  debug: boolean
+  sendStatus: boolean
+  testOpts: ExpectedVersionTestOptions
+  featureFlags: FeatureFlags
+  integrations: Integration[]
+  context: string
+  systemLog: SystemLogger
+  pluginsEnv: NodeJS.ProcessEnv
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir, packagePath)
   const pluginsOptionsA = await Promise.all(
@@ -84,23 +136,25 @@ export const resolvePluginsPath = async function ({
  * Find the path to the directory used to install plugins automatically.
  * It is a subdirectory of `buildDir`, so that the plugin can require the
  * project's dependencies (peer dependencies).
- * @param {string} buildDir
- * @param {string} [packagePath]
- * @returns
  */
-const getAutoPluginsDir = function (buildDir, packagePath) {
-  return join(buildDir, packagePath || '', AUTO_PLUGINS_DIR)
+const getAutoPluginsDir = function (buildDir: string, packagePath: string | undefined): string {
+  return join(buildDir, packagePath ?? '', AUTO_PLUGINS_DIR)
 }
 
 const resolvePluginPath = async function ({
   pluginOptions,
-  pluginOptions: { packageName, loadedFrom },
+  pluginOptions: { packageName },
   buildDir,
   packagePath,
   autoPluginsDir,
-}) {
+}: {
+  pluginOptions: AddedPluginOptions
+  buildDir: string
+  packagePath: string | undefined
+  autoPluginsDir: string
+}): Promise<ResolvedPluginOptions> {
   // Core plugins
-  if (loadedFrom !== undefined) {
+  if (isResolvedPlugin(pluginOptions)) {
     return pluginOptions
   }
 
@@ -113,7 +167,7 @@ const resolvePluginPath = async function ({
   }
 
   // Plugin added to `package.json`
-  const packageDir = join(buildDir, packagePath || '')
+  const packageDir = join(buildDir, packagePath ?? '')
   const { path: manualPath } = await tryResolvePath(packageName, packageDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
@@ -132,8 +186,14 @@ const resolvePluginPath = async function ({
   return { ...pluginOptions, loadedFrom: 'auto_install' }
 }
 
+const isResolvedPlugin = function (
+  pluginOptions: AddedPluginOptions,
+): pluginOptions is AddedPluginOptions & { loadedFrom: 'core' } {
+  return pluginOptions.loadedFrom !== undefined
+}
+
 // `packageName` starting with `/` are relative to the build directory
-const normalizeLocalPackageName = function (packageName) {
+const normalizeLocalPackageName = function (packageName: string): string {
   if (packageName.startsWith('/')) {
     return `.${packageName}`
   }
@@ -142,8 +202,9 @@ const normalizeLocalPackageName = function (packageName) {
 }
 
 // When requiring a local plugin with an invalid file path
-const validateLocalPluginPath = function (error, localPackageName) {
-  if (error !== undefined) {
+const validateLocalPluginPath = function (error: unknown, localPackageName: string) {
+  // `error` is `undefined` or an `Error`, since `resolve` and `require.resolve()` only throw those
+  if (error instanceof Error) {
     error.message = `Plugin could not be found using local path: ${localPackageName}\n${error.message}`
     addErrorInfo(error, { type: 'resolveConfig' })
     throw error
@@ -152,7 +213,17 @@ const validateLocalPluginPath = function (error, localPackageName) {
 
 // Install plugins from the official list that have not been previously installed.
 // Print a warning if they have not been installed through the UI.
-const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
+const handleMissingPlugins = async function ({
+  pluginsOptions,
+  autoPluginsDir,
+  mode,
+  logs,
+}: {
+  pluginsOptions: ExpectedPluginOptions[]
+  autoPluginsDir: string
+  mode: Mode
+  logs: Logs | undefined
+}): Promise<ExpectedPluginOptions[]> {
   const missingPlugins = pluginsOptions.filter(isMissingPlugin)
 
   if (missingPlugins.length === 0) {
@@ -172,7 +243,16 @@ const handleIntegrations = async function ({
   context,
   testOpts,
   pluginsEnv,
-}) {
+}: {
+  integrations: Integration[]
+  autoPluginsDir: string
+  mode: Mode
+  logs: Logs | undefined
+  buildDir: string
+  context: string
+  testOpts: ExpectedVersionTestOptions
+  pluginsEnv: NodeJS.ProcessEnv
+}): Promise<IntegrationPluginOptions[]> {
   const integrationsWithBuildPlugins = integrations.filter((integration) => integration.has_build)
   await installIntegrationPlugins({
     integrations: integrationsWithBuildPlugins,
@@ -196,10 +276,15 @@ const handleIntegrations = async function ({
       // memory and comparing its `package.json#name` to `integration.slug`, and throw a descriptive
       // error if they don't match.)
       const packageName = `${integration.slug}-buildhooks`
+      const { buildPlugin } = integration
+      // `@netlify/config` sets `buildPlugin` on every extension with `has_build`, but this keeps the error it used to throw
+      if (buildPlugin === null) {
+        throw new TypeError("Cannot read properties of null (reading 'origin')")
+      }
       return {
         integration,
         isIntegration: true,
-        loadedFrom: integration.buildPlugin.origin === 'local' ? 'local' : undefined,
+        loadedFrom: buildPlugin.origin === 'local' ? 'local' : undefined,
         packageName,
         pluginPath: await resolvePath(packageName, autoPluginsDir),
       }
@@ -208,7 +293,14 @@ const handleIntegrations = async function ({
 }
 
 // Resolve the plugins that just got automatically installed
-const resolveMissingPluginPath = async function ({ pluginOptions, pluginOptions: { packageName }, autoPluginsDir }) {
+const resolveMissingPluginPath = async function ({
+  pluginOptions,
+  pluginOptions: { packageName },
+  autoPluginsDir,
+}: {
+  pluginOptions: ExpectedPluginOptions
+  autoPluginsDir: string
+}): Promise<ExpectedPluginOptions> {
   if (!isMissingPlugin(pluginOptions)) {
     return pluginOptions
   }
@@ -217,6 +309,6 @@ const resolveMissingPluginPath = async function ({ pluginOptions, pluginOptions:
   return { ...pluginOptions, pluginPath }
 }
 
-const isMissingPlugin = function ({ isMissing }) {
-  return isMissing
+const isMissingPlugin = function (pluginOptions: ExpectedPluginOptions): pluginOptions is MissingPluginOptions {
+  return pluginOptions.isMissing === true
 }

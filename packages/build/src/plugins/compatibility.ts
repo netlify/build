@@ -5,7 +5,7 @@ import { FeatureFlags } from '../core/feature_flags.js'
 import { SystemLogger } from '../plugins_core/types.js'
 
 import { PluginVersion } from './list.js'
-import { CONDITIONS } from './plugin_conditions.js'
+import { getConditionWarning, testCondition } from './plugin_conditions.js'
 
 /**
  *  Retrieve the `expectedVersion` of a plugin:
@@ -34,17 +34,17 @@ export const getExpectedVersion = async function ({
   /** The package.json of the repository */
   packageJson: PackageJson
   packageName: string
-  packagePath?: string
+  packagePath?: string | undefined
   buildDir: string
   nodeVersion: string
-  pinnedVersion?: string
-  featureFlags?: FeatureFlags
+  pinnedVersion?: string | undefined
+  featureFlags?: FeatureFlags | undefined
   systemLog: SystemLogger
   /* Defines whether the version returned from this method is the authoritative
   version that will be used for the plugin; if not, the method may be called
   just to get information about other compatible versions that will not be
   selected */
-  authoritative?: boolean
+  authoritative?: boolean | undefined
 }) {
   const { version, conditions = [] } = await getCompatibleEntry({
     versions,
@@ -59,7 +59,7 @@ export const getExpectedVersion = async function ({
   })
 
   // Retrieve warning message shown when using an older version with `compatibility`
-  const compatWarning = conditions.map(({ type, condition }) => CONDITIONS[type].warning(condition as any)).join(', ')
+  const compatWarning = conditions.map(getConditionWarning).join(', ')
   return { version, compatWarning }
 }
 
@@ -97,10 +97,10 @@ const getCompatibleEntry = async function ({
   buildDir: string
   nodeVersion: string
   packageName: string
-  packagePath?: string
-  pinnedVersion?: string
-  featureFlags?: FeatureFlags
-  systemLog?: SystemLogger
+  packagePath?: string | undefined
+  pinnedVersion?: string | undefined
+  featureFlags?: FeatureFlags | undefined
+  systemLog?: SystemLogger | undefined
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   let compatibleEntry: PluginVersion | undefined
   for (const entry of versions) {
@@ -128,8 +128,8 @@ const getCompatibleEntry = async function ({
 
     const isCompatible = (
       await Promise.all(
-        conditions.map(async ({ type, condition }) =>
-          CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+        conditions.map(async (condition) =>
+          testCondition(condition, { nodeVersion, packageJson, packagePath, buildDir }),
         ),
       )
     ).every(Boolean)
@@ -142,7 +142,7 @@ const getCompatibleEntry = async function ({
 
   if (compatibleEntry) {
     systemLog(
-      `Used compatible version '${compatibleEntry.version}' for plugin '${packageName}' (pinned version is ${pinnedVersion})`,
+      `Used compatible version '${compatibleEntry.version}' for plugin '${packageName}' (pinned version is ${String(pinnedVersion)})`,
     )
 
     return compatibleEntry
@@ -154,10 +154,10 @@ const getCompatibleEntry = async function ({
     return { version: pinnedVersion, conditions: [] }
   }
 
-  const legacyFallback = { version: versions[0].version, conditions: [] }
+  const legacyFallback = { version: getFirstVersion(versions), conditions: [] }
   const fallback = await getFirstCompatibleEntry({ versions, nodeVersion, packageJson, packagePath, buildDir })
 
-  if (featureFlags?.netlify_build_updated_plugin_compatibility) {
+  if (featureFlags?.['netlify_build_updated_plugin_compatibility']) {
     if (legacyFallback.version !== fallback.version) {
       systemLog(
         `Detected mismatch in selected version for plugin '${packageName}': used new version of '${fallback.version}' over legacy version '${legacyFallback.version}'`,
@@ -191,8 +191,7 @@ const getFirstCompatibleEntry = async function ({
   packageJson: PackageJson
   buildDir: string
   nodeVersion: string
-  packagePath?: string
-  pinnedVersion?: string
+  packagePath?: string | undefined
 }): Promise<Pick<PluginVersion, 'conditions' | 'version'>> {
   let compatibleEntry: PluginVersion | undefined
   for (const entry of versions) {
@@ -205,8 +204,8 @@ const getFirstCompatibleEntry = async function ({
 
     const isCompatible = (
       await Promise.all(
-        conditions.map(async ({ type, condition }) =>
-          CONDITIONS[type].test(condition as any, { nodeVersion, packageJson, packagePath, buildDir }),
+        conditions.map(async (condition) =>
+          testCondition(condition, { nodeVersion, packageJson, packagePath, buildDir }),
         ),
       )
     ).every(Boolean)
@@ -224,5 +223,14 @@ const getFirstCompatibleEntry = async function ({
   // We should never get here, because it means there are no plugin versions
   // that we can install. We're keeping this here because it has been the
   // default behavior for a long time, but we should look to remove it.
-  return { version: versions[0].version, conditions: [] }
+  return { version: getFirstVersion(versions), conditions: [] }
+}
+
+// Keeps the error `versions[0].version` throws when no version is left, e.g. after feature flag filtering
+const getFirstVersion = function (versions: PluginVersion[]): string {
+  const [firstVersion] = versions
+  if (firstVersion === undefined) {
+    throw new TypeError("Cannot read properties of undefined (reading 'version')")
+  }
+  return firstVersion.version
 }
