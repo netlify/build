@@ -567,21 +567,6 @@
       "count": 1
     }
   },
-  "packages/build/src/install/functions.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/build/src/install/local.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/build/src/install/missing.js": {
-    "n/no-missing-import": {
-      "count": 3
-    }
-  },
   "packages/build/src/log/messages/compatibility.ts": {
     "@typescript-eslint/no-unsafe-argument": {
       "count": 22
@@ -721,7 +706,7 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/build/src/plugins/plugin_conditions.ts": {
@@ -734,7 +719,7 @@
   },
   "packages/build/src/plugins/resolve.js": {
     "n/no-missing-import": {
-      "count": 5
+      "count": 6
     }
   },
   "packages/build/src/plugins/spawn.ts": {
@@ -848,7 +833,7 @@
       "count": 10
     }
   },
-  "packages/build/src/plugins_core/functions_install/index.js": {
+  "packages/build/src/plugins_core/list.js": {
     "n/no-missing-import": {
       "count": 1
     }
