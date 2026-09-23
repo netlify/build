@@ -1476,16 +1476,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/context.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/default.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1569,21 +1559,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/merge.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/merge_normalize.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/mutations/apply.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1593,18 +1568,6 @@ export default [
     files: ['packages/config/src/mutations/update.js'],
     rules: {
       'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/normalize.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
     },
   },
   {

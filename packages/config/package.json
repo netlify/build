@@ -73,7 +73,6 @@
     "find-up": "^7.0.0",
     "indent-string": "^5.0.0",
     "is-plain-obj": "^4.0.0",
-    "map-obj": "^5.0.0",
     "p-locate": "^6.0.0",
     "path-type": "^6.0.0",
     "read-package-up": "^11.0.0",

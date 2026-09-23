@@ -374,7 +374,7 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
 
 const normalizeConfigAndContext = function (config, origin) {
   const configA = normalizeBeforeConfigMerge(config, origin)
-  const configB = normalizeContextProps({ config: configA, origin })
+  const configB = normalizeContextProps(configA, origin)
   return configB
 }
 
