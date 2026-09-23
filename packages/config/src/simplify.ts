@@ -7,7 +7,7 @@ type Properties = Record<string, unknown>
 
 /** A configuration, possibly with `build.environment` reduced to a list of names as `cleanupConfig` does. */
 type SimplifiableConfig = PartialNetlifyConfigWithout<'build'> & {
-  build?: BuildConfigWithout<'environment'> & { environment?: unknown }
+  build?: (BuildConfigWithout<'environment'> & { environment?: unknown }) | undefined
 }
 
 /** Remove default values (empty objects and arrays, default redirect flags), e.g. before writing `netlify.toml`. */

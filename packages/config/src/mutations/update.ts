@@ -16,11 +16,11 @@ import { applyMutations } from './apply.js'
 type SiteFiles = {
   buildDir: string
   /** The site's `netlify.toml`, which may not exist. */
-  configPath?: string
+  configPath?: string | undefined
   /** The site's `_headers` file, which may not exist. */
-  headersPath?: string
+  headersPath?: string | undefined
   /** The site's `_redirects` file, which may not exist. */
-  redirectsPath?: string
+  redirectsPath?: string | undefined
 }
 
 type UpdateConfigOptions = SiteFiles & {

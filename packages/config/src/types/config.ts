@@ -39,9 +39,9 @@ export interface EdgeFunctionDeclaration {
 
 export interface PluginConfig {
   package: string
-  inputs?: Record<string, unknown>
-  pinned_version?: string
-  origin?: ConfigOrigin
+  inputs?: Record<string, unknown> | undefined
+  pinned_version?: string | undefined
+  origin?: ConfigOrigin | undefined
 }
 
 export interface ProcessingConfig {
@@ -54,19 +54,19 @@ export interface ProcessingConfig {
 }
 
 interface BuildProperties {
-  base?: string
-  command?: string
-  commandOrigin?: ConfigOrigin
-  edge_functions?: string
+  base?: string | undefined
+  command?: string | undefined
+  commandOrigin?: ConfigOrigin | undefined
+  edge_functions?: string | undefined
   /** Values are coerced to strings when computing `env`, so `netlify.toml` may use other scalars. */
-  environment?: Record<string, unknown>
+  environment?: Record<string, unknown> | undefined
   /** Legacy location of the functions directory. */
-  functions?: string
-  ignore?: string
-  processing?: ProcessingConfig
-  publish?: string
-  publishOrigin?: ConfigOrigin
-  services?: Record<string, unknown>
+  functions?: string | undefined
+  ignore?: string | undefined
+  processing?: ProcessingConfig | undefined
+  publish?: string | undefined
+  publishOrigin?: ConfigOrigin | undefined
+  services?: Record<string, unknown> | undefined
 }
 
 // Known properties are declared separately from the index signature: `Omit` on a type with an
@@ -82,23 +82,23 @@ export interface ConfigExtension {
 }
 
 interface NetlifyConfigProperties {
-  build?: BuildConfig
-  context?: Record<string, PartialNetlifyConfig>
-  database?: { migrations?: { path?: string } }
-  dev?: Record<string, unknown>
-  edge_functions?: EdgeFunctionDeclaration[]
+  build?: BuildConfig | undefined
+  context?: Record<string, PartialNetlifyConfig> | undefined
+  database?: { migrations?: { path?: string } | undefined } | undefined
+  dev?: Record<string, unknown> | undefined
+  edge_functions?: EdgeFunctionDeclaration[] | undefined
   /** Keys are function names or globs (`*` for all functions), or, before normalization, function config properties. */
-  functions?: Record<string, unknown>
-  functionsDirectory?: string
-  functionsDirectoryOrigin?: FunctionsDirectoryOrigin
-  headers?: MinimalHeader[]
-  headersOrigin?: ConfigOrigin
-  images?: { remote_images?: string[] } & Record<string, unknown>
-  integrations?: ConfigExtension[]
-  plugins?: PluginConfig[]
-  redirects?: unknown[]
-  redirectsOrigin?: ConfigOrigin
-  spa_fallback?: boolean
+  functions?: Record<string, unknown> | undefined
+  functionsDirectory?: string | undefined
+  functionsDirectoryOrigin?: FunctionsDirectoryOrigin | undefined
+  headers?: MinimalHeader[] | undefined
+  headersOrigin?: ConfigOrigin | undefined
+  images?: ({ remote_images?: string[] } & Record<string, unknown>) | undefined
+  integrations?: ConfigExtension[] | undefined
+  plugins?: PluginConfig[] | undefined
+  redirects?: unknown[] | undefined
+  redirectsOrigin?: ConfigOrigin | undefined
+  spa_fallback?: boolean | undefined
 }
 
 /**

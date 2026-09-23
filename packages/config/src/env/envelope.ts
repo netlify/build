@@ -4,7 +4,7 @@ type EnvelopeOptions = {
   api: NetlifyAPI
   accountId: string | undefined
   /** Without a site, only account-wide variables. */
-  siteId?: string
+  siteId?: string | undefined
   context: string
 }
 
@@ -25,7 +25,11 @@ export const getEnvelope = async function ({
 
   try {
     // Any context can be passed, not only the ones the API's published types list.
-    const environmentVariables = await api.getEnvVars({ accountId, siteId, contextName: context as ContextName })
+    const environmentVariables = await api.getEnvVars({
+      accountId,
+      ...(siteId !== undefined && { siteId }),
+      contextName: context as ContextName,
+    })
     return Object.fromEntries(
       environmentVariables
         .sort((left, right) => ((left.key ?? '').toLowerCase() < (right.key ?? '').toLowerCase() ? -1 : 1))

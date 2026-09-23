@@ -28,7 +28,7 @@ ${propNames.map((propName) => `  - ${propName}`).join('\n')}`,
 /** `functionsDirectory` comes from `functions.directory`, so errors are reported against the latter. */
 export const functionsDirectoryCheck: Pick<Validation, 'formatInvalid' | 'propertyName'> = {
   formatInvalid: (invalid) => ({
-    functions: { directory: isPlainObj(invalid) ? invalid.functionsDirectory : undefined },
+    functions: { directory: isPlainObj(invalid) ? invalid['functionsDirectory'] : undefined },
   }),
   propertyName: 'functions.directory',
 }

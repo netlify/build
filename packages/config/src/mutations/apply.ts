@@ -55,8 +55,8 @@ const applyMutation = function (inlineConfig: PartialNetlifyConfig, { keys, valu
 const denormalizeFunctionsTopProps: Denormalize = function ({ functions = {}, ...inlineConfig }, value, [, key]) {
   const { [WILDCARD_ALL]: wildcardProps } = functions as Record<string, Record<string, unknown> | undefined>
   return FUNCTION_CONFIG_PROPERTIES.has(String(key))
-    ? { ...inlineConfig, functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } } }
-    : { ...inlineConfig, functions: { ...functions, [key]: value } }
+    ? { ...inlineConfig, functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [String(key)]: value } } }
+    : { ...inlineConfig, functions: { ...functions, [String(key)]: value } }
 }
 
 /** Properties that may change, and until which event. Every other property is read-only. */

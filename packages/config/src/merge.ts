@@ -39,7 +39,7 @@ const concatenateLaterFirst = function (target: unknown[], source: unknown[]): u
 
 // deepmerge doesn't say which property is being merged, so plugin lists are recognized by their shape.
 const isPluginsArray = function (array: unknown[]): array is PluginConfig[] {
-  return array.every((item) => isPlainObj(item) && typeof item.package === 'string')
+  return array.every((item) => isPlainObj(item) && typeof item['package'] === 'string')
 }
 
 const mergePlugins = function (pluginsA: PluginConfig[], pluginsB: PluginConfig[]): PluginConfig[] {

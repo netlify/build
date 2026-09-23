@@ -12,7 +12,7 @@ export const getRedirectsPath = function ({ build: { publish } }: { build: { pub
 }
 
 /** Merge `config.redirects` with the `_redirects` file, and warn about invalid ones. `redirects` moves to the end. */
-export const addRedirects = async function <T extends { redirects?: unknown[] }>({
+export const addRedirects = async function <T extends { redirects?: unknown[] | undefined }>({
   config,
   redirectsPath,
   logs,

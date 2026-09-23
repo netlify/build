@@ -9,12 +9,12 @@ import { nonEmpty } from './utils/non_empty.js'
 const FILENAME = 'netlify.toml'
 
 type ConfigPathOptions = {
-  configOpt?: string
+  configOpt?: string | undefined
   cwd: string
   repositoryRoot: string
   /** The base directory to look in, if any. */
-  configBase?: string
-  packagePath?: string
+  configBase?: string | undefined
+  packagePath?: string | undefined
 }
 
 /**

@@ -49,7 +49,8 @@ export const validatePostNormalizeConfig = (config: object) => {
 const validateConfig = function (config: object, validations: readonly Validation[]) {
   try {
     for (const validation of validations) {
-      const [first, ...rest] = validation.property.split('.')
+      // `split()` always returns at least one segment.
+      const [first = '', ...rest] = validation.property.split('.')
       validateProperty(config, first, rest, { path: [first], label: first }, validation)
     }
   } catch (error) {
@@ -68,20 +69,21 @@ const validateProperty = function (
   validation: Validation,
 ) {
   const value = getChild(parent, segment)
+  const [nextSegment, ...rest] = remainingSegments
 
-  if (remainingSegments.length === 0) {
+  if (nextSegment === undefined) {
     if (value === undefined || validation.check(value, segment, location.path)) {
       return
     }
 
     reportError(value, segment, location, validation)
+    return
   }
 
   if (value === undefined) {
     return
   }
 
-  const [nextSegment, ...rest] = remainingSegments
   if (nextSegment !== '*') {
     validateProperty(value, nextSegment, rest, descend(location, nextSegment, false), validation)
     return

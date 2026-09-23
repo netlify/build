@@ -1,5 +1,6 @@
 import isPlainObj from 'is-plain-obj'
 
+import type { EdgeFunctionDeclaration } from './types/config.js'
 import type { Validation } from './validate/types.js'
 import { isString, validProperties } from './validate/helpers.js'
 
@@ -32,7 +33,8 @@ export const EDGE_FUNCTIONS_PROPERTIES = [
 export const EDGE_FUNCTIONS_INTERNAL_PROPERTIES = ['generator'] as const
 
 // Earlier validations ensure each declaration is an object.
-const declaration = (value: unknown): Record<string, unknown> => (isPlainObj(value) ? value : {})
+const declaration = (value: unknown): Partial<Record<keyof EdgeFunctionDeclaration, unknown>> =>
+  isPlainObj(value) ? value : {}
 
 export const validations: Validation[] = [
   {

@@ -39,10 +39,10 @@ export default tseslint.config(
   },
   // The base tsconfig includes every file, so it would shadow a package's stricter tsconfig.
   {
-    files: ['packages/config/tests/**/*.ts'],
+    files: ['packages/config/src/**/*.ts', 'packages/config/tests/**/*.ts'],
     languageOptions: {
       parserOptions: {
-        project: ['./packages/config/tests/tsconfig.json'],
+        project: ['./packages/config/tsconfig.json', './packages/config/tests/tsconfig.json'],
       },
     },
   },
