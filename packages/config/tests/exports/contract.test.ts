@@ -106,7 +106,6 @@ test('applyMutations() does not mutate its argument, even deeply', () => {
   }
   const copy = structuredClone(inlineConfig)
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `applyMutations`'s result is untyped until its rewrite
   const result = applyMutations(deepFreeze(inlineConfig), [
     { keys: ['build', 'environment', 'NAME'], value: 'two', event: 'onPreBuild' },
     { keys: ['functions', 'node_bundler'], value: 'esbuild', event: 'onBuild' },
@@ -152,7 +151,6 @@ test('updateConfig() writes the mutations to netlify.toml, over the context and 
     event: 'onPostBuild',
   }
 
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION, headersMutation], { ...paths, ...CONTEXT })
 
   // Current behaviour: each context entry repeats the build properties both at its top level and under build.
@@ -194,13 +192,11 @@ for = "/path"
 
 test('updateConfig() accepts and ignores unknown options such as featureFlags', async () => {
   const paths = await writeSiteFiles({})
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
   const withoutFeatureFlags = await readFile(paths.configPath, 'utf8')
   await rm(paths.configPath)
 
   const optionsWithFeatureFlags = { ...paths, ...CONTEXT, featureFlags: { some_flag: true } }
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs`
   await updateConfig([COMMAND_MUTATION], optionsWithFeatureFlags)
 
   expect(await readFile(paths.configPath, 'utf8')).toBe(withoutFeatureFlags)
@@ -220,7 +216,6 @@ test('updateConfig() backs up the site files under fixed names, whatever they ar
     redirectsPath: join(buildDir, 'custom_redirects'),
   }
 
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
 
   const backupDir = join(buildDir, '.netlify', 'deploy')

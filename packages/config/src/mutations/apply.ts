@@ -1,55 +1,66 @@
 import { throwUserError } from '../error.js'
 import { EVENTS } from '../events.js'
-import { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } from '../functions_config.js'
+import { FUNCTION_CONFIG_PROPERTIES, WILDCARD_ALL } from '../functions_config.js'
+import type { PartialNetlifyConfig } from '../types/config.js'
+import type { ConfigMutation } from '../types/mutations.js'
 import { setProp } from '../utils/set.js'
 
 import { getPropName } from './config_prop_name.js'
 
-// Apply a series of mutations to `inlineConfig`.
-// Meant to be used to apply configuration changes at build time.
-// Those are applied on the `inlineConfig` object after `@netlify/config`
-// normalization. Therefore, this function also denormalizes (reverts that
-// normalization) so that the final `config` object can be serialized back to
-// a `netlify.toml`.
-export const applyMutations = function (inlineConfig, configMutations) {
+type Denormalize = (
+  inlineConfig: PartialNetlifyConfig,
+  value: unknown,
+  keys: ConfigMutation['keys'],
+) => PartialNetlifyConfig
+
+type MutableProp = {
+  /** The last build event during which the property may change. */
+  lastEvent: string
+  /** How to write the change, if not as is. */
+  denormalize?: Denormalize
+}
+
+/**
+ * Apply config mutations to `inlineConfig`. Mutations are made on the normalized config, so this
+ * also reverts that normalization where needed, so the result can be written back to `netlify.toml`.
+ */
+export const applyMutations = function (
+  inlineConfig: PartialNetlifyConfig,
+  configMutations: ConfigMutation[],
+): PartialNetlifyConfig {
   return configMutations.reduce(applyMutation, inlineConfig)
 }
 
-const applyMutation = function (inlineConfig, { keys, value, event }) {
+const applyMutation = function (inlineConfig: PartialNetlifyConfig, { keys, value, event }: ConfigMutation) {
   const propName = getPropName(keys)
-  if (!(propName in MUTABLE_PROPS)) {
+  const mutableProp = Object.hasOwn(MUTABLE_PROPS, propName) ? MUTABLE_PROPS[propName] : undefined
+  if (mutableProp === undefined) {
     throwUserError(`"netlifyConfig.${propName}" is read-only.`)
   }
 
-  const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
-  validateEvent(lastEvent, event, propName)
-
-  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value, keys)
-}
-
-const validateEvent = function (lastEvent, event, propName) {
+  const { lastEvent, denormalize } = mutableProp
+  // Dev events aren't in EVENTS (index -1): nothing is rejected during a dev event, and dev-only
+  // properties are rejected during any build event.
   if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
     throwUserError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
+
+  return denormalize === undefined
+    ? (setProp(inlineConfig, keys, value) as PartialNetlifyConfig)
+    : denormalize(inlineConfig, value, keys)
 }
 
-// `functions['*'].*` has higher priority than `functions.*` so we convert the
-// latter to the former.
-const denormalizeFunctionsTopProps = function (
-  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
-  value,
-  [, key],
-) {
-  return FUNCTION_CONFIG_PROPERTIES.has(key)
-    ? {
-        ...inlineConfig,
-        functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
-      }
+// `functions['*'].*` takes priority over top-level `functions.*` properties, so a mutation of a
+// top-level one is written to `functions['*']`.
+const denormalizeFunctionsTopProps: Denormalize = function ({ functions = {}, ...inlineConfig }, value, [, key]) {
+  const { [WILDCARD_ALL]: wildcardProps } = functions as Record<string, Record<string, unknown> | undefined>
+  return FUNCTION_CONFIG_PROPERTIES.has(String(key))
+    ? { ...inlineConfig, functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } } }
     : { ...inlineConfig, functions: { ...functions, [key]: value } }
 }
 
-// List of properties that are not read-only.
-const MUTABLE_PROPS = {
+/** Properties that may change, and until which event. Every other property is read-only. */
+const MUTABLE_PROPS: Partial<Record<string, MutableProp>> = {
   'build.command': { lastEvent: 'onPreBuild' },
   'build.edge_functions': { lastEvent: 'onPostBuild' },
   'build.environment': { lastEvent: 'onPostBuild' },

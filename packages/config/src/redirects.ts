@@ -18,12 +18,13 @@ export const addRedirects = async function <T extends { redirects?: unknown[] }>
   logs,
 }: {
   config: T
-  redirectsPath: string
+  /** Without a path, only `config.redirects` is used. */
+  redirectsPath: string | undefined
   logs: Logs | undefined
 }): Promise<T & { redirects: Redirect[] }> {
   const { redirects: configRedirects, ...rest } = config
   const { redirects, errors } = await parseAllRedirects({
-    redirectsFiles: [redirectsPath],
+    redirectsFiles: redirectsPath === undefined ? [] : [redirectsPath],
     // Declared as `string[]` by `@netlify/redirect-parser`, which actually takes redirect objects.
     configRedirects: configRedirects as string[],
     minimal: true,

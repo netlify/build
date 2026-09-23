@@ -273,7 +273,6 @@ test('updateConfig() backs up the site files, and restoreConfig() puts them back
   }
   const paths = await writeSiteFiles(originals)
 
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
 
   expect(await readFile(paths.configPath, 'utf8')).toContain('npm test')
@@ -293,7 +292,6 @@ test('updateConfig() backs up the site files, and restoreConfig() puts them back
 test('restoreConfig() deletes files that did not exist before updateConfig()', async () => {
   const paths = await writeSiteFiles({})
 
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
   expect(existsSync(paths.configPath)).toBe(true)
 
@@ -315,7 +313,6 @@ test('updateConfig() flushes pending output before printing warnings', async () 
   const flush = vi.fn(() => stderrLengthsAtFlush.push(logs.stderr.length))
   const logs = { stdout: [] as string[], stderr: [] as string[], outputFlusher: { flush } }
 
-  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT, logs })
 
   expect(logs.stderr.join('\n')).toContain('Warning: some redirects have syntax errors')

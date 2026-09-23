@@ -1415,12 +1415,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/api/build_settings.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/api/client.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1456,12 +1450,6 @@ export default [
     files: ['packages/config/src/bin/main.js'],
     rules: {
       'n/hashbang': 'off',
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/default.js'],
-    rules: {
       'n/no-missing-import': 'off',
     },
   },
@@ -1506,12 +1494,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/inline_config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/main.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1523,18 +1505,6 @@ export default [
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/mutations/apply.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/mutations/update.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
