@@ -1,35 +1,42 @@
 import { createRequire } from 'module'
 import { join } from 'path'
 
-import { type Extension, getExtensions } from '../../api/site_info.js'
-import { type ModeOption } from '../../types/options.js'
+import { getExtensions } from '../../api/site_info.js'
+import type { Extension } from '../../types/api.js'
+import type { ModeOption, TestOptions } from '../../types/options.js'
 
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
 
-function getPackageJSON(directory: string) {
+type AutoInstallOptions = {
+  featureFlags: Record<string, boolean>
+  siteId: string | undefined
+  accountId: string | undefined
+  token: string | undefined
+  buildDir: string
+  extensions: Extension[]
+  offline: boolean
+  testOpts: TestOptions
+  mode: ModeOption
+  extensionApiBaseUrl: string
+  debug: boolean
+}
+
+type PackageJson = { dependencies?: unknown }
+
+// An empty object when there is no `package.json`.
+const getPackageJson = function (directory: string): PackageJson {
   try {
-    const require = createRequire(join(directory, 'package.json'))
-    return require('./package.json')
+    return createRequire(join(directory, 'package.json'))('./package.json') as PackageJson
   } catch {
-    // Gracefully fail if no package.json found in buildDir
     return {}
   }
 }
 
-interface AutoInstallOptions {
-  featureFlags: any
-  siteId: string
-  accountId: string
-  token: string
-  buildDir: string
-  extensions: Extension[]
-  offline: boolean
-  testOpts: any
-  mode: ModeOption
-  extensionApiBaseUrl: string
-  debug?: boolean
-}
-
+/**
+ * Behind the `auto_install_required_extensions_v2` feature flag, install the extensions whose
+ * packages the site depends on and that aren't installed yet, then fetch the site's extensions
+ * again. Failures are logged and the extensions returned unchanged.
+ */
 export async function handleAutoInstallExtensions({
   featureFlags,
   siteId,
@@ -38,27 +45,18 @@ export async function handleAutoInstallExtensions({
   buildDir,
   extensions,
   offline,
-  testOpts = {},
+  testOpts,
   mode,
   extensionApiBaseUrl,
-  debug = false,
-}: AutoInstallOptions) {
-  if (!featureFlags?.auto_install_required_extensions_v2) {
+  debug,
+}: AutoInstallOptions): Promise<Extension[]> {
+  if (!featureFlags.auto_install_required_extensions_v2) {
     return extensions
   }
-  if (!accountId || !siteId || !token || !buildDir || offline) {
-    const reason = !accountId
-      ? 'Missing accountId'
-      : !siteId
-        ? 'Missing siteId'
-        : !token
-          ? 'Missing token'
-          : !buildDir
-            ? 'Missing buildDir'
-            : 'Running as offline'
 
+  if (!accountId || !siteId || !token || !buildDir || offline) {
     if (debug) {
-      console.error(`Failed to auto install extension(s): ${reason}`, {
+      console.error(`Failed to auto install extension(s): ${getSkipReason({ accountId, siteId, token, buildDir })}`, {
         accountId,
         siteId,
         buildDir,
@@ -70,52 +68,38 @@ export async function handleAutoInstallExtensions({
   }
 
   try {
-    const packageJson = getPackageJSON(buildDir)
-    if (
-      !packageJson?.dependencies ||
-      typeof packageJson?.dependencies !== 'object' ||
-      Object.keys(packageJson?.dependencies)?.length === 0
-    ) {
+    const { dependencies } = getPackageJson(buildDir)
+    if (typeof dependencies !== 'object' || dependencies === null || Object.keys(dependencies).length === 0) {
       return extensions
     }
 
     const autoInstallableExtensions = await fetchAutoInstallableExtensionsMeta()
-    const enabledExtensionSlugs = new Set((extensions ?? []).map(({ slug }) => slug))
-    const extensionsToInstallCandidates = autoInstallableExtensions.filter(
-      ({ slug }) => !enabledExtensionSlugs.has(slug),
+    const installedSlugs = new Set(extensions.map(({ slug }) => slug))
+    const extensionsToInstall = autoInstallableExtensions.filter(
+      ({ slug, packages }) =>
+        !installedSlugs.has(slug) && packages.some((packageName) => Object.hasOwn(dependencies, packageName)),
     )
-    const extensionsToInstall = extensionsToInstallCandidates.filter(({ packages }) => {
-      for (const pkg of packages) {
-        if (packageJson?.dependencies && Object.hasOwn(packageJson.dependencies, pkg)) {
-          return true
-        }
-      }
-      return false
-    })
-
     if (extensionsToInstall.length === 0) {
       return extensions
     }
 
     const results = await Promise.all(
-      extensionsToInstall.map(async (ext) => {
+      extensionsToInstall.map(async (extension) => {
         console.log(
-          `Installing extension "${ext.slug}" on team "${accountId}" required by package(s): "${ext.packages.join(
-            '",',
-          )}"`,
+          `Installing extension "${extension.slug}" on team "${accountId}" required by package(s): "${extension.packages.join('",')}"`,
         )
-        return installExtension({
+        return await installExtension({
           accountId,
           netlifyToken: token,
-          slug: ext.slug,
-          hostSiteUrl: ext.hostSiteUrl,
+          slug: extension.slug,
+          hostSiteUrl: extension.hostSiteUrl,
           extensionInstallationSource: mode,
         })
       }),
     )
 
-    if (results.length > 0 && results.some((result) => !result.error)) {
-      return getExtensions({
+    if (results.some((result) => !result.error)) {
+      return await getExtensions({
         siteId,
         accountId,
         testOpts,
@@ -126,9 +110,26 @@ export async function handleAutoInstallExtensions({
         mode,
       })
     }
+
     return extensions
   } catch (error) {
-    console.error(`Failed to auto install extension(s): ${error.message}`, error)
+    console.error(
+      `Failed to auto install extension(s): ${error instanceof Error ? error.message : String(error)}`,
+      error,
+    )
     return extensions
   }
+}
+
+const getSkipReason = function ({
+  accountId,
+  siteId,
+  token,
+  buildDir,
+}: Pick<AutoInstallOptions, 'accountId' | 'siteId' | 'token' | 'buildDir'>) {
+  if (!accountId) return 'Missing accountId'
+  if (!siteId) return 'Missing siteId'
+  if (!token) return 'Missing token'
+  if (!buildDir) return 'Missing buildDir'
+  return 'Running as offline'
 }

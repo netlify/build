@@ -1,51 +1,30 @@
 import path from 'node:path'
 
-import { type Extension } from './api/site_info.js'
 import { throwUserError } from './error.js'
+import type { Extension, ExtensionBuildPlugin, ExtensionWithDev } from './types/api.js'
+import type { ConfigExtension } from './types/config.js'
 
 export const NETLIFY_API_STAGING_HOSTNAME = 'api-staging.netlify.com'
 export const NETLIFY_API_HOSTNAME = 'api.netlify.com'
 export const EXTENSION_API_BASE_URL = 'https://api.netlifysdk.com'
 export const EXTENSION_API_STAGING_BASE_URL = 'https://api-staging.netlifysdk.com'
 
-export type MergeExtensionsOptions = {
-  /**
-   * Extensions loaded via the Netlify API. These are extensions enabled
-   */
+type MergeExtensionsOptions = {
+  /** Extensions installed on the site, from the extension API. */
   apiExtensions: Extension[]
-  /**
-   * Development extensions loaded via the build target's netlify.toml file. Only used when the
-   * build context is set to `dev` (e.g. when `netlify build` is run with `--context=dev`).
-   */
-  configExtensions?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
-  /**
-   * A path to the build target's build directory. We use this in dev mode to resolve non-absolute
-   * build plugin paths.
-   */
+  /** Extensions under development, from `netlify.toml`. Only used in the `dev` context. */
+  configExtensions?: ConfigExtension[]
+  /** Resolves relative `dev.path`s. */
   buildDir: string
-  /**
-   * The current build context, set e.g. via `netlify build --context=<context>`.
-   */
   context: string
 }
 
-export type ExtensionWithDev = Extension & {
-  buildPlugin: {
-    origin: 'local' | 'remote'
-    packageURL: URL
-  } | null
-  dev?: { path: string; force_run_in_build?: boolean } | null
-}
+type DevExtension = Pick<ExtensionWithDev, 'buildPlugin' | 'dev' | 'has_build' | 'name' | 'slug'>
 
 /**
- * normalizeAndMergeExtensions accepts several lists of extensions configured for the current build
- * target, normalizes them to compensate for some differences between the various APIs we load this
- * data from (one of two API endpoints and the user's config file), and merges them into a single
- * list.
- *
- * Note that it merges extension data provided by the config file (configExtensions) only when
- * context=dev. When it does so, config file data will be merged into any available API data, giving
- * a preference to config file data.
+ * Merge the site's extensions with those under development, which take priority, and normalize
+ * both to one shape. An extension under development doesn't need to exist in the API, so build
+ * hooks can be tested before the extension is published.
  */
 export const normalizeAndMergeExtensions = ({
   apiExtensions,
@@ -53,8 +32,8 @@ export const normalizeAndMergeExtensions = ({
   configExtensions = [],
   context,
 }: MergeExtensionsOptions): ExtensionWithDev[] => {
-  const apiExtensionsBySlug = new Map<string, ExtensionWithDev>(
-    apiExtensions.map((extension) => [
+  const apiExtensionsBySlug = new Map(
+    apiExtensions.map((extension): [string, Extension & Pick<ExtensionWithDev, 'buildPlugin' | 'dev'>] => [
       extension.slug,
       {
         ...extension,
@@ -65,83 +44,63 @@ export const normalizeAndMergeExtensions = ({
       },
     ]),
   )
-  const configExtensionsBySlug = new Map<
-    string,
-    Omit<ExtensionWithDev, 'author' | 'extension_token' | 'version'> & {
-      author: Extension['author'] | undefined
-      extension_token: Extension['extension_token'] | undefined
-      version: Extension['version'] | undefined
-    }
-  >(
-    // Only use configuration-file data in development mode
-    (context === 'dev' ? configExtensions : []).map((extension) => {
-      let buildPluginPackageURL: URL | null = null
-      if (extension.dev?.path) {
-        let resolvedPath = path.isAbsolute(extension.dev.path)
-          ? extension.dev.path
-          : path.resolve(buildDir, extension.dev.path)
-        const normalizedExtname = path.extname(resolvedPath).toLowerCase()
-
-        // If the user has specified a path to an extension directory rather than to a tarball
-        // package, interpret this as a shortcut for "the default Netlify Extension build plugin
-        // artifact path, please."
-        //
-        // This sort of emulates SDK v1/2/3 behavior, and is an effort at making extension dev mode
-        // friendlier to use. We can feel free to revisit this chocie at a later date.
-        if (normalizedExtname === '') {
-          resolvedPath = path.join(resolvedPath, '.ntli/site/static/packages/buildhooks.tgz')
-        }
-
-        buildPluginPackageURL = new URL(`file://${resolvedPath}`)
-      }
-
+  const devExtensionsBySlug = new Map(
+    (context === 'dev' ? configExtensions : []).map((extension): [string, DevExtension] => {
+      const buildPlugin = getDevBuildPlugin(extension, buildDir)
       return [
         extension.name,
-        // Normalize dev extensions to a similar shape as an API extension
         {
-          author: undefined,
           dev: extension.dev,
-          extension_token: undefined,
-          has_build: buildPluginPackageURL !== null,
+          has_build: buildPlugin !== null,
           name: extension.name,
           slug: extension.name,
-          version: undefined,
-          buildPlugin: buildPluginPackageURL !== null ? { origin: 'local', packageURL: buildPluginPackageURL } : null,
+          buildPlugin,
         },
       ]
     }),
   )
 
-  // Merge API and configuration file metadata together by merging development metadata onto API
-  // metadata.
-  //
-  // Explicitly allow the configuration file to reference an extension that doesn't yet exist in the
-  // API so users can test their build hooks without publishing the extension first.
-  const mergedExtensions = [...new Set([...apiExtensionsBySlug.keys(), ...configExtensionsBySlug.keys()])]
-    .map((slug) => [apiExtensionsBySlug.get(slug), configExtensionsBySlug.get(slug)] as const)
-    .map(([apiExtension, configExtension]) => {
+  const mergedExtensions = [...new Set([...apiExtensionsBySlug.keys(), ...devExtensionsBySlug.keys()])].map(
+    (slug): ExtensionWithDev => {
+      const apiExtension = apiExtensionsBySlug.get(slug)
+      const devExtension = devExtensionsBySlug.get(slug)
       return {
-        author: configExtension?.author ?? apiExtension?.author ?? '',
-        buildPlugin: configExtension?.buildPlugin ?? apiExtension?.buildPlugin ?? null,
-        dev: configExtension?.dev,
-        extension_token: configExtension?.extension_token ?? apiExtension?.extension_token ?? '',
-        has_build: configExtension?.has_build ?? apiExtension?.has_build ?? false,
-        name: configExtension?.name ?? apiExtension?.name ?? '',
-        slug: configExtension?.slug ?? apiExtension?.slug ?? '',
-        version: configExtension?.version ?? apiExtension?.version ?? '',
+        author: apiExtension?.author ?? '',
+        buildPlugin: devExtension?.buildPlugin ?? apiExtension?.buildPlugin ?? null,
+        dev: devExtension?.dev,
+        extension_token: apiExtension?.extension_token ?? '',
+        has_build: devExtension?.has_build ?? apiExtension?.has_build ?? false,
+        name: devExtension?.name ?? apiExtension?.name ?? '',
+        slug: devExtension?.slug ?? apiExtension?.slug ?? '',
+        version: apiExtension?.version ?? '',
       }
-    })
+    },
+  )
 
-  for (const extension of mergedExtensions) {
-    if (extension.buildPlugin !== null) {
-      const normalizedExtname = path.extname(extension.buildPlugin.packageURL.toString()).toLowerCase()
-      if (normalizedExtname !== '.tgz') {
-        throwUserError(
-          `Extension ${extension.slug} contains unexpected build plugin URL: '${extension.buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
-        )
-      }
+  for (const { buildPlugin, slug } of mergedExtensions) {
+    if (buildPlugin !== null && path.extname(buildPlugin.packageURL.toString()).toLowerCase() !== '.tgz') {
+      throwUserError(
+        `Extension ${slug} contains unexpected build plugin URL: '${buildPlugin.packageURL.toString()}'. Build plugin URLs must end in '.tgz'.`,
+      )
     }
   }
 
   return mergedExtensions
+}
+
+/**
+ * The build plugin of an extension under development, from its `dev.path`. A directory stands for
+ * the build plugin tarball the extension SDK outputs in it, which emulates SDK v1 to v3.
+ */
+const getDevBuildPlugin = function ({ dev }: ConfigExtension, buildDir: string): ExtensionBuildPlugin | null {
+  if (!dev?.path) {
+    return null
+  }
+
+  const resolvedPath = path.isAbsolute(dev.path) ? dev.path : path.resolve(buildDir, dev.path)
+  const packagePath =
+    path.extname(resolvedPath) === ''
+      ? path.join(resolvedPath, '.ntli/site/static/packages/buildhooks.tgz')
+      : resolvedPath
+  return { origin: 'local', packageURL: new URL(`file://${packagePath}`) }
 }
