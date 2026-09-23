@@ -1,9 +1,18 @@
+/** The files matching some globbing patterns, by how they changed. */
+export interface NetlifyPluginGitFileMatch {
+  modified: readonly string[]
+  created: readonly string[]
+  deleted: readonly string[]
+  /** Modified or created files. */
+  edited: readonly string[]
+}
+
 /**
  * Retrieve Git-related information such as the list of modified/created/deleted files
  * @see https://github.com/netlify/build/blob/master/packages/git-utils/README.md
  */
 export interface NetlifyPluginGitUtil {
-  fileMatch(globPattern: string): readonly string[]
+  fileMatch(...globPatterns: string[]): NetlifyPluginGitFileMatch
   /**
    * Array of all modified files.
    */
@@ -37,5 +46,5 @@ export interface NetlifyPluginGitUtil {
   /**
    * How many lines of code have changed
    */
-  linesOfCode(): Promise<number>
+  linesOfCode: number
 }

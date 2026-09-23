@@ -2,11 +2,12 @@ import type { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
 
 export const testUtilsGit: OnPreBuild = function ({ utils: { git } }: { utils: NetlifyPluginUtils }) {
-  expectType<readonly string[]>(git.fileMatch('*'))
+  expectType<readonly string[]>(git.fileMatch('*').edited)
+  expectType<readonly string[]>(git.fileMatch('*.js', '*.ts').deleted)
   expectType<readonly string[]>(git.modifiedFiles)
   expectType<readonly string[]>(git.createdFiles)
   expectType<readonly string[]>(git.deletedFiles)
-  expectType<Promise<number>>(git.linesOfCode())
+  expectType<number>(git.linesOfCode)
 }
 
 export const testUtilsGitCommits: OnPreBuild = function ({

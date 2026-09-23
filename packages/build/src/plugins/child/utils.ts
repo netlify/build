@@ -39,8 +39,7 @@ export const getUtils = function ({
   const status = getStatusUtils(runState)
   const utils = { build, cache, deploy, functions, run, status }
   addLazyProp(utils, 'git', () => getGitUtils())
-  // `@netlify/git-utils` leaves `fileMatch()` untyped, and `NetlifyPluginGitUtil`
-  // mistypes `fileMatch()` and `linesOfCode`
+  // `@netlify/git-utils` leaves `fileMatch()` untyped, so its result is only a string-keyed record
   return utils as typeof utils & { git: NetlifyPluginUtils['git'] }
 }
 
