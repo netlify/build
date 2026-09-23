@@ -11,7 +11,7 @@ export const getHeadersPath = function ({ build: { publish } }: { build: { publi
 }
 
 /** Merge `config.headers` with the `_headers` file, and warn about invalid ones. `headers` moves to the end. */
-export const addHeaders = async function <T extends { headers?: MinimalHeader[] | undefined }>({
+export const addHeaders = async function <T extends Record<string, unknown>>({
   config,
   headersPath,
   logs,
@@ -24,7 +24,8 @@ export const addHeaders = async function <T extends { headers?: MinimalHeader[] 
   const { headers: configHeaders, ...rest } = config
   const { headers, errors } = await parseAllHeaders({
     headersFiles: headersPath === undefined ? [] : [headersPath],
-    configHeaders,
+    // Declared as `MinimalHeader[]` by `@netlify/headers-parser`, which validates what it is given.
+    configHeaders: configHeaders as MinimalHeader[] | undefined,
     minimal: true,
   })
   warnHeadersParsing(logs, errors)

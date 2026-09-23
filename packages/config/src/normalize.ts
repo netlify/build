@@ -1,12 +1,11 @@
 import { normalizeFunctionsProps, WILDCARD_ALL } from './functions_config.js'
 import { mergeConfigs } from './merge.js'
 import { DEFAULT_ORIGIN } from './origin.js'
-import type { NormalizedNetlifyConfig, PartialNetlifyConfig, PluginConfig } from './types/config.js'
 import { nonEmpty } from './utils/non_empty.js'
-import { isPlainObj } from './utils/is_plain_obj.js'
 import { removeFalsy, removeUndefined } from './utils/remove_falsy.js'
+import type { MergeCheckedConfig, RawConfig } from './validate/validations.js'
 
-const getDefaultConfig = (packagePath?: string): PartialNetlifyConfig => ({
+const getDefaultConfig = (packagePath: string | undefined): MergeCheckedConfig => ({
   build: {
     environment: {},
     publish: nonEmpty(packagePath) ?? '.',
@@ -18,15 +17,15 @@ const getDefaultConfig = (packagePath?: string): PartialNetlifyConfig => ({
   plugins: [],
 })
 
-/**
- * Fill in defaults and normalize `functions` and `plugins`. The result is only asserted to be a
- * `NormalizedNetlifyConfig`: it is validated right after.
- */
-export const normalizeConfig = function (config: PartialNetlifyConfig, packagePath?: string): NormalizedNetlifyConfig {
-  const { build, functions, plugins, server, ...rest } = mergeConfigs<PartialNetlifyConfig>([
-    getDefaultConfig(packagePath),
-    removeEmpty(config),
-  ]) as NormalizedNetlifyConfig
+/** Fill in defaults and normalize `functions` and `plugins`. The result is validated right after. */
+export const normalizeConfig = function (config: MergeCheckedConfig, packagePath: string | undefined): RawConfig {
+  const {
+    build = {},
+    functions = {},
+    plugins = [],
+    server,
+    ...rest
+  } = mergeConfigs([getDefaultConfig(packagePath), removeEmpty(config)])
   const {
     build: normalizedBuild,
     functions: normalizedFunctions,
@@ -34,21 +33,21 @@ export const normalizeConfig = function (config: PartialNetlifyConfig, packagePa
   } = normalizeFunctionsProps(build, functions)
   return {
     ...rest,
-    build: normalizedBuild as NormalizedNetlifyConfig['build'],
+    build: normalizedBuild,
     functions: normalizedFunctions,
     plugins: plugins.map(normalizePlugin),
-    ...(isPlainObj(server) ? { server: normalizeServer(server) } : {}),
+    ...(server === undefined ? {} : { server: normalizeServer(server) }),
     ...functionsDirectoryProps,
   }
 }
 
 // An empty build command would otherwise be run, and fail the build.
-const removeEmpty = function ({ build, ...config }: PartialNetlifyConfig): PartialNetlifyConfig {
+const removeEmpty = function ({ build, ...config }: MergeCheckedConfig): MergeCheckedConfig {
   return removeFalsy({ ...config, build: removeFalsy(build ?? {}) })
 }
 
-const normalizePlugin = function ({ inputs = {}, ...plugin }: PluginConfig) {
-  return removeFalsy({ ...plugin, inputs }) as PluginConfig & { inputs: Record<string, unknown> }
+const normalizePlugin = function ({ inputs = {}, ...plugin }: Record<string, unknown>) {
+  return removeFalsy({ ...plugin, inputs })
 }
 
 const lowerCase = (value: unknown) => (typeof value === 'string' ? value.toLowerCase() : value)

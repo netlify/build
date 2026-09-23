@@ -6,7 +6,6 @@ import { mergeConfigs } from '../merge.js'
 import { parseOptionalConfig } from '../parse.js'
 import { addRedirects } from '../redirects.js'
 import { simplifyConfig } from '../simplify.js'
-import type { PartialNetlifyConfig } from '../types/config.js'
 import type { Logs } from '../types/logs.js'
 import type { ConfigMutation } from '../types/mutations.js'
 import { serializeToml } from '../utils/toml.js'
@@ -56,7 +55,7 @@ export const updateConfig = async function (
 
   const inlineConfig = ensureConfigPriority(applyMutations({}, configMutations), context, branch)
   const fileConfig = configPath === undefined ? {} : await parseOptionalConfig(configPath)
-  const mergedConfig = mergeConfigs<PartialNetlifyConfig>([fileConfig, inlineConfig])
+  const mergedConfig = mergeConfigs([fileConfig, inlineConfig])
   const withHeaders = await addHeaders({ config: mergedConfig, headersPath, logs })
   const withRedirects = await addRedirects({ config: withHeaders, redirectsPath, logs })
   const simplifiedConfig = simplifyConfig(withRedirects)

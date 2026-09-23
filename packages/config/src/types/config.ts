@@ -73,9 +73,6 @@ interface BuildProperties {
 // index signature would turn every known property into `unknown`.
 export type BuildConfig = BuildProperties & Record<string, unknown>
 
-export type BuildConfigWithout<Keys extends keyof BuildProperties> = Omit<BuildProperties, Keys> &
-  Record<string, unknown>
-
 export interface ConfigExtension {
   name: string
   dev?: { path: string; force_run_in_build?: boolean }
@@ -83,7 +80,8 @@ export interface ConfigExtension {
 
 interface NetlifyConfigProperties {
   build?: BuildConfig | undefined
-  context?: Record<string, PartialNetlifyConfig> | undefined
+  /** Entries are written like `netlify.toml` context entries, which may set build properties at their top level. */
+  context?: Record<string, Record<string, unknown>> | undefined
   database?: { migrations?: { path?: string } | undefined } | undefined
   dev?: Record<string, unknown> | undefined
   edge_functions?: EdgeFunctionDeclaration[] | undefined
@@ -111,15 +109,12 @@ interface NetlifyConfigProperties {
  */
 export type PartialNetlifyConfig = NetlifyConfigProperties & Record<string, unknown>
 
-export type PartialNetlifyConfigWithout<Keys extends keyof NetlifyConfigProperties> = Omit<
-  NetlifyConfigProperties,
-  Keys
-> &
-  Record<string, unknown>
-
 export type FunctionsConfig = { '*': FunctionConfig } & Record<string, FunctionConfig>
 
-type NormalizedProperties = Omit<NetlifyConfigProperties, 'build' | 'context' | 'functions' | 'plugins'> & {
+type NormalizedProperties = Omit<
+  NetlifyConfigProperties,
+  'build' | 'context' | 'functions' | 'headers' | 'plugins' | 'redirects'
+> & {
   build: BuildConfig & {
     environment: Record<string, unknown>
     publish: string
@@ -129,6 +124,10 @@ type NormalizedProperties = Omit<NetlifyConfigProperties, 'build' | 'context' | 
   }
   functions: FunctionsConfig
   plugins: (PluginConfig & { inputs: Record<string, unknown> })[]
+  /** As written in the sources, until `@netlify/headers-parser` parses them. */
+  headers?: unknown
+  /** As written in the sources, until `@netlify/redirect-parser` parses them. */
+  redirects?: unknown
 }
 
 /** A configuration after normalization: defaults filled in, and `functions` keyed by function name or glob only. */

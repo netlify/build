@@ -1,11 +1,6 @@
-import type {
-  BuildConfig,
-  FunctionConfig,
-  FunctionsConfig,
-  FunctionsDirectoryOrigin,
-  NodeBundler,
-} from './types/config.js'
+import type { FunctionsDirectoryOrigin, NodeBundler } from './types/config.js'
 import { isPlainObj } from './utils/is_plain_obj.js'
+import { spreadValue } from './utils/object.js'
 import { isDefined } from './utils/remove_falsy.js'
 
 export const bundlers: readonly NodeBundler[] = ['esbuild', 'nft', 'zisi', 'none']
@@ -24,7 +19,7 @@ export const FUNCTION_CONFIG_PROPERTIES: ReadonlySet<string> = new Set([
   'vcpu',
 ])
 
-type FunctionsDirectoryProps = { functionsDirectory?: string; functionsDirectoryOrigin?: FunctionsDirectoryOrigin }
+type FunctionsDirectoryProps = { functionsDirectory?: unknown; functionsDirectoryOrigin?: FunctionsDirectoryOrigin }
 
 /**
  * Normalize `functions` so its keys are only function names or globs, and move the functions
@@ -35,25 +30,38 @@ type FunctionsDirectoryProps = { functionsDirectory?: string; functionsDirectory
  * A key that is a config property name but whose value is an object of config properties is a
  * function with that name instead.
  *
- * `functions` is validated right after normalization, so its values are only asserted here.
+ * `functions` is validated right after normalization, so a `null` `*` is left for that to report.
+ * Other values that aren't objects are spread, as they always have been.
  */
 export const normalizeFunctionsProps = function (
-  { functions: v1FunctionsDirectory, ...build }: BuildConfig,
+  { functions: v1FunctionsDirectory, ...build }: Record<string, unknown>,
   { [WILDCARD_ALL]: wildcardProps, ...functions }: Record<string, unknown>,
-): { build: BuildConfig; functions: FunctionsConfig; functionsDirectoryProps: FunctionsDirectoryProps } {
+): {
+  build: Record<string, unknown>
+  functions: Record<string, unknown>
+  functionsDirectoryProps: FunctionsDirectoryProps
+} {
   const normalized = Object.entries(functions).reduce<Record<string, unknown>>(
     (all, [propName, propValue]) =>
       isConfigProperty(propName) && !isConfigLeaf(propValue)
-        ? { ...all, [WILDCARD_ALL]: { [propName]: propValue, ...(all[WILDCARD_ALL] as FunctionConfig) } }
+        ? { ...all, [WILDCARD_ALL]: { [propName]: propValue, ...spreadValue(all[WILDCARD_ALL]) } }
         : { ...all, [propName]: propValue },
     { [WILDCARD_ALL]: wildcardProps },
   )
   // `*` goes last, where the directory was taken out of it.
   const { [WILDCARD_ALL]: normalizedWildcard, ...namedFunctions } = normalized
-  const { directory, ...wildcardConfig } = normalizedWildcard as FunctionConfig
+  if (normalizedWildcard === null) {
+    return {
+      build,
+      functions: { ...namedFunctions, [WILDCARD_ALL]: normalizedWildcard },
+      functionsDirectoryProps: getFunctionsDirectoryProps(undefined, v1FunctionsDirectory),
+    }
+  }
+
+  const { directory, ...wildcardConfig } = spreadValue(normalizedWildcard)
   return {
     build,
-    functions: { ...namedFunctions, [WILDCARD_ALL]: wildcardConfig } as FunctionsConfig,
+    functions: { ...namedFunctions, [WILDCARD_ALL]: wildcardConfig },
     functionsDirectoryProps: getFunctionsDirectoryProps(directory, v1FunctionsDirectory),
   }
 }
@@ -64,8 +72,8 @@ const isConfigLeaf = (functionConfig: unknown) =>
   isPlainObj(functionConfig) && Object.keys(functionConfig).every(isConfigProperty)
 
 const getFunctionsDirectoryProps = function (
-  functionsDirectory: string | undefined,
-  v1FunctionsDirectory: string | undefined,
+  functionsDirectory: unknown,
+  v1FunctionsDirectory: unknown,
 ): FunctionsDirectoryProps {
   if (isDefined(functionsDirectory)) {
     return { functionsDirectory, functionsDirectoryOrigin: 'config' }
