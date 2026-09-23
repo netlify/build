@@ -6,11 +6,10 @@ import isPlainObj from 'is-plain-obj'
  * are extended as needed.
  */
 export const setProp = function (parent: unknown, keys: readonly (string | number)[], value: unknown): unknown {
-  if (keys.length === 0) {
+  const [key, ...childKeys] = keys
+  if (key === undefined) {
     return value
   }
-
-  const [key, ...childKeys] = keys
 
   if (typeof key === 'number' && Number.isInteger(key)) {
     const array: unknown[] = Array.isArray(parent) ? parent : []

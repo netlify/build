@@ -66,12 +66,12 @@ export const loadConfig = async function ({
 }
 
 type LoadConfigOnceOptions = Omit<LoadConfigOptions, 'configOpt' | 'packagePath'> & {
-  configOpt?: string
-  packagePath?: string
+  configOpt?: string | undefined
+  packagePath?: string | undefined
   /** The base directory to look for the configuration file in. */
   configBase: string | undefined
   /** The base directory, if already known. Otherwise it comes from the configuration. */
-  base?: string
+  base?: string | undefined
 }
 
 const loadConfigOnce = async function ({

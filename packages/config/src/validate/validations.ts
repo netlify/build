@@ -53,10 +53,10 @@ const isValidFunctionMemory = (value: unknown) => {
 }
 
 // Earlier validations ensure plugin entries are objects.
-const plugin = (value: unknown): Record<string, unknown> => (isPlainObj(value) ? value : {})
+const plugin = (value: unknown): Partial<Record<'package', unknown>> => (isPlainObj(value) ? value : {})
 
 /** The function name, in examples of `functions.<name>.*`. */
-const functionName = (path: PathSegment[]) => path[1]
+const functionName = (path: PathSegment[]) => String(path[1])
 
 /** Before case normalization. */
 export const PRE_CASE_NORMALIZE_VALIDATIONS: Validation[] = [
@@ -327,7 +327,7 @@ export const POST_NORMALIZE_VALIDATIONS: Validation[] = [
   {
     property: 'functions.*',
     check: (functionConfig) =>
-      !(isPlainObj(functionConfig) && functionConfig.memory !== undefined && functionConfig.vcpu !== undefined),
+      !(isPlainObj(functionConfig) && functionConfig['memory'] !== undefined && functionConfig['vcpu'] !== undefined),
     message: '"memory" and "vcpu" are mutually exclusive.',
     example: (_value, _key, path) => ({
       functions: { [functionName(path)]: { memory: '2gb' } },

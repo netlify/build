@@ -17,22 +17,22 @@ export interface EnvironmentVariable {
 export interface Config {
   accounts: MinimalAccount[]
   /** The Netlify API client. Undefined without a token, or when offline. */
-  api?: NetlifyAPI
+  api?: NetlifyAPI | undefined
   branch: string
   buildDir: string
   config: ResolvedNetlifyConfig
   /** Undefined when there is no configuration file. */
-  configPath?: string
+  configPath?: string | undefined
   context: string
   env: Record<string, EnvironmentVariable>
   /** Path to the `_headers` file, which may not exist. */
   headersPath: string
   integrations: ExtensionWithDev[]
   /** Only set with the `buffer` option. */
-  logs?: BufferedLogs
+  logs?: BufferedLogs | undefined
   /** Path to the `_redirects` file, which may not exist. */
   redirectsPath: string
   repositoryRoot: string
   siteInfo: SiteInfo
-  token?: string
+  token?: string | undefined
 }

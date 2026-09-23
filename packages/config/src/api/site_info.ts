@@ -175,7 +175,7 @@ export const getExtensions = async function ({
     'Netlify-Config-Mode': mode,
     'User-Agent': `Netlify Config (mode:${mode}) / ${ROOT_PACKAGE_JSON.version}`,
   })
-  if (featureFlags.send_build_bot_token_to_jigsaw && token) {
+  if (featureFlags['send_build_bot_token_to_jigsaw'] && token) {
     headers.set('Netlify-SDK-Build-Bot-Token', token)
   }
 

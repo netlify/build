@@ -54,8 +54,8 @@ type ResolveConfigPathsOptions = {
   repositoryRoot: string
   buildDir: string
   /** Resolve paths relative to the build directory rather than the repository root. */
-  baseRelDir?: boolean
-  packagePath?: string
+  baseRelDir?: boolean | undefined
+  packagePath?: string | undefined
 }
 
 /** Make file paths absolute, remove empty ones, and add the default directories that exist. */
@@ -104,7 +104,7 @@ const getPath = function (object: unknown, keys: string[]): unknown {
 
 // Returns `object` itself when there is nothing to delete.
 const deletePath = function (object: unknown, [key, ...childKeys]: string[]): unknown {
-  if (!isPlainObj(object) || !(key in object)) {
+  if (key === undefined || !isPlainObj(object) || !(key in object)) {
     return object
   }
 

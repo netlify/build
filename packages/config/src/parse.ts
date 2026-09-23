@@ -60,6 +60,7 @@ const validateTomlBackslashes = function (configString: string) {
     return
   }
 
+  // One of the two groups matches.
   const [, invalidTripleQuotedSequence, invalidSequence = invalidTripleQuotedSequence] = result
-  throwOnInvalidTomlSequence(invalidSequence)
+  throwOnInvalidTomlSequence(invalidSequence ?? '')
 }

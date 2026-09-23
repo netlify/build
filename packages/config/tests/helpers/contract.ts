@@ -7,7 +7,8 @@ type Serialized<T> = T extends URL
   : T extends (infer Item)[]
     ? Serialized<Item>[]
     : T extends object
-      ? { [Key in keyof T]: Serialized<T[Key]> }
+      ? // `JSON.stringify` drops properties set to `undefined`.
+        { [Key in keyof T]: Serialized<Exclude<T[Key], undefined>> }
       : T
 
 // Compiling this fails if the public types stop describing what the tests pin.

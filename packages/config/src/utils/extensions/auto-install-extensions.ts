@@ -50,7 +50,7 @@ export async function handleAutoInstallExtensions({
   extensionApiBaseUrl,
   debug,
 }: AutoInstallOptions): Promise<Extension[]> {
-  if (!featureFlags.auto_install_required_extensions_v2) {
+  if (!featureFlags['auto_install_required_extensions_v2']) {
     return extensions
   }
 

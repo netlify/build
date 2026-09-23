@@ -11,7 +11,7 @@ export const getHeadersPath = function ({ build: { publish } }: { build: { publi
 }
 
 /** Merge `config.headers` with the `_headers` file, and warn about invalid ones. `headers` moves to the end. */
-export const addHeaders = async function <T extends { headers?: MinimalHeader[] }>({
+export const addHeaders = async function <T extends { headers?: MinimalHeader[] | undefined }>({
   config,
   headersPath,
   logs,
