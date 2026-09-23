@@ -2,12 +2,22 @@ import { setInspectColors } from '../../log/colors.js'
 import { getEventsFromParent, sendEventToParent } from '../ipc.js'
 
 import { handleError, handleProcessErrors } from './error.js'
-import { load } from './load.js'
-import { run } from './run.js'
+import { load, type LoadPayload, type PluginContext } from './load.js'
+import { run, type RunPayload } from './run.js'
+
+// Before the `load` event, only `verbose` is known
+type ChildContext = Partial<PluginContext> & Pick<PluginContext, 'verbose'>
+
+type ChildState = { context: ChildContext }
+
+type EventHandler = (
+  payload: unknown,
+  context: ChildContext,
+) => Promise<{ context?: Partial<PluginContext>; [key: string]: unknown }>
 
 // Boot plugin child process.
 const bootPlugin = async function () {
-  const state = { context: { verbose: false } }
+  const state: ChildState = { context: { verbose: false } }
 
   try {
     handleProcessErrors()
@@ -23,7 +33,7 @@ const bootPlugin = async function () {
 }
 
 // Wait for events from parent to perform plugin methods
-const handleEvents = async function (state) {
+const handleEvents = async function (state: ChildState) {
   await getEventsFromParent((callId, eventName, payload) => handleEvent({ callId, eventName, payload, state }))
 }
 
@@ -36,9 +46,19 @@ const handleEvent = async function ({
   state: {
     context: { verbose },
   },
+}: {
+  callId: string
+  eventName: string
+  payload: unknown
+  state: ChildState
 }) {
   try {
-    const { context, ...response } = await EVENTS[eventName](payload, state.context)
+    const eventHandler = EVENTS[eventName]
+    // The parent only sends the events below
+    if (eventHandler === undefined) {
+      throw new TypeError('EVENTS[eventName] is not a function')
+    }
+    const { context, ...response } = await eventHandler(payload, state.context)
     state.context = { ...state.context, ...context }
     await sendEventToParent(callId, response, verbose)
   } catch (error) {
@@ -46,9 +66,11 @@ const handleEvent = async function ({
   }
 }
 
-const EVENTS = {
-  load,
-  run,
+// Payloads are sent over IPC by `callChild()`, which types each one by its event name
+const EVENTS: Record<string, EventHandler | undefined> = {
+  load: (payload) => load(payload as LoadPayload),
+  // The parent always sends `load`, which sets the whole context, before `run`
+  run: (payload, context) => run(payload as RunPayload, context as PluginContext),
   // async shutdown hook to stop tracing reliably
   shutdown: async () => {
     try {
@@ -62,4 +84,4 @@ const EVENTS = {
   },
 }
 
-bootPlugin()
+void bootPlugin()
