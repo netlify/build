@@ -3,32 +3,31 @@ import { resolve } from 'path'
 import { parseAllRedirects } from '@netlify/redirect-parser'
 
 import { warnRedirectsParsing } from './log/messages.js'
+import type { Redirect } from './types/config.js'
+import type { Logs } from './types/logs.js'
 
-// Retrieve path to `_redirects` file (even if it does not exist yet)
-export const getRedirectsPath = function ({ build: { publish } }: $TSFixMe) {
-  return resolve(publish, REDIRECTS_FILENAME)
+/** The `_redirects` file in the publish directory, which may not exist. */
+export const getRedirectsPath = function ({ build: { publish } }: { build: { publish: string } }) {
+  return resolve(publish, '_redirects')
 }
 
-const REDIRECTS_FILENAME = '_redirects'
-
-/**
- * Add `config.redirects`
- */
-export const addRedirects = async function ({
-  config: { redirects: configRedirects, ...config },
+/** Merge `config.redirects` with the `_redirects` file, and warn about invalid ones. `redirects` moves to the end. */
+export const addRedirects = async function <T extends { redirects?: unknown[] }>({
+  config,
   redirectsPath,
   logs,
 }: {
-  config: $TSFixMe
+  config: T
   redirectsPath: string
-  logs: $TSFixMe
-  featureFlags?: $TSFixMe
-}) {
+  logs: Logs | undefined
+}): Promise<T & { redirects: Redirect[] }> {
+  const { redirects: configRedirects, ...rest } = config
   const { redirects, errors } = await parseAllRedirects({
     redirectsFiles: [redirectsPath],
-    configRedirects,
+    // Declared as `string[]` by `@netlify/redirect-parser`, which actually takes redirect objects.
+    configRedirects: configRedirects as string[],
     minimal: true,
   })
-  warnRedirectsParsing(logs, errors)
-  return { ...config, redirects }
+  warnRedirectsParsing(logs, errors as { message: string }[])
+  return { ...rest, redirects: redirects as Redirect[] } as T & { redirects: Redirect[] }
 }

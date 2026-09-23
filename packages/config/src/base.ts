@@ -1,41 +1,35 @@
 import { resolvePath } from './files.js'
+import type { NormalizedNetlifyConfig, PartialNetlifyConfig } from './types/config.js'
 
-/**
- * Retrieve the first `base` directory used to load the first config file.
- */
-export const getInitialBase = function ({
-  repositoryRoot,
-  // @ts-expect-error TODO: enhance the types later on, just moved the file to .ts
-  defaultConfig: { build: { base: defaultBase } = {} },
-  inlineConfig: { build: { base: initialBase = defaultBase } = {} },
-}) {
-  return resolveBase(repositoryRoot, initialBase)
+type InitialBaseOptions = {
+  repositoryRoot: string
+  defaultConfig: PartialNetlifyConfig
+  inlineConfig: PartialNetlifyConfig
+}
+
+/** The base directory used to find the configuration file the first time: from `inlineConfig`, else `defaultConfig`. */
+export const getInitialBase = function ({ repositoryRoot, defaultConfig, inlineConfig }: InitialBaseOptions) {
+  const inlineBase = inlineConfig.build?.base
+  // Not `??`: a `null` inline base must not fall back to `defaultConfig`.
+  if (inlineBase === undefined) {
+    return resolveBase(repositoryRoot, defaultConfig.build?.base)
+  }
+  return resolveBase(repositoryRoot, inlineBase)
 }
 
 /**
- * Two config files can be used:
- *  - The first one, using the `config` property or doing a default lookup
- *    of `netlify.toml`
- *  - If the first one has a `base` property pointing to a directory with
- *    another `netlify.toml`, that second config file is used instead.
- * This retrieves the final `base` directory used:
- *  - To load the second config file
- *  - As the `buildDir`
- *  - To resolve file paths
- * If the second file has a `base` property, it is ignored, i.e. it is not
- * recursive.
+ * The final base directory: the given one, else `build.base` from the configuration. It is used
+ * as the build directory and to resolve paths, and it may hold a second configuration file that
+ * replaces the first. A `build.base` in that second file is ignored: this doesn't recurse.
  */
-export const getBase = function (base: string | undefined, repositoryRoot: string, config: $TSFixMe) {
-  return base === undefined ? resolveBase(repositoryRoot, config.build.base) : base
+export const getBase = function (base: string | undefined, repositoryRoot: string, config: NormalizedNetlifyConfig) {
+  return base ?? resolveBase(repositoryRoot, config.build.base)
 }
 
-const resolveBase = function (repositoryRoot: string, base: string) {
+const resolveBase = function (repositoryRoot: string, base: string | undefined) {
   return resolvePath(repositoryRoot, repositoryRoot, base, 'build.base')
 }
 
-/**
- * Also `config.build.base`.
- */
-export const addBase = function (config, base) {
+export const addBase = function (config: NormalizedNetlifyConfig, base: string | undefined): NormalizedNetlifyConfig {
   return { ...config, build: { ...config.build, base } }
 }

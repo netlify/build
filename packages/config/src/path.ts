@@ -4,15 +4,26 @@ import { join, resolve } from 'path'
 import { findUp } from 'find-up'
 import pLocate from 'p-locate'
 
+import { nonEmpty } from './utils/non_empty.js'
+
 const FILENAME = 'netlify.toml'
 
+type ConfigPathOptions = {
+  configOpt?: string
+  cwd: string
+  repositoryRoot: string
+  /** The base directory to look in, if any. */
+  configBase?: string
+  packagePath?: string
+}
+
 /**
- * Configuration location can be:
- * - a local path with the --config CLI flag
- * - a `netlify.*` file in the `repositoryRoot/{base}/{packagePath}`
- * - a `netlify.*` file in the `repositoryRoot/{base}`
- * - a `netlify.*` file in the `repositoryRoot`
- * - a `netlify.*` file in the current directory or any parent
+ * Find the configuration file, in order:
+ *  - the `config` option, relative to `cwd`
+ *  - `netlify.toml` in `{base}/{packagePath}`, in `{repositoryRoot}/{packagePath}` without a base,
+ *    or in `{base}` without a package path
+ *  - `netlify.toml` in the repository root
+ *  - `netlify.toml` in `cwd` or any of its parents
  */
 export const getConfigPath = async function ({
   configOpt,
@@ -20,14 +31,8 @@ export const getConfigPath = async function ({
   repositoryRoot,
   configBase,
   packagePath,
-}: {
-  cwd: string
-  repositoryRoot: string
-  configBase
-  configOpt?: string
-  packagePath?: string
-}) {
-  const configPath = await pLocate<string | undefined>(
+}: ConfigPathOptions): Promise<string | undefined> {
+  return await pLocate<string | undefined>(
     [
       searchConfigOpt(cwd, configOpt),
       searchBaseConfigFile(repositoryRoot, configBase, packagePath),
@@ -36,10 +41,8 @@ export const getConfigPath = async function ({
     ],
     Boolean,
   )
-  return configPath
 }
 
-/** --config CLI flag */
 const searchConfigOpt = function (cwd: string, configOpt?: string) {
   if (configOpt === undefined || configOpt.length === 0) {
     return
@@ -48,24 +51,15 @@ const searchConfigOpt = function (cwd: string, configOpt?: string) {
   return resolve(cwd, configOpt)
 }
 
-/**
- * Look for `repositoryRoot/{base}/{packagePath || '}/netlify.*`
- */
-const searchBaseConfigFile = function (repoRoot: string, base?: string, packagePath?: string) {
+const searchBaseConfigFile = function (repositoryRoot: string, base?: string, packagePath?: string) {
   if (base === undefined && packagePath === undefined) {
     return
   }
 
-  const cwd = join(base ? base : repoRoot, packagePath || '')
-  return searchConfigFile(cwd)
+  return searchConfigFile(join(nonEmpty(base) ?? repositoryRoot, packagePath ?? ''))
 }
-/**
- * Look for several file extensions for `netlify.*`
- */
-const searchConfigFile = function (cwd: string): string | undefined {
-  const path = resolve(cwd, FILENAME)
-  if (!existsSync(path)) {
-    return
-  }
-  return path
+
+const searchConfigFile = function (directory: string) {
+  const path = resolve(directory, FILENAME)
+  return existsSync(path) ? path : undefined
 }
