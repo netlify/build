@@ -33,7 +33,11 @@ interface TelemetryBody {
 
 const isTelemetryBody = (body: object): body is TelemetryBody => 'properties' in body && 'timestamp' in body
 
-const getTelemetryBody = ({ body }: Request): TelemetryBody => {
+const getTelemetryBody = (request: Request | undefined): TelemetryBody => {
+  if (request === undefined) {
+    throw new Error('Telemetry request is missing')
+  }
+  const { body } = request
   if (typeof body === 'string' || !isTelemetryBody(body)) {
     throw new Error('Telemetry request body is missing "properties" or "timestamp"')
   }
@@ -105,7 +109,7 @@ const runWithApiMock = async function (
     stopServer,
   } = await startServer({
     path: TELEMETRY_PATH,
-    wait: waitTelemetryServer,
+    ...(waitTelemetryServer !== undefined && { wait: waitTelemetryServer }),
     status: responseStatusCode,
   })
 

@@ -12,7 +12,11 @@ interface SecretsScanReport {
 
 const isValidationsReport = (body: object): body is { secrets_scan: SecretsScanReport } => 'secrets_scan' in body
 
-const getSecretsScan = ({ body }: Request): SecretsScanReport => {
+const getSecretsScan = (request: Request | undefined): SecretsScanReport => {
+  if (request === undefined) {
+    throw new Error('Validations report request is missing')
+  }
+  const { body } = request
   if (typeof body === 'string' || !isValidationsReport(body)) {
     throw new Error('Validations report request body is missing "secrets_scan"')
   }
@@ -151,9 +155,9 @@ test('secrets scanning, should fail build and report to API when it finds secret
   )
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toHaveLength(32)
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toHaveLength(0)
@@ -170,9 +174,9 @@ test('secrets scanning should report success to API when no secrets are found', 
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toBeTruthy()
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toBeTruthy()
@@ -258,7 +262,7 @@ test('secrets scanning, enhanced scan should not find matches when disabled with
     })
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
   expect(requests).toHaveLength(1)
-  const request = requests[0]
+  const [request] = requests
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toHaveLength(0)
 })
 
@@ -278,7 +282,7 @@ test('secrets scanning, enhanced scan should skip matches defined in SECRETS_SCA
 
   expect(normalizeOutput(output)).toContain('SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set')
   expect(requests).toHaveLength(1)
-  const request = requests[0]
+  const [request] = requests
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toHaveLength(0)
 })
 
@@ -308,8 +312,8 @@ test('secrets scanning, should run when enhanced scan enabled and no env vars se
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toBeTruthy()
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toBeTruthy()
@@ -326,9 +330,9 @@ test('secrets scanning, should not find secrets in files without known prefixes'
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toHaveLength(0)
 })
@@ -345,9 +349,9 @@ test('secrets scanning, run and report result to API when there are no secrets a
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toBeTruthy()
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toBeTruthy()
@@ -372,9 +376,9 @@ test('secrets scanning, should fail build and report to API when enhanced scan f
     `the build will fail until these likely secret values are not found in build output or repo files`,
   )
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toHaveLength(0)
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toHaveLength(1)
@@ -391,9 +395,9 @@ test('secrets scanning, should report success to API when enhanced scans finds n
     .runBuildServer({ path: '/api/v1/deploys/test/validations_report' })
 
   expect(requests).toHaveLength(1)
-  const request = requests[0]
-  expect(request.method).toBe('PATCH')
-  expect(request.url).toBe('/api/v1/deploys/test/validations_report')
+  const [request] = requests
+  expect(request?.method).toBe('PATCH')
+  expect(request?.url).toBe('/api/v1/deploys/test/validations_report')
   expect(getSecretsScan(request).scannedFilesCount).toBeTruthy()
   expect(getSecretsScan(request).secretsScanMatches).toBeTruthy()
   expect(getSecretsScan(request).enhancedSecretsScanMatches).toBeTruthy()

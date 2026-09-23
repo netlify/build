@@ -1347,12 +1347,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/tests/functions/tests.js'],
-    rules: {
-      '@typescript-eslint/no-empty-function': 'off',
-    },
-  },
-  {
     files: ['packages/cache-utils/src/expire.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off',
@@ -2825,50 +2819,6 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/core/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/error_reporting/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/monitor/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/plugins_events/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    files: ['packages/build/tests/time/tests.js'],
-    rules: {
-      'import/no-named-as-default-member': 'off',
-    },
-  },
-  {
-    // Same class of gap as packages/build-info's own *.test.ts suppressions (e.g.
-    // tests/bin.test.ts): `@netlify/testing` isn't declared as a dependency anywhere
-    // (to avoid a circular dependency), so its types don't fully resolve here.
-    files: [
-      'packages/build/tests/frameworks_api/spa.test.ts',
-      'packages/build/tests/spa_fallback/spa_fallback.test.ts',
-    ],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
     },
   },
 ]

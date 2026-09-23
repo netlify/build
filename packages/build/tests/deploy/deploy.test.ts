@@ -51,8 +51,8 @@ test('Deploy plugin sends deployDir as a path relative to repositoryRoot', async
     await stopServer()
   }
 
-  const [{ deployDir }] = requests
-  expect(deployDir).toBe(normalize('base/publish'))
+  const [request] = requests
+  expect(request?.deployDir).toBe(normalize('base/publish'))
 })
 
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async () => {
@@ -160,7 +160,7 @@ test('Deploy plugin specifies deploy-specific variables in deploy event', async 
   }
 
   expect(requests).toHaveLength(1)
-  expect(requests[0].environment).toEqual([
+  expect(requests[0]?.environment).toEqual([
     {
       is_secret: false,
       key: 'DATABASE_URI',

@@ -68,7 +68,7 @@ test('Runs the db_setup core step and creates a database branch for non-producti
   expect(branchRequests.length).toBe(1)
 
   // Verify the branch request includes the branch_id
-  expect(branchRequests[0].body).toEqual({ branch_id: 'feat/my-feature' })
+  expect(branchRequests[0]?.body).toEqual({ branch_id: 'feat/my-feature' })
 })
 
 test('Does not run the db_setup core step when @netlify/database is not in dependencies', async () => {

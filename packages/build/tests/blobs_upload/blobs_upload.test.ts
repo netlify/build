@@ -46,7 +46,7 @@ beforeEach(async () => {
 
   await blobServer.start()
 
-  process.env.NETLIFY_BLOBS_CONTEXT = Buffer.from(
+  process.env['NETLIFY_BLOBS_CONTEXT'] = Buffer.from(
     JSON.stringify({
       apiURL: `http://localhost:${String(port)}`,
     }),
@@ -55,7 +55,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await blobServer.stop()
-  delete process.env.NETLIFY_BLOBS_CONTEXT
+  delete process.env['NETLIFY_BLOBS_CONTEXT']
 })
 
 test('Blobs upload step uploads files when deploy ID is provided and no files in directory', async () => {
@@ -65,7 +65,7 @@ test('Blobs upload step uploads files when deploy ID is provided and no files in
     .runBuildProgrammatic()
 
   expect(success).toBe(true)
-  expect(blobRequests.set).toBe(undefined)
+  expect(blobRequests['set']).toBe(undefined)
 
   expect(logs?.stdout.join('\n')).not.toContain('Uploading blobs to deploy store')
 })
@@ -82,7 +82,7 @@ test('Blobs upload step uploads files when there are files but deploy ID is not 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'blobs', 'deploy')
   await expect(access(blobsDir)).resolves.toBeUndefined()
 
-  expect(blobRequests.set).toBe(undefined)
+  expect(blobRequests['set']).toBe(undefined)
 
   expect(logs?.stdout.join('\n')).not.toContain('Uploading blobs to deploy store')
 })
@@ -95,9 +95,9 @@ test('Blobs upload step uploads files to deploy store (legacy API)', async () =>
     .runBuildProgrammatic()
 
   expect(success).toBe(true)
-  expect(blobRequests.set).toHaveLength(6)
+  expect(blobRequests['set']).toHaveLength(6)
 
-  const defaultRegionRequests = blobRequests.set?.filter((urlPath) => {
+  const defaultRegionRequests = blobRequests['set']?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'us-east-2'
@@ -130,9 +130,9 @@ test('Blobs upload step uploads files to deploy store (legacy deploy config API)
     .withFlags({ deployId: 'abc123', siteId: 'test', token: TOKEN, offline: true, cwd: fixture.repositoryRoot })
     .runBuildProgrammatic()
   expect(success).toBe(true)
-  expect(blobRequests.set).toHaveLength(6)
+  expect(blobRequests['set']).toHaveLength(6)
 
-  const regionAutoRequests = blobRequests.set?.filter((urlPath) => {
+  const regionAutoRequests = blobRequests['set']?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'auto'
@@ -166,9 +166,9 @@ test('Blobs upload step uploads files to deploy store', async () => {
   expect(success).toBe(true)
 
   // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
-  expect(blobRequests.set).toHaveLength(6)
+  expect(blobRequests['set']).toHaveLength(6)
 
-  const regionAutoRequests = blobRequests.set?.filter((urlPath) => {
+  const regionAutoRequests = blobRequests['set']?.filter((urlPath) => {
     const url = new URL(urlPath, 'http://localhost')
 
     return url.searchParams.get('region') === 'auto'
@@ -214,7 +214,7 @@ test('Blobs upload step uploads files to dev deploy store', async () => {
   expect(output.includes('Uploading 3 blobs to deploy store')).toBe(true)
 
   // 3 requests for getting pre-signed URLs + 3 requests for hitting them.
-  expect(blobRequests.set).toHaveLength(6)
+  expect(blobRequests['set']).toHaveLength(6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)
@@ -243,7 +243,7 @@ test('Blobs upload step cancels deploy if blob metadata is malformed', async () 
   const blobsDir = join(fixture.repositoryRoot, '.netlify', 'v1', 'blobs', 'deploy')
   await expect(access(blobsDir)).resolves.toBeUndefined()
 
-  expect(blobRequests.set).toBe(undefined)
+  expect(blobRequests['set']).toBe(undefined)
 
   expect(success).toBe(false)
   expect(severityCode).toBe(4)
@@ -256,7 +256,7 @@ test('monorepo > blobs upload, uploads files to deploy store', async () => {
     .runBuildProgrammatic()
 
   expect(success).toBe(true)
-  expect(blobRequests.set).toHaveLength(6)
+  expect(blobRequests['set']).toHaveLength(6)
 
   const storeOpts = { deployID: 'abc123', siteID: 'test', token: TOKEN }
   const store = getDeployStore(storeOpts)

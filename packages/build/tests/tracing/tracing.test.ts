@@ -62,9 +62,9 @@ test('addBuildErrorToActiveSpan - when error severity info', () => {
 
   addBuildErrorToActiveSpan(myError)
   const exportedSpan = getExportedSpan()
-  expect(exportedSpan.status.code).toBe(SpanStatusCode.ERROR)
+  expect(exportedSpan?.status.code).toBe(SpanStatusCode.ERROR)
   // Severities are infered from the Error Type
-  expect(exportedSpan.attributes).toEqual({
+  expect(exportedSpan?.attributes).toEqual({
     'build.error.location.type': 'buildFail',
     'build.error.severity': 'info',
     'build.error.type': 'failPlugin',
@@ -76,9 +76,9 @@ test('addBuildErrorToActiveSpan - when error has no info', () => {
   addBuildErrorToActiveSpan(myError)
 
   const exportedSpan = getExportedSpan()
-  expect(exportedSpan.status.code).toBe(SpanStatusCode.ERROR)
+  expect(exportedSpan?.status.code).toBe(SpanStatusCode.ERROR)
   // If we have no custom build error Info nothing is added to the span attributes
-  expect(exportedSpan.attributes).toEqual({})
+  expect(exportedSpan?.attributes).toEqual({})
 })
 
 test('addBuildErrorToActiveSpan - noop when error severity none', () => {
@@ -88,6 +88,6 @@ test('addBuildErrorToActiveSpan - noop when error severity none', () => {
   addBuildErrorToActiveSpan(myError)
 
   const exportedSpan = getExportedSpan()
-  expect(exportedSpan.attributes).toEqual({})
-  expect(exportedSpan.status.code).toBe(SpanStatusCode.UNSET)
+  expect(exportedSpan?.attributes).toEqual({})
+  expect(exportedSpan?.status.code).toBe(SpanStatusCode.UNSET)
 })
