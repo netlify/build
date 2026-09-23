@@ -9,6 +9,7 @@ import { getBuildCommandDescription } from '../log/description.js'
 import type { Logs } from '../log/logger.js'
 import { logBuildCommandStart } from '../log/messages/steps.js'
 import { getBuildCommandStdio, handleBuildCommandOutput } from '../log/stream.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
 
 const tracer = wrapTracer(trace.getTracer('build-command'))
 
@@ -77,9 +78,10 @@ const coreStepDescription = function ({
     build: { commandOrigin: buildCommandOrigin },
   },
 }: {
-  netlifyConfig: BuildCommandConfig
+  netlifyConfig: NetlifyConfig
 }) {
-  return getBuildCommandDescription(buildCommandOrigin)
+  // Unknown origins print "undefined" as dry runs did; step headers used to throw
+  return String(getBuildCommandDescription(buildCommandOrigin))
 }
 
 const hasBuildCommand = function ({

@@ -95,14 +95,16 @@ export type ErrorInfo = {
 type PluginInfo = {
   packageName: string
   pluginPackageJson?: PackageJson | undefined
-  extensionMetadata?: {
-    slug: string
-    name: string
-    version: string
-    has_build: boolean
-    has_connector: boolean
-    author?: string
-  }
+  extensionMetadata?:
+    | {
+        slug: string
+        name: string
+        version: string
+        has_build: boolean
+        has_connector: boolean
+        author?: string
+      }
+    | undefined
 }
 
 export type BuildCommandLocation = {

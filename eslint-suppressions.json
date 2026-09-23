@@ -419,7 +419,7 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 6
+      "count": 9
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 325
@@ -770,7 +770,7 @@
       "count": 4
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 8
+      "count": 4
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 7
@@ -803,13 +803,10 @@
   },
   "packages/build/src/plugins_core/functions/index.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 10
+      "count": 3
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 17
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
     },
     "@typescript-eslint/prefer-nullish-coalescing": {
       "count": 4
@@ -830,6 +827,11 @@
   },
   "packages/build/src/plugins_core/pre_cleanup/index.ts": {
     "@typescript-eslint/prefer-nullish-coalescing": {
+      "count": 1
+    }
+  },
+  "packages/build/src/plugins_core/save_artifacts/index.ts": {
+    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -912,52 +914,13 @@
   },
   "packages/build/src/steps/core_step.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 4
+      "count": 5
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 57
+      "count": 48
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/steps/error.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 20
-    }
-  },
-  "packages/build/src/steps/get.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 15
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 6
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 3
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/steps/plugin.js": {
-    "n/no-missing-import": {
-      "count": 9
     }
   },
   "packages/build/src/steps/run_core_steps.ts": {
@@ -979,7 +942,7 @@
       "count": 5
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 185
+      "count": 184
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 2
@@ -995,9 +958,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 2
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/steps/run_steps.js": {
@@ -1005,9 +965,9 @@
       "count": 3
     }
   },
-  "packages/build/src/steps/update_config.js": {
+  "packages/build/src/steps/update_config.ts": {
     "n/no-missing-import": {
-      "count": 4
+      "count": 1
     }
   },
   "packages/build/src/telemetry/main.ts": {

@@ -5,6 +5,11 @@ export interface Build {
   command?: string
 
   /**
+   * Where `command` was set, e.g. `ui` or `config`
+   */
+  commandOrigin?: string
+
+  /**
    * the path to your static content folder
    */
   publish: string

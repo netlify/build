@@ -1,5 +1,5 @@
-export const getBuildCommandDescription = function (buildCommandOrigin: string): string | undefined {
-  return BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
+export const getBuildCommandDescription = function (buildCommandOrigin: string | undefined): string | undefined {
+  return buildCommandOrigin === undefined ? undefined : BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
 }
 
 const BUILD_COMMAND_DESCRIPTIONS: Partial<Record<string, string>> = {
