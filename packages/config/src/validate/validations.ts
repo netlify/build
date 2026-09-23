@@ -13,37 +13,27 @@ import {
   isString,
   validProperties,
 } from './helpers.js'
+import type { PathSegment, Validation } from './types.js'
 
-/**
- * @param {string} cron
- * @returns {boolean}
- */
-const isValidCronExpression = (cron) => {
+// Hand-written validations rather than a JSON schema, for clearer error messages.
+
+const isValidCronExpression = (cron: unknown) => {
   try {
-    CronExpressionParser.parse(cron)
+    CronExpressionParser.parse(cron as string)
     return true
   } catch {
     return false
   }
 }
 
-// List of validations performed on the configuration file.
-// Validation are performed in order: parent should be before children.
-// Each validation is an object with the following properties:
-//   - `property` {string}: dot-delimited path to the property.
-//     Can contain `*` providing a previous check validates the parent is an
-//     object or an array.
-//   - `propertyName` {string}: human-friendly property name; overrides the
-//     value of `property` when displaying an error message
-//   - `check` {(value, key, prevPath) => boolean}: validation check function
-//   - `message` {string}: error message
-//   - `example` {string}: example of correct code
-//   - `formatInvalid` {(object) => object}: formats the invalid value when
-//     displaying an error message
-// We use this instead of JSON schema (or others) to get nicer error messages.
+// Earlier validations ensure plugin entries are objects.
+const plugin = (value: unknown): Record<string, unknown> => (isPlainObj(value) ? value : {})
 
-// Validations done before case normalization
-export const PRE_CASE_NORMALIZE_VALIDATIONS = [
+/** The function name, in examples of `functions.<name>.*`. */
+const functionName = (path: PathSegment[]) => path[1]
+
+/** Before case normalization. */
+export const PRE_CASE_NORMALIZE_VALIDATIONS: Validation[] = [
   {
     property: 'build',
     check: isPlainObj,
@@ -54,28 +44,26 @@ export const PRE_CASE_NORMALIZE_VALIDATIONS = [
 
 const edgeFunctionsUserProperties = validProperties(EDGE_FUNCTIONS_PROPERTIES, [])
 
-// Validations performed only on the user's configuration file (`netlify.toml`),
-// i.e. not on configuration coming from other origins such as the UI, the CLI,
-// or the Frameworks API. This is where the schema is restricted to the subset
-// of properties that users are allowed to set, excluding those reserved for
-// platform-generated configuration (e.g. `generator`).
-export const CONFIG_FILE_VALIDATIONS = [
+/**
+ * Only on the user's `netlify.toml`, not on configuration from the UI, the CLI or the Frameworks
+ * API. This restricts the properties users may set, excluding those reserved for platform-generated
+ * configuration such as `generator`.
+ */
+export const CONFIG_FILE_VALIDATIONS: Validation[] = [
   {
     property: 'edge_functions.*',
     ...edgeFunctionsUserProperties,
-    // Structural problems, such as an entry that is not an object, are reported
-    // by the shared `edge_functions` validations, which run later. We only check
-    // the properties of actual objects here, so that those validations remain
-    // the ones surfacing a meaningful error.
-    check: (edgeFunction) => !isPlainObj(edgeFunction) || edgeFunctionsUserProperties.check(edgeFunction),
+    // Entries that aren't objects are reported by the shared `edge_functions` validations, which run
+    // later and give a clearer error.
+    check: (edgeFunction, key, path) =>
+      !isPlainObj(edgeFunction) || edgeFunctionsUserProperties.check(edgeFunction, key, path),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
 ]
 
-// Properties with an `origin` property need to be validated twice:
-//  - Before the `origin` property is added
-//  - After `context.*` is merged, since they might contain that property
-const ORIGIN_VALIDATIONS = [
+// Properties that get an `origin` are validated twice: before the origin is added, and after
+// contexts are merged, since contexts can set them too.
+const ORIGIN_VALIDATIONS: Validation[] = [
   {
     property: 'build.command',
     check: isString,
@@ -90,11 +78,11 @@ const ORIGIN_VALIDATIONS = [
   },
 ]
 
-// Validations done before `defaultConfig` merge
-export const PRE_MERGE_VALIDATIONS = [...ORIGIN_VALIDATIONS]
+/** Before `defaultConfig` is merged. */
+export const PRE_MERGE_VALIDATIONS: Validation[] = [...ORIGIN_VALIDATIONS]
 
-// Validations done before context merge
-export const PRE_CONTEXT_VALIDATIONS = [
+/** Before contexts are merged. */
+export const PRE_CONTEXT_VALIDATIONS: Validation[] = [
   {
     property: 'context',
     check: isPlainObj,
@@ -105,12 +93,12 @@ export const PRE_CONTEXT_VALIDATIONS = [
     property: 'context.*',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: (contextProps, key) => ({ context: { [key]: { publish: 'dist' } } }),
+    example: (_value, key) => ({ context: { [key]: { publish: 'dist' } } }),
   },
 ]
 
-// Validations done before normalization
-export const PRE_NORMALIZE_VALIDATIONS = [
+/** Before normalization. */
+export const PRE_NORMALIZE_VALIDATIONS: Validation[] = [
   ...ORIGIN_VALIDATIONS,
   {
     property: 'functions',
@@ -118,14 +106,6 @@ export const PRE_NORMALIZE_VALIDATIONS = [
     message: 'must be an object.',
     example: () => ({
       functions: { external_node_modules: ['module-one', 'module-two'] },
-    }),
-  },
-  {
-    property: 'functions',
-    check: isPlainObj,
-    message: 'must be an object.',
-    example: () => ({
-      functions: { ignored_node_modules: ['module-one', 'module-two'] },
     }),
   },
   {
@@ -155,41 +135,41 @@ export const PRE_NORMALIZE_VALIDATIONS = [
 
 const EXAMPLE_PORT = 80
 
-// Validations done after normalization
-export const POST_NORMALIZE_VALIDATIONS = [
+/** After normalization. */
+export const POST_NORMALIZE_VALIDATIONS: Validation[] = [
   {
     property: 'plugins.*',
     ...validProperties(['package', 'pinned_version', 'inputs'], ['origin']),
     example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: EXAMPLE_PORT } }] },
   },
-
   {
     property: 'plugins.*',
-    check: (plugin) => plugin.package !== undefined,
+    check: (value) => plugin(value).package !== undefined,
     message: '"package" property is required.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
-
   {
     property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
-  // We don't allow `package@tag|version` nor `git:...`, `github:...`,
-  // `https://...`, etc.
-  // We skip this validation for local plugins.
-  // We ensure @scope/plugin still work.
+  // Neither `package@tag|version` nor `git:...`, `github:...`, `https://...` etc. are allowed, but
+  // local plugins and scoped packages are.
   {
     property: 'plugins.*.package',
-    check: (packageName) =>
-      packageName.startsWith('.') ||
-      packageName.startsWith('/') ||
-      validateNpmPackageName(packageName).validForOldPackages,
+    // An earlier validation ensures this is a string.
+    check: (value) => {
+      const packageName = String(value)
+      return (
+        packageName.startsWith('.') ||
+        packageName.startsWith('/') ||
+        validateNpmPackageName(packageName).validForOldPackages
+      )
+    },
     message: 'must be a npm package name only.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
-
   {
     property: 'plugins.*.pinned_version',
     check: isString,
@@ -242,53 +222,53 @@ export const POST_NORMALIZE_VALIDATIONS = [
     property: 'functions.*',
     check: isPlainObj,
     message: 'must be an object.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { external_node_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
     property: 'functions.*.deno_import_map',
     check: isString,
     message: 'must be a string.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { deno_import_map: 'path/to/import_map.json' } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { deno_import_map: 'path/to/import_map.json' } },
     }),
   },
   {
     property: 'functions.*.external_node_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { external_node_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
     property: 'functions.*.ignored_node_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { ignored_node_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
     property: 'functions.*.included_files',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
     }),
   },
   {
     property: 'functions.*.node_bundler',
-    check: (value) => bundlers.includes(value),
+    check: (value) => bundlers.includes(value as (typeof bundlers)[number]),
     message: `must be one of: ${bundlers.join(', ')}`,
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { node_bundler: bundlers[0] } },
     }),
   },
   {
     property: 'functions.*.directory',
-    check: (value, key, prevPath) => prevPath[1] === FUNCTIONS_CONFIG_WILDCARD_ALL,
+    check: (_value, _key, path) => functionName(path) === FUNCTIONS_CONFIG_WILDCARD_ALL,
     message: 'must be defined on the main `functions` object.',
     example: () => ({
       functions: { directory: 'my-functions' },
@@ -298,32 +278,32 @@ export const POST_NORMALIZE_VALIDATIONS = [
     property: 'functions.*.memory',
     check: (value) => typeof value === 'number' || isString(value),
     message: 'must be a number (in MB) or a string with a unit (e.g. "2gb").',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { memory: '2gb' } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { memory: '2gb' } },
     }),
   },
   {
     property: 'functions.*.region',
     check: isString,
     message: 'must be a string.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { region: 'cmh' } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { region: 'cmh' } },
     }),
   },
   {
     property: 'functions.*.vcpu',
     check: (value) => typeof value === 'number' && value >= 0.5 && value <= 2,
     message: 'must be a number between 0.5 and 2.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { vcpu: 1.5 } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { vcpu: 1.5 } },
     }),
   },
   {
     property: 'functions.*.schedule',
     check: isValidCronExpression,
     message: 'must be a valid cron expression (see https://ntl.fyi/cron-syntax).',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { schedule: '5 4 * * *' } },
+    example: (_value, _key, path) => ({
+      functions: { [functionName(path)]: { schedule: '5 4 * * *' } },
     }),
   },
   {

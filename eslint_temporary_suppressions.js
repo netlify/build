@@ -1492,16 +1492,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/edge_functions.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/env/envelope.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off',
@@ -1544,12 +1534,6 @@ export default [
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/functions_config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1630,12 +1614,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/origin.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/parse.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1678,36 +1656,6 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/context.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/example.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/identical.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/validate/validations.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
