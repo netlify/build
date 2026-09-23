@@ -12,8 +12,8 @@ const DEPLOY_CONFIG_BLOBS_PATH = '.netlify/deploy/v1/blobs/deploy'
 
 /** Retrieve the absolute path of the deploy scoped internal blob directories */
 export const getBlobsDirs = (buildDir: string, packagePath?: string) => [
-  path.resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH),
-  path.resolve(buildDir, packagePath || '', LEGACY_BLOBS_PATH),
+  path.resolve(buildDir, packagePath ?? '', DEPLOY_CONFIG_BLOBS_PATH),
+  path.resolve(buildDir, packagePath ?? '', LEGACY_BLOBS_PATH),
 ]
 
 interface EnvironmentContext {
@@ -60,7 +60,7 @@ export const getBlobsEnvironmentContext = ({
  */
 export const scanForBlobs = async function (buildDir: string, packagePath?: string) {
   // We start by looking for files using the Frameworks API.
-  const frameworkBlobsDir = path.resolve(buildDir, packagePath || '', FRAMEWORKS_API_BLOBS_PATH, 'deploy')
+  const frameworkBlobsDir = path.resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_BLOBS_PATH, 'deploy')
   const frameworkBlobsDirScan = await new fdir().onlyCounts().crawl(frameworkBlobsDir).withPromise()
 
   if (frameworkBlobsDirScan.files > 0) {
@@ -73,7 +73,7 @@ export const scanForBlobs = async function (buildDir: string, packagePath?: stri
   // Next, we look for files using the legacy Deploy Configuration API. It was
   // short-lived and not really documented, but we do have sites relying on
   // it, so we must support it for backwards-compatibility.
-  const deployConfigBlobsDir = path.resolve(buildDir, packagePath || '', DEPLOY_CONFIG_BLOBS_PATH)
+  const deployConfigBlobsDir = path.resolve(buildDir, packagePath ?? '', DEPLOY_CONFIG_BLOBS_PATH)
   const deployConfigBlobsDirScan = await new fdir().onlyCounts().crawl(deployConfigBlobsDir).withPromise()
 
   if (deployConfigBlobsDirScan.files > 0) {
@@ -85,7 +85,7 @@ export const scanForBlobs = async function (buildDir: string, packagePath?: stri
 
   // Finally, we look for files using the initial spec for file-based Blobs
   // uploads.
-  const legacyBlobsDir = path.resolve(buildDir, packagePath || '', LEGACY_BLOBS_PATH)
+  const legacyBlobsDir = path.resolve(buildDir, packagePath ?? '', LEGACY_BLOBS_PATH)
   const legacyBlobsDirScan = await new fdir().onlyCounts().crawl(legacyBlobsDir).withPromise()
 
   if (legacyBlobsDirScan.files > 0) {
@@ -140,8 +140,9 @@ export const getFileWithMetadata = async (
   const [data, metadata] = await Promise.all([
     readFile(contentPath),
     metadataPath ? readMetadata(metadataPath) : {},
-  ]).catch((err) => {
-    throw new Error(`Failed while reading '${key}' and its metadata: ${err.message}`)
+  ]).catch((err: unknown) => {
+    // `readFile()` and `readMetadata()` only reject with errors
+    throw new Error(`Failed while reading '${key}' and its metadata: ${(err as Error).message}`)
   })
 
   return { data, metadata }
@@ -152,7 +153,7 @@ const readMetadata = async (metadataPath: string): Promise<Record<string, string
   try {
     metadataFile = await readFile(metadataPath, { encoding: 'utf8' })
   } catch (err) {
-    if (err.code === 'ENOENT') {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
       // no metadata file found, that's ok
       return {}
     }
@@ -160,7 +161,8 @@ const readMetadata = async (metadataPath: string): Promise<Record<string, string
   }
 
   try {
-    return JSON.parse(metadataFile)
+    // Metadata files hold string values
+    return JSON.parse(metadataFile) as Record<string, string>
   } catch {
     // Normalize the error message
     throw new Error(`Error parsing metadata file '${metadataPath}'`)

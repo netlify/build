@@ -9,17 +9,22 @@ export const getErrorMessage = (error: unknown): string => {
   }
 }
 
-type asyncFunction<T> = (...args: unknown[]) => Promise<T>
+type asyncFunction<T, Args extends unknown[]> = (...args: Args) => Promise<T>
 /**
  * Wrap an async function so it prepends an error message on exceptions.
  * This helps locate errors.
  */
-export const addAsyncErrorMessage = function <T>(asyncFunc: asyncFunction<T>, message: string): asyncFunction<T> {
+export const addAsyncErrorMessage = function <T, Args extends unknown[] = unknown[]>(
+  asyncFunc: asyncFunction<T, Args>,
+  message: string,
+): asyncFunction<T, Args> {
   return async (...args) => {
     try {
       return await asyncFunc(...args)
     } catch (error) {
-      error.stack = `${message}: ${error.stack}`
+      // The wrapped socket and JSON calls throw Errors
+      const errorA = error as Error
+      errorA.stack = `${message}: ${String(errorA.stack)}`
       throw error
     }
   }

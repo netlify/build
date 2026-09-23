@@ -12,7 +12,8 @@ const ROOT_PACKAGE_JSON_PATH = fileURLToPath(new URL('../../package.json', impor
 export const importJsonFile = async function <T>(filePath: string): Promise<T> {
   const fileContents = await readFile(filePath, 'utf-8')
 
-  return JSON.parse(fileContents)
+  // The caller knows the file's shape
+  return JSON.parse(fileContents) as T
 }
 
 export const ROOT_PACKAGE_JSON = await importJsonFile<RootPackageJson>(ROOT_PACKAGE_JSON_PATH)
