@@ -17,11 +17,16 @@ export const addHeaders = async function <T extends { headers?: MinimalHeader[] 
   logs,
 }: {
   config: T
-  headersPath: string
+  /** Without a path, only `config.headers` is used. */
+  headersPath: string | undefined
   logs: Logs | undefined
 }): Promise<T & { headers: MinimalHeader[] }> {
   const { headers: configHeaders, ...rest } = config
-  const { headers, errors } = await parseAllHeaders({ headersFiles: [headersPath], configHeaders, minimal: true })
+  const { headers, errors } = await parseAllHeaders({
+    headersFiles: headersPath === undefined ? [] : [headersPath],
+    configHeaders,
+    minimal: true,
+  })
   warnHeadersParsing(logs, errors)
   warnHeadersCaseSensitivity(logs, headers)
   return { ...rest, headers } as T & { headers: MinimalHeader[] }
