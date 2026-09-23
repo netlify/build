@@ -1,0 +1,2 @@
+[functions.api]
+schedule = "not a cron expression"
