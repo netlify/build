@@ -480,24 +480,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/install/functions.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/install/local.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/install/missing.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/messages/compatibility.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -685,7 +667,7 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/functions_install/index.js'],
+    files: ['packages/build/src/plugins_core/list.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
