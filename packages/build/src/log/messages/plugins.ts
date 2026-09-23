@@ -17,21 +17,22 @@ export const logPluginsList = function ({
 }: {
   pluginsList: PluginList
   logs: BufferedLogs | undefined
-  debug?: boolean
+  debug?: boolean | undefined
 }): void {
   if (!debug) {
     return
   }
 
+  // `normalizePluginsList()` never leaves `versions` empty
   const pluginsListArray = Object.entries(pluginsList)
-    .map(([packageName, versions]) => `${packageName}@${versions[0].version}`)
+    .map(([packageName, versions]) => `${packageName}@${String(versions[0]?.version)}`)
     .sort()
 
   logSubHeader(logs, 'Available plugins')
   logArray(logs, pluginsListArray)
 }
 
-export const logFailPluginWarning = function (methodName, event) {
+export const logFailPluginWarning = function (methodName: string, event: string) {
   logWarning(
     undefined,
     `Plugin error: since "${event}" happens after deploy, the build has already succeeded and cannot fail anymore. This plugin should either:

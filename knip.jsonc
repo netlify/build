@@ -14,7 +14,7 @@
     "packages/build": {
       "entry": [
         // Reached from the package-level CLI shim after TypeScript compilation.
-        "src/core/bin.js",
+        "src/core/bin.ts",
         "test-d/**/*.ts",
       ],
       "ignoreDependencies": [

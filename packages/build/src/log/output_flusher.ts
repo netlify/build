@@ -41,7 +41,7 @@ export class OutputFlusherTransform extends Transform {
     this[flusherSymbol] = flusher
   }
 
-  _transform(chunk: any, _: string, callback: () => void) {
+  override _transform(chunk: unknown, _: string, callback: () => void) {
     this[flusherSymbol].flush()
 
     this.push(chunk)

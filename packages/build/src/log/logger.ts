@@ -14,6 +14,8 @@ export type Logs = BufferedLogs | StreamedLogs
 export type BufferedLogs = { stdout: string[]; stderr: string[]; outputFlusher?: OutputFlusher }
 export type StreamedLogs = { outputFlusher?: OutputFlusher; logFunction?: (message: string) => void }
 
+type LogOptions = { indent?: boolean | undefined; color?: ((string: string) => string) | undefined }
+
 export const logsAreBuffered = (logs: Logs | undefined): logs is BufferedLogs => {
   return logs !== undefined && 'stdout' in logs
 }
@@ -41,22 +43,20 @@ export const getBufferLogs = (config: { buffer?: boolean; logger?: (message: str
   if (buffer) {
     return { stdout: [], stderr: [] }
   }
+
+  return undefined
 }
 
 // Core logging utility, used by the other methods.
 // This should be used instead of `console.log()` as it allows us to instrument
 // how any build logs is being printed.
-export const log = function (
-  logs: Logs | undefined,
-  string: string,
-  config: { indent?: boolean; color?: (string: string) => string } = {},
-) {
+export const log = function (logs: Logs | undefined, string: string, config: LogOptions = {}) {
   const { indent = false, color } = config
   const stringA = indent ? indentString(string, INDENT_SIZE) : string
   const stringB = stringA.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  if (logs && logs.outputFlusher) {
+  if (logs?.outputFlusher) {
     logs.outputFlusher.flush()
   }
 
@@ -89,74 +89,74 @@ export const getLogsOutput = (logs: Logs | undefined): LogOutput => {
   return { stdout: logs.stdout, stderr: logs.stderr }
 }
 
-const serializeIndentedArray = function (array) {
+const serializeIndentedArray = function (array: readonly string[]) {
   return serializeArray(array.map(serializeIndentedItem))
 }
 
-const serializeIndentedItem = function (item) {
+const serializeIndentedItem = function (item: string) {
   return indentString(item, INDENT_SIZE + 1).trimStart()
 }
 
-export const logError = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logError = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   log(logs, string, { color: THEME.errorLine, ...opts })
 }
 
-export const logWarning = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logWarning = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   log(logs, string, { color: THEME.warningLine, ...opts })
 }
 
 // Print a message that is under a header/subheader, i.e. indented
-export const logMessage = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logMessage = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   log(logs, string, { indent: true, ...opts })
 }
 
 // Print an object
-export const logObject = function (logs: Logs | undefined, object: object, opts?: object) {
+export const logObject = function (logs: Logs | undefined, object: object, opts?: LogOptions) {
   logMessage(logs, serializeObject(object), opts)
 }
 
 // Print an array
-export const logArray = function (logs: Logs | undefined, array, opts = {}) {
+export const logArray = function (logs: Logs | undefined, array: readonly string[], opts: LogOptions = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.none, ...opts })
 }
 
 // Print an array of warnings
-export const logWarningArray = function (logs: Logs | undefined, array, opts = {}) {
+export const logWarningArray = function (logs: Logs | undefined, array: readonly string[], opts: LogOptions = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.warningLine, ...opts })
 }
 
 // Print a main section header
-export const logHeader = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logHeader = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   log(logs, `\n${getHeader(string)}`, { color: THEME.header, ...opts })
 }
 
 // Print a main section header, when an error happened
-export const logErrorHeader = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logErrorHeader = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   logHeader(logs, string, { color: THEME.errorHeader, ...opts })
 }
 
 // Print a sub-section header
-export const logSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logSubHeader = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   log(logs, `\n${figures.pointer} ${string}`, { color: THEME.subHeader, ...opts })
 }
 
 // Print a sub-section header, when an error happened
-export const logErrorSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logErrorSubHeader = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   logSubHeader(logs, string, { color: THEME.errorSubHeader, ...opts })
 }
 
 // Print a sub-section header, when a warning happened
-export const logWarningSubHeader = function (logs: Logs | undefined, string: string, opts = {}) {
+export const logWarningSubHeader = function (logs: Logs | undefined, string: string, opts: LogOptions = {}) {
   logSubHeader(logs, string, { color: THEME.warningSubHeader, ...opts })
 }
 
 // Combines an array of elements into a single string, separated by a space,
 // and with basic serialization of non-string types
-export const reduceLogLines = function (lines) {
+export const reduceLogLines = function (lines: readonly unknown[]): string {
   return lines
     .map((input) => {
       if (input instanceof Error) {
-        return `${input.message} ${input.stack}`
+        return `${input.message} ${String(input.stack)}`
       }
 
       if (typeof input === 'object') {
@@ -165,13 +165,18 @@ export const reduceLogLines = function (lines) {
         } catch {
           // Value could not be serialized to JSON, so we return the string
           // representation.
-          return String(input)
+          return stringify(input)
         }
       }
 
-      return String(input)
+      return stringify(input)
     })
     .join(' ')
+}
+
+// Any value is accepted on purpose, including objects printed as `[object Object]`
+const stringify = function (value: unknown): string {
+  return String(value)
 }
 
 /**
@@ -187,7 +192,9 @@ export const getSystemLogger = function (
   // If the `debug` flag is used, we return a function that pipes system logs
   // to the regular logger, as the intention is for them to end up in stdout.
   if (debug) {
-    return (...args) => log(logs, reduceLogLines(args))
+    return (...args: unknown[]) => {
+      log(logs, reduceLogLines(args))
+    }
   }
 
   // If there's not a file descriptor configured for system logs and `debug`
@@ -206,7 +213,7 @@ export const getSystemLogger = function (
     logError(logs, 'Could not write to system log file')
   })
 
-  return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
+  return (...args: unknown[]) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
 }
 
 export const addOutputFlusher = (logs: Logs, outputFlusher: OutputFlusher): Logs => ({

@@ -12,13 +12,14 @@ export type StandardStreams = {
 }
 
 type LogsListener = (logs: string[], outputFlusher: OutputFlusher | undefined, chunk: Buffer) => void
-type LogsListeners = { stderrListener: LogsListener; stdoutListener: LogsListener }
+type ChunkListener = (chunk: Buffer) => void
+type LogsListeners = { stderrListener: ChunkListener; stdoutListener: ChunkListener }
 
 // We try to use `stdio: inherit` because it keeps `stdout/stderr` as `TTY`,
 // which solves many problems. However we can only do it in build.command.
 // Plugins have several events, so need to be switch on and off instead.
 // In buffer mode, `pipe` is necessary.
-export const getBuildCommandStdio = function (logs: Logs) {
+export const getBuildCommandStdio = function (logs: Logs | undefined) {
   if (logsAreBuffered(logs)) {
     return 'pipe'
   }
@@ -29,7 +30,7 @@ export const getBuildCommandStdio = function (logs: Logs) {
 // Add build command output
 export const handleBuildCommandOutput = function (
   { stdout: commandStdout, stderr: commandStderr }: { stdout: string; stderr: string },
-  logs: Logs,
+  logs: Logs | undefined,
 ) {
   if (!logsAreBuffered(logs)) {
     return
@@ -59,9 +60,12 @@ export const pipePluginOutput = function (
     return pipedPluginProcesses.get(childProcess)
   }
 
-  const listeners = !logsAreBuffered(logs)
-    ? streamOutput(childProcess, standardStreams)
-    : pushOutputToLogs(childProcess, logs, standardStreams.outputFlusher)
+  let listeners: LogsListeners | undefined
+  if (logsAreBuffered(logs)) {
+    listeners = pushOutputToLogs(childProcess, logs, standardStreams.outputFlusher)
+  } else {
+    streamOutput(childProcess, standardStreams)
+  }
 
   pipedPluginProcesses.set(childProcess, listeners)
 
@@ -88,7 +92,7 @@ export const unpipePluginOutput = async function (
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams): undefined {
+const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
   childProcess.stdout?.pipe(standardStreams.stdout)
   childProcess.stderr?.pipe(standardStreams.stderr)
 }
@@ -123,8 +127,8 @@ const logsListener: LogsListener = function (logs, outputFlusher, chunk) {
 
 const unpushOutputToLogs = function (
   childProcess: ChildProcess,
-  stdoutListener: LogsListener,
-  stderrListener: LogsListener,
+  stdoutListener: ChunkListener,
+  stderrListener: ChunkListener,
 ) {
   childProcess.stdout?.removeListener('data', stdoutListener)
   childProcess.stderr?.removeListener('data', stderrListener)
