@@ -323,7 +323,6 @@ const getFullConfig = async function ({
   configBase,
   base,
   logs,
-  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, packagePath, configBase })
   try {
@@ -337,7 +336,7 @@ const getFullConfig = async function ({
     const headersPath = getHeadersPath(configB)
     const configC = await addHeaders({ config: configB, headersPath, logs })
     const redirectsPath = getRedirectsPath(configC)
-    const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
+    const configD = await addRedirects({ config: configC, redirectsPath, logs })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`

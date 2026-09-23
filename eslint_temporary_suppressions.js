@@ -1441,16 +1441,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/base.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/bin/flags.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1467,12 +1457,6 @@ export default [
     rules: {
       'n/hashbang': 'off',
       'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/build_dir.ts'],
-    rules: {
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
     },
   },
   {
@@ -1513,23 +1497,6 @@ export default [
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/files.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/headers.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1574,30 +1541,6 @@ export default [
     files: ['packages/config/src/options/main.js'],
     rules: {
       'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/parse.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/path.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/redirects.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
   {

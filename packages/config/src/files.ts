@@ -1,21 +1,20 @@
 import { existsSync } from 'fs'
-import { resolve, relative, parse, join } from 'path'
+import { join, parse, relative, resolve } from 'path'
 
-import { getProperty, setProperty, deleteProperty } from 'dot-prop'
+import isPlainObj from 'is-plain-obj'
 
 import { throwUserError } from './error.js'
 import { mergeConfigs } from './merge.js'
+import type { NormalizedNetlifyConfig } from './types/config.js'
 import { isTruthy } from './utils/remove_falsy.js'
+import { setProp } from './utils/set.js'
 
-/**
- * We allow paths in configuration file to start with /
- * In that case, those are actually relative paths not absolute.
- */
+/** Paths in the configuration may start with `/`, but are relative anyway. */
 const LEADING_SLASH_REGEXP = /^\/+/
 
 /**
- * All file paths in the configuration file are relative to `buildDir`
- * (if `baseRelDir` is `true`).
+ * Configuration properties that are file paths. Segments are literal, so `*` only means the
+ * `functions['*']` entry.
  */
 const FILE_PATH_CONFIG_PROPS = [
   'functionsDirectory',
@@ -25,148 +24,121 @@ const FILE_PATH_CONFIG_PROPS = [
   'database.migrations.path',
 ]
 
-/**
- * Make configuration paths relative to `buildDir` and converts them to
- * absolute paths
- */
-export const resolveConfigPaths = function (options: {
-  config: $TSFixMe
-  repositoryRoot: string
-  buildDir: string
-  baseRelDir?: boolean
-  packagePath?: string
-}) {
-  const baseRel = options.baseRelDir ? options.buildDir : options.repositoryRoot
-  const config = resolvePaths({
-    config: options.config,
-    propNames: FILE_PATH_CONFIG_PROPS,
-    baseRel,
-    repositoryRoot: options.repositoryRoot,
-  })
-  return addDefaultPaths({
-    config,
-    repositoryRoot: options.repositoryRoot,
-    baseRel,
-    packagePath: options.packagePath,
-  })
-}
-
-const resolvePaths = function ({
-  config,
-  propNames,
-  baseRel,
-  repositoryRoot,
-}: {
-  config: $TSFixMe
-  propNames: string[]
-  baseRel: string
-  repositoryRoot: string
-}) {
-  return propNames.reduce((configA, propName) => resolvePathProp(configA, propName, baseRel, repositoryRoot), config)
-}
-
-const resolvePathProp = function (config: $TSFixMe, propName: string, baseRel: string, repositoryRoot: string) {
-  const path = getProperty(config, propName) as string | undefined
-
-  if (!isTruthy(path)) {
-    deleteProperty(config, propName)
-    return config
-  }
-
-  return setProperty(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
-}
-
-export const resolvePath = (repositoryRoot: string, baseRel: string, originalPath: string, propName: string) => {
-  if (!isTruthy(originalPath)) {
-    return
-  }
-
-  const path = originalPath.replace(LEADING_SLASH_REGEXP, '')
-  const pathA = resolve(baseRel, path)
-  validateInsideRoot(originalPath, pathA, repositoryRoot, propName)
-  return pathA
-}
-
-/**
- * We ensure all file paths are within the repository root directory.
- * However, we allow file paths to be outside the build directory, since this
- * can be convenient in monorepo setups.
- */
-const validateInsideRoot = (originalPath: string, path: string, repositoryRoot: string, propName: string) => {
-  if (relative(repositoryRoot, path).startsWith('..') || getWindowsDrive(repositoryRoot) !== getWindowsDrive(path)) {
-    throwUserError(
-      `Configuration property "${propName}" "${originalPath}" must be inside the repository root directory.`,
-    )
-  }
-}
-
-const getWindowsDrive = (path: string) => parse(path).root
-
-/**
- * Some configuration properties have default values that are only set if a
- * specific directory/file exists in the build directory
- */
-const addDefaultPaths = ({
-  config,
-  repositoryRoot,
-  baseRel,
-  packagePath,
-}: {
-  config: $TSFixMe
-  repositoryRoot: string
-  baseRel: string
-  packagePath?: string
-}) => {
-  const defaultPathsConfigs = DEFAULT_PATHS.map(({ defaultPath, getConfig, propName }) =>
-    addDefaultPath({ repositoryRoot, packagePath, baseRel, defaultPath, getConfig, propName }),
-  ).filter(Boolean)
-  return mergeConfigs([...defaultPathsConfigs, config])
-}
-
+/** Configuration defaults that only apply when a directory exists in the build directory. */
 const DEFAULT_PATHS = [
   // @todo Remove once we drop support for the legacy default functions directory.
   {
-    getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
+    getConfig: (directory: string) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
     defaultPath: 'netlify-automatic-functions',
     propName: 'functions.directory',
   },
   {
-    getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
+    getConfig: (directory: string) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
     defaultPath: 'netlify/functions',
     propName: 'functions.directory',
   },
   {
-    getConfig: (directory) => ({ build: { edge_functions: directory } }),
+    getConfig: (directory: string) => ({ build: { edge_functions: directory } }),
     defaultPath: 'netlify/edge-functions',
     propName: 'build.edge_functions',
   },
   {
-    getConfig: (directory) => ({ database: { migrations: { path: directory } } }),
+    getConfig: (directory: string) => ({ database: { migrations: { path: directory } } }),
     defaultPath: 'netlify/database/migrations',
     propName: 'database.migrations.path',
   },
 ] as const
 
-const addDefaultPath = ({
-  repositoryRoot,
-  packagePath,
-  baseRel,
-  defaultPath,
-  getConfig,
-  propName,
-}: {
+type ResolveConfigPathsOptions = {
+  config: NormalizedNetlifyConfig
   repositoryRoot: string
-  baseRel: string
+  buildDir: string
+  /** Resolve paths relative to the build directory rather than the repository root. */
+  baseRelDir?: boolean
   packagePath?: string
-  defaultPath: $TSFixMe
-  getConfig: (typeof DEFAULT_PATHS)[number]['getConfig']
-  propName: (typeof DEFAULT_PATHS)[number]['propName']
-}) => {
-  const absolutePath = resolvePath(repositoryRoot, join(baseRel, packagePath || ''), defaultPath, propName)
+}
 
-  if (!absolutePath || !existsSync(absolutePath)) {
+/** Make file paths absolute, remove empty ones, and add the default directories that exist. */
+export const resolveConfigPaths = function ({
+  config,
+  repositoryRoot,
+  buildDir,
+  baseRelDir,
+  packagePath,
+}: ResolveConfigPathsOptions): NormalizedNetlifyConfig {
+  const baseRel = baseRelDir ? buildDir : repositoryRoot
+  const resolvedConfig = FILE_PATH_CONFIG_PROPS.reduce(
+    (resolved, propName) => resolvePathProp(resolved, propName.split('.'), baseRel, repositoryRoot),
+    config,
+  )
+  const defaultPathsConfigs = DEFAULT_PATHS.flatMap(({ defaultPath, getConfig, propName }) => {
+    const absolutePath = resolvePath(repositoryRoot, join(baseRel, packagePath ?? ''), defaultPath, propName)
+    return absolutePath !== undefined && existsSync(absolutePath) ? [getConfig(absolutePath)] : []
+  })
+  return mergeConfigs<object>([...defaultPathsConfigs, resolvedConfig]) as NormalizedNetlifyConfig
+}
+
+const resolvePathProp = function (
+  config: NormalizedNetlifyConfig,
+  keys: string[],
+  baseRel: string,
+  repositoryRoot: string,
+): NormalizedNetlifyConfig {
+  const path = getPath(config, keys)
+
+  if (!isTruthy(path)) {
+    return deletePath(config, keys) as NormalizedNetlifyConfig
+  }
+
+  // Validation ensures file path properties are strings.
+  return setProp(
+    config,
+    keys,
+    resolvePath(repositoryRoot, baseRel, path as string, keys.join('.')),
+  ) as NormalizedNetlifyConfig
+}
+
+const getPath = function (object: unknown, keys: string[]): unknown {
+  return keys.reduce<unknown>((parent, key) => (isPlainObj(parent) ? parent[key] : undefined), object)
+}
+
+// Returns `object` itself when there is nothing to delete.
+const deletePath = function (object: unknown, [key, ...childKeys]: string[]): unknown {
+  if (!isPlainObj(object) || !(key in object)) {
+    return object
+  }
+
+  if (childKeys.length === 0) {
+    const { [key]: _deleted, ...rest } = object
+    return rest
+  }
+
+  const child = object[key]
+  const updatedChild = deletePath(child, childKeys)
+  return updatedChild === child ? object : { ...object, [key]: updatedChild }
+}
+
+/** Resolve a path from the configuration, which must be inside the repository root. */
+export const resolvePath = function (
+  repositoryRoot: string,
+  baseRel: string,
+  originalPath: string | undefined,
+  propName: string,
+): string | undefined {
+  if (!isTruthy(originalPath)) {
     return
   }
 
-  return getConfig(absolutePath)
+  const path = resolve(baseRel, originalPath.replace(LEADING_SLASH_REGEXP, ''))
+  validateInsideRoot(originalPath, path, repositoryRoot, propName)
+  return path
+}
+
+// Paths may be outside the build directory, which is convenient in monorepos.
+const validateInsideRoot = function (originalPath: string, path: string, repositoryRoot: string, propName: string) {
+  if (relative(repositoryRoot, path).startsWith('..') || parse(repositoryRoot).root !== parse(path).root) {
+    throwUserError(
+      `Configuration property "${propName}" "${originalPath}" must be inside the repository root directory.`,
+    )
+  }
 }
