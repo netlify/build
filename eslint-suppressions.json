@@ -1346,7 +1346,7 @@
       "count": 3
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 58
+      "count": 54
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1673,32 +1673,6 @@
       "count": 3
     }
   },
-  "packages/config/src/main.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 13
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 9
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 80
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 8
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 3
-    },
-    "@typescript-eslint/prefer-nullish-coalescing": {
-      "count": 2
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 2
-    }
-  },
   "packages/config/tests/api/cached_site_info.test.ts": {
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1711,11 +1685,6 @@
   },
   "packages/config/tests/extensions/build_plugin_url.test.ts": {
     "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    }
-  },
-  "packages/config/tsfixme.d.ts": {
-    "@typescript-eslint/no-explicit-any": {
       "count": 1
     }
   },
@@ -2446,13 +2415,13 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 3
+      "count": 1
     },
     "@typescript-eslint/no-unsafe-call": {
-      "count": 4
+      "count": 2
     },
     "@typescript-eslint/no-unsafe-member-access": {
-      "count": 4
+      "count": 2
     },
     "@typescript-eslint/no-unsafe-return": {
       "count": 6

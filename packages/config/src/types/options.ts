@@ -64,6 +64,6 @@ export interface ResolveConfigOptions {
   buffer?: boolean
   /** Environment variables, merged over `process.env` to compute defaults. */
   env?: Record<string, string | undefined>
-  featureFlags?: Record<string, boolean>
+  featureFlags?: Record<string, unknown>
   testOpts?: TestOptions
 }

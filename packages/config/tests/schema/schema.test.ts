@@ -69,7 +69,13 @@ const isAcceptedByNetlify = async (fixtureDir: string, config: ConfigFile) => {
 
   for (const context of [undefined, ...contexts]) {
     try {
-      await resolveConfig({ cwd: fixtureDir, repositoryRoot: fixtureDir, offline: true, buffer: true, context })
+      await resolveConfig({
+        cwd: fixtureDir,
+        repositoryRoot: fixtureDir,
+        offline: true,
+        buffer: true,
+        ...(context === undefined ? {} : { context }),
+      })
     } catch {
       return false
     }

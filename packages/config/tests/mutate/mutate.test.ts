@@ -172,20 +172,16 @@ test('updateConfig() does not delete _headers if headersPath not provided', asyn
 })
 
 test('Programmatic resolveConfig with configMutations', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
 
 test('Programmatic resolveConfig with configMutations and defaultConfig', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
@@ -196,8 +192,6 @@ test('Programmatic resolveConfig with configMutations and defaultConfig', async 
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
