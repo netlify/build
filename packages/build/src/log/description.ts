@@ -1,8 +1,8 @@
-export const getBuildCommandDescription = function (buildCommandOrigin) {
+export const getBuildCommandDescription = function (buildCommandOrigin: string): string | undefined {
   return BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
 }
 
-const BUILD_COMMAND_DESCRIPTIONS = {
+const BUILD_COMMAND_DESCRIPTIONS: Partial<Record<string, string>> = {
   ui: 'Build command from Netlify app',
   config: 'build.command from netlify.toml',
   inline: 'build.command from a plugin',
@@ -10,17 +10,17 @@ const BUILD_COMMAND_DESCRIPTIONS = {
 }
 
 /** Retrieve human-friendly plugin origin */
-export const getPluginOrigin = function (loadedFrom: 'package.json' | string, origin: string) {
+export const getPluginOrigin = function (loadedFrom: string, origin: string) {
   const originName = PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {
-    return `from ${originName} and package.json`
+    return `from ${String(originName)} and package.json`
   }
 
-  return `from ${originName}`
+  return `from ${String(originName)}`
 }
 
-const PLUGIN_ORIGINS = {
+const PLUGIN_ORIGINS: Partial<Record<string, string>> = {
   core: 'core',
   ui: 'Netlify app',
   config: 'netlify.toml',

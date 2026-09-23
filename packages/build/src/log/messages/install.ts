@@ -1,7 +1,13 @@
 import { isRuntime } from '../../utils/runtime.js'
-import { log, logArray, logSubHeader } from '../logger.js'
+import { type Logs, log, logArray, logSubHeader } from '../logger.js'
 
-export const logInstallMissingPlugins = function (logs, missingPlugins, packages) {
+type PluginOption = { packageName: string }
+
+export const logInstallMissingPlugins = function (
+  logs: Logs | undefined,
+  missingPlugins: readonly PluginOption[],
+  packages: readonly string[],
+) {
   const plugins = missingPlugins.filter((pkg) => !isRuntime(pkg))
 
   if (plugins.length !== 0) {
@@ -10,7 +16,7 @@ export const logInstallMissingPlugins = function (logs, missingPlugins, packages
   }
 }
 
-export const logInstallIntegrations = function (logs, integrations) {
+export const logInstallIntegrations = function (logs: Logs | undefined, integrations: readonly { slug: string }[]) {
   if (integrations.length === 0) {
     return
   }
@@ -22,7 +28,10 @@ export const logInstallIntegrations = function (logs, integrations) {
   )
 }
 
-export const logInstallLocalPluginsDeps = function (logs, localPluginsOptions) {
+export const logInstallLocalPluginsDeps = function (
+  logs: Logs | undefined,
+  localPluginsOptions: readonly PluginOption[],
+) {
   const packages = localPluginsOptions.map(getPackageName)
   logSubHeader(logs, 'Installing local plugins dependencies')
   logArray(logs, packages)
@@ -32,6 +41,6 @@ export const logInstallFunctionDependencies = function () {
   log(undefined, 'Installing functions dependencies')
 }
 
-const getPackageName = function ({ packageName }) {
+const getPackageName = function ({ packageName }: PluginOption) {
   return packageName
 }
