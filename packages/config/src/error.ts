@@ -1,13 +1,24 @@
-// We distinguish between errors thrown intentionally and uncaught exceptions
-// (such as bugs) with a `customErrorInfo.type` property.
-export const throwUserError = function (messageOrError: string | Error, error?: Error) {
-  const errorA = getError(messageOrError, error)
-  errorA[CUSTOM_ERROR_KEY] = { type: USER_ERROR_TYPE }
-  throw errorA
+const USER_ERROR_TYPE = 'resolveConfig'
+
+/**
+ * An error caused by the user's configuration or options rather than by a bug. netlify-cli and
+ * `@netlify/build` recognize these by `customErrorInfo.type`.
+ */
+export type UserError = Error & { customErrorInfo: { type: typeof USER_ERROR_TYPE } }
+
+/**
+ * Throw a user error. With an `Error` as `error`, its message is prefixed with `messageOrError` and
+ * it is thrown instead of a new error, which keeps its stack trace.
+ *
+ * This is a function declaration so that TypeScript treats calls to it as ending the code path.
+ */
+export function throwUserError(messageOrError: string | Error, error?: unknown): never {
+  const userError = toError(messageOrError, error) as UserError
+  userError.customErrorInfo = { type: USER_ERROR_TYPE }
+  throw userError
 }
 
-// Can pass either `message`, `error` or `message, error`
-const getError = function (messageOrError: string | Error, error?: Error) {
+const toError = function (messageOrError: string | Error, error: unknown): Error {
   if (messageOrError instanceof Error) {
     return messageOrError
   }
@@ -16,21 +27,22 @@ const getError = function (messageOrError: string | Error, error?: Error) {
     return new Error(messageOrError)
   }
 
-  error.message = `${messageOrError}\n${error.message}`
-  return error
+  if (error instanceof Error) {
+    error.message = `${messageOrError}\n${error.message}`
+    return error
+  }
+
+  return new Error(messageOrError, { cause: error })
 }
 
-export const isUserError = function (error) {
+export const isUserError = function (error: unknown): error is UserError {
   return (
-    canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined && error[CUSTOM_ERROR_KEY].type === USER_ERROR_TYPE
+    typeof error === 'object' &&
+    error !== null &&
+    'customErrorInfo' in error &&
+    typeof error.customErrorInfo === 'object' &&
+    error.customErrorInfo !== null &&
+    'type' in error.customErrorInfo &&
+    error.customErrorInfo.type === USER_ERROR_TYPE
   )
 }
-
-// Exceptions that are not objects (including `Error` instances) cannot have an
-// `CUSTOM_ERROR_KEY` property
-const canHaveErrorInfo = function (error) {
-  return error != null
-}
-
-const CUSTOM_ERROR_KEY = 'customErrorInfo'
-const USER_ERROR_TYPE = 'resolveConfig'
