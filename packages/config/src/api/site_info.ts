@@ -31,7 +31,7 @@ type SiteInfoOptions = {
   testOpts: TestOptions
   siteFeatureFlagPrefix: string | undefined
   token: string | undefined
-  featureFlags: Record<string, boolean>
+  featureFlags: Record<string, unknown>
   extensionApiBaseUrl: string
 }
 
@@ -146,7 +146,7 @@ type ExtensionsOptions = {
   testOpts: TestOptions
   offline: boolean
   token: string | undefined
-  featureFlags: Record<string, boolean>
+  featureFlags: Record<string, unknown>
   extensionApiBaseUrl: string
   mode: ModeOption
 }

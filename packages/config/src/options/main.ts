@@ -36,7 +36,7 @@ export type DefaultedOptions = ResolveConfigOptions & {
   offline: boolean
   debug: boolean
   buffer: boolean
-  featureFlags: Record<string, boolean>
+  featureFlags: Record<string, unknown>
   /** Only with the `buffer` option. A `logs` option is ignored. */
   logs: BufferedLogs | undefined
 }

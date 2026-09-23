@@ -31,8 +31,12 @@
       ],
     },
     "packages/config": {
-      // Reached from the package-level CLI shim after TypeScript compilation.
-      "entry": ["src/bin/main.js"],
+      "entry": [
+        // Reached from the package-level CLI shim after TypeScript compilation.
+        "src/bin/main.js",
+        // Type-only assertion, checked by tsc through tests/tsconfig.json.
+        "tests/helpers/contract.ts",
+      ],
       "ignoreDependencies": [
         // Used in tests but can't be declared as a dependency due to a circular dependency.
         "@netlify/testing",

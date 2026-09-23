@@ -8,7 +8,7 @@ import type { ModeOption, TestOptions } from '../../types/options.js'
 import { fetchAutoInstallableExtensionsMeta, installExtension } from './utils.js'
 
 type AutoInstallOptions = {
-  featureFlags: Record<string, boolean>
+  featureFlags: Record<string, unknown>
   siteId: string | undefined
   accountId: string | undefined
   token: string | undefined
