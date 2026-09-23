@@ -1,0 +1,4 @@
+[[edge_functions]]
+path = "/hello"
+function = "hello"
+name = 1

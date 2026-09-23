@@ -32,6 +32,9 @@ const KNOWN_DIFFERENCES: Partial<Record<string, string>> = {
   'validate/fixtures/plugins_duplicate': 'checks that plugins are unique by package',
   'validate/fixtures/server_scale_min_above_max': 'checks that `min` is not above `max`',
 
+  // Rules that a JSON schema pattern cannot express.
+  'validate/fixtures/function_config_invalid_schedule': 'checks that the cron expression parses',
+
   // Cases where the schema is deliberately stricter.
   'normalize/fixtures/function_config_ambiguous': 'rejects functions named after a functions property',
   'parse/fixtures/headers_field_error': 'rejects invalid headers, which Netlify ignores with a warning',
