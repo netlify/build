@@ -171,7 +171,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['packages/config/src/log/theme.js'],
+    files: ['packages/config/src/log/theme.ts'],
     rules: {
       // util.styleText exists in 22.12.0 and works fine, it was only
       // marked stable in 22.13.0
