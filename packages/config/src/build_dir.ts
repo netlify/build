@@ -3,28 +3,15 @@ import { isDirectory } from 'path-type'
 import { throwUserError } from './error.js'
 
 /**
- * Retrieve the build directory used to resolve most paths.
- * This is (in priority order):
- *  - `build.base`
- *  - `--repositoryRoot`
- *  - the current directory (default value of `--repositoryRoot`)
+ * The build directory, used to resolve most paths: the base directory if there is one, the
+ * repository root otherwise. Build commands and plugins run in it, so it must exist. The
+ * repository root has already been checked.
  */
-export const getBuildDir = async function (repositoryRoot: string, base?: string) {
-  const buildDir = base === undefined ? repositoryRoot : base
-  await checkBuildDir(buildDir, repositoryRoot)
-  return buildDir
-}
-
-/**
- * The build directory is used as the current directory of build commands and
- * build plugins. Therefore, it must exist.
- * We already check `repositoryRoot` earlier in the code, so only need to check
- * `buildDir` when it is the base directory instead.
- */
-const checkBuildDir = async function (buildDir: string, repositoryRoot: string) {
-  if (buildDir === repositoryRoot || (await isDirectory(buildDir))) {
-    return
+export const getBuildDir = async function (repositoryRoot: string, base?: string): Promise<string> {
+  const buildDir = base ?? repositoryRoot
+  if (buildDir !== repositoryRoot && !(await isDirectory(buildDir))) {
+    throwUserError(`Base directory does not exist: ${buildDir}`)
   }
 
-  throwUserError(`Base directory does not exist: ${buildDir}`)
+  return buildDir
 }

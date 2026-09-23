@@ -414,3 +414,11 @@ test('Monorepo with base field and build plugin', async () => {
     repositoryRoot,
   })
 })
+
+test('Resolves only the top-level functions deno_import_map', async () => {
+  const fixture = new Fixture(import.meta.url, './fixtures/deno_import_map')
+  const { config } = asConfig(JSON.parse(await fixture.runWithConfig()))
+
+  expect(config.functions?.['*']?.['deno_import_map']).toBe(join(fixture.repositoryRoot, 'import_map.json'))
+  expect(config.functions?.['foo']?.['deno_import_map']).toBe('foo.json')
+})
