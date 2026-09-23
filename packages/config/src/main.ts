@@ -105,10 +105,10 @@ export const resolveConfig = async function (opts): Promise<Config> {
   let { siteInfo, accounts, integrations: extensions } = (parsedCachedConfig || {}) as $TSFixMe
 
   // If we have cached site info, we don't need to fetch it again
-  const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && extensions)
+  const useCachedSiteInfo = Boolean(featureFlags.use_cached_site_info && siteInfo && accounts && extensions)
 
   // I'm adding some debug logging to see if the logic is working as expected
-  if (featureFlags?.use_cached_site_info_logging) {
+  if (featureFlags.use_cached_site_info_logging) {
     console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, extensions })
   }
 

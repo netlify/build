@@ -1454,12 +1454,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/options/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/tsfixme.d.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
