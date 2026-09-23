@@ -216,7 +216,7 @@ export const getSystemLogger = function (
   return (...args: unknown[]) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
 }
 
-export const addOutputFlusher = (logs: Logs, outputFlusher: OutputFlusher): Logs => ({
+export const addOutputFlusher = (logs: Logs | undefined, outputFlusher: OutputFlusher): Logs => ({
   ...logs,
   outputFlusher,
 })

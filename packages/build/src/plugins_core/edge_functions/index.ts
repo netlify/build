@@ -14,6 +14,7 @@ import {
 
 import { tagBundlingError } from './lib/error.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
+import type { NetlifyPluginConstants } from '../../core/constants.js'
 
 // TODO: Replace this with a custom cache directory.
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
@@ -200,6 +201,11 @@ const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
   packagePath,
+}: {
+  buildDir: string
+  constants: Pick<NetlifyPluginConstants, 'INTERNAL_EDGE_FUNCTIONS_SRC' | 'EDGE_FUNCTIONS_SRC'>
+  // A dry run doesn't pass it.
+  packagePath?: string | undefined
 }): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
@@ -207,9 +213,8 @@ const hasEdgeFunctionsDirectories = async function ({
     return true
   }
 
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
-
-  if (await pathExists(internalFunctionsSrc)) {
+  // Always set by the build, although plugins' constants type allows leaving it out.
+  if (INTERNAL_EDGE_FUNCTIONS_SRC !== undefined && (await pathExists(resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)))) {
     return true
   }
 

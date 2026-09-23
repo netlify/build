@@ -1,13 +1,23 @@
 import { context, propagation } from '@opentelemetry/api'
+import type { PackageJson } from 'read-package-up'
 
+import type { NetlifyPluginConstants } from '../core/constants.js'
+import type { FeatureFlags } from '../core/feature_flags.js'
+import type { ErrorParam } from '../core/types.js'
+import type { EnvChanges } from '../env/changes.js'
 import { addErrorInfo } from '../error/info.js'
-import { addOutputFlusher } from '../log/logger.js'
+import type { ErrorInfo } from '../error/types.js'
+import { addOutputFlusher, type Logs } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
-import { getStandardStreams } from '../log/output_flusher.js'
+import { getStandardStreams, type OutputFlusher } from '../log/output_flusher.js'
 import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
+import type { ConfigMutation } from '../plugins/child/diff.js'
 import { callChild } from '../plugins/ipc.js'
+import type { ChildProcess } from '../plugins/spawn.js'
 import { isTrustedPlugin } from '../plugins/trusted.js'
+import type { SystemLogger } from '../plugins_core/types.js'
 import { getSuccessStatus } from '../status/success.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
 
 import { getPluginErrorType } from './error.js'
 import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
@@ -39,6 +49,32 @@ export const firePluginStep = async function ({
   debug,
   verbose,
   extensionMetadata,
+}: {
+  event: string
+  childProcess: ChildProcess
+  packageName: string
+  packagePath: string | undefined
+  pluginPackageJson: PackageJson | undefined
+  loadedFrom: string | undefined
+  origin: string | undefined
+  envChanges: EnvChanges
+  errorParams: Pick<ErrorParam, 'netlifyConfig'>
+  configOpts: Parameters<typeof updateNetlifyConfig>[0]['configOpts']
+  netlifyConfig: NetlifyConfig
+  defaultConfig: unknown
+  configMutations: ConfigMutation[]
+  headersPath: string | undefined
+  redirectsPath: string | undefined
+  constants: NetlifyPluginConstants
+  steps: Parameters<typeof getSuccessStatus>[1]['steps']
+  error: Error | undefined
+  logs: Logs | undefined
+  outputFlusher: OutputFlusher | undefined
+  systemLog: SystemLogger
+  featureFlags: FeatureFlags | undefined
+  debug: boolean
+  verbose: boolean
+  extensionMetadata: NonNullable<ErrorInfo['plugin']>['extensionMetadata']
 }) {
   const standardStreams = getStandardStreams(outputFlusher)
   const listeners = pipePluginOutput(childProcess, logs, standardStreams)
