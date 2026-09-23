@@ -1,0 +1,11 @@
+[[integrations]]
+name = "dir-extension"
+
+  [integrations.dev]
+  path = "ext"
+
+[[integrations]]
+name = "tarball-extension"
+
+  [integrations.dev]
+  path = "ext/package.tgz"
