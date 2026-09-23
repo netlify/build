@@ -15,9 +15,14 @@ export const getInitialBase = function ({ repositoryRoot, defaultConfig, inlineC
   const { base: inlineBase } = spreadValue(inlineConfig['build'])
   // Not `??`: a `null` inline base must not fall back to `defaultConfig`.
   if (inlineBase === undefined) {
-    return resolveBase(repositoryRoot, defaultConfig.build?.base)
+    return resolveBase(repositoryRoot, getStringBase(defaultConfig))
   }
   return resolveBase(repositoryRoot, typeof inlineBase === 'string' ? inlineBase : undefined)
+}
+
+const getStringBase = function (config: RawConfig): string | undefined {
+  const { base } = spreadValue(config['build'])
+  return typeof base === 'string' ? base : undefined
 }
 
 /**
