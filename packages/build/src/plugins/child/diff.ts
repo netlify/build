@@ -28,11 +28,7 @@ export function cloneNetlifyConfig<T>(netlifyConfig: T): T {
 // `configMutations` is passed to parent process as JSON
 
 export function getConfigMutations(netlifyConfig: object, netlifyConfigCopy: object, event: string): ConfigMutation[] {
-  const configMutations = diffObjects(
-    netlifyConfig as Record<string, unknown>,
-    netlifyConfigCopy as Record<string, unknown>,
-    [],
-  )
+  const configMutations = diffObjects(netlifyConfig, netlifyConfigCopy, [])
 
   return configMutations.map((configMutation) => getConfigMutation(configMutation, event))
 }
@@ -42,12 +38,12 @@ type DiffResult = { keys: string[]; value: unknown }
 // We only recurse over plain objects, not arrays. Which means array properties
 // can only be modified all at once.
 
-function diffObjects(objA: Record<string, unknown>, objB: Record<string, unknown>, parentKeys: string[]): DiffResult[] {
+function diffObjects(objA: object, objB: object, parentKeys: string[]): DiffResult[] {
   const allKeys = [...new Set([...Object.keys(objA), ...Object.keys(objB)])]
 
   return allKeys.flatMap((key) => {
-    const valueA = objA[key]
-    const valueB = objB[key]
+    const valueA: unknown = Reflect.get(objA, key)
+    const valueB: unknown = Reflect.get(objB, key)
     const keys = [...parentKeys, key]
 
     if (isPlainObject(valueA) && isPlainObject(valueB)) {

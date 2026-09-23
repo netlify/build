@@ -15,7 +15,7 @@ export const useManifest = async function (
     loadedFrom,
     origin,
     inputs,
-  }: { packageName: string; loadedFrom?: unknown; origin?: unknown; inputs?: unknown },
+  }: { packageName: string; loadedFrom?: string | undefined; origin?: string | undefined; inputs?: unknown },
   {
     pluginDir,
     packageDir,
@@ -24,7 +24,7 @@ export const useManifest = async function (
     debug,
   }: {
     pluginDir: string
-    packageDir?: string
+    packageDir?: string | undefined
     pluginPackageJson: PackageJson
     debug: boolean
   },

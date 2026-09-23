@@ -1,15 +1,25 @@
 import { addErrorInfo } from '../../error/info.js'
+import type { Status } from '../../status/add.js'
 import { isPlainObject } from '../../utils/is_plain_object.js'
 
+export type RunState = { status?: Status }
+
+type ShowArgs = {
+  title?: string | undefined
+  summary: string
+  text?: string | undefined
+  extraData?: unknown[] | undefined
+}
+
 // Report status information to the UI
-export const show = function (runState: Record<string, unknown>, showArgs: Record<string, unknown>) {
+export const show = function (runState: RunState, showArgs: unknown): void {
   validateShowArgs(showArgs)
   const { title, summary, text, extraData } = removeEmptyStrings(showArgs)
   runState.status = { state: 'success', title, summary, text, extraData }
 }
 
 // Validate arguments of `utils.status.show()`
-const validateShowArgs = function (showArgs: Record<string, unknown>) {
+function validateShowArgs(showArgs: unknown): asserts showArgs is ShowArgs {
   try {
     validateShowArgsObject(showArgs)
     const { title, summary, text, extraData, ...otherArgs } = showArgs
@@ -62,8 +72,10 @@ const validateShowArgsExtraData = function (extraData: unknown) {
   }
 }
 
-const removeEmptyStrings = function (showArgs: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(showArgs).map(removeEmptyString)) as Record<string, unknown>
+const removeEmptyStrings = function (showArgs: ShowArgs): { [K in keyof ShowArgs]?: ShowArgs[K] | undefined } {
+  return Object.fromEntries(Object.entries(showArgs).map(removeEmptyString)) as {
+    [K in keyof ShowArgs]?: ShowArgs[K] | undefined
+  }
 }
 
 const removeEmptyString = function ([key, value]: [string, unknown]) {
