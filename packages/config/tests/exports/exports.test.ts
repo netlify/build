@@ -99,7 +99,6 @@ test('cleanupConfig() keeps only properties that are safe to print', () => {
   expect(
     cleanupConfig({
       build: {
-        // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
         base: '/repo',
         command: 'npm run build',
         commandOrigin: 'config',
@@ -111,7 +110,6 @@ test('cleanupConfig() keeps only properties that are safe to print', () => {
         publishOrigin: 'default',
         services: { secretService: 'secret' },
       },
-      // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
       plugins: [{ package: 'plugin', origin: 'config', inputs: { enabled: true, apiKey: 'secret', count: 3 } }],
       functions: { '*': { node_bundler: 'esbuild' } },
       functionsDirectory: '/repo/netlify/functions',
@@ -164,7 +162,6 @@ test('cleanupConfig() truncates headers and redirects to 100 entries', () => {
   const redirects = Array.from({ length: 150 }, (_, index) => ({ from: `/${String(index)}`, to: '/to', status: 301 }))
   const headers = Array.from({ length: 150 }, (_, index) => ({ for: `/${String(index)}`, values: { a: 'b' } }))
 
-  // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, require every property
   const cleaned = cleanupConfig({ redirects, headers }) as { redirects: unknown[]; headers: unknown[] }
 
   expect(cleaned.redirects).toHaveLength(100)
