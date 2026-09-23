@@ -77,7 +77,7 @@ const getConnectionOpts = function (buildbotServerSocket: string): NetConnectOpt
 /**
  * Emits the connect event
  */
-export const connectBuildbotClient = addAsyncErrorMessage(async (client: net.Socket) => {
+export const connectBuildbotClient = addAsyncErrorMessage(async (client: net.Socket): Promise<void> => {
   await once(client, 'connect')
 }, 'Could not connect to buildbot')
 
@@ -92,14 +92,19 @@ export const closeBuildbotClient = async function (client: net.Socket) {
   await promisify(client.end.bind(client))()
 }
 
-const writePayload = addAsyncErrorMessage(async (buildbotClient: net.Socket, payload: BuildRequest) => {
+const writePayload = addAsyncErrorMessage(async (buildbotClient: net.Socket, payload: BuildRequest): Promise<void> => {
   await promisify(buildbotClient.write.bind(buildbotClient))(JSON.stringify(payload))
 }, 'Could not send payload to buildbot')
 
-const getNextParsedResponsePromise = addAsyncErrorMessage<BuildbotResponse>(async (buildbotClient: net.Socket) => {
-  const [data] = await once(buildbotClient, 'data')
-  return JSON.parse(data) as BuildbotResponse
-}, 'Invalid response from buildbot')
+const getNextParsedResponsePromise = addAsyncErrorMessage(
+  async (buildbotClient: net.Socket): Promise<BuildbotResponse> => {
+    const eventArgs: unknown[] = await once(buildbotClient, 'data')
+    const [data] = eventArgs
+    // `JSON.parse()` stringifies the `Buffer` the same way. The response comes from the buildbot.
+    return JSON.parse(String(data)) as BuildbotResponse
+  },
+  'Invalid response from buildbot',
+)
 
 /**
  * Initates the deploy with the given buildbot client
@@ -129,7 +134,7 @@ export const deploySiteWithBuildbotClient = async function ({
   ])
 
   if (!response.succeeded) {
-    const { error, code, error_type } = response?.values || {}
+    const { error, code, error_type } = response.values ?? {}
     return handleDeployError(error, code, error_type)
   }
 }
@@ -142,7 +147,15 @@ export const deploySiteWithBuildbotClient = async function ({
  * We need to call `normalize()` in case the publish directory is the
  * repository root, so `deployDir` is "." not ""
  */
-const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_DIR } }) {
+const getDeployDir = function ({
+  buildDir,
+  repositoryRoot,
+  constants: { PUBLISH_DIR },
+}: {
+  buildDir: string
+  repositoryRoot: string
+  constants: Pick<NetlifyPluginConstants, 'PUBLISH_DIR'>
+}) {
   const absolutePublishDir = resolve(buildDir, PUBLISH_DIR)
   const relativePublishDir = relative(repositoryRoot, absolutePublishDir)
   const deployDir = normalize(relativePublishDir)
@@ -154,7 +167,7 @@ const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_
  */
 const handleDeployError = function (error?: string, errorCode?: string, errorType?: ErrorType) {
   if (errorCode !== undefined) {
-    const err = new Error(`Deploy did not succeed with HTTP Error ${errorCode}: ${error}`)
+    const err = new Error(`Deploy did not succeed with HTTP Error ${errorCode}: ${String(error)}`)
     if (errorCode.startsWith('5')) {
       const errorInfo = { type: 'deployInternal', location: { statusCode: errorCode } }
       addErrorInfo(err, errorInfo)
@@ -165,7 +178,7 @@ const handleDeployError = function (error?: string, errorCode?: string, errorTyp
     throw err
   }
 
-  const err = new Error(`Deploy did not succeed: ${error}`)
+  const err = new Error(`Deploy did not succeed: ${String(error)}`)
   const errorInfo =
     errorType === 'user' ? { type: 'resolveConfig' } : { type: 'coreStep', location: { coreStepName: 'Deploy site' } }
   addErrorInfo(err, errorInfo)

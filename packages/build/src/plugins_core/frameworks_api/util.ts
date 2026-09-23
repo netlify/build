@@ -1,21 +1,24 @@
 import { promises as fs } from 'fs'
 import { resolve } from 'path'
 
-import type { NetlifyConfig } from '../../index.js'
 import { FRAMEWORKS_API_CONFIG_PATH } from '../../utils/frameworks_api.js'
 import { isPlainObject } from '../../utils/is_plain_object.js'
 import { SystemLogger } from '../types.js'
 
-export const loadConfigFile = async (buildDir: string, packagePath?: string) => {
+export const loadConfigFile = async (
+  buildDir: string,
+  packagePath?: string,
+): Promise<Record<string, unknown> | undefined> => {
   const configPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_CONFIG_PATH)
 
   try {
     const data = await fs.readFile(configPath, 'utf8')
 
-    return JSON.parse(data) as Partial<NetlifyConfig>
+    // Unvalidated JSON written by frameworks, which `filterConfig()` narrows down
+    return JSON.parse(data) as Record<string, unknown>
   } catch (err) {
     // If the file doesn't exist, this is a non-error.
-    if (err.code !== 'ENOENT') {
+    if (!isFileNotFoundError(err)) {
       throw err
     }
   }
@@ -28,14 +31,20 @@ export const loadConfigFile = async (buildDir: string, packagePath?: string) => 
   try {
     const data = await fs.readFile(legacyConfigPath, 'utf8')
 
-    return JSON.parse(data) as Partial<NetlifyConfig>
+    // Unvalidated JSON written by frameworks, which `filterConfig()` narrows down
+    return JSON.parse(data) as Record<string, unknown>
   } catch (err) {
     // If the file doesn't exist, this is a non-error.
-    if (err.code !== 'ENOENT') {
+    if (!isFileNotFoundError(err)) {
       throw err
     }
   }
+
+  return undefined
 }
+
+// `fs` and `JSON.parse()` only throw `Error` instances
+const isFileNotFoundError = (err: unknown): boolean => err instanceof Error && 'code' in err && err.code === 'ENOENT'
 
 /**
  * Checks whether a property matches a template that may contain wildcards.

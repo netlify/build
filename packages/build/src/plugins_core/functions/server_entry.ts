@@ -10,10 +10,10 @@ import { type FeatureFlags } from '../../core/feature_flags.js'
 export const SERVER_DIRECTORY = 'netlify/server'
 
 export const useServerAsFunction = (featureFlags?: FeatureFlags): boolean =>
-  featureFlags?.netlify_build_server_entry === true
+  featureFlags?.['netlify_build_server_entry'] === true
 
 export const useServerStandalone = (featureFlags?: FeatureFlags): boolean =>
-  featureFlags?.netlify_build_server_standalone === true
+  featureFlags?.['netlify_build_server_standalone'] === true
 
 export interface ServerEntry {
   // Path of the user's server entrypoint.
@@ -32,7 +32,7 @@ export const getServerEntry = async ({
   packagePath,
 }: {
   buildDir: string
-  packagePath?: string
+  packagePath?: string | undefined
 }): Promise<ServerEntry | undefined> => {
   const packageRoot = resolve(buildDir, packagePath ?? '')
 

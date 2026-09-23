@@ -26,7 +26,14 @@ interface ValidationFailure {
 }
 
 export const trackMigrationNumber = (numberToNames: Map<string, string[]>, name: string) => {
-  const key = /^(\d+)_/.exec(name)![1].replace(/^0+/, '') || '0'
+  const migrationNumber = /^(\d+)_/.exec(name)?.[1]
+
+  // Callers only pass names matching the migration patterns. Reading the failed match throws this.
+  if (migrationNumber === undefined) {
+    throw new TypeError("Cannot read properties of null (reading '1')")
+  }
+
+  const key = migrationNumber.replace(/^0+/, '') || '0'
   const existing = numberToNames.get(key)
   if (existing) {
     existing.push(name)
