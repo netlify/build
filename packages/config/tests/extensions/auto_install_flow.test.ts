@@ -17,12 +17,12 @@ const SERVER_HANDLERS = [
 
 let installCalls: string[]
 
-const interceptFetch = ({ metadataStatus = 200, installStatus = 200 }) => {
+const interceptFetch = ({ metadata = AUTO_INSTALLABLE as unknown, metadataStatus = 200, installStatus = 200 }) => {
   const originalFetch = globalThis.fetch
   vi.spyOn(globalThis, 'fetch').mockImplementation((input, init) => {
     const url = input instanceof Request ? input.url : String(input)
     if (url === AUTO_INSTALLABLE_URL) {
-      return Promise.resolve(Response.json(AUTO_INSTALLABLE, { status: metadataStatus }))
+      return Promise.resolve(Response.json(metadata, { status: metadataStatus }))
     }
     if (url === INSTALL_URL) {
       installCalls.push(typeof init?.body === 'string' ? init.body : '')
@@ -48,8 +48,7 @@ const runAutoInstall = async (flags: Record<string, unknown> = {}) => {
     })
     .runConfigServer(SERVER_HANDLERS)
   const installationsFetches = requests.filter(({ url }) => url === INSTALLATIONS_PATH).length
-  const { integrations } = JSON.parse(output) as { integrations: unknown[] }
-  return { installationsFetches, integrations }
+  return { installationsFetches, output }
 }
 
 test('Extensions are fetched again after a successful install', async () => {
@@ -91,8 +90,18 @@ test('Nothing is installed when the auto-installable extensions cannot be fetche
 test('Nothing is installed without an account ID', async () => {
   interceptFetch({})
 
-  const { integrations } = await runAutoInstall({ accountId: undefined })
+  const { output } = await runAutoInstall({ accountId: undefined })
+  const { integrations } = JSON.parse(output) as { integrations: unknown[] }
 
   expect(integrations).toEqual([])
+  expect(installCalls).toEqual([])
+})
+
+test('Unexpected auto-installable extensions are used as is, with a warning', async () => {
+  interceptFetch({ metadata: [{ slug: 'other', packages: ['unrelated'] }] })
+
+  const { output } = await runAutoInstall()
+
+  expect(output).toContain('Unexpected auto-installable extensions from the extension API, used as is')
   expect(installCalls).toEqual([])
 })

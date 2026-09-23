@@ -1,6 +1,10 @@
+import * as z from 'zod'
+
 import { EXTENSION_API_BASE_URL } from '../../extensions.js'
+import type { Logs } from '../../types/logs.js'
 import type { ModeOption } from '../../types/options.js'
 import { ROOT_PACKAGE_JSON } from '../json.js'
+import { parseLeniently } from '../schema.js'
 
 export type InstallExtensionResult =
   | { slug: string; error: null }
@@ -38,22 +42,29 @@ export const installExtension = async ({
   return { slug, error: null }
 }
 
-export type AutoInstallableExtension = {
-  slug: string
-  hostSiteUrl: string
-  /** npm packages whose presence in `package.json` means the extension should be installed. */
-  packages: string[]
-}
+const autoInstallableExtensionsSchema = z.array(
+  z.looseObject({
+    slug: z.string(),
+    hostSiteUrl: z.string(),
+    /** npm packages whose presence in `package.json` means the extension should be installed. */
+    packages: z.array(z.string()),
+  }),
+)
+
+export type AutoInstallableExtension = z.output<typeof autoInstallableExtensionsSchema>[number]
 
 /** The extensions to install automatically when a site depends on one of their packages. Empty if they can't be fetched. */
-export async function fetchAutoInstallableExtensionsMeta(): Promise<AutoInstallableExtension[]> {
+export async function fetchAutoInstallableExtensionsMeta(logs: Logs | undefined): Promise<AutoInstallableExtension[]> {
   try {
     const url = new URL(`/meta/auto-installable`, process.env['EXTENSION_API_BASE_URL'] ?? EXTENSION_API_BASE_URL)
     const response = await fetch(url.toString())
     if (!response.ok) {
       throw new Error(`Failed to fetch extensions meta`)
     }
-    return (await response.json()) as AutoInstallableExtension[]
+    return parseLeniently(autoInstallableExtensionsSchema, await response.json(), {
+      description: 'auto-installable extensions from the extension API',
+      logs,
+    })
   } catch (error) {
     console.error(
       `Failed to fetch auto-installable extensions meta: ${error instanceof Error ? error.message : String(error)}`,

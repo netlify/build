@@ -29,7 +29,13 @@ export const resolveConfig = async function (options: ResolveConfigOptions = {})
 
   // `api` can't be serialized, so it isn't in a cached config.
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
-  const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
+  const parsedCachedConfig = await getCachedConfig({
+    cachedConfig,
+    cachedConfigPath,
+    token,
+    api,
+    logs: defaultedOptions.logs,
+  })
   // A cached config is returned as is, unless a `defaultConfig` is given, as netlify-cli does:
   // then the configuration is resolved again, reusing the cached site information.
   if (parsedCachedConfig !== undefined && options.defaultConfig === undefined) {
@@ -82,6 +88,7 @@ export const resolveConfig = async function (options: ResolveConfigOptions = {})
         testOpts,
         token,
         extensionApiBaseUrl,
+        logs,
       }),
   })
 
@@ -136,6 +143,7 @@ export const resolveConfig = async function (options: ResolveConfigOptions = {})
     offline,
     mode,
     debug,
+    logs,
   })
 
   // @todo Remove in the next major version.

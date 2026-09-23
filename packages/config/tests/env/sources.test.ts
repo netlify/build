@@ -11,12 +11,14 @@ const CACHED_ENV = {
 }
 
 // A cached config is returned as-is unless a `defaultConfig` is also given, as netlify-cli does.
-const resolveWithCachedEnv = async (fixtureName: string) =>
-  asConfig(
+const resolveWithCachedEnv = async (fixtureName: string) => {
+  const cachedConfig = await new Fixture(import.meta.url, `./fixtures/${fixtureName}`).runWithConfigAsObject()
+  return asConfig(
     await new Fixture(import.meta.url, `./fixtures/${fixtureName}`)
-      .withFlags({ cachedConfig: { env: CACHED_ENV }, defaultConfig: {} })
+      .withFlags({ cachedConfig: { ...cachedConfig, env: CACHED_ENV }, defaultConfig: {} })
       .runWithConfigAsObject(),
   )
+}
 
 test('Keeps the variables a cached config marks as internal', async () => {
   const { env } = await resolveWithCachedEnv('empty')
