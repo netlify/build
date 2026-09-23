@@ -589,26 +589,7 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/child/load.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/logic.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/child/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/run.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
@@ -639,12 +620,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/ipc.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/list.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -655,19 +630,6 @@ export default [
   {
     files: ['packages/build/src/plugins/load.js'],
     rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/load.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/main.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
       'n/no-missing-import': 'off',
     },
   },
@@ -699,12 +661,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/pinned_version.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/plugin_conditions.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -727,7 +683,6 @@ export default [
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-      'n/no-missing-import': 'off',
     },
   },
   {
