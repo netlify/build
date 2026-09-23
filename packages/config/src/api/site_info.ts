@@ -90,12 +90,13 @@ const getSite = async function (
   }
 
   try {
-    const site = await api.getSite({
-      // @ts-expect-error: Internal parameter that instructs the API to include all the site's
-      // feature flags in the response.
+    // `feature_flags` is internal (x-internal) so `@netlify/open-api` leaves it out of its types;
+    // it makes the response include the site's feature flags.
+    const params: Parameters<NetlifyAPI['getSite']>[0] & { feature_flags: string | undefined } = {
       feature_flags: siteFeatureFlagPrefix,
       siteId,
-    })
+    }
+    const site = await api.getSite(params)
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${getMessage(error)}. ${ERROR_CALL_TO_ACTION}`)
@@ -105,7 +106,7 @@ const getSite = async function (
 const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
   try {
     const accounts: unknown = await api.listAccountsForUser(
-      // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
+      // @ts-expect-error: `minimal` is internal (x-internal) so `@netlify/open-api` leaves it out of its types.
       { minimal: 'true' },
     )
     return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
