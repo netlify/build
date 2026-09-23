@@ -181,7 +181,7 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
   const manifest = await importJsonFile<Manifest>(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'))
 
   expect(manifest.functions.find(({ name }) => name === '___netlify-server')).toBeUndefined()
-  expect(manifest.server?.name).toBe('server')
+  expect(manifest.server?.path.endsWith('/server/server.tgz')).toBe(true)
   expect(manifest.server?.path.endsWith('.tgz')).toBe(true)
   expect(manifest.server?.routes).toHaveLength(1)
   expect(manifest.server?.routes?.[0].pattern).toBe('/*')
@@ -204,7 +204,7 @@ test('Functions: builds a Netlify Server in both forms when both channels are on
   const manifest = await importJsonFile<Manifest>(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'))
 
   expect(manifest.functions.find(({ name }) => name === '___netlify-server')).toBeDefined()
-  expect(manifest.server?.name).toBe('server')
+  expect(manifest.server?.path.endsWith('/server/server.tgz')).toBe(true)
 })
 
 test('Functions: ignores a Netlify Server entry when the feature flag is off', async () => {

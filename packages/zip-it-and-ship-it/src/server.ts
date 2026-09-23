@@ -1,8 +1,7 @@
 import { promises as fs } from 'fs'
-import { join, resolve } from 'path'
+import { extname, join, resolve } from 'path'
 
-import type { ArchiveFormat } from './archive.js'
-import type { Config } from './config.js'
+import { ARCHIVE_FORMAT } from './archive.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
@@ -17,7 +16,7 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 // A server claims every path the rest of the deploy does not.
 const SERVER_ROUTE = '/*'
 
-// Names the server's output folder, its archive and its entry in the manifest.
+// Names the server's output folder and its archive.
 const SERVER_NAME = 'server'
 
 /**
@@ -30,7 +29,6 @@ export type ServerResult = {
   excludedRoutes?: Route[]
   mainFile: string
   memory?: number
-  name: string
   path: string
   region?: string
   routes?: ExtendedRoute[]
@@ -55,12 +53,12 @@ export interface ServerOptions {
 // fails the build rather than coming up empty.
 const readServerSource = async (
   srcPath: string,
-  { cache, config, featureFlags }: { cache: RuntimeCache; config: Config; featureFlags: FeatureFlags },
+  { cache, featureFlags }: { cache: RuntimeCache; featureFlags: FeatureFlags },
 ): Promise<FunctionSource> => {
   let source: FunctionSource | undefined
 
   try {
-    source = await getFunctionFromPath(srcPath, { cache, config, featureFlags })
+    source = await getFunctionFromPath(srcPath, { cache, featureFlags })
   } catch (error) {
     throw new Error(`Could not read the Netlify Server at ${srcPath}: ${(error as Error).message}`)
   }
@@ -78,32 +76,27 @@ export const bundleServer = async (
   server: ServerOptions,
   destFolder: string,
   {
-    archiveFormat,
     basePath,
     cache,
-    config,
     featureFlags,
     logger,
     repositoryRoot,
   }: {
-    archiveFormat: ArchiveFormat
     basePath?: string
     cache: RuntimeCache
-    config: Config
     featureFlags: FeatureFlags
     logger: ReturnType<typeof getLogger>
     repositoryRoot?: string
   },
 ): Promise<ServerResult> => {
   const srcPath = resolve(server.path)
-  const source = await readServerSource(srcPath, { cache, config, featureFlags })
-
+  const source = await readServerSource(srcPath, { cache, featureFlags })
   const serverFolder = join(destFolder, SERVER_NAME)
 
   await fs.mkdir(serverFolder, { recursive: true })
 
   const zipResult = await source.runtime.zipFunction({
-    archiveFormat,
+    archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
     config: source.config,
@@ -123,10 +116,15 @@ export const bundleServer = async (
     stat: source.stat,
   })
 
+  const path = join(serverFolder, `${SERVER_NAME}${extname(zipResult.path)}`)
+
+  await fs.rename(zipResult.path, path)
+
   const result = formatZipResult({
     ...zipResult,
     mainFile: source.mainFile,
     name: SERVER_NAME,
+    path,
     runtime: source.runtime,
   })
 
@@ -135,7 +133,6 @@ export const bundleServer = async (
     excludedRoutes: result.excludedRoutes,
     mainFile: result.mainFile,
     memory: result.memory,
-    name: result.name,
     path: result.path,
     region: result.region,
     routes: getRoutes(SERVER_NAME, SERVER_ROUTE).map((route) => ({ ...route, prefer_static: true })),

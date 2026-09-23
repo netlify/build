@@ -233,10 +233,8 @@ export const bundle = async function ({
     server === undefined
       ? undefined
       : await bundleServer(server, destFolder, {
-          archiveFormat,
           basePath,
           cache,
-          config,
           featureFlags,
           logger,
           repositoryRoot,

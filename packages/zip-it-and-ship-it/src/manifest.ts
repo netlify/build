@@ -36,7 +36,6 @@ interface ManifestServer {
   excludedRoutes?: Route[]
   mainFile: string
   memory?: number
-  name: string
   path: string
   region?: string
   routes?: ExtendedRoute[]
@@ -83,7 +82,6 @@ const formatServerForManifest = ({
   excludedRoutes,
   mainFile,
   memory,
-  name,
   path,
   region,
   routes,
@@ -95,7 +93,6 @@ const formatServerForManifest = ({
     bundler,
     mainFile,
     memory,
-    name,
     path: resolve(path),
     region,
     runtime,

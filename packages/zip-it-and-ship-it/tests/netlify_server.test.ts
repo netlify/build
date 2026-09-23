@@ -34,9 +34,9 @@ describe('Netlify Server', () => {
   test('Reports the server on its own and never among the functions', async () => {
     const { manifest, result } = await bundleFixture({ path: SERVER_ENTRY })
 
-    expect(manifest.server?.name).toBe('server')
+    expect(manifest.server?.path.endsWith('/server/server.tgz')).toBe(true)
     expect(manifest.functions.map(({ name }) => name)).toEqual(['hello'])
-    expect(result.server?.name).toBe('server')
+    expect(result.server?.path.endsWith('/server/server.tgz')).toBe(true)
     expect(result.functions.map(({ name }) => name)).toEqual(['hello'])
   })
 
@@ -57,7 +57,7 @@ describe('Netlify Server', () => {
   test('Keeps the server archive out of the functions output folder', async () => {
     const { manifest, tmpDir } = await bundleFixture({ path: SERVER_ENTRY })
 
-    expect(manifest.server?.path.startsWith(join(tmpDir, 'server'))).toBe(true)
+    expect(manifest.server?.path).toBe(join(tmpDir, 'server', 'server.tgz'))
   })
 
   test('Bundles the server ready to run on Play, not as a Lambda function', async () => {
@@ -83,6 +83,48 @@ describe('Netlify Server', () => {
     )
   })
 
+  test('Builds for Play even when the functions are not archived', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const result = await bundle({
+      basePath: FIXTURE,
+      destFolder: tmpDir,
+      functions: { archiveFormat: 'none', paths: { user: { directories: [FUNCTIONS_DIR] } } },
+      manifest: join(tmpDir, 'manifest.json'),
+      server: { path: SERVER_ENTRY },
+    })
+
+    expect(result.server?.path.endsWith('.tgz')).toBe(true)
+  })
+
+  test('Takes no function configuration at all', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const result = await bundle({
+      basePath: FIXTURE,
+      destFolder: tmpDir,
+      functions: {
+        paths: { user: { directories: [FUNCTIONS_DIR] } },
+        config: {
+          // The entry file is `netlify/server/index.js`, so an unscoped lookup
+          // would let a function named `index` configure the server.
+          index: { memory: 2048 },
+
+          // Nor is a `[functions.server]` block a way to configure a server.
+          server: { vcpu: 2 },
+
+          // Not even the settings that apply to every function. A server will
+          // get its own block rather than borrowing the functions one.
+          '*': { region: 'dub' },
+        },
+      },
+      manifest: join(tmpDir, 'manifest.json'),
+      server: { path: SERVER_ENTRY },
+    })
+
+    expect(result.server?.memory).toBeUndefined()
+    expect(result.server?.vcpu).toBeUndefined()
+    expect(result.server?.region).toBeUndefined()
+  })
+
   test('Omits the properties that only make sense for a function', async () => {
     const { manifest } = await bundleFixture({ path: SERVER_ENTRY })
 
@@ -104,7 +146,7 @@ describe('Netlify Server', () => {
     })
 
     expect(result.functions).toEqual([])
-    expect(result.server?.name).toBe('server')
+    expect(result.server?.path.endsWith('/server/server.tgz')).toBe(true)
     expect((await readManifest(manifestPath)).functions).toEqual([])
   })
 
