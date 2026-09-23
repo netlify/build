@@ -77,7 +77,7 @@ export default tseslint.config(
   // TODO(jg): remove once eslint-plugin-n can handle
   // (or be configured to handle) package exports
   {
-    files: ['packages/build/tests/**/*.ts'],
+    files: ['packages/build/tests/**/*.ts', 'packages/config/tests/**/*.ts'],
     rules: {
       'n/no-missing-import': 'off',
     },
