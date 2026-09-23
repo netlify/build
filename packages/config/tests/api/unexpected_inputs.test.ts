@@ -2,7 +2,7 @@ import { writeFile } from 'fs/promises'
 import { fileURLToPath } from 'url'
 
 import { resolveConfig } from '@netlify/config'
-import { type ServerHandler, startServer } from '@netlify/testing'
+import { Fixture, type ServerHandler, startServer } from '@netlify/testing'
 import { tmpName } from 'tmp-promise'
 import { expect, test, vi } from 'vitest'
 
@@ -59,4 +59,22 @@ test('An unexpected cached config is used as is, with a warning', async () => {
 
   expect(result).toMatchObject({ env: {}, custom: 'value' })
   expect(warn.mock.calls.flat().join('\n')).toContain('Unexpected cached config, used as is')
+})
+
+test('An inlineConfig that is not an object is spread, as it always has been, with a warning', async () => {
+  const { output } = await new Fixture(import.meta.url, './fixtures/base')
+    // Not a string, since yargs strips the quotes around a flag's value.
+    .withFlags({ inlineConfig: JSON.stringify(['a']) })
+    .runConfigBinary()
+
+  expect(output).toContain('Unexpected inlineConfig option, which should be an object, spread into one')
+  expect(output).toContain('"0": "a"')
+})
+
+test('Unexpected configMutations are used as is, with a warning', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/base')
+    .withFlags({ configMutations: [{ keys: ['build', 'command'], value: 'test' }] })
+    .runWithConfig()
+
+  expect(output).toContain('Unexpected configMutations option, used as is')
 })
