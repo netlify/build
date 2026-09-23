@@ -231,30 +231,12 @@ const stopPlugin = async function ({
 
   const { packageName, inputs, pluginPath, pluginPackageJson: packageJson = {} } = pluginOptions
   if (childProcess.connected) {
-    try {
-      // reliable stop tracing inside child processes
-      await callChild({
-        childProcess,
-        eventName: 'shutdown',
-        payload: {
-          packageName,
-          pluginPath,
-          inputs,
-          packageJson,
-          verbose,
-          netlifyConfig,
-        },
-        logs,
-        verbose,
-      })
-    } catch {
-      // The child process may exit before responding, e.g. when it already
-      // failed. It is being terminated anyway, so ignore the error
-    } finally {
-      if (childProcess.connected) {
-        childProcess.disconnect()
-      }
-    }
+    await shutdownPlugin({
+      childProcess,
+      payload: { packageName, pluginPath, inputs, packageJson, verbose, netlifyConfig },
+      logs,
+      verbose,
+    })
   }
 
   // On Windows with Node 21+, there's a bug where attempting to kill a child process
@@ -270,5 +252,30 @@ const stopPlugin = async function ({
     )
   } catch {
     // no-op
+  }
+}
+
+// Separate from `stopPlugin()` so the `connected` check after `await` isn't narrowed by the one before it
+const shutdownPlugin = async function ({
+  childProcess,
+  payload,
+  logs,
+  verbose,
+}: {
+  childProcess: ChildProcess
+  payload: Record<string, unknown>
+  logs: Logs | undefined
+  verbose: boolean
+}) {
+  try {
+    // reliable stop tracing inside child processes
+    await callChild({ childProcess, eventName: 'shutdown', payload, logs, verbose })
+  } catch {
+    // The child process may exit before responding, e.g. when it already
+    // failed. It is being terminated anyway, so ignore the error
+  } finally {
+    if (childProcess.connected) {
+      childProcess.disconnect()
+    }
   }
 }

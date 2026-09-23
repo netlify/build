@@ -504,12 +504,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/list.ts'],
-    rules: {
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/options.ts'],
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'off',
@@ -520,12 +514,6 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/spawn.ts'],
-    rules: {
-      '@typescript-eslint/no-unnecessary-condition': 'off',
     },
   },
   {
