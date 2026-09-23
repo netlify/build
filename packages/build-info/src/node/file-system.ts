@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'path'
 
+import { any as findAny } from 'empathic/find'
 import { up as walkUp } from 'empathic/walk'
 
 import { DirType, Environment, FileSystem, findUpOptions } from '../file-system.js'
@@ -69,26 +70,9 @@ export class NodeFS extends FileSystem {
 
   /** Node implementation of finding a file or directory by walking up parent directories. */
   async findUp(name: string | string[], options: findUpOptions = {}): Promise<string | undefined> {
-    const walkOptions = {
-      cwd: options.cwd,
-      last: options.stopAt,
-    }
     const names = typeof name === 'string' ? [name] : name
-    const targetType = options.type ?? 'file'
-    for (const dir of walkUp('.', walkOptions)) {
-      for (const potentialName of names) {
-        const filePath = join(dir, potentialName)
-        try {
-          const stats = await fs.stat(filePath)
-          const type = stats.isFile() ? 'file' : 'directory'
-          if (targetType === type) {
-            return filePath
-          }
-        } catch {
-          // ignore
-        }
-      }
-    }
+    const type = options.type === 'directory' ? 'dir' : 'file'
+    return findAny(names, { cwd: options.cwd, last: options.stopAt, type })
   }
 
   /** Node implementation of finding files or directories by walking up parent directories. */
