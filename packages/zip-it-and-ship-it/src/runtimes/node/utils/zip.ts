@@ -135,23 +135,25 @@ const createDirectory = async function ({
 
   const symlinks = new Map<string, Set<string>>()
 
+  // Same shadowing problem as the archive path: creating a symlink where the
+  // copy loop has already made a real directory fails with EEXIST.
+  const statted = await Promise.all(
+    [...new Set(srcFiles)].map(async (srcFile) => ({
+      srcFile,
+      stat: await cachedLstat(cache.lstatCache, srcFile),
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+  )
+
   // Copying source files.
   await pMap(
-    srcFiles,
-    async (srcFile) => {
-      const destPath = aliases.get(srcFile) || srcFile
-      const normalizedDestPath = normalizeFilePath({
-        commonPrefix: basePath,
-        path: destPath,
-        userNamespace,
-      })
-      const absoluteDestPath = join(functionFolder, normalizedDestPath)
+    excludeShadowingSymlinks(statted),
+    async ({ srcFile, stat, destPath }) => {
+      const absoluteDestPath = join(functionFolder, destPath)
 
       if (rewrites.has(srcFile)) {
         return mkdirAndWriteFile(absoluteDestPath, rewrites.get(srcFile) as string)
       }
-
-      const stat = await cachedLstat(cache.lstatCache, srcFile)
 
       // If the path is a symlink, find the link target and add the link to a
       // `symlinks` map, which we'll later use to create the symlinks in the
@@ -269,19 +271,18 @@ const createZipArchive = async function ({
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
   const srcFilesInfos = await Promise.all(deduplicatedSrcFiles.map((file) => addStat(cache, file)))
+  const entries = excludeShadowingSymlinks(
+    srcFilesInfos.map(({ srcFile, stat }) => ({
+      srcFile,
+      stat,
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+  )
 
   // We ensure this is not async, so that the archive's checksum is
   // deterministic. Otherwise it depends on the order the files were added.
-  srcFilesInfos.forEach(({ srcFile, stat }) => {
-    zipJsFile({
-      aliases,
-      archive,
-      commonPrefix: basePath,
-      rewrites,
-      srcFile,
-      stat,
-      userNamespace,
-    })
+  entries.forEach(({ srcFile, stat, destPath }) => {
+    zipJsFile({ archive, destPath, rewrites, srcFile, stat })
   })
 
   await endZip(archive, output)
@@ -312,6 +313,41 @@ const addEntryFileToZip = function (archive: Archiver, { contents, filename }: E
   addZipContent(archive, contentBuffer, filename)
 }
 
+interface ArchiveEntry {
+  destPath: string
+  stat: Stats
+}
+
+// Once extracted, a path cannot be both a symbolic link and a directory. When
+// the file list holds a symlinked directory *and* the files reached through it,
+// the archive asks for exactly that, and AWS Lambda rejects the whole bundle
+// with InvalidZipFileException — asynchronously, so the upload only fails later
+// at activation. `unzip -t` does not catch it either: it checks the compressed
+// streams without materialising the tree.
+//
+// The contents are already in the archive, so the link is the safe half to drop.
+export const excludeShadowingSymlinks = function <T extends ArchiveEntry>(files: T[]): T[] {
+  const symlinks = new Set(files.filter(({ stat }) => stat.isSymbolicLink()).map(({ destPath }) => destPath))
+
+  if (symlinks.size === 0) {
+    return files
+  }
+
+  const shadowing = new Set<string>()
+
+  for (const { destPath } of files) {
+    for (let index = destPath.indexOf('/'); index !== -1; index = destPath.indexOf('/', index + 1)) {
+      const ancestor = destPath.slice(0, index)
+
+      if (symlinks.has(ancestor)) {
+        shadowing.add(ancestor)
+      }
+    }
+  }
+
+  return files.filter(({ destPath, stat }) => !(stat.isSymbolicLink() && shadowing.has(destPath)))
+}
+
 const addStat = async function (cache: RuntimeCache, srcFile: string) {
   const stat = await cachedLstat(cache.lstatCache, srcFile)
 
@@ -319,28 +355,21 @@ const addStat = async function (cache: RuntimeCache, srcFile: string) {
 }
 
 const zipJsFile = function ({
-  aliases = new Map(),
   archive,
-  commonPrefix,
+  destPath,
   rewrites = new Map(),
   stat,
   srcFile,
-  userNamespace,
 }: {
-  aliases?: Map<string, string>
   archive: Archiver
-  commonPrefix: string
+  destPath: string
   rewrites?: Map<string, string>
   stat: Stats
   srcFile: string
-  userNamespace: string
 }) {
-  const destPath = aliases.get(srcFile) || srcFile
-  const normalizedDestPath = normalizeFilePath({ commonPrefix, path: destPath, userNamespace })
-
   if (rewrites.has(srcFile)) {
-    addZipContent(archive, rewrites.get(srcFile) as string, normalizedDestPath)
+    addZipContent(archive, rewrites.get(srcFile) as string, destPath)
   } else {
-    addZipFile(archive, srcFile, normalizedDestPath, stat)
+    addZipFile(archive, srcFile, destPath, stat)
   }
 }
