@@ -1,7 +1,11 @@
+import type { ErrorTypes } from '../types.js'
+
+type NormalizeRule = readonly [RegExp, string]
+
 // We group errors by `error.message`. However some `error.message` contain
 // unique IDs, etc. which defeats that grouping. So we normalize those to make
 // them consistent
-export const normalizeGroupingMessage = function (message, type) {
+export const normalizeGroupingMessage = function (message: string, type: ErrorTypes) {
   const messageA = removeDependenciesLogs(message, type)
   const messageB = NORMALIZE_REGEXPS.reduce(normalizeMessage, messageA)
 
@@ -15,7 +19,7 @@ export const normalizeGroupingMessage = function (message, type) {
 }
 
 // Discard debug/info installation information
-const removeDependenciesLogs = function (message, type) {
+const removeDependenciesLogs = function (message: string, type: ErrorTypes) {
   if (type !== 'dependencies') {
     return message
   }
@@ -23,7 +27,7 @@ const removeDependenciesLogs = function (message, type) {
   return message.split('\n').filter(isErrorLine).join('\n')
 }
 
-const isErrorLine = function (line) {
+const isErrorLine = function (line: string) {
   return ERROR_LINES.some((errorLine) => line.startsWith(errorLine))
 }
 
@@ -34,11 +38,11 @@ const ERROR_LINES = [
   'error',
 ]
 
-const normalizeMessage = function (message, [regExp, replacement]) {
+const normalizeMessage = function (message: string, [regExp, replacement]: NormalizeRule) {
   return message.replace(regExp, replacement)
 }
 
-const NORMALIZE_REGEXPS = [
+const NORMALIZE_REGEXPS: NormalizeRule[] = [
   // Base64 URL
   [/(data:[^;]+;base64),[\w+/-=]+/g, 'dataURI'],
   // Node builtins mapping - normalize it to single one so it's not dependent on Node.js version it did run on
@@ -86,7 +90,7 @@ const NORMALIZE_REGEXPS = [
   [/^\s*$/gm, ''],
 ]
 
-const FUNCTIONS_BUNDLING_REGEXPS = [
+const FUNCTIONS_BUNDLING_REGEXPS: NormalizeRule[] = [
   // String literals and identifiers
   [/"([^"]+)"/g, '""'],
   [/'([^']+)'/g, "''"],

@@ -9,7 +9,15 @@ import { cwd } from 'process'
 // Keep non stack trace lines as is.
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
-export const cleanStacks = function ({ stack, rawStack, debug }) {
+export const cleanStacks = function ({
+  stack,
+  rawStack,
+  debug,
+}: {
+  stack: string | undefined
+  rawStack: boolean | undefined
+  debug: boolean | undefined
+}) {
   if (stack === undefined) {
     return
   }
@@ -23,7 +31,7 @@ export const cleanStacks = function ({ stack, rawStack, debug }) {
   return stack.split('\n').reduce(cleanStackLine, '').replace(INITIAL_NEWLINES, '')
 }
 
-const cleanStackLine = function (lines, line) {
+const cleanStackLine = function (lines: string, line: string) {
   const lineA = line.replace(getCwd(), '')
   const lineB = stripVTControlCharacters(lineA)
 
@@ -51,7 +59,7 @@ const getCwd = function () {
 // Check if a line is part of a stack trace
 const STACK_LINE_REGEXP = /^\s+at /
 
-const shouldRemoveStackLine = function (line) {
+const shouldRemoveStackLine = function (line: string) {
   const lineA = normalizePathSlashes(line)
 
   return (
@@ -77,7 +85,7 @@ const INTERNAL_STACK_REGEXP = /(lib\/|tests\/helpers\/|tests\/.*\/tests.js|node_
 
 const INITIAL_NEWLINES = /^\n+/
 
-const normalizePathSlashes = function (line) {
+const normalizePathSlashes = function (line: string) {
   return line.replace(BACKLASH_REGEXP, '/')
 }
 

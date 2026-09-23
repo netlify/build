@@ -3,7 +3,15 @@ import { inspect } from 'util'
 import { omit } from '../../utils/omit.js'
 
 // In uncaught exceptions, print error static properties
-export const getErrorProps = function ({ errorProps, showErrorProps, colors }) {
+export const getErrorProps = function ({
+  errorProps,
+  showErrorProps,
+  colors,
+}: {
+  errorProps: Record<string, unknown>
+  showErrorProps: boolean | undefined
+  colors: boolean
+}) {
   if (!showErrorProps) {
     return
   }

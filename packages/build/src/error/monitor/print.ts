@@ -1,8 +1,23 @@
-import { log } from '../../log/logger.js'
+import { log, type Logs } from '../../log/logger.js'
+
+type EventProps = {
+  context: unknown
+  groupingHash: string
+  severity: string
+  unhandled: boolean
+  _metadata: {
+    location?: unknown
+    plugin?: { packageName?: string; homepage?: string | undefined }
+    pluginPackageJson?: unknown
+    tsConfig?: unknown
+    env?: Record<string, string | undefined>
+    other?: unknown
+  }
+}
 
 // Print event payload instead of sending actual request during tests
 export const printEventForTest = function (
-  { name: errorClass, message: errorMessage },
+  { name: errorClass, message: errorMessage }: Pick<Error, 'name' | 'message'>,
   {
     context,
     groupingHash,
@@ -16,8 +31,8 @@ export const printEventForTest = function (
       env: { BUILD_ID } = {},
       other,
     },
-  },
-  logs,
+  }: EventProps,
+  logs: Logs | undefined,
 ) {
   const eventString = JSON.stringify(
     {
