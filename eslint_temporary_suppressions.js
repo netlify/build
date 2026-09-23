@@ -498,18 +498,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/child/error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/main.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/compatibility.test.ts'],
     rules: {
       'vitest/no-identical-title': 'off',

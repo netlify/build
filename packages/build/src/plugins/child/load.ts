@@ -41,10 +41,7 @@ export const load = async function ({
 
   validatePlugin(logic)
 
-  const methods = Object.fromEntries(
-    // `validatePlugin()` just checked that the plugin's return value is an object
-    Object.entries(logic as Record<string, unknown>).filter(isEventHandlerEntry),
-  )
+  const methods = Object.fromEntries(Object.entries(logic).filter(isEventHandlerEntry))
   const events = Object.keys(methods)
 
   // Context passed to every event handler
