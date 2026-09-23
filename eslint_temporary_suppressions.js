@@ -650,12 +650,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/log/messages/config.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/messages/core.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -666,31 +660,7 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/log/messages/core_steps.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/dry.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/log/messages/install.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/ipc.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/mutations.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
@@ -699,18 +669,6 @@ export default [
     files: ['packages/build/src/log/messages/plugins.ts'],
     rules: {
       '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/status.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/log/messages/steps.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1082,19 +1040,7 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/status/load_error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/status/report.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/status/success.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
