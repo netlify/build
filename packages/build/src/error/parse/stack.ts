@@ -1,14 +1,29 @@
+import type { BasicErrorInfo } from '../types.js'
+
 import { cleanStacks } from './clean_stack.js'
 
 // Retrieve the stack trace
-export const getStackInfo = function ({ message, stack, stackType, rawStack, severity, debug }) {
+export const getStackInfo = function ({
+  message,
+  stack,
+  stackType,
+  rawStack,
+  severity,
+  debug,
+}: Pick<BasicErrorInfo, 'message' | 'stack' | 'stackType' | 'rawStack' | 'severity'> & {
+  debug: boolean | undefined
+}) {
   const { message: messageA, stack: stackA } = splitStackInfo({ message, stack, stackType })
   const messageB = severity === 'none' ? messageA.replace(SUCCESS_ERROR_NAME, '') : messageA
   const stackB = cleanStacks({ stack: stackA, rawStack, debug })
   return { message: messageB, stack: stackB }
 }
 
-const splitStackInfo = function ({ message, stack, stackType }) {
+const splitStackInfo = function ({
+  message,
+  stack,
+  stackType,
+}: Pick<BasicErrorInfo, 'message' | 'stack' | 'stackType'>): SplitStack {
   // Some errors should not show any stack trace
   if (stackType === 'none') {
     return { message }
@@ -23,7 +38,9 @@ const splitStackInfo = function ({ message, stack, stackType }) {
   return splitStack(stack)
 }
 
-const splitStack = function (string) {
+type SplitStack = { message: string; stack?: string }
+
+const splitStack = function (string: string): SplitStack {
   const lines = string.split('\n')
   const stackIndex = lines.findIndex(isStackTrace)
 
@@ -36,7 +53,7 @@ const splitStack = function (string) {
   return { message: messageA, stack: stackA }
 }
 
-const isStackTrace = function (line) {
+const isStackTrace = function (line: string) {
   return line.trim().startsWith('at ')
 }
 

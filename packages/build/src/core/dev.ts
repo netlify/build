@@ -1,5 +1,3 @@
-import type { Client } from '@bugsnag/js'
-
 import { handleBuildError } from '../error/handle.js'
 import type { ConfigMutation } from '../plugins/child/diff.js'
 import type { CoreStepFunctionArgs } from '../plugins_core/types.js'
@@ -22,8 +20,7 @@ type DevBuildResult = {
 
 export const startDev = async (devCommand: DevCommand, flags: Partial<BuildFlags> = {}) => {
   const { mode, logs, debug, testOpts, ...normalizedFlags } = startBuild(flags)
-  // `startErrorMonitor()` returns `any` because of its untyped `memoizeOne(Bugsnag.start.bind())`
-  const errorMonitor = normalizedFlags.errorMonitor as Client | undefined
+  const { errorMonitor } = normalizedFlags
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
@@ -56,8 +53,7 @@ export const startDev = async (devCommand: DevCommand, flags: Partial<BuildFlags
       deployEnvVars,
     }
   } catch (error) {
-    // `handleBuildError()` handles any thrown value, despite its `Error` parameter
-    const { severity, message, stack } = await handleBuildError(error as Error, errorParams)
+    const { severity, message, stack } = await handleBuildError(error, errorParams)
     const { success, severityCode } = getSeverity(severity)
 
     return { success, severityCode, logs, error: { message, stack }, deployEnvVars: [] }

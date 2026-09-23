@@ -1,8 +1,10 @@
 import { cwd as getCwd } from 'process'
 
+import type { Client } from '@bugsnag/js'
+
 import { pathExists } from '../utils/path_exists.js'
 
-import { ErrorParam } from '../core/types.js'
+import type { ErrorParam } from '../core/types.js'
 import { logBuildError } from '../log/messages/core.js'
 
 import { removeErrorColors } from './colors.js'
@@ -10,10 +12,19 @@ import { getErrorInfo } from './info.js'
 import { reportBuildError } from './monitor/report.js'
 import { parseErrorInfo } from './parse/parse.js'
 
+// `ErrorParam` types some of these as `any`
+type BuildErrorParams = Omit<ErrorParam, 'errorMonitor' | 'debug' | 'childEnv' | 'netlifyConfig' | 'testOpts'> & {
+  errorMonitor: Client | undefined
+  debug: boolean | undefined
+  childEnv?: NodeJS.ProcessEnv | undefined
+  netlifyConfig?: ErrorParam['netlifyConfig'] | undefined
+  testOpts?: ErrorParam['testOpts'] | undefined
+}
+
 // Logs and reports a build failure
 export const handleBuildError = async function (
-  error: Error,
-  { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: ErrorParam,
+  error: unknown,
+  { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: BuildErrorParams,
 ) {
   const basicErrorInfo = parseErrorInfo(error)
 
@@ -37,7 +48,7 @@ export const handleBuildError = async function (
 // logged nor reported.
 // However, builds canceled with `utils.build.cancelBuild()` should still show
 // "Build canceled by ..."
-const isCancelCrash = async function (error) {
+const isCancelCrash = async function (error: unknown) {
   const [{ type }] = getErrorInfo(error)
   if (type === 'cancelBuild') {
     return false

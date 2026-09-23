@@ -1,7 +1,7 @@
 import { serializeObject } from '../../log/serialize.js'
 import { getErrorInfo } from '../info.js'
-import type { BuildError, BasicErrorInfo, ErrorInfo, TitleFunction } from '../types.js'
-import { DEFAULT_TITLE, getTypeInfo } from '../types.js'
+import type { AnyErrorLocation, BuildError, BasicErrorInfo, ErrorInfo, TitleFunction } from '../types.js'
+import { DEFAULT_TITLE, getTypeInfo, hasErrorLocation } from '../types.js'
 
 import { getLocationInfo } from './location.js'
 import { normalizeError } from './normalize.js'
@@ -10,7 +10,15 @@ import { getErrorProps } from './properties.js'
 import { getStackInfo } from './stack.js'
 
 // Add additional type-specific error information
-export const getFullErrorInfo = function ({ error, colors, debug }): BuildError {
+export const getFullErrorInfo = function ({
+  error,
+  colors,
+  debug,
+}: {
+  error: unknown
+  colors: boolean
+  debug: boolean | undefined
+}): BuildError {
   const basicErrorInfo = parseErrorInfo(error)
   const {
     message,
@@ -32,9 +40,8 @@ export const getFullErrorInfo = function ({ error, colors, debug }): BuildError 
 
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, severity, debug })
 
-  // FIXME here location should be PluginLocation type, but I'm affraid to mess up the current
-  // getPluginInfo behaviour by running a type check
-  const pluginInfo = getPluginInfo(plugin, location as any)
+  const { packageName, loadedFrom }: AnyErrorLocation = location
+  const pluginInfo = getPluginInfo(plugin, { packageName, loadedFrom })
   const tsConfigInfo = getTsConfigInfo(tsConfig)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps({ errorProps, showErrorProps, colors })
@@ -52,7 +59,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }): BuildError 
 }
 
 // Serialize the `tsConfig` error information
-const getTsConfigInfo = function (tsConfig: any) {
+const getTsConfigInfo = function (tsConfig: ErrorInfo['tsConfig']) {
   if (tsConfig === undefined) {
     return
   }
@@ -61,7 +68,7 @@ const getTsConfigInfo = function (tsConfig: any) {
 }
 
 // Parse error instance into all the basic properties containing information
-export const parseErrorInfo = function (error: Error): BasicErrorInfo {
+export const parseErrorInfo = function (error: unknown): BasicErrorInfo {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
   const { errorMetadata } = errorInfo
@@ -99,6 +106,11 @@ export const parseErrorInfo = function (error: Error): BasicErrorInfo {
 const getTitle = function (title: TitleFunction | string, errorInfo: ErrorInfo) {
   if (typeof title !== 'function') {
     return title
+  }
+
+  // Every title function reads the location, so it would throw
+  if (!hasErrorLocation(errorInfo)) {
+    return DEFAULT_TITLE
   }
 
   try {

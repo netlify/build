@@ -1,26 +1,28 @@
 import { type Attributes } from '@opentelemetry/api'
+import type { PackageJson } from 'read-package-up'
+
+import type { PluginStatus } from '../status/add.js'
 
 // We override errorProps and title through getTitle and getErrorProps
 export type BuildError = Omit<BasicErrorInfo, 'errorProps'> & {
   title: string
-  pluginInfo?: string
-  locationInfo?: string
-  errorProps?: string
+  tsConfigInfo?: string | undefined
+  pluginInfo?: string | undefined
+  locationInfo?: string | undefined
+  errorProps?: string | undefined
 }
 
 export type BasicErrorInfo = {
   message: string
   stack: string
-  severity: string
   type: ErrorTypes
   errorInfo: ErrorInfo
   errorProps: Record<string, unknown>
-  errorMetadata: any
+  errorMetadata: unknown
   /**
    * The core step id where the error took place
    */
   stage?: string
-  tsConfigInfo?: any
 } & ErrorType
 
 /**
@@ -65,20 +67,34 @@ type StackType =
    */
   | 'message'
 
-type GroupFunction = ({ location }: { location: ErrorLocation }) => string
-export type TitleFunction = ({ location }: { location: ErrorLocation }) => string
+// Error information is not validated, so a type's title or group cannot rely on its location's kind
+type GroupFunction = (errorInfo: { location: AnyErrorLocation }) => string | undefined
+export type TitleFunction = (errorInfo: { location: AnyErrorLocation }) => string
 
+/**
+ * Information added to errors by `addErrorInfo()`, either by us, by dependencies like
+ * `@netlify/zip-it-and-ship-it`, or by plugin child processes through IPC
+ */
 export type ErrorInfo = {
+  type?: string | undefined
+  location?: ErrorLocation
   plugin?: PluginInfo
-  tsConfig?: any
-  location: ErrorLocation
+  tsConfig?: { compilerOptions?: unknown; tsNodeOptions?: unknown }
+  errorMetadata?: unknown
+  statuses?: PluginStatus[]
+  /**
+   * The core step id where the error took place
+   */
+  stage?: string
+  /**
+   * Grouping hash used by the error monitor instead of `error.message`
+   */
+  normalizedMessage?: string
 }
 
 type PluginInfo = {
   packageName: string
-  pluginPackageJson: {
-    version?: string
-  }
+  pluginPackageJson?: PackageJson | undefined
   extensionMetadata?: {
     slug: string
     name: string
@@ -92,21 +108,25 @@ type PluginInfo = {
 export type BuildCommandLocation = {
   buildCommand: string
   buildCommandOrigin: string
+  configPath?: string | undefined
 }
 
 export const isBuildCommandLocation = function (location?: ErrorLocation): location is BuildCommandLocation {
-  const buildLocation = location as BuildCommandLocation
-  return typeof buildLocation?.buildCommand === 'string' && typeof buildLocation?.buildCommandOrigin === 'string'
+  const fields: AnyErrorLocation | undefined = location
+  return typeof fields?.buildCommand === 'string' && typeof fields.buildCommandOrigin === 'string'
 }
 
+// `@netlify/zip-it-and-ship-it` sets `bundler` and `runtime` but not `functionType`
 export type FunctionsBundlingLocation = {
   functionName: string
-  functionType: string
+  functionType?: string
+  bundler?: string
+  runtime?: string
 }
 
 export const isFunctionsBundlingLocation = function (location?: ErrorLocation): location is FunctionsBundlingLocation {
-  const bundlingLocation = location as FunctionsBundlingLocation
-  return typeof bundlingLocation?.functionName === 'string' && typeof bundlingLocation?.functionType === 'string'
+  const fields: AnyErrorLocation | undefined = location
+  return typeof fields?.functionName === 'string' && typeof fields.functionType === 'string'
 }
 
 export type CoreStepLocation = {
@@ -114,7 +134,8 @@ export type CoreStepLocation = {
 }
 
 export const isCoreStepLocation = function (location?: ErrorLocation): location is CoreStepLocation {
-  return typeof (location as CoreStepLocation)?.coreStepName === 'string'
+  const fields: AnyErrorLocation | undefined = location
+  return typeof fields?.coreStepName === 'string'
 }
 
 export type PluginLocation = {
@@ -122,25 +143,24 @@ export type PluginLocation = {
   packageName: string
   loadedFrom: string
   origin: string
-  input?: string
+  input?: string | undefined
 }
 
 export const isPluginLocation = function (location?: ErrorLocation): location is PluginLocation {
-  const pluginLocation = location as PluginLocation
+  const fields: AnyErrorLocation | undefined = location
   return (
-    typeof pluginLocation?.event === 'string' &&
-    typeof pluginLocation?.packageName === 'string' &&
-    typeof pluginLocation?.loadedFrom === 'string'
+    typeof fields?.event === 'string' && typeof fields.packageName === 'string' && typeof fields.loadedFrom === 'string'
   )
 }
 
 export type APILocation = {
   endpoint: string
-  parameters?: any
+  parameters?: unknown
 }
 
 export const isAPILocation = function (location?: ErrorLocation): location is APILocation {
-  return typeof (location as APILocation)?.endpoint === 'string'
+  const fields: AnyErrorLocation | undefined = location
+  return typeof fields?.endpoint === 'string'
 }
 
 export type DeployLocation = {
@@ -148,7 +168,8 @@ export type DeployLocation = {
 }
 
 export const isDeployLocation = function (location?: ErrorLocation): location is DeployLocation {
-  return typeof (location as DeployLocation)?.statusCode === 'string'
+  const fields: AnyErrorLocation | undefined = location
+  return typeof fields?.statusCode === 'string'
 }
 
 export type ErrorLocation =
@@ -159,9 +180,20 @@ export type ErrorLocation =
   | APILocation
   | DeployLocation
 
+/**
+ * The fields of every kind of location, since nothing checks which kind an error's location is
+ */
+export type AnyErrorLocation = Partial<
+  BuildCommandLocation & FunctionsBundlingLocation & CoreStepLocation & PluginLocation & APILocation & DeployLocation
+>
+
+export const hasErrorLocation = function (errorInfo: ErrorInfo): errorInfo is ErrorInfo & { location: ErrorLocation } {
+  return errorInfo.location !== undefined
+}
+
 const buildErrorAttributePrefix = 'build.error'
 
-const errorLocationToTracingAttributes = function (location: ErrorLocation): Attributes {
+const errorLocationToTracingAttributes = function (location: ErrorLocation | undefined): Attributes {
   const locationAttributePrefix = `${buildErrorAttributePrefix}.location`
   if (isBuildCommandLocation(location)) {
     return {
@@ -209,23 +241,23 @@ const pluginDataToTracingAttributes = function (pluginInfo?: PluginInfo): Attrib
   if (typeof pluginInfo === 'undefined') return {}
 
   return {
-    [`${pluginAttributePrefix}.name`]: pluginInfo?.packageName,
-    [`${pluginAttributePrefix}.version`]: pluginInfo?.pluginPackageJson?.version,
-    [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo?.extensionMetadata?.author,
-    [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo?.extensionMetadata?.slug,
+    [`${pluginAttributePrefix}.name`]: pluginInfo.packageName,
+    [`${pluginAttributePrefix}.version`]: pluginInfo.pluginPackageJson?.version,
+    [`${pluginAttributePrefix}.extensionAuthor`]: pluginInfo.extensionMetadata?.author,
+    [`${pluginAttributePrefix}.extensionSlug`]: pluginInfo.extensionMetadata?.slug,
   }
 }
 
 /**
  * Given a BuildError, extract the relevant trace attributes to add to the on-going Span
  */
-export const buildErrorToTracingAttributes = function (error: BuildError | BasicErrorInfo): Attributes {
-  const attributes = {}
+export const buildErrorToTracingAttributes = function (error: Partial<BuildError | BasicErrorInfo>): Attributes {
+  const attributes: Attributes = {}
   // Check we're not adding undefined values
-  if (error?.severity) attributes[`${buildErrorAttributePrefix}.severity`] = error.severity
-  if (error?.type) attributes[`${buildErrorAttributePrefix}.type`] = error.type
-  if (error?.locationType) attributes[`${buildErrorAttributePrefix}.location.type`] = error.locationType
-  if (error?.stage) attributes[`${buildErrorAttributePrefix}.step.id`] = error.stage
+  if (error.severity) attributes[`${buildErrorAttributePrefix}.severity`] = error.severity
+  if (error.type) attributes[`${buildErrorAttributePrefix}.type`] = error.type
+  if (error.locationType) attributes[`${buildErrorAttributePrefix}.location.type`] = error.locationType
+  if (error.stage) attributes[`${buildErrorAttributePrefix}.step.id`] = error.stage
   return {
     ...attributes,
     ...errorLocationToTracingAttributes(error.errorInfo?.location),
@@ -233,11 +265,16 @@ export const buildErrorToTracingAttributes = function (error: BuildError | Basic
   }
 }
 
+// Like `TYPES[type] !== undefined`, this is also true for `Object.prototype` keys
+const isErrorType = function (type: string | undefined): type is ErrorTypes {
+  return type !== undefined && type in TYPES
+}
+
 /**
  * Retrieve error-type specific information
  */
-export const getTypeInfo = function ({ type }) {
-  const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
+export const getTypeInfo = function ({ type }: ErrorInfo): ErrorType & { type: ErrorTypes } {
+  const typeA = isErrorType(type) ? type : DEFAULT_TYPE
   return { type: typeA, ...TYPES[typeA] }
 }
 
@@ -252,23 +289,23 @@ export interface ErrorType {
   /**
    *  retrieve a human-friendly location of the error, printed
    */
-  locationType?: string
+  locationType?: string | undefined
   /**
    *  `true` when the `Error` instance static properties
    */
-  showErrorProps?: boolean
+  showErrorProps?: boolean | undefined
   /**
    *  `true` when the stack trace should be cleaned up
    */
-  rawStack?: boolean
+  rawStack?: boolean | undefined
   /**
    *  `true` when we want this error to show in build logs (defaults to true)
    */
-  showInBuildLog?: boolean
+  showInBuildLog?: boolean | undefined
   /**
    *  main title shown in Bugsnag. Also used to group errors together in Bugsnag, combined with `error.message`. Defaults to `title`.
    */
-  group?: GroupFunction
+  group?: GroupFunction | undefined
   /**
    *  error severity (also used by Bugsnag)
    */
@@ -321,12 +358,15 @@ export type ErrorTypes = ErrorTypeMap
  *    with current filters"
  *
  */
-const TYPES: { [T in ErrorTypes]: ErrorType } = {
+// Fallback when a title cannot be built from the error information
+export const DEFAULT_TITLE = 'Core internal error'
+
+const TYPES: Record<ErrorTypes, ErrorType> = {
   /**
    * Plugin called `utils.build.cancelBuild()`
    */
   cancelBuild: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Build canceled by ${packageName}`,
+    title: ({ location: { packageName } }) => `Build canceled by ${String(packageName)}`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'none',
@@ -351,8 +391,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * User misconfigured a plugin
    */
   pluginInput: {
-    title: ({ location: { packageName, input } }: { location: PluginLocation }) =>
-      `Plugin "${packageName}" invalid input "${input}"`,
+    title: ({ location: { packageName, input } }) => `Plugin "${String(packageName)}" invalid input "${String(input)}"`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'info',
@@ -370,7 +409,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    */
   buildCommand: {
     title: '"build.command" failed',
-    group: ({ location: { buildCommand } }: { location: BuildCommandLocation }) => buildCommand,
+    group: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
     locationType: 'buildCommand',
     severity: 'info',
@@ -379,15 +418,14 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * User error during Functions bundling
    */
   functionsBundling: {
-    title: ({ location: { functionName, functionType } }: { location: FunctionsBundlingLocation }) => {
+    title: ({ location: { functionName, functionType } }) => {
       if (functionType === 'edge') {
         return 'Bundling of edge function failed'
       }
 
-      return `Bundling of function "${functionName}" failed`
+      return `Bundling of function "${String(functionName)}" failed`
     },
-    group: ({ location: { functionType = 'serverless' } }: { location: FunctionsBundlingLocation }) =>
-      `Bundling of ${functionType} function failed`,
+    group: ({ location: { functionType = 'serverless' } }) => `Bundling of ${functionType} function failed`,
     stackType: 'none',
     locationType: 'functionsBundling',
     severity: 'info',
@@ -404,7 +442,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Plugin called `utils.build.failBuild()`
    */
   failBuild: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -413,7 +451,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Plugin called `utils.build.failPlugin()`
    */
   failPlugin: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" failed`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -422,7 +460,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Plugin has an invalid shape
    */
   pluginValidation: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" internal error`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'warning',
@@ -431,7 +469,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Plugin threw an uncaught exception
    */
   pluginInternal: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -442,7 +480,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Bug while orchestrating child processes
    */
   ipc: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'warning',
@@ -451,7 +489,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Core plugin internal error
    */
   corePlugin: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -462,7 +500,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Trusted plugin internal error (all of our `@netlify/*` plugins).
    */
   trustedPlugin: {
-    title: ({ location: { packageName } }: { location: PluginLocation }) => `Plugin "${packageName}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${String(packageName)}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -473,8 +511,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Core step internal error
    */
   coreStep: {
-    title: ({ location: { coreStepName } }: { location: CoreStepLocation }) =>
-      `Internal error during "${coreStepName}"`,
+    title: ({ location: { coreStepName } }) => `Internal error during "${String(coreStepName)}"`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -485,7 +522,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * Request error when `@netlify/build` was calling Netlify API
    */
   api: {
-    title: ({ location: { endpoint } }: { location: APILocation }) => `API error on "${endpoint}"`,
+    title: ({ location: { endpoint } }) => `API error on "${String(endpoint)}"`,
     stackType: 'message',
     showErrorProps: true,
     locationType: 'api',
@@ -513,7 +550,7 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
    * `@netlify/build` threw an uncaught exception
    */
   exception: {
-    title: 'Core internal error',
+    title: DEFAULT_TITLE,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -534,6 +571,3 @@ const TYPES: { [T in ErrorTypes]: ErrorType } = {
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
-
-// Fallback when a title cannot be built from the error information
-export const DEFAULT_TITLE = TYPES[DEFAULT_TYPE].title as string
