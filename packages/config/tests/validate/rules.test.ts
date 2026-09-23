@@ -1,3 +1,4 @@
+import { resolveConfig } from '@netlify/config'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
@@ -30,12 +31,15 @@ test('edge_functions.any.generator: string, when set by another origin than netl
 })
 
 test('functions.*.memory, region, vcpu and schedule accept valid values', async () => {
-  const { config } = (await new Fixture(
-    import.meta.url,
-    './fixtures/function_config_valid_resources',
-  ).runWithConfigAsObject()) as { config: { functions: Record<string, Record<string, unknown>> } }
+  // `Infinity` is only reachable from code: TOML's `inf`, like the printed result, goes through JSON.
+  const { config } = await resolveConfig(
+    new Fixture(import.meta.url, './fixtures/function_config_valid_resources')
+      .withFlags({ inlineConfig: { functions: { daily: { memory: Infinity } } } })
+      .getConfigFlags(),
+  )
 
   expect(config.functions['*']).toMatchObject({ memory: '2gb', region: 'cmh' })
   expect(config.functions['small']).toMatchObject({ memory: 512, vcpu: 0.5 })
   expect(config.functions['large']).toMatchObject({ vcpu: 2, schedule: '5 4 * * *' })
+  expect(config.functions['daily']).toMatchObject({ memory: Infinity, schedule: ['@daily'] })
 })
