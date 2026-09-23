@@ -55,7 +55,6 @@ const resolveWithCachedSiteData = async (cachedSiteData: object, featureFlags: R
 }
 
 test('With use_cached_site_info, the site data of a cached config is reused without any request', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { siteInfo, accounts, integrations, requestedPaths } = await resolveWithCachedSiteData(
     { siteInfo: CACHED_SITE_INFO, accounts: CACHED_ACCOUNTS, integrations: CACHED_INTEGRATIONS },
     { use_cached_site_info: true },
@@ -68,28 +67,24 @@ test('With use_cached_site_info, the site data of a cached config is reused with
 })
 
 test('With use_cached_site_info, the site data is fetched when the cached config lacks some of it', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { siteInfo, accounts, integrations, requestedPaths } = await resolveWithCachedSiteData(
     { siteInfo: CACHED_SITE_INFO, accounts: undefined, integrations: CACHED_INTEGRATIONS },
     { use_cached_site_info: true },
   )
 
   expect(requestedPaths).toEqual(SITE_DATA_PATHS)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(siteInfo.name).toBe('api-name')
   expect(accounts).toEqual([{ slug: 'api-account' }])
   expect(integrations.map(({ slug }) => slug)).toEqual(['api-extension'])
 })
 
 test('Without use_cached_site_info, the site data of a cached config is fetched again', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { siteInfo, accounts, integrations, requestedPaths } = await resolveWithCachedSiteData(
     { siteInfo: CACHED_SITE_INFO, accounts: CACHED_ACCOUNTS, integrations: CACHED_INTEGRATIONS },
     {},
   )
 
   expect(requestedPaths).toEqual(SITE_DATA_PATHS)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(siteInfo.name).toBe('api-name')
   expect(accounts).toEqual([{ slug: 'api-account' }])
   expect(integrations.map(({ slug }) => slug)).toEqual(['api-extension'])
