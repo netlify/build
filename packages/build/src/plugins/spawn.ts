@@ -19,13 +19,13 @@ import {
   logRuntime,
 } from '../log/messages/compatibility.js'
 import { SystemLogger } from '../plugins_core/types.js'
-import { isTrustedPlugin } from '../steps/plugin.js'
 import { measureDuration } from '../time/main.js'
 
 import { callChild, getEventFromChild } from './ipc.js'
 import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 import { captureStandardError } from './system_log.js'
+import { isTrustedPlugin } from './trusted.js'
 
 export type ChildProcess = ExecaChildProcess<string>
 
