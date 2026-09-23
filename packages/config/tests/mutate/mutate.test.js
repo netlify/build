@@ -3,11 +3,9 @@ import { copyFile, rm } from 'fs/promises'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 
+import { resolveConfig, updateConfig } from '@netlify/config'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
-
-import { updateConfig } from '../../lib/index.js'
-import { resolveConfig } from '../../lib/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
