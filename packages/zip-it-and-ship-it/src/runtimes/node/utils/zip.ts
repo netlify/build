@@ -326,6 +326,8 @@ interface ArchiveEntry {
 // streams without materialising the tree.
 //
 // The contents are already in the archive, so the link is the safe half to drop.
+// Aliases let two source paths land on one destination, so a link can collide
+// with a real entry either as its ancestor or on the exact same path.
 export const excludeShadowingSymlinks = function <T extends ArchiveEntry>(files: T[]): T[] {
   const symlinks = new Set(files.filter(({ stat }) => stat.isSymbolicLink()).map(({ destPath }) => destPath))
 
@@ -335,7 +337,11 @@ export const excludeShadowingSymlinks = function <T extends ArchiveEntry>(files:
 
   const shadowing = new Set<string>()
 
-  for (const { destPath } of files) {
+  for (const { destPath, stat } of files) {
+    if (!stat.isSymbolicLink() && symlinks.has(destPath)) {
+      shadowing.add(destPath)
+    }
+
     for (let index = destPath.indexOf('/'); index !== -1; index = destPath.indexOf('/', index + 1)) {
       const ancestor = destPath.slice(0, index)
 

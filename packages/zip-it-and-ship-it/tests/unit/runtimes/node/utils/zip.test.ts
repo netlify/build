@@ -38,6 +38,19 @@ describe('excludeShadowingSymlinks', () => {
     expect(destPaths(excludeShadowingSymlinks(files))).toStrictEqual(['node_modules/sharp/build/sharp.node'])
   })
 
+  test('drops a symlink that an alias put on the same path as a real file', () => {
+    const files = [entry('index.js'), entry('node_modules/left-pad', true), entry('node_modules/left-pad')]
+
+    expect(destPaths(excludeShadowingSymlinks(files))).toStrictEqual(['index.js', 'node_modules/left-pad'])
+    expect(excludeShadowingSymlinks(files).every(({ stat }) => !stat.isSymbolicLink())).toBe(true)
+  })
+
+  test('keeps two symlinks that merely share a target path', () => {
+    const files = [entry('node_modules/is-odd', true), entry('node_modules/.pnpm/is-even/node_modules/is-odd', true)]
+
+    expect(destPaths(excludeShadowingSymlinks(files))).toStrictEqual(destPaths(files))
+  })
+
   test('keeps symlinks that shadow nothing', () => {
     const files = [
       entry('index.js'),
