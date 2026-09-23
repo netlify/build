@@ -71,7 +71,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
   // which consumers like the CLI can set, is present. In those cases, let the
   // flow continue so that the default config is parsed and used.
   if (parsedCachedConfig !== undefined && opts.defaultConfig === undefined) {
-    return parsedCachedConfig
+    return parsedCachedConfig as $TSFixMe
   }
 
   // TODO(kh): remove this mapping and get the extensionApiHost from the opts
@@ -102,7 +102,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  let { siteInfo, accounts, integrations: extensions } = parsedCachedConfig || {}
+  let { siteInfo, accounts, integrations: extensions } = (parsedCachedConfig || {}) as $TSFixMe
 
   // If we have cached site info, we don't need to fetch it again
   const useCachedSiteInfo = Boolean(featureFlags?.use_cached_site_info && siteInfo && accounts && extensions)
