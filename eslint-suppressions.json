@@ -427,7 +427,7 @@
       "count": 6
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 338
+      "count": 334
     },
     "@typescript-eslint/no-unsafe-member-access": {
       "count": 6
@@ -482,7 +482,7 @@
       "count": 15
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 62
+      "count": 61
     },
     "@typescript-eslint/no-unsafe-member-access": {
       "count": 2
@@ -524,47 +524,6 @@
       "count": 1
     }
   },
-  "packages/build/src/error/handle.ts": {
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 4
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/error/info.ts": {
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 2
-    }
-  },
-  "packages/build/src/error/monitor/report.js": {
-    "n/no-missing-import": {
-      "count": 7
-    }
-  },
-  "packages/build/src/error/monitor/start.ts": {
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
-    }
-  },
   "packages/build/src/error/parse/location.ts": {
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 2
@@ -579,20 +538,6 @@
       "count": 1
     },
     "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
-    }
-  },
-  "packages/build/src/error/parse/parse.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 4
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 23
-    },
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -615,7 +560,7 @@
   },
   "packages/build/src/error/parse/serialize_log.ts": {
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 8
+      "count": 7
     },
     "@typescript-eslint/no-unsafe-member-access": {
       "count": 1
@@ -629,48 +574,6 @@
   },
   "packages/build/src/error/parse/serialize_status.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 1
-    }
-  },
-  "packages/build/src/error/parse/stack.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/error/report.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 4
-    },
-    "@typescript-eslint/prefer-nullish-coalescing": {
-      "count": 1
-    }
-  },
-  "packages/build/src/error/types.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 4
-    },
-    "@typescript-eslint/no-unnecessary-condition": {
-      "count": 23
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
       "count": 1
     }
   },
@@ -748,7 +651,7 @@
       "count": 11
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 5
+      "count": 4
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1185,7 +1088,7 @@
       "count": 2
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 21
+      "count": 20
     }
   },
   "packages/build/src/steps/get.ts": {
@@ -1224,7 +1127,7 @@
       "count": 8
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 80
+      "count": 77
     },
     "n/no-missing-import": {
       "count": 3

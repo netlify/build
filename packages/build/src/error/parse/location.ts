@@ -10,7 +10,7 @@ import type {
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
-export const getLocationInfo = function ({ stack, location, locationType }) {
+export const getLocationInfo = function ({ stack, location, locationType }): string | undefined {
   // No location to print
   if (locationType === undefined && stack === undefined) {
     return
