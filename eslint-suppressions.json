@@ -1719,23 +1719,6 @@
       "count": 1
     }
   },
-  "packages/config/src/context.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 8
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 5
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/config/src/default.js": {
     "n/no-missing-import": {
       "count": 1
@@ -1806,12 +1789,9 @@
       "count": 7
     },
     "@typescript-eslint/no-unsafe-return": {
-      "count": 4
+      "count": 6
     },
     "@typescript-eslint/prefer-nullish-coalescing": {
-      "count": 1
-    },
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -1822,7 +1802,7 @@
   },
   "packages/config/src/index.ts": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 2
     }
   },
   "packages/config/src/inline_config.js": {
@@ -1835,10 +1815,10 @@
       "count": 13
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 5
+      "count": 8
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 154
+      "count": 145
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1847,7 +1827,7 @@
       "count": 11
     },
     "@typescript-eslint/no-unsafe-return": {
-      "count": 5
+      "count": 3
     },
     "@typescript-eslint/prefer-nullish-coalescing": {
       "count": 2
@@ -1856,23 +1836,7 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 7
-    }
-  },
-  "packages/config/src/merge.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/config/src/merge_normalize.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
       "count": 6
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 2
     }
   },
   "packages/config/src/mutations/apply.js": {
@@ -1882,30 +1846,7 @@
   },
   "packages/config/src/mutations/update.js": {
     "n/no-missing-import": {
-      "count": 5
-    }
-  },
-  "packages/config/src/normalize.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "@typescript-eslint/prefer-nullish-coalescing": {
-      "count": 1
-    },
-    "n/no-missing-import": {
-      "count": 1
+      "count": 6
     }
   },
   "packages/config/src/options/main.js": {
