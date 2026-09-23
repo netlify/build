@@ -29,7 +29,7 @@ export const useManifest = async function (
     debug: boolean
   },
 ) {
-  const manifestPath = await getManifestPath({ pluginDir, packageDir, packageName })
+  const manifestPath = getManifestPath({ pluginDir, packageDir, packageName })
 
   try {
     const manifest = await loadManifest({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin })

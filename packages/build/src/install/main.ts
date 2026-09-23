@@ -5,20 +5,48 @@ import { execa } from 'execa'
 import { addErrorInfo } from '../error/info.js'
 import { pathExists } from '../utils/path_exists.js'
 
+type CommandType = 'install' | 'addExact'
+type Manager = 'npm' | 'yarn'
+type Command = [string, ...string[]]
+
 // Install Node.js dependencies in a specific directory
-export const installDependencies = function ({ packageRoot, isLocal }) {
+export const installDependencies = function ({
+  packageRoot,
+  isLocal,
+}: {
+  packageRoot: string
+  isLocal: boolean
+}): Promise<void> {
   return runCommand({ packageRoot, isLocal, type: 'install' })
 }
 
 // Add new Node.js dependencies, with exact semver ranges
-export const addExactDependencies = function ({ packageRoot, isLocal, packages }) {
+export const addExactDependencies = function ({
+  packageRoot,
+  isLocal,
+  packages,
+}: {
+  packageRoot: string
+  isLocal: boolean
+  packages?: string[]
+}): Promise<void> | undefined {
   if (!packages || packages.length === 0) {
     return
   }
   return runCommand({ packageRoot, packages, isLocal, type: 'addExact' })
 }
 
-const runCommand = async function ({ packageRoot, packages = [], isLocal, type }) {
+const runCommand = async function ({
+  packageRoot,
+  packages = [],
+  isLocal,
+  type,
+}: {
+  packageRoot: string
+  packages?: string[]
+  isLocal: boolean
+  type: CommandType
+}): Promise<void> {
   try {
     const [command, ...args] = await getCommand({ packageRoot, type, isLocal })
     // `addExact` is used to install Netlify Integration/extension plugins, which can be
@@ -29,7 +57,10 @@ const runCommand = async function ({ packageRoot, packages = [], isLocal, type }
     const env = type === 'addExact' ? { npm_config_allow_remote: 'all' } : {}
     await execa(command, [...args, ...packages], { cwd: packageRoot, all: true, env })
   } catch (error) {
-    const message = getErrorMessage(error.all)
+    // `getCommand()`'s guard is unreachable, so only `execa()` errors land here,
+    // and with `all: true` they include the interleaved output
+    const { all } = error as { all: string }
+    const message = getErrorMessage(all)
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${message}`)
     addErrorInfo(errorA, { type: 'dependencies' })
     throw errorA
@@ -37,14 +68,26 @@ const runCommand = async function ({ packageRoot, packages = [], isLocal, type }
 }
 
 // Retrieve the shell command to install or add dependencies
-const getCommand = async function ({ packageRoot, type, isLocal }) {
+const getCommand = async function ({
+  packageRoot,
+  type,
+  isLocal,
+}: {
+  packageRoot: string
+  type: CommandType
+  isLocal: boolean
+}): Promise<Command> {
   const manager = await getManager(type, packageRoot)
   const command = COMMANDS[manager][type]
+  // Unreachable: `getManager()` only returns `yarn` for `install`
+  if (command === undefined) {
+    throw new Error(`No "${type}" command for ${manager}`)
+  }
   const commandA = addYarnCustomCache(command, manager, isLocal)
   return commandA
 }
 
-const getManager = async function (type, packageRoot) {
+const getManager = async function (type: CommandType, packageRoot: string): Promise<Manager> {
   // `addDependencies()` always uses npm
   if (type === 'addExact') {
     return 'npm'
@@ -57,7 +100,7 @@ const getManager = async function (type, packageRoot) {
   return 'npm'
 }
 
-const COMMANDS = {
+const COMMANDS: Record<Manager, Partial<Record<CommandType, Command>>> = {
   npm: {
     addExact: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund', '--save-exact'],
     install: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund'],
@@ -68,7 +111,7 @@ const COMMANDS = {
 }
 
 // In CI, yarn uses a custom cache folder
-const addYarnCustomCache = function (command, manager, isLocal) {
+const addYarnCustomCache = function (command: Command, manager: Manager, isLocal: boolean): Command {
   if (manager !== 'yarn' || isLocal) {
     return command
   }
@@ -79,12 +122,12 @@ const addYarnCustomCache = function (command, manager, isLocal) {
 const YARN_CI_CACHE_DIR = `${homedir()}/.yarn_cache`
 
 // Retrieve message to add to install errors
-const getErrorMessage = function (allOutput) {
+const getErrorMessage = function (allOutput: string): string {
   return allOutput.split('\n').filter(isNotNpmLogMessage).join('\n')
 }
 
 // Debug logs shown at the end of npm errors is not useful in Netlify Build
-const isNotNpmLogMessage = function (line) {
+const isNotNpmLogMessage = function (line: string): boolean {
   return NPM_LOG_MESSAGES.every((message) => !line.includes(message))
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']

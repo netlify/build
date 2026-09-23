@@ -7,7 +7,16 @@ import { validatePlugin } from './validate.js'
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin steps. This is also passed to the parent.
-export const load = async function ({ pluginPath, inputs, packageJson, verbose, netlifyConfig }) {
+// The parent sends these over IPC. Only `pluginPath` is read here: the rest is passed on.
+type LoadPayload = {
+  pluginPath: string
+  inputs: unknown
+  packageJson: unknown
+  verbose: unknown
+  netlifyConfig: unknown
+}
+
+export const load = async function ({ pluginPath, inputs, packageJson, verbose, netlifyConfig }: LoadPayload) {
   const tsNodeService = registerTypeScript(pluginPath)
   const logic = await getLogic({ pluginPath, inputs, tsNodeService, netlifyConfig })
 

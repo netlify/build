@@ -28,7 +28,7 @@ const coreStep: CoreStepFunction = async function ({
 
   await zipItAndShipIt.zipServer(serverEntry.entryPath, resolve(buildDir, SERVER_DIST), {
     basePath: buildDir,
-    featureFlags: getZisiFeatureFlags(featureFlags ?? {}),
+    featureFlags: getZisiFeatureFlags(featureFlags),
     repositoryRoot,
     systemLog,
   })

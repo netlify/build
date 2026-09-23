@@ -3,18 +3,25 @@ import fsSync from 'node:fs'
 import { addErrorInfo } from '../../error/info.js'
 
 // Retrieve "manifest.yml" path for a specific plugin
-export const getManifestPath = async function ({ pluginDir, packageDir, packageName }) {
+export const getManifestPath = function ({
+  pluginDir,
+  packageDir,
+  packageName,
+}: {
+  pluginDir: string
+  packageDir: string | undefined
+  packageName: string
+}): string {
   const dirs = [pluginDir, packageDir]
-    .filter(Boolean)
+    .filter((dir): dir is string => Boolean(dir))
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
   const manifestPath = dirs.find((dir) => fsSync.existsSync(dir))
-  validateManifestExists(manifestPath, packageName)
-  return manifestPath
+  return validateManifestExists(manifestPath, packageName)
 }
 
-const validateManifestExists = function (manifestPath, packageName) {
+const validateManifestExists = function (manifestPath: string | undefined, packageName: string): string {
   if (manifestPath !== undefined) {
-    return
+    return manifestPath
   }
 
   const error = new Error(

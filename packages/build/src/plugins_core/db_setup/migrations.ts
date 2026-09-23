@@ -8,7 +8,7 @@ import { readMigrationEntries, getMigrationsSrc } from './utils.js'
 import { validateMigrations, formatValidationErrors } from './validation.js'
 
 const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
-  if (!featureFlags?.netlify_build_db_setup) {
+  if (!featureFlags.netlify_build_db_setup) {
     return false
   }
 

@@ -1,29 +1,45 @@
 import { THEME } from '../../log/theme.js'
 import { isPlainObject } from '../../utils/is_plain_object.js'
 
+export type PluginManifestInput = {
+  name: string
+  description?: string
+  required?: boolean
+  default?: unknown
+}
+
+export type PluginManifest = {
+  name: string
+  inputs?: PluginManifestInput[]
+}
+
 // Validate `manifest.yml` syntax
-export const validateManifest = function (manifest, rawManifest) {
+export const validateManifest = function (manifest: unknown, rawManifest: string): void {
   try {
-    validateBasic(manifest)
-    validateUnknownProps(manifest)
-    validateName(manifest)
-    validateInputs(manifest)
+    const manifestObject = validateBasic(manifest)
+    validateUnknownProps(manifestObject)
+    validateName(manifestObject)
+    validateInputs(manifestObject)
   } catch (error) {
-    error.message = `Plugin's "manifest.yml" ${error.message}
+    if (error instanceof Error) {
+      error.message = `Plugin's "manifest.yml" ${error.message}
 
 ${THEME.errorSubHeader('manifest.yml')}
 ${rawManifest.trim()}`
+    }
     throw error
   }
 }
 
-const validateBasic = function (manifest) {
+const validateBasic = function (manifest: unknown): Record<string, unknown> {
   if (!isPlainObject(manifest)) {
     throw new Error('must be a plain object')
   }
+
+  return manifest
 }
 
-const validateUnknownProps = function (manifest) {
+const validateUnknownProps = function (manifest: Record<string, unknown>): void {
   const unknownProp = Object.keys(manifest).find((key) => !VALID_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`unknown property "${unknownProp}"`)
@@ -32,7 +48,7 @@ const validateUnknownProps = function (manifest) {
 
 const VALID_PROPS = new Set(['name', 'inputs'])
 
-const validateName = function ({ name }) {
+const validateName = function ({ name }: Record<string, unknown>): void {
   if (name === undefined) {
     throw new Error('must contain a "name" property')
   }
@@ -42,7 +58,7 @@ const validateName = function ({ name }) {
   }
 }
 
-const validateInputs = function ({ inputs }) {
+const validateInputs = function ({ inputs }: Record<string, unknown>): void {
   if (inputs === undefined) {
     return
   }
@@ -54,24 +70,26 @@ const validateInputs = function ({ inputs }) {
   inputs.forEach(validateInput)
 }
 
-const isArrayOfObjects = function (objects) {
+const isArrayOfObjects = function (objects: unknown): objects is Record<string, unknown>[] {
   return Array.isArray(objects) && objects.every(isPlainObject)
 }
 
-const validateInput = function (input, index) {
+const validateInput = function (input: Record<string, unknown>, index: number): void {
   try {
     validateUnknownInputProps(input)
     validateInputName(input)
     validateInputDescription(input)
     validateInputRequired(input)
   } catch (error) {
-    error.message = `"inputs" property is invalid.
-Input at position ${index} ${error.message}.`
+    if (error instanceof Error) {
+      error.message = `"inputs" property is invalid.
+Input at position ${String(index)} ${error.message}.`
+    }
     throw error
   }
 }
 
-const validateUnknownInputProps = function (input) {
+const validateUnknownInputProps = function (input: Record<string, unknown>): void {
   const unknownProp = Object.keys(input).find((key) => !VALID_INPUT_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`has an unknown property "${unknownProp}"`)
@@ -80,7 +98,7 @@ const validateUnknownInputProps = function (input) {
 
 const VALID_INPUT_PROPS = new Set(['name', 'description', 'required', 'default'])
 
-const validateInputName = function ({ name }) {
+const validateInputName = function ({ name }: Record<string, unknown>): void {
   if (name === undefined) {
     throw new Error('must contain a "name" property')
   }
@@ -90,7 +108,7 @@ const validateInputName = function ({ name }) {
   }
 }
 
-const validateInputDescription = function ({ description }) {
+const validateInputDescription = function ({ description }: Record<string, unknown>): void {
   if (description === undefined) {
     return
   }
@@ -100,7 +118,7 @@ const validateInputDescription = function ({ description }) {
   }
 }
 
-const validateInputRequired = function ({ required }) {
+const validateInputRequired = function ({ required }: Record<string, unknown>): void {
   if (required !== undefined && typeof required !== 'boolean') {
     throw new Error('"required" property must be a boolean')
   }
