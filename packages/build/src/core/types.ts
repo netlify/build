@@ -7,13 +7,16 @@ import type { ConfigMutation } from '../plugins/child/diff.js'
 export type Mode = 'buildbot' | 'cli' | 'require'
 
 export type BuildCLIFlags = {
-  cachedConfig: Record<string, unknown>
+  /** The object `@netlify/config` resolves, which callers pass back as-is */
+  cachedConfig: object
   /** Netlify Site ID */
   siteId: string
   /** Netlify API token for authentication */
   token: string
   /** Netlify Deploy ID */
   deployId: string
+  /** URL of the Edge Functions bootstrap module, overriding edge-bundler's default */
+  edgeFunctionsBootstrapURL?: string
   /** Netlify Skew Protection token */
   skewProtectionToken?: string
   /**
