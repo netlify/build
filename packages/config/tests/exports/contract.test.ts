@@ -35,10 +35,8 @@ test('cleanupConfig() prints properties in a fixed order', () => {
     redirects: [{ from: '/a', to: '/b' }],
     headersOrigin: 'config',
     headers: [{ for: '/', values: { a: 'b' } }],
-    // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
     plugins: [{ package: 'plugin', origin: 'config', inputs: {} }],
     build: {
-      // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
       publishOrigin: 'config',
       publish: '/repo/dist',
       processing: { css: { bundle: true } },
