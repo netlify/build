@@ -1678,16 +1678,16 @@
       "count": 13
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 8
+      "count": 9
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 121
+      "count": 80
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
     },
     "@typescript-eslint/no-unsafe-member-access": {
-      "count": 10
+      "count": 8
     },
     "@typescript-eslint/no-unsafe-return": {
       "count": 3
@@ -1697,14 +1697,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 2
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/options/main.js": {
-    "n/no-missing-import": {
-      "count": 5
     }
   },
   "packages/config/tests/api/cached_site_info.test.ts": {
