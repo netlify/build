@@ -53,7 +53,7 @@ export interface ProcessingConfig {
   [key: string]: unknown
 }
 
-export interface BuildConfig {
+interface BuildProperties {
   base?: string
   command?: string
   commandOrigin?: ConfigOrigin
@@ -67,23 +67,21 @@ export interface BuildConfig {
   publish?: string
   publishOrigin?: ConfigOrigin
   services?: Record<string, unknown>
-  [key: string]: unknown
 }
+
+// Known properties are declared separately from the index signature: `Omit` on a type with an
+// index signature would turn every known property into `unknown`.
+export type BuildConfig = BuildProperties & Record<string, unknown>
+
+export type BuildConfigWithout<Keys extends keyof BuildProperties> = Omit<BuildProperties, Keys> &
+  Record<string, unknown>
 
 export interface ConfigExtension {
   name: string
   dev?: { path: string; force_run_in_build?: boolean }
 }
 
-/**
- * A configuration from a single source (`netlify.toml`, UI settings, inline config), or any
- * merge of them, before normalization. Every property is optional, and properties this package
- * doesn't know about are passed through untouched.
- *
- * Values have only been checked by the validations run so far, so code handling this type still
- * treats unvalidated properties defensively.
- */
-export interface PartialNetlifyConfig {
+interface NetlifyConfigProperties {
   build?: BuildConfig
   context?: Record<string, PartialNetlifyConfig>
   database?: { migrations?: { path?: string } }
@@ -101,16 +99,27 @@ export interface PartialNetlifyConfig {
   redirects?: unknown[]
   redirectsOrigin?: ConfigOrigin
   spa_fallback?: boolean
-  [key: string]: unknown
 }
+
+/**
+ * A configuration from a single source (`netlify.toml`, UI settings, inline config), or any
+ * merge of them, before normalization. Every property is optional, and properties this package
+ * doesn't know about are passed through untouched.
+ *
+ * Values have only been checked by the validations run so far, so code handling this type still
+ * treats unvalidated properties defensively.
+ */
+export type PartialNetlifyConfig = NetlifyConfigProperties & Record<string, unknown>
+
+export type PartialNetlifyConfigWithout<Keys extends keyof NetlifyConfigProperties> = Omit<
+  NetlifyConfigProperties,
+  Keys
+> &
+  Record<string, unknown>
 
 export type FunctionsConfig = { '*': FunctionConfig } & Record<string, FunctionConfig>
 
-/** A configuration after normalization: defaults filled in, and `functions` keyed by function name or glob only. */
-export interface NormalizedNetlifyConfig extends Omit<
-  PartialNetlifyConfig,
-  'build' | 'context' | 'functions' | 'plugins'
-> {
+type NormalizedProperties = Omit<NetlifyConfigProperties, 'build' | 'context' | 'functions' | 'plugins'> & {
   build: BuildConfig & {
     environment: Record<string, unknown>
     publish: string
@@ -121,6 +130,9 @@ export interface NormalizedNetlifyConfig extends Omit<
   functions: FunctionsConfig
   plugins: (PluginConfig & { inputs: Record<string, unknown> })[]
 }
+
+/** A configuration after normalization: defaults filled in, and `functions` keyed by function name or glob only. */
+export type NormalizedNetlifyConfig = NormalizedProperties & Record<string, unknown>
 
 /**
  * A redirect as returned by `parseAllRedirects` in `@netlify/redirect-parser` with `minimal: true`,
@@ -139,7 +151,7 @@ export interface Redirect {
 }
 
 /** The fully resolved configuration returned by `resolveConfig`: paths are absolute and headers and redirects are parsed. */
-export interface ResolvedNetlifyConfig extends Omit<NormalizedNetlifyConfig, 'headers' | 'redirects'> {
+export type ResolvedNetlifyConfig = Omit<NormalizedProperties, 'headers' | 'redirects'> & {
   headers: MinimalHeader[]
   redirects: Redirect[]
-}
+} & Record<string, unknown>

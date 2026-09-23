@@ -1673,9 +1673,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 3
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/config/src/base.ts": {
@@ -1700,10 +1697,7 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 2
+      "count": 3
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1712,9 +1706,6 @@
       "count": 2
     },
     "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -1743,6 +1734,11 @@
     },
     "n/no-missing-import": {
       "count": 3
+    }
+  },
+  "packages/config/src/default.js": {
+    "n/no-missing-import": {
+      "count": 1
     }
   },
   "packages/config/src/edge_functions.ts": {
@@ -1841,22 +1837,17 @@
       "count": 1
     }
   },
-  "packages/config/src/index.ts": {
-    "n/no-missing-import": {
-      "count": 4
-    }
-  },
-  "packages/config/src/log/logger.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/config/src/log/messages.js": {
+  "packages/config/src/headers.js": {
     "n/no-missing-import": {
       "count": 1
     }
   },
-  "packages/config/src/log/options.js": {
+  "packages/config/src/index.ts": {
+    "n/no-missing-import": {
+      "count": 3
+    }
+  },
+  "packages/config/src/inline_config.js": {
     "n/no-missing-import": {
       "count": 1
     }
@@ -1887,7 +1878,7 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 9
+      "count": 8
     }
   },
   "packages/config/src/merge.js": {
@@ -1916,7 +1907,7 @@
   },
   "packages/config/src/mutations/update.js": {
     "n/no-missing-import": {
-      "count": 4
+      "count": 5
     }
   },
   "packages/config/src/normalize.ts": {
@@ -1944,7 +1935,7 @@
   },
   "packages/config/src/options/main.js": {
     "n/no-missing-import": {
-      "count": 2
+      "count": 5
     }
   },
   "packages/config/src/origin.js": {
@@ -1955,9 +1946,6 @@
   "packages/config/src/parse.ts": {
     "@typescript-eslint/no-unsafe-argument": {
       "count": 3
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/config/src/path.ts": {
@@ -1970,20 +1958,12 @@
   },
   "packages/config/src/redirects.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
+      "count": 3
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 1
     },
     "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/simplify.js": {
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -2021,6 +2001,11 @@
       "count": 1
     },
     "@typescript-eslint/restrict-template-expressions": {
+      "count": 1
+    }
+  },
+  "packages/config/src/validate/context.js": {
+    "n/no-missing-import": {
       "count": 1
     }
   },
