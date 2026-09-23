@@ -10,8 +10,8 @@ const BUILD_COMMAND_DESCRIPTIONS: Partial<Record<string, string>> = {
 }
 
 /** Retrieve human-friendly plugin origin */
-export const getPluginOrigin = function (loadedFrom: string, origin: string) {
-  const originName = PLUGIN_ORIGINS[origin]
+export const getPluginOrigin = function (loadedFrom: string | undefined, origin: string | undefined) {
+  const originName = origin === undefined ? undefined : PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {
     return `from ${String(originName)} and package.json`

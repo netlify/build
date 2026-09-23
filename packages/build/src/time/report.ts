@@ -1,4 +1,4 @@
-import type { Tags, StatsD } from 'hot-shots'
+import type { StatsD } from 'hot-shots'
 
 import {
   closeClient,
@@ -12,12 +12,14 @@ import {
 import { addAggregatedTimers } from './aggregate.js'
 import { roundTimerToMillisecs } from './measure.js'
 
-interface Timer {
+export interface Timer {
   metricName: string
   stageTag: string
   parentTag: string
   durationNs: number
-  tags: Record<string, string | string[]>
+  category?: string | undefined
+  // Aggregated timers have none
+  tags?: Record<string, string | string[]> | undefined
 }
 
 /**
@@ -47,11 +49,11 @@ const sendTimers = async function (timers: Timer[], statsdOpts: StatsDOptions, f
 const sendTimer = function (timer: Timer, client: StatsD, framework?: string): void {
   const { metricName, stageTag, parentTag, durationNs, tags } = timer
   const durationMs = roundTimerToMillisecs(durationNs)
-  const statsDTags: Tags = { stage: stageTag, parent: parentTag, ...tags }
+  const statsDTags: Record<string, string | string[]> = { stage: stageTag, parent: parentTag, ...tags }
 
   // Do not add a framework tag if empty string or null/undefined
   if (framework) {
-    statsDTags.framework = framework
+    statsDTags['framework'] = framework
   }
 
   client.distribution(metricName, durationMs, formatTags(statsDTags))

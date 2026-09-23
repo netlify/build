@@ -1,5 +1,6 @@
 import { env, execPath } from 'process'
 
+import type { Logs } from '../log/logger.js'
 import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
@@ -18,10 +19,11 @@ const DEFAULT_OTEL_ENDPOINT_PROTOCOL = 'http'
 
 export type ResolvedFlags = {
   env: Record<string, unknown>
-  token: string
+  /** From `flags.token` or else `NETLIFY_AUTH_TOKEN`, which `flags.env` can set to any value */
+  token?: string
   mode: Mode
   offline: boolean
-  telemetry: boolean
+  telemetry?: boolean
   verbose: boolean
   /** The dist directory of the functions @default `.netlify/functions/` */
   functionsDistDir: string
@@ -33,21 +35,27 @@ export type ResolvedFlags = {
   sendStatus: boolean
   saveConfig: boolean
   /** Netlify API endpoint @default `api.netlify.com` */
-  apiHost?: string
+  apiHost: string
   testOpts: TestOptions
-  statsd: { port: number }
-  timeline: 'build' | string
-  cachedConfig: Record<string, unknown>
-  siteId: string
-  dry: false
-  context: 'production' | string
-  statsdOpts: { host?: number; port: number }
+  statsd: { host?: string; port?: number }
+  /** e.g. `build` */
+  timeline: string
+  cachedConfig?: Record<string, unknown>
+  siteId?: string
+  dry?: boolean
+  /** e.g. `production` */
+  context?: string
+  statsdOpts: { host?: string; port: number }
+  /** From `BUGSNAG_KEY`, which `flags.env` can set to any value */
   bugsnagKey?: string
-  systemLogFile?: number
+  systemLogFile?: number | undefined
 }
 
+// `flags.env` values are not validated
+type CombinedEnv = Partial<Record<string, unknown>>
+
 /** Normalize CLI flags  */
-export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): ResolvedFlags {
+export const normalizeFlags = function (flags: Partial<BuildFlags>, logs: Logs | undefined): ResolvedFlags {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env
@@ -64,7 +72,9 @@ export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): Resol
     statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
-  const normalizedFlags = removeFalsy(mergedFlags) as any
+  // Required fields' defaults are never `undefined` or empty, so `removeFalsy()` keeps them. `BuildFlags` omits
+  // `testOpts` and `systemLogFile`, which callers pass anyway, and `token` and `bugsnagKey` are assumed to be strings.
+  const normalizedFlags = removeFalsy(mergedFlags) as ResolvedFlags
 
   if (!flags.quiet) {
     logFlags(logs, rawFlags, normalizedFlags)
@@ -74,23 +84,23 @@ export const normalizeFlags = function (flags: Partial<BuildFlags>, logs): Resol
 }
 
 // Default values of CLI flags
-const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
+const getDefaultFlags = function ({ env: envOpt = {} }: Partial<BuildFlags>, combinedEnv: CombinedEnv) {
   return {
     env: envOpt,
     nodePath: execPath,
-    token: combinedEnv.NETLIFY_AUTH_TOKEN,
+    token: combinedEnv['NETLIFY_AUTH_TOKEN'],
     mode: REQUIRE_MODE,
     offline: false,
     telemetry: false,
-    verbose: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
+    verbose: Boolean(combinedEnv['NETLIFY_BUILD_DEBUG']),
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     edgeFunctionsDistDir: DEFAULT_EDGE_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
-    deployId: combinedEnv.DEPLOY_ID,
-    skewProtectionToken: combinedEnv.NETLIFY_SKEW_PROTECTION_TOKEN,
-    buildId: combinedEnv.BUILD_ID,
-    debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
-    bugsnagKey: combinedEnv.BUGSNAG_KEY,
+    deployId: combinedEnv['DEPLOY_ID'],
+    skewProtectionToken: combinedEnv['NETLIFY_SKEW_PROTECTION_TOKEN'],
+    buildId: combinedEnv['BUILD_ID'],
+    debug: Boolean(combinedEnv['NETLIFY_BUILD_DEBUG']),
+    bugsnagKey: combinedEnv['BUGSNAG_KEY'],
     sendStatus: false,
     saveConfig: false,
     apiHost: DEFAULT_API_HOST,
@@ -113,6 +123,6 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
 
 // Compute the telemetry flag, it's disabled by default, and we want to always disable it
 // if BUILD_TELEMETRY_DISABLED is passed.
-const computeTelemetry = function (flags, envOpts) {
-  return envOpts.BUILD_TELEMETRY_DISABLED ? { telemetry: false } : { telemetry: flags.telemetry }
+const computeTelemetry = function (flags: Partial<BuildFlags>, envOpts: CombinedEnv) {
+  return envOpts['BUILD_TELEMETRY_DISABLED'] ? { telemetry: false } : { telemetry: flags.telemetry }
 }

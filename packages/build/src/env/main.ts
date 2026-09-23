@@ -4,7 +4,13 @@ import { getParentColorEnv } from '../log/colors.js'
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
+export const getChildEnv = function ({
+  envOpt,
+  env: allConfigEnv,
+}: {
+  envOpt?: Record<string, unknown> | undefined
+  env: Record<string, unknown>
+}) {
   const parentColorEnv = getParentColorEnv()
   const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
   return Object.fromEntries(Object.entries(parentEnv).filter(([key]) => shouldKeepEnv(key)))

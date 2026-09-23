@@ -184,7 +184,7 @@ describe(`getExpectedVersion`, () => {
     expect(version).toBe('5.0.0-beta.1')
   })
 
-  test('should retrieve the plugin based on conditions and feature flag due to pinned version', async () => {
+  test('should retrieve the plugin based on conditions and feature flag due to pinned version, falling back when site dependencies are out of range', async () => {
     const versions: PluginVersion[] = [
       {
         version: '5.0.0-beta.1',

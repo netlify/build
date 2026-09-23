@@ -1,5 +1,8 @@
+import type { Client } from '@bugsnag/js'
+
 import { NetlifyConfig, NetlifyPlugin } from '../index.js'
 import type { Logs } from '../log/logger.js'
+import type { ConfigMutation } from '../plugins/child/diff.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
@@ -18,9 +21,9 @@ export type BuildCLIFlags = {
    * @default false
    */
   dry: boolean
-  debug?: unknown
-  /** Build context */
-  context: 'production' | string
+  debug?: boolean
+  /** Build context, e.g. `production` */
+  context: string
   /** The invoking service of netlify build */
   mode: Mode
   telemetry: boolean
@@ -65,7 +68,7 @@ export type BuildResult = {
   success: boolean
   severityCode: SeverityCode
   netlifyConfig?: NetlifyConfig
-  configMutations?: any
+  configMutations?: ConfigMutation[]
   logs?: string[]
 }
 
@@ -78,16 +81,19 @@ export enum SeverityCode {
 }
 
 export type TestOptions = {
-  errorMonitor?: any
+  /** Print error monitor events instead of sending them */
+  errorMonitor?: boolean
   silentLingeringProcesses?: boolean
+  telemetryOrigin?: string
+  telemetryTimeout?: number
 }
 
 export type ErrorParam = {
-  errorMonitor: any
+  errorMonitor: Client | undefined
   mode: Mode
   logs: Logs | undefined
-  debug: any
+  debug: boolean | undefined
   testOpts?: TestOptions
-  childEnv?: any
+  childEnv?: NodeJS.ProcessEnv
   netlifyConfig?: NetlifyConfig
 }
