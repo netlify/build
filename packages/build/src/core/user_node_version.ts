@@ -10,21 +10,22 @@ import { addErrorInfo } from '../error/info.js'
 const NVM_NODE_VERSION_REGEXP = /[/\\]v(\d+\.\d+\.\d+)[/\\](bin[/\\]node|node.exe)$/
 
 // Retrieve Node.js version from current process
-const getCurrentNodeVersion = function () {
-  return semver.clean(currentVersion)
+const getCurrentNodeVersion = function (): string {
+  // Unreachable fallback: `process.version` is always a valid version
+  return semver.clean(currentVersion) ?? currentVersion
 }
 
 // Retrieve Node.js version from `--node-path` or fallback to extracting the current Node.js process version
-export const getUserNodeVersion = async function (nodePath) {
+export const getUserNodeVersion = async function (nodePath: string): Promise<string> {
   // No `--node-path` CLI flag, use the current node process version
   if (nodePath === execPath) {
     return getCurrentNodeVersion()
   }
 
   // Extract version from path
-  const result = NVM_NODE_VERSION_REGEXP.exec(nodePath)
-  if (result !== null) {
-    return result[1]
+  const pathVersion = NVM_NODE_VERSION_REGEXP.exec(nodePath)?.[1]
+  if (pathVersion !== undefined) {
+    return pathVersion
   }
 
   // Fallback to actually running `node --version` with the given nodePath

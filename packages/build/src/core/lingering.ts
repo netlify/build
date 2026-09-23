@@ -1,6 +1,9 @@
-import psList from 'ps-list'
+import psList, { type ProcessDescriptor } from 'ps-list'
 
+import type { Logs } from '../log/logger.js'
 import { logLingeringProcesses } from '../log/messages/core.js'
+
+import type { Mode, TestOptions } from './types.js'
 
 // Print a warning when some build processes are still running.
 // We cannot rely on using the process tree:
@@ -22,7 +25,11 @@ export const warnOnLingeringProcesses = async function ({
   mode,
   logs,
   testOpts: { silentLingeringProcesses = false },
-}) {
+}: {
+  mode: Mode
+  logs: Logs | undefined
+  testOpts: TestOptions
+}): Promise<void> {
   if (mode !== 'buildbot' || silentLingeringProcesses) {
     return
   }
@@ -39,18 +46,18 @@ export const warnOnLingeringProcesses = async function ({
 }
 
 // `cmd` is only available on Unix. Unlike `name`, it includes the arguments.
-const getCommand = function ({ name, cmd = name }) {
+const getCommand = function ({ name, cmd = name }: ProcessDescriptor): string {
   return cmd
 }
 
 // We ignore any command known to be internal to the buildbot.
 // We also ignore commands known not to complete properly in builds if they are
 // widely used.
-const isNotIgnoredCommand = function (command) {
+const isNotIgnoredCommand = function (command: string): boolean {
   return !IGNORED_COMMANDS.some((ignoredCommand) => matchesIgnoredCommand(command, ignoredCommand))
 }
 
-const matchesIgnoredCommand = function (command, ignoredCommand) {
+const matchesIgnoredCommand = function (command: string, ignoredCommand: string | RegExp): boolean {
   if (typeof ignoredCommand === 'string') {
     return command.includes(ignoredCommand)
   }
@@ -58,7 +65,7 @@ const matchesIgnoredCommand = function (command, ignoredCommand) {
   return ignoredCommand.test(command)
 }
 
-const IGNORED_COMMANDS = [
+const IGNORED_COMMANDS: (string | RegExp)[] = [
   // TODO: Those can most likely be removed
   'ps',
   'grep',

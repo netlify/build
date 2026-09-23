@@ -7,7 +7,10 @@ import { async as resolveLib } from 'resolve'
 const require = createRequire(import.meta.url)
 
 // Like `resolvePath()` but does not throw
-export const tryResolvePath = async function (path, basedir) {
+export const tryResolvePath = async function (
+  path: string,
+  basedir: string,
+): Promise<{ path: string; error?: undefined } | { path?: undefined; error: unknown }> {
   try {
     const resolvedPath = await resolvePath(path, basedir)
     return { path: resolvedPath }
@@ -17,7 +20,7 @@ export const tryResolvePath = async function (path, basedir) {
 }
 
 // This throws if the package cannot be found
-export const resolvePath = async function (path, basedir) {
+export const resolvePath = async function (path: string, basedir: string): Promise<string> {
   try {
     return await resolvePathWithBasedir(path, basedir)
     // Fallback.
@@ -32,11 +35,18 @@ export const resolvePath = async function (path, basedir) {
 // We need to use `new Promise()` due to a bug with `utils.promisify()` on
 // `resolve`:
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
-const resolvePathWithBasedir = function (path, basedir) {
+const resolvePathWithBasedir = function (path: string, basedir: string): Promise<string> {
   return new Promise((resolve, reject) => {
     resolveLib(path, { basedir }, (error, resolvedPath) => {
       if (error) {
-        return reject(error)
+        reject(error)
+        return
+      }
+
+      // Unreachable: `resolve` always passes a path when there is no error
+      if (resolvedPath === undefined) {
+        reject(new Error(`Could not resolve "${path}"`))
+        return
       }
 
       resolve(resolvedPath)

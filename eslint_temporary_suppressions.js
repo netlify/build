@@ -413,12 +413,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/core/dev.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/core/dry.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -431,12 +425,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/core/lingering.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/core/main.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -444,12 +432,6 @@ export default [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/missing_side_file.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -469,18 +451,6 @@ export default [
     rules: {
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/core/user_node_version.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/env/changes.js'],
-    rules: {
-      '@typescript-eslint/no-dynamic-delete': 'off',
     },
   },
   {
@@ -1048,12 +1018,6 @@ export default [
   },
   {
     files: ['packages/build/src/steps/plugin.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/steps/return.js'],
     rules: {
       'n/no-missing-import': 'off',
     },

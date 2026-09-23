@@ -1,4 +1,5 @@
 import { NetlifyConfig, NetlifyPlugin } from '../index.js'
+import type { Logs } from '../log/logger.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
@@ -78,12 +79,13 @@ export enum SeverityCode {
 
 export type TestOptions = {
   errorMonitor?: any
+  silentLingeringProcesses?: boolean
 }
 
 export type ErrorParam = {
   errorMonitor: any
   mode: Mode
-  logs: string[]
+  logs: Logs | undefined
   debug: any
   testOpts?: TestOptions
   childEnv?: any

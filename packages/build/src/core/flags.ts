@@ -1,4 +1,6 @@
-const jsonParse = function (value) {
+import type { Options } from 'yargs'
+
+const jsonParse = function (value: string | undefined): unknown {
   return value === undefined ? undefined : JSON.parse(value)
 }
 
@@ -228,4 +230,4 @@ Default: false`,
     hidden: true,
     describe: 'Scan for potential secrets in all env vars',
   },
-}
+} satisfies Record<string, Options>
