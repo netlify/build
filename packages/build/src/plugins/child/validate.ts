@@ -3,7 +3,7 @@ import { serializeArray } from '../../log/serialize.js'
 import { DEV_EVENTS, EVENTS } from '../events.js'
 
 // Validate the shape of a plugin return value
-export const validatePlugin = function (logic: unknown): void {
+export function validatePlugin(logic: unknown): asserts logic is Record<string, unknown> {
   try {
     // This validation must work with the return value of `import()` which has
     // a `Module` prototype, not `Object`

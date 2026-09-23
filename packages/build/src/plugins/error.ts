@@ -1,20 +1,22 @@
 import { addErrorInfo } from '../error/info.js'
 import { logFailPluginWarning } from '../log/messages/plugins.js'
 
+type FailOpts = { error?: Error; errorMetadata?: string[] }
+
 // Stop build.
 // As opposed to throwing an error directly or to uncaught exceptions, this is
 // displayed as a user error, not an implementation error.
-export const failBuild = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
+export const failBuild = function (message: string, opts?: FailOpts): never {
   throw normalizeError('failBuild', failBuild, message, opts)
 }
 
 // Stop plugin. Same as `failBuild` but only stops plugin not whole build
-export const failPlugin = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
+export const failPlugin = function (message: string, opts?: FailOpts): never {
   throw normalizeError('failPlugin', failPlugin, message, opts)
 }
 
 // Cancel build. Same as `failBuild` except it marks the build as "canceled".
-export const cancelBuild = function (message: string, opts?: { error: Error; errorMetadata: string[] }) {
+export const cancelBuild = function (message: string, opts?: FailOpts): never {
   throw normalizeError('cancelBuild', cancelBuild, message, opts)
 }
 
@@ -25,26 +27,28 @@ export const failPluginWithWarning = function (
   methodName: string,
   event: string,
   message: string,
-  opts: { error: Error; errorMetadata: string[] },
-) {
+  opts?: FailOpts,
+): never {
   logFailPluginWarning(methodName, event)
-  failPlugin(message, opts)
+  return failPlugin(message, opts)
 }
+
+type StackTraceTarget = (...args: never[]) => unknown
 
 // An `error` option can be passed to keep the original error message and
 // stack trace. An additional `message` string is always required.
 const normalizeError = function (
   type: string,
-  func: (...args: unknown[]) => unknown,
+  func: StackTraceTarget,
   message: string,
-  { error, errorMetadata }: { error?: Error; errorMetadata?: string[] } = {},
+  { error, errorMetadata }: FailOpts = {},
 ) {
   const errorA = getError(error, message, func)
   addErrorInfo(errorA, { type, errorMetadata })
   return errorA
 }
 
-const getError = function (error: unknown, message: string, func: (...args: unknown[]) => unknown) {
+const getError = function (error: unknown, message: string, func: StackTraceTarget) {
   if (error instanceof Error) {
     // This might fail if `name` is a getter or is non-writable.
     try {

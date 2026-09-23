@@ -595,16 +595,6 @@
       "count": 1
     }
   },
-  "packages/build/src/plugins/child/error.js": {
-    "n/no-missing-import": {
-      "count": 4
-    }
-  },
-  "packages/build/src/plugins/child/main.js": {
-    "n/no-missing-import": {
-      "count": 4
-    }
-  },
   "packages/build/src/plugins/compatibility.test.ts": {
     "vitest/no-identical-title": {
       "count": 1

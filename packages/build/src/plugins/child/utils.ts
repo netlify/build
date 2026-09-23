@@ -39,7 +39,8 @@ export const getUtils = function ({
   const status = getStatusUtils(runState)
   const utils = { build, cache, deploy, functions, run, status }
   addLazyProp(utils, 'git', () => getGitUtils())
-  // `addLazyProp()` just defined `git`
+  // `@netlify/git-utils` leaves `fileMatch()` untyped, and `NetlifyPluginGitUtil`
+  // mistypes `fileMatch()` and `linesOfCode`
   return utils as typeof utils & { git: NetlifyPluginUtils['git'] }
 }
 
@@ -89,9 +90,7 @@ const getBuildUtils = function (event: string): NetlifyPluginBuildUtil {
         cancelBuild: failPluginWithWarning.bind(null, 'cancelBuild', event),
       }
     : { failBuild, failPlugin, cancelBuild }
-  // `../error.ts` types `opts` as required and `failPluginWithWarning()` as returning, but `opts` is optional and
-  // every one of these throws
-  return buildUtils as NetlifyPluginBuildUtil
+  return buildUtils
 }
 
 const getCacheUtils = function (CACHE_DIR: string) {

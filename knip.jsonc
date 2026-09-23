@@ -16,6 +16,7 @@
         // Reached from the package-level CLI shim after TypeScript compilation.
         "src/core/bin.ts",
         // Spawned by URL from the compiled output, which knip can't trace.
+        "src/plugins/child/main.ts",
         "src/plugins_core/functions_install/index.ts",
         "test-d/**/*.ts",
       ],
