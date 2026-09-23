@@ -1530,12 +1530,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/error.ts'],
-    rules: {
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/files.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1559,10 +1553,9 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/integrations.ts'],
+    files: ['packages/config/src/log/logger.js'],
     rules: {
-      '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-unnecessary-condition': 'off',
+      'n/no-missing-import': 'off',
     },
   },
   {
@@ -1691,6 +1684,12 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['packages/config/src/validate/example.js'],
+    rules: {
+      'n/no-missing-import': 'off',
     },
   },
   {
