@@ -53,7 +53,7 @@ const pipedPluginProcesses = new WeakMap<ChildProcess, ReturnType<typeof pipePlu
 // Start plugin step output
 export const pipePluginOutput = function (
   childProcess: ChildProcess,
-  logs: Logs,
+  logs: Logs | undefined,
   standardStreams: StandardStreams,
 ): LogsListeners | undefined {
   if (pipedPluginProcesses.has(childProcess)) {
@@ -75,15 +75,17 @@ export const pipePluginOutput = function (
 // Stop streaming/buffering plugin step output
 export const unpipePluginOutput = async function (
   childProcess: ChildProcess,
-  logs: Logs,
-  listeners: LogsListeners,
+  logs: Logs | undefined,
+  listeners: LogsListeners | undefined,
   standardStreams: StandardStreams,
 ) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await setTimeout(0)
 
   if (logsAreBuffered(logs)) {
-    unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
+    if (listeners !== undefined) {
+      unpushOutputToLogs(childProcess, listeners.stdoutListener, listeners.stderrListener)
+    }
   } else {
     unstreamOutput(childProcess, standardStreams)
   }

@@ -1,11 +1,10 @@
 import { saveUpdatedConfig } from '../../core/config.js'
-// eslint-disable-next-line n/no-missing-import
 import { shouldDeploy } from '../deploy/index.js'
+import type { CoreStep, CoreStepCondition, CoreStepFunctionArgs } from '../types.js'
 
 const coreStep = async function ({
   buildDir,
   configPath,
-  packagePath,
   outputConfigPath,
   repositoryRoot,
   logs,
@@ -17,13 +16,12 @@ const coreStep = async function ({
   redirectsPath,
   debug,
   saveConfig,
-}) {
+}: CoreStepFunctionArgs & { outputConfigPath?: string | undefined }) {
   await saveUpdatedConfig({
     configMutations,
     buildDir,
     repositoryRoot,
     configPath,
-    packagePath,
     outputConfigPath,
     headersPath,
     redirectsPath,
@@ -40,11 +38,13 @@ const coreStep = async function ({
 
 // This step and the deploy step must be mutually exclusive, or we end up
 // mutating the config twice.
-const shouldSaveArtifacts = (options) => {
-  return !shouldDeploy(options) && options.saveConfig === true
+const shouldSaveArtifacts: CoreStepCondition = (options) => {
+  // Programmatic callers may omit `saveConfig`
+  const flags: { saveConfig?: boolean | undefined } = options
+  return !shouldDeploy(options) && flags.saveConfig === true
 }
 
-export const saveArtifacts = {
+export const saveArtifacts: CoreStep = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'save_artifacts',

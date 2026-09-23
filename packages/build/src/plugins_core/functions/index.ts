@@ -5,7 +5,7 @@ import { pathExists } from '../../utils/path_exists.js'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
-import { type GeneratedFunction, getGeneratedFunctions } from '../../steps/return_values.js'
+import { type GeneratedFunction, getGeneratedFunctions, type ReturnValue } from '../../steps/return_values.js'
 import {
   logBundleResults,
   logFunctionsNonExistingDir,
@@ -19,6 +19,8 @@ import { getZipError } from './error.js'
 import { getServerEntry } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
+import type { NetlifyPluginConstants } from '../../core/constants.js'
+import type { FeatureFlags } from '../../core/feature_flags.js'
 
 // see https://docs.netlify.com/functions/trigger-on-events/#available-triggers
 const eventTriggeredFunctions = new Set([
@@ -237,6 +239,13 @@ const hasFunctionsDirectories = async function ({
   featureFlags,
   packagePath,
   returnValues,
+}: {
+  buildDir: string
+  constants: Pick<NetlifyPluginConstants, 'INTERNAL_FUNCTIONS_SRC' | 'FUNCTIONS_SRC'>
+  featureFlags?: FeatureFlags | undefined
+  // A dry run doesn't pass these.
+  packagePath?: string | undefined
+  returnValues?: Record<string, ReturnValue> | undefined
 }) {
   if (
     featureFlags?.netlify_build_server_entry &&
@@ -251,9 +260,8 @@ const hasFunctionsDirectories = async function ({
     return true
   }
 
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
-
-  if (await pathExists(internalFunctionsSrc)) {
+  // Always set by the build, although plugins' constants type allows leaving it out.
+  if (INTERNAL_FUNCTIONS_SRC !== undefined && (await pathExists(resolve(buildDir, INTERNAL_FUNCTIONS_SRC)))) {
     return true
   }
 
