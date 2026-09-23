@@ -28,13 +28,6 @@ export default [
       'import/no-unresolved': ['off'],
     },
   },
-  {
-    // Allow circular testing package dependency in config
-    files: ['packages/config/tests/**/*.test.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
-    },
-  },
 
   /* Per-file rule suppressions */
 

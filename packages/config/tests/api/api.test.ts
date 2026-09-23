@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = {
   path: SITE_INFO_PATH,
@@ -117,22 +119,21 @@ test('NETLIFY_AUTH_TOKEN environment variable', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/empty')
     .withFlags({ testOpts: { env: true } })
     .withEnv({ NETLIFY_AUTH_TOKEN: 'test' })
-    .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
 test('--site-id', async () => {
-  const output = await new Fixture(import.meta.url, './fixtures/empty')
-    .withFlags({ siteId: 'test' })
-    .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
+  const output = await new Fixture(import.meta.url, './fixtures/empty').withFlags({ siteId: 'test' }).runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
 test('--account-id in offline and buildbot mode', async () => {
-  const output = await new Fixture(import.meta.url, './fixtures/empty')
-    .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
-    .runWithConfig([])
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/empty')
+      .withFlags({ accountId: 'test-account', offline: true, mode: 'buildbot' })
+      .runWithConfigAsObject(),
+  )
 
   expect(config.siteInfo.account_id).toBe('test-account')
 })
@@ -140,7 +141,7 @@ test('--account-id in offline and buildbot mode', async () => {
 test('NETLIFY_SITE_ID environment variable', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/empty')
     .withEnv({ NETLIFY_SITE_ID: 'test' })
-    .runWithConfig([FETCH_EXTENSIONS_EMPTY_RESPONSE])
+    .runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
@@ -230,131 +231,139 @@ test('Build settings are not used in CI', async () => {
 })
 
 test('Extensions are returned from getSiteInfo from v1 safe API when there is not accountID', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-    })
-    .runConfigServer([SITE_INFO_DATA, SITE_EXTENSIONS_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/base')
+      .withFlags({
+        token: 'test',
+        siteId: 'test',
+      })
+      .runConfigServerAsObject([SITE_INFO_DATA, SITE_EXTENSIONS_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[0].version).toBe('https://extension-test-1.netlify.app')
-  expect(config.integrations[0].has_build).toBe(true)
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[0]?.version).toBe('https://extension-test-1.netlify.app')
+  expect(config.integrations[0]?.has_build).toBe(true)
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not available in API', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/dev_extension')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      context: 'dev',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/dev_extension')
+      .withFlags({
+        token: 'test',
+        siteId: 'test',
+        context: 'dev',
+        accountId: 'account1',
+      })
+      .runConfigServerAsObject([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(2)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[1].slug).toBe('abc-extension')
-  expect(config.integrations[1].has_build).toBe(false)
-  expect(config.integrations[1].version).toBe('')
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[1]?.slug).toBe('abc-extension')
+  expect(config.integrations[1]?.has_build).toBe(false)
+  expect(config.integrations[1]?.version).toBe('')
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/dev_extension')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      context: 'dev',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/dev_extension')
+      .withFlags({
+        token: 'test',
+        siteId: 'test',
+        context: 'dev',
+        accountId: 'account1',
+      })
+      .runConfigServerAsObject([
+        SITE_INFO_DATA,
+        TEAM_INSTALLATIONS_META_EMPTY_RESPONSE,
+        FETCH_EXTENSIONS_EMPTY_RESPONSE,
+      ]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('abc-extension')
-  expect(config.integrations[0].has_build).toBe(false)
-  expect(config.integrations[0].version).toBe('')
+  expect(config.integrations[0]?.slug).toBe('abc-extension')
+  expect(config.integrations[0]?.has_build).toBe(false)
+  expect(config.integrations[0]?.version).toBe('')
 })
 
 test('In extension dev mode, extension specified in config is returned even if extension is not enabled on site and accountId not present', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/dev_extension')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      context: 'dev',
-    })
-    .runConfigServer([SITE_INFO_DATA, SITE_EXTENSIONS_EMPTY_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/dev_extension')
+      .withFlags({
+        token: 'test',
+        siteId: 'test',
+        context: 'dev',
+      })
+      .runConfigServerAsObject([SITE_INFO_DATA, SITE_EXTENSIONS_EMPTY_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('abc-extension')
-  expect(config.integrations[0].has_build).toBe(false)
-  expect(config.integrations[0].version).toBe('')
+  expect(config.integrations[0]?.slug).toBe('abc-extension')
+  expect(config.integrations[0]?.has_build).toBe(false)
+  expect(config.integrations[0]?.version).toBe('')
 })
 
 test('In extension dev mode, extension specified in config is returned and build is forced by config', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/dev_extension_with_force_build')
-    .withFlags({
-      token: 'test',
-      siteId: 'test',
-      context: 'dev',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_EMPTY_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/dev_extension_with_force_build')
+      .withFlags({
+        token: 'test',
+        siteId: 'test',
+        context: 'dev',
+        accountId: 'account1',
+      })
+      .runConfigServerAsObject([
+        SITE_INFO_DATA,
+        TEAM_INSTALLATIONS_META_EMPTY_RESPONSE,
+        FETCH_EXTENSIONS_EMPTY_RESPONSE,
+      ]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('abc-extension')
-  expect(config.integrations[0].has_build).toBe(true)
-  expect(config.integrations[0].version).toBe('')
+  expect(config.integrations[0]?.slug).toBe('abc-extension')
+  expect(config.integrations[0]?.has_build).toBe(true)
+  expect(config.integrations[0]?.version).toBe('')
 })
 
 test('extensions are not returned if offline', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      offline: true,
-      siteId: 'test',
-      mode: 'buildbot',
-      accountId: 'account1',
-    })
-    .runConfigServer([TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/base')
+      .withFlags({
+        offline: true,
+        siteId: 'test',
+        mode: 'buildbot',
+        accountId: 'account1',
+      })
+      .runConfigServerAsObject([TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(0)
 })
 
 test('extensions and account id are returned if mode is buildbot', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'buildbot',
-      accountId: 'account1',
-      token: 'test',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/base')
+      .withFlags({
+        siteId: 'test',
+        mode: 'buildbot',
+        accountId: 'account1',
+        token: 'test',
+      })
+      .runConfigServerAsObject([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[0].version).toBe('https://extension-test-2.netlify.app')
-  expect(config.integrations[0].has_build).toBe(true)
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[0]?.version).toBe('https://extension-test-2.netlify.app')
+  expect(config.integrations[0]?.has_build).toBe(true)
 
   // account id is also available
   expect(config.siteInfo).toBeTruthy()
@@ -362,22 +371,22 @@ test('extensions and account id are returned if mode is buildbot', async () => {
 })
 
 test('extensions are returned if accountId is present and mode is dev', async () => {
-  const { output } = await new Fixture(import.meta.url, './fixtures/base')
-    .withFlags({
-      siteId: 'test',
-      mode: 'dev',
-      token: 'test',
-      accountId: 'account1',
-    })
-    .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
-
-  const config = JSON.parse(output)
+  const config = asConfig(
+    await new Fixture(import.meta.url, './fixtures/base')
+      .withFlags({
+        siteId: 'test',
+        mode: 'dev',
+        token: 'test',
+        accountId: 'account1',
+      })
+      .runConfigServerAsObject([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE]),
+  )
 
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[0].version).toBe('https://extension-test-2.netlify.app')
-  expect(config.integrations[0].has_build).toBe(true)
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[0]?.version).toBe('https://extension-test-2.netlify.app')
+  expect(config.integrations[0]?.has_build).toBe(true)
 })
 
 test('extensions are returned and called with a netlify-sdk-build-bot-token header', async () => {
@@ -393,17 +402,17 @@ test('extensions are returned and called with a netlify-sdk-build-bot-token head
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
   const installationsHeaders = requests.find(
     (request) => request.url === TEAM_INSTALLATIONS_META_RESPONSE.path,
   )?.headers
 
-  expect(installationsHeaders.includes('netlify-sdk-build-bot-token')).toBeTruthy()
+  expect(installationsHeaders?.includes('netlify-sdk-build-bot-token')).toBeTruthy()
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[0].version).toBe('https://extension-test-2.netlify.app')
-  expect(config.integrations[0].has_build).toBe(true)
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[0]?.version).toBe('https://extension-test-2.netlify.app')
+  expect(config.integrations[0]?.has_build).toBe(true)
 })
 
 test('extensions are returned and called with a netlify-config-mode header', async () => {
@@ -419,17 +428,17 @@ test('extensions are returned and called with a netlify-config-mode header', asy
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
   const installationsHeaders = requests.find(
     (request) => request.url === TEAM_INSTALLATIONS_META_RESPONSE.path,
   )?.headers
 
-  expect(installationsHeaders.includes('netlify-config-mode')).toBeTruthy()
+  expect(installationsHeaders?.includes('netlify-config-mode')).toBeTruthy()
   expect(config.integrations).toBeTruthy()
   expect(config.integrations.length).toBe(1)
-  expect(config.integrations[0].slug).toBe('test')
-  expect(config.integrations[0].version).toBe('https://extension-test-2.netlify.app')
-  expect(config.integrations[0].has_build).toBe(true)
+  expect(config.integrations[0]?.slug).toBe('test')
+  expect(config.integrations[0]?.version).toBe('https://extension-test-2.netlify.app')
+  expect(config.integrations[0]?.has_build).toBe(true)
 })
 
 test('extensions are not returned if failed to fetch extensions', async () => {

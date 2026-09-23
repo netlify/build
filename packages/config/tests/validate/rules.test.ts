@@ -36,6 +36,6 @@ test('functions.*.memory, region, vcpu and schedule accept valid values', async 
   ).runWithConfigAsObject()) as { config: { functions: Record<string, Record<string, unknown>> } }
 
   expect(config.functions['*']).toMatchObject({ memory: '2gb', region: 'cmh' })
-  expect(config.functions.small).toMatchObject({ memory: 512, vcpu: 0.5 })
-  expect(config.functions.large).toMatchObject({ vcpu: 2, schedule: '5 4 * * *' })
+  expect(config.functions['small']).toMatchObject({ memory: 512, vcpu: 0.5 })
+  expect(config.functions['large']).toMatchObject({ vcpu: 2, schedule: '5 4 * * *' })
 })

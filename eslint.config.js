@@ -37,6 +37,22 @@ export default tseslint.config(
       },
     },
   },
+  // The base tsconfig includes every file, so it would shadow a package's stricter tsconfig.
+  {
+    files: ['packages/config/tests/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: ['./packages/config/tests/tsconfig.json'],
+      },
+    },
+  },
+  {
+    // Not a declared dependency: `@netlify/testing` depends on `@netlify/config`.
+    files: ['packages/config/tests/**/*.ts'],
+    rules: {
+      'n/no-extraneous-import': ['error', { allowModules: ['@netlify/testing'] }],
+    },
+  },
 
   {
     files: ['**/*.?(c|m)js?(x)'],
