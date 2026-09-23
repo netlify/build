@@ -206,7 +206,7 @@ export const getExtensions = async function ({
   if (!siteId || offline) {
     return []
   }
-  const { host: originalHost, setBaseUrl } = testOpts
+  const { host: originalHost } = testOpts
 
   // TODO(kh): I am adding this purely for local staging development.
   // We should remove this once we have fixed https://github.com/netlify/cli/blob/b5a5c7525edd28925c5c2e3e5f0f00c4261eaba5/src/lib/build.ts#L125
@@ -226,10 +226,6 @@ export const getExtensions = async function ({
   }
 
   const baseUrl = new URL(host ?? extensionApiBaseUrl)
-  // We only use this for testing
-  if (host && setBaseUrl) {
-    setBaseUrl(extensionApiBaseUrl)
-  }
   // if accountId isn't present, use safe v1 endpoint
   const url = accountId
     ? `${baseUrl}team/${accountId}/integrations/installations/meta/${siteId}`
