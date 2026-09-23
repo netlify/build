@@ -1486,6 +1486,12 @@ export default [
     },
   },
   {
+    files: ['packages/config/src/default.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/config/src/edge_functions.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1547,25 +1553,19 @@ export default [
     },
   },
   {
+    files: ['packages/config/src/headers.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
     files: ['packages/config/src/index.ts'],
     rules: {
       'n/no-missing-import': 'off',
     },
   },
   {
-    files: ['packages/config/src/log/logger.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/log/messages.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/log/options.js'],
+    files: ['packages/config/src/inline_config.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
@@ -1660,12 +1660,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/simplify.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/config/src/utils/extensions/auto-install-extensions.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-return': 'off',
@@ -1684,6 +1678,12 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['packages/config/src/validate/context.js'],
+    rules: {
+      'n/no-missing-import': 'off',
     },
   },
   {
