@@ -1,18 +1,6 @@
-/**
- * Type-check one package under extra compiler flags, grouped by file, error code
- * or enclosing function, and optionally compared against a committed baseline.
- *
- * Build workspace dependencies first (`npx lerna run build`); otherwise
- * unresolved `@netlify/*` imports show up as TS2307 and skew every count.
- *
- *   node scripts/type-debt/diagnostics.ts <package> [--<compilerFlag> ...]
- *        [--by file|code|function] [--baseline <path> [--update]]
- *
- * The baseline is keyed by file and error code, not a total: correct typing
- * often *raises* a package's count, so a total-count ratchet would block it.
- * A PR that legitimately adds errors runs `--update` and the diff is reviewed.
- */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+// Build workspace dependencies first (`npx lerna run build`), or unresolved `@netlify/*` imports show up
+// as TS2307 and skew every count.
+import { existsSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -20,9 +8,7 @@ import ts from 'typescript'
 
 const [pkg, ...args] = process.argv.slice(2)
 if (!pkg) {
-  throw new Error(
-    'usage: diagnostics.ts <package> [--<compilerFlag> ...] [--by file|code|function] [--baseline <path> [--update]]',
-  )
+  throw new Error('usage: diagnostics.ts <package> [--<compilerFlag> ...] [--by file|code|function]')
 }
 
 const pkgDir = resolve(dirname(fileURLToPath(import.meta.url)), '../../packages', pkg)
@@ -35,9 +21,7 @@ const valueOf = (flag: string) => {
   return i === -1 ? undefined : args[i + 1]
 }
 const groupBy = valueOf('--by') ?? 'file'
-const baselinePath = valueOf('--baseline')
-const update = args.includes('--update')
-const ownFlags = new Set(['--by', '--baseline', '--update', groupBy, baselinePath])
+const ownFlags = new Set(['--by', groupBy])
 const compilerFlags = Object.fromEntries(
   args.filter((arg) => arg.startsWith('--') && !ownFlags.has(arg)).map((arg) => [arg.slice(2), true]),
 )
@@ -95,47 +79,3 @@ console.log(
 for (const [key, count] of [...counts].sort((a, b) => b[1] - a[1]).slice(0, 40)) {
   console.log(`${String(count).padStart(6)}  ${key}`)
 }
-
-type Baseline = Partial<Record<string, Partial<Record<string, number>>>>
-
-const compareWithBaseline = (path: string) => {
-  const current: Baseline = {}
-  for (const diagnostic of diagnostics) {
-    const entry = (current[relative(pkgDir, diagnostic.file!.fileName)] ??= {})
-    const code = `TS${String(diagnostic.code)}`
-    entry[code] = (entry[code] ?? 0) + 1
-  }
-
-  if (update || !existsSync(path)) {
-    const sorted = Object.fromEntries(
-      Object.keys(current)
-        .sort()
-        .map((file) => [file, current[file]]),
-    )
-    writeFileSync(path, `${JSON.stringify(sorted, null, 2)}\n`)
-    console.log(`\nwrote ${path}`)
-    return
-  }
-
-  const baseline = JSON.parse(readFileSync(path, 'utf8')) as Baseline
-  const regressions: string[] = []
-  const improvements: string[] = []
-  for (const file of new Set([...Object.keys(current), ...Object.keys(baseline)])) {
-    for (const code of new Set([...Object.keys(current[file] ?? {}), ...Object.keys(baseline[file] ?? {})])) {
-      const now = current[file]?.[code] ?? 0
-      const before = baseline[file]?.[code] ?? 0
-      const change = `${file} ${code}: ${String(before)} -> ${String(now)}`
-      if (now > before) regressions.push(change)
-      if (now < before) improvements.push(change)
-    }
-  }
-  if (improvements.length > 0) console.log(`\nimproved (run with --update to lock in):\n  ${improvements.join('\n  ')}`)
-  if (regressions.length > 0) {
-    console.error(
-      `\nnew errors (fix them, or run with --update and justify the diff in review):\n  ${regressions.join('\n  ')}`,
-    )
-    process.exitCode = 1
-  }
-}
-
-if (baselinePath) compareWithBaseline(baselinePath)
