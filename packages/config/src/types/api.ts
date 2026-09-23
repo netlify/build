@@ -21,8 +21,15 @@ export interface UiPluginConfig {
 }
 
 /** A site as returned by the Netlify API, or the subset known without calling it. */
-export type SiteInfo = Partial<Omit<ApiSite, 'build_settings'>> & {
+export type SiteInfo = Partial<Omit<ApiSite, 'build_settings' | 'capabilities' | 'processing_settings'>> & {
   build_settings?: SiteBuildSettings
+  /**
+   * Passed through as returned. The published types say every value is an object, but the API
+   * returns flags such as `ai_gateway_disabled: true`.
+   */
+  capabilities?: Record<string, unknown>
+  /** Passed through as returned. The published types only list `html.pretty_urls`. */
+  processing_settings?: Record<string, unknown>
   /** Plugins installed in the UI. Returned by the API but missing from its published types. */
   plugins?: UiPluginConfig[]
   feature_flags?: Record<string, string | number | boolean>
