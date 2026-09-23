@@ -105,6 +105,123 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.9 to ^7.1.10
+    * @netlify/opentelemetry-utils bumped from ^3.1.0 to ^4.0.0
+    * @netlify/zip-it-and-ship-it bumped from 15.5.1 to 16.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.0
+
+## [36.4.8](https://github.com/netlify/build/compare/build-v36.4.7...build-v36.4.8) (2026-09-09)
+
+
+### Bug Fixes
+
+* don't swallow Frameworks API config validation errors ([#7218](https://github.com/netlify/build/issues/7218)) ([36ce357](https://github.com/netlify/build/commit/36ce3579e65c4ce21720b1a3556e790b86852969))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.4 to ^25.2.5
+
+## [36.4.7](https://github.com/netlify/build/compare/build-v36.4.6...build-v36.4.7) (2026-09-08)
+
+
+### Bug Fixes
+
+* correct buildSite return types and declare generatedFunctions ([#7213](https://github.com/netlify/build/issues/7213)) ([5531e86](https://github.com/netlify/build/commit/5531e86398ad4e12ab61b5aaabb79fffba9bfec9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.3 to ^25.2.4
+    * @netlify/functions-utils bumped from ^7.1.8 to ^7.1.9
+    * @netlify/zip-it-and-ship-it bumped from 15.5.0 to 15.5.1
+
+## [36.4.6](https://github.com/netlify/build/compare/build-v36.4.5...build-v36.4.6) (2026-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/blobs to v11 ([#7206](https://github.com/netlify/build/issues/7206)) ([f75d95f](https://github.com/netlify/build/commit/f75d95f76b88920e9b3e23db22d45154f8921a4e))
+
+## [36.4.5](https://github.com/netlify/build/compare/build-v36.4.4...build-v36.4.5) (2026-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency supports-color to v11 ([#7172](https://github.com/netlify/build/issues/7172)) ([379234c](https://github.com/netlify/build/commit/379234cbf476a1656569ed47f4c863dff05de57a))
+* improve error logging for failed blob uploads ([#7203](https://github.com/netlify/build/issues/7203)) ([cc0bd34](https://github.com/netlify/build/commit/cc0bd34da6465a2906ac80ae0b180d7cf75b42e0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.7 to ^7.1.8
+    * @netlify/zip-it-and-ship-it bumped from 15.4.2 to 15.5.0
+
+## [36.4.4](https://github.com/netlify/build/compare/build-v36.4.3...build-v36.4.4) (2026-09-01)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.6 to ^7.1.7
+    * @netlify/zip-it-and-ship-it bumped from 15.4.1 to 15.4.2
+
+## [36.4.3](https://github.com/netlify/build/compare/build-v36.4.2...build-v36.4.3) (2026-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/blobs to ^10.7.13 ([#6854](https://github.com/netlify/build/issues/6854)) ([ff182e1](https://github.com/netlify/build/commit/ff182e1b4ba0f166881feff6aea71c7d6f796ed3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.5 to ^7.1.6
+    * @netlify/zip-it-and-ship-it bumped from 15.4.0 to 15.4.1
+
+## [36.4.2](https://github.com/netlify/build/compare/build-v36.4.1...build-v36.4.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* catch errors during plugin shutdown ([#7196](https://github.com/netlify/build/issues/7196)) ([e0fd625](https://github.com/netlify/build/commit/e0fd62590b31d0506eb209708dad36a8a2bb877a))
+* **deps:** migrate to tinyexec and native utils ([#7175](https://github.com/netlify/build/issues/7175)) ([3a49c67](https://github.com/netlify/build/commit/3a49c6744b4f52ec8e6e225bd4ba7bb0d9e5052b))
+* **deps:** remove 9 micro-utility dependencies ([#7095](https://github.com/netlify/build/issues/7095)) ([1011653](https://github.com/netlify/build/commit/10116531367d28e3a12df679aa3c68c184b80c62))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.1 to ^7.1.2
+    * @netlify/git-utils bumped from ^7.1.0 to ^7.1.1
+
 ## [36.4.1](https://github.com/netlify/build/compare/build-v36.4.0...build-v36.4.1) (2026-08-21)
 
 

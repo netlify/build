@@ -1,8 +1,7 @@
 import { promises as fs, Stats } from 'node:fs'
-import { basename } from 'node:path'
+import { basename, dirname } from 'node:path'
 
 import { isNotJunk } from 'junk'
-import { moveFile } from 'move-file'
 
 /**
  * Move or copy a cached file/directory from/to a local one
@@ -13,7 +12,28 @@ import { moveFile } from 'move-file'
 export const moveCacheFile = async function (src: string, dest: string, move = false) {
   // Moving is faster but removes the source files locally
   if (move) {
-    return moveFile(src, dest, { overwrite: false })
+    try {
+      await fs.access(dest)
+      throw new Error(`The destination file exists: ${dest}`)
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+        throw error
+      }
+    }
+
+    await fs.mkdir(dirname(dest), { recursive: true })
+
+    try {
+      await fs.rename(src, dest)
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EXDEV') {
+        throw error
+      }
+      // Only happens when moving cross-device
+      await fs.cp(src, dest, { recursive: true, force: false, errorOnExist: true })
+      await fs.rm(src, { recursive: true, force: true })
+    }
+    return
   }
 
   if ((await getStat(src)) === undefined) {

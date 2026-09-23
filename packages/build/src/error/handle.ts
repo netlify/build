@@ -1,6 +1,6 @@
 import { cwd as getCwd } from 'process'
 
-import { pathExists } from 'path-exists'
+import { pathExists } from '../utils/path_exists.js'
 
 import { ErrorParam } from '../core/types.js'
 import { logBuildError } from '../log/messages/core.js'

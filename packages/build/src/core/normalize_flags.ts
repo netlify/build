@@ -97,12 +97,9 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
-    // tracing.apiKey defaults to '-' else we'll get warning logs if not using
-    // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
     tracing: {
       enabled: false,
       preloadingEnabled: false,
-      apiKey: '-',
       // defaults to always sample
       sampleRate: 1,
       httpProtocol: DEFAULT_OTEL_ENDPOINT_PROTOCOL,

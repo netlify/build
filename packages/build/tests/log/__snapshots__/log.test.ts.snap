@@ -1,0 +1,196 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Logs whether the build commands came from the UI 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/log/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/log/fixtures/empty
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: ui
+    publish: packages/build/tests/log/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Build command from Netlify app                                
+────────────────────────────────────────────────────────────────
+
+$ node --invalid
+
+"build.command" failed                                        
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Command failed with exit code 9: node --invalid
+
+  Error location
+  In Build command from Netlify app:
+  node --invalid
+
+  Resolved config
+  build:
+    command: node --invalid
+    commandOrigin: ui
+    publish: packages/build/tests/log/fixtures/empty
+    publishOrigin: default
+
+node: bad option: --invalid"
+`;
+
+exports[`The verbose flag enables verbosity 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/log/fixtures/verbose
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+  verbose: true
+
+> Current directory
+  packages/build/tests/log/fixtures/verbose
+
+> Config file
+  packages/build/tests/log/fixtures/verbose/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/log/fixtures/verbose
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin@1.0.0 from netlify.toml
+
+./plugin (onPreBuild event)                                   
+────────────────────────────────────────────────────────────────
+
+Step starting.
+Step started.
+Plugin logic started.
+test
+Plugin logic ended.
+Stop closing.
+Step ended.
+Step completed.
+
+(./plugin onPreBuild completed in 1ms)
+Build step duration: ./plugin onPreBuild completed in 1ms
+Step starting.
+Step started.
+Step ended.
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Verbosity works with plugin errors 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/log/fixtures/verbose_error
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+  verbose: true
+
+> Current directory
+  packages/build/tests/log/fixtures/verbose_error
+
+> Config file
+  packages/build/tests/log/fixtures/verbose_error/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/log/fixtures/verbose_error
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin@1.0.0 from netlify.toml
+
+./plugin (onPreBuild event)                                   
+────────────────────────────────────────────────────────────────
+
+Step starting.
+Step started.
+Plugin logic started.
+Step erroring.
+Error: test
+STACK TRACE
+Step completed.
+Step starting.
+Step started.
+Step ended.
+
+Plugin "./plugin" internal error                              
+────────────────────────────────────────────────────────────────
+
+  Error message
+  Error: test
+
+  Plugin details
+  Package:        ./plugin
+  Version:        1.0.0
+  Repository:     git+https://github.com/netlify/build.git
+  Report issues:  https://github.com/netlify/build/issues
+
+  Error location
+  In "onPreBuild" event in "./plugin" from netlify.toml
+STACK TRACE
+
+  Resolved config
+  build:
+    publish: packages/build/tests/log/fixtures/verbose_error
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin"
+`;

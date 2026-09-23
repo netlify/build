@@ -1,10 +1,10 @@
 import { getDeployStore, type GetDeployStoreOptions } from '@netlify/blobs'
 import { inspect } from 'node:util'
-import pMap from 'p-map'
 
 import { DEFAULT_API_HOST } from '../../core/normalize_flags.js'
 import { logError } from '../../log/logger.js'
 import { getFileWithMetadata, getKeysToUpload, scanForBlobs } from '../../utils/blobs.js'
+import { getErrorMessage } from '../../utils/errors.js'
 import { getBlobs } from '../../utils/frameworks_api.js'
 import { type CoreStep, type CoreStepCondition, type CoreStepFunction } from '../types.js'
 
@@ -58,18 +58,30 @@ const coreStep: CoreStepFunction = async function ({
   systemLog(`Uploading ${blobsToUpload.length} blobs to deploy store...`)
 
   try {
-    await pMap(
-      blobsToUpload,
-      async ({ key, contentPath, metadataPath }) => {
-        const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
-        // `data` is a `Buffer`, typed by @types/node as `Buffer<ArrayBufferLike>`, which TS
-        // rejects as a `BlobPart`; the runtime value is a valid blob part.
-        await blobStore.set(key, new Blob([data as BlobPart]), { metadata })
-      },
-      { concurrency: 10 },
+    const queue = blobsToUpload[Symbol.iterator]()
+    let stopQueue = false
+    await Promise.all(
+      Array.from({ length: 10 }, async () => {
+        while (!stopQueue) {
+          const next = queue.next()
+          if (next.done) {
+            return
+          }
+          const { key, contentPath, metadataPath } = next.value
+          try {
+            const { data, metadata } = await getFileWithMetadata(key, contentPath, metadataPath)
+            await blobStore.set(key, new Blob([data]), { metadata })
+          } catch (error) {
+            stopQueue = true
+            throw error
+          }
+        }
+      }),
     )
   } catch (err) {
-    logError(logs, `Error uploading blobs to deploy store: ${err.message}`)
+    const errorMessage = getErrorMessage(err)
+
+    logError(logs, `Error uploading blobs to deploy store: ${errorMessage}`)
 
     try {
       systemLog(
@@ -79,7 +91,7 @@ const coreStep: CoreStepFunction = async function ({
       // systemLog is meant for debugging purposes, we should not ever throw if it fails
     }
 
-    throw new Error(`Failed while uploading blobs to deploy store`)
+    throw new Error(`Failed while uploading blobs to deploy store: ${errorMessage}`, { cause: err })
   }
 
   systemLog(`Done uploading blobs to deploy store.`)

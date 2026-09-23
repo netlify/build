@@ -1,7 +1,7 @@
 import { copyFile, mkdir } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 import { readMigrationEntries, getMigrationsSrc } from './utils.js'

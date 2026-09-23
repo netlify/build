@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.1](https://github.com/netlify/build/compare/git-utils-v7.1.0...git-utils-v7.1.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **deps:** migrate to tinyexec and native utils ([#7175](https://github.com/netlify/build/issues/7175)) ([3a49c67](https://github.com/netlify/build/commit/3a49c6744b4f52ec8e6e225bd4ba7bb0d9e5052b))
+
 ## [7.1.0](https://github.com/netlify/build/compare/git-utils-v7.0.0...git-utils-v7.1.0) (2026-07-17)
 
 

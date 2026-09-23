@@ -1,0 +1,2595 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Can use context properties for build.edge_functions 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_edge_functions_build",
+  "config": {
+    "build": {
+      "edge_functions": "packages/config/tests/context/fixtures/context_edge_functions_build/srcTest",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_edge_functions_build",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_edge_functions_build/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_edge_functions_build/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_edge_functions_build/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_edge_functions_build",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Can use context properties for edge_functions 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_edge_functions_top",
+  "config": {
+    "build": {
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_edge_functions_top",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "edge_functions": [
+      {
+        "function": "logTest",
+        "path": "/external/path"
+      }
+    ],
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_edge_functions_top/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_edge_functions_top/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_edge_functions_top/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_edge_functions_top",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context array merge 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/array_merge",
+  "config": {
+    "build": {
+      "environment": {},
+      "ignore": "b",
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/array_merge",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "external_node_modules": [
+          "module-three",
+          "module-four"
+        ]
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/array_merge/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/array_merge/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/array_merge/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/array_merge",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context deep merge 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/deep_merge",
+  "config": {
+    "build": {
+      "environment": {
+        "one": "one",
+        "two": "two"
+      },
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/deep_merge",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {},
+      "my-function": {
+        "node_bundler": "esbuild"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/deep_merge/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    },
+    "one": {
+      "sources": [
+        "configFile"
+      ],
+      "value": "one"
+    },
+    "two": {
+      "sources": [
+        "configFile"
+      ],
+      "value": "two"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/deep_merge/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/deep_merge/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/deep_merge",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context default value 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_default",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_default",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_default/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_default/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_default/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_default",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context environment variable 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_flag",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_flag",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_flag/netlify.toml",
+  "context": "testContext",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "testContext"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_flag/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_flag/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_flag",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context merge priority 1`] = `
+"{
+  "accounts": [],
+  "branch": "testBranch",
+  "buildDir": "packages/config/tests/context/fixtures/priority_merge",
+  "config": {
+    "build": {
+      "command": "echo commandTestBranch",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/priority_merge",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "external_node_modules": [
+          "module-three"
+        ]
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/priority_merge/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://testBranch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/priority_merge/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/priority_merge/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/priority_merge",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch CLI flag 1`] = `
+"{
+  "accounts": [],
+  "branch": "testBranch",
+  "buildDir": "packages/config/tests/context/fixtures/branch",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://testBranch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch environment variable 1`] = `
+"{
+  "accounts": [],
+  "branch": "testBranch",
+  "buildDir": "packages/config/tests/context/fixtures/branch",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://testBranch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch exact match takes precedence over wildcard 1`] = `
+"{
+  "accounts": [],
+  "branch": "feat/special",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo feat-exact",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/special"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://feat/special--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/special"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch fallback 1`] = `
+"{
+  "accounts": [],
+  "branch": "master",
+  "buildDir": "/tmp-dir",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "/tmp-dir",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "/tmp-dir/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "master"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://master--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "master"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "/tmp-dir/_headers",
+  "integrations": [],
+  "redirectsPath": "/tmp-dir/_redirects",
+  "repositoryRoot": "/tmp-dir",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch git 1`] = `
+"{
+  "accounts": [],
+  "branch": "testBranch",
+  "buildDir": "/tmp-dir",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "/tmp-dir",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "/tmp-dir/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://testBranch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "testBranch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "/tmp-dir/_headers",
+  "integrations": [],
+  "redirectsPath": "/tmp-dir/_redirects",
+  "repositoryRoot": "/tmp-dir",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch that does not match wildcard falls back to default 1`] = `
+"{
+  "accounts": [],
+  "branch": "main",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo default",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "main"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://main--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "main"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch wildcard pattern feat* without slash 1`] = `
+"{
+  "accounts": [],
+  "branch": "featawesome",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo feat-star",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "featawesome"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://featawesome--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "featawesome"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch wildcard pattern feat/* 1`] = `
+"{
+  "accounts": [],
+  "branch": "feat/test-wildcard",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo feat-star",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/test-wildcard"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://feat/test-wildcard--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/test-wildcard"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with branch wildcard pattern feature/* 1`] = `
+"{
+  "accounts": [],
+  "branch": "feature/new-feature",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo feat-star",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "feature/new-feature"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://feature/new-feature--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "feature/new-feature"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with context CLI flag 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_flag",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_flag",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {
+        "node_bundler": "zisi"
+      }
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_flag/netlify.toml",
+  "context": "testContext",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "testContext"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_flag/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_flag/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_flag",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Context with nested branch wildcard pattern feat/nested/* 1`] = `
+"{
+  "accounts": [],
+  "branch": "feat/nested/deep-branch",
+  "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
+  "config": {
+    "build": {
+      "command": "echo feat-star",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/branch_wildcard",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/branch_wildcard/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/nested/deep-branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://feat/nested/deep-branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "feat/nested/deep-branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/branch_wildcard/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/branch_wildcard/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/branch_wildcard",
+  "siteInfo": {}
+}"
+`;
+
+exports[`Using context does not reset plugins 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/config/tests/context/fixtures/context_reset",
+  "config": {
+    "build": {
+      "command": "echo commandTest",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/config/tests/context/fixtures/context_reset",
+      "publishOrigin": "default",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [
+      {
+        "inputs": {},
+        "origin": "config",
+        "package": "netlify-plugin-test"
+      }
+    ],
+    "redirects": []
+  },
+  "configPath": "packages/config/tests/context/fixtures/context_reset/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/config/tests/context/fixtures/context_reset/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/config/tests/context/fixtures/context_reset/_redirects",
+  "repositoryRoot": "packages/config/tests/context/fixtures/context_reset",
+  "siteInfo": {}
+}"
+`;

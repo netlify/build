@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 
 import { type NodeBundlerName, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'

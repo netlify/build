@@ -1,7 +1,5 @@
 import { env } from 'process'
 
-import { includeKeys } from 'filter-obj'
-
 // If plugins modify `process.env`, this is propagated in other plugins and in
 // `build.command`. Since those are different processes, we figure out when they
 // do this and communicate the new `process.env` to other processes.
@@ -12,8 +10,8 @@ export const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfi
 }
 
 const diffEnv = function (envBefore, envAfter) {
-  const envChanges = includeKeys(envAfter, (name, value) => value !== envBefore[name])
-  const deletedEnv = includeKeys(envBefore, (name) => envAfter[name] === undefined)
+  const envChanges = Object.fromEntries(Object.entries(envAfter).filter(([name, value]) => value !== envBefore[name]))
+  const deletedEnv = Object.fromEntries(Object.entries(envBefore).filter(([name]) => envAfter[name] === undefined))
   const deletedEnvA = Object.fromEntries(Object.entries(deletedEnv).map(setToNull))
   return { ...envChanges, ...deletedEnvA }
 }

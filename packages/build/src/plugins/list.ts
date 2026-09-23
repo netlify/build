@@ -1,5 +1,5 @@
 import { pluginsUrl, pluginsList as oldPluginsList } from '@netlify/plugins-list'
-import isPlainObj from 'is-plain-obj'
+import { isPlainObject } from '../utils/is_plain_object.js'
 
 import { BufferedLogs } from '../log/logger.js'
 import { logPluginsList, logPluginsFetchError } from '../log/messages/plugins.js'
@@ -8,21 +8,20 @@ import { CONDITIONS } from './plugin_conditions.js'
 
 /**
  * Internal type from the `plugins.json`
- * @private
  */
-type PluginCompatiblityEntry = {
+export type PluginCompatiblityEntry = {
   version: string
   featureFlag?: string
   overridePinnedVersion?: string
   migrationGuide?: string
+  nodeVersion?: string
   siteDependencies?: Record<string, string>
 }
 
 /**
  * Internal type from the `plugins.json`
- * @private
  */
-type PluginListEntry = {
+export type PluginListEntry = {
   author: string
   description: string
   name: string
@@ -111,12 +110,12 @@ const fetchPluginsList = async function ({
     //    buildbot release.
   } catch (error) {
     logPluginsFetchError(logs, error.message)
-    return oldPluginsList as PluginListEntry[]
+    return oldPluginsList
   }
 }
 
 const isValidPluginsList = function (pluginsList): pluginsList is PluginListEntry[] {
-  return Array.isArray(pluginsList) && pluginsList.every(isPlainObj)
+  return Array.isArray(pluginsList) && pluginsList.every(isPlainObject)
 }
 
 const normalizePluginsList = function (pluginsList: PluginListEntry[]) {

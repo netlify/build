@@ -1,7 +1,7 @@
 import { mkdir, readdir, writeFile } from 'fs/promises'
 import { join, resolve } from 'path'
 
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 import { addErrorInfo } from '../../error/info.js'
 import { type FeatureFlags } from '../../core/feature_flags.js'
