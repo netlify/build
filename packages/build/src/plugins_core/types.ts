@@ -1,6 +1,7 @@
 import type { NetlifyAPI } from '@netlify/api'
 
 import type { NetlifyPluginConstants } from '../core/constants.js'
+import type { FeatureFlags } from '../core/feature_flags.js'
 import type { BufferedLogs } from '../log/logger.js'
 import type { NetlifyConfig } from '../types/config/netlify_config.js'
 import type { ReturnValue } from '../steps/return_values.js'
@@ -36,7 +37,7 @@ export type CoreStepFunctionArgs = {
   logs?: BufferedLogs
   systemLog: SystemLogger
   edgeFunctionsBootstrapURL?: string
-  featureFlags?: Record<string, any>
+  featureFlags: FeatureFlags
 
   headersPath?: string
   redirectsPath?: string

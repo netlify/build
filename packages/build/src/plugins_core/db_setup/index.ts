@@ -11,7 +11,7 @@ const NPM_PACKAGE_NAME = '@netlify/database'
 const NPM_PACKAGE_NAME_LEGACY = '@netlify/db'
 
 const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlags }) => {
-  if (!featureFlags?.netlify_build_db_setup) {
+  if (!featureFlags.netlify_build_db_setup) {
     return false
   }
 

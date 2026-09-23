@@ -603,7 +603,13 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/install/main.js'],
+    files: ['packages/build/src/install/functions.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
+    files: ['packages/build/src/install/local.js'],
     rules: {
       'n/no-missing-import': 'off',
     },
@@ -721,18 +727,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/child/typescript.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/child/validate.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/compatibility.test.ts'],
     rules: {
       'vitest/no-identical-title': 'off',
@@ -781,12 +775,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins/manifest/check.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins/manifest/load.js'],
     rules: {
       'n/no-missing-import': 'off',
@@ -797,18 +785,6 @@ export default [
     rules: {
       'n/no-missing-import': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/path.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins/manifest/validate.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {
@@ -948,12 +924,6 @@ export default [
     },
   },
   {
-    files: ['packages/build/src/plugins_core/functions/error.js'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/build/src/plugins_core/functions/index.ts'],
     rules: {
       'import/named': 'off',
@@ -962,12 +932,6 @@ export default [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
-  {
-    files: ['packages/build/src/plugins_core/functions/utils.js'],
-    rules: {
-      'n/no-missing-import': 'off',
     },
   },
   {

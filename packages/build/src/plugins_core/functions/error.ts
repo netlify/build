@@ -6,44 +6,59 @@ const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
 const MODULE_NOT_FOUND_ESBUILD_REGEXP = /^Could not resolve ['"]([^'"]+)/
 const MODULE_NOT_FOUND_REGEXP = /Cannot find module ['"]([^'"]+)/
 
+type ZipError = {
+  message: string
+  // Set by esbuild build failures
+  errors?: { text: string }[]
+}
+
 // Handle errors coming from zip-it-and-ship-it
-export const getZipError = async function (error, functionsSrc) {
-  const moduleNotFoundError = await getModuleNotFoundError(error, functionsSrc)
+export const getZipError = async function (error: unknown, functionsSrc: string | undefined): Promise<unknown> {
+  // Everything thrown while bundling functions is an `Error`, which is what the checks below rely on
+  const zipError = error as ZipError
+  const moduleNotFoundError = await getModuleNotFoundError(zipError, functionsSrc)
 
   if (moduleNotFoundError) {
     return moduleNotFoundError
   }
 
-  if (isPackageJsonError(error)) {
-    return getPackageJsonError(error)
+  if (isPackageJsonError(zipError)) {
+    return getPackageJsonError(zipError)
   }
 
-  if (isGoVersionError(error)) {
-    return getGoVersionError(error)
+  if (isGoVersionError(zipError)) {
+    return getGoVersionError(zipError)
   }
 
-  if (isGoMissingDependencyError(error)) {
-    return getGoMissingDependencyError(error)
+  if (isGoMissingDependencyError(zipError)) {
+    return getGoMissingDependencyError(zipError)
   }
 
-  return error
+  return zipError
 }
 
-const getModuleNotFoundError = async function (error, functionsSrc) {
+const getModuleNotFoundError = async function (
+  error: ZipError,
+  functionsSrc: string | undefined,
+): Promise<ZipError | undefined> {
   const errorFromZisi = await getModuleNotFoundErrorFromZISI(error, functionsSrc)
 
   if (errorFromZisi) {
     return errorFromZisi
   }
 
-  const errorFromEsbuild = await getModuleNotFoundErrorFromEsbuild(error, functionsSrc)
-
-  if (errorFromEsbuild) {
-    return errorFromEsbuild
-  }
+  return await getModuleNotFoundErrorFromEsbuild(error, functionsSrc)
 }
 
-const getModuleNotFoundErrorObject = async ({ error, functionsSrc, moduleNames }) => {
+const getModuleNotFoundErrorObject = async ({
+  error,
+  functionsSrc,
+  moduleNames,
+}: {
+  error: ZipError
+  functionsSrc: string | undefined
+  moduleNames: string[]
+}): Promise<ZipError> => {
   const message = await getModuleNotFoundMessage(functionsSrc, moduleNames)
 
   error.message = `${message}\n\n${error.message}`
@@ -52,7 +67,10 @@ const getModuleNotFoundErrorObject = async ({ error, functionsSrc, moduleNames }
   return error
 }
 
-const getModuleNotFoundMessage = async function (functionsSrc, moduleNames) {
+const getModuleNotFoundMessage = async function (
+  functionsSrc: string | undefined,
+  moduleNames: string[],
+): Promise<string> {
   if (moduleNames.length === 0 || !(await lacksNodeModules(functionsSrc))) {
     return MODULE_NOT_FOUND_MESSAGE
   }
@@ -64,20 +82,25 @@ const getModuleNotFoundMessage = async function (functionsSrc, moduleNames) {
   return getLocalInstallMessage(moduleNames)
 }
 
-const isLocalPath = function (moduleName) {
+const isLocalPath = function (moduleName: string): boolean {
   return moduleName.startsWith('.') || moduleName.startsWith('/')
 }
 
-const getModuleNotFoundErrorFromEsbuild = function (error, functionsSrc) {
+const getModuleNotFoundErrorFromEsbuild = function (
+  error: ZipError,
+  functionsSrc: string | undefined,
+): Promise<ZipError> | undefined {
   const { errors = [] } = error
-  const modulesNotFound = errors.reduce((modules, errorObject) => {
-    const match = errorObject.text.match(MODULE_NOT_FOUND_ESBUILD_REGEXP)
+  const modulesNotFound = errors.reduce<string[]>((modules, errorObject) => {
+    const match = MODULE_NOT_FOUND_ESBUILD_REGEXP.exec(errorObject.text)
+    // The capture group is mandatory, so it is set whenever there is a match
+    const moduleName = match?.[1]
 
-    if (!match) {
+    if (moduleName === undefined) {
       return modules
     }
 
-    return [...modules, match[1]]
+    return [...modules, moduleName]
   }, [])
 
   if (modulesNotFound.length === 0) {
@@ -87,8 +110,11 @@ const getModuleNotFoundErrorFromEsbuild = function (error, functionsSrc) {
   return getModuleNotFoundErrorObject({ error, functionsSrc, moduleNames: modulesNotFound })
 }
 
-const getModuleNotFoundErrorFromZISI = function (error, functionsSrc) {
-  if (!(error instanceof Error && error.code === MODULE_NOT_FOUND_CODE)) {
+const getModuleNotFoundErrorFromZISI = function (
+  error: unknown,
+  functionsSrc: string | undefined,
+): Promise<ZipError> | undefined {
+  if (!(error instanceof Error && 'code' in error && error.code === MODULE_NOT_FOUND_CODE)) {
     return
   }
 
@@ -98,7 +124,7 @@ const getModuleNotFoundErrorFromZISI = function (error, functionsSrc) {
 }
 
 // This error message always include the same words
-const getModuleNameFromZISIError = function (error) {
+const getModuleNameFromZISIError = function (error: { message: unknown }): string | undefined {
   if (typeof error.message !== 'string') {
     return
   }
@@ -112,7 +138,7 @@ const getModuleNameFromZISIError = function (error) {
 }
 
 // Netlify Functions has a `package.json` but no `node_modules`
-const lacksNodeModules = async function (functionsSrc) {
+const lacksNodeModules = async function (functionsSrc: string | undefined): Promise<boolean> {
   return (
     functionsSrc !== undefined &&
     (await hasFunctionRootFile('package.json', functionsSrc)) &&
@@ -122,7 +148,7 @@ const lacksNodeModules = async function (functionsSrc) {
 
 // Functions can be either files or directories, so we need to check on two
 // depth levels
-const hasFunctionRootFile = async function (filename, functionsSrc) {
+const hasFunctionRootFile = async function (filename: string, functionsSrc: string): Promise<boolean> {
   const files = await readdirpPromise(functionsSrc, { depth: 1, fileFilter: filename })
   return files.length !== 0
 }
@@ -134,7 +160,7 @@ Please make sure the file exists and its path is correctly spelled.`
 
 // A common mistake is to assume Netlify Functions dependencies are
 // automatically installed. This checks for this pattern.
-const getLocalInstallMessage = function (modules) {
+const getLocalInstallMessage = function (modules: string[]): string {
   const genericMessage = `
 
 By default, dependencies inside a Netlify Function's "package.json" are not automatically installed.
@@ -159,34 +185,34 @@ package = "@netlify/plugin-functions-install-core"
 // We need to load the site's `package.json` when bundling Functions. This is
 // because `optionalDependencies` can make `import()` fail, but we don't want
 // to error then. However, if the `package.json` is invalid, we fail the build.
-const isPackageJsonError = function (error) {
+const isPackageJsonError = function (error: ZipError): boolean {
   return PACKAGE_JSON_ORIGINAL_MESSAGES.some((msg) => error.message.includes(msg))
 }
 
 const PACKAGE_JSON_ORIGINAL_MESSAGES = ['is invalid JSON', 'in JSON at position']
 
-const getPackageJsonError = function (error) {
+const getPackageJsonError = function (error: ZipError): ZipError {
   addErrorInfo(error, { type: 'resolveConfig' })
   return error
 }
 
-const isGoVersionError = function (error) {
+const isGoVersionError = function (error: ZipError): boolean {
   return error.message.includes('module requires Go')
 }
 
-const getGoVersionError = function (error) {
+const getGoVersionError = function (error: ZipError): ZipError {
   addErrorInfo(error, { type: 'resolveConfig' })
   return error
 }
 
-const isGoMissingDependencyError = function (error) {
+const isGoMissingDependencyError = function (error: ZipError): boolean {
   return (
     error.message.includes('missing go.sum entry for module providing package') ||
     error.message.includes('no required module provides package')
   )
 }
 
-const getGoMissingDependencyError = function (error) {
+const getGoMissingDependencyError = function (error: ZipError): ZipError {
   addErrorInfo(error, { type: 'dependencies' })
   return error
 }
