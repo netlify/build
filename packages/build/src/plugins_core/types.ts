@@ -2,11 +2,9 @@ import type { NetlifyAPI } from '@netlify/api'
 
 import type { NetlifyPluginConstants } from '../core/constants.js'
 import type { FeatureFlags } from '../core/feature_flags.js'
-import type { BufferedLogs } from '../log/logger.js'
+import type { Logs } from '../log/logger.js'
 import type { NetlifyConfig } from '../types/config/netlify_config.js'
 import type { ReturnValue } from '../steps/return_values.js'
-
-type $TSFixme = any
 
 export type CoreStepFunctionArgs = {
   /**
@@ -18,7 +16,7 @@ export type CoreStepFunctionArgs = {
    * This is the value of the package directory field of the build settings
    * `undefined` if none is set.
    */
-  packagePath?: string
+  packagePath?: string | undefined
   repositoryRoot: string
   deployId: string
   /**
@@ -31,27 +29,28 @@ export type CoreStepFunctionArgs = {
   branch: string
   saveConfig: boolean
   constants: NetlifyPluginConstants
-  quiet?: boolean
-  debug?: boolean
+  quiet?: boolean | undefined
+  debug?: boolean | undefined
   events: string[]
-  logs?: BufferedLogs
+  logs?: Logs | undefined
   systemLog: SystemLogger
-  edgeFunctionsBootstrapURL?: string
+  edgeFunctionsBootstrapURL?: string | undefined
   featureFlags: FeatureFlags
 
-  headersPath?: string
-  redirectsPath?: string
+  headersPath?: string | undefined
+  redirectsPath?: string | undefined
   configMutations: unknown[] // FIXME
   configPath: string
   netlifyConfig: NetlifyConfig
-  explicitSecretKeys: $TSFixme
+  /** Comma-separated, from the `--explicitSecretKeys` flag */
+  explicitSecretKeys?: string | undefined
   enhancedSecretScan: boolean
   deployEnvVars: { key: string; value: string; isSecret: boolean; scopes: string[] }[]
-  userNodeVersion?: string
-  childEnv: $TSFixme
+  userNodeVersion?: string | undefined
+  childEnv: NodeJS.ProcessEnv
   returnValues: Record<string, ReturnValue>
 
-  buildbotServerSocket?: string
+  buildbotServerSocket?: string | undefined
   api: NetlifyAPI
 }
 
@@ -70,4 +69,4 @@ export type CoreStep = {
   quiet?: boolean
 }
 
-export type SystemLogger = (...args: any[]) => void
+export type SystemLogger = (...args: unknown[]) => void

@@ -40,7 +40,7 @@ export type SecretScanResult = {
  * @returns
  */
 export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean {
-  if (env.SECRETS_SCAN_ENABLED === false || env.SECRETS_SCAN_ENABLED === 'false') {
+  if (env['SECRETS_SCAN_ENABLED'] === false || env['SECRETS_SCAN_ENABLED'] === 'false') {
     return false
   }
   return true
@@ -52,7 +52,10 @@ export function isSecretsScanningEnabled(env: Record<string, unknown>): boolean 
  * @returns
  */
 export function isEnhancedSecretsScanningEnabled(env: Record<string, unknown>): boolean {
-  if (env.SECRETS_SCAN_SMART_DETECTION_ENABLED === false || env.SECRETS_SCAN_SMART_DETECTION_ENABLED === 'false') {
+  if (
+    env['SECRETS_SCAN_SMART_DETECTION_ENABLED'] === false ||
+    env['SECRETS_SCAN_SMART_DETECTION_ENABLED'] === 'false'
+  ) {
     return false
   }
   return true
@@ -85,7 +88,7 @@ function filterOmittedKeys(env: Record<string, unknown>, envKeys: string[] = [])
  *  - booleans
  *  - numbers or objects with fewer than 4 chars
  */
-function isValueTrivial(val): boolean {
+function isValueTrivial(val: unknown): boolean {
   if (typeof val === 'string') {
     // string forms of booleans
     if (val === 'true' || val === 'false') {
@@ -126,14 +129,14 @@ const getShannonEntropy = (str: string): number => {
   const len = str.length
   if (len === 0) return 0
 
-  const freqMap = {}
+  const freqMap: Record<string, number> = {}
   for (const char of str) {
-    freqMap[char] = (freqMap[char] || 0) + 1
+    freqMap[char] = (freqMap[char] ?? 0) + 1
   }
 
   let entropy = 0
-  for (const char in freqMap) {
-    const p = freqMap[char] / len
+  for (const count of Object.values(freqMap)) {
+    const p = count / len
     entropy -= p * Math.log2(p)
   }
 
@@ -165,7 +168,7 @@ const prefixMatchingRegex = LIKELY_SECRET_PREFIXES.map((p) => p.replace(/[$*+?.(
 // Note: Using the global flag (g) means this regex object maintains state between executions.
 // We would need to reset lastIndex to 0 if we wanted to reuse it on the same string multiple times.
 const likelySecretRegex = new RegExp(
-  `(?:["'\`]|[=]) *(?<token>(?<prefix>${prefixMatchingRegex})[a-zA-Z0-9-]{${MIN_CHARS_AFTER_PREFIX}}[a-zA-Z0-9-]*?)(?:["'\`]|$)`,
+  `(?:["'\`]|[=]) *(?<token>(?<prefix>${prefixMatchingRegex})[a-zA-Z0-9-]{${String(MIN_CHARS_AFTER_PREFIX)}}[a-zA-Z0-9-]*?)(?:["'\`]|$)`,
   'gi',
 )
 
@@ -205,8 +208,8 @@ export function findLikelySecrets({
   const allOmittedValues = [...omitValuesFromEnhancedScan, ...SAFE_LISTED_VALUES]
 
   while ((match = likelySecretRegex.exec(text)) !== null) {
-    const token = match.groups?.token
-    const prefix = match.groups?.prefix
+    const token = match.groups?.['token']
+    const prefix = match.groups?.['prefix']
     if (
       !token ||
       !prefix ||
@@ -236,7 +239,13 @@ export function findLikelySecrets({
  * @param options
  * @returns string[] of relative paths from base of files that should be searched
  */
-export async function getFilePathsToScan({ env, base }): Promise<string[]> {
+export async function getFilePathsToScan({
+  env,
+  base,
+}: {
+  env: Record<string, unknown>
+  base: string
+}): Promise<string[]> {
   const omitPathsAlways = ['.git/', '.cache/']
 
   // Files/folders ignored by the repo's .gitignore should not be scanned, since they
@@ -262,8 +271,9 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
   files = files.map((f) => f.split(path.sep).join('/'))
 
   let omitPaths: string[] = []
-  if (typeof env.SECRETS_SCAN_OMIT_PATHS === 'string') {
-    omitPaths = env.SECRETS_SCAN_OMIT_PATHS.split(',')
+  if (typeof env['SECRETS_SCAN_OMIT_PATHS'] === 'string') {
+    omitPaths = env['SECRETS_SCAN_OMIT_PATHS']
+      .split(',')
       .map((s) => s.trim())
       .filter(Boolean)
   }
@@ -278,7 +288,7 @@ export async function getFilePathsToScan({ env, base }): Promise<string[]> {
 }
 
 // omit paths are relative path substrings.
-const omitPathMatches = (relativePath, omitPaths) => {
+const omitPathMatches = (relativePath: string, omitPaths: string[]) => {
   return omitPaths.some((oPath) => {
     // check if the substring matches or glob pattern
     return relativePath.startsWith(oPath) || minimatch(relativePath, oPath, { dot: true })
@@ -307,8 +317,8 @@ export async function scanFilesForKeyValues({
     scannedFilesCount: 0,
   }
 
-  const keyValues: Record<string, string[]> = keys.reduce((kvs, key) => {
-    let val = env[key]
+  const keyValues = keys.reduce<Record<string, string[]>>((kvs, key) => {
+    let val: unknown = env[key]
 
     if (typeof val === 'number' || typeof val === 'object') {
       val = JSON.stringify(val)
@@ -353,7 +363,7 @@ export async function scanFilesForKeyValues({
   }
 
   settledPromises.forEach((result) => {
-    if (result.status === 'fulfilled' && result.value?.length > 0) {
+    if (result.status === 'fulfilled' && result.value.length > 0) {
       scanResults.matches = scanResults.matches.concat(result.value)
     }
   })
@@ -365,7 +375,7 @@ type SearchStreamOptions = {
   basePath: string
   file: string
   keyValues: Record<string, string[]>
-  enhancedScanning?: boolean
+  enhancedScanning?: boolean | undefined
   omitValuesFromEnhancedScan?: unknown[]
 }
 
@@ -382,7 +392,7 @@ const searchStreamMinimalChunks = ({
   return new Promise((resolve, reject) => {
     const matches: MatchResult[] = []
 
-    const keyVals: string[] = ([] as string[]).concat(...Object.values(keyValues))
+    const keyVals: string[] = Object.values(keyValues).flat()
 
     // determine longest value that we will search for - needed to determine minimal size of rolling buffer
     const maxValLength = Math.max(
@@ -409,7 +419,7 @@ const searchStreamMinimalChunks = ({
 
     const inStream = createReadStream(filePath)
 
-    function getKeyForValue(val) {
+    function getKeyForValue(val: string) {
       let key = ''
       for (const [secretKeyName, valuePermutations] of Object.entries(keyValues)) {
         if (valuePermutations.includes(val)) {
@@ -424,7 +434,7 @@ const searchStreamMinimalChunks = ({
     let newLinesIndexesInCurrentBuffer: number[] | null = null
     function getCurrentBufferNewLineIndexes() {
       if (newLinesIndexesInCurrentBuffer === null) {
-        newLinesIndexesInCurrentBuffer = [] as number[]
+        newLinesIndexesInCurrentBuffer = []
         let newLineIndex = -1
         while ((newLineIndex = buffer.indexOf('\n', newLineIndex + 1)) !== -1) {
           newLinesIndexesInCurrentBuffer.push(newLineIndex)
@@ -456,7 +466,13 @@ const searchStreamMinimalChunks = ({
     /**
      * Calculate absolute line number in a file for given match in the current rolling buffer.
      */
-    function getLineNumberForMatchInTheBuffer({ indexInBuffer, key }: { indexInBuffer: number; key: string }) {
+    function getLineNumberForMatchInTheBuffer({
+      indexInBuffer,
+      key,
+    }: {
+      indexInBuffer: number
+      key: string
+    }): number | undefined {
       const absolutePositionInFile = processedCharacters + indexInBuffer
 
       // check if we already handled match for given key in this position
@@ -492,6 +508,8 @@ const searchStreamMinimalChunks = ({
           return lineNumber
         }
       }
+
+      return undefined
     }
 
     function processBuffer() {
@@ -564,8 +582,8 @@ const searchStreamMinimalChunks = ({
       }
     })
 
-    inStream.on('error', function (error: any) {
-      if (error?.code === 'EISDIR') {
+    inStream.on('error', function (error: NodeJS.ErrnoException) {
+      if (error.code === 'EISDIR') {
         // file path is a directory - do nothing
         resolve(matches)
       } else {
@@ -593,29 +611,25 @@ const searchStreamMinimalChunks = ({
  * @returns
  */
 export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
-  secretMatches: { [key: string]: MatchResult[] }
-  enhancedSecretMatches: { [key: string]: MatchResult[] }
+  secretMatches: Record<string, MatchResult[]>
+  enhancedSecretMatches: Record<string, MatchResult[]>
 } {
-  const secretMatchesByKeys: { [key: string]: MatchResult[] } = {}
-  const enhancedSecretMatchesByKeys: { [key: string]: MatchResult[] } = {}
+  const secretMatchesByKeys: Record<string, MatchResult[]> = {}
+  const enhancedSecretMatchesByKeys: Record<string, MatchResult[]> = {}
   scanResults.matches.forEach((matchResult) => {
     if (matchResult.enhancedMatch) {
-      if (!enhancedSecretMatchesByKeys[matchResult.key]) {
-        enhancedSecretMatchesByKeys[matchResult.key] = []
-      }
-      enhancedSecretMatchesByKeys[matchResult.key].push(matchResult)
+      const matches = (enhancedSecretMatchesByKeys[matchResult.key] ??= [])
+      matches.push(matchResult)
     } else {
-      if (!secretMatchesByKeys[matchResult.key]) {
-        secretMatchesByKeys[matchResult.key] = []
-      }
-      secretMatchesByKeys[matchResult.key].push(matchResult)
+      const matches = (secretMatchesByKeys[matchResult.key] ??= [])
+      matches.push(matchResult)
     }
   })
 
   // sort results to get a consistent output and logically ordered match results
-  const sortMatches = (matchesByKeys: { [key: string]: MatchResult[] }) => {
-    Object.keys(matchesByKeys).forEach((key) => {
-      matchesByKeys[key].sort((a, b) => {
+  const sortMatches = (matchesByKeys: Record<string, MatchResult[]>) => {
+    Object.values(matchesByKeys).forEach((matches) => {
+      matches.sort((a, b) => {
         // sort by file name first
         if (a.file > b.file) {
           return 1

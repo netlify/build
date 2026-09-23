@@ -4,7 +4,7 @@ import { type NodeBundlerName, zipFunctions, type FunctionResult } from '@netlif
 import { pathExists } from '../../utils/path_exists.js'
 
 import { addErrorInfo } from '../../error/info.js'
-import { log } from '../../log/logger.js'
+import { type Logs, log } from '../../log/logger.js'
 import { type GeneratedFunction, getGeneratedFunctions, type ReturnValue } from '../../steps/return_values.js'
 import {
   logBundleResults,
@@ -18,7 +18,7 @@ import type { CoreStepFunction } from '../types.js'
 import { getZipError } from './error.js'
 import { getServerEntry } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
-import { getZisiParameters } from './zisi.js'
+import { type GetZisiParametersType, getZisiParameters } from './zisi.js'
 import type { NetlifyPluginConstants } from '../../core/constants.js'
 import type { FeatureFlags } from '../../core/feature_flags.js'
 
@@ -77,6 +77,11 @@ const zipFunctionsAndLogResults = async ({
   repositoryRoot,
   userNodeVersion,
   systemLog,
+}: GetZisiParametersType & {
+  functionsSrc: string | undefined
+  generatedFunctions: string[]
+  frameworkFunctionsSrc: string
+  logs: Logs | undefined
 }) => {
   const zisiParameters = getZisiParameters({
     branch,
@@ -103,7 +108,7 @@ const zipFunctionsAndLogResults = async ({
           functions: generatedFunctions,
         },
         user: {
-          directories: [functionsSrc].filter(Boolean),
+          directories: [functionsSrc].filter((directory): directory is string => Boolean(directory)),
         },
       },
       functionsDist,
@@ -145,7 +150,7 @@ const coreStep: CoreStepFunction = async function ({
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc ?? '')
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_PATH)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_FUNCTIONS_PATH)
   const frameworkFunctionsSrcExists = await pathExists(frameworkFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = [], frameworkFunctions = []] = await getUserAndInternalFunctions({
@@ -248,8 +253,8 @@ const hasFunctionsDirectories = async function ({
   returnValues?: Record<string, ReturnValue> | undefined
 }) {
   if (
-    featureFlags?.netlify_build_server_entry &&
-    (await pathExists(resolve(buildDir, packagePath || '', 'netlify/server')))
+    featureFlags?.['netlify_build_server_entry'] &&
+    (await pathExists(resolve(buildDir, packagePath ?? '', 'netlify/server')))
   ) {
     return true
   }
@@ -265,7 +270,7 @@ const hasFunctionsDirectories = async function ({
     return true
   }
 
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_FUNCTIONS_PATH)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_FUNCTIONS_PATH)
 
   if (await pathExists(frameworkFunctionsSrc)) {
     return true
@@ -273,8 +278,8 @@ const hasFunctionsDirectories = async function ({
 
   // We must run the core step if the return value of any of the previous steps
   // has declared generated functions.
-  for (const id in returnValues) {
-    if (returnValues[id].generatedFunctions && returnValues[id].generatedFunctions.length !== 0) {
+  for (const returnValue of Object.values(returnValues ?? {})) {
+    if (returnValue.generatedFunctions && returnValue.generatedFunctions.length !== 0) {
       return true
     }
   }
@@ -290,8 +295,8 @@ const getGeneratedFunctionsByGenerator = (
   const result: Record<string, GeneratedFunction[]> = {}
 
   for (const func of generatedFunctions) {
-    result[func.generator.name] = result[func.generator.name] || []
-    result[func.generator.name].push(func)
+    const generatorFunctions = (result[func.generator.name] ??= [])
+    generatorFunctions.push(func)
   }
 
   return result

@@ -30,10 +30,10 @@ export const getServerEntry = async ({
   featureFlags,
 }: {
   buildDir: string
-  packagePath?: string
+  packagePath?: string | undefined
   featureFlags?: FeatureFlags
 }): Promise<ServerEntry | undefined> => {
-  if (!featureFlags?.netlify_build_server_entry) {
+  if (!featureFlags?.['netlify_build_server_entry']) {
     return undefined
   }
 
@@ -45,12 +45,13 @@ export const getServerEntry = async ({
   }
 
   const candidates = (await readdir(serverDir)).filter((name) => SERVER_ENTRY_BASENAMES.has(name)).sort()
+  const [candidate, ...otherCandidates] = candidates
 
-  if (candidates.length === 0) {
+  if (candidate === undefined) {
     return undefined
   }
 
-  if (candidates.length > 1) {
+  if (otherCandidates.length !== 0) {
     const error = new Error(
       `Found multiple server entrypoints in ${SERVER_ENTRY_DIR} (${candidates.join(
         ', ',
@@ -60,7 +61,7 @@ export const getServerEntry = async ({
     throw error
   }
 
-  const entryPath = join(serverDir, candidates[0])
+  const entryPath = join(serverDir, candidate)
   const shimDir = join(packageRoot, SERVER_SHIM_DIR)
   const shimPath = join(shimDir, `${SERVER_ENTRY_FUNCTION_NAME}.mjs`)
 
@@ -70,7 +71,7 @@ export const getServerEntry = async ({
   return {
     entryPath,
     shimPath,
-    relativeEntryPath: `${SERVER_ENTRY_DIR}/${String(candidates[0])}`,
+    relativeEntryPath: `${SERVER_ENTRY_DIR}/${candidate}`,
   }
 }
 

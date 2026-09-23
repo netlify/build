@@ -24,6 +24,9 @@ import {
 
 const tracer = trace.getTracer('secrets-scanning')
 
+// `netlify.toml` values may not be strings; objects print as "[object Object]", as they always did
+const stringifyEnvValue = (value: unknown): string => String(value)
+
 const coreStep: CoreStepFunction = async function ({
   buildDir,
   logs,
@@ -36,10 +39,11 @@ const coreStep: CoreStepFunction = async function ({
 }) {
   const stepResults = {}
 
-  const passedSecretKeys = (explicitSecretKeys || '').split(',')
-  const envVars = netlifyConfig.build.environment as Record<string, unknown>
+  const passedSecretKeys = (explicitSecretKeys ?? '').split(',')
+  // `netlify.toml` can hold non-string values, which the scan handles
+  const envVars: Record<string, unknown> = netlifyConfig.build.environment
 
-  systemLog?.({ passedSecretKeys, buildDir })
+  systemLog({ passedSecretKeys, buildDir })
 
   if (!isSecretsScanningEnabled(envVars)) {
     logSecretsScanSkipMessage(logs, 'Secrets scanning disabled via SECRETS_SCAN_ENABLED flag set to false.')
@@ -48,10 +52,16 @@ const coreStep: CoreStepFunction = async function ({
 
   // transparently log if there are scanning values being omitted
   if (envVars['SECRETS_SCAN_OMIT_KEYS'] !== undefined) {
-    log(logs, `SECRETS_SCAN_OMIT_KEYS override option set to: ${envVars['SECRETS_SCAN_OMIT_KEYS']}\n`)
+    log(
+      logs,
+      `SECRETS_SCAN_OMIT_KEYS override option set to: ${stringifyEnvValue(envVars['SECRETS_SCAN_OMIT_KEYS'])}\n`,
+    )
   }
   if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
-    log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
+    log(
+      logs,
+      `SECRETS_SCAN_OMIT_PATHS override option set to: ${stringifyEnvValue(envVars['SECRETS_SCAN_OMIT_PATHS'])}\n`,
+    )
   }
   const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
   const enhancedScanConfigured = enhancedSecretScan && enhancedScanningEnabledInEnv
@@ -65,7 +75,7 @@ const coreStep: CoreStepFunction = async function ({
   if (enhancedScanConfigured && envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES'] !== undefined) {
     log(
       logs,
-      `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set to: ${envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES']}\n`,
+      `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set to: ${stringifyEnvValue(envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES'])}\n`,
     )
   }
 
@@ -102,7 +112,7 @@ const coreStep: CoreStepFunction = async function ({
       scanResults = await scanFilesForKeyValues({
         env: envVars,
         keys: keysToSearchFor,
-        base: buildDir as string,
+        base: buildDir,
         filePaths,
         enhancedScanning: enhancedScanConfigured,
         omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),
@@ -122,7 +132,7 @@ const coreStep: CoreStepFunction = async function ({
         enhancedScanning: enhancedScanConfigured,
       }
 
-      systemLog?.(attributesForLogsAndSpan)
+      systemLog(attributesForLogsAndSpan)
       span.setAttributes(attributesForLogsAndSpan)
       span.end()
     },
@@ -132,15 +142,16 @@ const coreStep: CoreStepFunction = async function ({
     const secretScanResult: SecretScanResult = {
       scannedFilesCount: scanResults?.scannedFilesCount ?? 0,
       secretsScanMatches: secretMatches ?? [],
-      enhancedSecretsScanMatches: enhancedSecretMatches ? enhancedSecretMatches : [],
+      enhancedSecretsScanMatches: enhancedSecretMatches ?? [],
     }
-    reportValidations({ api, secretScanResult, deployId, systemLog })
+    // Fire and forget: `reportValidations()` catches its own errors
+    void reportValidations({ api, secretScanResult, deployId, systemLog })
   }
 
   if (!scanResults || scanResults.matches.length === 0) {
     logSecretsScanSuccessMessage(
       logs,
-      `Secrets scanning complete. ${scanResults?.scannedFilesCount} file(s) scanned. No secrets detected in build output or repo code!`,
+      `Secrets scanning complete. ${String(scanResults?.scannedFilesCount)} file(s) scanned. No secrets detected in build output or repo code!`,
     )
     return stepResults
   }

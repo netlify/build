@@ -4,26 +4,41 @@ import { type FunctionConfig, type ZipFunctionsOptions } from '@netlify/zip-it-a
 import semver from 'semver'
 
 import type { FeatureFlags } from '../../core/feature_flags.js'
+import type { Functions } from '../../types/config/functions.js'
+import type { SystemLogger } from '../types.js'
 
 import { getZisiFeatureFlags } from './feature_flags.js'
 
-type GetZisiParametersType = {
-  branch?: string
+export type GetZisiParametersType = {
+  branch: string
   buildDir: string
-  childEnv: Record<string, string>
+  childEnv: NodeJS.ProcessEnv
   featureFlags: FeatureFlags
-  functionsConfig: Record<string, any>
+  functionsConfig: Functions
   functionsDist: string
-  internalFunctionsSrc: string | undefined
+  internalFunctionsSrc: string
   isRunningLocally: boolean
   repositoryRoot: string
-  userNodeVersion: string
-  systemLog: ZipFunctionsOptions['systemLog']
+  userNodeVersion: string | undefined
+  systemLog: SystemLogger
 }
 
-const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion: string): string | undefined => {
-  if (childEnv.AWS_LAMBDA_JS_RUNTIME) {
-    return childEnv.AWS_LAMBDA_JS_RUNTIME
+// `Functions` leaves out `name` and `schedule`, and only declares the esbuild-only properties on one of its variants
+type FunctionConfigInput = Functions[string] & {
+  external_node_modules?: string[]
+  ignored_node_modules?: string[]
+  name?: string
+  schedule?: string
+}
+
+const getLambdaNodeVersion = (childEnv: NodeJS.ProcessEnv, userNodeVersion: string | undefined): string | undefined => {
+  if (childEnv['AWS_LAMBDA_JS_RUNTIME']) {
+    return childEnv['AWS_LAMBDA_JS_RUNTIME']
+  }
+
+  // `runCoreSteps()` does not pass it, which makes `semver` throw this
+  if (userNodeVersion === undefined) {
+    throw new TypeError('Invalid version. Must be a string. Got type "undefined".')
   }
 
   // As of time of writing the default Lambda Node.js version is 16 and
@@ -73,7 +88,8 @@ export const getZisiParameters = ({
     manifest,
     featureFlags: zisiFeatureFlags,
     repositoryRoot,
-    configFileDirectories,
+    // `zipFunctions()` destructures its options, so leaving the key out is the same as `undefined`
+    ...(configFileDirectories === undefined ? {} : { configFileDirectories }),
     systemLog,
   }
 }
@@ -88,7 +104,7 @@ export const normalizeFunctionConfig = ({
   nodeVersion,
 }: {
   buildDir: string
-  functionConfig: Record<string, any>
+  functionConfig: FunctionConfigInput
   isRunningLocally: boolean
   nodeVersion: string | undefined
 }): FunctionConfig => ({
