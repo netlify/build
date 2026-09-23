@@ -23,7 +23,16 @@ export const startTcpServer = async function <TRequest>({
   const server = createServer(onConnection.bind(null, { response, requests, onRequest }))
   await promisify(server.listen.bind(server))(connectionOpts)
 
-  const stopServer = promisify(server.close.bind(server))
+  const stopServer = () =>
+    new Promise<void>((resolve, reject) => {
+      server.close((error) => {
+        if (error === undefined) {
+          resolve()
+        } else {
+          reject(error)
+        }
+      })
+    })
   return { address, requests, stopServer }
 }
 
