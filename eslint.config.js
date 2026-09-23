@@ -46,6 +46,14 @@ export default tseslint.config(
       },
     },
   },
+  {
+    files: ['packages/build/src/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: ['./packages/build/tsconfig.strict.json'],
+      },
+    },
+  },
 
   {
     files: ['**/*.?(c|m)js?(x)'],

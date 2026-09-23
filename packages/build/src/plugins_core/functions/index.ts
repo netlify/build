@@ -282,7 +282,6 @@ const getGeneratedFunctionsByGenerator = (
   const result: Record<string, GeneratedFunction[]> = {}
 
   for (const func of generatedFunctions) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     result[func.generator.name] = result[func.generator.name] || []
     result[func.generator.name].push(func)
   }

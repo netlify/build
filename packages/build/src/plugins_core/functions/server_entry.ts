@@ -70,7 +70,7 @@ export const getServerEntry = async ({
   return {
     entryPath,
     shimPath,
-    relativeEntryPath: `${SERVER_ENTRY_DIR}/${candidates[0]}`,
+    relativeEntryPath: `${SERVER_ENTRY_DIR}/${String(candidates[0])}`,
   }
 }
 

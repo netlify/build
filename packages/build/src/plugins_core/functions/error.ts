@@ -173,8 +173,9 @@ There are several ways to fix this problem:
 package = "@netlify/plugin-functions-install-core"
   `
 
-  if (modules.length === 1) {
-    return `A Netlify Function is using "${modules[0]}" but that dependency has not been installed yet.${genericMessage}`
+  const [moduleName, ...otherModules] = modules
+  if (moduleName !== undefined && otherModules.length === 0) {
+    return `A Netlify Function is using "${moduleName}" but that dependency has not been installed yet.${genericMessage}`
   }
 
   const moduleNames = modules.map((name) => `"${name}"`).join(', ')

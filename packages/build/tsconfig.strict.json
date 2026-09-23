@@ -1,0 +1,21 @@
+{
+  // The strictness every file is converted to. ESLint gets type information from it, and
+  // `tsconfig.build.json` adopts these flags once every file passes them.
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "useUnknownInCatchVariables": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "strictBindCallApply": true
+  },
+  // Unlike the build, this includes the unit tests next to the sources.
+  "exclude": ["tests/**"]
+}
