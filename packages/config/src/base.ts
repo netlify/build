@@ -1,20 +1,23 @@
 import { resolvePath } from './files.js'
 import type { NormalizedNetlifyConfig, PartialNetlifyConfig } from './types/config.js'
+import { spreadValue } from './utils/object.js'
+import type { RawConfig } from './validate/validations.js'
 
 type InitialBaseOptions = {
   repositoryRoot: string
   defaultConfig: PartialNetlifyConfig
-  inlineConfig: PartialNetlifyConfig
+  inlineConfig: RawConfig
 }
 
 /** The base directory used to find the configuration file the first time: from `inlineConfig`, else `defaultConfig`. */
 export const getInitialBase = function ({ repositoryRoot, defaultConfig, inlineConfig }: InitialBaseOptions) {
-  const inlineBase = inlineConfig.build?.base
+  // Not validated yet: a base that isn't a string is reported once the sources are merged.
+  const { base: inlineBase } = spreadValue(inlineConfig['build'])
   // Not `??`: a `null` inline base must not fall back to `defaultConfig`.
   if (inlineBase === undefined) {
     return resolveBase(repositoryRoot, defaultConfig.build?.base)
   }
-  return resolveBase(repositoryRoot, inlineBase)
+  return resolveBase(repositoryRoot, typeof inlineBase === 'string' ? inlineBase : undefined)
 }
 
 /**

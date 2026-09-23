@@ -16,6 +16,7 @@ import type {
   ResolvedNetlifyConfig,
 } from './types/config.js'
 import type { Logs } from './types/logs.js'
+import type { RawConfig } from './validate/validations.js'
 
 type LoadConfigOptions = {
   /** The `config` option: a path to the configuration file. */
@@ -26,7 +27,7 @@ type LoadConfigOptions = {
   packagePath: string | undefined
   branch: string
   defaultConfig: PartialNetlifyConfig
-  inlineConfig: PartialNetlifyConfig
+  inlineConfig: RawConfig
   /** Where the config mutations come from, for error messages. */
   configMutationsOrigin: string | undefined
   baseRelDir: boolean
@@ -136,9 +137,9 @@ const addErrorStage = function (
 }
 
 type MergeAndNormalizeOptions = {
-  fileConfig: PartialNetlifyConfig
+  fileConfig: RawConfig
   defaultConfig: PartialNetlifyConfig
-  inlineConfig: PartialNetlifyConfig
+  inlineConfig: RawConfig
   context: string
   branch: string
   logs: Logs | undefined
@@ -167,10 +168,10 @@ const mergeAndNormalizeConfig = function ({
   const withContexts = mergeContext({ config: withDefaults, context, branch, logs })
   const withInlineConfig = mergeConfigs([withContexts, normalizedInlineConfig])
 
-  return normalizeAfterConfigMerge(withInlineConfig, packagePath)
+  return normalizeAfterConfigMerge(withInlineConfig, packagePath, logs)
 }
 
-const normalizeSource = function (config: PartialNetlifyConfig, origin: ConfigOrigin) {
+const normalizeSource = function (config: RawConfig, origin: ConfigOrigin) {
   return normalizeContextProps(normalizeBeforeConfigMerge(config, origin), origin)
 }
 

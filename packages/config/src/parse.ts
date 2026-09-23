@@ -2,8 +2,8 @@ import { existsSync, promises as fs } from 'fs'
 
 import { throwUserError } from './error.js'
 import { throwOnInvalidTomlSequence } from './log/messages.js'
-import type { PartialNetlifyConfig } from './types/config.js'
 import { parseToml } from './utils/toml.js'
+import { type RawConfig, rawConfigSchema } from './validate/validations.js'
 
 /**
  * Unknown backslash escapes in `"` and `"""` strings (not `'` and `'''`) are invalid TOML; catch them
@@ -13,7 +13,7 @@ const INVALID_TOML_BACKSLASH =
   /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
 
 /** Read and parse the configuration file. Without a path, the configuration is empty. */
-export const parseConfig = async function (configPath?: string): Promise<PartialNetlifyConfig> {
+export const parseConfig = async function (configPath?: string): Promise<RawConfig> {
   if (configPath === undefined) {
     return {}
   }
@@ -26,7 +26,7 @@ export const parseConfig = async function (configPath?: string): Promise<Partial
 }
 
 /** Read and parse the configuration file if it exists. */
-export const parseOptionalConfig = async function (configPath: string): Promise<PartialNetlifyConfig> {
+export const parseOptionalConfig = async function (configPath: string): Promise<RawConfig> {
   if (!existsSync(configPath)) {
     return {}
   }
@@ -35,12 +35,12 @@ export const parseOptionalConfig = async function (configPath: string): Promise<
 }
 
 // A TOML document is always a table. Its properties are validated later.
-const readConfigFile = async function (configPath: string): Promise<PartialNetlifyConfig> {
+const readConfigFile = async function (configPath: string): Promise<RawConfig> {
   const configString = await readConfig(configPath)
   validateTomlBackslashes(configString)
 
   try {
-    return parseToml(configString) as PartialNetlifyConfig
+    return rawConfigSchema.parse(parseToml(configString))
   } catch (error) {
     throwUserError('Could not parse configuration file', error)
   }
