@@ -4,9 +4,10 @@ type NetlifyPluginRunUtilOptions = Omit<ExecaOptions, 'preferLocal'> & {
   /**
    * @default true
    */
-  preferLocal?: ExecaOptions['preferLocal']
+  preferLocal?: boolean
 }
 
+// A child process, which is also a promise of its result.
 type NetlifyPluginRunUtilResult = ExecaChildProcess
 
 /**
@@ -14,6 +15,6 @@ type NetlifyPluginRunUtilResult = ExecaChildProcess
  * @see https://github.com/netlify/build/blob/master/packages/run-utils/README.md
  */
 export interface NetlifyPluginRunUtil {
-  (file: string, args?: readonly string[], options?: NetlifyPluginRunUtilOptions): Promise<NetlifyPluginRunUtilResult>
-  command(command: string, options?: NetlifyPluginRunUtilOptions): Promise<NetlifyPluginRunUtilResult>
+  (file: string, args?: readonly string[], options?: NetlifyPluginRunUtilOptions): NetlifyPluginRunUtilResult
+  command(command: string, options?: NetlifyPluginRunUtilOptions): NetlifyPluginRunUtilResult
 }

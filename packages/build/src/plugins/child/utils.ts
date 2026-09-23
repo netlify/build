@@ -31,8 +31,7 @@ export const getUtils = function ({
   runState: RunState
   deployEnvVars: DeployEnvVarsData
 }): NetlifyPluginUtils {
-  // `NetlifyPluginRunUtil` wrongly types the result as a `Promise<ExecaChildProcess>`, so no single cast can bridge them
-  const run = Object.assign(baseRun, { command: runCommand }) as unknown as NetlifyPluginUtils['run']
+  const run: NetlifyPluginUtils['run'] = Object.assign(baseRun, { command: runCommand })
   const build = getBuildUtils(event)
   const cache = getCacheUtils(CACHE_DIR)
   const deploy = getDeployUtils({ deployEnvVars })
