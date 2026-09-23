@@ -27,10 +27,10 @@ const isValidCronExpression = (cron: unknown) => {
 }
 
 // Earlier validations ensure plugin entries are objects.
-const plugin = (value: unknown): Record<string, unknown> => (isPlainObj(value) ? value : {})
+const plugin = (value: unknown): Partial<Record<'package', unknown>> => (isPlainObj(value) ? value : {})
 
 /** The function name, in examples of `functions.<name>.*`. */
-const functionName = (path: PathSegment[]) => path[1]
+const functionName = (path: PathSegment[]) => String(path[1])
 
 /** Before case normalization. */
 export const PRE_CASE_NORMALIZE_VALIDATIONS: Validation[] = [

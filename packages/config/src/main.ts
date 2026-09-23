@@ -179,10 +179,10 @@ type SiteDataOptions = {
 /** The site information from the cached config, behind a feature flag and if it's complete, otherwise from the API. */
 const getSiteData = async function ({ cached, featureFlags, fetch }: SiteDataOptions): Promise<SiteData> {
   const { siteInfo, accounts, integrations: extensions } = cached ?? {}
-  const useCachedSiteInfo = Boolean(featureFlags.use_cached_site_info && siteInfo && accounts && extensions)
+  const useCachedSiteInfo = Boolean(featureFlags['use_cached_site_info'] && siteInfo && accounts && extensions)
 
   // I'm adding some debug logging to see if the logic is working as expected
-  if (featureFlags.use_cached_site_info_logging) {
+  if (featureFlags['use_cached_site_info_logging']) {
     console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, extensions })
   }
 
