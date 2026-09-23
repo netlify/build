@@ -147,7 +147,7 @@ const createDirectory = async function ({
 
   // Copying source files.
   await pMap(
-    excludeShadowingSymlinks(statted),
+    excludeConflictingSymlinks(statted),
     async ({ srcFile, stat, destPath }) => {
       const absoluteDestPath = join(functionFolder, destPath)
 
@@ -271,7 +271,7 @@ const createZipArchive = async function ({
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
   const srcFilesInfos = await Promise.all(deduplicatedSrcFiles.map((file) => addStat(cache, file)))
-  const entries = excludeShadowingSymlinks(
+  const entries = excludeConflictingSymlinks(
     srcFilesInfos.map(({ srcFile, stat }) => ({
       srcFile,
       stat,
@@ -327,8 +327,9 @@ interface ArchiveEntry {
 //
 // The contents are already in the archive, so the link is the safe half to drop.
 // Aliases let two source paths land on one destination, so a link can collide
-// with a real entry either as its ancestor or on the exact same path.
-export const excludeShadowingSymlinks = function <T extends ArchiveEntry>(files: T[]): T[] {
+// with a real entry either as its ancestor or on the exact same path, and two
+// links can collide with each other.
+export const excludeConflictingSymlinks = function <T extends ArchiveEntry>(files: T[]): T[] {
   const symlinks = new Set(files.filter(({ stat }) => stat.isSymbolicLink()).map(({ destPath }) => destPath))
 
   if (symlinks.size === 0) {
@@ -351,7 +352,25 @@ export const excludeShadowingSymlinks = function <T extends ArchiveEntry>(files:
     }
   }
 
-  return files.filter(({ destPath, stat }) => !(stat.isSymbolicLink() && shadowing.has(destPath)))
+  const taken = new Set<string>()
+
+  return files.filter(({ destPath, stat }) => {
+    if (!stat.isSymbolicLink()) {
+      return true
+    }
+
+    if (shadowing.has(destPath) || taken.has(destPath)) {
+      return false
+    }
+
+    // One destination can only hold one link. Links with the same target
+    // already collapsed into a single one; links with different targets used to
+    // race and fail with EEXIST. Keeping the first is deterministic, because the
+    // order of the file list already is.
+    taken.add(destPath)
+
+    return true
+  })
 }
 
 const addStat = async function (cache: RuntimeCache, srcFile: string) {
