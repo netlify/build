@@ -36,7 +36,7 @@ test('System logger does not write to file descriptor when `debug: true`', async
 
   systemLog('Hello world', { object: true, problem: false }, error)
 
-  const output = normalizeOutput(mockProcess.stdout[0])
+  const output = normalizeOutput(mockProcess.stdout[0] ?? '')
 
   expect(mockProcess.stdout).toHaveLength(1)
   expect(normalizeOutput(output)).toMatchSnapshot()

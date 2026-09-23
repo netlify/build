@@ -45,7 +45,7 @@ test('findLikelySecrets - should not match values that are too short', () => {
 test('findLikelySecrets - should return the matched prefix as the key', () => {
   const matches = findLikelySecrets({ text: 'mykey = "github_pat_Kj2P9xL5mN8vB3cX7qA4"' })
   expect(matches).toHaveLength(1)
-  expect(matches[0].prefix).toBe('github_pat_')
+  expect(matches[0]?.prefix).toBe('github_pat_')
 })
 
 test('findLikelySecrets - should handle empty or invalid input', () => {

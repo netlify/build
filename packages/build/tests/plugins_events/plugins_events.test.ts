@@ -152,5 +152,5 @@ test('Passes plugin options into dev command', async () => {
   const [options] = devCommand.mock.lastCall ?? []
   expect(options).toBeTruthy()
   expect(options?.netlifyConfig).toBeTruthy()
-  expect(options?.childEnv.TEST_ASSIGN).toBeTruthy()
+  expect(options?.childEnv['TEST_ASSIGN']).toBeTruthy()
 })

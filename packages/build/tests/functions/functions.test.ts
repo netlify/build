@@ -152,13 +152,13 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   const { functions } = await importJsonFile<FunctionsManifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
-  const serverEntry = functions.find(({ name }) => name === '___netlify-server')!
+  const serverEntry = functions.find(({ name }) => name === '___netlify-server')
 
-  expect(serverEntry.displayName).toBe('Netlify Server')
-  expect(serverEntry.generator).toBe('netlify-server')
-  expect(serverEntry.routes).toHaveLength(1)
-  expect(serverEntry.routes?.[0].pattern).toBe('/*')
-  expect(serverEntry.routes?.[0].prefer_static).toBe(true)
+  expect(serverEntry?.displayName).toBe('Netlify Server')
+  expect(serverEntry?.generator).toBe('netlify-server')
+  expect(serverEntry?.routes).toHaveLength(1)
+  expect(serverEntry?.routes?.[0]?.pattern).toBe('/*')
+  expect(serverEntry?.routes?.[0]?.prefer_static).toBe(true)
   expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server'))).toBe(false)
 })
 
@@ -191,7 +191,7 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
   expect(manifest.functions).toBeUndefined()
   expect(manifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
   expect(manifest.server.routes).toHaveLength(1)
-  expect(manifest.server.routes?.[0].pattern).toBe('/*')
+  expect(manifest.server.routes?.[0]?.pattern).toBe('/*')
 })
 
 test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
@@ -210,8 +210,8 @@ test('Functions: writes the in-source config of a Netlify Server to its manifest
 
   expect(manifest.server.region).toBe('fra')
   expect(manifest.server.routes).toHaveLength(1)
-  expect(manifest.server.routes?.[0].pattern).toBe('/api/*')
-  expect(manifest.server.routes?.[0].prefer_static).toBe(true)
+  expect(manifest.server.routes?.[0]?.pattern).toBe('/api/*')
+  expect(manifest.server.routes?.[0]?.prefer_static).toBe(true)
 })
 
 test('Functions: bundles a standalone Netlify Server alongside the functions, into separate outputs', async () => {
@@ -271,7 +271,7 @@ test('Functions: maps build feature flags for the server the way it does for the
 
   await fixture.runWithBuild()
 
-  const [, , options] = zipServerSpy.mock.calls[0]
+  const options = zipServerSpy.mock.calls[0]?.[2]
 
   expect(options?.featureFlags?.traceWithNft).toBe(true)
 
@@ -360,11 +360,11 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
 
   // The Frameworks API takes precedence over the legacy internal directory.
   const frameworksInternalConflict = functions.find(({ name }) => name === 'frameworks-internal-conflict')
-  expect(frameworksInternalConflict?.routes?.[0].pattern).toBe('/frameworks-internal-conflict/frameworks')
+  expect(frameworksInternalConflict?.routes?.[0]?.pattern).toBe('/frameworks-internal-conflict/frameworks')
 
   // User code takes precedence over the Frameworks API.
   const frameworksUserConflict = functions.find(({ name }) => name === 'frameworks-user-conflict')
-  expect(frameworksUserConflict?.routes?.[0].pattern).toBe('/frameworks-user-conflict/user')
+  expect(frameworksUserConflict?.routes?.[0]?.pattern).toBe('/frameworks-user-conflict/user')
 
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
@@ -404,7 +404,6 @@ test('Functions: loads functions generated with the Frameworks API in a monorepo
 const fakeResult = (overrides: Partial<FunctionResult> = {}): FunctionResult => ({
   name: 'fn',
   runtime: 'js',
-  bundler: 'zisi',
   config: {},
   entryFilename: 'fn.js',
   mainFile: 'fn.js',
@@ -464,7 +463,7 @@ test('trackBundleResults: records per-function bundler reason and sizes', () => 
     ],
   })
 
-  expect(messages[0][0]).toMatchObject({
+  expect(messages[0]?.[0]).toMatchObject({
     functions: [
       { name: 'a', bundlerReason: 'flag-forced-nft', sizeBytes: 100 },
       { name: 'b', bundlerReason: 'zisi-default', sizeBytes: 200 },
@@ -480,7 +479,7 @@ test('trackBundleResults: excludes JS results that have no bundler (prebuilt .zi
     systemLog: () => {},
     results: [
       fakeResult({ name: 'a', bundler: 'esbuild' }),
-      fakeResult({ name: 'b', bundler: undefined }), // prebuilt .zip
+      fakeResult({ name: 'b' }), // prebuilt .zip
     ],
   })
   expect(summary.bundlers).toEqual(['esbuild'])

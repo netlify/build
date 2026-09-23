@@ -40,8 +40,8 @@ const STACK_TRACE_REGEXP = /^\s+at .*/gm
 const WHITESPACE_REGEXP = /\s+/g
 
 const comparePackage = function (
-  { body: { package: packageA } }: { body: PluginRunBody },
-  { body: { package: packageB } }: { body: PluginRunBody },
+  { body: { package: packageA } }: { body: Pick<PluginRunBody, 'package'> },
+  { body: { package: packageB } }: { body: Pick<PluginRunBody, 'package'> },
 ) {
   return packageA < packageB ? -1 : 1
 }

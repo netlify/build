@@ -431,7 +431,7 @@ const runWithUpdatePluginMock = async function (
   { flags, status, sendStatus = true, testPlugin }: UpdatePluginMockOptions = {},
 ) {
   const { scheme, host, stopServer } = await startServer([
-    { path: UPDATE_PLUGIN_PATH, status },
+    { path: UPDATE_PLUGIN_PATH, ...(status === undefined ? {} : { status }) },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
     { path: '/site/test/integrations/safe', response: [] },
   ])
@@ -531,7 +531,7 @@ const runWithPluginRunsMock = async function (
   { flags, status, sendStatus = true, testPlugin, pluginRuns = DEFAULT_TEST_PLUGIN_RUNS }: PluginRunsMockOptions = {},
 ) {
   const { scheme, host, stopServer } = await startServer([
-    { path: PLUGIN_RUNS_PATH, response: pluginRuns, status },
+    { path: PLUGIN_RUNS_PATH, response: pluginRuns, ...(status === undefined ? {} : { status }) },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
     { path: '/site/test/integrations/safe', response: [] },
   ])
