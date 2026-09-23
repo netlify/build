@@ -1,6 +1,13 @@
 import { resolve } from 'path'
 
-import { type NodeBundlerName, zipFunctions, type FunctionResult } from '@netlify/zip-it-and-ship-it'
+import {
+  bundle,
+  type BundleOptions,
+  type BundleResult,
+  type FunctionResult,
+  type NodeBundlerName,
+  zipFunctions,
+} from '@netlify/zip-it-and-ship-it'
 import { pathExists } from '../../utils/path_exists.js'
 
 import { addErrorInfo } from '../../error/info.js'
@@ -16,7 +23,7 @@ import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 import type { CoreStepFunction } from '../types.js'
 
 import { getZipError } from './error.js'
-import { getServerEntry } from './server_entry.js'
+import { getServerEntry, writeServerShim } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
@@ -73,6 +80,7 @@ const zipFunctionsAndLogResults = async ({
   isRunningLocally,
   logs,
   repositoryRoot,
+  server,
   userNodeVersion,
   systemLog,
 }) => {
@@ -85,7 +93,17 @@ const zipFunctionsAndLogResults = async ({
     functionsDist,
     internalFunctionsSrc,
     isRunningLocally,
+    paths: {
+      generated: {
+        directories: [internalFunctionsSrc, frameworkFunctionsSrc].filter(Boolean),
+        functions: generatedFunctions,
+      },
+      user: {
+        directories: [functionsSrc].filter(Boolean),
+      },
+    },
     repositoryRoot,
+    server,
     userNodeVersion,
     systemLog,
   })
@@ -94,19 +112,7 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    const results = await zipItAndShipIt.zipFunctions(
-      {
-        generated: {
-          directories: [internalFunctionsSrc, frameworkFunctionsSrc].filter(Boolean),
-          functions: generatedFunctions,
-        },
-        user: {
-          directories: [functionsSrc].filter(Boolean),
-        },
-      },
-      functionsDist,
-      zisiParameters,
-    )
+    const { functions: results } = await zipItAndShipIt.bundle(zisiParameters)
 
     validateCustomRoutes(results)
 
@@ -171,6 +177,11 @@ const coreStep: CoreStepFunction = async function ({
     log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
   }
 
+  // A server is either bundled standalone or, until that path is in use
+  // everywhere, carried through the functions plumbing as a shim.
+  const standalone = featureFlags?.netlify_build_server_standalone === true
+  const serverShimPath = serverEntry && !standalone ? await writeServerShim(serverEntry) : undefined
+
   logFunctionsToBundle({
     logs,
     userFunctions,
@@ -209,8 +220,9 @@ const coreStep: CoreStepFunction = async function ({
     systemLog,
     generatedFunctions: [
       ...generatedFunctions.map((func) => func.path),
-      ...(serverEntry ? [serverEntry.shimPath] : []),
+      ...(serverShimPath === undefined ? [] : [serverShimPath]),
     ],
+    server: serverEntry && standalone ? { path: serverEntry.entryPath } : undefined,
   })
 
   const fallback = fallbackCount > 0 ? 'true' : 'false'
@@ -305,6 +317,9 @@ export const bundleFunctions = {
 // `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
 // function and export them so tests can use it.
 export const zipItAndShipIt = {
+  async bundle(options: BundleOptions): Promise<BundleResult> {
+    return await bundle(options)
+  },
   async zipFunctions(...args: Parameters<typeof zipFunctions>): Promise<FunctionResult[]> {
     return await zipFunctions(...args)
   },

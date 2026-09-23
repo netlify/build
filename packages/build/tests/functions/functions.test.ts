@@ -159,6 +159,34 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   expect(serverEntry.routes?.[0].prefer_static).toBe(true)
 })
 
+test('Functions: bundles a Netlify Server standalone when netlify_build_server_standalone is on', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_entry: true, netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  expect(output).toContain('Netlify Server detected at netlify/server/index.mjs')
+
+  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+
+  // The server no longer travels as a function, so there is no shim to bundle
+  // and nothing named after it in the functions output.
+  expect(functionsDist).not.toContain('___netlify-server.zip')
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server-entry'))).toBe(false)
+
+  const manifest = await importJsonFile<Manifest>(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'))
+
+  expect(manifest.functions.find(({ name }) => name === '___netlify-server')).toBeUndefined()
+  expect(manifest.server?.name).toBe('server')
+  expect(manifest.server?.path.endsWith('.tgz')).toBe(true)
+  expect(manifest.server?.routes).toHaveLength(1)
+  expect(manifest.server?.routes?.[0].pattern).toBe('/*')
+})
+
 test('Functions: ignores a Netlify Server entry when the feature flag is off', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
     .withFlags({ debug: false })

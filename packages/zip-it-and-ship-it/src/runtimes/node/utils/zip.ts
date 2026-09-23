@@ -30,6 +30,7 @@ import {
   getEntryFile,
   getTelemetryFile,
   isNamedLikeEntryFile,
+  SERVER_MARKER_FILENAME,
 } from './entry_file.js'
 import { NETLIFY_PLAY_BOOTSTRAP_VERSION, useNetlifyPlay } from './play.js'
 import { getMetadataFile } from './metadata_file.js'
@@ -53,6 +54,7 @@ interface ZipNodeParameters {
   extension: string
   featureFlags: FeatureFlags
   filename: string
+  isServer?: boolean
   mainFile: string
   moduleFormat: ModuleFormat
   name: string
@@ -196,6 +198,7 @@ const createZipArchive = async function ({
   extension,
   featureFlags,
   filename,
+  isServer,
   mainFile,
   moduleFormat,
   rewrites,
@@ -203,7 +206,7 @@ const createZipArchive = async function ({
   srcFiles,
   generator,
 }: ZipNodeParameters) {
-  const isPlay = useNetlifyPlay(featureFlags, mainFile)
+  const isPlay = isServer === true || useNetlifyPlay(featureFlags, mainFile)
   const format = isPlay ? ARCHIVE_FORMAT.TAR : ARCHIVE_FORMAT.ZIP
   const archiveExtension = format === ARCHIVE_FORMAT.TAR ? '.tgz' : '.zip'
   const destPath = join(destFolder, `${basename(filename, extension)}${archiveExtension}`)
@@ -250,6 +253,10 @@ const createZipArchive = async function ({
 
     addEntryFileToZip(archive, entryFile)
   }
+  if (isServer === true) {
+    addEntryFileToZip(archive, { contents: '{}', filename: SERVER_MARKER_FILENAME })
+  }
+
   const telemetryFile = getTelemetryFile(generator)
 
   if (featureFlags.zisi_add_instrumentation_loader === true) {
