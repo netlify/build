@@ -1651,28 +1651,6 @@
       "count": 1
     }
   },
-  "packages/config/src/bin/flags.ts": {
-    "@typescript-eslint/no-misused-promises": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    }
-  },
-  "packages/config/src/bin/main.js": {
-    "n/no-missing-import": {
-      "count": 3
-    }
-  },
   "packages/config/tests/api/cached_site_info.test.ts": {
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
