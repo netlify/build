@@ -1,10 +1,12 @@
 import { Fixture } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 const CACHED_COMMAND = 'echo cached command'
 
-const resolveWithModifiedCachedConfig = async (defaultConfig) => {
-  const cachedConfig = await new Fixture(import.meta.url, './fixtures/cached_config').runWithConfigAsObject()
+const resolveWithModifiedCachedConfig = async (defaultConfig: unknown) => {
+  const cachedConfig = asConfig(await new Fixture(import.meta.url, './fixtures/cached_config').runWithConfigAsObject())
   const modifiedCachedConfig = {
     ...cachedConfig,
     config: { ...cachedConfig.config, build: { ...cachedConfig.config.build, command: CACHED_COMMAND } },

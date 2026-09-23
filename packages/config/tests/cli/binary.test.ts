@@ -4,11 +4,13 @@ import { Fixture } from '@netlify/testing'
 import { execa } from 'execa'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const BINARY_PATH = fileURLToPath(new URL('../../bin.js', import.meta.url))
 
-const parseOutput = (output) => JSON.parse(output)
+const parseOutput = (output: string) => asConfig(JSON.parse(output))
 
 test('Exits with 0 on success', async () => {
   const { exitCode } = await new Fixture(import.meta.url, './fixtures/empty').runConfigBinary()

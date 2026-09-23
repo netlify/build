@@ -21,9 +21,10 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "test": "vitest run",
+    "test:types": "tsc -p tests/tsconfig.json",
+    "test": "npm run test:types && vitest run",
     "test:dev": "vitest",
-    "test:ci": "vitest run --coverage --reporter=default"
+    "test:ci": "npm run test:types && vitest run --coverage --reporter=default"
   },
   "keywords": [
     "javascript",

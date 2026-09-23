@@ -5,15 +5,16 @@ import { resolveConfig } from '@netlify/config'
 import { Fixture } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
-type Extension = { slug: string; buildPlugin: { origin: string; packageURL: string } | null; has_build: boolean }
-type Result = { integrations: Extension[] }
+import { asConfig } from '../helpers/result.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const resolveFixture = async (fixtureName: string, flags: Record<string, unknown>) =>
-  (await new Fixture(import.meta.url, `./fixtures/${fixtureName}`)
-    .withFlags({ offline: true, ...flags })
-    .runWithConfigAsObject()) as Result
+  asConfig(
+    await new Fixture(import.meta.url, `./fixtures/${fixtureName}`)
+      .withFlags({ offline: true, ...flags })
+      .runWithConfigAsObject(),
+  )
 
 test('In dev mode, a dev.path pointing at a directory uses the default build plugin tarball inside it', async () => {
   const { integrations } = await resolveFixture('dev_path', { context: 'dev' })

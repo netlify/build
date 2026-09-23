@@ -7,11 +7,27 @@ import { resolveConfig, updateConfig } from '@netlify/config'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
+interface ConfigMutation {
+  keys: (string | number)[]
+  value: unknown
+  event: string
+}
+
+interface RunUpdateConfigOptions {
+  headersPath?: string | undefined
+  redirectsPath?: string | undefined
+  configMutations?: ConfigMutation[]
+}
+
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 // Call the main function
-const runUpdateConfig = async function (fixtureName, { configMutations = [buildCommandMutation], ...opts } = {}) {
+const runUpdateConfig = async function (
+  fixtureName: string,
+  { configMutations = [buildCommandMutation], ...opts }: RunUpdateConfigOptions = {},
+) {
   const { configPath, headersPath, redirectsPath, buildDir } = await initFixtureDir(fixtureName)
+  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig(configMutations, {
     buildDir,
     configPath,
@@ -25,12 +41,20 @@ const runUpdateConfig = async function (fixtureName, { configMutations = [buildC
 }
 
 // `configMutations` used for testing
-const buildCommandMutation = { keys: ['build', 'command'], value: 'test', event: 'onPreBuild' }
-const headersMutation = { keys: ['headers'], value: [{ for: '/path', values: { test: 'one' } }], event: 'onPreBuild' }
-const redirectsMutation = { keys: ['redirects'], value: [{ from: '/one', to: '/two' }], event: 'onPreBuild' }
+const buildCommandMutation: ConfigMutation = { keys: ['build', 'command'], value: 'test', event: 'onPreBuild' }
+const headersMutation: ConfigMutation = {
+  keys: ['headers'],
+  value: [{ for: '/path', values: { test: 'one' } }],
+  event: 'onPreBuild',
+}
+const redirectsMutation: ConfigMutation = {
+  keys: ['redirects'],
+  value: [{ from: '/one', to: '/two' }],
+  event: 'onPreBuild',
+}
 
 // Initialize the fixture directory
-const initFixtureDir = async function (fixtureName) {
+const initFixtureDir = async function (fixtureName: string) {
   const fixtureDir = `${FIXTURES_DIR}/${fixtureName}`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
@@ -48,7 +72,7 @@ const initFixtureDir = async function (fixtureName) {
 
 // Create temporary copies of `netlify.toml` and `redirects` from the fixture
 // directory to use in tests
-const copyIfExists = async function (fixturePath, tempPath) {
+const copyIfExists = async function (fixturePath: string, tempPath: string) {
   if (existsSync(fixturePath)) {
     await copyFile(fixturePath, tempPath)
     return
@@ -148,16 +172,20 @@ test('updateConfig() does not delete _headers if headersPath not provided', asyn
 })
 
 test('Programmatic resolveConfig with configMutations', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
 
 test('Programmatic resolveConfig with configMutations and defaultConfig', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({
     mode: 'cli',
     context: 'production',
@@ -168,6 +196,8 @@ test('Programmatic resolveConfig with configMutations and defaultConfig', async 
     configMutations: [{ keys: ['functions', 'directory'], value: 'new_functions', event: 'onPreBuild' }],
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.functionsDirectory).toBe(join(process.cwd(), 'new_functions'))
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.functions).toBe(join(process.cwd(), 'new_functions'))
 })
