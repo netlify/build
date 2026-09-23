@@ -41,10 +41,13 @@ const LIST_ACCOUNTS_RESPONSE_SUCCESS = [
     response: [{ slug: 'testAccount', site_env: { TEST: 'test' } }],
   },
 ]
-const LIST_ACCOUNTS_RESPONSE_MISMATCH = {
-  path: LIST_ACCOUNTS_PATH,
-  response: [{ slug: 'testAccount', site_env: { TEST: 'test' } }],
-}
+const LIST_ACCOUNTS_RESPONSE_MISMATCH = [
+  { path: SITE_INFO_PATH, response: { account_slug: 'otherAccount' } },
+  {
+    path: LIST_ACCOUNTS_PATH,
+    response: [{ slug: 'testAccount', site_env: { TEST: 'test' } }],
+  },
+]
 const LIST_ACCOUNTS_RESPONSE_ERROR = [
   SITE_INFO_RESPONSE_ACCOUNT,
   {
@@ -541,7 +544,7 @@ test('Does not set accounts environment variables if no matching account', async
   } = asConfig(
     await new Fixture(import.meta.url, './fixtures/empty')
       .withFlags(AUTH_FLAGS)
-      .runConfigServerAsObject([LIST_ACCOUNTS_RESPONSE_MISMATCH, SITE_EXTENSIONS_EMPTY_RESPONSE]),
+      .runConfigServerAsObject([...LIST_ACCOUNTS_RESPONSE_MISMATCH, SITE_EXTENSIONS_EMPTY_RESPONSE]),
   )
   expect(TEST).toBeUndefined()
 })

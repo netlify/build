@@ -2,11 +2,16 @@ import type { NetlifyAPI } from '@netlify/api'
 
 type ApiSite = Awaited<ReturnType<NetlifyAPI['getSite']>>
 
-/** The UI build settings. `base` and `base_rel_dir` are returned by the API but missing from its published types. */
-export type SiteBuildSettings = NonNullable<ApiSite['build_settings']> & {
+type ApiBuildSettings = NonNullable<ApiSite['build_settings']> & {
   base?: string
   base_rel_dir?: boolean
 }
+
+/**
+ * The UI build settings. `base` and `base_rel_dir` are returned by the API but missing from its
+ * published types, which also don't say that any setting can be `null`.
+ */
+export type SiteBuildSettings = { [Key in keyof ApiBuildSettings]?: ApiBuildSettings[Key] | null }
 
 /** A plugin installed in the UI. */
 export interface UiPluginConfig {
@@ -24,19 +29,23 @@ export type SiteInfo = Partial<Omit<ApiSite, 'build_settings'>> & {
   use_envelope?: boolean
 }
 
+/**
+ * A user's account. Only `slug` and `site_env` are read, so the other properties the API
+ * documents are not required.
+ */
 export interface MinimalAccount {
-  id: string
-  name: string
   slug: string
-  default: boolean
-  team_logo_url: string | null
-  on_pro_trial: boolean
-  organization_id: string | null
-  type_name: string
-  type_slug: string
-  members_count: number
   /** Account-wide environment variables, for accounts that don't use the environment variables API. */
-  site_env?: Record<string, string>
+  site_env?: Record<string, string> | undefined
+  id?: string | undefined
+  name?: string | undefined
+  default?: boolean | undefined
+  team_logo_url?: string | null | undefined
+  on_pro_trial?: boolean | undefined
+  organization_id?: string | null | undefined
+  type_name?: string | undefined
+  type_slug?: string | undefined
+  members_count?: number | undefined
 }
 
 /** An extension installed on the site, as returned by the extension API. */

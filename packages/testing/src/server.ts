@@ -35,7 +35,16 @@ export const startServer = async (handler: ServerHandler, port = 0) => {
 
   const host = getHost(server)
 
-  const stopServer = promisify(server.close.bind(server))
+  const stopServer = () =>
+    new Promise<void>((resolve, reject) => {
+      server.close((error) => {
+        if (error === undefined) {
+          resolve()
+        } else {
+          reject(error)
+        }
+      })
+    })
   return { scheme: 'http', host, requests, stopServer }
 }
 

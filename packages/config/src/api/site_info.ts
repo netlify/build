@@ -11,8 +11,12 @@ import {
 } from '../extensions.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 import type { Extension, MinimalAccount, SiteInfo } from '../types/api.js'
+import type { Logs } from '../types/logs.js'
 import type { ModeOption, TestOptions } from '../types/options.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
+import { parseLeniently } from '../utils/schema.js'
+
+import { accountsSchema, siteSchema } from './schemas.js'
 
 /** What `@netlify/config` knows about the site from the API. */
 export type SiteData = {
@@ -33,6 +37,7 @@ type SiteInfoOptions = {
   token: string | undefined
   featureFlags: Record<string, unknown>
   extensionApiBaseUrl: string
+  logs: Logs | undefined
 }
 
 /**
@@ -52,6 +57,7 @@ export const getSiteInfo = async function ({
   token,
   featureFlags,
   extensionApiBaseUrl,
+  logs,
 }: SiteInfoOptions): Promise<SiteData> {
   const extensionsOptions = { siteId, accountId, testOpts, offline, token, featureFlags, extensionApiBaseUrl, mode }
 
@@ -65,8 +71,8 @@ export const getSiteInfo = async function ({
   }
 
   const [siteInfo, accounts, extensions] = await Promise.all([
-    getSite(api, siteId, siteFeatureFlagPrefix),
-    getAccounts(api),
+    getSite(api, siteId, siteFeatureFlagPrefix, logs),
+    getAccounts(api, logs),
     getExtensions(extensionsOptions),
   ])
 
@@ -84,6 +90,7 @@ const getSite = async function (
   api: NetlifyAPI,
   siteId: string | undefined,
   siteFeatureFlagPrefix: string | undefined,
+  logs: Logs | undefined,
 ): Promise<SiteInfo> {
   if (siteId === undefined) {
     return {}
@@ -96,20 +103,26 @@ const getSite = async function (
       feature_flags: siteFeatureFlagPrefix,
       siteId,
     }
-    const site = await api.getSite(params)
+    const site = parseLeniently(siteSchema, await api.getSite(params), {
+      description: 'site information from the Netlify API',
+      logs,
+    })
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${getMessage(error)}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 
-const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> {
+const getAccounts = async function (api: NetlifyAPI, logs: Logs | undefined): Promise<MinimalAccount[]> {
   try {
     const accounts: unknown = await api.listAccountsForUser(
       // @ts-expect-error: `minimal` is internal (x-internal) so `@netlify/open-api` leaves it out of its types.
       { minimal: 'true' },
     )
-    return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
+    // Any other shape has always meant no accounts.
+    return Array.isArray(accounts)
+      ? parseLeniently(accountsSchema, accounts, { description: 'accounts from the Netlify API', logs })
+      : []
   } catch (error) {
     throwUserError(`Failed retrieving user account: ${getMessage(error)}. ${ERROR_CALL_TO_ACTION}`)
   }
