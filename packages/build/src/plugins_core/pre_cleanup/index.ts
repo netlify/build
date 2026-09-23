@@ -8,7 +8,7 @@ import { CoreStep, CoreStepFunction } from '../types.js'
 const coreStep: CoreStepFunction = async ({ buildDir, constants, packagePath }) => {
   const paths = [
     ...getBlobsDirs(buildDir, packagePath),
-    resolve(buildDir, packagePath || '', FRAMEWORKS_API_PATH),
+    resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_PATH),
     constants.DB_MIGRATIONS_DIST ? resolve(buildDir, constants.DB_MIGRATIONS_DIST) : undefined,
   ].filter((path): path is string => Boolean(path))
 

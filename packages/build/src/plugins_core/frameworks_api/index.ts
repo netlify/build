@@ -3,8 +3,8 @@ import { dirname, resolve } from 'node:path'
 
 import { mergeConfigs } from '@netlify/config'
 
-import type { NetlifyConfig } from '../../index.js'
 import { getConfigMutations } from '../../plugins/child/diff.js'
+import { getErrorMessage } from '../../utils/errors.js'
 import { DEPLOY_CONFIG_DIST_PATH, FRAMEWORKS_API_SKEW_PROTECTION_PATH } from '../../utils/frameworks_api.js'
 import { CoreStep, CoreStepFunction } from '../types.js'
 
@@ -66,12 +66,13 @@ const coreStep: CoreStepFunction = async function ({
   },
 }) {
   await handleSkewProtection(buildDir, packagePath)
-  let config: Partial<NetlifyConfig> | undefined
+  let config: Record<string, unknown> | undefined
 
   try {
     config = await loadConfigFile(buildDir, packagePath)
   } catch (err) {
-    systemLog(`Failed to read Frameworks API: ${err.message}`)
+    // `loadConfigFile()` only throws `Error` instances, so this is their `message`
+    systemLog(`Failed to read Frameworks API: ${getErrorMessage(err)}`)
 
     throw new Error('An error occurred while processing the platform configuration defined by your framework')
   }
@@ -80,28 +81,28 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
 
-  const configOverrides: Partial<NetlifyConfig> = {}
+  const configOverrides: Record<string, unknown> = {}
 
   for (const key in config) {
     // If the key uses the special notation for defining mutations that should
     // take precedence over user-defined properties, extract the canonical
-    // property, set it on a different object, and delete it from the main one.
+    // property and set it on a different object.
     if (OVERRIDE_PROPERTIES.has(key)) {
       const canonicalKey = key.slice(0, -1)
 
       configOverrides[canonicalKey] = config[key]
-
-      delete config[key]
     }
   }
 
+  const regularConfig = Object.fromEntries(Object.entries(config).filter(([key]) => !OVERRIDE_PROPERTIES.has(key)))
+
   // Filtering out any properties that can't be mutated using this API.
-  const filteredConfig = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
+  const filteredConfig = filterConfig(regularConfig, [], ALLOWED_PROPERTIES, systemLog)
 
   // Merging the config extracted from the API with the initial config.
   const newConfig = mergeConfigs([filteredConfig, netlifyConfig, configOverrides], {
     concatenateArrays: true,
-  }) as Partial<NetlifyConfig>
+  })
 
   // Diffing the initial and the new configs to compute the mutations (what
   // changed between them).

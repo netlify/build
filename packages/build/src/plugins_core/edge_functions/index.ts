@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
 
-import { bundle, find } from '@netlify/edge-bundler'
+import { bundle, type Declaration, find, type Manifest } from '@netlify/edge-bundler'
 import { pathExists } from '../../utils/path_exists.js'
 
 import { Metric } from '../../core/report_metrics.js'
@@ -15,12 +15,13 @@ import {
 import { tagBundlingError } from './lib/error.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 import type { NetlifyPluginConstants } from '../../core/constants.js'
+import type { CoreStepFunction } from '../types.js'
 
 // TODO: Replace this with a custom cache directory.
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-const coreStep = async function ({
+const coreStep: CoreStepFunction = async function ({
   buildDir,
   packagePath,
   constants: {
@@ -35,25 +36,23 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
   edgeFunctionsBootstrapURL,
-}: {
-  buildDir: string
-  packagePath: string
-  constants: Record<string, string>
-  debug: boolean
-  systemLog(...args: any[]): void
-  featureFlags: Record<string, any>
-  logs: any
-  netlifyConfig: any
-  edgeFunctionsBootstrapURL?: string
 }) {
-  const { edge_functions: declarations = [], functions } = netlifyConfig
+  const { edge_functions: edgeFunctions = [], functions } = netlifyConfig
+  // @netlify/config validates that each one has a `path` or a `pattern`, which `NetlifyConfig` does not declare
+  const declarations = edgeFunctions as Declaration[]
   const { deno_import_map: userDefinedImportMap } = functions['*']
-  const importMapPaths: string[] = [userDefinedImportMap]
+  const importMapPaths: (string | undefined)[] = [userDefinedImportMap]
   const distPath = resolve(buildDir, distDirectory)
+
+  // Always set by the build, although plugins' constants type allows leaving it out. `resolve()` throws this.
+  if (internalSrcDirectory === undefined) {
+    throw new TypeError('The "paths[1]" argument must be of type string. Received undefined')
+  }
+
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const frameworksAPISrcPath = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
+  const frameworksAPISrcPath = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
   const generatedFunctionPaths = [internalSrcPath]
 
   if (await pathExists(frameworksAPISrcPath)) {
@@ -62,7 +61,7 @@ const coreStep = async function ({
 
   const frameworkImportMap = resolve(
     buildDir,
-    packagePath || '',
+    packagePath ?? '',
     FRAMEWORKS_API_EDGE_FUNCTIONS_PATH,
     FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP,
   )
@@ -71,7 +70,7 @@ const coreStep = async function ({
     importMapPaths.push(frameworkImportMap)
   }
 
-  const sourcePaths = [...generatedFunctionPaths, srcPath].filter(Boolean) as string[]
+  const sourcePaths = [...generatedFunctionPaths, srcPath].filter((path): path is string => Boolean(path))
 
   const [userFunctionsSrcExists, userFunctions, internalFunctions, frameworkFunctions] = await Promise.all([
     srcPath ? pathExists(srcPath) : Promise.resolve(false),
@@ -113,7 +112,7 @@ const coreStep = async function ({
   // If we're building locally, set a vendor directory in `internalSrcPath`.
   // This makes Edge Bundler keep the vendor files around after the build,
   // which lets the IDE have a valid reference to them.
-  if (isRunningLocally && featureFlags.edge_functions_npm_modules) {
+  if (isRunningLocally && featureFlags['edge_functions_npm_modules']) {
     vendorDirectory = join(internalSrcPath, '.vendor')
 
     await fs.mkdir(vendorDirectory, { recursive: true })
@@ -124,19 +123,22 @@ const coreStep = async function ({
   await fs.mkdir(distPath, { recursive: true })
 
   try {
+    // `bundle()` destructures its options, so leaving a key out is the same as `undefined`
     const { manifest } = await bundle(sourcePaths, distPath, declarations, {
       basePath: buildDir,
-      cacheDirectory,
+      ...(cacheDirectory === undefined ? {} : { cacheDirectory }),
       configPath: join(internalSrcPath, 'manifest.json'),
-      debug,
+      ...(debug === undefined ? {} : { debug }),
       distImportMapPath,
       featureFlags,
       importMapPaths,
-      userLogger: (...args) => log(logs, reduceLogLines(args)),
+      userLogger: (...args) => {
+        log(logs, reduceLogLines(args))
+      },
       systemLogger: systemLog,
       internalSrcFolder: generatedFunctionPaths,
-      bootstrapURL: edgeFunctionsBootstrapURL,
-      vendorDirectory,
+      ...(edgeFunctionsBootstrapURL === undefined ? {} : { bootstrapURL: edgeFunctionsBootstrapURL }),
+      ...(vendorDirectory === undefined ? {} : { vendorDirectory }),
     })
 
     // Edge Bundler produces no manifest when there is nothing to deploy - no
@@ -160,12 +162,12 @@ const coreStep = async function ({
   }
 }
 
-const getMetrics = (manifest): Metric[] => {
+const getMetrics = (manifest: Manifest): Metric[] => {
   const numGenEfs = Object.values(manifest.function_config).filter(
     (config: { generator?: string }) => config.generator,
   ).length
   const allRoutes = [...manifest.routes, ...manifest.post_cache_routes]
-  const totalEfs = [] as string[]
+  const totalEfs: string[] = []
 
   allRoutes.forEach((route) => {
     if (!totalEfs.some((func) => func === route.function)) {
@@ -218,7 +220,7 @@ const hasEdgeFunctionsDirectories = async function ({
     return true
   }
 
-  const frameworkFunctionsSrc = resolve(buildDir, packagePath || '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
+  const frameworkFunctionsSrc = resolve(buildDir, packagePath ?? '', FRAMEWORKS_API_EDGE_FUNCTIONS_PATH)
 
   return await pathExists(frameworkFunctionsSrc)
 }

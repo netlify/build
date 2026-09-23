@@ -20,7 +20,7 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
   // for cli deploys with `netlify deploy --build` the `NETLIFY_API_HOST` is undefined
-  const apiHost = NETLIFY_API_HOST || 'api.netlify.com'
+  const apiHost = NETLIFY_API_HOST === undefined || NETLIFY_API_HOST === '' ? 'api.netlify.com' : NETLIFY_API_HOST
 
   const storeOpts: GetDeployStoreOptions = {
     siteID: SITE_ID,
@@ -57,7 +57,7 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   if (!quiet) {
-    log(logs, `Uploading ${blobsToUpload.length} blobs to deploy store...`)
+    log(logs, `Uploading ${String(blobsToUpload.length)} blobs to deploy store...`)
   }
 
   try {

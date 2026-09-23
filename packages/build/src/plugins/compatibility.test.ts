@@ -271,7 +271,7 @@ describe(`getExpectedVersion`, () => {
       },
     ]
 
-    const logMessages: string[] = []
+    const logMessages: unknown[] = []
 
     const { version } = await getExpectedVersion({
       versions,
@@ -279,7 +279,7 @@ describe(`getExpectedVersion`, () => {
       packageJson: { dependencies: { next: '12.0.0' } },
       packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
-      systemLog: (message: string) => {
+      systemLog: (message: unknown) => {
         logMessages.push(message)
       },
       authoritative: true,
@@ -309,7 +309,7 @@ describe(`getExpectedVersion`, () => {
       },
     ]
 
-    const logMessages: string[] = []
+    const logMessages: unknown[] = []
 
     const { version } = await getExpectedVersion({
       versions,
@@ -317,7 +317,7 @@ describe(`getExpectedVersion`, () => {
       packageJson: { dependencies: { next: '12.0.0' } },
       packageName: '@netlify/cool-plugin',
       buildDir: '/some/path',
-      systemLog: (message: string) => {
+      systemLog: (message: unknown) => {
         logMessages.push(message)
       },
       featureFlags: {

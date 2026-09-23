@@ -8,7 +8,7 @@ import { readMigrationEntries, getMigrationsSrc } from './utils.js'
 import { validateMigrations, formatValidationErrors } from './validation.js'
 
 const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
-  if (!featureFlags.netlify_build_db_setup) {
+  if (!featureFlags['netlify_build_db_setup']) {
     return false
   }
 
@@ -22,8 +22,16 @@ const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir 
 
 const coreStep: CoreStepFunction = async ({ constants, buildDir, systemLog }) => {
   const migrationsSrc = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
-  const srcDir = resolve(buildDir, migrationsSrc!)
-  const destDir = resolve(buildDir, constants.DB_MIGRATIONS_DIST!)
+  const { DB_MIGRATIONS_DIST: migrationsDist } = constants
+
+  // The condition only runs this step when there is a migrations directory, and the build always sets
+  // `DB_MIGRATIONS_DIST`, although plugins' constants type allows leaving it out. `resolve()` throws this.
+  if (migrationsSrc === undefined || migrationsDist === undefined) {
+    throw new TypeError('The "paths[1]" argument must be of type string. Received undefined')
+  }
+
+  const srcDir = resolve(buildDir, migrationsSrc)
+  const destDir = resolve(buildDir, migrationsDist)
 
   const { dirNames, fileNames } = await readMigrationEntries(buildDir, migrationsSrc)
 
