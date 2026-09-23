@@ -1142,7 +1142,7 @@
   },
   "packages/build/test-d/options/netlify_plugin_run_util.ts": {
     "@typescript-eslint/no-floating-promises": {
-      "count": 3
+      "count": 2
     }
   },
   "packages/build/test-d/options/netlify_plugin_status_util.ts": {

@@ -15,7 +15,7 @@ export const run = (file: string, args?: string[] | object, options?: Options) =
 }
 
 /** Run a command, with file + arguments being a single string */
-export const runCommand = (command: string, options: Options) => {
+export const runCommand = (command: string, options?: Options) => {
   const optionsA = { ...DEFAULT_OPTIONS, ...options }
   const childProcess = execaCommand(command, options)
   redirectOutput(childProcess, optionsA)
