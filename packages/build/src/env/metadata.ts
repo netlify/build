@@ -1,11 +1,11 @@
 import { env } from 'process'
 
 // Retrieve environment variables used in error monitoring
-export const getEnvMetadata = function (childEnv = env) {
+export const getEnvMetadata = function (childEnv: NodeJS.ProcessEnv = env): NodeJS.ProcessEnv {
   return Object.fromEntries(Object.entries(childEnv).filter(([name]) => isEnvMetadata(name)))
 }
 
-const isEnvMetadata = function (name) {
+const isEnvMetadata = function (name: string): boolean {
   return ENVIRONMENT_VARIABLES.has(name)
 }
 

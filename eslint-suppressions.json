@@ -416,7 +416,7 @@
   },
   "packages/build/src/core/bin.js": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 4
     }
   },
   "packages/build/src/core/build.ts": {
@@ -436,12 +436,12 @@
       "count": 1
     },
     "n/no-missing-import": {
-      "count": 9
+      "count": 7
     }
   },
   "packages/build/src/core/config.js": {
     "n/no-missing-import": {
-      "count": 7
+      "count": 8
     }
   },
   "packages/build/src/core/constants.ts": {
@@ -464,11 +464,6 @@
       "count": 2
     }
   },
-  "packages/build/src/core/dev.js": {
-    "n/no-missing-import": {
-      "count": 4
-    }
-  },
   "packages/build/src/core/dry.js": {
     "n/no-missing-import": {
       "count": 2
@@ -476,11 +471,6 @@
   },
   "packages/build/src/core/feature_flags.ts": {
     "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    }
-  },
-  "packages/build/src/core/lingering.js": {
-    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -495,11 +485,6 @@
       "count": 62
     },
     "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    }
-  },
-  "packages/build/src/core/missing_side_file.js": {
-    "n/no-missing-import": {
       "count": 2
     }
   },
@@ -528,16 +513,6 @@
       "count": 5
     },
     "@typescript-eslint/no-redundant-type-constituents": {
-      "count": 1
-    }
-  },
-  "packages/build/src/core/user_node_version.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/build/src/env/changes.js": {
-    "@typescript-eslint/no-dynamic-delete": {
       "count": 1
     }
   },
@@ -570,7 +545,7 @@
   },
   "packages/build/src/error/monitor/report.js": {
     "n/no-missing-import": {
-      "count": 6
+      "count": 7
     }
   },
   "packages/build/src/error/monitor/start.ts": {
@@ -699,11 +674,6 @@
       "count": 1
     }
   },
-  "packages/build/src/index.ts": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/build/src/install/functions.js": {
     "n/no-missing-import": {
       "count": 1
@@ -755,7 +725,7 @@
   },
   "packages/build/src/log/messages/compatibility.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 15
+      "count": 18
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 14
@@ -771,9 +741,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 8
-    },
-    "n/no-missing-import": {
-      "count": 2
     }
   },
   "packages/build/src/log/messages/core.ts": {
@@ -792,7 +759,7 @@
   },
   "packages/build/src/log/messages/install.js": {
     "n/no-missing-import": {
-      "count": 1
+      "count": 2
     }
   },
   "packages/build/src/log/messages/plugins.ts": {
@@ -840,7 +807,7 @@
   },
   "packages/build/src/plugins/child/run.js": {
     "n/no-missing-import": {
-      "count": 4
+      "count": 5
     }
   },
   "packages/build/src/plugins/compatibility.test.ts": {
@@ -867,7 +834,7 @@
       "count": 2
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 14
+      "count": 13
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 2
@@ -880,9 +847,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 3
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/plugins/ipc.js": {
@@ -976,26 +940,20 @@
   },
   "packages/build/src/plugins/pinned_version.js": {
     "n/no-missing-import": {
-      "count": 1
+      "count": 2
     }
   },
   "packages/build/src/plugins/plugin_conditions.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
       "count": 1
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 2
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/plugins/resolve.js": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 4
     }
   },
   "packages/build/src/plugins/spawn.ts": {
@@ -1224,7 +1182,7 @@
   },
   "packages/build/src/steps/core_step.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
+      "count": 4
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 58
@@ -1233,7 +1191,7 @@
       "count": 1
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/build/src/steps/error.ts": {
@@ -1272,11 +1230,6 @@
       "count": 8
     }
   },
-  "packages/build/src/steps/return.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
   "packages/build/src/steps/run_core_steps.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 5
@@ -1296,7 +1249,7 @@
       "count": 5
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 186
+      "count": 185
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 2
@@ -1314,7 +1267,7 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/build/src/steps/run_steps.js": {

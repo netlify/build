@@ -1,6 +1,8 @@
 import { relative } from 'path'
 
+import type { Logs } from '../log/logger.js'
 import { logMissingSideFile } from '../log/messages/core.js'
+import type { NetlifyConfig } from '../types/config/netlify_config.js'
 import { pathExists } from '../utils/path_exists.js'
 
 // Some files like `_headers` and `_redirects` must be copied to the publishing
@@ -13,13 +15,27 @@ export const warnOnMissingSideFiles = async function ({
     build: { publish },
   },
   logs,
-}) {
+}: {
+  buildDir: string
+  netlifyConfig: NetlifyConfig
+  logs: Logs | undefined
+}): Promise<void> {
   await Promise.all(SIDE_FILES.map((sideFile) => warnOnMissingSideFile({ logs, sideFile, buildDir, publish })))
 }
 
 const SIDE_FILES = ['_headers', '_redirects']
 
-const warnOnMissingSideFile = async function ({ logs, sideFile, buildDir, publish }) {
+const warnOnMissingSideFile = async function ({
+  logs,
+  sideFile,
+  buildDir,
+  publish,
+}: {
+  logs: Logs | undefined
+  sideFile: string
+  buildDir: string
+  publish: string
+}): Promise<void> {
   if (!(await pathExists(`${buildDir}/${sideFile}`)) || (await pathExists(`${publish}/${sideFile}`))) {
     return
   }
