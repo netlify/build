@@ -441,7 +441,7 @@
   },
   "packages/build/src/core/config.js": {
     "n/no-missing-import": {
-      "count": 4
+      "count": 5
     }
   },
   "packages/build/src/core/constants.ts": {
@@ -552,22 +552,12 @@
       "count": 1
     }
   },
-  "packages/build/src/error/api.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/build/src/error/build.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/build/src/error/handle.ts": {
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 4
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/build/src/error/info.ts": {
@@ -581,14 +571,9 @@
       "count": 2
     }
   },
-  "packages/build/src/error/monitor/print.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/build/src/error/monitor/report.js": {
     "n/no-missing-import": {
-      "count": 3
+      "count": 6
     }
   },
   "packages/build/src/error/monitor/start.ts": {
@@ -633,10 +618,10 @@
       "count": 4
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 28
+      "count": 23
     },
     "n/no-missing-import": {
-      "count": 3
+      "count": 1
     }
   },
   "packages/build/src/error/parse/plugin.ts": {
@@ -654,11 +639,6 @@
     },
     "@typescript-eslint/restrict-template-expressions": {
       "count": 2
-    }
-  },
-  "packages/build/src/error/parse/properties.js": {
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/error/parse/serialize_log.ts": {
@@ -680,6 +660,11 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-assignment": {
+      "count": 1
+    }
+  },
+  "packages/build/src/error/parse/stack.js": {
+    "n/no-missing-import": {
       "count": 1
     }
   },
@@ -868,7 +853,7 @@
   },
   "packages/build/src/plugins/child/error.js": {
     "n/no-missing-import": {
-      "count": 1
+      "count": 3
     }
   },
   "packages/build/src/plugins/child/load.ts": {
@@ -948,7 +933,7 @@
   },
   "packages/build/src/plugins/ipc.js": {
     "n/no-missing-import": {
-      "count": 1
+      "count": 2
     }
   },
   "packages/build/src/plugins/list.ts": {
@@ -1355,9 +1340,6 @@
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 21
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/steps/get.ts": {

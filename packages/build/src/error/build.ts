@@ -5,7 +5,7 @@ import { CUSTOM_ERROR_KEY } from './info.js'
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors static properties are not kept by
 // `v8.serialize()`.
-export const jsonToError = function ({ name, message, stack, ...errorProps }) {
+export const jsonToError = function ({ name, message, stack, ...errorProps }: Record<string, unknown>): Error {
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
@@ -16,23 +16,30 @@ export const jsonToError = function ({ name, message, stack, ...errorProps }) {
   return error
 }
 
+const ERROR_PROPS = ['name', 'message', 'stack'] as const
+
+type ErrorPropName = (typeof ERROR_PROPS)[number]
+
 // Make sure `name`, `message` and `stack` are not enumerable
-const assignErrorProps = function (error, values) {
+const assignErrorProps = function (error: Error, values: Record<ErrorPropName, unknown>) {
   ERROR_PROPS.forEach((name) => {
     assignErrorProp(error, name, values[name])
   })
 }
 
-const ERROR_PROPS = ['name', 'message', 'stack']
-
-const assignErrorProp = function (error, name, value) {
+const assignErrorProp = function (error: Error, name: ErrorPropName, value: unknown) {
   // `Object.defineProperty()` requires direct mutation
 
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
 }
 
+type SerializableError = Error & {
+  [CUSTOM_ERROR_KEY]?: unknown
+  diagnosticText?: unknown
+}
+
 // Inverse of `jsonToError()`.
-export const errorToJson = function (error) {
+export const errorToJson = function (error: SerializableError): Record<string, unknown> {
   const { name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps } = error
 
   // diagnosticText is not enumerable in TSError, so we need to grab it manually. destructuring won't work.

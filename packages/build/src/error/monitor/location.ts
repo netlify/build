@@ -1,5 +1,10 @@
+import type { ErrorLocation } from '../types.js'
+
 // Retrieve plugin's location and build logs
-export const getLocationMetadata = function (location, envMetadata) {
+export const getLocationMetadata = function (
+  location: ErrorLocation | undefined,
+  envMetadata: Record<string, string | undefined>,
+) {
   const buildLogs = getBuildLogs(envMetadata)
 
   if (buildLogs === undefined && location === undefined) {
@@ -10,7 +15,7 @@ export const getLocationMetadata = function (location, envMetadata) {
 }
 
 // Retrieve the URL to the build logs
-const getBuildLogs = function ({ SITE_NAME, DEPLOY_ID }) {
+const getBuildLogs = function ({ SITE_NAME, DEPLOY_ID }: Record<string, string | undefined>) {
   if (SITE_NAME === undefined || DEPLOY_ID === undefined) {
     return
   }
