@@ -1651,25 +1651,6 @@
       "count": 1
     }
   },
-  "packages/config/src/api/client.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/api/site_info.ts": {
-    "@typescript-eslint/no-unnecessary-condition": {
-      "count": 4
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 3
-    }
-  },
   "packages/config/src/bin/flags.ts": {
     "@typescript-eslint/no-misused-promises": {
       "count": 1
@@ -1692,63 +1673,6 @@
       "count": 3
     }
   },
-  "packages/config/src/env/envelope.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unnecessary-condition": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 4
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 6
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 10
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 3
-    }
-  },
-  "packages/config/src/env/git.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/env/main.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 36
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 5
-    },
-    "@typescript-eslint/prefer-nullish-coalescing": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 2
-    },
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/config/src/main.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 13
@@ -1757,7 +1681,7 @@
       "count": 8
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 123
+      "count": 121
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -1775,49 +1699,12 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 2
+      "count": 1
     }
   },
   "packages/config/src/options/main.js": {
     "n/no-missing-import": {
       "count": 5
-    }
-  },
-  "packages/config/src/utils/extensions/auto-install-extensions.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unnecessary-condition": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 7
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
-    },
-    "@typescript-eslint/return-await": {
-      "count": 1
-    }
-  },
-  "packages/config/src/utils/extensions/utils.ts": {
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
     }
   },
   "packages/config/tests/api/cached_site_info.test.ts": {

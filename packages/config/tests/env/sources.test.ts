@@ -59,3 +59,26 @@ test('Ignores a failure to fetch environment variables from the API', async () =
   expect(env['URL']).toEqual({ sources: ['general'], value: 'test' })
   expect(env['UI_ENV_VAR']).toBeUndefined()
 })
+
+test('Uses the environment variables API for a site without build settings', async () => {
+  const { env } = asConfig(
+    await new Fixture(import.meta.url, './fixtures/empty')
+      .withFlags({ token: 'test', siteId: 'test' })
+      .runConfigServerAsObject([
+        {
+          path: '/api/v1/sites/test',
+          response: { account_id: 'team', account_slug: 'team', id: 'test', use_envelope: true },
+        },
+        {
+          path: '/api/v1/accounts/team/env?context_name=production&site_id=test',
+          response: [
+            { key: 'ENVELOPE_VAR', scopes: ['builds'], values: [{ context: 'all', value: 'envelope value' }] },
+          ],
+        },
+        { path: '/api/v1/accounts/team/env?context_name=production', response: [] },
+        { path: '/site/test/integrations/safe', response: [] },
+      ]),
+  )
+
+  expect(env['ENVELOPE_VAR']).toEqual({ sources: ['ui'], value: 'envelope value' })
+})
