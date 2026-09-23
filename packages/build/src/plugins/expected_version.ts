@@ -3,18 +3,37 @@ import semver from 'semver'
 
 import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
+import type { Logs } from '../log/logger.js'
 import { SystemLogger } from '../plugins_core/types.js'
 import { importJsonFile } from '../utils/json.js'
 import { resolvePath } from '../utils/resolve.js'
 
 import { getExpectedVersion } from './compatibility.js'
 import { PluginList, PluginVersion, getPluginsList } from './list.js'
-import { PluginsOptions } from './node_version.js'
+import { PluginsLoadedFrom, PluginsOptions } from './node_version.js'
+
+type ExpectedVersionPluginOptions = PluginsOptions & { nodeVersion: string }
+
+export type ExpectedVersionTestOptions = { pluginsListUrl?: string | undefined; skipPluginList?: boolean | undefined }
+
+export type ExpectedVersions = {
+  latestVersion: string
+  expectedVersion: string
+  compatibleVersion: string
+  migrationGuide: string | undefined
+  compatWarning: string
+  isMissing: boolean
+}
+
+// Plugins that do not need an expected version, or are not in the plugins list
+type NoExpectedVersions = { [Key in keyof ExpectedVersions]?: undefined }
+
+export type MaybeExpectedVersions = ExpectedVersions | NoExpectedVersions
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
 // We ensure that the last version that's been approved is always the one being used.
 // We also ensure that the plugin is our official list.
-export const addExpectedVersions = async function ({
+export const addExpectedVersions = async function <T extends ExpectedVersionPluginOptions>({
   pluginsOptions,
   autoPluginsDir,
   packageJson,
@@ -25,7 +44,18 @@ export const addExpectedVersions = async function ({
   testOpts,
   featureFlags,
   systemLog,
-}) {
+}: {
+  pluginsOptions: T[]
+  autoPluginsDir: string
+  packageJson: PackageJson
+  packagePath: string | undefined
+  debug: boolean
+  logs: Logs | undefined
+  buildDir: string
+  testOpts: ExpectedVersionTestOptions
+  featureFlags: FeatureFlags
+  systemLog: SystemLogger
+}): Promise<(T & MaybeExpectedVersions)[]> {
   if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
   }
@@ -49,7 +79,7 @@ export const addExpectedVersions = async function ({
 }
 
 /** Any `pluginOptions` with `expectedVersion` set will be automatically installed */
-const addExpectedVersion = async function ({
+const addExpectedVersion = async function <T extends ExpectedVersionPluginOptions>({
   pluginsList,
   autoPluginsDir,
   packageJson,
@@ -63,26 +93,31 @@ const addExpectedVersion = async function ({
 }: {
   pluginsList: PluginList
   packageJson: PackageJson
-  packagePath?: string
+  packagePath: string | undefined
   buildDir: string
-  pluginOptions: PluginsOptions & { nodeVersion: string }
+  pluginOptions: T
   featureFlags: FeatureFlags
-  testOpts: Record<string, unknown>
+  testOpts: ExpectedVersionTestOptions
   autoPluginsDir: string
   systemLog: SystemLogger
-}) {
+}): Promise<T & MaybeExpectedVersions> {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
   }
 
-  if (pluginsList[packageName] === undefined) {
+  const unfilteredVersions = pluginsList[packageName]
+  if (unfilteredVersions === undefined) {
     validateUnlistedPlugin(packageName, loadedFrom, testOpts)
     return pluginOptions
   }
 
-  const unfilteredVersions = pluginsList[packageName]
   const versions = filterVersions(unfilteredVersions, featureFlags)
-  const [{ version: latestVersion, migrationGuide }] = versions
+  const [latestEntry] = versions
+  // Keeps the error destructuring `versions` threw when feature flags filter out every version
+  if (latestEntry === undefined) {
+    throw new TypeError("Cannot read properties of undefined (reading 'version')")
+  }
+  const { version: latestVersion, migrationGuide } = latestEntry
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
     getExpectedVersion({
       versions,
@@ -131,7 +166,19 @@ const filterVersions = function (unfilteredVersions: PluginVersion[], featureFla
  * Checks whether plugin should be installed due to the wrong version being used
  * (either outdated, or mismatching compatibility requirements)
  */
-const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion }) {
+const isMissingVersion = async function ({
+  autoPluginsDir,
+  packageName,
+  pluginPath,
+  loadedFrom,
+  expectedVersion,
+}: {
+  autoPluginsDir: string
+  packageName: string
+  pluginPath: string | undefined
+  loadedFrom: PluginsLoadedFrom | undefined
+  expectedVersion: string
+}): Promise<boolean> {
   return (
     // We always respect the versions specified in `package.json`, as opposed
     // to auto-installed plugins
@@ -143,7 +190,7 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
   )
 }
 
-const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
+const getAutoPluginVersion = async function (packageName: string, autoPluginsDir: string): Promise<string> {
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
   const { version } = await importJsonFile<PackageJson>(packageJsonPath)
   if (!version) {
@@ -160,7 +207,11 @@ const needsExpectedVersion = function ({ loadedFrom }: PluginsOptions) {
 // Plugins that are not in our official list can only be specified in
 // `netlify.toml` providing they are also installed in the site's package.json.
 // Otherwise, the build should fail.
-const validateUnlistedPlugin = function (packageName, loadedFrom, testOpts) {
+const validateUnlistedPlugin = function (
+  packageName: string,
+  loadedFrom: PluginsLoadedFrom | undefined,
+  testOpts: ExpectedVersionTestOptions,
+) {
   if (testOpts.skipPluginList) {
     return
   }

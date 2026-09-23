@@ -419,10 +419,10 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 9
+      "count": 7
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 325
+      "count": 323
     },
     "@typescript-eslint/no-unsafe-member-access": {
       "count": 6
@@ -431,7 +431,7 @@
       "count": 1
     },
     "n/no-missing-import": {
-      "count": 4
+      "count": 2
     }
   },
   "packages/build/src/core/config.js": {
@@ -600,77 +600,9 @@
       "count": 1
     }
   },
-  "packages/build/src/plugins/compatibility.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
-    }
-  },
-  "packages/build/src/plugins/expected_version.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 15
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 2
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 3
-    }
-  },
   "packages/build/src/plugins/list.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 1
-    },
     "@typescript-eslint/prefer-nullish-coalescing": {
       "count": 1
-    }
-  },
-  "packages/build/src/plugins/load.js": {
-    "n/no-missing-import": {
-      "count": 5
-    }
-  },
-  "packages/build/src/plugins/node_version.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 5
-    },
-    "@typescript-eslint/no-redundant-type-constituents": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 7
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
-    "@typescript-eslint/require-await": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 2
     }
   },
   "packages/build/src/plugins/options.ts": {
@@ -678,10 +610,10 @@
       "count": 1
     },
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
+      "count": 1
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 25
+      "count": 23
     },
     "@typescript-eslint/no-unsafe-call": {
       "count": 1
@@ -693,43 +625,12 @@
       "count": 1
     },
     "@typescript-eslint/restrict-template-expressions": {
-      "count": 2
-    },
-    "n/no-missing-import": {
       "count": 1
-    }
-  },
-  "packages/build/src/plugins/plugin_conditions.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 2
-    }
-  },
-  "packages/build/src/plugins/resolve.js": {
-    "n/no-missing-import": {
-      "count": 6
     }
   },
   "packages/build/src/plugins/spawn.ts": {
     "@typescript-eslint/no-unnecessary-condition": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-argument": {
       "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 9
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
-    "@typescript-eslint/restrict-template-expressions": {
-      "count": 4
     }
   },
   "packages/build/src/plugins_core/blobs_upload/index.ts": {
@@ -818,11 +719,6 @@
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 10
-    }
-  },
-  "packages/build/src/plugins_core/list.js": {
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/plugins_core/pre_cleanup/index.ts": {

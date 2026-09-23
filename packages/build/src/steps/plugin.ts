@@ -6,7 +6,7 @@ import type { FeatureFlags } from '../core/feature_flags.js'
 import type { ErrorParam } from '../core/types.js'
 import type { EnvChanges } from '../env/changes.js'
 import { addErrorInfo } from '../error/info.js'
-import type { ErrorInfo } from '../error/types.js'
+import type { ExtensionMetadata } from '../error/types.js'
 import { addOutputFlusher, type Logs } from '../log/logger.js'
 import { logStepCompleted } from '../log/messages/ipc.js'
 import { getStandardStreams, type OutputFlusher } from '../log/output_flusher.js'
@@ -74,7 +74,7 @@ export const firePluginStep = async function ({
   featureFlags: FeatureFlags | undefined
   debug: boolean
   verbose: boolean
-  extensionMetadata: NonNullable<ErrorInfo['plugin']>['extensionMetadata']
+  extensionMetadata: ExtensionMetadata | undefined
 }) {
   const standardStreams = getStandardStreams(outputFlusher)
   const listeners = pipePluginOutput(childProcess, logs, standardStreams)

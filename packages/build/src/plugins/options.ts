@@ -66,17 +66,28 @@ export const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugin
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function ({
+const loadPluginFiles = async function <
+  T extends { pluginPath: string | undefined; packageName: string; nodeVersion?: string | undefined },
+>({
   pluginOptions,
   pluginOptions: { pluginPath, nodeVersion, packageName },
   debug,
+}: {
+  pluginOptions: T
+  debug: boolean
 }) {
+  // Only reachable with `testOpts.skipPluginList` and an unresolvable plugin.
+  // Mirrors `dirname()`'s TypeError, without its `code`.
+  if (pluginPath === undefined) {
+    throw new TypeError('The "path" argument must be of type string. Received undefined')
+  }
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
 
-  // Ensure Node.js version is compatible with plugin's `engines.node`
+  // Ensure Node.js version is compatible with plugin's `engines.node`.
+  // Extensions have no `nodeVersion`, which `satisfies()` rejects, so they always throw when a range is set.
   const pluginNodeVersionRange = pluginPackageJson?.engines?.node
-  if (pluginNodeVersionRange && !semver.satisfies(nodeVersion, pluginNodeVersionRange)) {
+  if (pluginNodeVersionRange && (nodeVersion === undefined || !semver.satisfies(nodeVersion, pluginNodeVersionRange))) {
     throwUserError(
       `The Node.js version is ${nodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
     )
