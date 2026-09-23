@@ -33,7 +33,7 @@
     "packages/config": {
       "entry": [
         // Reached from the package-level CLI shim after TypeScript compilation.
-        "src/bin/main.js",
+        "src/bin/main.ts",
         // Type-only assertion, checked by tsc through tests/tsconfig.json.
         "tests/helpers/contract.ts",
       ],
