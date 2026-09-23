@@ -1,4 +1,4 @@
-import { type DynamicMethods } from 'packages/js-client/lib/types.js'
+import type { NetlifyAPI } from '@netlify/api'
 
 import type { NetlifyPluginConstants } from '../core/constants.js'
 import type { BufferedLogs } from '../log/logger.js'
@@ -51,7 +51,7 @@ export type CoreStepFunctionArgs = {
   returnValues: Record<string, ReturnValue>
 
   buildbotServerSocket?: string
-  api: DynamicMethods
+  api: NetlifyAPI
 }
 
 export type CoreStepFunction = (args: CoreStepFunctionArgs) => Promise<object>

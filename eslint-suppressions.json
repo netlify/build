@@ -1305,9 +1305,6 @@
   "packages/build/src/plugins_core/types.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/build/src/report/statsd.ts": {
@@ -1335,9 +1332,6 @@
   },
   "packages/build/src/status/validations.ts": {
     "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "n/no-missing-import": {
       "count": 1
     }
   },
