@@ -2,10 +2,15 @@ import isPlainObj from 'is-plain-obj'
 
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge } from './merge_normalize.js'
-import type { ConfigOrigin, PartialNetlifyConfig } from './types/config.js'
+import type { ConfigOrigin } from './types/config.js'
 import type { Logs } from './types/logs.js'
+import { spreadValue } from './utils/object.js'
 import { validateContextsPluginsConfig } from './validate/context.js'
-import { validatePreContextConfig } from './validate/main.js'
+import { parsePreContextConfig } from './validate/main.js'
+import type { RawConfig, SourceCheckedConfig } from './validate/validations.js'
+
+/** A source with each of its `context.*` entries validated and normalized as a source too. */
+export type SourceWithContexts = SourceCheckedConfig & { context?: Record<string, SourceCheckedConfig> }
 
 /** Properties that `context.{context}.*` may set directly, meaning `context.{context}.build.*`. */
 const BUILD_PROPERTIES = new Set([
@@ -20,16 +25,11 @@ const BUILD_PROPERTIES = new Set([
 ])
 
 /** Validate and normalize each of `config.context.*`, as its own source. */
-export const normalizeContextProps = function (
-  config: PartialNetlifyConfig,
-  origin: ConfigOrigin,
-): PartialNetlifyConfig {
-  const { context: contextProps } = config
+export const normalizeContextProps = function (config: SourceCheckedConfig, origin: ConfigOrigin): SourceWithContexts {
+  const { context: contextProps } = parsePreContextConfig(config)
   if (contextProps === undefined) {
     return config
   }
-
-  validatePreContextConfig(config)
 
   const normalizedContextProps = Object.fromEntries(
     Object.entries(contextProps).map(([key, contextConfig]) => [
@@ -41,11 +41,11 @@ export const normalizeContextProps = function (
 }
 
 // Applied in key order, so a later `build` key replaces build properties set before it.
-const addBuildNamespace = function (contextConfig: PartialNetlifyConfig): PartialNetlifyConfig {
-  return Object.entries(contextConfig).reduce<PartialNetlifyConfig>(
+const addBuildNamespace = function (contextConfig: RawConfig): RawConfig {
+  return Object.entries(contextConfig).reduce<RawConfig>(
     (namespaced, [key, value]) =>
       isBuildProperty(key, value)
-        ? { ...namespaced, build: { ...namespaced.build, [key]: value } }
+        ? { ...namespaced, build: { ...spreadValue(namespaced['build']), [key]: value } }
         : { ...namespaced, [key]: value },
     {},
   )
@@ -60,7 +60,7 @@ const isBuildProperty = function (key: string, value: unknown) {
 }
 
 type MergeContextOptions = {
-  config: PartialNetlifyConfig
+  config: SourceWithContexts
   /** The `--context`, e.g. `production`. */
   context: string
   branch: string
@@ -72,7 +72,7 @@ type MergeContextOptions = {
  * then the one named after the branch. Each is an exact match, or failing that every entry whose
  * name ends with `*` and is a prefix of it, e.g. `feat/*` for the `feat/my-branch` branch.
  */
-export const mergeContext = function ({ config, context, branch, logs }: MergeContextOptions): PartialNetlifyConfig {
+export const mergeContext = function ({ config, context, branch, logs }: MergeContextOptions): SourceCheckedConfig {
   const { context: contextProps, ...rest } = config
   if (contextProps === undefined) {
     return rest
@@ -85,9 +85,9 @@ export const mergeContext = function ({ config, context, branch, logs }: MergeCo
 }
 
 const findMatchingContextProps = function (
-  contextProps: Record<string, PartialNetlifyConfig>,
+  contextProps: Record<string, SourceCheckedConfig>,
   key: string,
-): PartialNetlifyConfig[] {
+): SourceCheckedConfig[] {
   if (!key) {
     return []
   }
@@ -108,19 +108,19 @@ const findMatchingContextProps = function (
  * property context-sensitively. `redirects` is only kept at the top level.
  */
 export const ensureConfigPriority = function (
-  { build = {}, ...config }: PartialNetlifyConfig,
+  { build = {}, ...config }: RawConfig,
   context: string,
   branch: string,
-): PartialNetlifyConfig {
+): RawConfig {
   const { redirects: _redirects, ...contextConfig } = config
   // Written like a `netlify.toml` context entry, with build properties at its top level.
   // `normalizeContextProps` moves them under `build`.
-  const contextEntry = { ...contextConfig, ...build, build } as PartialNetlifyConfig
+  const contextEntry = { ...contextConfig, ...spreadValue(build), build }
   return {
     ...config,
     build,
     context: {
-      ...config.context,
+      ...spreadValue(config['context']),
       [context]: contextEntry,
       [branch]: contextEntry,
     },

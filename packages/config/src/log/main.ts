@@ -42,7 +42,7 @@ export const logDefaultConfig = function (
   logObject(logs, cleanupConfig({ ...defaultConfig, baseRelDir }))
 }
 
-export const logInlineConfig = function (inlineConfig: PartialNetlifyConfig, { logs, debug }: DebugLogOptions) {
+export const logInlineConfig = function (inlineConfig: Record<string, unknown>, { logs, debug }: DebugLogOptions) {
   if (!debug || Object.keys(inlineConfig).length === 0) {
     return
   }

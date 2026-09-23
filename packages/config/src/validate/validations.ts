@@ -21,6 +21,10 @@ import type { PathSegment } from './types.js'
 // declared in priority order, and a stage relies on the earlier stages' checks having passed.
 
 const plainObject = z.record(z.string(), z.unknown())
+
+/** A configuration source before any check: a TOML table or a JSON object. */
+export const rawConfigSchema = plainObject
+export type RawConfig = z.output<typeof rawConfigSchema>
 const arrayOfObjects = z.array(plainObject)
 
 const isValidCronExpression = (cron: unknown) => {
@@ -373,3 +377,8 @@ export const POST_NORMALIZE_SCHEMA = z.looseObject({
     .optional(),
   edge_functions: edgeFunctionsSchema.optional(),
 })
+
+export type CaseCheckedConfig = z.output<typeof PRE_CASE_NORMALIZE_SCHEMA>
+export type SourceCheckedConfig = z.output<typeof PRE_MERGE_SCHEMA>
+export type ContextCheckedConfig = z.output<typeof PRE_CONTEXT_SCHEMA>
+export type MergeCheckedConfig = z.output<typeof PRE_NORMALIZE_SCHEMA>

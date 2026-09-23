@@ -1,25 +1,25 @@
 import isPlainObj from 'is-plain-obj'
 
-import type { BuildConfigWithout, PartialNetlifyConfig, PartialNetlifyConfigWithout } from './types/config.js'
+import { spreadValue } from './utils/object.js'
 import { removeFalsy } from './utils/remove_falsy.js'
 
 type Properties = Record<string, unknown>
 
-/** A configuration, possibly with `build.environment` reduced to a list of names as `cleanupConfig` does. */
-type SimplifiableConfig = PartialNetlifyConfigWithout<'build'> & {
-  build?: (BuildConfigWithout<'environment'> & { environment?: unknown }) | undefined
-}
-
-/** Remove default values (empty objects and arrays, default redirect flags), e.g. before writing `netlify.toml`. */
+/**
+ * Remove default values (empty objects and arrays, default redirect flags), e.g. before writing
+ * `netlify.toml`. `build.environment` may be a list of names, as `cleanupConfig` makes it.
+ */
 export const simplifyConfig = function ({
-  build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build } = {},
+  build: rawBuild,
   functions,
   plugins,
   headers,
   redirects,
-  context = {},
+  context,
   ...config
-}: SimplifiableConfig): Properties {
+}: Properties): Properties {
+  const { environment, processing: rawProcessing, services, ...build } = spreadValue(rawBuild)
+  const { css, html, images, js, ...processing } = spreadValue(rawProcessing)
   const simplifiedBuild = {
     ...build,
     ...simplifyEnvironment(environment),
@@ -42,7 +42,7 @@ export const simplifyConfig = function ({
     ...removeEmptyArray(plugins, 'plugins'),
     ...removeEmptyArray(headers, 'headers'),
     ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
-    ...removeEmptyObject(simplifyContexts(context), 'context'),
+    ...removeEmptyObject(simplifyContexts(spreadValue(context)), 'context'),
   })
 }
 
@@ -53,9 +53,9 @@ const simplifyEnvironment = function (environment: unknown): Properties {
     : removeEmptyObject(environment, 'environment')
 }
 
-const simplifyContexts = function (contexts: Record<string, PartialNetlifyConfig>): Properties {
+const simplifyContexts = function (contexts: Properties): Properties {
   return Object.fromEntries(
-    Object.entries(contexts).map(([context, contextConfig]) => [context, simplifyConfig(contextConfig)]),
+    Object.entries(contexts).map(([context, contextConfig]) => [context, simplifyConfig(spreadValue(contextConfig))]),
   )
 }
 
