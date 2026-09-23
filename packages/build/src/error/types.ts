@@ -92,19 +92,20 @@ export type ErrorInfo = {
   normalizedMessage?: string
 }
 
+export type ExtensionMetadata = {
+  slug: string
+  name: string
+  version: string
+  has_build: boolean
+  // Unset by @netlify/config, whose schema leaves it out
+  has_connector?: boolean | undefined
+  author?: string | undefined
+}
+
 type PluginInfo = {
   packageName: string
   pluginPackageJson?: PackageJson | undefined
-  extensionMetadata?:
-    | {
-        slug: string
-        name: string
-        version: string
-        has_build: boolean
-        has_connector: boolean
-        author?: string
-      }
-    | undefined
+  extensionMetadata?: ExtensionMetadata | undefined
 }
 
 export type BuildCommandLocation = {
