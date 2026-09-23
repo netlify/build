@@ -3,9 +3,9 @@ import indentString from 'indent-string'
 import { THEME } from '../log/theme.js'
 import { serializeToml } from '../utils/toml.js'
 
-import type { PathSegment, Validation } from './types.js'
+import type { PathSegment, Rule } from './types.js'
 
-type ExampleOptions = Pick<Validation, 'example' | 'formatInvalid'> & {
+type ExampleOptions = Pick<Rule, 'example' | 'formatInvalid'> & {
   value: unknown
   key: PathSegment
   path: PathSegment[]
@@ -24,7 +24,7 @@ ${THEME.subHeader('Valid syntax')}
 ${indentString(serializeToml(validExample), 2)}`
 }
 
-const getInvalidValue = function (value: unknown, path: PathSegment[], formatInvalid: Validation['formatInvalid']) {
+const getInvalidValue = function (value: unknown, path: PathSegment[], formatInvalid: Rule['formatInvalid']) {
   const invalidConfig = path.reduceRight<unknown>((child, segment) => wrapInParent(child, segment), value)
   return serializeToml(formatInvalid === undefined ? invalidConfig : formatInvalid(invalidConfig))
 }

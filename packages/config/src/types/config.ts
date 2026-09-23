@@ -9,32 +9,32 @@ export type FunctionsDirectoryOrigin = 'ui' | 'config' | 'config-v1' | 'default'
 export type NodeBundler = 'esbuild' | 'nft' | 'zisi' | 'none'
 
 export interface FunctionConfig {
-  deno_import_map?: string
-  directory?: string
-  external_node_modules?: string[]
-  ignored_node_modules?: string[]
-  included_files?: string[]
+  deno_import_map?: string | undefined
+  directory?: string | undefined
+  external_node_modules?: string[] | undefined
+  ignored_node_modules?: string[] | undefined
+  included_files?: string[] | undefined
   /** In MB, or a string with a unit such as `"2gb"`. */
-  memory?: number | string
-  node_bundler?: NodeBundler
-  region?: string
-  schedule?: string
-  vcpu?: number
+  memory?: number | string | undefined
+  node_bundler?: NodeBundler | undefined
+  region?: string | undefined
+  schedule?: string | undefined
+  vcpu?: number | undefined
 }
 
 export interface EdgeFunctionDeclaration {
   function: string
-  path?: string
-  excludedPath?: string | string[]
-  pattern?: string
-  excludedPattern?: string | string[]
-  cache?: 'manual' | 'off'
+  path?: string | undefined
+  excludedPath?: string | string[] | undefined
+  pattern?: string | undefined
+  excludedPattern?: string | string[] | undefined
+  cache?: 'manual' | 'off' | undefined
   /** HTTP method names, matched case-insensitively. */
-  method?: string | string[]
-  header?: Record<string, string | boolean>
-  name?: string
+  method?: string | string[] | undefined
+  header?: Record<string, string | boolean> | undefined
+  name?: string | undefined
   /** Set by frameworks and integrations only, never in `netlify.toml`. */
-  generator?: string
+  generator?: string | undefined
 }
 
 export interface PluginConfig {

@@ -9,3 +9,6 @@ vcpu = 0.5
 [functions.large]
 vcpu = 2
 schedule = "5 4 * * *"
+
+[functions.daily]
+schedule = ["@daily"]
