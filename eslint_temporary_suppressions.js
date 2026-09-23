@@ -1434,32 +1434,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/index.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/main.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off',
-    },
-  },
-  {
-    files: ['packages/config/tsfixme.d.ts'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
     files: ['packages/edge-bundler/node/bridge.test.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',

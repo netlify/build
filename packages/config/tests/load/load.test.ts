@@ -267,17 +267,12 @@ test('--cachedConfig with a siteId', async () => {
 })
 
 test('Programmatic', async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({ repositoryRoot: `${FIXTURES_DIR}/empty` })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.environment).not.toBeUndefined()
 })
 
 test('Programmatic no options', async () => {
-  // @ts-expect-error: `resolveConfig`'s `opts` parameter is untyped and required
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.environment).not.toBeUndefined()
 })
 
