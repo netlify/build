@@ -1415,25 +1415,6 @@ export default [
     },
   },
   {
-    files: ['packages/config/src/bin/flags.ts'],
-    rules: {
-      'n/no-missing-import': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-misused-promises': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-    },
-  },
-  {
-    files: ['packages/config/src/bin/main.js'],
-    rules: {
-      'n/hashbang': 'off',
-      'n/no-missing-import': 'off',
-    },
-  },
-  {
     files: ['packages/edge-bundler/node/bridge.test.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',

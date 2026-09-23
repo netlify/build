@@ -1,30 +1,37 @@
 import process from 'process'
 
 import { includeKeys } from 'filter-obj'
-import yargs from 'yargs'
+import yargs, { type Options } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
+import type { ResolveConfigOptions } from '../types/options.js'
 
-// Parse CLI flags
-export const parseFlags = function () {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: `yargs` types are incorrect
-  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
+export type CliFlags = ResolveConfigOptions & {
+  /** Sort the keys of the output. */
+  stable: boolean
+  /** Where to write the result, `-` for stdout. */
+  output?: string
+}
+
+/**
+ * Parse the binary's flags. JSON flags are cast, not validated: `resolveConfig` validates the
+ * configuration, but `--cachedConfig` is trusted as is.
+ */
+export const parseFlags = function (): CliFlags {
+  const { featureFlags: cliFeatureFlags, ...flags } = yargs(hideBin(process.argv))
     .options(FLAGS)
     .usage(USAGE)
-    .parse()
-  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
-  const flagsA = { ...flags, featureFlags }
-  const flagsB = includeKeys(flagsA, isUserFlag)
-  return flagsB
+    .parseSync()
+  const featureFlags = normalizeCliFeatureFlags(typeof cliFeatureFlags === 'string' ? cliFeatureFlags : '')
+  return includeKeys({ ...flags, featureFlags }, isUserFlag) as CliFlags
 }
 
-const jsonParse = function (value) {
-  return value === undefined ? undefined : JSON.parse(value)
+// yargs passes the whole array for `array` options such as configMutations.
+const jsonParse = function (value: string | string[] | undefined): unknown {
+  return value === undefined ? undefined : JSON.parse(String(value))
 }
 
-// List of CLI flags
 const FLAGS = {
   config: {
     string: true,
@@ -176,15 +183,15 @@ Default: false`,
     describe: 'Buffer output instead of streaming it',
     hidden: true,
   },
-}
+} satisfies Record<string, Options>
 
 const USAGE = `netlify-config [OPTIONS...]
 
 Retrieve and resolve the Netlify configuration.
 The result is printed as a JSON object on stdout.`
 
-// Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function (key, value) {
+// Remove `yargs`' own keys, and the single-letter and dash-cased aliases it adds.
+const isUserFlag = function (key: string, value: unknown) {
   return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 
