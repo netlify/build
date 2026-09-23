@@ -1,0 +1,4 @@
+[[edge_functions]]
+path = "/products/*"
+excludedPattern = 1
+function = "hello"
