@@ -2,7 +2,9 @@ import prettyMs from 'pretty-ms'
 
 import { getFullErrorInfo } from '../../error/parse/parse.js'
 import { serializeLogError } from '../../error/parse/serialize_log.js'
+import type { SystemLogger } from '../../plugins_core/types.js'
 import { roundTimerToMillisecs } from '../../time/measure.js'
+import type { NetlifyConfig } from '../../types/config/netlify_config.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
 import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, Logs } from '../logger.js'
@@ -17,7 +19,17 @@ export const logBuildStart = function (logs?: Logs) {
   logMessage(logs, `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`)
 }
 
-export const logBuildError = function ({ error, netlifyConfig, logs, debug }) {
+export const logBuildError = function ({
+  error,
+  netlifyConfig,
+  logs,
+  debug,
+}: {
+  error: unknown
+  netlifyConfig: NetlifyConfig | undefined
+  logs: Logs | undefined
+  debug: boolean | undefined
+}) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
   const { severity } = fullErrorInfo
   const { title, body } = serializeLogError({ fullErrorInfo })
@@ -27,11 +39,17 @@ export const logBuildError = function ({ error, netlifyConfig, logs, debug }) {
   logConfigOnError({ logs, netlifyConfig, severity })
 }
 
-export const logBuildSuccess = function (logs) {
+export const logBuildSuccess = function (logs: Logs | undefined) {
   logHeader(logs, 'Netlify Build Complete')
 }
 
-export const logTimer = function (logs, durationNs, timerName, systemLog, outputFlusher?: OutputFlusher) {
+export const logTimer = function (
+  logs: Logs | undefined,
+  durationNs: number,
+  timerName: string,
+  systemLog: SystemLogger,
+  outputFlusher?: OutputFlusher,
+) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
 
@@ -40,10 +58,10 @@ export const logTimer = function (logs, durationNs, timerName, systemLog, output
     log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
   }
 
-  systemLog(`Build step duration: ${timerName} completed in ${durationMs}ms`)
+  systemLog(`Build step duration: ${timerName} completed in ${String(durationMs)}ms`)
 }
 
-export const logMissingSideFile = function (logs, sideFile, publish) {
+export const logMissingSideFile = function (logs: Logs | undefined, sideFile: string, publish: string) {
   logWarning(
     logs,
     `
@@ -53,7 +71,7 @@ A "${sideFile}" file is present in the repository but is missing in the publish 
 
 const ansiLink = (text: string, url: string) => `\u001B]8;;${url}\u0007${text}\u001B]8;;\u0007`
 
-export const logLingeringProcesses = function (logs, commands) {
+export const logLingeringProcesses = function (logs: Logs | undefined, commands: readonly string[]) {
   logWarning(
     logs,
     `

@@ -1,17 +1,19 @@
-#!/usr/bin/env node
-
 import { readFileSync } from 'fs'
 import process from 'process'
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+import type { BufferedLogs } from '../log/logger.js'
+import type { RootPackageJson } from '../utils/json.js'
+
 import { normalizeCliFeatureFlags } from './feature_flags.js'
 import { FLAGS } from './flags.js'
 import { buildSite } from './main.js'
 import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 
-const packJson = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
+// Our own `package.json`, so its shape is known
+const packJson = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as RootPackageJson
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
@@ -37,8 +39,9 @@ const parseFlags = function () {
     .options(FLAGS)
     .usage(USAGE)
     .version(packJson.version)
-    .parse()
-  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
+    .parseSync()
+  // `featureFlags` has no yargs type, so this is not always a string: `--featureFlags=1` crashes `.split()`
+  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags as string)
   return { ...flags, featureFlags }
 }
 
@@ -51,14 +54,14 @@ NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function ([key, value]) {
+const isUserFlag = function ([key, value]: [string, unknown]) {
   return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0', 'dryRun'])
 
 // Used mostly for testing
-const printLogs = function (logs) {
+const printLogs = function (logs: BufferedLogs | undefined) {
   if (logs === undefined) {
     return
   }
@@ -72,15 +75,15 @@ const printLogs = function (logs) {
 // Making the exit code not 0 in that case ensures the caller knows that the
 // build has completed when the exit code is 0. This `exit` event handlers
 // guarantees this.
-const onExit = function ({ done }, exitCode) {
+const onExit = function ({ done }: { done: boolean }, exitCode: number) {
   if (done || exitCode !== 0) {
     return
   }
 
   const [, processName] = process.argv
-  console.log(`${processName} exited with exit code ${exitCode} without finishing the build.`)
+  console.log(`${String(processName)} exited with exit code ${String(exitCode)} without finishing the build.`)
 
   process.exitCode = FALLBACK_SEVERITY_ENTRY.severityCode
 }
 
-runCli()
+void runCli()

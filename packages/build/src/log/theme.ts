@@ -24,5 +24,5 @@ export const THEME = {
   // One of several words that should be dimmed inside a line
   dimWords: colors.gray,
   // No colors
-  none: (string) => string,
+  none: (string: string) => string,
 }

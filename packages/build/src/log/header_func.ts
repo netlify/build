@@ -3,7 +3,7 @@ import { parseErrorInfo } from '../error/parse/parse.js'
 import { logHeader, logErrorHeader } from './logger.js'
 
 /** Retrieve successful or error header depending on whether `error` exists */
-export const getLogHeaderFunc = function (error?: Error) {
+export const getLogHeaderFunc = function (error?: unknown) {
   if (error === undefined) {
     return logHeader
   }
