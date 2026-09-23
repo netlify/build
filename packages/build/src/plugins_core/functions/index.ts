@@ -23,7 +23,7 @@ import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 import type { CoreStepFunction } from '../types.js'
 
 import { getZipError } from './error.js'
-import { getServerEntry, writeServerShim } from './server_entry.js'
+import { getServerEntry, useServer, writeServerShim } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
@@ -177,10 +177,9 @@ const coreStep: CoreStepFunction = async function ({
     log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
   }
 
-  // A server is either bundled standalone or, until that path is in use
-  // everywhere, carried through the functions plumbing as a shim.
+  const asFunction = featureFlags?.netlify_build_server_entry === true
   const standalone = featureFlags?.netlify_build_server_standalone === true
-  const serverShimPath = serverEntry && !standalone ? await writeServerShim(serverEntry) : undefined
+  const serverShimPath = serverEntry && asFunction ? await writeServerShim(serverEntry) : undefined
 
   logFunctionsToBundle({
     logs,
@@ -250,10 +249,7 @@ const hasFunctionsDirectories = async function ({
   packagePath,
   returnValues,
 }) {
-  if (
-    featureFlags?.netlify_build_server_entry &&
-    (await pathExists(resolve(buildDir, packagePath || '', 'netlify/server')))
-  ) {
+  if (useServer(featureFlags) && (await pathExists(resolve(buildDir, packagePath || '', 'netlify/server')))) {
     return true
   }
 

@@ -9,6 +9,9 @@ import { type FeatureFlags } from '../../core/feature_flags.js'
 const SERVER_ENTRY_DIR = 'netlify/server'
 const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'index.mts'])
 
+export const useServer = (featureFlags?: FeatureFlags): boolean =>
+  featureFlags?.netlify_build_server_entry === true || featureFlags?.netlify_build_server_standalone === true
+
 export interface ServerEntry {
   // Path of the user's server entrypoint.
   entryPath: string
@@ -30,7 +33,7 @@ export const getServerEntry = async ({
   packagePath?: string
   featureFlags?: FeatureFlags
 }): Promise<ServerEntry | undefined> => {
-  if (!featureFlags?.netlify_build_server_entry) {
+  if (!useServer(featureFlags)) {
     return undefined
   }
 
@@ -65,8 +68,8 @@ export const getServerEntry = async ({
 }
 
 // Everything below carries a server through the functions plumbing, which is
-// how it was deployed before it stood on its own. It goes away with the
-// `netlify_build_server_standalone` flag.
+// how it was deployed before it stood on its own. It goes away once no deploy
+// is built with the function channel on.
 
 const SERVER_FUNCTION_NAME = '___netlify-server'
 const SERVER_SHIM_DIR = '.netlify/server-entry'
