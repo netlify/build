@@ -1,17 +1,22 @@
 import { resolve } from 'path'
 import process from 'process'
 
+import isPlainObj from 'is-plain-obj'
 import { isDirectory } from 'path-type'
+import * as z from 'zod'
 
 import { throwUserError } from '../error.js'
-import { getBufferLogs } from '../log/logger.js'
+import { getBufferLogs, logWarning } from '../log/logger.js'
 import { logOpts } from '../log/main.js'
 import type { PartialNetlifyConfig } from '../types/config.js'
 import type { BufferedLogs } from '../types/logs.js'
 import type { ConfigMutation } from '../types/mutations.js'
 import type { ModeOption, ResolveConfigOptions } from '../types/options.js'
 import { nonEmpty } from '../utils/non_empty.js'
+import { spreadValue } from '../utils/object.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
+import { parseLeniently } from '../utils/schema.js'
+import type { RawConfig } from '../validate/validations.js'
 
 import { getBaseOverride } from './base.js'
 import { getBranch } from './branch.js'
@@ -24,8 +29,9 @@ const DEFAULT_BUILD_ID = '0'
 
 /** The options, with defaults, many of them from environment variables. */
 export type DefaultedOptions = ResolveConfigOptions & {
+  /** Guaranteed to be an object, but its properties are only checked with the other sources. */
   defaultConfig: PartialNetlifyConfig
-  inlineConfig: PartialNetlifyConfig
+  inlineConfig: RawConfig
   configMutations: ConfigMutation[]
   cwd: string
   env: Record<string, string | undefined>
@@ -47,6 +53,24 @@ export type NormalizedOptions = DefaultedOptions & {
   branch: string
 }
 
+const configMutationsSchema: z.ZodType<ConfigMutation[]> = z.array(
+  z.looseObject({ keys: z.array(z.union([z.string(), z.number()])), value: z.unknown(), event: z.string() }),
+)
+
+/**
+ * A configuration given as an option, such as a JSON flag of the binary, checked with the other
+ * sources once its properties are merged. One that isn't an object is spread, as it always has
+ * been, with a warning.
+ */
+const parseSourceOption = function (value: unknown, name: string, logs: BufferedLogs | undefined): RawConfig {
+  if (isPlainObj(value)) {
+    return value
+  }
+
+  logWarning(logs, `Unexpected ${name} option, which should be an object, spread into one`)
+  return spreadValue(value)
+}
+
 /**
  * Add defaults to the options. Empty options (`undefined`, `null`, or blank strings) count as
  * missing, but `false` doesn't.
@@ -59,7 +83,17 @@ export const addDefaultOpts = function (options: ResolveConfigOptions = {}): Def
     ...givenOptions,
     featureFlags: { ...defaultOptions.featureFlags, ...givenOptions.featureFlags },
   }) as Omit<DefaultedOptions, 'logs'>
-  const defaultedOptions = { ...withDefaults, logs: getBufferLogs(withDefaults) }
+  const logs = getBufferLogs(withDefaults)
+  const defaultedOptions = {
+    ...withDefaults,
+    defaultConfig: parseSourceOption(withDefaults.defaultConfig, 'defaultConfig', logs),
+    inlineConfig: parseSourceOption(withDefaults.inlineConfig, 'inlineConfig', logs),
+    configMutations: parseLeniently(configMutationsSchema, withDefaults.configMutations, {
+      description: 'configMutations option',
+      logs,
+    }),
+    logs,
+  }
 
   logOpts(givenOptions, defaultedOptions)
 
