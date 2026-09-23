@@ -42,7 +42,7 @@ export type ResolvedFlags = {
   statsd: { host?: string; port?: number }
   /** e.g. `build` */
   timeline: string
-  cachedConfig?: Record<string, unknown>
+  cachedConfig?: object
   siteId?: string
   dry?: boolean
   /** e.g. `production` */
