@@ -1,7 +1,25 @@
 import type { NetlifyAPI } from '@netlify/api'
 
+type ApiSite = Awaited<ReturnType<NetlifyAPI['getSite']>>
+
+/** The UI build settings. `base` and `base_rel_dir` are returned by the API but missing from its published types. */
+export type SiteBuildSettings = NonNullable<ApiSite['build_settings']> & {
+  base?: string
+  base_rel_dir?: boolean
+}
+
+/** A plugin installed in the UI. */
+export interface UiPluginConfig {
+  package: string
+  inputs?: Record<string, unknown>
+  pinned_version?: string
+}
+
 /** A site as returned by the Netlify API, or the subset known without calling it. */
-export type SiteInfo = Partial<Awaited<ReturnType<NetlifyAPI['getSite']>>> & {
+export type SiteInfo = Partial<Omit<ApiSite, 'build_settings'>> & {
+  build_settings?: SiteBuildSettings
+  /** Plugins installed in the UI. Returned by the API but missing from its published types. */
+  plugins?: UiPluginConfig[]
   feature_flags?: Record<string, string | number | boolean>
   use_envelope?: boolean
 }
