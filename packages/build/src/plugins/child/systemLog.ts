@@ -13,5 +13,6 @@ export const getSystemLog = () => {
     }
   } catch {
     // not accessible
+    return undefined
   }
 }

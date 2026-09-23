@@ -1,7 +1,5 @@
 import { cwd as getCwd } from 'process'
 
-import type { Client } from '@bugsnag/js'
-
 import { pathExists } from '../utils/path_exists.js'
 
 import type { ErrorParam } from '../core/types.js'
@@ -12,19 +10,10 @@ import { getErrorInfo } from './info.js'
 import { reportBuildError } from './monitor/report.js'
 import { parseErrorInfo } from './parse/parse.js'
 
-// `ErrorParam` types some of these as `any`
-type BuildErrorParams = Omit<ErrorParam, 'errorMonitor' | 'debug' | 'childEnv' | 'netlifyConfig' | 'testOpts'> & {
-  errorMonitor: Client | undefined
-  debug: boolean | undefined
-  childEnv?: NodeJS.ProcessEnv | undefined
-  netlifyConfig?: ErrorParam['netlifyConfig'] | undefined
-  testOpts?: ErrorParam['testOpts'] | undefined
-}
-
 // Logs and reports a build failure
 export const handleBuildError = async function (
   error: unknown,
-  { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: BuildErrorParams,
+  { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: ErrorParam,
 ) {
   const basicErrorInfo = parseErrorInfo(error)
 

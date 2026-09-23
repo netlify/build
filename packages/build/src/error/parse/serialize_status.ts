@@ -14,7 +14,7 @@ export const serializeErrorStatus = function ({
   return { state, title, summary: message, text, extraData: errorMetadata }
 }
 
-const getText = function ({ locationInfo, errorProps }) {
+const getText = function ({ locationInfo, errorProps }: Pick<BuildError, 'locationInfo' | 'errorProps'>) {
   const parts = [locationInfo, getErrorProps(errorProps)].filter(Boolean)
 
   if (parts.length === 0) {

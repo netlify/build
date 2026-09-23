@@ -2,7 +2,11 @@ export type FeatureFlags = Record<string, boolean>
 
 // From CLI `--featureFlags=a,b,c` to programmatic `{ a: true, b: true, c: true }`
 export const normalizeCliFeatureFlags = function (cliFeatureFlags: string): FeatureFlags {
-  return Object.assign({}, ...cliFeatureFlags.split(',').filter(isNotEmpty).map(getFeatureFlag))
+  return cliFeatureFlags
+    .split(',')
+    .filter(isNotEmpty)
+    .map(getFeatureFlag)
+    .reduce<FeatureFlags>((featureFlags, featureFlag) => Object.assign(featureFlags, featureFlag), {})
 }
 
 const isNotEmpty = function (name: string): boolean {

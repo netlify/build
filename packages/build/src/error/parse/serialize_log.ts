@@ -11,30 +11,40 @@ export const serializeLogError = function ({
   return { title, body }
 }
 
-const getBody = function ({ message, pluginInfo, locationInfo, tsConfigInfo, errorProps, severity }) {
+const getBody = function ({
+  message,
+  pluginInfo,
+  locationInfo,
+  tsConfigInfo,
+  errorProps,
+  severity,
+}: Pick<BuildError, 'message' | 'pluginInfo' | 'locationInfo' | 'tsConfigInfo' | 'errorProps' | 'severity'>) {
   if (severity === 'none') {
     return message
   }
 
-  return Object.entries({
-    message,
-    tsConfigInfo,
-    pluginInfo,
-    locationInfo,
-    errorProps,
-  })
-    .filter(blockHasValue)
-    .map(serializeBlock)
-    .join('\n\n')
+  const blocks: Block[] = [
+    ['message', message],
+    ['tsConfigInfo', tsConfigInfo],
+    ['pluginInfo', pluginInfo],
+    ['locationInfo', locationInfo],
+    ['errorProps', errorProps],
+  ]
+  return blocks.filter(blockHasValue).map(serializeBlock).join('\n\n')
 }
 
-const blockHasValue = function ([, value]) {
+type Block = [BlockName, string | undefined]
+
+const blockHasValue = function (block: Block): block is [BlockName, string] {
+  const [, value] = block
   return value !== undefined
 }
 
-const serializeBlock = function ([key, value]) {
+const serializeBlock = function ([key, value]: [BlockName, string]) {
   return `${THEME.errorSubHeader(LOG_BLOCK_NAMES[key])}\n${value}`
 }
+
+type BlockName = keyof typeof LOG_BLOCK_NAMES
 
 const LOG_BLOCK_NAMES = {
   message: 'Error message',

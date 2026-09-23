@@ -10,27 +10,32 @@ export interface InputStatsDOptions {
 
 export type StatsDOptions = Required<InputStatsDOptions>
 
-export const validateStatsDOptions = function (statsdOpts: InputStatsDOptions): statsdOpts is StatsDOptions {
-  return !!(statsdOpts && statsdOpts.host && statsdOpts.port)
+export const validateStatsDOptions = function (
+  statsdOpts: InputStatsDOptions | undefined,
+): statsdOpts is StatsDOptions {
+  return !!(statsdOpts?.host && statsdOpts.port)
 }
 
 /**
  * Start a new StatsD Client and a new UDP socket
  */
-export const startClient = async function (statsdOpts: StatsDOptions): Promise<StatsD> {
+export const startClient = function (statsdOpts: StatsDOptions): Promise<StatsD> {
   const { host, port } = statsdOpts
 
-  return new StatsD({
-    host,
-    port,
-    // This caches the dns resolution for subsequent sends of metrics for this instance
-    // Because we only try to send the metrics on close, this comes only into effect if `bufferFlushInterval` time is exceeded
-    cacheDns: true,
-    // set the maxBufferSize to infinite and the bufferFlushInterval very high, so that we only
-    // send the metrics on close or if more than 10 seconds past by
-    maxBufferSize: Infinity,
-    bufferFlushInterval: 10_000,
-  })
+  // Callers `await` this in async functions, where a thrown error rejects just like a rejected promise
+  return Promise.resolve(
+    new StatsD({
+      host,
+      port,
+      // This caches the dns resolution for subsequent sends of metrics for this instance
+      // Because we only try to send the metrics on close, this comes only into effect if `bufferFlushInterval` time is exceeded
+      cacheDns: true,
+      // set the maxBufferSize to infinite and the bufferFlushInterval very high, so that we only
+      // send the metrics on close or if more than 10 seconds past by
+      maxBufferSize: Infinity,
+      bufferFlushInterval: 10_000,
+    }),
+  )
 }
 
 /**

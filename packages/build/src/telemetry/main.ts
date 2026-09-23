@@ -2,7 +2,9 @@ import { platform } from 'process'
 
 import osName from 'os-name'
 
+import type { TestOptions } from '../core/types.js'
 import { addErrorInfo } from '../error/info.js'
+import type { PluginsOptions } from '../plugins/node_version.js'
 import { roundTimerToMillisecs } from '../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
@@ -11,6 +13,25 @@ const DEFAULT_TELEMETRY_CONFIG = {
   origin: 'https://api.segment.io/v1',
   writeKey: 'dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6',
   timeout: DEFAULT_TELEMETRY_TIMEOUT,
+}
+
+// Plugins that failed before being loaded have no `pluginPackageJson` nor `nodeVersion`
+type TelemetryPluginOptions = Pick<PluginsOptions, 'packageName'> &
+  Partial<Pick<PluginsOptions, 'origin' | 'loadedFrom' | 'pinnedVersion' | 'pluginPackageJson'>> & {
+    nodeVersion?: string | undefined
+  }
+
+// Build failures can happen before these are known
+type PayloadOptions = {
+  deployId?: string | undefined
+  buildId?: string | undefined
+  status: string
+  stepsCount?: number | undefined
+  pluginsOptions?: readonly TelemetryPluginOptions[] | undefined
+  durationNs?: number | undefined
+  siteInfo?: { id?: string | undefined } | undefined
+  userNodeVersion?: string | undefined
+  framework?: string | undefined
 }
 
 // Send telemetry request when build completes
@@ -26,7 +47,7 @@ export const trackBuildComplete = async function ({
   userNodeVersion,
   framework,
   testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
-}) {
+}: PayloadOptions & { telemetry?: boolean | undefined; testOpts: TestOptions }) {
   if (!telemetry) {
     return
   }
@@ -86,7 +107,7 @@ const getPayload = function ({
   userNodeVersion,
   siteInfo = { id: undefined },
   framework,
-}) {
+}: PayloadOptions) {
   return {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -113,7 +134,7 @@ const getPayload = function ({
   }
 }
 
-const OS_TYPES = {
+const OS_TYPES: Partial<Record<NodeJS.Platform, string>> = {
   linux: 'Linux',
   darwin: 'MacOS',
   win32: 'Windows',
@@ -130,13 +151,13 @@ const getPlugin = function ({
   loadedFrom,
   nodeVersion,
   pinnedVersion,
-  pluginPackageJson: { version } = { version: undefined },
-}) {
+  pluginPackageJson: { version } = {},
+}: TelemetryPluginOptions) {
   const installType = getInstallType(origin, loadedFrom)
   return { name: packageName, installType, nodeVersion, pinnedVersion, version }
 }
 
-const getInstallType = function (origin, loadedFrom) {
+const getInstallType = function (origin: string | undefined, loadedFrom: string | undefined) {
   if (loadedFrom === 'auto_install') {
     return origin === 'ui' ? 'ui' : 'netlify_toml'
   }

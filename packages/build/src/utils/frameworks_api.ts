@@ -53,11 +53,12 @@ export const findFiles = async (directory: string, leafNames: Set<string>) => {
     .withPromise()
 
   groups.forEach(({ files }) => {
-    if (files.length === 0) {
+    const [firstFile] = files
+    if (firstFile === undefined) {
       return
     }
 
-    const key = dirname(files[0]).split(sep).join('/')
+    const key = dirname(firstFile).split(sep).join('/')
 
     results.set(
       key,
@@ -76,7 +77,7 @@ const BLOBS_META_FILE = 'blob.meta.json'
  */
 export const getBlobs = async (blobsDirectory: string) => {
   const files = await findFiles(blobsDirectory, new Set([BLOBS_CONTENT_FILE, BLOBS_META_FILE]))
-  const blobs: { key: string; contentPath: string; metadataPath?: string }[] = []
+  const blobs: { key: string; contentPath: string; metadataPath: string | undefined }[] = []
 
   files.forEach((filePaths, key) => {
     const contentPath = filePaths.find((path) => basename(path) === 'blob')
