@@ -955,8 +955,8 @@ Entries with empty values are omitted.
 | `CONTEXT`                                              | `context`                                                                 |
 | `NETLIFY_LOCAL`                                        | `'true'`                                                                  |
 | `BRANCH`, `HEAD`                                       | `branch`                                                                  |
-| `COMMIT_REF`                                           | `git rev-parse HEAD` in `buildDir`                                        |
-| `CACHED_COMMIT_REF`                                    | `git rev-parse HEAD^` in `buildDir`                                       |
+| `COMMIT_REF`                                           | the HEAD commit of `buildDir`'s repository                                |
+| `CACHED_COMMIT_REF`                                    | the first parent of that commit                                           |
 | `PULL_REQUEST`                                         | `'false'`                                                                 |
 | `LANG`, `LC_ALL`                                       | `'en_US.UTF-8'`                                                           |
 | `LANGUAGE`                                             | `'en_US:en'`                                                              |

@@ -118,10 +118,7 @@ const getGeneralEnv = async function ({
   buildDir: string
   branch: string
 }): Promise<Record<string, unknown>> {
-  const [commitRef, cachedCommitRef] = await Promise.all([
-    runGit(['rev-parse', 'HEAD'], buildDir),
-    runGit(['rev-parse', 'HEAD^'], buildDir),
-  ])
+  const { commitRef, cachedCommitRef } = await getCommitRefs(buildDir)
   // QUIRK: only `undefined` gets the default, so `name: null` gives `branch--null.netlify.app`.
   const { name = 'site-name' } = siteInfo
   return removeBlank({
@@ -148,6 +145,16 @@ const getGeneralEnv = async function ({
     GATSBY_TELEMETRY_DISABLED: '1',
     NEXT_TELEMETRY_DISABLED: '1',
   })
+}
+
+// One process instead of two, since spawning takes most of a typical call's time. The first parent
+// is `HEAD^`. `--` stops a file named `HEAD` making the revision ambiguous.
+const getCommitRefs = async function (
+  buildDir: string,
+): Promise<{ commitRef: string | undefined; cachedCommitRef: string | undefined }> {
+  const commits = await runGit(['rev-list', '--max-count=1', '--parents', 'HEAD', '--'], buildDir)
+  const [commitRef, cachedCommitRef] = commits === undefined ? [] : commits.split(' ')
+  return { commitRef, cachedCommitRef }
 }
 
 // Values are not checked, so `siteInfo.name` may be a number, which is kept.
