@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.1.0](https://github.com/netlify/build/compare/build-v37.0.0...build-v37.1.0) (2026-09-24)
+
+
+### Features
+
+* support standalone server ([#7236](https://github.com/netlify/build/issues/7236)) ([10012e6](https://github.com/netlify/build/commit/10012e6439effd7b02eb62f84913e685050254e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.10 to ^7.1.11
+    * @netlify/zip-it-and-ship-it bumped from 16.0.0 to 16.1.0
+
 ## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
 
 
