@@ -80,15 +80,12 @@ const normalizeFunctions = function ({ [WILDCARD_ALL]: wildcard, ...functions }:
   functions: RawConfig
   directory: unknown
 } {
-  const withWildcard = Object.entries(functions).reduce<RawConfig>(
-    (all, [name, value]) =>
-      FUNCTION_CONFIG_PROPERTIES.has(name) && !isFunctionConfig(value)
-        ? { ...all, [WILDCARD_ALL]: { [name]: value, ...spreadValue(all[WILDCARD_ALL]) } }
-        : { ...all, [name]: value },
-    { [WILDCARD_ALL]: wildcard },
-  )
+  const entries = Object.entries(functions)
+  const namedFunctions = Object.fromEntries(entries.filter((entry) => !isWildcardProperty(entry)))
+  const normalizedWildcard = entries
+    .filter(isWildcardProperty)
+    .reduce<unknown>((all, [name, value]) => ({ [name]: value, ...spreadValue(all) }), wildcard)
   // `'*'` goes last. A `null` one is left for validation to report.
-  const { [WILDCARD_ALL]: normalizedWildcard, ...namedFunctions } = withWildcard
   if (normalizedWildcard === null) {
     return { functions: { ...namedFunctions, [WILDCARD_ALL]: null }, directory: undefined }
   }
@@ -96,6 +93,9 @@ const normalizeFunctions = function ({ [WILDCARD_ALL]: wildcard, ...functions }:
   const { directory, ...wildcardConfig } = spreadValue(normalizedWildcard)
   return { functions: { ...namedFunctions, [WILDCARD_ALL]: wildcardConfig }, directory }
 }
+
+const isWildcardProperty = ([name, value]: [string, unknown]): boolean =>
+  FUNCTION_CONFIG_PROPERTIES.has(name) && !isFunctionConfig(value)
 
 const isFunctionConfig = (value: unknown): boolean =>
   isPlainObj(value) && Object.keys(value).every((key) => FUNCTION_CONFIG_PROPERTIES.has(key))
