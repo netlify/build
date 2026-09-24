@@ -131,3 +131,9 @@ behaviour spec; "quirk" there means kept on purpose, and removing one is a break
   users overriding them on purpose.
 - **Internal env.** Reuse only entries whose first source is `internal`, not any entry listing it. SPEC §13.5.
 - **Log line transform.** Replace each blank line with U+200B one for one, without collapsing runs. SPEC §18.2.
+
+## Performance
+
+- **Second pass.** A file's `build.base` makes each call load twice, and the first result is discarded: 10.6ms instead
+  of 8.4ms on a small site. Skipping the first pass's headers, redirects and path resolution would drop its warnings and
+  errors, so it depends on the second-pass simplification above. SPEC §6.3.
