@@ -1,0 +1,3 @@
+/blog/* /posts/:splat 301
+/docs /documentation 302
+/* /index.html 200

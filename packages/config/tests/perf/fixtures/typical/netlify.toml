@@ -1,0 +1,40 @@
+[build]
+command = "npm run build"
+publish = "public"
+
+[build.environment]
+NODE_VERSION = "22"
+
+[functions]
+node_bundler = "esbuild"
+
+[[plugins]]
+package = "@netlify/plugin-lighthouse"
+
+[plugins.inputs]
+output_path = "reports/lighthouse.html"
+
+[context.production.environment]
+API_URL = "https://api.example.com"
+
+[context.deploy-preview]
+command = "npm run build:preview"
+
+[context."feat/*".environment]
+API_URL = "https://staging-api.example.com"
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
+
+[[redirects]]
+from = "/old"
+to = "/new"
+status = 301
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
