@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { builtinModules } from 'module'
+import { tmpdir } from 'os'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -7,7 +8,6 @@ import { resolve, ParsedImportMap } from '@import-maps/resolve'
 import { build } from 'esbuild'
 import { findUp } from 'find-up'
 import { parseImports } from 'parse-imports'
-import tmp from 'tmp-promise'
 
 import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
@@ -256,7 +256,7 @@ export const vendorNPMSpecifiers = async ({
   // We need to create some files on disk, which we don't want to write to the
   // project directory. If a custom directory has been specified, we use it.
   // Otherwise, create a random temporary directory.
-  const temporaryDirectory = directory ? { path: directory } : await tmp.dir()
+  const temporaryDirectory = directory ?? (await fs.mkdtemp(path.join(tmpdir(), 'edge-bundler-')))
 
   const npmSpecifiers = await getNPMSpecifiers({
     basePath,
@@ -272,7 +272,7 @@ export const vendorNPMSpecifiers = async ({
   const ops = await Promise.all(
     npmSpecifiers.map(async ({ specifier, types }) => {
       const code = `import * as mod from "${specifier}";\nexport default mod.default;\nexport * from "${specifier}";`
-      const filePath = path.join(temporaryDirectory.path, `bundled-${slugifyFileName(specifier)}.js`)
+      const filePath = path.join(temporaryDirectory, `bundled-${slugifyFileName(specifier)}.js`)
 
       await fs.writeFile(filePath, code)
 
@@ -296,7 +296,7 @@ export const vendorNPMSpecifiers = async ({
       mainFields: ['module', 'browser', 'main'],
       logLevel: 'error',
       nodePaths,
-      outdir: temporaryDirectory.path,
+      outdir: temporaryDirectory,
       platform: 'node',
       splitting: true,
       target: 'es2020',
@@ -339,7 +339,7 @@ export const vendorNPMSpecifiers = async ({
   // specifier gets two entries in the import map, one with the `npm:` prefix
   // and one without, such that both options are supported.
   const newImportMap = {
-    baseURL: pathToFileURL(temporaryDirectory.path),
+    baseURL: pathToFileURL(temporaryDirectory),
     imports: ops.reduce((acc, op) => {
       const url = pathToFileURL(op.filePath).toString()
 
@@ -358,7 +358,7 @@ export const vendorNPMSpecifiers = async ({
     }
 
     try {
-      await fs.rm(temporaryDirectory.path, { force: true, recursive: true })
+      await fs.rm(temporaryDirectory, { force: true, recursive: true })
     } catch {
       // no-op
     }
@@ -366,7 +366,7 @@ export const vendorNPMSpecifiers = async ({
 
   return {
     cleanup,
-    directory: temporaryDirectory.path,
+    directory: temporaryDirectory,
     importMap: newImportMap,
     outputFiles,
   }
