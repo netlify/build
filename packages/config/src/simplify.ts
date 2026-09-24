@@ -1,77 +1,69 @@
 import isPlainObj from 'is-plain-obj'
 
-import { spreadValue } from './utils/object.js'
-import { removeFalsy } from './utils/remove_falsy.js'
+import { spreadValue } from './normalize_values.js'
+import type { RawConfig } from './types.js'
 
-type Properties = Record<string, unknown>
-
-/**
- * Remove default values (empty objects and arrays, default redirect flags), e.g. before writing
- * `netlify.toml`. `build.environment` may be a list of names, as `cleanupConfig` makes it.
- */
+/** Remove empty values, for writing `netlify.toml` and for printing. */
 export const simplifyConfig = function ({
-  build: rawBuild,
+  build,
   functions,
   plugins,
   headers,
   redirects,
   context,
   ...config
-}: Properties): Properties {
-  const { environment, processing: rawProcessing, services, ...build } = spreadValue(rawBuild)
-  const { css, html, images, js, ...processing } = spreadValue(rawProcessing)
-  const simplifiedBuild = {
-    ...build,
-    ...simplifyEnvironment(environment),
-    ...removeEmptyObject(
-      {
-        ...processing,
-        ...removeEmptyObject(css, 'css'),
-        ...removeEmptyObject(html, 'html'),
-        ...removeEmptyObject(images, 'images'),
-        ...removeEmptyObject(js, 'js'),
-      },
-      'processing',
-    ),
-    ...removeEmptyObject(services, 'services'),
-  }
+}: RawConfig): RawConfig {
   return removeFalsy({
     ...config,
-    ...removeEmptyObject(simplifyFunctions(functions), 'functions'),
-    ...removeEmptyObject(simplifiedBuild, 'build'),
-    ...removeEmptyArray(plugins, 'plugins'),
-    ...removeEmptyArray(headers, 'headers'),
-    ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
-    ...removeEmptyObject(simplifyContexts(spreadValue(context)), 'context'),
+    functions: simplifyFunctions(functions),
+    build: simplifyBuild(build),
+    plugins: nonEmptyArray(plugins),
+    headers: nonEmptyArray(headers),
+    redirects: nonEmptyArray(simplifyRedirects(redirects)),
+    context: nonEmptyObject(simplifyContexts(context)),
   })
 }
 
 // `environment` is a list of names when called by `cleanupConfig`.
-const simplifyEnvironment = function (environment: unknown): Properties {
-  return Array.isArray(environment)
-    ? removeEmptyArray(environment, 'environment')
-    : removeEmptyObject(environment, 'environment')
+const simplifyBuild = function (build: unknown): RawConfig | undefined {
+  const { environment, processing, services, ...rest } = spreadValue(build)
+  return nonEmptyObject({
+    ...rest,
+    environment: Array.isArray(environment) ? nonEmptyArray(environment) : nonEmptyObject(environment),
+    processing: simplifyProcessing(processing),
+    services: nonEmptyObject(services),
+  })
 }
 
-const simplifyContexts = function (contexts: Properties): Properties {
-  return Object.fromEntries(
-    Object.entries(contexts).map(([context, contextConfig]) => [context, simplifyConfig(spreadValue(contextConfig))]),
-  )
+const simplifyProcessing = function (processing: unknown): RawConfig | undefined {
+  const { css, html, images, js, ...rest } = spreadValue(processing)
+  return nonEmptyObject({
+    ...rest,
+    css: nonEmptyObject(css),
+    html: nonEmptyObject(html),
+    images: nonEmptyObject(images),
+    js: nonEmptyObject(js),
+  })
 }
 
-const simplifyFunctions = function (functions: unknown): unknown {
-  return isPlainObj(functions)
-    ? Object.entries(functions).reduce<Properties>(
-        (simplified, [key, value]) => ({ ...simplified, ...removeEmptyObject(value, key) }),
-        {},
-      )
-    : functions
+const simplifyFunctions = function (functions: unknown): RawConfig | undefined {
+  if (!isPlainObj(functions)) {
+    return undefined
+  }
+
+  const entries = Object.entries(functions).map(([name, functionConfig]): [string, unknown] => [
+    name,
+    nonEmptyObject(functionConfig),
+  ])
+  return nonEmptyObject(Object.fromEntries(entries))
 }
 
 const simplifyRedirects = function (redirects: unknown): unknown {
-  return Array.isArray(redirects) ? redirects.map(simplifyRedirect) : redirects
+  return Array.isArray(redirects) ? redirects.map(simplifyRedirect) : undefined
 }
 
+// Only the properties with defaults are simplified. The others are kept as they are, even empty.
+// An absent `force` or `proxy` is kept as an `undefined` key, as it always has been.
 const simplifyRedirect = function (redirect: unknown): unknown {
   if (!isPlainObj(redirect)) {
     return redirect
@@ -82,27 +74,41 @@ const simplifyRedirect = function (redirect: unknown): unknown {
     ...rest,
     ...(force === false ? {} : { force }),
     ...(proxy === false ? {} : { proxy }),
-    ...removeEmptyObject(query, 'query'),
-    ...removeEmptyObject(conditions, 'conditions'),
-    ...removeEmptyObject(headers, 'headers'),
+    ...nonEmptyProperty('query', query),
+    ...nonEmptyProperty('conditions', conditions),
+    ...nonEmptyProperty('headers', headers),
   }
 }
 
-/** `{ [propName]: object }` without its empty values, or `{}` if nothing is left or it isn't a plain object. */
-export const removeEmptyObject = function (object: unknown, propName: string): Properties {
-  if (!isPlainObj(object)) {
-    return {}
-  }
-
-  const nonEmpty = removeFalsy(object)
-  return Object.keys(nonEmpty).length === 0 ? {} : { [propName]: nonEmpty }
+const nonEmptyProperty = function (name: string, value: unknown): RawConfig {
+  const nonEmpty = nonEmptyObject(value)
+  return nonEmpty === undefined ? {} : { [name]: nonEmpty }
 }
 
-/** `{ [propName]: array }`, or `{}` if it is empty or not an array. */
-export const removeEmptyArray = function (array: unknown, propName: string): Properties {
-  if (!Array.isArray(array)) {
-    return {}
+// An entry that simplifies to `{}` is kept, and is written as an empty `[context.<name>]` table.
+const simplifyContexts = function (contexts: unknown): RawConfig {
+  const entries = Object.entries(spreadValue(contexts)).map(([name, contextConfig]): [string, RawConfig] => [
+    name,
+    simplifyConfig(spreadValue(contextConfig)),
+  ])
+  return Object.fromEntries(entries)
+}
+
+const nonEmptyObject = function (value: unknown): RawConfig | undefined {
+  if (!isPlainObj(value)) {
+    return undefined
   }
 
-  return array.length === 0 ? {} : { [propName]: array }
+  const nonEmpty = removeFalsy(value)
+  return Object.keys(nonEmpty).length === 0 ? undefined : nonEmpty
 }
+
+const nonEmptyArray = (value: unknown): unknown[] | undefined =>
+  Array.isArray(value) && value.length !== 0 ? value : undefined
+
+const removeFalsy = (object: RawConfig): RawConfig =>
+  Object.fromEntries(Object.entries(object).filter(([, value]) => !isFalsy(value)))
+
+// `false` and `0` are values, not empty ones.
+const isFalsy = (value: unknown): boolean =>
+  value === undefined || value === null || (typeof value === 'string' && value.trim() === '')

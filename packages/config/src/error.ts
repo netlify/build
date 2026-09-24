@@ -1,38 +1,30 @@
 const USER_ERROR_TYPE = 'resolveConfig'
 
 /**
- * An error caused by the user's configuration or options rather than by a bug. netlify-cli and
- * `@netlify/build` recognize these by `customErrorInfo.type`.
+ * Caused by the user's configuration or options, not a bug. Consumers check `customErrorInfo.type`,
+ * and `@netlify/build` rewrites `customErrorInfo` in place, so it must stay a plain, writable object.
  */
 export type UserError = Error & { customErrorInfo: { type: typeof USER_ERROR_TYPE } }
 
 /**
- * Throw a user error. With an `Error` as `error`, its message is prefixed with `messageOrError` and
- * it is thrown instead of a new error, which keeps its stack trace.
- *
- * This is a function declaration so that TypeScript treats calls to it as ending the code path.
+ * With an `Error` as `cause`, that error is thrown instead of a new one, with `message` prepended
+ * to its own: this keeps its class, `code` and stack.
  */
-export function throwUserError(messageOrError: string | Error, error?: unknown): never {
-  const userError = toError(messageOrError, error) as UserError
-  userError.customErrorInfo = { type: USER_ERROR_TYPE }
-  throw userError
+export function throwUserError(message: string, cause?: unknown): never {
+  throw toUserError(message, cause)
 }
 
-const toError = function (messageOrError: string | Error, error: unknown): Error {
-  if (messageOrError instanceof Error) {
-    return messageOrError
+export const tagUserError = function (error: Error): UserError {
+  return Object.assign(error, { customErrorInfo: { type: USER_ERROR_TYPE } } as const)
+}
+
+const toUserError = function (message: string, cause: unknown): UserError {
+  if (cause instanceof Error) {
+    cause.message = `${message}\n${cause.message}`
+    return tagUserError(cause)
   }
 
-  if (error === undefined) {
-    return new Error(messageOrError)
-  }
-
-  if (error instanceof Error) {
-    error.message = `${messageOrError}\n${error.message}`
-    return error
-  }
-
-  return new Error(messageOrError, { cause: error })
+  return tagUserError(cause === undefined ? new Error(message) : new Error(message, { cause }))
 }
 
 export const isUserError = function (error: unknown): error is UserError {
@@ -46,3 +38,13 @@ export const isUserError = function (error: unknown): error is UserError {
     error.customErrorInfo.type === USER_ERROR_TYPE
   )
 }
+
+/** Bugs get the prefix too, not only user errors. */
+export const prefixError = function (error: unknown, prefix: string): unknown {
+  if (error instanceof Error) {
+    error.message = `${prefix}:\n${error.message}`
+  }
+  return error
+}
+
+export const getErrorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error))

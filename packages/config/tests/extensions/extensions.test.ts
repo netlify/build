@@ -3,6 +3,9 @@ import { beforeEach, expect, test } from 'vitest'
 
 import { asConfig } from '../helpers/result.js'
 
+// The auto-install messages are logged before the result, in their own block.
+const parseResult = (output: string) => asConfig(JSON.parse(output.split('\n\n').at(-1) ?? ''))
+
 // Mock fetch for external extension installation requests
 const originalFetch = globalThis.fetch
 const mockInstallationResponse = { success: true, mocked: true, testId: 'MOCK_RESPONSE_12345' }
@@ -77,7 +80,7 @@ test('Auto-install extensions: feature flag disabled returns extensions unchange
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = asConfig(JSON.parse(output))
+  const config = parseResult(output)
 
   // Should not have attempted to install any extensions
   expect(output.includes('Installing extension')).toBe(false)
@@ -98,7 +101,7 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = asConfig(JSON.parse(output))
+  const config = parseResult(output)
 
   // Should not have attempted to install any extensions
   expect(output.includes('Installing extension')).toBe(false)
@@ -120,7 +123,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = asConfig(JSON.parse(output))
+  const config = parseResult(output)
 
   // Should have found package.json in buildDir
   expect(config.integrations).toBeTruthy()
@@ -141,6 +144,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
     'Should have called correct external URL',
   ).toBeTruthy()
   expect(installationRequests[0]?.options?.method === 'POST', 'Should use POST method').toBeTruthy()
+  expect(output).toContain('Installing extension "neon" on team "account1" required by package(s): "@netlify/neon"')
   const body = installationRequests[0]?.options?.body
   expect(typeof body === 'string' && body.includes('account1'), 'Should include team ID in request body').toBeTruthy()
 })
@@ -159,7 +163,7 @@ test('Auto-install extensions: does not install when required packages are missi
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = asConfig(JSON.parse(output))
+  const config = parseResult(output)
 
   // Should not attempt to install extensions since required packages are missing
   expect(output.includes('Installing extension')).toBe(false)
@@ -185,7 +189,7 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = asConfig(JSON.parse(output))
+  const config = parseResult(output)
 
   // Should have found package.json in buildDir even without netlify.toml
   expect(config.integrations).toBeTruthy()

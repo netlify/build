@@ -106,8 +106,6 @@ After a full resolution the result object has exactly these 15 own keys, in this
 | `api`            | API client \| undefined                               | Present iff a token is present and `offline` is not true (§4.1) |
 | `logs`           | `{ stdout: string[], stderr: string[] }` \| undefined | Only with `buffer` (§18.1); `stdout` is always `[]`             |
 
-`context` can be `undefined` through the whitespace quirk of §2.3; `branch` only if git prints blank output (§3.2).
-
 The result is a plain mutable object; consumers assign into it and into `config`.
 
 A cached short-circuit (§5.6) returns a different object: `{ token, ...cached, api }`.
@@ -171,41 +169,40 @@ directory, or adds headers and redirects has its `message` prefixed in place wit
 
 All are user errors unless marked bug. `<prefix>` means §1.4.3 applies.
 
-| §    | Condition                                                             | Message                                                                                                                        |
-| ---- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| 3.3  | `cwd` / `repositoryRoot` missing or not a directory                   | `Option 'cwd' points to a non-existing directory: <abs>` / `Option 'repositoryRoot' points to a non-existing directory: <abs>` |
-| 3.3  | other stat error (`ENOTDIR`, `EACCES`), non-string path               | raw error (bug)                                                                                                                |
-| 4.3  | getSite fails                                                         | `Failed retrieving site data for site <siteId>: <msg>. <CTA>`                                                                  |
-| 4.4  | accounts request fails                                                | `Failed retrieving user account: <msg>. <CTA>`                                                                                 |
-| 4.5  | extensions request fails                                              | `Failed retrieving extensions for site <siteId>: <msg>. <CTA>`                                                                 |
-| 5.6  | `cachedConfigPath` unreadable or not JSON                             | raw fs error / `SyntaxError` (bug)                                                                                             |
-| 5.2  | `siteInfo.build_settings === null` without envelope                   | `TypeError` (bug)                                                                                                              |
-| 6.5  | chosen config file does not exist                                     | `<prefix>Configuration file does not exist`                                                                                    |
-| 6.5  | config file read fails                                                | `<prefix>Could not read configuration file\n<fs message>`                                                                      |
-| 6.6  | invalid backslash escape                                              | `<prefix>In netlify.toml, the following backslash should be escaped: <seq>\nThe following should be used instead: \<seq>`      |
-| 6.6  | TOML syntax error                                                     | `<prefix>Could not parse configuration file\n<parser message>`                                                                 |
-| 6.4  | base not a directory                                                  | `<prefix>Base directory does not exist: <abs base>`                                                                            |
-| 11.2 | path outside R                                                        | `<prefix>Configuration property "<prop>" "<value>" must be inside the repository root directory.`                              |
-| 9.6  | duplicate plugin in one source                                        | `<prefix>Plugin "<pkg>" must not be specified twice in <place>`                                                                |
-| 7.4  | UI plugin in a non-matching context without inputs                    | `<prefix>` + text of §7.4                                                                                                      |
-| 10   | validation rule                                                       | `<prefix>Configuration property <label> <message>\n…` (§10.2)                                                                  |
-| 10.2 | error thrown while checking or formatting                             | `<prefix><that error's message>`                                                                                               |
-| 10.4 | schema mismatch with no rule message                                  | `<prefix>Configuration failed a check without an error message: <issues>`                                                      |
-| 15.3 | mutation of read-only property                                        | `"netlifyConfig.<prop>" is read-only.`                                                                                         |
-| 15.4 | mutation after its last event                                         | `"netlifyConfig.<prop>" cannot be modified after "<lastEvent>".`                                                               |
-| 14.3 | dev build plugin not a tarball                                        | `Extension <slug> contains unexpected build plugin URL: '<url>'. Build plugin URLs must end in '.tgz'.`                        |
-| 14.1 | extension `has_build` with a non-URL `version`                        | `TypeError: Invalid URL` (bug)                                                                                                 |
-| 16.1 | updateConfig file errors                                              | same texts as §6.5/§6.6, no prefix                                                                                             |
-| 16.1 | updateConfig with no output path                                      | `TypeError` from the file write (bug)                                                                                          |
-| 16.3 | TOML serialization of a mixed-type array                              | `<key>: Array cannot contain values of different types.` (bug)                                                                 |
-| 17.2 | `cleanupConfig` with `build`, `build.environment` or `plugins` `null` | `TypeError` (bug)                                                                                                              |
+| §    | Condition                                                                          | Message                                                                                                                        |
+| ---- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 3.3  | `cwd` / `repositoryRoot` missing or not a directory                                | `Option 'cwd' points to a non-existing directory: <abs>` / `Option 'repositoryRoot' points to a non-existing directory: <abs>` |
+| 3.3  | other stat error (`ENOTDIR`, `EACCES`), non-string path                            | raw error (bug)                                                                                                                |
+| 4.3  | getSite fails                                                                      | `Failed retrieving site data for site <siteId>: <msg>. <CTA>`                                                                  |
+| 4.4  | accounts request fails                                                             | `Failed retrieving user account: <msg>. <CTA>`                                                                                 |
+| 4.5  | extensions request fails                                                           | `Failed retrieving extensions for site <siteId>: <msg>. <CTA>`                                                                 |
+| 5.6  | `cachedConfigPath` unreadable or not JSON                                          | raw fs error / `SyntaxError` (bug)                                                                                             |
+| 6.5  | chosen config file does not exist                                                  | `<prefix>Configuration file does not exist`                                                                                    |
+| 6.5  | config file read fails                                                             | `<prefix>Could not read configuration file\n<fs message>`                                                                      |
+| 6.6  | invalid backslash escape                                                           | `<prefix>In netlify.toml, the following backslash should be escaped: <seq>\nThe following should be used instead: \<seq>`      |
+| 6.6  | TOML syntax error                                                                  | `<prefix>Could not parse configuration file\n<parser message>`                                                                 |
+| 6.4  | base not a directory                                                               | `<prefix>Base directory does not exist: <abs base>`                                                                            |
+| 11.2 | path outside R                                                                     | `<prefix>Configuration property "<prop>" "<value>" must be inside the repository root directory.`                              |
+| 9.6  | duplicate plugin in one source                                                     | `<prefix>Plugin "<pkg>" must not be specified twice in <place>`                                                                |
+| 7.4  | UI plugin in a non-matching context without inputs                                 | `<prefix>` + text of §7.4                                                                                                      |
+| 10   | validation rule                                                                    | `<prefix>Configuration property <label> <message>\n…` (§10.2)                                                                  |
+| 10.2 | error thrown while checking or formatting                                          | `<prefix><that error's message>`                                                                                               |
+| 15.3 | mutation of read-only property                                                     | `"netlifyConfig.<prop>" is read-only.`                                                                                         |
+| 15.4 | mutation after its last event                                                      | `"netlifyConfig.<prop>" cannot be modified after "<lastEvent>".`                                                               |
+| 14.3 | dev build plugin not a tarball                                                     | `Extension <slug> contains unexpected build plugin URL: '<url>'. Build plugin URLs must end in '.tgz'.`                        |
+| 14.1 | extension `has_build` with a non-URL `version`                                     | `TypeError: Invalid URL` (bug)                                                                                                 |
+| 16.1 | updateConfig file errors                                                           | same texts as §6.5/§6.6, no prefix                                                                                             |
+| 16.1 | updateConfig with no output path                                                   | `TypeError`: `updateConfig() needs configPath or outputConfigPath` (bug)                                                       |
+| 16.3 | TOML serialization of a mixed-type array                                           | `<key>: Array cannot contain values of different types.` (bug)                                                                 |
+| 17.2 | `cleanupConfig` with `build`, `build.environment`, a plugin or its `inputs` `null` | `TypeError`: `<name> must be an object` (bug)                                                                                  |
+| 17.2 | `cleanupConfig` with a non-array `plugins`                                         | `TypeError`: `plugins must be an array` (bug)                                                                                  |
 
 ## 2. Option resolution
 
 ### 2.1 Emptiness
 
-- Empty top-level options are removed before defaults are computed, and again after defaults are merged. So
-  `branch: ''`, `context: '  '`, `token: null` fall through to the env var or default.
+- Empty top-level options are treated as absent, and so are empty env fallback values. So `branch: ''`, `context: '  '`,
+  `token: null` and `CONTEXT=' '` fall through to the next fallback.
 - `false`, `0` and other non-empty values count as given and are not type-checked (`context: 0` stays `0`).
   `debug: false` beats `NETLIFY_BUILD_DEBUG`; `baseRelDir: false` and `offline: false` are kept.
 - Nested values are not cleaned: `env: { NETLIFY_AUTH_TOKEN: '' }` keeps its empty value.
@@ -218,10 +215,8 @@ All are user errors unless marked bug. `<prefix>` means §1.4.3 applies.
 
 ### 2.3 `context`, `deployId`, `buildId`
 
-- Each is the option, else the env var (`CONTEXT`, `DEPLOY_ID`, `BUILD_ID`) when it is not `''`, else the default
-  (`'production'`, `'0'`, `'0'`).
-- **(quirk)** A whitespace-only env value passes the `''` test, then the second emptiness pass removes it: the resolved
-  value is `undefined`, not the default.
+- Each is the option, else the env var (`CONTEXT`, `DEPLOY_ID`, `BUILD_ID`) when it is not empty, else the default
+  (`'production'`, `'0'`, `'0'`). A whitespace-only env value counts as unset and gives the default.
 
 ### 2.4 `debug`
 
@@ -294,8 +289,8 @@ Precedence: option, `BRANCH`, `git rev-parse --abbrev-ref HEAD`, `git rev-parse 
   with the trailing newline stripped.
 - A detached HEAD gives `'HEAD'` **(quirk)**. The `main` step only succeeds when HEAD cannot be resolved but a `main`
   ref exists.
-- A whitespace-only `BRANCH` counts as absent and git is used. A blank git output is removed, leaving `branch`
-  `undefined`.
+- A whitespace-only `BRANCH` counts as absent and git is used. A blank git output counts as a failure and falls through
+  to the next step, so `branch` is never `undefined`.
 - Branch detection runs before directory validation, so git is spawned even when directories are invalid.
 
 ### 3.3 Directory validation
@@ -409,7 +404,8 @@ Layers are combined with `mergeConfigs` default mode (§8).
 
 ### 5.2 UI build settings
 
-Applied only when `siteInfo.build_settings !== undefined` (API path, envelope, or reused cached site info).
+Applied only when `siteInfo.build_settings` is neither `undefined` nor `null` (API path, envelope, or reused cached site
+info). `build_settings: null` is treated as absent.
 
 - `cmd` → `build.command`, `dir` → `build.publish`, `base` → `build.base`, each only when present.
 - The build object is `{ ...uiBuild, ...defaultConfig.build }`: `defaultConfig.build` wins key by key. A key present
@@ -418,9 +414,10 @@ Applied only when `siteInfo.build_settings !== undefined` (API path, envelope, o
   `defaultConfig.functionsDirectory` **(quirk)**. A blank value sets the origin, then path resolution deletes the
   directory, leaving the origin alone.
 - `siteInfo.plugins` (default `[]`) are reduced to `{ package, inputs, pinned_version }` and placed before
-  `defaultConfig.plugins`. Without `build_settings` they are ignored entirely **(quirk)**.
+  `defaultConfig.plugins`. Without `build_settings` they are ignored entirely **(quirk)**. A `defaultConfig.plugins`
+  that is not an array (including `null`) is kept as is without the UI plugins, and fails §10.3 #4.
 - `build_settings.env` is not added to `build.environment`; it is the `ui` env source (§13.2).
-- `build_settings: null` without envelope throws a bug `TypeError`. Individual `null` fields behave as missing.
+- Individual `null` fields behave as missing.
 
 ### 5.3 `base` option
 
@@ -430,8 +427,8 @@ is set or UI settings apply, a capitalized `defaultConfig.Build` is dropped **(q
 
 ### 5.4 `baseRelDir`
 
-The option if given; else, when `build_settings` exists, `Boolean(build_settings.base_rel_dir)`, which is `false` when
-the field is missing **(quirk)**; else `true`.
+The option if given; else, when `build_settings` exists (not `null`), `Boolean(build_settings.base_rel_dir)`, which is
+`false` when the field is missing **(quirk)**; else `true`.
 
 ### 5.5 Inline layer
 
@@ -456,9 +453,9 @@ surface unprefixed.
   Reused: `cached.env` entries marked `internal` (§13.5); and `siteInfo`, `accounts`, `integrations` in place of all
   site-data requests (§4.3–§4.5 and the site envelope) when `use_cached_site_info` is truthy and all three are truthy
   (empty arrays count).
-- When `use_cached_site_info_logging` is truthy, every resolution reaching site data calls
-  `console.log('Checking site information', { useCachedSiteInfo, siteInfo, accounts, extensions })` on stdout,
-  unbuffered **(quirk)**.
+- When `use_cached_site_info_logging` is truthy, every resolution reaching site data logs (§18, not a warning)
+  `Checking site information` followed by a space and the inspected
+  `{ useCachedSiteInfo, siteInfo, accounts, extensions }` (Node `util.format`).
 
 ### 5.7 Processing order
 
@@ -544,12 +541,12 @@ back to the default and gives `undefined`. A non-string or blank value gives `un
 ### 7.1 Selection
 
 - Names checked, in order: `context`, then `branch`. For each non-empty name:
-  - if `context[name]` is truthy (a plain property read), only that entry applies;
+  - if `context` has an own entry `name`, only that entry applies;
   - otherwise every entry whose key ends with `*` and whose key without the final `*` is a prefix of the name applies,
     in key order (later wins). It is not "most specific wins". `*` alone matches every name. Wildcards apply to the
     context name too.
-- A name equal to an `Object.prototype` member (`constructor`, `toString`, …) "exact-matches" it, merges nothing and
-  suppresses wildcard matching for that name **(quirk)**.
+- Entries are own properties: a name equal to an `Object.prototype` member (`constructor`, `toString`, …) without its
+  own entry falls back to wildcard matching like any other name.
 - The same entry may apply twice (context equal to branch); this is idempotent.
 - Entries are merged per §8 default mode: arrays replaced, objects deep-merged, plugins merged by package. The `context`
   key is then removed from the merged default+file config.
@@ -600,8 +597,8 @@ context is appended after existing packages. Top-level-only plugins are kept.
 `mergeConfigs(configs, { concatenateArrays? })` returns a new merged object. It does not validate.
 
 - Each input is first stripped of top-level keys whose value is `undefined` or `null`, and of the same keys in `build`;
-  a missing `build` becomes `{}`. So the result always has `build` (at least `{}`), except that an empty input list
-  returns `{}`.
+  a `build` that is not a plain object (missing, `null`, a string, an array, …) becomes `{}`. So the result always has
+  `build` (at least `{}`), except that an empty input list returns `{}`.
 - `null` or `undefined` at the top level or directly in `build` never override. Deeper `null` does override. Blank
   strings do override (they are removed later, §9.5).
 - Inputs are deep-merged left to right; later wins. Plain objects merge by key union. On a type mismatch the later value
@@ -672,8 +669,8 @@ plugins: []
 Per source and per context entry, after origins: two plugins with the same `package` and the same `origin` (strict
 equality) throw `Plugin "<String(package)>" must not be specified twice in <place>` for the first one that has a later
 duplicate. `<place>` is `netlify.toml` for `config`, `the app` for `ui`, and the literal `undefined` for any other
-origin, including `inline` **(quirk)**. UI plugins and `defaultConfig.plugins` form one source. Two plugins without
-`package` give `Plugin "undefined" …`. Duplicates across sources are merged (§8).
+origin, including `inline` **(quirk)** and names such as `toString`. UI plugins and `defaultConfig.plugins` form one
+source. Two plugins without `package` give `Plugin "undefined" …`. Duplicates across sources are merged (§8).
 
 ### 9.7 Functions
 
@@ -709,7 +706,7 @@ All other top-level keys (unknown properties, spread option indices, top-level `
 | PX  | pre-context    | each top-level source                                     |
 | PN  | pre-normalize  | merged config, before defaults and §9.5                   |
 | N   | post-normalize | normalized config                                         |
-| W   | lenient        | normalized config; warns only (§10.5)                     |
+| W   | lenient        | normalized config; warns only (§10.4)                     |
 
 - Only one error is reported. Earlier stages win. Within a stage, the first failing rule in table order wins; ties go to
   the first offending element in array-index or key order. An object failing a rule hides its children.
@@ -799,25 +796,20 @@ Edge function declarations, N stage, each `edge_functions[i]`, after #35. `cache
 | 48  | `.path`             | does not start with `/`                                         | `must be a valid path.`                                                                 | E                                                                                                                                                               |
 | 49  | `.cache`            | not `manual` or `off`                                           | `must be one of: manual, off`                                                           | `{edge_functions:[{cache:'manual',path:'/hello',function:'hello'}]}`                                                                                            |
 | 50  | `.method`           | not a method (case-insensitive) or a non-empty array of methods | `must be one of or array of: GET, POST, PUT, PATCH, DELETE, OPTIONS`                    | `{edge_functions:[{method:['PUT','DELETE'],path:'/hello',function:'hello'}]}`                                                                                   |
-| 51  | `.header`           | not a non-null, non-array object with boolean or string values  | `must be an object with string keys and boolean or string values.`                      | `{edge_functions:[{path:'/hello',function:'hello',header:{'x-must-be-present':true,'x-must-not-be-present':false,'x-must-match-value':'^(value1\|value2)$'}}]}` |
+| 51  | `.header`           | not a plain object with boolean or string values                | `must be an object with string keys and boolean or string values.`                      | `{edge_functions:[{path:'/hello',function:'hello',header:{'x-must-be-present':true,'x-must-not-be-present':false,'x-must-match-value':'^(value1\|value2)$'}}]}` |
 
 `generator` is rejected in `netlify.toml` (#2, contexts included) and accepted from `defaultConfig`, `inlineConfig` and
 mutations. The Frameworks API relies on this.
 
-### 10.4 Fallback
+### 10.4 Lenient normalized-shape warning
 
-A value that passes the rules but fails the internal typed shape (for example a `header` that is a `Date`) throws
-`Configuration failed a check without an error message: <issues>` (§18.4 issue format), as a user error.
-
-### 10.5 Lenient normalized-shape warning
-
-After N passes, the normalized config is checked against a loose shape (extra keys allowed): the §1.3.1 invariants, the
-types of §10.3, origins in `ui|config|default|inline` (`functionsDirectoryOrigin` also `config-v1|default-v1`), records
-for `build.environment`, `build.services`, `build.processing.*` and `dev`, `integrations[]` of
-`{ name: string, dev?: { path: string, force_run_in_build?: boolean } }`, a string `schedule` and finite numbers. On
-mismatch it logs `Unexpected configuration, used as is:\n<issues>`; the config is unchanged. Values valid under §10.3
-that still trigger it: an array or `false` `schedule`, `Infinity` memory, `inputs: null`, a plugin origin outside the
-enum.
+After N passes, the normalized config is checked against a loose shape mirroring the declared result type (extra keys
+allowed): the §1.3.1 invariants, the types of §10.3, origins in `ui|config|default|inline` (`functionsDirectoryOrigin`
+also `config-v1|default-v1`), records for `build.environment`, `build.services`, `build.processing.*` and `dev`,
+`integrations[]` of `{ name: string, dev?: { path: string, force_run_in_build?: boolean } }`, and finite numbers.
+`schedule` may be any value, so it never warns. On mismatch it logs `Unexpected configuration, used as is:\n<issues>`;
+the config is unchanged. Values valid under §10.3 that still trigger it: `NaN` or `Infinity` memory, `inputs: null`, a
+plugin origin outside the enum.
 
 ## 11. Paths
 
@@ -948,27 +940,27 @@ this to carry its own variables into @netlify/build.
 
 Entries with empty values are omitted.
 
-| Variable                                               | Value                                    |
-| ------------------------------------------------------ | ---------------------------------------- |
-| `SITE_ID`                                              | `siteInfo.id`                            |
-| `SITE_NAME`                                            | `siteInfo.name`                          |
-| `DEPLOY_ID`                                            | `deployId`                               |
-| `NETLIFY_SKEW_PROTECTION_TOKEN`                        | `skewProtectionToken`                    |
-| `BUILD_ID`                                             | `buildId`                                |
-| `ACCOUNT_ID`                                           | `siteInfo.account_id`                    |
-| `URL`                                                  | `siteInfo.ssl_url`                       |
-| `REPOSITORY_URL`                                       | `siteInfo.build_settings.repo_url`       |
-| `DEPLOY_PRIME_URL`                                     | `https://<branch>--<name>.netlify.app`   |
-| `DEPLOY_URL`                                           | `https://<deployId>--<name>.netlify.app` |
-| `CONTEXT`                                              | `context`                                |
-| `NETLIFY_LOCAL`                                        | `'true'`                                 |
-| `BRANCH`, `HEAD`                                       | `branch`                                 |
-| `COMMIT_REF`                                           | `git rev-parse HEAD` in `buildDir`       |
-| `CACHED_COMMIT_REF`                                    | `git rev-parse HEAD^` in `buildDir`      |
-| `PULL_REQUEST`                                         | `'false'`                                |
-| `LANG`, `LC_ALL`                                       | `'en_US.UTF-8'`                          |
-| `LANGUAGE`                                             | `'en_US:en'`                             |
-| `GATSBY_TELEMETRY_DISABLED`, `NEXT_TELEMETRY_DISABLED` | `'1'`                                    |
+| Variable                                               | Value                                                                     |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `SITE_ID`                                              | `siteInfo.id`                                                             |
+| `SITE_NAME`                                            | `siteInfo.name`                                                           |
+| `DEPLOY_ID`                                            | `deployId`                                                                |
+| `NETLIFY_SKEW_PROTECTION_TOKEN`                        | `skewProtectionToken`                                                     |
+| `BUILD_ID`                                             | `buildId`                                                                 |
+| `ACCOUNT_ID`                                           | `siteInfo.account_id`                                                     |
+| `URL`                                                  | `siteInfo.ssl_url`                                                        |
+| `REPOSITORY_URL`                                       | `siteInfo.build_settings.repo_url` (none when `build_settings` is `null`) |
+| `DEPLOY_PRIME_URL`                                     | `https://<branch>--<name>.netlify.app`                                    |
+| `DEPLOY_URL`                                           | `https://<deployId>--<name>.netlify.app`                                  |
+| `CONTEXT`                                              | `context`                                                                 |
+| `NETLIFY_LOCAL`                                        | `'true'`                                                                  |
+| `BRANCH`, `HEAD`                                       | `branch`                                                                  |
+| `COMMIT_REF`                                           | `git rev-parse HEAD` in `buildDir`                                        |
+| `CACHED_COMMIT_REF`                                    | `git rev-parse HEAD^` in `buildDir`                                       |
+| `PULL_REQUEST`                                         | `'false'`                                                                 |
+| `LANG`, `LC_ALL`                                       | `'en_US.UTF-8'`                                                           |
+| `LANGUAGE`                                             | `'en_US:en'`                                                              |
+| `GATSBY_TELEMETRY_DISABLED`, `NEXT_TELEMETRY_DISABLED` | `'1'`                                                                     |
 
 `<name>` is `siteInfo.name`, `'site-name'` when `undefined` (`null` gives `null`). A failing git command omits its
 variable. Branch and deploy ID are not sanitized.
@@ -1004,26 +996,28 @@ Any merged entry whose non-null `buildPlugin` URL has an extension other than `.
 
 ### 14.4 Auto-install
 
-Runs after env resolution in every mode. Never throws.
+Runs after env resolution in every mode. Never throws. Every message goes through the logger (§18). `<inspected x>` is
+`x` formatted by Node's `util.format` after a space (an `Error` shows its stack).
 
 1. Skipped unless `auto_install_required_extensions_v2` is truthy.
-2. Skipped when `accountId`, `siteId` or `token` is missing, or `offline`. With `debug`, first
-   `console.error('Failed to auto install extension(s): <reason>', {…})` with reason `Missing accountId`,
-   `Missing siteId`, `Missing token` or `Running as offline`.
+2. Skipped when `accountId`, `siteId` or `token` is missing, or `offline`. With `debug`, first the warning
+   `Failed to auto install extension(s): <reason><inspected { accountId, siteId, buildDir, offline, mode }>` with reason
+   `Missing accountId`, `Missing siteId`, `Missing token` or `Running as offline`.
 3. Reads `dependencies` (own keys, not `devDependencies`) of `<buildDir>/package.json`, cached per process **(quirk)**.
    Missing or unparsable: skipped.
 4. `GET <EXTENSION_API_BASE_URL from process.env, default https://api.netlifysdk.com>/meta/auto-installable` (ignores
-   `host` and `testOpts`). Failure:
-   `console.error('Failed to fetch auto-installable extensions meta: <message>', error)` and empty metadata. The body is
-   checked leniently (description `auto-installable extensions from the extension API`; array of
+   `host` and `testOpts`). Failure (network, JSON, or a non-OK status, message `Failed to fetch extensions meta`): the
+   warning `Failed to fetch auto-installable extensions meta: <message><inspected error>` and empty metadata. The body
+   is checked leniently (description `auto-installable extensions from the extension API`; array of
    `{ slug, hostSiteUrl: string, packages: string[] }`).
 5. Candidates: metadata entries whose `slug` is not installed and whose `packages` include a dependency.
-6. Per candidate in parallel:
-   `console.log('Installing extension "<slug>" on team "<accountId>" required by package(s): "<packages joined by '",'>"')`
-   (stdout); `POST <hostSiteUrl>/.netlify/functions/handler/on-install` with body `{"teamId":"<accountId>"}`, headers
-   `netlify-token: <token>` and the §4.5 `User-Agent`. OK or 409 succeeds; other statuses fail silently.
+6. Per candidate in parallel, the plain (non-warning) log
+   `Installing extension "<slug>" on team "<accountId>" required by package(s): "<p1>", "<p2>"` listing the candidate's
+   `packages`, each quoted, joined by `, `; then `POST <hostSiteUrl>/.netlify/functions/handler/on-install` with body
+   `{"teamId":"<accountId>"}`, headers `netlify-token: <token>` and the §4.5 `User-Agent`. OK or 409 succeeds; other
+   statuses fail silently.
 7. If any succeeded, extensions are fetched again (§4.5) and replace the list.
-8. Any exception: `console.error('Failed to auto install extension(s): <message>', error)`, original list kept.
+8. Any exception: the warning `Failed to auto install extension(s): <message><inspected error>`, original list kept.
 
 ## 15. Mutations (`applyMutations`)
 
@@ -1097,8 +1091,9 @@ With no mutations, it does nothing, not even creating directories. Otherwise, in
 8. Concurrently: write the TOML (§16.3) to `outputConfigPath`; delete `headersPath` and `redirectsPath` if defined and
    existing.
 
-Without both `configPath` and `outputConfigPath`, the write throws a bug `TypeError` after the backup. The TOML is
-written only to `outputConfigPath`; `configPath` is what is backed up.
+Without both `configPath` and `outputConfigPath`, step 8's write throws the bug
+`TypeError: updateConfig() needs configPath or outputConfigPath` after the backup. The TOML is written only to
+`outputConfigPath`; `configPath` is what is backed up.
 
 ### 16.2 Backup and `restoreConfig(configMutations, { buildDir, configPath?, headersPath?, redirectsPath? })`
 
@@ -1156,8 +1151,10 @@ else is omitted (`build.services`, `build.functions`, `images`, `dev`, `edge_fun
 - Resulting key order: `headersOrigin`, `redirectsOrigin`, `baseRelDir`, `functionsDirectory`, `functions`, `build`
   (`base`, `command`, `commandOrigin`, `edge_functions`, `ignore`, `publish`, `publishOrigin`, `environment`,
   `processing`), `plugins`, `headers`, `redirects`, each only if kept.
-- `cleanupConfig({})` is `{}`. `build`, `build.environment` or `plugins` set to `null`, or a non-object environment,
-  throw a bug `TypeError`.
+- `cleanupConfig({})` is `{}`. A `null` `build`, `build.environment`, plugin or plugin `inputs` throws the bug
+  `TypeError` `<name> must be an object` (`<name>` is `build`, `environment`, `plugin` or `inputs`); a `plugins` that is
+  not an array, `null` included, throws `plugins must be an array`. Other non-object values are spread: a string
+  `build.environment` prints its indexes, a number prints nothing.
 
 ## 18. Logging
 
@@ -1207,16 +1204,17 @@ checked value is used unchanged.
 | `Unexpected cached config, used as is:\n…`                                                         | 5.6  |
 | `Unexpected site information from the Netlify API, used as is:\n…`                                 | 4.3  |
 | `Unexpected accounts from the Netlify API, used as is:\n…`                                         | 4.4  |
-| `Unexpected configuration, used as is:\n…`                                                         | 10.5 |
+| `Unexpected configuration, used as is:\n…`                                                         | 10.4 |
 | `Unexpected auto-installable extensions from the extension API, used as is:\n…`                    | 14.4 |
+| `Failed to auto install extension(s): …`, `Failed to fetch auto-installable extensions meta: …`    | 14.4 |
 | UI plugin in a context                                                                             | 7.4  |
 | `\nWarning: some headers/redirects have syntax errors:…`                                           | 12.3 |
 | `\nWarning: the same header is set twice with different cases…`                                    | 12.3 |
 
 ### 18.5 Output bypassing the logger
 
-Not buffered or flushed **(quirk)**: auto-install messages (`console.log`/`console.error`, §14.4) and
-`Checking site information` (§5.6). `console.log` writes to stdout and corrupts the binary's JSON.
+None. Every message, including auto-install messages (§14.4) and `Checking site information` (§5.6), goes through the
+logger, so only the binary writes to stdout (§19).
 
 ## 19. The `netlify-config` binary
 
