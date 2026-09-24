@@ -4,6 +4,7 @@ import { arch, platform } from 'process'
 
 import type { InvocationMode } from './function.js'
 import type { TrafficRules } from './rate_limit.js'
+import type { ServerResult } from './server.js'
 import type { FunctionResult } from './utils/format_result.js'
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
@@ -30,8 +31,22 @@ interface ManifestFunction {
   vcpu?: number
 }
 
+interface ManifestServer {
+  bundler?: string
+  excludedRoutes?: Route[]
+  mainFile: string
+  memory?: number
+  path: string
+  region?: string
+  routes?: ExtendedRoute[]
+  runtime: string
+  runtimeVersion?: string
+  vcpu?: number
+}
+
 export interface Manifest {
   functions: ManifestFunction[]
+  server?: ManifestServer
   system: {
     arch: string
     platform: string
@@ -42,16 +57,58 @@ export interface Manifest {
 
 const MANIFEST_VERSION = 1
 
-export const createManifest = async ({ functions, path }: { functions: FunctionResult[]; path: string }) => {
-  const formattedFunctions = functions.map((func) => formatFunctionForManifest(func))
+export const createManifest = async ({
+  functions,
+  path,
+  server,
+}: {
+  functions: FunctionResult[]
+  path: string
+  server?: ServerResult
+}) => {
   const payload: Manifest = {
-    functions: formattedFunctions,
+    functions: functions.map((func) => formatFunctionForManifest(func)),
+    server: server && formatServerForManifest(server),
     system: { arch, platform },
     timestamp: Date.now(),
     version: MANIFEST_VERSION,
   }
 
   await fs.writeFile(path, JSON.stringify(payload))
+}
+
+const formatServerForManifest = ({
+  bundler,
+  excludedRoutes,
+  mainFile,
+  memory,
+  path,
+  region,
+  routes,
+  runtime,
+  runtimeVersion,
+  vcpu,
+}: ServerResult): ManifestServer => {
+  const server: ManifestServer = {
+    bundler,
+    mainFile,
+    memory,
+    path: resolve(path),
+    region,
+    runtime,
+    runtimeVersion,
+    vcpu,
+  }
+
+  if (routes?.length) {
+    server.routes = routes
+  }
+
+  if (excludedRoutes?.length) {
+    server.excludedRoutes = excludedRoutes
+  }
+
+  return server
 }
 
 const formatFunctionForManifest = ({
