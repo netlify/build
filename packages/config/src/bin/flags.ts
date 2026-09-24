@@ -1,35 +1,38 @@
-import process from 'process'
-
-import { includeKeys } from 'filter-obj'
 import yargs, { type Options } from 'yargs'
-import { hideBin } from 'yargs/helpers'
 
-import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
-import type { ResolveConfigOptions } from '../types/options.js'
+import type { ResolveConfigOptions } from '../types.js'
 
 export type CliFlags = ResolveConfigOptions & {
   /** Sort the keys of the output. */
   stable: boolean
   /** Where to write the result, `-` for stdout. */
-  output?: string
+  output: string
 }
 
-/**
- * Parse the binary's flags. JSON flags are cast, not validated: `resolveConfig` validates the
- * configuration, but `--cachedConfig` is trusted as is.
- */
-export const parseFlags = function (): CliFlags {
-  const { featureFlags: cliFeatureFlags, ...flags } = yargs(hideBin(process.argv))
-    .options(FLAGS)
-    .usage(USAGE)
-    .parseSync()
-  const featureFlags = normalizeCliFeatureFlags(typeof cliFeatureFlags === 'string' ? cliFeatureFlags : '')
-  return includeKeys({ ...flags, featureFlags }, isUserFlag) as CliFlags
+/** Unknown flags are passed on. On invalid JSON or `--help`, yargs prints and exits the process. */
+export const parseFlags = function (argv: string[]): CliFlags {
+  const { featureFlags, output, ...flags } = yargs(argv).options(FLAGS).usage(USAGE).parseSync()
+  // The JSON flags aren't checked here: `resolveConfig` checks the configuration, and trusts `cachedConfig`.
+  return {
+    ...flags,
+    output: output ?? '-',
+    featureFlags: parseFeatureFlags(featureFlags),
+  } as CliFlags
 }
 
-// yargs passes the whole array for `array` options such as configMutations.
-const jsonParse = function (value: string | string[] | undefined): unknown {
-  return value === undefined ? undefined : JSON.parse(String(value))
+/** `a,b` gives `{ a: true, b: true }`. Blank names are skipped, but the others are not trimmed. */
+const parseFeatureFlags = function (value: unknown): Record<string, boolean> {
+  if (typeof value !== 'string') {
+    return {}
+  }
+
+  const names = value.split(',').filter((name) => name.trim() !== '')
+  return Object.fromEntries(names.map((name) => [name, true]))
+}
+
+// yargs passes every occurrence of an `array` flag, so `--configMutations` must be one JSON array.
+const parseJson = function (value: string | string[]): unknown {
+  return JSON.parse(String(value))
 }
 
 const FLAGS = {
@@ -43,7 +46,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
     describe: `JSON configuration object containing default values.
 Each configuration default value is used unless overridden through the main configuration file.
 Default: none.`,
-    coerce: jsonParse,
+    coerce: parseJson,
     hidden: true,
   },
   cachedConfig: {
@@ -52,7 +55,7 @@ Default: none.`,
 or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
-    coerce: jsonParse,
+    coerce: parseJson,
     hidden: true,
   },
   cachedConfigPath: {
@@ -67,7 +70,7 @@ Default: none.`,
     string: true,
     describe: `JSON configuration object overriding the configuration file and other settings.
 Default: none.`,
-    coerce: jsonParse,
+    coerce: parseJson,
     hidden: true,
   },
   configMutations: {
@@ -78,7 +81,7 @@ Each change must be an object with three properties:
   - "value": new value of that property
   - "event": build event when this change was applied, e.g. "onPreBuild"
 Default: empty array.`,
-    coerce: jsonParse,
+    coerce: parseJson,
     hidden: true,
   },
   cwd: {
@@ -189,10 +192,3 @@ const USAGE = `netlify-config [OPTIONS...]
 
 Retrieve and resolve the Netlify configuration.
 The result is printed as a JSON object on stdout.`
-
-// Remove `yargs`' own keys, and the single-letter and dash-cased aliases it adds.
-const isUserFlag = function (key: string, value: unknown) {
-  return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
-}
-
-const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
