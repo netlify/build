@@ -56,15 +56,14 @@ ${messages}`,
  * reported. Names are deduplicated across paths first, which can drop the ` for "<path>"` (QUIRK).
  */
 const warnHeadersCase = function (logs: Logs | undefined, headers: readonly Header[]) {
-  const names = headers
-    .flatMap(({ for: path, values }) =>
-      Object.keys(values).map((name) => ({ path, name, lowerName: name.toLowerCase() })),
-    )
-    .filter(({ name }, index, all) => all.slice(index + 1).every((other) => other.name !== name))
-
-  const second = names.find(({ lowerName }, index) =>
-    names.slice(index + 1).some((other) => other.lowerName === lowerName),
+  const allNames = headers.flatMap(({ for: path, values }) =>
+    Object.keys(values).map((name) => ({ path, name, lowerName: name.toLowerCase() })),
   )
+  const lastIndexByName = getLastIndexes(allNames.map(({ name }) => name))
+  const names = allNames.filter(({ name }, index) => lastIndexByName.get(name) === index)
+
+  const lastIndexByLowerName = getLastIndexes(names.map(({ lowerName }) => lowerName))
+  const second = names.find(({ lowerName }, index) => (lastIndexByLowerName.get(lowerName) ?? index) > index)
   if (second === undefined) {
     return
   }
@@ -81,3 +80,5 @@ const warnHeadersCase = function (logs: Logs | undefined, headers: readonly Head
 Warning: the same header is set twice with different cases${forPath}: "${first.name}" and "${second.name}"`,
   )
 }
+
+const getLastIndexes = (keys: readonly string[]): Map<string, number> => new Map(keys.map((key, index) => [key, index]))
