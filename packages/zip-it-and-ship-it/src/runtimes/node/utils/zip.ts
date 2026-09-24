@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { Stats } from 'fs'
 import { mkdir, readlink as readLink, rm, symlink, writeFile } from 'fs/promises'
 import os from 'os'
-import { basename, dirname, extname, join } from 'path'
+import { basename, dirname, extname, isAbsolute, join, posix } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
 import type { Archiver } from 'archiver'
@@ -135,23 +135,23 @@ const createDirectory = async function ({
 
   const symlinks = new Map<string, Set<string>>()
 
+  const statted = await Promise.all(
+    [...new Set(srcFiles)].map(async (srcFile) => ({
+      srcFile,
+      stat: await cachedLstat(cache.lstatCache, srcFile),
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+  )
+
   // Copying source files.
   await pMap(
-    srcFiles,
-    async (srcFile) => {
-      const destPath = aliases.get(srcFile) || srcFile
-      const normalizedDestPath = normalizeFilePath({
-        commonPrefix: basePath,
-        path: destPath,
-        userNamespace,
-      })
-      const absoluteDestPath = join(functionFolder, normalizedDestPath)
+    await resolveSymlinkedDestPaths(statted),
+    async ({ srcFile, stat, destPath }) => {
+      const absoluteDestPath = join(functionFolder, destPath)
 
       if (rewrites.has(srcFile)) {
         return mkdirAndWriteFile(absoluteDestPath, rewrites.get(srcFile) as string)
       }
-
-      const stat = await cachedLstat(cache.lstatCache, srcFile)
 
       // If the path is a symlink, find the link target and add the link to a
       // `symlinks` map, which we'll later use to create the symlinks in the
@@ -269,19 +269,18 @@ const createZipArchive = async function ({
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
   const srcFilesInfos = await Promise.all(deduplicatedSrcFiles.map((file) => addStat(cache, file)))
+  const entries = await resolveSymlinkedDestPaths(
+    srcFilesInfos.map(({ srcFile, stat }) => ({
+      srcFile,
+      stat,
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+  )
 
   // We ensure this is not async, so that the archive's checksum is
   // deterministic. Otherwise it depends on the order the files were added.
-  srcFilesInfos.forEach(({ srcFile, stat }) => {
-    zipJsFile({
-      aliases,
-      archive,
-      commonPrefix: basePath,
-      rewrites,
-      srcFile,
-      stat,
-      userNamespace,
-    })
+  entries.forEach(({ srcFile, stat, destPath }) => {
+    zipJsFile({ archive, destPath, rewrites, srcFile, stat })
   })
 
   await endZip(archive, output)
@@ -312,6 +311,82 @@ const addEntryFileToZip = function (archive: Archiver, { contents, filename }: E
   addZipContent(archive, contentBuffer, filename)
 }
 
+interface ArchiveEntry {
+  destPath: string
+  srcFile: string
+  stat: Stats
+}
+
+// A tracer that resolves a module through a symlinked directory reports the path
+// it walked, not where the files really live. The archive then holds a link at
+// `node_modules/<pkg>` *and* files under that same path, which cannot both exist
+// once extracted — AWS Lambda rejects the whole bundle for it.
+//
+// Put those entries back on the path the link points at, which is the layout the
+// package manager produced in the first place: files in the store, `node_modules
+// /<pkg>` a link to them. Resolution then works the way it does locally.
+//
+// A link the archive cannot contain — absolute, or reaching above the bundle
+// root — is left alone; rewriting onto it would move entries out of the bundle.
+export const resolveSymlinkedDestPaths = async function <T extends ArchiveEntry>(
+  files: T[],
+  readTarget: (srcFile: string) => Promise<string> = readLink,
+): Promise<T[]> {
+  const links = files.filter(({ stat }) => stat.isSymbolicLink())
+
+  if (links.length === 0) {
+    return files
+  }
+
+  const realPaths = new Map<string, string>()
+
+  await Promise.all(
+    links.map(async ({ srcFile, destPath }) => {
+      const target = await readTarget(srcFile)
+
+      if (isAbsolute(target)) {
+        return
+      }
+
+      const realPath = posix.normalize(posix.join(posix.dirname(destPath), target))
+
+      if (realPath.startsWith('..')) {
+        return
+      }
+
+      realPaths.set(destPath, realPath)
+    }),
+  )
+
+  if (realPaths.size === 0) {
+    return files
+  }
+
+  const seen = new Set<string>()
+
+  return files
+    .map((file) => {
+      for (const [link, realPath] of realPaths) {
+        if (file.destPath.startsWith(`${link}/`)) {
+          return { ...file, destPath: realPath + file.destPath.slice(link.length) }
+        }
+      }
+
+      return file
+    })
+    .filter(({ destPath }) => {
+      // A rewrite can land on a path the archive already holds, since the tracer
+      // may have reported some of a package under each spelling.
+      if (seen.has(destPath)) {
+        return false
+      }
+
+      seen.add(destPath)
+
+      return true
+    })
+}
+
 const addStat = async function (cache: RuntimeCache, srcFile: string) {
   const stat = await cachedLstat(cache.lstatCache, srcFile)
 
@@ -319,28 +394,21 @@ const addStat = async function (cache: RuntimeCache, srcFile: string) {
 }
 
 const zipJsFile = function ({
-  aliases = new Map(),
   archive,
-  commonPrefix,
+  destPath,
   rewrites = new Map(),
   stat,
   srcFile,
-  userNamespace,
 }: {
-  aliases?: Map<string, string>
   archive: Archiver
-  commonPrefix: string
+  destPath: string
   rewrites?: Map<string, string>
   stat: Stats
   srcFile: string
-  userNamespace: string
 }) {
-  const destPath = aliases.get(srcFile) || srcFile
-  const normalizedDestPath = normalizeFilePath({ commonPrefix, path: destPath, userNamespace })
-
   if (rewrites.has(srcFile)) {
-    addZipContent(archive, rewrites.get(srcFile) as string, normalizedDestPath)
+    addZipContent(archive, rewrites.get(srcFile) as string, destPath)
   } else {
-    addZipFile(archive, srcFile, normalizedDestPath, stat)
+    addZipFile(archive, srcFile, destPath, stat)
   }
 }
