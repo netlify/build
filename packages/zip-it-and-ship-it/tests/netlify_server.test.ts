@@ -13,6 +13,7 @@ import { FIXTURES_DIR } from './helpers/main.js'
 const FIXTURE = join(FIXTURES_DIR, 'netlify-server')
 const FUNCTIONS_DIR = join(FIXTURE, 'functions')
 const SERVER_ENTRY = join(FIXTURE, 'netlify', 'server', 'index.js')
+const SERVER_ARCHIVE = join('server', 'server.tgz')
 
 const readManifest = async (path: string): Promise<Manifest> => JSON.parse(await readFile(path, 'utf-8')) as Manifest
 
@@ -34,9 +35,9 @@ describe('Netlify Server', () => {
   test('Reports the server on its own and never among the functions', async () => {
     const { manifest, result } = await bundleFixture({ path: SERVER_ENTRY })
 
-    expect(manifest.server?.path.endsWith('/server/server.tgz')).toBe(true)
+    expect(manifest.server?.path.endsWith(SERVER_ARCHIVE)).toBe(true)
     expect(manifest.functions.map(({ name }) => name)).toEqual(['hello'])
-    expect(result.server?.path.endsWith('/server/server.tgz')).toBe(true)
+    expect(result.server?.path.endsWith(SERVER_ARCHIVE)).toBe(true)
     expect(result.functions.map(({ name }) => name)).toEqual(['hello'])
   })
 
@@ -146,7 +147,7 @@ describe('Netlify Server', () => {
     })
 
     expect(result.functions).toEqual([])
-    expect(result.server?.path.endsWith('/server/server.tgz')).toBe(true)
+    expect(result.server?.path.endsWith(SERVER_ARCHIVE)).toBe(true)
     expect((await readManifest(manifestPath)).functions).toEqual([])
   })
 
