@@ -4,6 +4,8 @@ const bundlesSchema = {
   properties: {
     asset: { type: 'string' },
     format: { type: 'string', enum: ['eszip2', 'tar'] },
+    custom_import_map: { type: 'boolean' },
+    vendor_manifest: { type: 'boolean' },
   },
   additionalProperties: false,
 }
