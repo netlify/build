@@ -136,6 +136,7 @@ export const bundle = async ({
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes, additionalImportMapEntries)
+  const customImportMap = !ImportMap.isDefault(importMapContents)
 
   // Create deno.json with import map contents for runtime resolution
   const denoConfigPath = path.join(bundleDir.path, 'deno.json')
@@ -162,6 +163,7 @@ export const bundle = async ({
 
   // Rewrite import assertions in files outputted by deno vendor
   const denoVendorOutput = path.join(bundleDir.path, 'vendor')
+  const vendorManifest = existsSync(path.join(denoVendorOutput, 'manifest.json'))
   if (existsSync(denoVendorOutput)) {
     const denoVendorFiles = await listRecursively(denoVendorOutput)
     for (const denoVendorFile of denoVendorFiles) {
@@ -221,9 +223,11 @@ export const bundle = async ({
     await Promise.allSettled(cleanup.map((task) => task()))
 
     return {
+      customImportMap,
       extension: TARBALL_EXTENSION,
       format: BundleFormat.TARBALL,
       hash,
+      vendorManifest,
     }
   }
 }

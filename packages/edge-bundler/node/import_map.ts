@@ -296,6 +296,21 @@ export class ImportMap {
     return this
   }
 
+  // Whether the given contents hold nothing beyond what every bundle gets
+  // without any user, framework or npm import map entries: the internal
+  // imports and the Node.js built-ins. Each entry is checked on its own, so the
+  // result doesn't depend on whether the built-ins have been added.
+  static isDefault({ imports, scopes }: { imports: Imports; scopes: Record<string, Imports> }) {
+    return (
+      Object.keys(scopes).length === 0 &&
+      Object.entries(imports).every(
+        ([specifier, url]) =>
+          (INTERNAL_IMPORTS as Imports)[specifier] === url ||
+          (builtinModules.includes(specifier) && url === `node:${specifier}`),
+      )
+    )
+  }
+
   async writeToFile(path: string) {
     const distDirectory = dirname(path)
 
