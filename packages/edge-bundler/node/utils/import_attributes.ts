@@ -7,7 +7,7 @@ import type {
   Options as AcornOptions,
   Program,
 } from 'acorn'
-import { tsPlugin } from '@sveltejs/acorn-typescript'
+import { tsPlugin } from '#acorn-typescript'
 
 const acornNoJSX = Parser.extend(tsPlugin({ jsx: false }))
 const acornJSX = Parser.extend(tsPlugin({ jsx: true }))

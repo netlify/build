@@ -78,6 +78,7 @@ export type ZipFunction = (
     featureFlags: FeatureFlags
     generator?: string
     isInternal: boolean
+    isServer?: boolean
     logger: Logger
     repositoryRoot?: string
     span?: Span

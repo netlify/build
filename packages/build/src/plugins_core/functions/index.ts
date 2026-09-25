@@ -16,7 +16,7 @@ import { FRAMEWORKS_API_FUNCTIONS_PATH } from '../../utils/frameworks_api.js'
 import type { CoreStepFunction } from '../types.js'
 
 import { getZipError } from './error.js'
-import { getServerEntry } from './server_entry.js'
+import { getServerEntry, SERVER_DIRECTORY, useServerAsFunction, writeServerShim } from './server_entry.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
@@ -165,11 +165,13 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   const generatedFunctions = getGeneratedFunctions(returnValues)
-  const serverEntry = await getServerEntry({ buildDir, packagePath, featureFlags })
+  const serverEntry = useServerAsFunction(featureFlags) ? await getServerEntry({ buildDir, packagePath }) : undefined
 
   if (serverEntry) {
     log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
   }
+
+  const serverShimPath = serverEntry === undefined ? undefined : await writeServerShim(serverEntry)
 
   logFunctionsToBundle({
     logs,
@@ -209,7 +211,7 @@ const coreStep: CoreStepFunction = async function ({
     systemLog,
     generatedFunctions: [
       ...generatedFunctions.map((func) => func.path),
-      ...(serverEntry ? [serverEntry.shimPath] : []),
+      ...(serverShimPath === undefined ? [] : [serverShimPath]),
     ],
   })
 
@@ -238,10 +240,7 @@ const hasFunctionsDirectories = async function ({
   packagePath,
   returnValues,
 }) {
-  if (
-    featureFlags?.netlify_build_server_entry &&
-    (await pathExists(resolve(buildDir, packagePath || '', 'netlify/server')))
-  ) {
+  if (useServerAsFunction(featureFlags) && (await pathExists(resolve(buildDir, packagePath || '', SERVER_DIRECTORY)))) {
     return true
   }
 
