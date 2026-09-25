@@ -1,10 +1,12 @@
-import { promises as fs, existsSync } from 'fs'
+import { promises as fs, createWriteStream, existsSync } from 'fs'
 import path from 'path'
+import { pipeline } from 'stream/promises'
 import { fileURLToPath, pathToFileURL } from 'url'
+import { createGzip } from 'zlib'
 
 import commonPathPrefix from 'common-path-prefix'
+import { packTar, type FileSource } from 'modern-tar/fs'
 import pRetry, { AbortError } from 'p-retry'
-import * as tar from 'tar'
 import tmp from 'tmp-promise'
 
 import { DenoBridge } from '../bridge.js'
@@ -193,30 +195,23 @@ export const bundle = async ({
     // List files to include in the tarball as paths relative to the bundle dir.
     // Using absolute paths here leads to platform-specific quirks (notably on Windows),
     // where entries can include drive letters and break extraction/imports.
-    // The './' prefix is required to prevent node-tar from interpreting entries
-    // starting with '@' as GNU tar archive-include directives, which would cause
-    // it to strip the '@' and stat a non-existent path (ENOENT).
+    // Ensure forward slashes inside the tarball for cross-platform consistency.
     const files = (await listRecursively(bundleDir.path))
       .map((p) => path.relative(bundleDir.path, p))
       .map((p) => './' + getUnixPath(p))
       .sort()
 
-    await tar.create(
-      {
-        cwd: bundleDir.path,
-        file: tarballPath,
-        gzip: true,
-        noDirRecurse: true,
-        // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
-        portable: true, // omit uid/gid/uname/gname/ctime/atime
-        noMtime: true, // omit mtime
-        // Ensure forward slashes inside the tarball for cross-platform consistency.
-        onWriteEntry(entry) {
-          entry.path = getUnixPath(entry.path)
-        },
-      },
-      files,
-    )
+    // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
+    const sources: FileSource[] = files.map((file) => ({
+      type: 'file',
+      source: path.join(bundleDir.path, file),
+      target: file,
+      mtime: new Date(0),
+      uid: 0,
+      gid: 0,
+    }))
+
+    await pipeline(packTar(sources), createGzip(), createWriteStream(tarballPath))
 
     const hash = await getFileHash(tarballPath)
 

@@ -1,11 +1,14 @@
 import { execSync } from 'node:child_process'
-import { promises as fs } from 'node:fs'
+import { createReadStream, promises as fs } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { stderr, stdout } from 'node:process'
+import { pipeline } from 'node:stream/promises'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { createGunzip, gunzipSync } from 'node:zlib'
 
 import { execa } from 'execa'
-import * as tar from 'tar'
+import { unpackTar } from 'modern-tar'
+import { unpackTar as unpackTarToDir } from 'modern-tar/fs'
 import tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
@@ -154,13 +157,20 @@ export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   return JSON.parse(result.stdout)
 }
 
+export const extractTarball = async (tarballPath: string, destination: string) => {
+  await pipeline(createReadStream(tarballPath), createGunzip(), unpackTarToDir(destination))
+}
+
+export const listTarball = async (tarballPath: string) => {
+  const entries = await unpackTar(gunzipSync(await fs.readFile(tarballPath)))
+
+  return entries.map((entry) => entry.header.name)
+}
+
 export const runTarball = async (tarballPath: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
-  await tar.extract({
-    cwd: tmpDir.path,
-    file: tarballPath,
-  })
+  await extractTarball(tarballPath, tmpDir.path)
 
   const evalCommand = execa('deno', ['eval', '--vendor', inspectTarballFunction()], {
     cwd: tmpDir.path,
