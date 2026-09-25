@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.1.0](https://github.com/netlify/build/compare/edge-bundler-v16.0.4...edge-bundler-v16.1.0) (2026-09-25)
+
+
+### Features
+
+* **edge-bundler:** record import map and vendor manifest usage for tarballs ([#7239](https://github.com/netlify/build/issues/7239)) ([f12cc93](https://github.com/netlify/build/commit/f12cc933d3ffa0bacb1bda1d4057b821737d51c4))
+
 ## [16.0.4](https://github.com/netlify/build/compare/edge-bundler-v16.0.3...edge-bundler-v16.0.4) (2026-08-21)
 
 

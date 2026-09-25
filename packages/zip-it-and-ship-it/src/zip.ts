@@ -8,7 +8,7 @@ import { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
-import { createManifest } from './manifest.js'
+import { createFunctionsManifest, createServerManifest } from './manifest.js'
 import { bundleServer, type ServerOptions, type ServerResult } from './server.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
@@ -33,62 +33,27 @@ export interface ZipFunctionOptions {
   internalSrcFolder?: string
 }
 
-export interface BundleResult {
-  /**
-   * The bundled functions. A server is never among them.
-   */
-  functions: FunctionResult[]
-
-  /**
-   * The bundled Netlify Server, when one was given.
-   */
-  server?: ServerResult
-}
-
 export type ZipFunctionsOptions = ZipFunctionOptions & {
   configFileDirectories?: string[]
   manifest?: string
   parallelLimit?: number
 }
 
-/**
- * The deploy's functions, and how to bundle them.
- */
-export interface FunctionsOptions {
-  /**
-   * Directories to search, specific function paths, or both.
-   */
-  paths: MixedPaths
-
-  archiveFormat?: ArchiveFormat
-  config?: Config
-  configFileDirectories?: string[]
-  parallelLimit?: number
-}
-
-export type { ServerOptions, ServerResult }
-
-export interface BundleOptions {
-  /**
-   * Where the archives and the manifest are written.
-   */
-  destFolder: string
-
-  functions?: FunctionsOptions
-  server?: ServerOptions
+export interface ZipServerOptions {
+  basePath?: string
+  debug?: boolean
+  featureFlags?: FeatureFlags
 
   /**
    * Path of the manifest file. Defaults to `manifest.json` inside `destFolder`.
    */
   manifest?: string
 
-  basePath?: string
-  branch?: string
-  debug?: boolean
-  featureFlags?: FeatureFlags
   repositoryRoot?: string
   systemLog?: LogFunction
 }
+
+export type { ServerOptions, ServerResult }
 
 const DEFAULT_PARALLEL_LIMIT = 5
 
@@ -104,75 +69,29 @@ export const zipFunctions = async function (
   input: MixedPaths,
   destFolder: string,
   {
-    archiveFormat,
-    basePath,
-    branch,
-    config,
-    configFileDirectories,
-    debug,
-    featureFlags,
-    manifest,
-    parallelLimit,
-    repositoryRoot,
-    systemLog,
-  }: ZipFunctionsOptions = {},
-): Promise<FunctionResult[]> {
-  const { functions } = await bundle({
-    basePath,
-    branch,
-    debug,
-    destFolder,
-    featureFlags,
-    functions: {
-      archiveFormat,
-      config,
-      configFileDirectories,
-      parallelLimit,
-      paths: input,
-    },
-    manifest,
-    repositoryRoot,
-    systemLog,
-  })
-
-  return functions
-}
-
-// Bundles a deploy's functions and its Netlify Server, writing the one manifest
-// that describes both.
-export const bundle = async function ({
-  basePath,
-  branch,
-  debug,
-  destFolder,
-  featureFlags: inputFeatureFlags,
-  functions: functionsOptions,
-  manifest,
-  repositoryRoot = basePath,
-  server,
-  systemLog,
-}: BundleOptions): Promise<BundleResult> {
-  const {
     archiveFormat = ARCHIVE_FORMAT.ZIP,
+    basePath,
+    branch,
     config = {},
     configFileDirectories,
+    featureFlags: inputFeatureFlags,
+    manifest,
     parallelLimit = DEFAULT_PARALLEL_LIMIT,
-    paths,
-  } = functionsOptions ?? { paths: [] }
-
+    repositoryRoot = basePath,
+    systemLog,
+    debug,
+  }: ZipFunctionsOptions = {},
+): Promise<FunctionResult[]> {
   validateArchiveFormat(archiveFormat)
 
   const logger = getLogger(systemLog, debug)
   const cache = new RuntimeCache()
   const featureFlags = getFlags(inputFeatureFlags)
-  const bag = getFunctionsBag(paths)
+  const bag = getFunctionsBag(input)
   const srcFolders = resolveFunctionsDirectories([...bag.generated.directories, ...bag.user.directories])
 
-  const [foundPaths] = await Promise.all([
-    listFunctionsDirectories(srcFolders),
-    fs.mkdir(destFolder, { recursive: true }),
-  ])
-  const functions = await getFunctionsFromPaths([...foundPaths, ...bag.generated.functions, ...bag.user.functions], {
+  const [paths] = await Promise.all([listFunctionsDirectories(srcFolders), fs.mkdir(destFolder, { recursive: true })])
+  const functions = await getFunctionsFromPaths([...paths, ...bag.generated.functions, ...bag.user.functions], {
     cache,
     config,
     configFileDirectories,
@@ -229,24 +148,43 @@ export const bundle = async function ({
     }),
   )
 
-  const serverResult =
-    server === undefined
-      ? undefined
-      : await bundleServer(server, destFolder, {
-          basePath,
-          cache,
-          featureFlags,
-          logger,
-          repositoryRoot,
-        })
-
-  await createManifest({
+  await createFunctionsManifest({
     functions: formattedResults,
     path: resolve(manifest || join(destFolder, 'manifest.json')),
-    server: serverResult,
   })
 
-  return { functions: formattedResults, server: serverResult }
+  return formattedResults
+}
+
+export const zipServer = async function (
+  srcPath: string,
+  destFolder: string,
+  {
+    basePath,
+    debug,
+    featureFlags: inputFeatureFlags,
+    manifest,
+    repositoryRoot = basePath,
+    systemLog,
+  }: ZipServerOptions = {},
+): Promise<ServerResult> {
+  const logger = getLogger(systemLog, debug)
+  const cache = new RuntimeCache()
+  const featureFlags = getFlags(inputFeatureFlags)
+
+  await fs.mkdir(destFolder, { recursive: true })
+
+  const result = await bundleServer({ path: srcPath }, destFolder, {
+    basePath,
+    cache,
+    featureFlags,
+    logger,
+    repositoryRoot,
+  })
+
+  await createServerManifest({ path: resolve(manifest || join(destFolder, 'manifest.json')), server: result })
+
+  return result
 }
 
 export const zipFunction = async function (
