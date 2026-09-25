@@ -16,6 +16,21 @@ const INTERNAL_IMPORTS = {
 
 type Imports = Record<string, string>
 
+// Maps Node.js built-in modules to their prefixed version (e.g. "path" =>
+// "node:path"). Modules that only exist with the prefix (e.g. `node:test`) are
+// listed with it already, so there's no unprefixed name to map.
+export const getNodeBuiltinImports = (): Imports => {
+  const imports: Imports = {}
+
+  for (const name of builtinModules) {
+    if (!name.startsWith('node:')) {
+      imports[name] = `node:${name}`
+    }
+  }
+
+  return imports
+}
+
 export interface ImportMapFile {
   baseURL: URL
   imports?: Imports
@@ -282,15 +297,9 @@ export class ImportMap {
   // Adds an import map source mapping Node.js built-in modules to their prefixed
   // version (e.g. "path" => "node:path").
   withNodeBuiltins() {
-    const imports: Record<string, string> = {}
-
-    for (const name of builtinModules) {
-      imports[name] = `node:${name}`
-    }
-
     this.sources.push({
       baseURL: new URL(import.meta.url),
-      imports,
+      imports: getNodeBuiltinImports(),
     })
 
     return this
@@ -301,12 +310,12 @@ export class ImportMap {
   // imports and the Node.js built-ins. Each entry is checked on its own, so the
   // result doesn't depend on whether the built-ins have been added.
   static isDefault({ imports, scopes }: { imports: Imports; scopes: Record<string, Imports> }) {
+    const nodeBuiltinImports = getNodeBuiltinImports()
+
     return (
       Object.keys(scopes).length === 0 &&
       Object.entries(imports).every(
-        ([specifier, url]) =>
-          (INTERNAL_IMPORTS as Imports)[specifier] === url ||
-          (builtinModules.includes(specifier) && url === `node:${specifier}`),
+        ([specifier, url]) => (INTERNAL_IMPORTS as Imports)[specifier] === url || nodeBuiltinImports[specifier] === url,
       )
     )
   }
