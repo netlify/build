@@ -359,6 +359,35 @@ import css from './styles.css' with {
     expect(result).toEqual(expectedResult)
   })
 
+  test('handles a function expression named with a TypeScript contextual keyword', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+CompletionRecord.prototype.assert = function assert() {};
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+CompletionRecord.prototype.assert = function assert() {};
+`
+
+    expect(rewriteSourceImportAssertions(source)).toEqual(expectedResult)
+  })
+
+  test('handles an export of a merged namespace member', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+declare module "assert" {
+  function assert(v: unknown): asserts v;
+  namespace assert {
+    function strict(): void;
+  }
+  namespace assert {
+    export { strict };
+  }
+  export = assert;
+}
+`
+    const expectedResult = source.replace("assert { type: 'json' }", "with { type: 'json' }")
+
+    expect(rewriteSourceImportAssertions(source)).toEqual(expectedResult)
+  })
+
   describe('dynamic imports', () => {
     test('ignores handles static export assertions', () => {
       const source = `
