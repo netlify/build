@@ -8,7 +8,7 @@ import { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
-import { createManifest } from './manifest.js'
+import { createFunctionsManifest, createServerManifest } from './manifest.js'
 import { bundleServer, type ServerOptions, type ServerResult } from './server.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
@@ -148,7 +148,10 @@ export const zipFunctions = async function (
     }),
   )
 
-  await createManifest({ functions: formattedResults, path: resolve(manifest || join(destFolder, 'manifest.json')) })
+  await createFunctionsManifest({
+    functions: formattedResults,
+    path: resolve(manifest || join(destFolder, 'manifest.json')),
+  })
 
   return formattedResults
 }
@@ -179,7 +182,7 @@ export const zipServer = async function (
     repositoryRoot,
   })
 
-  await createManifest({ path: resolve(manifest || join(destFolder, 'manifest.json')), server: result })
+  await createServerManifest({ path: resolve(manifest || join(destFolder, 'manifest.json')), server: result })
 
   return result
 }

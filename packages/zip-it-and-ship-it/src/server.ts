@@ -23,11 +23,7 @@ const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'in
 
 /**
  * Resolves the server entrypoint inside `directory`, or undefined when there is
- * none. Throws when there is more than one, since a site can have only one
- * server. Callers say where to look, as they do for functions.
- *
- * Anything that needs to find a server goes through this, so `netlify build`,
- * `netlify deploy` and `netlify dev` cannot disagree about what counts as one.
+ * none.
  */
 export const findServerEntry = async (directory: string): Promise<string | undefined> => {
   let entries: string[]
@@ -37,8 +33,6 @@ export const findServerEntry = async (directory: string): Promise<string | undef
   } catch (error) {
     const { code } = error as NodeJS.ErrnoException
 
-    // Anything else is a directory we were meant to read and could not, which
-    // would silently leave the deploy with no server.
     if (code === 'ENOENT' || code === 'ENOTDIR') {
       return undefined
     }
@@ -61,11 +55,6 @@ export const findServerEntry = async (directory: string): Promise<string | undef
   return join(directory, candidates[0])
 }
 
-/**
- * A bundled Netlify Server. It is built like a function, but it is described on
- * its own terms: it carries no schedule, event subscriptions, invocation mode,
- * priority or timeout, because it is not invoked per request.
- */
 export type ServerResult = {
   bundler?: string
   excludedRoutes?: Route[]
@@ -81,8 +70,7 @@ export type ServerResult = {
 }
 
 /**
- * The deploy's Netlify Server, and how to bundle it. Set by whatever generates
- * the server, not by the user.
+ * The deploy's Netlify Server, and how to bundle it.
  */
 export interface ServerOptions {
   /**
@@ -91,8 +79,6 @@ export interface ServerOptions {
   path: string
 }
 
-// A server that cannot be read leaves the deploy with no backend at all, so it
-// fails the build rather than coming up empty.
 const readServerSource = async (
   srcPath: string,
   { cache, featureFlags }: { cache: RuntimeCache; featureFlags: FeatureFlags },
@@ -112,9 +98,6 @@ const readServerSource = async (
   return source
 }
 
-// Bundles a Netlify Server through the same runtime as a function. It writes
-// straight into destFolder, which is the server's own, separate from the
-// functions'.
 export const bundleServer = async (
   server: ServerOptions,
   destFolder: string,

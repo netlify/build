@@ -53,9 +53,6 @@ interface ManifestBase {
   version: number
 }
 
-/**
- * What the functions build step writes next to the archives it produced.
- */
 export interface FunctionsManifest extends ManifestBase {
   functions: ManifestFunction[]
 
@@ -67,42 +64,37 @@ export interface FunctionsManifest extends ManifestBase {
   server?: ManifestServer
 }
 
-/**
- * What the server build step writes next to the archive it produced. It carries
- * no `functions` key: a deploy's functions are described by the manifest of the
- * step that built them, and an empty list here would read as "no functions".
- */
 export interface ServerManifest extends ManifestBase {
   server: ManifestServer
 }
 
 /**
- * The functions manifest, under the name it has always had.
+ * The functions manifest, under the name it had before the server manifest was
+ * introduced, for backwards compatibility.
  */
 export type Manifest = FunctionsManifest
 
 const MANIFEST_VERSION = 1
 
-type CreateManifestOptions = { path: string } & (
-  | { functions: FunctionResult[]; server?: undefined }
-  | { server: ServerResult; functions?: undefined }
-)
+export const createFunctionsManifest = async ({ functions, path }: { functions: FunctionResult[]; path: string }) => {
+  const formattedFunctions = functions.map((func) => formatFunctionForManifest(func))
+  const payload: FunctionsManifest = {
+    functions: formattedFunctions,
+    system: { arch, platform },
+    timestamp: Date.now(),
+    version: MANIFEST_VERSION,
+  }
 
-export const createManifest = async ({ functions, path, server }: CreateManifestOptions) => {
-  const payload: FunctionsManifest | ServerManifest =
-    server === undefined
-      ? {
-          functions: functions.map((func) => formatFunctionForManifest(func)),
-          system: { arch, platform },
-          timestamp: Date.now(),
-          version: MANIFEST_VERSION,
-        }
-      : {
-          server: formatServerForManifest(server),
-          system: { arch, platform },
-          timestamp: Date.now(),
-          version: MANIFEST_VERSION,
-        }
+  await fs.writeFile(path, JSON.stringify(payload))
+}
+
+export const createServerManifest = async ({ path, server }: { path: string; server: ServerResult }) => {
+  const payload: ServerManifest = {
+    server: formatServerForManifest(server),
+    system: { arch, platform },
+    timestamp: Date.now(),
+    version: MANIFEST_VERSION,
+  }
 
   await fs.writeFile(path, JSON.stringify(payload))
 }
