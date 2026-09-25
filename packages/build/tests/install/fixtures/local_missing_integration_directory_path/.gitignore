@@ -1,0 +1,4 @@
+!.netlify/
+.netlify/**
+!.netlify/plugins/
+!.netlify/plugins/.npmrc
