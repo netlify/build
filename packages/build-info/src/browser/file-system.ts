@@ -52,8 +52,11 @@ export class WebFS extends FileSystem {
   }
 
   resolve(...paths: string[]): string {
-    const path = this.join(...paths)
-    return this.isAbsolute(path) ? path : this.join(this.cwd, path)
+    let resolved = this.cwd
+    for (const path of paths) {
+      resolved = this.isAbsolute(path) ? path : this.join(resolved, path)
+    }
+    return this.join(resolved).replace(/\/$/, '') || '/'
   }
 
   async fileExists(path: string): Promise<boolean> {
