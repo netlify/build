@@ -187,6 +187,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     offline,
     mode,
     debug,
+    logs,
   })
 
   const mergedExtensions = normalizeAndMergeExtensions({
