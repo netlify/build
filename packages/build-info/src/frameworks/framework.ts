@@ -5,6 +5,61 @@ import { Environment } from '../file-system.js'
 import { getBuildCommands, getDevCommands } from '../get-commands.js'
 import { Project } from '../project.js'
 
+export type FrameworkId =
+  | 'analog'
+  | 'angular'
+  | 'assemble'
+  | 'astro'
+  | 'blitz'
+  | 'brunch'
+  | 'cecil'
+  | 'create-react-app'
+  | 'docpad'
+  | 'docusaurus'
+  | 'eleventy'
+  | 'ember'
+  | 'expo'
+  | 'gatsby'
+  | 'gridsome'
+  | 'grunt'
+  | 'gulp'
+  | 'harp'
+  | 'hexo'
+  | 'hono'
+  | 'hugo'
+  | 'hydrogen'
+  | 'jekyll'
+  | 'metalsmith'
+  | 'middleman'
+  | 'next'
+  | 'nuxt'
+  | 'observable'
+  | 'parcel'
+  | 'phenomic'
+  | 'quasar'
+  | 'qwik'
+  | 'react-router'
+  | 'react-static'
+  | 'redwoodjs'
+  | 'remix'
+  | 'roots'
+  | 'sapper'
+  | 'solid-js'
+  | 'solid-start'
+  | 'stencil'
+  | 'svelte'
+  | 'svelte-kit'
+  | 'tanstack-router'
+  | 'tanstack-start'
+  | 'vike'
+  | 'vite'
+  | 'vue'
+  | 'vuepress'
+  | 'waku'
+  | 'wintersmith'
+  | 'wmr'
+  | 'zola'
+
 export enum Category {
   BackendFramework = 'backend_framework',
   FrontendFramework = 'frontend_framework',
@@ -56,7 +111,7 @@ export type FrameworkInfo = ReturnType<Framework['toJSON']>
 export interface Framework {
   project: Project
 
-  id: string
+  id: FrameworkId
   name: string
   category: Category
   /**
@@ -178,7 +233,7 @@ export function mergeDetections(detections: (Detection | undefined)[]): Detectio
 }
 
 export abstract class BaseFramework implements Framework {
-  id: string
+  id: FrameworkId
   name: string
   category: Category
   detected?: Detection
