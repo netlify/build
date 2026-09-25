@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs'
-import { builtinModules } from 'module'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
@@ -9,7 +8,7 @@ import { findUp } from 'find-up'
 import { parseImports } from 'parse-imports'
 import tmp from 'tmp-promise'
 
-import { ImportMap } from './import_map.js'
+import { getNodeBuiltinImports, ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { pathsBetween } from './utils/fs.js'
 import { TYPESCRIPT_EXTENSIONS } from './utils/typescript.js'
@@ -326,13 +325,7 @@ export const vendorNPMSpecifiers = async ({
   // Add all Node.js built-ins to the import map, so any unprefixed specifiers
   // (e.g. `process`) resolve to the prefixed versions (e.g. `node:prefix`),
   // which Deno can process.
-  const builtIns = builtinModules.reduce(
-    (acc, name) => ({
-      ...acc,
-      [name]: `node:${name}`,
-    }),
-    {} as Record<string, string>,
-  )
+  const builtIns = getNodeBuiltinImports()
 
   // Creates an object that is compatible with the `imports` block of an import
   // map, mapping specifiers to the paths of their bundled files on disk. Each
