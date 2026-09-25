@@ -1,11 +1,6 @@
 import { join, resolve } from 'path'
 
-import {
-  type BundleOptions,
-  type FunctionConfig,
-  type MixedPaths,
-  type ServerOptions,
-} from '@netlify/zip-it-and-ship-it'
+import { type FunctionConfig, type ZipFunctionsOptions } from '@netlify/zip-it-and-ship-it'
 import semver from 'semver'
 
 import type { FeatureFlags } from '../../core/feature_flags.js'
@@ -23,9 +18,7 @@ type GetZisiParametersType = {
   isRunningLocally: boolean
   repositoryRoot: string
   userNodeVersion: string
-  systemLog: BundleOptions['systemLog']
-  paths: MixedPaths
-  server?: ServerOptions
+  systemLog: ZipFunctionsOptions['systemLog']
 }
 
 const getLambdaNodeVersion = (childEnv: Record<string, string>, userNodeVersion: string): string | undefined => {
@@ -55,12 +48,10 @@ export const getZisiParameters = ({
   functionsDist,
   internalFunctionsSrc,
   isRunningLocally,
-  paths,
   repositoryRoot,
-  server,
   userNodeVersion,
   systemLog,
-}: GetZisiParametersType): BundleOptions => {
+}: GetZisiParametersType): ZipFunctionsOptions => {
   const nodeVersion = getLambdaNodeVersion(childEnv, userNodeVersion)
   const manifest = join(functionsDist, 'manifest.json')
   const config = Object.fromEntries(
@@ -78,16 +69,11 @@ export const getZisiParameters = ({
   return {
     basePath: buildDir,
     branch,
-    destFolder: functionsDist,
-    featureFlags: zisiFeatureFlags,
-    functions: {
-      config,
-      configFileDirectories,
-      paths,
-    },
+    config,
     manifest,
+    featureFlags: zisiFeatureFlags,
     repositoryRoot,
-    server,
+    configFileDirectories,
     systemLog,
   }
 }

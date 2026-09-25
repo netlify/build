@@ -44,9 +44,7 @@ interface ManifestServer {
   vcpu?: number
 }
 
-export interface Manifest {
-  functions: ManifestFunction[]
-  server?: ManifestServer
+interface ManifestBase {
   system: {
     arch: string
     platform: string
@@ -55,20 +53,44 @@ export interface Manifest {
   version: number
 }
 
+export interface FunctionsManifest extends ManifestBase {
+  functions: ManifestFunction[]
+
+  /**
+   * A server is described by its own manifest now. Nothing writes this any
+   * more; it is kept so that readers of manifests written before the split
+   * still compile.
+   */
+  server?: ManifestServer
+}
+
+export interface ServerManifest extends ManifestBase {
+  server: ManifestServer
+}
+
+/**
+ * The functions manifest, under the name it had before the server manifest was
+ * introduced, for backwards compatibility.
+ */
+export type Manifest = FunctionsManifest
+
 const MANIFEST_VERSION = 1
 
-export const createManifest = async ({
-  functions,
-  path,
-  server,
-}: {
-  functions: FunctionResult[]
-  path: string
-  server?: ServerResult
-}) => {
-  const payload: Manifest = {
-    functions: functions.map((func) => formatFunctionForManifest(func)),
-    server: server && formatServerForManifest(server),
+export const createFunctionsManifest = async ({ functions, path }: { functions: FunctionResult[]; path: string }) => {
+  const formattedFunctions = functions.map((func) => formatFunctionForManifest(func))
+  const payload: FunctionsManifest = {
+    functions: formattedFunctions,
+    system: { arch, platform },
+    timestamp: Date.now(),
+    version: MANIFEST_VERSION,
+  }
+
+  await fs.writeFile(path, JSON.stringify(payload))
+}
+
+export const createServerManifest = async ({ path, server }: { path: string; server: ServerResult }) => {
+  const payload: ServerManifest = {
+    server: formatServerForManifest(server),
     system: { arch, platform },
     timestamp: Date.now(),
     version: MANIFEST_VERSION,
