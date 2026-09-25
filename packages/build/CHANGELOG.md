@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.3.0](https://github.com/netlify/build/compare/build-v37.2.0...build-v37.3.0) (2026-09-25)
+
+
+### Features
+
+* add server core step ([#7240](https://github.com/netlify/build/issues/7240)) ([e933e96](https://github.com/netlify/build/commit/e933e968cea2402cd5359229f78bcc9eb9da8b9a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.11 to ^7.1.12
+    * @netlify/zip-it-and-ship-it bumped from 16.1.0 to 16.2.0
+
 ## [37.2.0](https://github.com/netlify/build/compare/build-v37.1.0...build-v37.2.0) (2026-09-25)
 
 
