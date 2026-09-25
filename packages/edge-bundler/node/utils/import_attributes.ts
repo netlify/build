@@ -39,26 +39,15 @@ export function rewriteSourceImportAssertions(source: string): string {
     return source
   }
 
+  const statements = collectImportAssertions(source, parseAST(source).body)
   let modified = source
 
-  try {
-    const parsedAST = parseAST(source)
-
-    const statements = collectImportAssertions(source, parsedAST.body)
-
-    // Bulk replacement of import assertions
-    for (const statement of statements.sort((a, b) => b.start - a.start)) {
-      modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
-    }
-
-    return modified
-  } catch (error) {
-    if (!modified.includes('assert')) {
-      return modified
-    }
-
-    throw error
+  // Bulk replacement of import assertions
+  for (const statement of statements.sort((a, b) => b.start - a.start)) {
+    modified = `${modified.slice(0, statement.start)}${statement.text}${modified.slice(statement.end)}`
   }
+
+  return modified
 }
 
 type StatementsWithAssertions = ImportDeclaration | ImportExpression | ExportAllDeclaration | ExportNamedDeclaration

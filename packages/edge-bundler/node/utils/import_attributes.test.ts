@@ -359,6 +359,12 @@ import css from './styles.css' with {
     expect(result).toEqual(expectedResult)
   })
 
+  test('throws when the source cannot be parsed', () => {
+    const source = `import data from './data.json' assert { type: 'json' };\n#!`
+
+    expect(() => rewriteSourceImportAssertions(source)).toThrow(SyntaxError)
+  })
+
   test('handles a function expression named with a TypeScript contextual keyword', () => {
     const source = `import data from './data.json' assert { type: 'json' };
 CompletionRecord.prototype.assert = function assert() {};
