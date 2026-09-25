@@ -4,7 +4,7 @@ import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
-import type { FunctionResult, Manifest } from '@netlify/zip-it-and-ship-it'
+import type { FunctionResult, FunctionsManifest, ServerManifest } from '@netlify/zip-it-and-ship-it'
 import semver from 'semver'
 import { expect, test } from 'vitest'
 
@@ -13,7 +13,7 @@ import { importJsonFile } from '../../lib/utils/json.js'
 import { pathExists } from '../../lib/utils/path_exists.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
-const SERVER_ARCHIVE = join('server', 'server.tgz')
+const SERVER_ARCHIVE = 'server.tgz'
 
 interface FunctionMetadata {
   bootstrap_version: string
@@ -148,7 +148,7 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   expect(functionsDist).toContain('manifest.json')
   expect(functionsDist).toContain('___netlify-server.zip')
 
-  const { functions } = await importJsonFile<Manifest>(
+  const { functions } = await importJsonFile<FunctionsManifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
   const serverEntry = functions.find(({ name }) => name === '___netlify-server')!
@@ -158,6 +158,7 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   expect(serverEntry.routes).toHaveLength(1)
   expect(serverEntry.routes?.[0].pattern).toBe('/*')
   expect(serverEntry.routes?.[0].prefer_static).toBe(true)
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server'))).toBe(false)
 })
 
 test('Functions: bundles a Netlify Server standalone when netlify_build_server_standalone is on', async () => {
@@ -172,20 +173,45 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
 
   expect(output).toContain('Netlify Server detected at netlify/server/index.mjs')
 
-  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
-
   // The server no longer travels as a function, so there is no shim to bundle
   // and nothing named after it in the functions output.
-  expect(functionsDist).not.toContain('___netlify-server.zip')
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/functions/___netlify-server.zip'))).toBe(false)
   expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server-entry'))).toBe(false)
 
-  const manifest = await importJsonFile<Manifest>(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'))
+  const serverDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/server'))
 
-  expect(manifest.functions.find(({ name }) => name === '___netlify-server')).toBeUndefined()
-  expect(manifest.server?.path.endsWith(SERVER_ARCHIVE)).toBe(true)
-  expect(manifest.server?.path.endsWith('.tgz')).toBe(true)
-  expect(manifest.server?.routes).toHaveLength(1)
-  expect(manifest.server?.routes?.[0].pattern).toBe('/*')
+  expect(serverDist.sort()).toEqual(['manifest.json', SERVER_ARCHIVE])
+
+  const manifest = await importJsonFile<ServerManifest & FunctionsManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  // The server's manifest describes the server and nothing else.
+  expect(manifest.functions).toBeUndefined()
+  expect(manifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+  expect(manifest.server.routes).toHaveLength(1)
+  expect(manifest.server.routes?.[0].pattern).toBe('/*')
+})
+
+test('Functions: bundles a standalone Netlify Server alongside the functions, into separate outputs', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_and_functions')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  // Two steps writing two manifests, so neither can drop what the other wrote.
+  const functionsManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const serverManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(functionsManifest.functions.map(({ name }) => name)).toEqual(['hello'])
+  expect(functionsManifest.server).toBeUndefined()
+  expect(serverManifest.functions).toBeUndefined()
+  expect(serverManifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
 })
 
 test('Functions: builds a Netlify Server in both forms when both channels are on', async () => {
@@ -198,14 +224,18 @@ test('Functions: builds a Netlify Server in both forms when both channels are on
 
   await fixture.runWithBuild()
 
-  const functionsDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/functions'))
+  // Each channel writes into its own step's output, so neither can drop the
+  // other's.
+  const functionsManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const serverManifest = await importJsonFile<ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
 
-  expect(functionsDist).toContain('___netlify-server.zip')
-
-  const manifest = await importJsonFile<Manifest>(resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'))
-
-  expect(manifest.functions.find(({ name }) => name === '___netlify-server')).toBeDefined()
-  expect(manifest.server?.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+  expect(functionsManifest.functions.find(({ name }) => name === '___netlify-server')).toBeDefined()
+  expect(functionsManifest.server).toBeUndefined()
+  expect(serverManifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
 })
 
 test('Functions: ignores a Netlify Server entry when the feature flag is off', async () => {
@@ -257,7 +287,7 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
   expect(functionsDist).toContain('user.zip')
   expect(functionsDist).toContain('server-internal.zip')
 
-  const { functions } = await importJsonFile<Manifest>(
+  const { functions } = await importJsonFile<FunctionsManifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
 

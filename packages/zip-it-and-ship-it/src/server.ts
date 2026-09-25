@@ -16,8 +16,50 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 // A server claims every path the rest of the deploy does not.
 const SERVER_ROUTE = '/*'
 
-// Names the server's output folder and its archive.
+// Names the server's archive, and the function it is bundled as.
 const SERVER_NAME = 'server'
+
+const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'index.mts'])
+
+/**
+ * Resolves the server entrypoint inside `directory`, or undefined when there is
+ * none. Throws when there is more than one, since a site can have only one
+ * server. Callers say where to look, as they do for functions.
+ *
+ * Anything that needs to find a server goes through this, so `netlify build`,
+ * `netlify deploy` and `netlify dev` cannot disagree about what counts as one.
+ */
+export const findServerEntry = async (directory: string): Promise<string | undefined> => {
+  let entries: string[]
+
+  try {
+    entries = await fs.readdir(directory)
+  } catch (error) {
+    const { code } = error as NodeJS.ErrnoException
+
+    // Anything else is a directory we were meant to read and could not, which
+    // would silently leave the deploy with no server.
+    if (code === 'ENOENT' || code === 'ENOTDIR') {
+      return undefined
+    }
+
+    throw error
+  }
+
+  const candidates = entries.filter((name) => SERVER_ENTRY_BASENAMES.has(name)).sort()
+
+  if (candidates.length === 0) {
+    return undefined
+  }
+
+  if (candidates.length > 1) {
+    throw new Error(
+      `Found multiple server entrypoints in ${directory} (${candidates.join(', ')}). A site can have one server only.`,
+    )
+  }
+
+  return join(directory, candidates[0])
+}
 
 /**
  * A bundled Netlify Server. It is built like a function, but it is described on
@@ -70,8 +112,9 @@ const readServerSource = async (
   return source
 }
 
-// Bundles a Netlify Server through the same runtime as a function, into its own
-// folder so its archive does not land among theirs.
+// Bundles a Netlify Server through the same runtime as a function. It writes
+// straight into destFolder, which is the server's own, separate from the
+// functions'.
 export const bundleServer = async (
   server: ServerOptions,
   destFolder: string,
@@ -91,16 +134,13 @@ export const bundleServer = async (
 ): Promise<ServerResult> => {
   const srcPath = resolve(server.path)
   const source = await readServerSource(srcPath, { cache, featureFlags })
-  const serverFolder = join(destFolder, SERVER_NAME)
-
-  await fs.mkdir(serverFolder, { recursive: true })
 
   const zipResult = await source.runtime.zipFunction({
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
     config: source.config,
-    destFolder: serverFolder,
+    destFolder,
     extension: source.extension,
     featureFlags,
     filename: source.filename,
@@ -116,7 +156,7 @@ export const bundleServer = async (
     stat: source.stat,
   })
 
-  const path = join(serverFolder, `${SERVER_NAME}${extname(zipResult.path)}`)
+  const path = join(destFolder, `${SERVER_NAME}${extname(zipResult.path)}`)
 
   await fs.rename(zipResult.path, path)
 

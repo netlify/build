@@ -202,7 +202,7 @@ test('Normalizes error messages resulting from bundling TypeScript serverless fu
     type: 'functionsBundling',
   })
 
-  vi.spyOn(zipItAndShipIt, 'bundle').mockImplementation(() => {
+  vi.spyOn(zipItAndShipIt, 'zipFunctions').mockImplementation(() => {
     throw customError
   })
 
@@ -237,7 +237,7 @@ error: expected one of \`!\` or \`::\`, found keyword \`use\`
     type: 'functionsBundling',
   })
 
-  vi.spyOn(zipItAndShipIt, 'bundle').mockImplementation(() => {
+  vi.spyOn(zipItAndShipIt, 'zipFunctions').mockImplementation(() => {
     throw customError
   })
 
@@ -256,7 +256,7 @@ test('When an error has a `normalizedMessage` property, its value is used as the
     type: 'functionsBundling',
   })
 
-  vi.spyOn(zipItAndShipIt, 'bundle').mockImplementation(() => {
+  vi.spyOn(zipItAndShipIt, 'zipFunctions').mockImplementation(() => {
     throw customError
   })
 

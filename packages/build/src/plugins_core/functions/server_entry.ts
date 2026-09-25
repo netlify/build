@@ -1,16 +1,19 @@
-import { mkdir, readdir, writeFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { mkdir, writeFile } from 'fs/promises'
+import { basename, join, resolve } from 'path'
 
-import { pathExists } from '../../utils/path_exists.js'
+import { findServerEntry } from '@netlify/zip-it-and-ship-it'
 
 import { addErrorInfo } from '../../error/info.js'
 import { type FeatureFlags } from '../../core/feature_flags.js'
 
-const SERVER_ENTRY_DIR = 'netlify/server'
-const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'index.mts'])
+// Where a site's server lives, relative to the package root.
+export const SERVER_DIRECTORY = 'netlify/server'
 
-export const useServer = (featureFlags?: FeatureFlags): boolean =>
-  featureFlags?.netlify_build_server_entry === true || featureFlags?.netlify_build_server_standalone === true
+export const useServerAsFunction = (featureFlags?: FeatureFlags): boolean =>
+  featureFlags?.netlify_build_server_entry === true
+
+export const useServerStandalone = (featureFlags?: FeatureFlags): boolean =>
+  featureFlags?.netlify_build_server_standalone === true
 
 export interface ServerEntry {
   // Path of the user's server entrypoint.
@@ -27,43 +30,30 @@ export interface ServerEntry {
 export const getServerEntry = async ({
   buildDir,
   packagePath,
-  featureFlags,
 }: {
   buildDir: string
   packagePath?: string
-  featureFlags?: FeatureFlags
 }): Promise<ServerEntry | undefined> => {
-  if (!useServer(featureFlags)) {
-    return undefined
-  }
-
   const packageRoot = resolve(buildDir, packagePath ?? '')
-  const serverDir = join(packageRoot, SERVER_ENTRY_DIR)
 
-  if (!(await pathExists(serverDir))) {
-    return undefined
-  }
+  let entryPath: string | undefined
 
-  const candidates = (await readdir(serverDir)).filter((name) => SERVER_ENTRY_BASENAMES.has(name)).sort()
-
-  if (candidates.length === 0) {
-    return undefined
-  }
-
-  if (candidates.length > 1) {
-    const error = new Error(
-      `Found multiple server entrypoints in ${SERVER_ENTRY_DIR} (${candidates.join(
-        ', ',
-      )}). A site can have one server only.`,
-    )
+  try {
+    entryPath = await findServerEntry(join(packageRoot, SERVER_DIRECTORY))
+  } catch (error) {
     addErrorInfo(error, { type: 'resolveConfig' })
+
     throw error
   }
 
+  if (entryPath === undefined) {
+    return undefined
+  }
+
   return {
-    entryPath: join(serverDir, candidates[0]),
+    entryPath,
     packageRoot,
-    relativeEntryPath: `${SERVER_ENTRY_DIR}/${candidates[0]}`,
+    relativeEntryPath: `${SERVER_DIRECTORY}/${basename(entryPath)}`,
   }
 }
 
