@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.1.1](https://github.com/netlify/build/compare/edge-bundler-v16.1.0...edge-bundler-v16.1.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **edge-bundler:** vendor acorn-typescript with unreleased parser fixes ([#7245](https://github.com/netlify/build/issues/7245)) ([c9ae6ed](https://github.com/netlify/build/commit/c9ae6ed4a119a518c3d90a1cf5fc48fe8836f8ee))
+
 ## [16.1.0](https://github.com/netlify/build/compare/edge-bundler-v16.0.4...edge-bundler-v16.1.0) (2026-09-25)
 
 
