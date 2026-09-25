@@ -29,9 +29,9 @@
     "build": "tsc --project tsconfig.build.json",
     "e2e:serve": "vite e2e/fixture --port 3000",
     "e2e": "playwright test",
-    "test": "vitest run",
+    "test": "npm run build && vitest run",
     "test:dev": "vitest --ui",
-    "test:ci": "vitest run --reporter=default"
+    "test:ci": "npm run build && vitest run --reporter=default"
   },
   "keywords": [],
   "license": "MIT",
@@ -63,7 +63,6 @@
     "@vitest/ui": "^3.0.0",
     "execa": "^8.0.0",
     "memfs": "^4.0.0",
-    "ts-node": "^10.9.2",
     "unionfs": "^4.4.0",
     "vitest": "^3.0.0"
   },
