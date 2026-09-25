@@ -14,6 +14,7 @@
     "packages/*/dist",
     "packages/edge-bundler/deno/**",
     "packages/edge-bundler/*/vendor/**",
+    "packages/edge-bundler/vendor/**",
     "CHANGELOG.md",
     "coverage"
   ]
