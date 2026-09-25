@@ -249,3 +249,54 @@ test('Clones an import map', () => {
     scopes: {},
   })
 })
+
+describe('Detects whether import map contents are the defaults', () => {
+  test('Treats the internal imports and Node.js built-ins as the defaults', () => {
+    expect(ImportMap.isDefault(new ImportMap().withNodeBuiltins().getContents())).toBe(true)
+  })
+
+  test('Treats the internal imports alone as the defaults', () => {
+    expect(ImportMap.isDefault(new ImportMap().getContents())).toBe(true)
+  })
+
+  test('Treats a user import map that only repeats the defaults as the defaults', () => {
+    const map = new ImportMap([
+      {
+        baseURL: pathToFileURL(join(cwd(), 'import-map.json')),
+        imports: { '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts' },
+      },
+    ])
+
+    expect(ImportMap.isDefault(map.withNodeBuiltins().getContents())).toBe(true)
+  })
+
+  test('Flags an extra specifier', () => {
+    const map = new ImportMap([
+      {
+        baseURL: pathToFileURL(join(cwd(), 'import-map.json')),
+        imports: { 'alias:jamstack': 'https://jamstack.org' },
+      },
+    ])
+
+    expect(ImportMap.isDefault(map.withNodeBuiltins().getContents())).toBe(false)
+  })
+
+  test('Flags a default specifier mapped elsewhere', () => {
+    // User import maps can't do this, as the built-ins and internal imports are
+    // applied after them, but the contents are checked as given.
+    const { imports, scopes } = new ImportMap().withNodeBuiltins().getContents()
+
+    expect(ImportMap.isDefault({ imports: { ...imports, path: 'https://example.com/path.ts' }, scopes })).toBe(false)
+  })
+
+  test('Flags scopes', () => {
+    const map = new ImportMap([
+      {
+        baseURL: pathToFileURL(join(cwd(), 'import-map.json')),
+        scopes: { './functions/': { '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts' } },
+      },
+    ])
+
+    expect(ImportMap.isDefault(map.withNodeBuiltins().getContents())).toBe(false)
+  })
+})
