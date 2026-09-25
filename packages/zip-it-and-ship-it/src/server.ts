@@ -2,11 +2,13 @@ import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
 import { ARCHIVE_FORMAT } from './archive.js'
+import { NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
-import type { RuntimeName } from './runtimes/runtime.js'
+import { RUNTIME, type RuntimeName } from './runtimes/runtime.js'
 import type { RuntimeCache } from './utils/cache.js'
+import { FunctionBundlingUserError } from './utils/error.js'
 import { formatZipResult } from './utils/format_result.js'
 import { removeUndefined } from './utils/remove_undefined.js'
 import type { getLogger } from './utils/logger.js'
@@ -16,7 +18,8 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 // A server claims every path the rest of the deploy does not.
 const SERVER_ROUTE = '/*'
 
-// Names the server's archive, and the function it is bundled as.
+// Names the server's archive. Everywhere else it is only a label, identifying
+// the server in bundling errors, since a server has no name of its own.
 const SERVER_NAME = 'server'
 
 const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'index.mts'])
@@ -85,14 +88,22 @@ const readServerSource = async (
 ): Promise<FunctionSource> => {
   let source: FunctionSource | undefined
 
+  // A server that cannot be read is the user's file being wrong, so it is
+  // reported as a bundling failure rather than an internal error.
+  const unreadable = (detail?: string) =>
+    new FunctionBundlingUserError(`Could not read the Netlify Server at ${srcPath}${detail ? `: ${detail}` : ''}`, {
+      functionName: SERVER_NAME,
+      runtime: RUNTIME.JAVASCRIPT,
+    })
+
   try {
     source = await getFunctionFromPath(srcPath, { cache, featureFlags })
   } catch (error) {
-    throw new Error(`Could not read the Netlify Server at ${srcPath}: ${(error as Error).message}`)
+    throw unreadable((error as Error).message)
   }
 
   if (source === undefined) {
-    throw new Error(`Could not read the Netlify Server at ${srcPath}`)
+    throw unreadable()
   }
 
   return source
@@ -122,7 +133,7 @@ export const bundleServer = async (
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: source.config,
+    config: { ...source.config, nodeBundler: NODE_BUNDLER.NFT },
     destFolder,
     extension: source.extension,
     featureFlags,

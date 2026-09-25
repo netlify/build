@@ -6,9 +6,10 @@ import { fileURLToPath } from 'url'
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
 import type { FunctionResult, FunctionsManifest, ServerManifest } from '@netlify/zip-it-and-ship-it'
 import semver from 'semver'
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
+import * as serverStep from '../../lib/plugins_core/server/index.js'
 import { importJsonFile } from '../../lib/utils/json.js'
 import { pathExists } from '../../lib/utils/path_exists.js'
 
@@ -236,6 +237,25 @@ test('Functions: builds a Netlify Server in both forms when both channels are on
   expect(functionsManifest.functions.find(({ name }) => name === '___netlify-server')).toBeDefined()
   expect(functionsManifest.server).toBeUndefined()
   expect(serverManifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+})
+
+test('Functions: maps build feature flags for the server the way it does for the functions', async () => {
+  const zipServerSpy = vi.spyOn(serverStep.zipItAndShipIt, 'zipServer')
+
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
+    .withFlags({
+      debug: false,
+      featureFlags: { buildbot_zisi_trace_nft: true, netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const [, , options] = zipServerSpy.mock.calls[0]
+
+  expect(options?.featureFlags?.traceWithNft).toBe(true)
+
+  zipServerSpy.mockRestore()
 })
 
 test('Functions: ignores a Netlify Server entry when the feature flag is off', async () => {

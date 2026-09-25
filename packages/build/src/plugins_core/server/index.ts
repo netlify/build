@@ -5,6 +5,7 @@ import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
 import type { FeatureFlags } from '../../core/feature_flags.js'
 import { log } from '../../log/logger.js'
 import { pathExists } from '../../utils/path_exists.js'
+import { getZisiFeatureFlags } from '../functions/feature_flags.js'
 import { getServerEntry, SERVER_DIRECTORY, useServerStandalone } from '../functions/server_entry.js'
 import type { CoreStepFunction } from '../types.js'
 
@@ -27,7 +28,7 @@ const coreStep: CoreStepFunction = async function ({
 
   await zipItAndShipIt.zipServer(serverEntry.entryPath, resolve(buildDir, SERVER_DIST), {
     basePath: buildDir,
-    featureFlags,
+    featureFlags: getZisiFeatureFlags(featureFlags ?? {}),
     repositoryRoot,
     systemLog,
   })

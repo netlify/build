@@ -6,6 +6,7 @@ import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
 import { findServerEntry, zipFunctions, zipServer } from '../src/main.js'
+import type { FunctionBundlingUserError } from '../src/utils/error.js'
 import type { Manifest, ServerManifest } from '../src/manifest.js'
 
 import { FIXTURES_DIR } from './helpers/main.js'
@@ -180,12 +181,33 @@ describe('Netlify Server', () => {
     expect(functionsManifest.functions.map(({ name }) => name)).toEqual(['hello'])
   })
 
-  test('Fails the build when the server entry cannot be read', async () => {
+  test('Traces a CommonJS server with NFT rather than the legacy bundler', async () => {
+    const fixture = join(FIXTURES_DIR, 'netlify-server-cjs')
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
 
-    await expect(
-      zipServer(join(FIXTURE, 'netlify', 'server', 'nope.js'), tmpDir, { basePath: FIXTURE }),
-    ).rejects.toThrow('Could not read the Netlify Server')
+    const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), tmpDir, { basePath: fixture })
+
+    // Left to the function heuristics this would be `zisi`, since the entry is
+    // CommonJS and so reads as a v1 function.
+    expect(result.bundler).toBe('nft')
+  })
+
+  test('Fails the build when the server entry cannot be read, as a user error', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+
+    const error = await zipServer(join(FIXTURE, 'netlify', 'server', 'nope.js'), tmpDir, {
+      basePath: FIXTURE,
+    }).catch((err: unknown) => err)
+
+    expect(error).toBeInstanceOf(Error)
+    expect((error as Error).message).toContain('Could not read the Netlify Server')
+
+    // Carries the tag that makes the build report it as the user's file being
+    // wrong rather than an internal failure.
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
   })
 
   test('zipFunctions bundles only functions and still returns an array', async () => {
