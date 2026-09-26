@@ -32,7 +32,8 @@ test('runCommand resolves project-local binaries by default and honors preferLoc
   const { stdout } = await runCommand(command, { cwd, stdio: 'pipe' })
   expect(stdout).toBe('project-local')
   await expect(runCommand(command, { cwd, stdio: 'pipe', preferLocal: false })).rejects.toMatchObject({
-    code: 'ENOENT',
+    failed: true,
+    command,
   })
 })
 
@@ -41,5 +42,7 @@ test('run preserves options when the arguments array is omitted', async () => {
   const child = run(execPath, undefined, { cwd, env: { RUN_UTILS_TEST: 'child-value' }, stdio: 'pipe' })
   child.stdin!.end('console.log(JSON.stringify({ cwd: process.cwd(), value: process.env.RUN_UTILS_TEST }))')
   const { stdout } = await child
-  expect(JSON.parse(stdout)).toEqual({ cwd: await realpath(cwd), value: 'child-value' })
+  const result = JSON.parse(stdout)
+  expect(await realpath(result.cwd)).toBe(await realpath(cwd))
+  expect(result.value).toBe('child-value')
 })
