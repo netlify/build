@@ -42,7 +42,7 @@ test('run preserves options when the arguments array is omitted', async () => {
   const child = run(execPath, undefined, { cwd, env: { RUN_UTILS_TEST: 'child-value' }, stdio: 'pipe' })
   child.stdin!.end('console.log(JSON.stringify({ cwd: process.cwd(), value: process.env.RUN_UTILS_TEST }))')
   const { stdout } = await child
-  const result = JSON.parse(stdout)
+  const result = JSON.parse(stdout) as { cwd: string; value: string }
   expect(await realpath(result.cwd)).toBe(await realpath(cwd))
   expect(result.value).toBe('child-value')
 })
