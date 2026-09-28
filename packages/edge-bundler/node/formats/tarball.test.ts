@@ -21,15 +21,35 @@ describe('rewriteImportAssertions', () => {
     await fs.rm(workDir, { recursive: true, force: true })
   })
 
-  test('rewrites import assertions in a source file', async () => {
-    const sourceFile = join(workDir, 'source.ts')
-    const destFile = join(workDir, 'dest.ts')
-    await fs.writeFile(sourceFile, `import data from './data.json' assert { type: 'json' };\n`)
+  test.each(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts', '.cjs', '.cts', '.d.ts', '.d.mts', '.d.cts'])(
+    'rewrites import assertions in a %s source file',
+    async (extension) => {
+      const sourceFile = join(workDir, `source${extension}`)
+      const destFile = join(workDir, `dest${extension}`)
+      await fs.writeFile(sourceFile, `import data from './data.json' assert { type: 'json' };\n`)
 
-    await rewriteImportAssertions(sourceFile, destFile)
+      await rewriteImportAssertions(sourceFile, destFile)
 
-    expect(await fs.readFile(destFile, 'utf-8')).toBe(`import data from './data.json' with { type: 'json' };\n`)
-  })
+      expect(await fs.readFile(destFile, 'utf-8')).toBe(`import data from './data.json' with { type: 'json' };\n`)
+    },
+  )
+
+  test.each(['.cjs', '.cts', '.js'])(
+    'rewrites a CommonJS %s source file with a top-level return',
+    async (extension) => {
+      const sourceFile = join(workDir, `source${extension}`)
+      const destFile = join(workDir, `dest${extension}`)
+      const source = `const assert = require('assert');
+if (typeof module === 'undefined') return;
+module.exports = import('./data.json', { assert: { type: 'json' } });
+`
+      await fs.writeFile(sourceFile, source)
+
+      await rewriteImportAssertions(sourceFile, destFile)
+
+      expect(await fs.readFile(destFile, 'utf-8')).toBe(source.replace('{ assert:', '{ with:'))
+    },
+  )
 
   test('copies a file without rewritable extension verbatim', async () => {
     const sourceFile = join(workDir, 'data.json')

@@ -13,8 +13,10 @@ import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/f
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
 export { Config, FunctionConfig } from './config.js'
-export { zipFunction, zipFunctions, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
-export type { FunctionsBag } from './paths.js'
+export { zipFunction, zipFunctions, zipServer, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
+export type { ServerOptions, ServerResult, ZipServerOptions } from './zip.js'
+export { findServerEntry } from './server.js'
+export type { FunctionsBag, MixedPaths } from './paths.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export type { TrafficRules } from './rate_limit.js'
@@ -22,7 +24,7 @@ export type { ExtendedRoute, Route } from './utils/routes.js'
 export { NodeBundlerName, NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 export { RuntimeName, RUNTIME } from './runtimes/runtime.js'
 export { ModuleFormat, MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
-export { Manifest } from './manifest.js'
+export type { FunctionsManifest, Manifest, ServerManifest } from './manifest.js'
 export { FunctionResult } from './utils/format_result.js'
 
 export interface ListedFunction {

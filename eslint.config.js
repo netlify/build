@@ -85,7 +85,12 @@ export default tseslint.config(
 
   // Project-specific rules
   {
-    ignores: ['packages/**/dist', 'packages/**/lib', 'packages/edge-bundler/deno/**'],
+    ignores: [
+      'packages/**/dist',
+      'packages/**/lib',
+      'packages/edge-bundler/deno/**',
+      'packages/edge-bundler/vendor/**',
+    ],
   },
   {
     files: ['**/*.?(c|m)ts?(x)'],
