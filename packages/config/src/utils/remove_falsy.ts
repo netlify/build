@@ -1,9 +1,10 @@
 /**
  * Remove falsy values from object
  */
-export const removeFalsy = function (obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([, value]) => isTruthy(value)))
-}
+export const removeFalsy = <T extends object>(obj: T) =>
+  Object.fromEntries(Object.entries(obj).filter(([, value]) => isTruthy(value))) as NoFalsyField<T>
+
+type NoFalsyField<T> = { [P in keyof T]: Exclude<T[P], null | undefined | ''> }
 
 type NoUndefinedField<T> = { [P in keyof T]: Exclude<T[P], null | undefined> }
 
