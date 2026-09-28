@@ -119,10 +119,13 @@ const getConfigForFunction = async ({
 
   const fromFile = await getFromFile(func)
 
-  return {
-    ...fromConfig,
-    ...fromFile,
-  }
+  return withComputeResources(
+    {
+      ...fromConfig,
+      ...fromFile,
+    },
+    [fromConfig, fromFile],
+  )
 }
 
 const getFromMainConfig = ({
