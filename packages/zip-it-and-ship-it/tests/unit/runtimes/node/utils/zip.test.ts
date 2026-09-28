@@ -66,6 +66,32 @@ describe('resolveSymlinkedDestPaths', () => {
     expect(reversed.map(({ destPath }) => destPath)).toContain('node_modules/.store/inner/index.js')
   })
 
+  // The first rewrite can land under another link, so resolving once leaves the
+  // entry shadowed by that second link.
+  test('follows a chain of links to the final destination', async () => {
+    const files = [
+      entry('node_modules/dep', true),
+      entry('node_modules/.store', true),
+      entry('node_modules/dep/index.js'),
+    ]
+
+    const resolved = await resolveSymlinkedDestPaths(files, {
+      readTarget: readTargets({ 'node_modules/dep': '.store/dep', 'node_modules/.store': 'vendor/store' }),
+    })
+
+    expect(destPaths(resolved)).toContain('node_modules/vendor/store/dep/index.js')
+  })
+
+  test('stops instead of spinning when links point at each other', async () => {
+    const files = [entry('a', true), entry('b', true), entry('a/index.js')]
+
+    const resolved = await resolveSymlinkedDestPaths(files, {
+      readTarget: readTargets({ a: 'b', b: 'a' }),
+    })
+
+    expect(resolved).toHaveLength(3)
+  })
+
   // The link cannot be represented inside the archive, so rewriting entries onto
   // it would move them out of the bundle.
   test('leaves entries alone when the link points outside the bundle', async () => {

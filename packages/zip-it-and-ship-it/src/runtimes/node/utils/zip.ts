@@ -377,11 +377,37 @@ export const resolveSymlinkedDestPaths = async function <T extends ArchiveEntry>
 
   // Longest first, so a link nested inside another wins over its parent.
   const candidates = [...realPaths.entries()].sort(([a], [b]) => b.length - a.length)
+
+  // One rewrite can land under another link, so keep going until the path sits
+  // below none of them. Links that point at each other would otherwise spin
+  // here, so stop as soon as a path repeats.
+  const resolveDestPath = (destPath: string) => {
+    const visited = new Set([destPath])
+    let current = destPath
+
+    for (;;) {
+      const match = candidates.find(([link]) => current.startsWith(`${link}/`))
+
+      if (match === undefined) {
+        return current
+      }
+
+      const next = match[1] + current.slice(match[0].length)
+
+      if (visited.has(next)) {
+        return current
+      }
+
+      visited.add(next)
+      current = next
+    }
+  }
+
   const byDestPath = new Map<string, T>()
 
   for (const file of files) {
-    const match = candidates.find(([link]) => file.destPath.startsWith(`${link}/`))
-    const resolved = match ? { ...file, destPath: match[1] + file.destPath.slice(match[0].length) } : file
+    const destPath = resolveDestPath(file.destPath)
+    const resolved = destPath === file.destPath ? file : { ...file, destPath }
     const existing = byDestPath.get(resolved.destPath)
 
     // Two spellings of one package can now collapse onto a single path. Keep
