@@ -157,7 +157,42 @@ const getFromMainConfig = ({
     .sort(({ weight: weightA }, { weight: weightB }) => weightA - weightB)
     .map(({ expression }) => config[expression])
 
-  return mergeOptions.apply({ concatArrays: true, ignoreUndefined: true }, matches)
+  const merged = withComputeResources(
+    mergeOptions.apply({ concatArrays: true, ignoreUndefined: true }, matches) as FunctionConfig,
+    matches,
+  )
+
+  const memory = merged.memory as number | string | undefined
+
+  if (typeof memory === 'string') {
+    merged.memory = parseMemoryMB(memory)
+  }
+
+  return merged
+}
+
+// memory and vcpux are two mutually exclusive ways of sizing a function, so
+// they can't be merged key by key like other properties
+// a wildcard block with memory and a more specific block with vcpu
+// would otherwise produce both. Instead, the highest-priority source that
+// sets either of them supplies the pair.
+export const withComputeResources = <T extends FunctionConfig>(
+  merged: T,
+  sources: Pick<FunctionConfig, 'memory' | 'vcpu'>[],
+): T => {
+  const winner = [...sources].reverse().find((source) => source.memory !== undefined || source.vcpu !== undefined)
+
+  if (winner === undefined) {
+    return merged
+  }
+
+  const { memory, vcpu, ...rest } = merged
+
+  return {
+    ...rest,
+    ...(winner.memory === undefined ? {} : { memory: winner.memory }),
+    ...(winner.vcpu === undefined ? {} : { vcpu: winner.vcpu }),
+  } as T
 }
 
 const getFromFile = async (func: FunctionWithoutConfig): Promise<FunctionConfig> => {

@@ -27,6 +27,28 @@ const isValidCronExpression = (cron) => {
   }
 }
 
+const FUNCTION_MEMORY_PATTERN = /^(\d+(?:\.\d+)?)\s*(mb|gb)?$/i
+const FUNCTION_MEMORY_MIN_MB = 1024
+const FUNCTION_MEMORY_MAX_MB = 4096
+
+const isValidFunctionMemory = (value) => {
+  let megabytes = value
+
+  if (isString(value)) {
+    const match = FUNCTION_MEMORY_PATTERN.exec(value.trim())
+
+    if (!match) {
+      return false
+    }
+
+    megabytes = Number.parseFloat(match[1]) * (match[2]?.toLowerCase() === 'gb' ? 1024 : 1)
+  }
+
+  return (
+    Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
+  )
+}
+
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
 // Each validation is an object with the following properties:
@@ -296,8 +318,8 @@ export const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'functions.*.memory',
-    check: (value) => typeof value === 'number' || isString(value),
-    message: 'must be a number (in MB) or a string with a unit (e.g. "2gb").',
+    check: isValidFunctionMemory,
+    message: 'must be between 1024 and 4096 MB, as a number (in MB) or a string with a unit (e.g. "2gb").',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { memory: '2gb' } },
     }),
@@ -316,6 +338,14 @@ export const POST_NORMALIZE_VALIDATIONS = [
     message: 'must be a number between 0.5 and 2.',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { vcpu: 1.5 } },
+    }),
+  },
+  {
+    property: 'functions.*',
+    check: (functionConfig) => !(functionConfig.memory !== undefined && functionConfig.vcpu !== undefined),
+    message: '"memory" and "vcpu" are mutually exclusive.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { memory: '2gb' } },
     }),
   },
   {
