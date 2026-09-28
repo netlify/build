@@ -858,6 +858,9 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const manifest = JSON.parse(manifestFile)
 
       expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
+      expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: false, vendor_manifest: false })
+      expect(manifest.bundles[1]).not.toHaveProperty('custom_import_map')
+      expect(manifest.bundles[1]).not.toHaveProperty('vendor_manifest')
 
       const tarballPath = join(distPath, manifest.bundles[0].asset)
       const tarballResult = await runTarball(tarballPath)
@@ -880,6 +883,57 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const eszipPath = join(distPath, manifest.bundles[1].asset)
       const eszipResult = await runESZIP(eszipPath)
       expect(eszipResult).toStrictEqual(expectedOutput)
+
+      await cleanup()
+    })
+
+    test('Flags a vendor manifest when a remote module needs its headers recorded', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_netlify_edge', { copyDirectory: true })
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, [], {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+      })
+
+      const manifest = JSON.parse(await readFile(resolve(distPath, 'manifest.json'), 'utf8'))
+
+      // `netlify:edge` maps to a URL with a query string, which Deno can't vendor
+      // without recording it in `vendor/manifest.json`.
+      expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: false, vendor_manifest: true })
+
+      const entries: string[] = []
+
+      await tar.list({
+        file: join(distPath, manifest.bundles[0].asset),
+        onReadEntry: (entry) => {
+          entries.push(entry.path)
+        },
+      })
+
+      expect(entries).toContain('./vendor/manifest.json')
+
+      await cleanup()
+    })
+
+    test('With imports of Node.js built-ins that only exist with the `node:` prefix', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_prefix_only', { copyDirectory: true })
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, [], {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+      })
+
+      const manifest = JSON.parse(await readFile(resolve(distPath, 'manifest.json'), 'utf8'))
+      const tarballResult = await runTarball(join(distPath, manifest.bundles[0].asset))
+
+      expect(tarballResult).toStrictEqual({ func1: 'function' })
+
+      const eszipResult = await runESZIP(join(distPath, manifest.bundles[1].asset))
+      expect(eszipResult).toStrictEqual({ func1: 'function' })
 
       await cleanup()
     })
@@ -964,6 +1018,9 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
       const manifest = JSON.parse(manifestFile)
+
+      // The user import map and the bundled npm modules both add import map entries.
+      expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: true })
 
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
@@ -1159,7 +1216,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
         expect(manifest.bundling_timing).toEqual({ tarball_ms: expect.any(Number) })
         expect(manifest.bundles.length).toBe(2)
-        expect(manifest.bundles[0].format).toBe('tar')
+        expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: false, vendor_manifest: false })
         expect(manifest.bundles[1].format).toBe('eszip2')
 
         // Verify the tarball is functional

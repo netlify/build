@@ -1,81 +1,71 @@
-import { mkdir, readdir, writeFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { mkdir, writeFile } from 'fs/promises'
+import { basename, join, resolve } from 'path'
 
-import { pathExists } from '../../utils/path_exists.js'
+import { findServerEntry } from '@netlify/zip-it-and-ship-it'
 
 import { addErrorInfo } from '../../error/info.js'
 import { type FeatureFlags } from '../../core/feature_flags.js'
 
-export const SERVER_ENTRY_FUNCTION_NAME = '___netlify-server'
-const SERVER_ENTRY_DIR = 'netlify/server'
-const SERVER_ENTRY_BASENAMES = new Set(['index.js', 'index.mjs', 'index.ts', 'index.mts'])
-const SERVER_SHIM_DIR = '.netlify/server-entry'
+// Where a site's server lives, relative to the package root.
+export const SERVER_DIRECTORY = 'netlify/server'
+
+export const useServerAsFunction = (featureFlags?: FeatureFlags): boolean =>
+  featureFlags?.netlify_build_server_entry === true
+
+export const useServerStandalone = (featureFlags?: FeatureFlags): boolean =>
+  featureFlags?.netlify_build_server_standalone === true
 
 export interface ServerEntry {
   // Path of the user's server entrypoint.
   entryPath: string
 
-  // Path of the generated shim, ready to be bundled as a generated function.
-  shimPath: string
+  // Root of the package the server belongs to.
+  packageRoot: string
 
   // Entrypoint path relative to the package root, for logging.
   relativeEntryPath: string
 }
 
-// Finds the user's server entrypoint and materializes the function entry it is
-// deployed as.
+// Finds the user's server entrypoint.
 export const getServerEntry = async ({
   buildDir,
   packagePath,
-  featureFlags,
 }: {
   buildDir: string
   packagePath?: string
-  featureFlags?: FeatureFlags
 }): Promise<ServerEntry | undefined> => {
-  if (!featureFlags?.netlify_build_server_entry) {
-    return undefined
-  }
-
   const packageRoot = resolve(buildDir, packagePath ?? '')
-  const serverDir = join(packageRoot, SERVER_ENTRY_DIR)
 
-  if (!(await pathExists(serverDir))) {
-    return undefined
-  }
+  let entryPath: string | undefined
 
-  const candidates = (await readdir(serverDir)).filter((name) => SERVER_ENTRY_BASENAMES.has(name)).sort()
-
-  if (candidates.length === 0) {
-    return undefined
-  }
-
-  if (candidates.length > 1) {
-    const error = new Error(
-      `Found multiple server entrypoints in ${SERVER_ENTRY_DIR} (${candidates.join(
-        ', ',
-      )}). A site can have one server only.`,
-    )
+  try {
+    entryPath = await findServerEntry(join(packageRoot, SERVER_DIRECTORY))
+  } catch (error) {
     addErrorInfo(error, { type: 'resolveConfig' })
+
     throw error
   }
 
-  const entryPath = join(serverDir, candidates[0])
-  const shimDir = join(packageRoot, SERVER_SHIM_DIR)
-  const shimPath = join(shimDir, `${SERVER_ENTRY_FUNCTION_NAME}.mjs`)
-
-  await mkdir(shimDir, { recursive: true })
-  await writeFile(shimPath, getShimContents(entryPath))
+  if (entryPath === undefined) {
+    return undefined
+  }
 
   return {
     entryPath,
-    shimPath,
-    relativeEntryPath: `${SERVER_ENTRY_DIR}/${candidates[0]}`,
+    packageRoot,
+    relativeEntryPath: `${SERVER_DIRECTORY}/${basename(entryPath)}`,
   }
 }
 
-// The shim gives the server the deploy surface of a function without touching
-// the user's code.
+// Everything below carries a server through the functions plumbing, which is
+// how it was deployed before it stood on its own. It goes away once no deploy
+// is built with the function channel on.
+
+const SERVER_FUNCTION_NAME = '___netlify-server'
+const SERVER_SHIM_DIR = '.netlify/server-entry'
+
+// Gives the server the deploy surface of a function without touching the user's
+// code, so that it can be bundled and uploaded as one.
 const getShimContents = (entryPath: string) => `import * as server from ${JSON.stringify(entryPath)}
 
 export default server.default ?? server
@@ -88,3 +78,19 @@ export const config = {
   preferStatic: true,
 }
 `
+
+/**
+ * Writes the file a server is bundled from when it travels as a function, and
+ * returns its path.
+ */
+export const writeServerShim = async ({ entryPath, packageRoot }: ServerEntry): Promise<string> => {
+  const shimDir = join(packageRoot, SERVER_SHIM_DIR)
+
+  await mkdir(shimDir, { recursive: true })
+
+  const shimPath = join(shimDir, `${SERVER_FUNCTION_NAME}.mjs`)
+
+  await writeFile(shimPath, getShimContents(entryPath))
+
+  return shimPath
+}

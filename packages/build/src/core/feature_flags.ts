@@ -21,4 +21,5 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   edge_bundler_generate_tarball: false,
   netlify_build_db_setup: false,
   netlify_build_server_entry: false,
+  netlify_build_server_standalone: false,
 }
