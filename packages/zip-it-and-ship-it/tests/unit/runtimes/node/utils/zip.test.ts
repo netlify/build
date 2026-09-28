@@ -10,12 +10,7 @@ const entry = (destPath: string, symlink = false) => ({
   stat: { isSymbolicLink: () => symlink } as Stats,
 })
 
-const readTargets =
-  (links: Record<string, string>, onRead?: (srcFile: string) => void) => async (srcFile: string) => {
-    onRead?.(srcFile)
-
-    return links[srcFile.replace('/repo/', '')]
-  }
+const readTargets = (links: Record<string, string>) => async (srcFile: string) => links[srcFile.replace('/repo/', '')]
 
 const destPaths = (files: { destPath: string }[]) => files.map(({ destPath }) => destPath)
 
