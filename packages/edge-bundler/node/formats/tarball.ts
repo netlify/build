@@ -17,7 +17,7 @@ import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
 import { DENO_RETRIES, isTransientDenoErrorObject } from '../utils/transient_error.js'
-import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
+import { isDeclarationFile, rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
 import { generateManifestRoutes, Route } from '../manifest.js'
@@ -138,6 +138,7 @@ export const bundle = async ({
 
   // Get import map contents with file:// URLs transformed to relative paths
   const importMapContents = importMap.getContents(prefixes, additionalImportMapEntries)
+  const customImportMap = !ImportMap.isDefault(importMapContents)
 
   // Create deno.json with import map contents for runtime resolution
   const denoConfigPath = path.join(bundleDir.path, 'deno.json')
@@ -164,6 +165,7 @@ export const bundle = async ({
 
   // Rewrite import assertions in files outputted by deno vendor
   const denoVendorOutput = path.join(bundleDir.path, 'vendor')
+  const vendorManifest = existsSync(path.join(denoVendorOutput, 'manifest.json'))
   if (existsSync(denoVendorOutput)) {
     const denoVendorFiles = await listRecursively(denoVendorOutput)
     for (const denoVendorFile of denoVendorFiles) {
@@ -216,15 +218,17 @@ export const bundle = async ({
     await Promise.allSettled(cleanup.map((task) => task()))
 
     return {
+      customImportMap,
       extension: TARBALL_EXTENSION,
       format: BundleFormat.TARBALL,
       hash,
+      vendorManifest,
     }
   }
 }
 
 // Source file extensions that may contain import statements.
-const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
+const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts', '.cjs', '.cts'])
 
 /**
  * Uses deno info to get the module graph and extract only the local source files
@@ -397,7 +401,7 @@ export async function rewriteImportAssertions(sourceFile: string, destPath: stri
 
   try {
     const source = await fs.readFile(sourceFile, 'utf-8')
-    const modified = rewriteSourceImportAssertions(source)
+    const modified = rewriteSourceImportAssertions(source, { isDeclaration: isDeclarationFile(sourceFile) })
     await fs.writeFile(destPath, modified)
   } catch (error) {
     throw new Error(`Failed to rewrite import assertions in ${sourceFile}`, { cause: error })

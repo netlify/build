@@ -18,9 +18,6 @@ const defaultOptions: TracingOptions = {
   // defaults to always sample
   sampleRate: 1,
   baggageFilePath: '',
-  // tracing.apiKey defaults to '-' else we'll get warning logs if not using
-  // honeycomb directly - https://github.com/honeycombio/honeycomb-opentelemetry-node/issues/201
-  apiKey: '-',
   parentSpanId: '',
   traceId: '',
   debug: false,

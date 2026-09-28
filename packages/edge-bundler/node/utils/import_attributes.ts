@@ -7,18 +7,33 @@ import type {
   Options as AcornOptions,
   Program,
 } from 'acorn'
-import { tsPlugin } from '@sveltejs/acorn-typescript'
+import { tsPlugin } from '#acorn-typescript'
 
 const acornNoJSX = Parser.extend(tsPlugin({ jsx: false }))
 const acornJSX = Parser.extend(tsPlugin({ jsx: true }))
+const acornDts = Parser.extend(tsPlugin({ dts: true }))
 
 const parseOptions: AcornOptions = {
   ecmaVersion: 'latest',
   sourceType: 'module',
   locations: true,
+  // CommonJS files (`.cjs`, `.cts`, or `.js` outside a `"type": "module"`
+  // package) may `return` at the top level.
+  allowReturnOutsideFunction: true,
 }
 
-const parseAST = (source: string): Program => {
+// The file extensions Deno treats as TypeScript declaration files.
+const DECLARATION_FILE = /\.d\.[cm]?ts$/
+
+export const isDeclarationFile = (path: string) => DECLARATION_FILE.test(path)
+
+export const parseAST = (source: string, { isDeclaration = false } = {}): Program => {
+  // Declaration files are an ambient context, where syntax such as a `const`
+  // without an initializer is valid, so they need the parser's `dts` mode.
+  if (isDeclaration) {
+    return acornDts.parse(source, parseOptions)
+  }
+
   try {
     return acornJSX.parse(source, parseOptions)
   } catch (error) {
@@ -34,7 +49,7 @@ const parseAST = (source: string): Program => {
 /**
  * Given source code rewrites import assert into import with
  */
-export function rewriteSourceImportAssertions(source: string): string {
+export function rewriteSourceImportAssertions(source: string, options: { isDeclaration?: boolean } = {}): string {
   if (!source.includes('assert')) {
     return source
   }
@@ -42,7 +57,7 @@ export function rewriteSourceImportAssertions(source: string): string {
   let modified = source
 
   try {
-    const parsedAST = parseAST(source)
+    const parsedAST = parseAST(source, options)
 
     const statements = collectImportAssertions(source, parsedAST.body)
 

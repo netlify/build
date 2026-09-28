@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.1.0...opentelemetry-sdk-setup-v4.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/opentelemetry-utils bumped from ~3.1.0 to ~4.0.0
+
 ## [3.1.0](https://github.com/netlify/build/compare/opentelemetry-sdk-setup-v3.0.1...opentelemetry-sdk-setup-v3.1.0) (2026-07-17)
 
 
