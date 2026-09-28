@@ -23,7 +23,7 @@ const saveOne = async function (
     cwd?: string
     move?: boolean
     ttl?: number
-    digests?: any[]
+    digests?: string[]
   } = {},
 ) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt })

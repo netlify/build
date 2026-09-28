@@ -1,4 +1,4 @@
-import stringWidth from 'string-width'
+import stringWidth from 'fast-string-width'
 
 const HEADER_MIN_WIDTH = 60
 const PADDING_WIDTH = 2

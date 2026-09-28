@@ -1,0 +1,4 @@
+spa_fallback = false
+
+[build]
+command = "node build.mjs"

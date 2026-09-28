@@ -17,11 +17,13 @@ import { filterConfig, loadConfigFile } from './util.js'
 const ALLOWED_PROPERTIES = [
   ['build', 'functions'],
   ['build', 'publish'],
+  ['edge_functions'],
   ['functions', '*'],
   ['functions', '*', '*'],
   ['headers'],
   ['images', 'remote_images'],
   ['redirects'],
+  ['spa_fallback'],
 ]
 
 // For array properties, any values set in this API will be merged with the
@@ -71,7 +73,7 @@ const coreStep: CoreStepFunction = async function ({
   } catch (err) {
     systemLog(`Failed to read Frameworks API: ${err.message}`)
 
-    throw new Error('An error occured while processing the platform configurarion defined by your framework')
+    throw new Error('An error occurred while processing the platform configuration defined by your framework')
   }
 
   if (!config) {
@@ -107,6 +109,7 @@ const coreStep: CoreStepFunction = async function ({
 
   return {
     configMutations,
+    configMutationsOrigin: 'the Frameworks API',
   }
 }
 

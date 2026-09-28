@@ -1,7 +1,7 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/main/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-Utility for handling Netlify Functions in Netlify Build plugins.
+Utility for handling Netlify Functions in Netlify Build plugins
 
 This allows plugins to:
 

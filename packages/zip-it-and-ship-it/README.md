@@ -5,7 +5,8 @@
 [![Build](https://github.com/netlify/zip-it-and-ship-it/workflows/Build/badge.svg)](https://github.com/netlify/zip-it-and-ship-it/actions)
 [![Downloads](https://img.shields.io/npm/dm/@netlify/zip-it-and-ship-it.svg)](https://www.npmjs.com/package/@netlify/zip-it-and-ship-it)
 
-Creates Zip archives from Node.js, Go, and Rust programs. Those archives are ready to be uploaded to AWS Lambda.
+Creates Zip archives from Netlify Functions written in Node.js, Go, or Rust. Those archives are ready to be uploaded to
+AWS Lambda.
 
 This library is used under the hood by several Netlify features, including
 [production CI builds](https://github.com/netlify/build), [Netlify CLI](https://github.com/netlify/cli) and the
@@ -493,8 +494,3 @@ In Netlify, this is done by ensuring that the following Node.js versions are the
 Note that this problem might not apply for Node.js native modules using the [N-API](https://nodejs.org/api/n-api.html).
 
 More information in [this issue](https://github.com/netlify/zip-it-and-ship-it/issues/69).
-
-## File Serving
-
-As of `v0.3.0` the `serveFunctions` capability has been extracted out to
-[Netlify Dev](https://github.com/netlify/netlify-dev-plugin/).

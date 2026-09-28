@@ -12,6 +12,10 @@ export const isString = function (value) {
   return typeof value === 'string'
 }
 
+export const isBoolean = function (value) {
+  return typeof value === 'boolean'
+}
+
 // Check an object valid properties, including legacy ones
 export const validProperties = function (propNames, legacyPropNames) {
   return {

@@ -1,0 +1,9 @@
+spa_fallback = true
+
+[build]
+command = "echo hi"
+
+[[redirects]]
+from = "/*"
+to = "/200.html"
+status = 200

@@ -127,6 +127,12 @@ Default: automatically guessed`,
 Default: automatically guessed`,
     hidden: true,
   },
+  serverDistDir: {
+    string: true,
+    describe: `Path to the directory where the packaged Netlify Server is kept.
+Default: automatically guessed`,
+    hidden: true,
+  },
   cacheDir: {
     string: true,
     describe: `Path to the cache directory.

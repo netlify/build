@@ -1,0 +1,4 @@
+[[edge_functions]]
+  path = "/test"
+  function = "test"
+  name = "My edge function"

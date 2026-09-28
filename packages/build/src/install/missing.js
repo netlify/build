@@ -2,9 +2,8 @@ import { promises as fs } from 'node:fs'
 import { normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { pathExists } from 'path-exists'
-
 import { logInstallMissingPlugins, logInstallIntegrations } from '../log/messages/install.js'
+import { pathExists } from '../utils/path_exists.js'
 
 import { addExactDependencies } from './main.js'
 

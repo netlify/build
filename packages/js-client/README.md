@@ -1,4 +1,6 @@
-A Netlify [OpenAPI](https://github.com/netlify/open-api) client that works in the browser and Node.js.
+# `@netlify/api`
+
+A Netlify [OpenAPI](https://github.com/netlify/open-api) client that works in the browser and Node.js
 
 ## Usage
 

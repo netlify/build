@@ -1,39 +1,16 @@
 import { platform } from 'os'
 
 import { type ExecaChildProcess } from 'execa'
-import waitFor from 'p-wait-for'
 import { satisfies } from 'semver'
 
 // 1 second
 const SERVER_KILL_TIMEOUT = 1e3
 
 // 1 second
-const SERVER_POLL_INTERNAL = 1e3
+const SERVER_POLL_INTERVAL = 1e3
 
-// 10 seconds
-const SERVER_POLL_TIMEOUT = 1e4
-
-interface SuccessRef {
-  success: boolean
-}
-
-const isServerReady = async (port: number, successRef: SuccessRef, ps?: ExecaChildProcess<string>) => {
-  // If the process has been killed or if it exited with an error, we return
-  // early with `success: false`.
-  if (ps?.killed || (ps?.exitCode && ps.exitCode > 0)) {
-    return true
-  }
-
-  try {
-    await fetch(`http://127.0.0.1:${port}`)
-
-    successRef.success = true
-  } catch {
-    return false
-  }
-
-  return true
-}
+// 30 seconds
+const SERVER_POLL_TIMEOUT = 3e4
 
 const killProcess = (ps: ExecaChildProcess<string>) => {
   // If the process is no longer running, there's nothing left to do.
@@ -56,22 +33,37 @@ const killProcess = (ps: ExecaChildProcess<string>) => {
           platform() === 'win32' && satisfies(process.version, '>=21') ? false : SERVER_KILL_TIMEOUT,
       })
     } catch {
-      // no-op
+      // If `kill()` itself throws (the EPERM case above), the process was
+      // never signalled, so it may never emit `close`. Resolve here instead
+      // of leaving the promise pending forever.
+      resolve(undefined)
     }
   })
 }
 
 const waitForServer = async (port: number, ps?: ExecaChildProcess<string>) => {
-  const successRef: SuccessRef = {
-    success: false,
+  const deadline = Date.now() + SERVER_POLL_TIMEOUT
+  const signal = AbortSignal.timeout(SERVER_POLL_TIMEOUT)
+
+  while (Date.now() < deadline) {
+    // If the process has been killed or exited, the server will never become
+    // ready
+    if (ps?.killed || ps?.exitCode !== null || ps?.signalCode !== null) {
+      return false
+    }
+
+    try {
+      await fetch(`http://127.0.0.1:${port}`, { signal })
+
+      return true
+    } catch {
+      await new Promise((resolve) => {
+        setTimeout(resolve, SERVER_POLL_INTERVAL)
+      })
+    }
   }
 
-  await waitFor(() => isServerReady(port, successRef, ps), {
-    interval: SERVER_POLL_INTERNAL,
-    timeout: SERVER_POLL_TIMEOUT,
-  })
-
-  return successRef.success
+  return false
 }
 
 export { killProcess, waitForServer }

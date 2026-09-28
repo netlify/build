@@ -1,9 +1,8 @@
 import { promises as fs } from 'fs'
-import { basename, dirname, join } from 'path'
+import { basename, join } from 'path'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
-import cpy from 'cpy'
-import { pathExists } from 'path-exists'
+import { isNotJunk } from 'junk'
 
 // Add a Netlify Function file to the `functions` directory, so it is processed
 // by `@netlify/plugin-functions-core`
@@ -12,7 +11,9 @@ export const add = async function (src?: string, dist?: string, { fail = default
     return fail('No function source directory was specified')
   }
 
-  if (!(await pathExists(src))) {
+  try {
+    await fs.access(src)
+  } catch {
     return fail(`No function file or directory found at "${src}"`)
   }
 
@@ -20,19 +21,11 @@ export const add = async function (src?: string, dist?: string, { fail = default
     return fail('No function directory was specified')
   }
 
-  const srcBasename = basename(src)
-  const [srcGlob, dest] = await getSrcAndDest(src, srcBasename, dist)
-  await cpy(srcGlob, dest, { cwd: dirname(src), overwrite: true })
-}
-
-const getSrcAndDest = async function (src: string, srcBasename: string, dist: string): Promise<[string, string]> {
-  const srcStat = await fs.stat(src)
-
-  if (srcStat.isDirectory()) {
-    return [`${srcBasename}/**`, join(dist, srcBasename)]
-  }
-
-  return [srcBasename, dist]
+  await fs.cp(src, join(dist, basename(src)), {
+    recursive: true,
+    force: true,
+    filter: (source) => isNotJunk(basename(source)),
+  })
 }
 
 export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {

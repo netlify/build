@@ -1,12 +1,24 @@
+import { randomBytes } from 'crypto'
 import { createServer } from 'net'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { promisify } from 'util'
 
 import getPort from 'get-port'
-import { tmpName } from 'tmp-promise'
+
+interface TcpServerOptions<TRequest> {
+  response?: unknown
+  useUnixSocket?: boolean
+  onRequest?: (request: TRequest) => void | Promise<void>
+}
 
 // Start a TCP server to mock calls.
-export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest = undefined } = {}) {
-  const requests = []
+export const startTcpServer = async function <TRequest>({
+  response = '',
+  useUnixSocket = true,
+  onRequest = undefined,
+}: TcpServerOptions<TRequest> = {}) {
+  const requests: TRequest[] = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests, onRequest }))
   await promisify(server.listen.bind(server))(connectionOpts)
@@ -17,7 +29,7 @@ export const startTcpServer = async function ({ response = '', useUnixSocket = t
 
 const getConnectionOpts = async function ({ useUnixSocket }) {
   if (useUnixSocket) {
-    const path = await tmpName({ template: 'netlify-test-socket-XXXXXX' })
+    const path = join(tmpdir(), `netlify-test-socket-${randomBytes(3).toString('hex')}`)
     return { connectionOpts: { path }, address: path }
   }
 

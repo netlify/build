@@ -1,8 +1,7 @@
-import { platform } from 'process'
+import { platform, version } from 'process'
 import { fileURLToPath } from 'url'
 
 import { execaNode } from 'execa'
-import semver from 'semver'
 import { test, expect } from 'vitest'
 
 import { run, runCommand } from '../src/main.js'
@@ -21,8 +20,8 @@ test('Should expose several methods', () => {
 })
 
 test('Can run a command as a single string', async () => {
-  const { stdout } = await runCommand('npx --version', { stdio: 'pipe' })
-  expect(semver.valid(stdout)).toBeTruthy()
+  const { stdout } = await runCommand('node --version', { stdio: 'pipe' })
+  expect(stdout).toBe(version)
 })
 
 // `echo` in `cmd.exe` is different from Unix
@@ -39,27 +38,26 @@ if (platform !== 'win32') {
 }
 
 test('Can run local binaries', async () => {
-  const { stdout } = await run('npx', ['--version'], { stdio: 'pipe' })
-
-  expect(semver.valid(stdout)).toBeTruthy()
+  const { stdout } = await run('vitest', ['--version'], { stdio: 'pipe' })
+  expect(stdout).toMatch(/^vitest\/\d+\.\d+\.\d+/)
 })
 
 test('Should redirect stdout/stderr to parent', async () => {
-  const { stdout } = await runInChildProcess('npx --version')
-  expect(semver.valid(stdout)).toBeTruthy()
+  const { stdout } = await runInChildProcess('node --version')
+  expect(stdout).toBe(version)
 })
 
 test('Should not redirect stdout/stderr to parent when using "stdio" option', async () => {
-  const { stdout } = await runInChildProcess('ava --version', { stdio: 'pipe' })
+  const { stdout } = await runInChildProcess('node --version', { stdio: 'pipe' })
   expect(stdout).toBe('')
 })
 
 test('Should not redirect stdout/stderr to parent when using "stdout" option', async () => {
-  const { stdout } = await runInChildProcess('ava --version', { stdout: 'pipe' })
+  const { stdout } = await runInChildProcess('node --version', { stdout: 'pipe' })
   expect(stdout).toBe('')
 })
 
 test('Should not redirect stdout/stderr to parent when using "stderr" option', async () => {
-  const { stdout } = await runInChildProcess('ava --version', { stderr: 'pipe' })
+  const { stdout } = await runInChildProcess('node --version', { stderr: 'pipe' })
   expect(stdout).toBe('')
 })

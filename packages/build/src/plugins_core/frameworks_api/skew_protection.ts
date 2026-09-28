@@ -15,8 +15,6 @@ const skewProtectionConfigSchema = z.object({
 })
 
 export type SkewProtectionConfig = z.infer<typeof skewProtectionConfigSchema>
-export type DeployIDSource = z.infer<typeof deployIDSourceSchema>
-export type DeployIDSourceType = z.infer<typeof deployIDSourceTypeSchema>
 
 const validateSkewProtectionConfig = (input: unknown): SkewProtectionConfig => {
   const { data, error, success } = skewProtectionConfigSchema.safeParse(input)

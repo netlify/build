@@ -1,6 +1,5 @@
-import isPlainObj from 'is-plain-obj'
-
 import { addErrorInfo } from '../../error/info.js'
+import { isPlainObject } from '../../utils/is_plain_object.js'
 
 // Report status information to the UI
 export const show = function (runState: Record<string, unknown>, showArgs: Record<string, unknown>) {
@@ -33,7 +32,7 @@ function validateShowArgsObject(showArgs: unknown): asserts showArgs is Record<s
     throw new Error('requires an argument')
   }
 
-  if (!isPlainObj(showArgs)) {
+  if (!isPlainObject(showArgs)) {
     throw new Error('argument must be a plain object')
   }
 }

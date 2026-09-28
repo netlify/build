@@ -43,7 +43,7 @@ test('detects and configures a SolidStart site that uses the old `solid-start` p
   expect(detected?.[0]?.dev?.port).toBe(3000)
 })
 
-test('detects and configures a SolidStart site that uses the new `@solidjs/start` package', async ({ fs }) => {
+test('detects and configures a SolidStart v1 site', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({
       scripts: {
@@ -60,6 +60,7 @@ test('detects and configures a SolidStart site that uses the new `@solidjs/start
         vinxi: '^0.4.1',
       },
     }),
+    'app.config.ts': '',
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
 
@@ -73,4 +74,36 @@ test('detects and configures a SolidStart site that uses the new `@solidjs/start
   expect(detected?.[0]?.build?.directory).toBe('dist')
   expect(detected?.[0]?.dev?.command).toBe('vinxi dev')
   expect(detected?.[0]?.dev?.port).toBe(3000)
+})
+
+test('detects and configures a SolidStart v2 site', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({
+      scripts: {
+        dev: 'vite dev',
+        build: 'vite build',
+      },
+      dependencies: {
+        '@solidjs/router': '^1.0.0',
+        '@solidjs/start': '2.0.0',
+        'solid-js': '^1.9.14',
+      },
+      devDependencies: {
+        '@netlify/vite-plugin': '^2.12.9',
+        vite: '^8.2.0',
+      },
+    }),
+    'vite.config.ts': '',
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
+  expect(detectedFrameworks).not.toContain('vite')
+  expect(detectedFrameworks).not.toContain('solidjs')
+
+  expect(detected?.[0]?.id).toBe('solid-start')
+  expect(detected?.[0]?.build?.command).toBe('vite build')
+  expect(detected?.[0]?.build?.directory).toBe('dist/client')
+  expect(detected?.[0]?.dev?.command).toBe('vite dev')
+  expect(detected?.[0]?.dev?.port).toBe(5173)
 })

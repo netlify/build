@@ -1,12 +1,12 @@
-import { rm, writeFile } from 'fs/promises'
-import { join, basename } from 'path'
+import { randomUUID } from 'crypto'
+import { mkdtemp, rm, writeFile } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
 
-import { dir as getTmpDir, tmpName } from 'tmp-promise'
 const PREFIX = 'test-cache-utils-'
 
-export const createTmpDir = async function (opts = {}) {
-  const { path } = await getTmpDir({ ...opts, prefix: PREFIX })
-  return path
+export const createTmpDir = async function ({ tmpdir: baseDir = tmpdir() }: { tmpdir?: string } = {}) {
+  return mkdtemp(join(baseDir, PREFIX))
 }
 
 // Utility method to create a single temporary file and directory
@@ -27,7 +27,7 @@ export const createTmpFiles = async function (files: any[], opts = {}): Promise<
   const tmpDir = await createTmpDir(opts)
   const tmpFiles = await Promise.all(
     files.map(async ({ name }) => {
-      const filename = name || basename(await tmpName())
+      const filename = name || randomUUID()
       const tmpFile = join(tmpDir, filename)
       await writeFile(tmpFile, '')
       return tmpFile

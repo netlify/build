@@ -17,9 +17,9 @@ import { normalizeFilePath } from './normalize_path.js'
 
 export const ENTRY_FILE_NAME = '___netlify-entry-point'
 export const BOOTSTRAP_FILE_NAME = '___netlify-bootstrap.mjs'
-export const BOOTSTRAP_VERSION_FILE_NAME = '___netlify-bootstrap-version'
 export const METADATA_FILE_NAME = '___netlify-metadata.json'
 export const TELEMETRY_FILE_NAME = '___netlify-telemetry.mjs'
+export const SERVER_MARKER_FILENAME = '___netlify-server.json'
 
 const require = createRequire(import.meta.url)
 

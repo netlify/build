@@ -4,11 +4,12 @@ const originalSocketSend = Socket.prototype.send
 
 let intercepts = {}
 
-const createScope = function (address, { persist = false } = {}) {
+const createScope = function (address: string, { persist = false } = {}) {
+  const buffers: Buffer[] = []
   return {
     used: false,
     persist,
-    buffers: [],
+    buffers,
     offset: 0,
     length: 0,
     address,
@@ -60,7 +61,7 @@ export const isMocked = function () {
   return Boolean((Socket.prototype.send as any).mocked)
 }
 
-export const intercept = (address, { persist = false, startIntercept = true, allowUnknown = false } = {}) => {
+export const intercept = (address: string, { persist = false, startIntercept = true, allowUnknown = false } = {}) => {
   const scope = createScope(address, { persist })
   intercepts[address] = scope
   if (!isMocked() && startIntercept) interceptSocketSend({ allowUnknown })

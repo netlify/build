@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 
+import pRetry from 'p-retry'
 import { SemVer } from 'semver'
 import tmp from 'tmp-promise'
 
@@ -11,8 +12,9 @@ import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
 import { RateLimit } from './rate_limit.js'
+import { DENO_RETRIES, isTransientDenoError } from './utils/transient_error.js'
 
-enum ConfigExitCode {
+export enum ConfigExitCode {
   Success = 0,
   UnhandledError = 1,
   ImportError,
@@ -102,25 +104,60 @@ export const getFunctionConfig = async ({
   // The extractor will use its exit code to signal different error scenarios,
   // based on the list of exit codes we send as an argument. We then capture
   // the exit code to know exactly what happened and guide people accordingly.
-  const { exitCode, stderr, stdout } = await deno.run(
-    [
-      'run',
-      '--allow-env',
-      version.major >= 2 ? '--allow-import' : '',
-      '--allow-net',
-      '--allow-read',
-      `--allow-write=${collector.path}`,
-      `--import-map=${importMap.toDataURL()}`,
-      '--no-config',
-      '--node-modules-dir=false',
-      '--quiet',
-      extractorPath,
-      pathToFileURL(functionPath).href,
-      pathToFileURL(collector.path).href,
-      JSON.stringify(ConfigExitCode),
-    ].filter(Boolean),
-    { rejectOnExitCode: false },
-  )
+  const runExtractor = () =>
+    deno.run(
+      [
+        'run',
+        '--allow-env',
+        version.major >= 2 ? '--allow-import' : '',
+        '--allow-net',
+        '--allow-read',
+        `--allow-write=${collector.path}`,
+        `--import-map=${importMap.toDataURL()}`,
+        '--no-config',
+        '--node-modules-dir=false',
+        '--quiet',
+        extractorPath,
+        pathToFileURL(functionPath).href,
+        pathToFileURL(collector.path).href,
+        JSON.stringify(ConfigExitCode),
+      ].filter(Boolean),
+      { rejectOnExitCode: false },
+    )
+
+  // The extractor imports the function, so a dropped connection while fetching a remote module
+  // looks exactly like an import error. Because we're not rejecting on the exit code, we have to
+  // read the transient failure out of `stderr` ourselves and throw so that `pRetry` has another go.
+  // If every attempt fails we fall through with the last result, leaving the error handling below
+  // to report it as it would have without any retries.
+  let lastResult: Awaited<ReturnType<typeof runExtractor>> | undefined
+
+  const { exitCode, stderr, stdout } = await pRetry(
+    async () => {
+      lastResult = await runExtractor()
+
+      if (lastResult.exitCode !== ConfigExitCode.Success && isTransientDenoError(lastResult.stderr)) {
+        throw new Error(lastResult.stderr)
+      }
+
+      return lastResult
+    },
+    {
+      retries: DENO_RETRIES,
+      onFailedAttempt: (error) => {
+        log.system(`Config extraction for '${functionPath}' hit a transient error, retrying: ${error.message}`)
+      },
+    },
+  ).catch((error: unknown) => {
+    // If we never captured a result, the extractor rejected outright rather than resolving with a
+    // non-zero exit code (e.g. the binary failed to spawn). Surface that error instead of falling
+    // through to destructure `undefined`.
+    if (lastResult === undefined) {
+      throw error
+    }
+
+    return lastResult
+  })
 
   if (exitCode !== ConfigExitCode.Success) {
     handleConfigError(functionPath, exitCode, stderr, log)

@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/netlify/build/compare/opentelemetry-utils-v3.1.0...opentelemetry-utils-v4.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+## [3.1.0](https://github.com/netlify/build/compare/opentelemetry-utils-v3.0.0...opentelemetry-utils-v3.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
 ## [3.0.0](https://github.com/netlify/build/compare/opentelemetry-utils-v2.0.2...opentelemetry-utils-v3.0.0) (2026-06-16)
 
 

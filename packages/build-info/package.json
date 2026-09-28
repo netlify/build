@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "11.0.0",
+  "version": "11.3.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -27,6 +27,7 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
+    "e2e:serve": "vite e2e/fixture --port 3000",
     "e2e": "playwright test",
     "test": "vitest run",
     "test:dev": "vitest --ui",
@@ -45,9 +46,10 @@
   "author": "Netlify Inc.",
   "dependencies": {
     "@bugsnag/js": "^8.0.0",
-    "@iarna/toml": "^2.2.5",
+    "smol-toml": "^1.5.2",
     "dot-prop": "^9.0.0",
     "find-up": "^7.0.0",
+    "lockparse": "^0.5.2",
     "minimatch": "^10.2.4",
     "read-pkg": "^9.0.0",
     "semver": "^7.3.8",
@@ -61,7 +63,7 @@
     "@vitest/ui": "^3.0.0",
     "execa": "^8.0.0",
     "memfs": "^4.0.0",
-    "typescript": "^5.0.0",
+    "ts-node": "^10.9.2",
     "unionfs": "^4.4.0",
     "vitest": "^3.0.0"
   },

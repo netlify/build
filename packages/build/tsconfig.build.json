@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "lib" /* Specify an output folder for all emitted files. */,
+    "rootDir": "src",
+    "strictBindCallApply": false /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
+  },
+  "include": ["src/**/*.js", "src/**/*.ts"],
+  "exclude": ["tests/**", "src/**/*.test.ts"]
+}

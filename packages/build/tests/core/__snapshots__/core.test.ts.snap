@@ -1,0 +1,2192 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`--apiHost is used to set Netlify API host 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  apiHost: /test/socket
+  debug: true
+  deployId: test
+  repositoryRoot: packages/build/tests/core/fixtures/cancel
+  testOpts:
+    pluginsListUrl: test
+    scheme: http
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/cancel
+
+> Config file
+  packages/build/tests/core/fixtures/cancel/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/cancel
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+Build canceled by ./plugin.js                                 
+────────────────────────────────────────────────────────────────
+
+  test
+"
+`;
+
+exports[`--apiHost is used to set Netlify API host 2`] = `
+[
+  {
+    "body": "",
+    "headers": "accept accept-encoding authorization connection content-length host user-agent",
+    "method": "POST",
+    "url": "/api/v1/deploys/test/cancel",
+  },
+]
+`;
+
+exports[`--baseRelDir 1`] = `
+"{
+  "accounts": [],
+  "branch": "branch",
+  "buildDir": "packages/build/tests/core/fixtures/basereldir/base",
+  "config": {
+    "build": {
+      "base": "packages/build/tests/core/fixtures/basereldir/base",
+      "command": "echo command",
+      "commandOrigin": "config",
+      "environment": {},
+      "processing": {
+        "css": {},
+        "html": {},
+        "images": {},
+        "js": {}
+      },
+      "publish": "packages/build/tests/core/fixtures/basereldir",
+      "publishOrigin": "config",
+      "services": {}
+    },
+    "functions": {
+      "*": {}
+    },
+    "headers": [],
+    "plugins": [],
+    "redirects": []
+  },
+  "configPath": "packages/build/tests/core/fixtures/basereldir/netlify.toml",
+  "context": "production",
+  "env": {
+    "BRANCH": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "BUILD_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "CACHED_COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "COMMIT_REF": {
+      "sources": [
+        "general"
+      ],
+      "value": "HEXADECIMAL_ID"
+    },
+    "CONTEXT": {
+      "sources": [
+        "general"
+      ],
+      "value": "production"
+    },
+    "DEPLOY_ID": {
+      "sources": [
+        "general"
+      ],
+      "value": "0"
+    },
+    "DEPLOY_PRIME_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://branch--site-name.netlify.app"
+    },
+    "DEPLOY_URL": {
+      "sources": [
+        "general"
+      ],
+      "value": "https://0--site-name.netlify.app"
+    },
+    "GATSBY_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "HEAD": {
+      "sources": [
+        "general"
+      ],
+      "value": "branch"
+    },
+    "LANG": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "LANGUAGE": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US:en"
+    },
+    "LC_ALL": {
+      "sources": [
+        "general"
+      ],
+      "value": "en_US.UTF-8"
+    },
+    "NETLIFY_LOCAL": {
+      "sources": [
+        "general"
+      ],
+      "value": "true"
+    },
+    "NEXT_TELEMETRY_DISABLED": {
+      "sources": [
+        "general"
+      ],
+      "value": "1"
+    },
+    "PULL_REQUEST": {
+      "sources": [
+        "general"
+      ],
+      "value": "false"
+    }
+  },
+  "headersPath": "packages/build/tests/core/fixtures/basereldir/_headers",
+  "integrations": [],
+  "redirectsPath": "packages/build/tests/core/fixtures/basereldir/_redirects",
+  "repositoryRoot": "packages/build/tests/core/fixtures/basereldir",
+  "siteInfo": {}
+}"
+`;
+
+exports[`--branch 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  branch: testContext
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/context
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/context
+
+> Config file
+  packages/build/tests/core/fixtures/context/netlify.toml
+
+> Resolved config
+  build:
+    command: echo commandTest
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/context
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo commandTest
+commandTest
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--cachedConfig 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/cached_config
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/cached_config
+
+> Config file
+  packages/build/tests/core/fixtures/cached_config/netlify.toml
+
+> Resolved config
+  build:
+    command: echo command
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/cached_config
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo command
+command
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--cachedConfig CLI flag 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/cached_config
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/core/fixtures/cached_config
+
+> Config file
+  packages/build/tests/core/fixtures/cached_config/netlify.toml
+
+> Resolved config
+  build:
+    command: echo command
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/cached_config
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo command
+command
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--cachedConfigPath 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  cachedConfigPath: /external/path
+  context: test
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/cached_config
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/cached_config
+
+> Config file
+  packages/build/tests/core/fixtures/cached_config/netlify.toml
+
+> Resolved config
+  build:
+    command: echo command
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/cached_config
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo command
+command
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--cachedConfigPath CLI flag 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  cachedConfigPath: /external/path
+  context: test
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/cached_config
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/core/fixtures/cached_config
+
+> Config file
+  packages/build/tests/core/fixtures/cached_config/netlify.toml
+
+> Resolved config
+  build:
+    command: echo command
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/cached_config
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo command
+command
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--config 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  config: packages/build/tests/core/fixtures/empty/netlify.toml
+  debug: true
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    base: packages/build
+    publish: packages/build
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--context 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  context: testContext
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/context
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/context
+
+> Config file
+  packages/build/tests/core/fixtures/context/netlify.toml
+
+> Resolved config
+  build:
+    command: echo commandTest
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/context
+    publishOrigin: default
+
+> Context
+  testContext
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo commandTest
+commandTest
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--cwd 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  cwd: packages/build/tests/core/fixtures/publish
+  debug: true
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/publish
+
+> Config file
+  packages/build/tests/core/fixtures/publish/netlify.toml
+
+> Resolved config
+  build:
+    base: packages/build/tests/core/fixtures/publish
+    publish: packages/build/tests/core/fixtures/publish
+    publishOrigin: config
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--defaultConfig 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    command: echo commandDefault
+    commandOrigin: ui
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Build command from Netlify app                                
+────────────────────────────────────────────────────────────────
+
+$ echo commandDefault
+commandDefault
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--defaultConfig CLI flag 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    command: echo commandDefault
+    commandOrigin: ui
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Build command from Netlify app                                
+────────────────────────────────────────────────────────────────
+
+$ echo commandDefault
+commandDefault
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--dry with build.command but no netlify.toml 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  dry: true
+  repositoryRoot: packages/build/tests/core/fixtures/none
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/none
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    command: echo
+    commandOrigin: ui
+    publish: packages/build/tests/core/fixtures/none
+    publishOrigin: default
+
+> Context
+  production
+
+> Netlify Build Commands
+  For more information on build events see the docs https://github.com/netlify/build
+
+  Running \`netlify build\` will execute this build flow
+
+  ┌──────────────────┬──────────────────┐
+  │ Event            │ Location         │
+  └──────────────────┴──────────────────┘
+  ┌──────────────────┐
+  │ 1. onBuild     ↓ │ Build command from Netlify app
+  └──────────────────┘ 
+
+  If this looks good to you, run \`netlify build\` to execute the build
+"
+`;
+
+exports[`--dry with one event 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  dry: true
+  repositoryRoot: packages/build/tests/core/fixtures/single
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/single
+
+> Config file
+  packages/build/tests/core/fixtures/single/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/single
+    publishOrigin: default
+
+> Context
+  production
+
+> Netlify Build Commands
+  For more information on build events see the docs https://github.com/netlify/build
+
+  Running \`netlify build\` will execute this build flow
+
+  ┌──────────────────┬──────────────────┐
+  │ Event            │ Location         │
+  └──────────────────┴──────────────────┘
+
+  If this looks good to you, run \`netlify build\` to execute the build
+"
+`;
+
+exports[`--dry with several events 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  dry: true
+  repositoryRoot: packages/build/tests/core/fixtures/several
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/several
+
+> Config file
+  packages/build/tests/core/fixtures/several/netlify.toml
+
+> Resolved config
+  build:
+    command: echo test
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/several
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/several/functions
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin@1.0.0 from netlify.toml
+
+> Netlify Build Commands
+  For more information on build events see the docs https://github.com/netlify/build
+
+  Running \`netlify build\` will execute this build flow
+
+  ┌──────────────────┬──────────────────┐
+  │ Event            │ Location         │
+  └──────────────────┴──────────────────┘
+  ┌──────────────────┐
+  │ 1. onPreBuild  ↓ │ Plugin ./plugin
+  └──────────────────┘ 
+  ┌──────────────────┐
+  │ 2. onBuild     ↓ │ build.command from netlify.toml
+  └──────────────────┘ 
+  ┌──────────────────┐
+  │ 3. onBuild     ↓ │ Functions bundling
+  └──────────────────┘ 
+
+  If this looks good to you, run \`netlify build\` to execute the build
+"
+`;
+
+exports[`--dry-run 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  dry: true
+  repositoryRoot: packages/build/tests/core/fixtures/single
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/core/fixtures/single
+
+> Config file
+  packages/build/tests/core/fixtures/single/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/single
+    publishOrigin: default
+
+> Context
+  production
+
+> Netlify Build Commands
+  For more information on build events see the docs https://github.com/netlify/build
+
+  Running \`netlify build\` will execute this build flow
+
+  ┌──────────────────┬──────────────────┐
+  │ Event            │ Location         │
+  └──────────────────┴──────────────────┘
+
+  If this looks good to you, run \`netlify build\` to execute the build
+"
+`;
+
+exports[`--help 1`] = `
+"netlify-build [OPTIONS...]
+
+Run Netlify Build system locally.
+
+Options can also
+be specified as environment variables prefixed with
+NETLIFY_BUILD_. For example
+the environment variable NETLIFY_BUILD_DRY=true can
+be used instead of the CLI f
+lag --dry.
+
+Options:
+  --help            Show help                                          [boolean]
+  --config          Path to the configuration file.
+                    Defaults to any netlify.toml
+                     in the git repository root directory or the base directory
+                                                                        [string]
+  --cwd             Current directory. Used to retrieve the configuration file.
+
+                    Default: current directory                          [string]
+  --repositoryRoot  Git repository root directory. Used to retrieve the configur
+                    ation file.
+                    Default: automatically guessed                      [string]
+  --packagePath     When using a monorepo, specifies the relative path from the
+                    repository root to the package being built          [string]
+  --apiHost         Netlify API endpoint.
+                    Default: automatically guessed                      [string]
+  --token           Netlify API token for authentication.
+                    The NETLIFY_AUTH_TOKEN
+                     environment variable can be used as well.          [string]
+  --siteId          Netlify Site ID.                                    [string]
+  --accountId       Netlify Account ID.                                 [string]
+  --deployId        Netlify Deploy ID.
+                    Default: automatically guessed                      [string]
+  --buildId         Netlify Build ID.
+                    Default: automatically guessed                      [string]
+  --context         Build context.
+                    Default: 'production'                               [string]
+  --branch          Repository branch.
+                    Default: automatically guessed                      [string]
+  --dry, --dry-run  Run in dry mode, i.e. printing steps without executing them.
+
+                    Default: false                                     [boolean]
+  --nodePath        Path to the Node.js binary to use in the build command and p
+                    lugins.
+                    Default: Current Node.js binary                     [string]
+  --telemetry       Enable telemetry.
+                    Default: false                                     [boolean]
+  --offline         Do not send requests to the Netlify API to retrieve site set
+                    tings.
+                    Default: false                                     [boolean]
+  --buffer          Buffer output instead of printing it               [boolean]
+  --version         Show version number                                [boolean]"
+`;
+
+exports[`--node-path is not used by core plugins 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  nodePath: /external/path
+  repositoryRoot: packages/build/tests/core/fixtures/core
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/core
+
+> Config file
+  packages/build/tests/core/fixtures/core/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/core
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/core/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - test.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"test","runtime":"js","bundler":"nft","bundlerReason":"esm-default","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--node-path is not used by local plugins 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  nodePath: /external/path
+  repositoryRoot: packages/build/tests/core/fixtures/local_node_path_unused
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/local_node_path_unused
+
+> Config file
+  packages/build/tests/core/fixtures/local_node_path_unused/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/local_node_path_unused
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin.js
+
+> Context
+  production
+
+> Warning: ./plugin.js will be executed with Node.js version 1.0.0
+  The plugin cannot be executed with your defined Node.js version 1.0.0
+
+  Read more about our minimum required version in our forums announcement (https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-18-node-js-20/162662)
+
+> Loading plugins
+   - ./plugin.js@1.0.0 from netlify.toml
+
+./plugin.js (onPreBuild event)                                
+────────────────────────────────────────────────────────────────
+
+expect execPath to NOT equal TEST_NODE_PATH. Got 'true'
+
+(./plugin.js onPreBuild completed in 1ms)
+Build step duration: ./plugin.js onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--node-path is not used by plugins added to package.json 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  nodePath: /external/path
+  repositoryRoot: packages/build/tests/core/fixtures/package_node_path_unused
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/package_node_path_unused
+
+> Config file
+  packages/build/tests/core/fixtures/package_node_path_unused/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/package_node_path_unused
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: netlify-plugin-test
+
+> Context
+  production
+
+> Warning: netlify-plugin-test will be executed with Node.js version 1.0.0
+  The plugin cannot be executed with your defined Node.js version 1.0.0
+
+  Read more about our minimum required version in our forums announcement (https://answers.netlify.com/t/build-plugins-end-of-support-for-node-js-18-node-js-20/162662)
+
+> Loading plugins
+   - netlify-plugin-test@1.0.0 from netlify.toml and package.json
+
+netlify-plugin-test (onPreBuild event)                        
+────────────────────────────────────────────────────────────────
+
+expect execPath to NOT equal TEST_NODE_PATH. Got 'true'
+
+(netlify-plugin-test onPreBuild completed in 1ms)
+Build step duration: netlify-plugin-test onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--node-path is used by build.command 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  nodePath: /external/path
+  repositoryRoot: packages/build/tests/core/fixtures/build_command
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/build_command
+
+> Config file
+  packages/build/tests/core/fixtures/build_command/netlify.toml
+
+> Resolved config
+  build:
+    command: node --version
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/build_command
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node --version
+v1.0.0
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`--repository-root 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Bundles functions from the \`.netlify/functions-internal\` directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_internal
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_internal
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_internal
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/functions_internal/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from .netlify/functions-internal directory:
+ - function_three.js
+
+Packaging Functions from netlify/functions directory:
+ - function_one.js
+ - function_two.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":3},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_three","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_one","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_two","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Bundles functions from the \`.netlify/functions-internal\` directory even if the configured user functions directory is missing 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_user_missing
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_user_missing
+
+> Config file
+  packages/build/tests/core/fixtures/functions_user_missing/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_user_missing
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/functions_user_missing/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+The Netlify Functions setting targets a non-existing directory: functions
+
+Packaging Functions from .netlify/functions-internal directory:
+ - function_one.js
+ - function_two.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":2},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_one","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_two","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not print warning when redirects file is missing both from the build directory and the publish directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_redirects_none
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_redirects_none
+
+> Config file
+  packages/build/tests/core/fixtures/missing_redirects_none/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/missing_redirects_none/publish
+    publishOrigin: config
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not print warning when redirects file is missing from the build directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_redirects_absent
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_redirects_absent
+
+> Config file
+  packages/build/tests/core/fixtures/missing_redirects_absent/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/missing_redirects_absent/publish
+    publishOrigin: config
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not print warning when redirects file is not missing from publish directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_redirects_present
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_redirects_present
+
+> Config file
+  packages/build/tests/core/fixtures/missing_redirects_present/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/missing_redirects_present/publish
+    publishOrigin: config
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not require the \`.netlify/functions-internal\` directory to exist 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_internal_missing
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_internal_missing
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_internal_missing
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/functions_internal_missing/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from netlify/functions directory:
+ - function_one.js
+ - function_two.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":2},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_one","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_two","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Does not require the \`.netlify/functions-internal\` or the user functions directory to exist 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_internal_user_missing
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_internal_user_missing
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_internal_user_missing
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions config is passed to zip-it-and-ship-it (1) 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_config_1
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_config_1
+
+> Config file
+  packages/build/tests/core/fixtures/functions_config_1/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_config_1
+    publishOrigin: default
+  functions:
+    "*":
+      external_node_modules:
+        - "@netlify/imaginary-module-one"
+        - "@netlify/imaginary-module-two"
+        - "@netlify/imaginary-module-three"
+      included_files:
+        - directory-1
+        - directory-2/file-1
+        - directory-3/**/*.jpg
+      node_bundler: esbuild
+  functionsDirectory: packages/build/tests/core/fixtures/functions_config_1/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - function_one.js
+ - function_two.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["esbuild"],"bundlerCounts":{"esbuild":2},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_one","runtime":"js","bundler":"esbuild","bundlerReason":"config-override","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_two","runtime":"js","bundler":"esbuild","bundlerReason":"config-override","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions config is passed to zip-it-and-ship-it (2) 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_config_2
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_config_2
+
+> Config file
+  packages/build/tests/core/fixtures/functions_config_2/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_config_2
+    publishOrigin: default
+  functions:
+    "*":
+      ignored_node_modules:
+        - "@netlify/imaginary-module-one"
+      included_files:
+        - directory-1
+      node_bundler: esbuild
+    function_*:
+      external_node_modules:
+        - "@netlify/imaginary-module-three"
+      included_files:
+        - directory-3/**/*.jpg
+    function_one:
+      external_node_modules:
+        - "@netlify/imaginary-module-two"
+      included_files:
+        - directory-2/file-1
+  functionsDirectory: packages/build/tests/core/fixtures/functions_config_2/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - function_one.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["esbuild"],"bundlerCounts":{"esbuild":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_one","runtime":"js","bundler":"esbuild","bundlerReason":"config-override","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions config is passed to zip-it-and-ship-it (3) 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/functions_config_3
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_config_3
+
+> Config file
+  packages/build/tests/core/fixtures/functions_config_3/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_config_3
+    publishOrigin: default
+  functions:
+    "*":
+      external_node_modules:
+        - "@netlify/imaginary-module-one"
+      included_files:
+        - directory-1
+      node_bundler: esbuild
+    function_one:
+      external_node_modules:
+        - "@netlify/imaginary-module-two"
+      included_files:
+        - "!directory-1/file-1"
+  functionsDirectory: packages/build/tests/core/fixtures/functions_config_3/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - function_one.js
+ - function_two.js
+
+
+Dependencies installation error                               
+────────────────────────────────────────────────────────────────
+
+  Error message
+  A Netlify Function failed to require one of its dependencies.
+  Please make sure it is present in the site's top-level "package.json".
+
+  Build failed with 1 error:
+  tests/core/fixtures/functions_config_3/functions/function_two.js ERROR: Could not resolve "@netlify/imaginary-module-two"
+
+  Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_config_3
+    publishOrigin: default
+  functions:
+    "*":
+      external_node_modules:
+        - "@netlify/imaginary-module-one"
+      included_files:
+        - directory-1
+      node_bundler: esbuild
+    function_one:
+      external_node_modules:
+        - "@netlify/imaginary-module-two"
+      included_files:
+        - "!directory-1/file-1"
+  functionsDirectory: packages/build/tests/core/fixtures/functions_config_3/functions"
+`;
+
+exports[`No configuration file 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/none
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/none
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/none
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Print warning for missing redirects file even with a base directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_redirects_base
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_redirects_base/base
+
+> Config file
+  packages/build/tests/core/fixtures/missing_redirects_base/base/netlify.toml
+
+> Resolved config
+  build:
+    base: packages/build/tests/core/fixtures/missing_redirects_base/base
+    publish: packages/build/tests/core/fixtures/missing_redirects_base/base/publish
+    publishOrigin: config
+
+> Context
+  production
+
+A "_redirects" file is present in the repository but is missing in the publish directory "publish".
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Print warning when headers file is missing from publish directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_headers_warning
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_headers_warning
+
+> Config file
+  packages/build/tests/core/fixtures/missing_headers_warning/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/missing_headers_warning/publish
+    publishOrigin: config
+
+> Context
+  production
+
+A "_headers" file is present in the repository but is missing in the publish directory "publish".
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Print warning when redirects file is missing from publish directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/missing_redirects_warning
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/missing_redirects_warning
+
+> Config file
+  packages/build/tests/core/fixtures/missing_redirects_warning/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/missing_redirects_warning/publish
+    publishOrigin: config
+
+> Context
+  production
+
+A "_redirects" file is present in the repository but is missing in the publish directory "publish".
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Shows notice about bundling errors and falls back to ZISI 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/esbuild_errors_2
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/esbuild_errors_2
+
+> Config file
+  packages/build/tests/core/fixtures/esbuild_errors_2/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/esbuild_errors_2
+    publishOrigin: default
+  functions:
+    "*":
+      node_bundler: esbuild
+  functionsDirectory: packages/build/tests/core/fixtures/esbuild_errors_2/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - function_with_module.js
+
+
+> Failed to bundle functions with selected bundler (fallback used):
+   - function_with_module.zip
+{"msg":"Functions bundling completed successfully","bundlers":["zisi"],"bundlerCounts":{"zisi":1},"fallbackCount":1,"warningsCount":0,"functions":[{"name":"function_with_module","runtime":"js","bundler":"zisi","bundlerReason":"config-override","sizeBytes":80,"hadFallback":true,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Shows notice about bundling errors and warnings coming from esbuild 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/esbuild_errors_1
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/esbuild_errors_1
+
+> Config file
+  packages/build/tests/core/fixtures/esbuild_errors_1/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/esbuild_errors_1
+    publishOrigin: default
+  functions:
+    "*":
+      node_bundler: esbuild
+  functionsDirectory: packages/build/tests/core/fixtures/esbuild_errors_1/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - function_simple.js
+ - function_with_dynamic_require.js
+ - function_with_native.js
+
+
+> Failed to bundle functions with selected bundler (fallback used):
+   - function_with_dynamic_require.zip
+   - function_with_native.zip
+{"msg":"Functions bundling completed successfully","bundlers":["esbuild","zisi"],"bundlerCounts":{"esbuild":1,"zisi":2},"fallbackCount":2,"warningsCount":0,"functions":[{"name":"function_simple","runtime":"js","bundler":"esbuild","bundlerReason":"config-override","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_with_dynamic_require","runtime":"js","bundler":"zisi","bundlerReason":"config-override","sizeBytes":80,"hadFallback":true,"hadWarnings":false},{"name":"function_with_native","runtime":"js","bundler":"zisi","bundlerReason":"config-override","sizeBytes":80,"hadFallback":true,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`User error 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  config: /external/path
+  debug: true
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+Configuration error                                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  When resolving config file /external/path
+  Configuration file does not exist
+"
+`;
+
+exports[`empty --config 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  cwd: packages/build/tests/core/fixtures/toml/apps/nested
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/toml
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/toml/apps/nested
+
+> Config file
+  packages/build/tests/core/fixtures/toml/apps/nested/netlify.toml
+
+> Resolved config
+  build:
+    base: packages/build/tests/core/fixtures/toml/apps/nested
+    command: echo not party town
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/toml/apps/nested
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo not party town
+not party town
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`featureFlags can be not used 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`featureFlags can be used in the CLI 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: "true"
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`featureFlags can be used programmatically 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/empty
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/empty
+
+> Config file
+  packages/build/tests/core/fixtures/empty/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/empty
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`functions can have a config with different parameters passed to zip-it-and-ship-it 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  mode: buildbot
+  repositoryRoot: packages/build/tests/core/fixtures/functions_config_json
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/functions_config_json
+
+> Config file
+  No config file was defined: using default values.
+
+> Resolved config
+  build:
+    publish: packages/build/tests/core/fixtures/functions_config_json
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/core/fixtures/functions_config_json/netlify/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from .netlify/functions-internal directory:
+ - function_two.js
+
+Packaging Functions from netlify/functions directory:
+ - function_one.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["none","nft"],"bundlerCounts":{"none":1,"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"function_two","runtime":"js","bundler":"none","bundlerReason":"none-override","sizeBytes":80,"hadFallback":false,"hadWarnings":false},{"name":"function_one","runtime":"js","bundler":"nft","bundlerReason":"v1.0.0","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`nested --config 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  config: packages/build/tests/core/fixtures/toml/apps/nested/netlify.toml
+  debug: true
+  repositoryRoot: packages/build/tests/core/fixtures/toml
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/core/fixtures/toml
+
+> Config file
+  packages/build/tests/core/fixtures/toml/apps/nested/netlify.toml
+
+> Resolved config
+  build:
+    command: echo not party town
+    commandOrigin: config
+    publish: packages/build/tests/core/fixtures/toml
+    publishOrigin: default
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ echo not party town
+not party town
+
+(build.command completed in 1ms)
+Build step duration: build.command completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;

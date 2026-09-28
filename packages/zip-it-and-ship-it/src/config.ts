@@ -86,14 +86,6 @@ export const functionConfigShape = z.object({
   nodeModuleFormat: moduleFormat.optional().catch(undefined),
 })
 
-const refuseMemoryAndVcpu = (cfg: { memory?: unknown; vcpu?: unknown }): boolean =>
-  !(cfg.memory !== undefined && cfg.vcpu !== undefined)
-
-export const functionConfig = functionConfigShape.refine(refuseMemoryAndVcpu, {
-  message: '`memory` and `vcpu` cannot both be set.',
-  path: ['vcpu'],
-})
-
 type FunctionConfig = z.infer<typeof functionConfigShape>
 
 interface FunctionConfigFile {

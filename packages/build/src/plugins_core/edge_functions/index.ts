@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
 
 import { bundle, find } from '@netlify/edge-bundler'
-import { pathExists } from 'path-exists'
+import { pathExists } from '../../utils/path_exists.js'
 
 import { Metric } from '../../core/report_metrics.js'
 import { log, reduceLogLines } from '../../log/logger.js'
@@ -137,6 +137,15 @@ const coreStep = async function ({
       bootstrapURL: edgeFunctionsBootstrapURL,
       vendorDirectory,
     })
+
+    // Edge Bundler produces no manifest when there is nothing to deploy - no
+    // edge function has a route - in which case there is nothing more to do.
+    if (manifest === undefined) {
+      systemLog('No edge function has a route; skipping manifest generation.')
+
+      return {}
+    }
+
     const metrics = getMetrics(manifest)
 
     systemLog('Edge Functions manifest:', manifest)
@@ -178,6 +187,22 @@ const getMetrics = (manifest): Metric[] => {
       name: 'buildbot.build.edge_functions.bundling_ms',
       value: tarballDurationMs,
       tags: { format: 'tarball' },
+    })
+  }
+
+  // How often tarballs depend on a non-default import map or a vendor manifest.
+  const bundles = manifest.bundles as { format: string; custom_import_map?: boolean; vendor_manifest?: boolean }[]
+  const tarball = bundles.find((bundle) => bundle.format === 'tar')
+
+  if (typeof tarball?.custom_import_map === 'boolean' && typeof tarball.vendor_manifest === 'boolean') {
+    metrics.push({
+      type: 'increment',
+      name: 'buildbot.build.edge_functions.tarball_resolution',
+      value: 1,
+      tags: {
+        custom_import_map: String(tarball.custom_import_map),
+        vendor_manifest: String(tarball.vendor_manifest),
+      },
     })
   }
 

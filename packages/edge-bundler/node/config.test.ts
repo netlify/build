@@ -10,7 +10,7 @@ import { fixturesDir, useFixture } from '../test/util.js'
 
 import { DenoBridge } from './bridge.js'
 import { bundle } from './bundler.js'
-import { FunctionConfig, getFunctionConfig } from './config.js'
+import { ConfigExitCode, FunctionConfig, getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { ImportMap } from './import_map.js'
 import { RateLimitAction, RateLimitAggregator } from './rate_limit.js'
@@ -458,4 +458,72 @@ test('Fails validation if default export is not present', async () => {
   await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
 
   await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
+})
+
+describe('`getFunctionConfig` retries transient network failures', () => {
+  // The extractor runs with `rejectOnExitCode: false`, so a failed run resolves with a non-zero
+  // exit code rather than throwing. Only `run`, `getBinaryPath` and `getBinaryVersion` are reached
+  // by the code under test.
+  const stubDeno = (run: () => Promise<unknown>) =>
+    ({
+      run,
+      getBinaryPath: () => Promise.resolve({ path: '/deno' }),
+      getBinaryVersion: () => Promise.resolve({ version: '2.0.0' }),
+    }) as unknown as DenoBridge
+
+  const logger = () => ({
+    user: vi.fn().mockResolvedValue(null),
+    system: vi.fn().mockResolvedValue(null),
+  })
+
+  const networkError =
+    "error: Import 'https://edge.netlify.com/bootstrap/globals/types.ts' failed.\n" +
+    '    0: error sending request: client error (SendRequest): connection error: connection reset'
+
+  test('retries when the extractor fails with a transient network error', async () => {
+    let attempts = 0
+    const deno = stubDeno(() => {
+      attempts += 1
+
+      if (attempts < 3) {
+        return Promise.resolve({ exitCode: ConfigExitCode.ImportError, stderr: networkError, stdout: '' })
+      }
+
+      return Promise.resolve({ exitCode: ConfigExitCode.NoConfig, stderr: '', stdout: '' })
+    })
+
+    await expect(
+      getFunctionConfig({ functionPath: '/func.ts', importMap: new ImportMap(), deno, log: logger() }),
+    ).resolves.toEqual({})
+    expect(attempts).toBe(3)
+  }, 30_000)
+
+  test('does not retry a deterministic extractor failure', async () => {
+    let attempts = 0
+    const deno = stubDeno(() => {
+      attempts += 1
+
+      return Promise.resolve({
+        exitCode: ConfigExitCode.ImportError,
+        stderr: "error: Module not found 'file:///nope.ts'",
+        stdout: '',
+      })
+    })
+
+    await expect(
+      getFunctionConfig({ functionPath: '/func.ts', importMap: new ImportMap(), deno, log: logger() }),
+    ).rejects.toThrowError('Could not load edge function')
+    expect(attempts).toBe(1)
+  })
+
+  test('surfaces the original error when the extractor rejects on every attempt', async () => {
+    // When `run` rejects outright (rather than resolving with a non-zero exit code) we never
+    // capture a result, so the original error must be surfaced instead of a `TypeError` from
+    // destructuring `undefined`.
+    const deno = stubDeno(() => Promise.reject(new Error('deno failed to spawn')))
+
+    await expect(
+      getFunctionConfig({ functionPath: '/func.ts', importMap: new ImportMap(), deno, log: logger() }),
+    ).rejects.toThrowError('deno failed to spawn')
+  }, 30_000)
 })

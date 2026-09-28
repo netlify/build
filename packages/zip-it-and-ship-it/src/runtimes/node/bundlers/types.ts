@@ -17,7 +17,7 @@ export const NODE_BUNDLER = {
   NONE: 'none',
 } as const
 
-export const nodeBundler = z.nativeEnum(NODE_BUNDLER)
+export const nodeBundler = z.enum(NODE_BUNDLER)
 
 export type NodeBundlerName = z.infer<typeof nodeBundler>
 

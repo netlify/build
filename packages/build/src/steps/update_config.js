@@ -1,12 +1,10 @@
 import { isDeepStrictEqual } from 'util'
 
-import pFilter from 'p-filter'
-import { pathExists } from 'path-exists'
-
 import { resolveUpdatedConfig } from '../core/config.js'
 import { addErrorInfo } from '../error/info.js'
 import { logConfigOnUpdate } from '../log/messages/config.js'
 import { logConfigMutations, systemLogConfigMutations } from '../log/messages/mutations.js'
+import { pathExists } from '../utils/path_exists.js'
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
@@ -24,12 +22,14 @@ export const updateNetlifyConfig = async function ({
   systemLog,
   debug,
   source = '',
+  configMutationsOrigin = source || undefined,
+  configErrorType = 'resolveConfig',
 }) {
   if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, headersPath, redirectsPath }))) {
     return { netlifyConfig, configMutations }
   }
 
-  validateConfigMutations(newConfigMutations)
+  validateConfigMutations(newConfigMutations, configErrorType)
 
   // Don't log configuration mutations performed by code that has been authored
   // by Netlify (i.e. core steps or build plugins in the `@netlify/` scope),
@@ -48,7 +48,13 @@ export const updateNetlifyConfig = async function ({
     config: netlifyConfigA,
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
-  } = await resolveUpdatedConfig(configOpts, mergedConfigMutations, defaultConfig)
+  } = await resolveUpdatedConfig(
+    configOpts,
+    mergedConfigMutations,
+    defaultConfig,
+    configMutationsOrigin,
+    configErrorType,
+  )
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
 
   errorParams.netlifyConfig = netlifyConfigA
@@ -81,17 +87,19 @@ const haveConfigSideFilesChanged = async function (configSideFiles, headersPath,
 // sometimes have higher priority and should therefore be deleted in order to
 // apply any configuration update on `netlify.toml`.
 export const listConfigSideFiles = async function (sideFiles) {
-  const configSideFiles = await pFilter(sideFiles, pathExists)
+  const existingSideFiles = await Promise.all(
+    sideFiles.map(async (sideFile) => ((await pathExists(sideFile)) ? sideFile : null)),
+  )
 
-  return configSideFiles.sort()
+  return existingSideFiles.filter(Boolean).sort()
 }
 
 // Validate each new configuration change
-const validateConfigMutations = function (newConfigMutations) {
+const validateConfigMutations = function (newConfigMutations, errorType) {
   try {
     newConfigMutations.forEach(validateConfigMutation)
   } catch (error) {
-    addErrorInfo(error, { type: 'pluginValidation' })
+    addErrorInfo(error, { type: errorType })
     throw error
   }
 }

@@ -64,7 +64,7 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
 test('test title', async (t) => {
-  const output = await new Fixture('./fixtures/fixture_name').runWithBuild()
+  const output = await new Fixture(test.meta.file, './fixtures/fixture_name').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 ```

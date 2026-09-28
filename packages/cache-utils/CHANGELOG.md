@@ -1,5 +1,26 @@
 # Changelog
 
+## [7.1.2](https://github.com/netlify/build/compare/cache-utils-v7.1.1...cache-utils-v7.1.2) (2026-08-25)
+
+
+### Performance Improvements
+
+* **cache-utils:** use native fs traversal ([#7104](https://github.com/netlify/build/issues/7104)) ([48d41de](https://github.com/netlify/build/commit/48d41de368466f8d6447b9e46615177a1a5061b0))
+
+## [7.1.1](https://github.com/netlify/build/compare/cache-utils-v7.1.0...cache-utils-v7.1.1) (2026-08-03)
+
+
+### Performance Improvements
+
+* **build:** use node:fs for cache checks ([#7107](https://github.com/netlify/build/issues/7107)) ([23f494c](https://github.com/netlify/build/commit/23f494cfc5ba997f607f094cc3adf7793d9999e8))
+
+## [7.1.0](https://github.com/netlify/build/compare/cache-utils-v7.0.0...cache-utils-v7.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
 ## [7.0.0](https://github.com/netlify/build/compare/cache-utils-v6.0.5...cache-utils-v7.0.0) (2026-06-16)
 
 

@@ -22,13 +22,13 @@ export class SolidStart extends BaseFramework implements Framework {
   category = Category.SSG
 
   dev = {
-    command: 'vinxi dev',
-    port: 3000,
+    command: 'vite dev',
+    port: 5173,
   }
 
   build = {
-    command: 'vinxi build',
-    directory: 'dist',
+    command: 'vite build',
+    directory: 'dist/client',
   }
 
   logo = {
@@ -46,6 +46,15 @@ export class SolidStart extends BaseFramework implements Framework {
         this.build = LEGACY_BUILD
         return this as DetectedFramework
       }
+
+      // Became "just vite" starting in v2, used vinxi 0.4.0 to 1.x.
+      if (this.version && this.version.major < 2) {
+        this.dev.command = 'vinxi dev'
+        this.dev.port = 3000
+        this.build.command = 'vinxi build'
+        this.build.directory = 'dist'
+      }
+
       return this as DetectedFramework
     }
   }

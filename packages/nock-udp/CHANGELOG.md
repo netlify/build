@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/netlify/build/compare/nock-udp-v6.0.0...nock-udp-v6.1.0) (2026-07-17)
+
+
+### Features
+
+* trigger no-op releases with NPM Trusted Publishing ([#7131](https://github.com/netlify/build/issues/7131)) ([ec0cd90](https://github.com/netlify/build/commit/ec0cd90d524706f9442346da1d94885abae8a0c9))
+
 ## [6.0.0](https://github.com/netlify/build/compare/nock-udp-v5.0.2...nock-udp-v6.0.0) (2026-06-16)
 
 

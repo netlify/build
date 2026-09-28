@@ -8,13 +8,17 @@ import { test, expect } from 'vitest'
 
 import { getLocalEntryPoint } from './formats/javascript.js'
 
-test('`getLocalEntryPoint` returns a valid stage 2 file for local development', async () => {
+// `server.ts`, the bootstrap's local development entry point, exports `serve`.
+// The `index-combined.ts` entry point it replaced re-exported the same function
+// as `boot`, and older bootstrap URLs still serve it, so the generated stage 2
+// has to cope with either name.
+test.each(['serve', 'boot'])('`getLocalEntryPoint` boots a bootstrap exporting `%s`', async (exportName) => {
   const { path: tmpDir } = await tmp.dir()
 
   // This is a fake bootstrap that we'll create just for the purpose of logging
   // the functions and the metadata that are sent to the `boot` function.
   const printer = `
-    export const boot = async (functionsLoader) => {
+    export const ${exportName} = async (functionsLoader) => {
       const functions = await functionsLoader()
       const metadata = { functions: {} }
 

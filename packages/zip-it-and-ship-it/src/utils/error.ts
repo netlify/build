@@ -14,7 +14,14 @@ interface CustomErrorInfo {
 
 type UserError = Error & { customErrorInfo: CustomErrorInfo }
 
+const createFunctionsBundlingErrorInfo = (location: CustomErrorLocation): CustomErrorInfo => ({
+  type: 'functionsBundling',
+  location,
+})
+
 export class FunctionBundlingUserError extends Error {
+  customErrorInfo: CustomErrorInfo
+
   constructor(message: string, customErrorInfo: CustomErrorLocation) {
     super(message)
 
@@ -22,16 +29,11 @@ export class FunctionBundlingUserError extends Error {
     this.name = 'FunctionBundlingUserError'
     Error.captureStackTrace(this, FunctionBundlingUserError)
 
-    FunctionBundlingUserError.addCustomErrorInfo(this, customErrorInfo)
+    this.customErrorInfo = createFunctionsBundlingErrorInfo(customErrorInfo)
   }
 
   static addCustomErrorInfo(error: Error, customErrorInfo: CustomErrorLocation): UserError {
-    const info: CustomErrorInfo = {
-      type: 'functionsBundling',
-      location: customErrorInfo,
-    }
-
-    ;(error as UserError).customErrorInfo = info
+    ;(error as UserError).customErrorInfo = createFunctionsBundlingErrorInfo(customErrorInfo)
 
     return error as UserError
   }

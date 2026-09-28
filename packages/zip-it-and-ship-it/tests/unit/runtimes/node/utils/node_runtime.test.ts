@@ -25,20 +25,20 @@ describe('getNodeRuntime', () => {
 
 describe('getNodeRuntimeForV2', () => {
   test.each([
-    ['nodejs12.x', 'nodejs22.x'],
-    ['nodejs14.x', 'nodejs22.x'],
-    ['nodejs16.x', 'nodejs22.x'],
+    ['nodejs12.x', 'nodejs24.x'],
+    ['nodejs14.x', 'nodejs24.x'],
+    ['nodejs16.x', 'nodejs24.x'],
     ['nodejs18.x', 'nodejs18.x'],
     ['nodejs20.x', 'nodejs20.x'],
     ['nodejs22.x', 'nodejs22.x'],
     ['nodejs24.x', 'nodejs24.x'],
-    ['14.x', 'nodejs22.x'],
-    ['v16.x', 'nodejs22.x'],
+    ['14.x', 'nodejs24.x'],
+    ['v16.x', 'nodejs24.x'],
     ['18.0.0', 'nodejs18.x'],
     ['20.0.0', 'nodejs20.x'],
-    ['v14.2.0', 'nodejs22.x'],
-    ['14.1', 'nodejs22.x'],
-    [':shrug:', 'nodejs22.x'],
+    ['v14.2.0', 'nodejs24.x'],
+    ['14.1', 'nodejs24.x'],
+    [':shrug:', 'nodejs24.x'],
     ['99.0.0', undefined],
   ])('handles `%s`', (input, expected) => {
     expect(getNodeRuntimeForV2(input)).toBe(expected)

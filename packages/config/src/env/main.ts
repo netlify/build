@@ -213,7 +213,7 @@ const getConfigFileEnv = function ({
 
 // Some environment variables cannot be overridden by configuration
 const cleanUserEnv = function (userEnv) {
-  return Object.fromEntries(Object.entries(userEnv).filter(([key]) => !READONLY_ENV.has(key)))
+  return Object.fromEntries(Object.entries(userEnv ?? {}).filter(([key]) => !READONLY_ENV.has(key)))
 }
 
 const READONLY_ENV = new Set([

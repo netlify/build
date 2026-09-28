@@ -9,13 +9,32 @@ const isValidHeaderValue = (value: unknown) => typeof value === 'boolean' || typ
 const isValidHeaders = (value: unknown) =>
   typeof value === 'object' && value !== null && !Array.isArray(value) && Object.values(value).every(isValidHeaderValue)
 
+// Properties that can be set on an edge function declaration from any origin,
+// including the user's `netlify.toml`.
+export const EDGE_FUNCTIONS_PROPERTIES = [
+  'path',
+  'excludedPath',
+  'pattern',
+  'excludedPattern',
+  'function',
+  'cache',
+  'method',
+  'header',
+  'name',
+]
+
+// Properties that can only be set by platform-generated configuration, i.e. by
+// frameworks and integrations through the Frameworks API — never from the
+// user's `netlify.toml`.
+export const EDGE_FUNCTIONS_INTERNAL_PROPERTIES = ['generator']
+
 export const validations = [
   {
     property: 'edge_functions.*',
-    ...validProperties(
-      ['path', 'excludedPath', 'pattern', 'excludedPattern', 'function', 'cache', 'method', 'header'],
-      [],
-    ),
+    // This runs on the fully-merged configuration, which may include properties
+    // contributed by the Frameworks API, so it validates against the full set.
+    // User-facing restrictions are enforced separately (see `CONFIG_FILE_VALIDATIONS`).
+    ...validProperties([...EDGE_FUNCTIONS_PROPERTIES, ...EDGE_FUNCTIONS_INTERNAL_PROPERTIES], []),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
@@ -75,6 +94,18 @@ export const validations = [
     check: isString,
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.name',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello', name: 'Hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.generator',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello', generator: 'package-name@1.2.3' }] }),
   },
   {
     property: 'edge_functions.*.path',

@@ -166,7 +166,13 @@ const prepareServer = ({
     }
   }
 
-  return startServer
+  return Object.assign(startServer, {
+    async close() {
+      if (processRef.ps !== undefined) {
+        await killProcess(processRef.ps)
+      }
+    },
+  })
 }
 
 interface InspectSettings {

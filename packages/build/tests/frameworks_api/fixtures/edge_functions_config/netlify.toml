@@ -1,0 +1,6 @@
+[build]
+command = "node build.mjs"
+
+[[edge_functions]]
+path = "/from-toml"
+function = "user_edge"

@@ -1,0 +1,4 @@
+# Everything under .netlify is generated at build time (build.mjs copies
+# frameworks_api_seed/ into .netlify/v1, and edge bundling writes its output
+# and Deno cache here). Only the seed is the source of truth.
+.netlify

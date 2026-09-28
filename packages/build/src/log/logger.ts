@@ -120,11 +120,6 @@ export const logArray = function (logs: Logs | undefined, array, opts = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.none, ...opts })
 }
 
-// Print an array of errors
-export const logErrorArray = function (logs: Logs | undefined, array, opts = {}) {
-  logMessage(logs, serializeIndentedArray(array), { color: THEME.errorLine, ...opts })
-}
-
 // Print an array of warnings
 export const logWarningArray = function (logs: Logs | undefined, array, opts = {}) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.warningLine, ...opts })

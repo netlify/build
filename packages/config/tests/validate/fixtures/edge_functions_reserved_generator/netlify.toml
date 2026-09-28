@@ -1,0 +1,4 @@
+[[edge_functions]]
+  path = "/test"
+  function = "test"
+  generator = "package-name@1.2.3"
