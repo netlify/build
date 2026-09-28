@@ -2,7 +2,6 @@ import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
 import { ARCHIVE_FORMAT } from './archive.js'
-import { NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
@@ -133,7 +132,7 @@ export const bundleServer = async (
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: { ...source.config, nodeBundler: NODE_BUNDLER.NFT },
+    config: source.config,
     destFolder,
     extension: source.extension,
     featureFlags,

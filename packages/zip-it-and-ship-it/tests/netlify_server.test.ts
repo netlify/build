@@ -190,6 +190,45 @@ describe('Netlify Server', () => {
     // Left to the function heuristics this would be `zisi`, since the entry is
     // CommonJS and so reads as a v1 function.
     expect(result.bundler).toBe('nft')
+    expect(result.runtimeVersion).toBeDefined()
+  })
+
+  describe('Whichever shape the server is written in', () => {
+    // A framework server exports nothing, so the static analysis that tells a
+    // v1 function from a v2 one reads it as v1. Nothing about the bundle may
+    // follow from that.
+    const SHAPES = {
+      'framework mode': join(FIXTURES_DIR, 'netlify-server-framework'),
+      'Netlify syntax': FIXTURE,
+    }
+
+    const bundleShape = async (fixture: string) => {
+      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+      const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), tmpDir, { basePath: fixture })
+      const extractDir = join(tmpDir, 'extracted')
+
+      await mkdir(extractDir, { recursive: true })
+      await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+      return { contents: (await readdir(extractDir)).sort(), result }
+    }
+
+    test.each(Object.entries(SHAPES))('Carries the entry file the guest imports (%s)', async (_name, fixture) => {
+      const { contents } = await bundleShape(fixture)
+
+      // The guest imports a fixed path, so the bundle is only runnable if the
+      // entry file is in it.
+      expect(contents).toContain('___netlify-entry-point.mjs')
+      expect(contents).toContain('___netlify-server.json')
+    })
+
+    test('Is bundled and versioned the same either way', async () => {
+      const [framework, netlify] = await Promise.all(Object.values(SHAPES).map(bundleShape))
+
+      expect(framework.result.bundler).toBe(netlify.result.bundler)
+      expect(framework.result.runtimeVersion).toBe(netlify.result.runtimeVersion)
+      expect(framework.result.runtimeVersion).toBeDefined()
+    })
   })
 
   test('Fails the build when the server entry cannot be read, as a user error', async () => {
