@@ -46,6 +46,10 @@ export interface NetlifyPluginConstants {
    */
   EDGE_FUNCTIONS_DIST: string
   /**
+   * the directory where the built Netlify Server is placed before deployment. Its value is always defined, but the target might not have been created yet.
+   */
+  SERVER_DIST: string
+  /**
    * the directory where database migrations are placed before deployment.
    */
   DB_MIGRATIONS_DIST?: string
@@ -100,6 +104,7 @@ export const getConstants = async function ({
   packagePath,
   functionsDistDir,
   edgeFunctionsDistDir,
+  serverDistDir,
   cacheDir,
   netlifyConfig,
   siteInfo: { id: siteId, account_id: accountId },
@@ -122,6 +127,8 @@ export const getConstants = async function ({
     // only on local development join with the packagePath as this directory
     // on buildbot this `functionsDistDir` is an absolute path to `/tmp/zisi-.....` so we cannot join it with the pacakgePath
     EDGE_FUNCTIONS_DIST: !isLocal ? edgeFunctionsDistDir : join(packagePath || '', edgeFunctionsDistDir),
+    // The directory where the built Netlify Server is placed before deployment
+    SERVER_DIST: !isLocal ? serverDistDir : join(packagePath || '', serverDistDir),
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
@@ -253,6 +260,7 @@ const CONSTANT_PATHS = new Set([
   'INTERNAL_FUNCTIONS_SRC',
   'DB_MIGRATIONS_DIST',
   'EDGE_FUNCTIONS_DIST',
+  'SERVER_DIST',
   'EDGE_FUNCTIONS_SRC',
   'DB_MIGRATIONS_SRC',
   'CACHE_DIR',
