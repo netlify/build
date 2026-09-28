@@ -10,7 +10,8 @@ const entry = (destPath: string, symlink = false) => ({
   stat: { isSymbolicLink: () => symlink } as Stats,
 })
 
-const readTargets = (links: Record<string, string>) => async (srcFile: string) => links[srcFile.replace('/repo/', '')]
+const readTargets = (links: Record<string, string>) => (srcFile: string) =>
+  Promise.resolve(links[srcFile.replace('/repo/', '')])
 
 const destPaths = (files: { destPath: string }[]) => files.map(({ destPath }) => destPath)
 
@@ -129,7 +130,7 @@ describe('resolveSymlinkedDestPaths', () => {
     const files = [entry('index.js'), entry('node_modules/left-pad/index.js')]
 
     const resolved = await resolveSymlinkedDestPaths(files, {
-      readTarget: async () => {
+      readTarget: () => {
         throw new Error('should not read any link')
       },
     })
