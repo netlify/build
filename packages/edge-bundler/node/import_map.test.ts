@@ -300,3 +300,17 @@ describe('Detects whether import map contents are the defaults', () => {
     expect(ImportMap.isDefault(map.withNodeBuiltins().getContents())).toBe(false)
   })
 })
+
+test('Maps Node.js built-ins to their `node:` prefixed version', () => {
+  const { imports } = new ImportMap().withNodeBuiltins().getContents()
+
+  expect(imports.path).toBe('node:path')
+  expect(imports['fs/promises']).toBe('node:fs/promises')
+
+  // Modules that only exist with the prefix (e.g. `node:test`) must not be
+  // mapped to a double-prefixed specifier that doesn't resolve.
+  for (const [specifier, url] of Object.entries(imports)) {
+    expect(specifier.startsWith('node:')).toBe(false)
+    expect(url.startsWith('node:node:')).toBe(false)
+  }
+})

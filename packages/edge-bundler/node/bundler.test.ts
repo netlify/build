@@ -917,6 +917,27 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       await cleanup()
     })
 
+    test('With imports of Node.js built-ins that only exist with the `node:` prefix', async () => {
+      const { basePath, cleanup, distPath } = await useFixture('imports_node_prefix_only', { copyDirectory: true })
+
+      await bundle([join(basePath, 'netlify/edge-functions')], distPath, [], {
+        basePath,
+        featureFlags: {
+          edge_bundler_generate_tarball: true,
+        },
+      })
+
+      const manifest = JSON.parse(await readFile(resolve(distPath, 'manifest.json'), 'utf8'))
+      const tarballResult = await runTarball(join(distPath, manifest.bundles[0].asset))
+
+      expect(tarballResult).toStrictEqual({ func1: 'function' })
+
+      const eszipResult = await runESZIP(join(distPath, manifest.bundles[1].asset))
+      expect(eszipResult).toStrictEqual({ func1: 'function' })
+
+      await cleanup()
+    })
+
     test('Produces byte-identical tarballs when bundling the same code twice', async () => {
       const { basePath, cleanup, distPath } = await useFixture('imports_node_builtin', { copyDirectory: true })
       const declarations: Declaration[] = [
