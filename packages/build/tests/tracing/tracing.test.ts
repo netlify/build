@@ -1,6 +1,14 @@
-import { ROOT_CONTEXT, context, trace, SpanStatusCode, type Context, type ContextManager } from '@opentelemetry/api'
-import { BasicTracerProvider, Span } from '@opentelemetry/sdk-trace-base'
-import { afterAll, afterEach, assert, beforeAll, beforeEach, expect, test } from 'vitest'
+import {
+  ROOT_CONTEXT,
+  context,
+  trace,
+  SpanStatusCode,
+  type Context,
+  type ContextManager,
+  type Span,
+} from '@opentelemetry/api'
+import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
+import { afterAll, afterEach, beforeAll, beforeEach, expect, test } from 'vitest'
 
 import { addErrorInfo } from '../../lib/error/info.js'
 import { addBuildErrorToActiveSpan } from '../../lib/tracing/main.js'
@@ -16,8 +24,17 @@ function createContextManager(activeContext: Context): ContextManager {
   return contextManager
 }
 
+const exporter = new InMemorySpanExporter()
+let span: Span
+
+const getExportedSpan = () => {
+  span.end()
+  const [exportedSpan] = exporter.getFinishedSpans()
+  return exportedSpan
+}
+
 beforeAll(() => {
-  const tracerProvider = new BasicTracerProvider()
+  const tracerProvider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] })
   const success = trace.setGlobalTracerProvider(tracerProvider)
   expect(success).toBe(true)
 })
@@ -27,8 +44,9 @@ afterAll(() => {
 })
 
 beforeEach(() => {
+  exporter.reset()
   const tracer = trace.getTracer('test')
-  const span = tracer.startSpan('my-span')
+  span = tracer.startSpan('my-span')
   const ctx = trace.setSpan(ROOT_CONTEXT, span)
   const success = context.setGlobalContextManager(createContextManager(ctx))
   expect(success).toBe(true)
@@ -43,11 +61,10 @@ test('addBuildErrorToActiveSpan - when error severity info', () => {
   addErrorInfo(myError, { type: 'failPlugin' })
 
   addBuildErrorToActiveSpan(myError)
-  const span = trace.getActiveSpan()
-  assert.instanceOf(span, Span)
-  expect(span.status.code).toBe(SpanStatusCode.ERROR)
+  const exportedSpan = getExportedSpan()
+  expect(exportedSpan.status.code).toBe(SpanStatusCode.ERROR)
   // Severities are infered from the Error Type
-  expect(span.attributes).toEqual({
+  expect(exportedSpan.attributes).toEqual({
     'build.error.location.type': 'buildFail',
     'build.error.severity': 'info',
     'build.error.type': 'failPlugin',
@@ -58,21 +75,19 @@ test('addBuildErrorToActiveSpan - when error has no info', () => {
   const myError = new Error()
   addBuildErrorToActiveSpan(myError)
 
-  const span = trace.getActiveSpan()
-  assert.instanceOf(span, Span)
-  expect(span.status.code).toBe(SpanStatusCode.ERROR)
+  const exportedSpan = getExportedSpan()
+  expect(exportedSpan.status.code).toBe(SpanStatusCode.ERROR)
   // If we have no custom build error Info nothing is added to the span attributes
-  expect(span.attributes).toEqual({})
+  expect(exportedSpan.attributes).toEqual({})
 })
 
 test('addBuildErrorToActiveSpan - noop when error severity none', () => {
   const myError = new Error()
   addErrorInfo(myError, { type: 'cancelBuild' })
 
-  const span = trace.getActiveSpan()
-  assert.instanceOf(span, Span)
   addBuildErrorToActiveSpan(myError)
 
-  expect(span.attributes).toEqual({})
-  expect(span.status.code).toBe(SpanStatusCode.UNSET)
+  const exportedSpan = getExportedSpan()
+  expect(exportedSpan.attributes).toEqual({})
+  expect(exportedSpan.status.code).toBe(SpanStatusCode.UNSET)
 })

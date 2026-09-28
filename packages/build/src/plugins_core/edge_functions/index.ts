@@ -190,6 +190,22 @@ const getMetrics = (manifest): Metric[] => {
     })
   }
 
+  // How often tarballs depend on a non-default import map or a vendor manifest.
+  const bundles = manifest.bundles as { format: string; custom_import_map?: boolean; vendor_manifest?: boolean }[]
+  const tarball = bundles.find((bundle) => bundle.format === 'tar')
+
+  if (typeof tarball?.custom_import_map === 'boolean' && typeof tarball.vendor_manifest === 'boolean') {
+    metrics.push({
+      type: 'increment',
+      name: 'buildbot.build.edge_functions.tarball_resolution',
+      value: 1,
+      tags: {
+        custom_import_map: String(tarball.custom_import_map),
+        vendor_manifest: String(tarball.vendor_manifest),
+      },
+    })
+  }
+
   return metrics
 }
 // We run this core step if at least one of the functions directories (the
