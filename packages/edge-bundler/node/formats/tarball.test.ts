@@ -34,6 +34,23 @@ describe('rewriteImportAssertions', () => {
     },
   )
 
+  test.each(['.cjs', '.cts', '.js'])(
+    'rewrites a CommonJS %s source file with a top-level return',
+    async (extension) => {
+      const sourceFile = join(workDir, `source${extension}`)
+      const destFile = join(workDir, `dest${extension}`)
+      const source = `const assert = require('assert');
+if (typeof module === 'undefined') return;
+module.exports = import('./data.json', { assert: { type: 'json' } });
+`
+      await fs.writeFile(sourceFile, source)
+
+      await rewriteImportAssertions(sourceFile, destFile)
+
+      expect(await fs.readFile(destFile, 'utf-8')).toBe(source.replace('{ assert:', '{ with:'))
+    },
+  )
+
   test('copies a file without rewritable extension verbatim', async () => {
     const sourceFile = join(workDir, 'data.json')
     const destFile = join(workDir, 'dest.json')

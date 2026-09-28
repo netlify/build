@@ -17,6 +17,9 @@ const parseOptions: AcornOptions = {
   ecmaVersion: 'latest',
   sourceType: 'module',
   locations: true,
+  // CommonJS files (`.cjs`, `.cts`, or `.js` outside a `"type": "module"`
+  // package) may `return` at the top level.
+  allowReturnOutsideFunction: true,
 }
 
 // The file extensions Deno treats as TypeScript declaration files.
