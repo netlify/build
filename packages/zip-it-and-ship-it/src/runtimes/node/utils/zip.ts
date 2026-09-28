@@ -147,7 +147,7 @@ const createDirectory = async function ({
 
   // Copying source files.
   await pMap(
-    await resolveSymlinkedDestPaths(statted),
+    await resolveSymlinkedDestPaths(statted, { rewrites }),
     async ({ srcFile, stat, destPath }) => {
       const absoluteDestPath = join(functionFolder, destPath)
 
@@ -282,6 +282,7 @@ const createZipArchive = async function ({
       stat,
       destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
     })),
+    { rewrites },
   )
 
   // We ensure this is not async, so that the archive's checksum is
@@ -337,7 +338,10 @@ interface ArchiveEntry {
 // root — is left alone; rewriting onto it would move entries out of the bundle.
 export const resolveSymlinkedDestPaths = async function <T extends ArchiveEntry>(
   files: T[],
-  readTarget: (srcFile: string) => Promise<string> = readLink,
+  {
+    readTarget = readLink,
+    rewrites = new Map<string, string>(),
+  }: { readTarget?: (srcFile: string) => Promise<string>; rewrites?: Map<string, string> } = {},
 ): Promise<T[]> {
   const links = files.filter(({ stat }) => stat.isSymbolicLink())
 
@@ -345,53 +349,50 @@ export const resolveSymlinkedDestPaths = async function <T extends ArchiveEntry>
     return files
   }
 
+  // Resolve in parallel, but record in `links` order: keying off whichever
+  // readlink finished first would make the output depend on IO timing, and the
+  // archive checksum has to be reproducible.
+  const targets = await Promise.all(links.map(({ srcFile }) => readTarget(srcFile)))
   const realPaths = new Map<string, string>()
 
-  await Promise.all(
-    links.map(async ({ srcFile, destPath }) => {
-      const target = await readTarget(srcFile)
+  links.forEach(({ destPath }, index) => {
+    const target = targets[index]
 
-      if (isAbsolute(target)) {
-        return
-      }
+    if (isAbsolute(target)) {
+      return
+    }
 
-      const realPath = posix.normalize(posix.join(posix.dirname(destPath), target))
+    const realPath = posix.normalize(posix.join(posix.dirname(destPath), target))
 
-      if (realPath.startsWith('..')) {
-        return
-      }
+    if (realPath.startsWith('..')) {
+      return
+    }
 
-      realPaths.set(destPath, realPath)
-    }),
-  )
+    realPaths.set(destPath, realPath)
+  })
 
   if (realPaths.size === 0) {
     return files
   }
 
-  const seen = new Set<string>()
+  // Longest first, so a link nested inside another wins over its parent.
+  const candidates = [...realPaths.entries()].sort(([a], [b]) => b.length - a.length)
+  const byDestPath = new Map<string, T>()
 
-  return files
-    .map((file) => {
-      for (const [link, realPath] of realPaths) {
-        if (file.destPath.startsWith(`${link}/`)) {
-          return { ...file, destPath: realPath + file.destPath.slice(link.length) }
-        }
-      }
+  for (const file of files) {
+    const match = candidates.find(([link]) => file.destPath.startsWith(`${link}/`))
+    const resolved = match ? { ...file, destPath: match[1] + file.destPath.slice(match[0].length) } : file
+    const existing = byDestPath.get(resolved.destPath)
 
-      return file
-    })
-    .filter(({ destPath }) => {
-      // A rewrite can land on a path the archive already holds, since the tracer
-      // may have reported some of a package under each spelling.
-      if (seen.has(destPath)) {
-        return false
-      }
+    // Two spellings of one package can now collapse onto a single path. Keep
+    // the entry whose contents were rewritten — nft patches package.json files
+    // into `rewrites`, and the unpatched twin would ship the wrong manifest.
+    if (existing === undefined || (!rewrites.has(existing.srcFile) && rewrites.has(resolved.srcFile))) {
+      byDestPath.set(resolved.destPath, resolved)
+    }
+  }
 
-      seen.add(destPath)
-
-      return true
-    })
+  return [...byDestPath.values()]
 }
 
 const addStat = async function (cache: RuntimeCache, srcFile: string) {
