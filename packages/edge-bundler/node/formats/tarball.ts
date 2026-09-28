@@ -15,7 +15,7 @@ import { listRecursively } from '../utils/fs.js'
 import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
 import { DENO_RETRIES, isTransientDenoErrorObject } from '../utils/transient_error.js'
-import { rewriteSourceImportAssertions } from '../utils/import_attributes.js'
+import { isDeclarationFile, rewriteSourceImportAssertions } from '../utils/import_attributes.js'
 import type { ModuleGraphJson } from '../vendor/module_graph/module_graph.js'
 import { EdgeFunctionConfig } from '../index.js'
 import { generateManifestRoutes, Route } from '../manifest.js'
@@ -233,7 +233,7 @@ export const bundle = async ({
 }
 
 // Source file extensions that may contain import statements.
-const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts'])
+const REWRITABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.mts', '.cjs', '.cts'])
 
 /**
  * Uses deno info to get the module graph and extract only the local source files
@@ -406,7 +406,7 @@ export async function rewriteImportAssertions(sourceFile: string, destPath: stri
 
   try {
     const source = await fs.readFile(sourceFile, 'utf-8')
-    const modified = rewriteSourceImportAssertions(source)
+    const modified = rewriteSourceImportAssertions(source, { isDeclaration: isDeclarationFile(sourceFile) })
     await fs.writeFile(destPath, modified)
   } catch (error) {
     throw new Error(`Failed to rewrite import assertions in ${sourceFile}`, { cause: error })
