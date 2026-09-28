@@ -895,14 +895,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       // without recording it in `vendor/manifest.json`.
       expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: false, vendor_manifest: true })
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: join(distPath, manifest.bundles[0].asset),
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(join(distPath, manifest.bundles[0].asset))
 
       expect(entries).toContain('./vendor/manifest.json')
 
