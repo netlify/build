@@ -171,7 +171,7 @@ const getFromMainConfig = ({
   return merged
 }
 
-// memory and vcpux are two mutually exclusive ways of sizing a function, so
+// memory and vcpu are two mutually exclusive ways of sizing a function, so
 // they can't be merged key by key like other properties
 // a wildcard block with memory and a more specific block with vcpu
 // would otherwise produce both. Instead, the highest-priority source that
