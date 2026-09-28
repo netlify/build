@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { rewriteSourceImportAssertions } from './import_attributes.js'
+import { isDeclarationFile, parseAST, rewriteSourceImportAssertions } from './import_attributes.js'
 
 describe('rewriteSourceImportAssertions', () => {
   test('handles static import assertions', () => {
@@ -357,6 +357,57 @@ import css from './styles.css' with {
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
+  })
+
+  describe('declaration files', () => {
+    test.each([
+      ['index.d.ts', true],
+      ['index.d.mts', true],
+      ['index.d.cts', true],
+      ['index.ts', false],
+      ['index.mts', false],
+      ['index.d.js', false],
+      ['types.d.ts.bak', false],
+    ])('isDeclarationFile(%s) is %s', (path, expected) => {
+      expect(isDeclarationFile(path)).toBe(expected)
+    })
+
+    test('parses ambient-only syntax in declaration mode', () => {
+      const source = `export const convert: (<T>(test: T) => T);`
+
+      expect(() => parseAST(source)).toThrow(SyntaxError)
+      expect(parseAST(source, { isDeclaration: true }).body).toHaveLength(1)
+    })
+
+    test('rewrites import assertions in a declaration file', () => {
+      const source = `import data from './data.json' assert { type: 'json' };
+export const convert: (<T>(test: T) => T);
+`
+      const expectedResult = `import data from './data.json' with { type: 'json' };
+export const convert: (<T>(test: T) => T);
+`
+
+      expect(rewriteSourceImportAssertions(source, { isDeclaration: true })).toEqual(expectedResult)
+    })
+
+    test.each([
+      ['a parenthesized generic function type (unist-util-is)', `export const convert: (<T>(test: T) => T);`],
+      [
+        'a namespace after a string literal type (unpdf)',
+        `export const Prefix: "x";\nexport namespace Kind {\n  let A: number;\n}`,
+      ],
+    ])('handles %s', (_, body) => {
+      const source = `import data from './data.json' assert { type: 'json' };
+export * from "./other.json"assert{type: 'json'};
+${body}
+`
+      const expectedResult = `import data from './data.json' with { type: 'json' };
+export * from "./other.json"with{type: 'json'};
+${body}
+`
+
+      expect(rewriteSourceImportAssertions(source, { isDeclaration: true })).toEqual(expectedResult)
+    })
   })
 
   test('handles a function expression named with a TypeScript contextual keyword', () => {
