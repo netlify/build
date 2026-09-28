@@ -377,6 +377,12 @@ export default [
     },
   },
   {
+    files: ['packages/build/scripts/copy_yml.js'],
+    rules: {
+      'n/no-unsupported-features/node-builtins': 'off',
+    },
+  },
+  {
     files: ['packages/build/src/core/bin.js'],
     rules: {
       'n/hashbang': 'off',
