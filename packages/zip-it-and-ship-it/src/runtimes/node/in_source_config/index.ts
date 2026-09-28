@@ -374,7 +374,6 @@ export const augmentFunctionConfig = (
   tomlConfig: FunctionConfig,
   inSourceConfig: InSourceConfig = {},
 ) => {
-
   const mergedConfig = withComputeResources(
     mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig & InSourceConfig,
     [tomlConfig, inSourceConfig],

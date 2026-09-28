@@ -44,9 +44,7 @@ const isValidFunctionMemory = (value) => {
     megabytes = Number.parseFloat(match[1]) * (match[2]?.toLowerCase() === 'gb' ? 1024 : 1)
   }
 
-  return (
-    Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
-  )
+  return Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
 }
 
 // List of validations performed on the configuration file.
