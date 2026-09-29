@@ -279,6 +279,31 @@ test('Functions: fails the build on multiple Netlify Server entrypoints', async 
   expect(output).toContain('Found multiple server entrypoints')
 })
 
+test('Functions: passes memory, vcpu and region from netlify.toml to the manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/function_resources')
+    .withFlags({ debug: false })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const { functions } = await importJsonFile<FunctionsManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const getResources = (functionName: string) => {
+    const func = functions.find(({ name }) => name === functionName)
+
+    return { memory: func?.memory, region: func?.region, vcpu: func?.vcpu }
+  }
+
+  expect(getResources('sized-by-memory')).toEqual({ memory: 2048, region: 'fra', vcpu: undefined })
+
+  // A more specific block's vcpu replaces the wildcard memory
+  expect(getResources('sized-by-vcpu')).toEqual({ memory: undefined, region: 'fra', vcpu: 1.5 })
+
+  // In-source configuration takes precedence over netlify.toml
+  expect(getResources('sized-in-source')).toEqual({ memory: undefined, region: 'fra', vcpu: 0.5 })
+})
+
 test('Functions: loads functions generated with the Frameworks API', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/functions_user_and_frameworks')
     .withFlags({ debug: false })
