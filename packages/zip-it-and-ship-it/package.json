@@ -76,7 +76,7 @@
     "zod": "^4.0.5"
   },
   "devDependencies": {
-    "@netlify/types": "2.7.0",
+    "@netlify/types": "3.1.0",
     "@opentelemetry/sdk-trace-base": "~2.8.0",
     "@types/archiver": "8.0.0",
     "@types/node": "^22.12.0",
