@@ -343,6 +343,19 @@ export const config = { region: 'fra' }
     expect(manifest.server.region).toBe('fra')
   })
 
+  test.each([
+    ['as const', `export const config = { path: '/api/*', region: 'fra' } as const`],
+    [
+      'satisfies',
+      `import type { Config } from '@netlify/server'\n\nexport const config = { path: '/api/*', region: 'fra' } satisfies Config`,
+    ],
+  ])('Reads a config written with %s', async (_name, configSource) => {
+    const { manifest } = await bundleSource('index.ts', `${FRAMEWORK_SERVER}\n${configSource}\n`)
+
+    expect(manifest.server.region).toBe('fra')
+    expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*'])
+  })
+
   test('Reads the config property of a default export object', async () => {
     const { manifest } = await bundleSource(
       'index.mjs',

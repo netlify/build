@@ -7,6 +7,7 @@ import type {
   ObjectExpression,
   SpreadElement,
   JSXNamespacedName,
+  Statement,
 } from '@babel/types'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
@@ -245,6 +246,24 @@ export const parseFile = async (
   return parseSource(source, { functionName, isServer })
 }
 
+// Reads a named `config` export wrapped in `as const` or `satisfies`, which the
+// shared export traversal doesn't unwrap.
+const getWrappedConfigExport = (nodes: Statement[], getAllBindings: BindingMethod) => {
+  for (const node of nodes) {
+    if (node.type !== 'ExportNamedDeclaration' || node.declaration?.type !== 'VariableDeclaration') {
+      continue
+    }
+
+    for (const declarator of node.declaration.declarations) {
+      if (declarator.id.type === 'Identifier' && declarator.id.name === 'config') {
+        const object = resolveObjectExpression(declarator.init ?? undefined, getAllBindings)
+
+        return object ? parseObject(object) : undefined
+      }
+    }
+  }
+}
+
 const parseServerConfig = (config: Record<string, unknown>, functionName: string): InSourceConfig => {
   const { data, error, success } = serverInSourceConfig.safeParse(config)
 
@@ -293,7 +312,11 @@ export const parseSource = (
   )
 
   if (isServer) {
-    const config = configExport ?? getConfigFromDefaultExport(defaultExportExpression, getAllBindings) ?? {}
+    const config =
+      configExport ??
+      getWrappedConfigExport(ast.body, getAllBindings) ??
+      getConfigFromDefaultExport(defaultExportExpression, getAllBindings) ??
+      {}
 
     return {
       config: parseServerConfig(config, functionName),
