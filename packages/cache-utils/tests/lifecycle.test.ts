@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { expect, test, vi } from 'vitest'
 
 import { has, restore, save } from '../src/main.js'
+import { parsePath } from '../src/path.js'
 
 import { createTmpDir, removeFiles } from './helpers/main.js'
 
@@ -90,7 +91,8 @@ test('Should preserve local files when the cache manifest cannot be read', async
     await fs.writeFile(output, 'cached build')
     expect(await save('output', options)).toBe(true)
     await fs.writeFile(output, 'local build')
-    await fs.writeFile(join(cacheDir, 'cwd', 'output.netlify.cache.json'), '{')
+    const { cachePath } = await parsePath({ path: 'output', cacheDir, cwdOpt: cwd })
+    await fs.writeFile(`${cachePath}.netlify.cache.json`, '{')
 
     await expect(restore('output', options)).rejects.toThrow(SyntaxError)
     expect(await fs.readFile(output, 'utf8')).toBe('local build')
