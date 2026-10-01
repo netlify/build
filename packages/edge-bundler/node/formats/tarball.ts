@@ -1,4 +1,5 @@
 import { promises as fs, createWriteStream, existsSync } from 'fs'
+import { tmpdir } from 'os'
 import path from 'path'
 import { pipeline } from 'stream/promises'
 import { fileURLToPath, pathToFileURL } from 'url'
@@ -7,7 +8,6 @@ import { createGzip } from 'zlib'
 import commonPathPrefix from 'common-path-prefix'
 import { packTar, type FileSource } from 'modern-tar/fs'
 import pRetry, { AbortError } from 'p-retry'
-import tmp from 'tmp-promise'
 
 import { DenoBridge } from '../bridge.js'
 import { Bundle, BundleFormat } from '../bundle.js'
@@ -59,8 +59,15 @@ export const bundle = async ({
   importMap,
   vendorDirectory,
 }: BundleTarballOptions): Promise<(arg: FinalizeTarballBundleOptions) => Promise<Bundle>> => {
-  const bundleDir = await tmp.dir({ unsafeCleanup: true })
-  const cleanup = [bundleDir.cleanup]
+  const tempDir = await fs.mkdtemp(path.join(tmpdir(), 'edge-bundler-tarball-'))
+  let bundleDir: string
+  try {
+    bundleDir = await fs.realpath(tempDir)
+  } catch (error) {
+    await fs.rm(tempDir, { recursive: true, force: true })
+    throw error
+  }
+  const cleanup = [() => fs.rm(bundleDir, { recursive: true, force: true })]
 
   const initialManifest: Omit<Manifest, 'function_config' | 'routes' | 'post_cache_routes'> = {
     functions: {},
@@ -88,7 +95,7 @@ export const bundle = async ({
     const vendorFiles = await listRecursively(vendorDirectory)
     for (const vendorFile of vendorFiles) {
       const relativePath = path.relative(vendorDirectory, vendorFile)
-      const destPath = path.join(bundleDir.path, npmVendorDir, relativePath)
+      const destPath = path.join(bundleDir, npmVendorDir, relativePath)
 
       await fs.mkdir(path.dirname(destPath), { recursive: true })
 
@@ -125,7 +132,7 @@ export const bundle = async ({
       prefixes[pathToFileURL(path.join(commonPath, 'vendor') + path.sep).href] = './.root-vendor/'
     }
 
-    const destPath = path.join(bundleDir.path, relativePath)
+    const destPath = path.join(bundleDir, relativePath)
 
     await fs.mkdir(path.dirname(destPath), { recursive: true })
 
@@ -141,7 +148,7 @@ export const bundle = async ({
   const customImportMap = !ImportMap.isDefault(importMapContents)
 
   // Create deno.json with import map contents for runtime resolution
-  const denoConfigPath = path.join(bundleDir.path, 'deno.json')
+  const denoConfigPath = path.join(bundleDir, 'deno.json')
   const denoConfigContents = JSON.stringify(importMapContents, null, 2)
   await fs.writeFile(denoConfigPath, denoConfigContents)
 
@@ -159,12 +166,12 @@ export const bundle = async ({
       ...Object.values(initialManifest.functions),
     ],
     {
-      cwd: bundleDir.path,
+      cwd: bundleDir,
     },
   )
 
   // Rewrite import assertions in files outputted by deno vendor
-  const denoVendorOutput = path.join(bundleDir.path, 'vendor')
+  const denoVendorOutput = path.join(bundleDir, 'vendor')
   const vendorManifest = existsSync(path.join(denoVendorOutput, 'manifest.json'))
   if (existsSync(denoVendorOutput)) {
     const denoVendorFiles = await listRecursively(denoVendorOutput)
@@ -185,7 +192,7 @@ export const bundle = async ({
       post_cache_routes: manifestRoutes.postCacheRoutes,
     }
 
-    const manifestPath = path.join(bundleDir.path, '___netlify-edge-functions.json')
+    const manifestPath = path.join(bundleDir, '___netlify-edge-functions.json')
     const manifestContents = JSON.stringify(manifest)
     await fs.writeFile(manifestPath, manifestContents)
 
@@ -196,15 +203,15 @@ export const bundle = async ({
     // Using absolute paths here leads to platform-specific quirks (notably on Windows),
     // where entries can include drive letters and break extraction/imports.
     // Ensure forward slashes inside the tarball for cross-platform consistency.
-    const files = (await listRecursively(bundleDir.path))
-      .map((p) => path.relative(bundleDir.path, p))
+    const files = (await listRecursively(bundleDir))
+      .map((p) => path.relative(bundleDir, p))
       .map((p) => './' + getUnixPath(p))
       .sort()
 
     // Omit metadata that can vary across platforms and runs, to ensure reproducible tarballs.
     const sources: FileSource[] = files.map((file) => ({
       type: 'file',
-      source: path.join(bundleDir.path, file),
+      source: path.join(bundleDir, file),
       target: file,
       mtime: new Date(0),
       uid: 0,

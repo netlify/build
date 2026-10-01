@@ -13,7 +13,7 @@ import type {
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfigShape } from '../../../config.js'
+import { FunctionConfig, functionConfigShape, withComputeResources } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
@@ -374,8 +374,10 @@ export const augmentFunctionConfig = (
   tomlConfig: FunctionConfig,
   inSourceConfig: InSourceConfig = {},
 ) => {
-  const mergedConfig = mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig &
-    InSourceConfig
+  const mergedConfig = withComputeResources(
+    mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig & InSourceConfig,
+    [tomlConfig, inSourceConfig],
+  )
 
   // We can't simply merge included files from the TOML and from in-source
   // configuration because their globs are relative to different base paths.

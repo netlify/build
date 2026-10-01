@@ -74,7 +74,10 @@
     "p-retry": "^6.0.0",
     "parse-imports": "^2.2.1",
     "semver": "^7.3.8",
-    "tmp-promise": "^3.0.3",
     "urlpattern-polyfill": "8.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
   }
 }
