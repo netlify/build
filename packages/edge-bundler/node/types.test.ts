@@ -1,8 +1,8 @@
-import { readFile, rm, writeFile } from 'fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'fs/promises'
+import { tmpdir } from 'os'
 import { join } from 'path'
 
 import nock from 'nock'
-import tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
 import { testLogger } from '../test/util.js'
@@ -15,9 +15,9 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
   const mockVersion = '123456789'
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(200, mockVersion)
 
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-types-'))
   const deno = new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     logger: testLogger,
   })
 
@@ -26,7 +26,7 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   await ensureLatestTypes(deno, testLogger, mockURL)
 
-  const versionFile = await readFile(join(tmpDir.path, 'types-version.txt'), 'utf8')
+  const versionFile = await readFile(join(tmpDir, 'types-version.txt'), 'utf8')
 
   expect(latestVersionMock.isDone()).toBe(true)
   expect(mock).toHaveBeenCalledTimes(1)
@@ -35,21 +35,21 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('`ensureLatestTypes` does not update the Deno CLI cache if the local version of types is up-to-date', async () => {
   const mockURL = 'https://edge.netlify'
   const mockVersion = '987654321'
 
-  const tmpDir = await tmp.dir()
-  const versionFilePath = join(tmpDir.path, 'types-version.txt')
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-types-'))
+  const versionFilePath = join(tmpDir, 'types-version.txt')
 
   await writeFile(versionFilePath, mockVersion)
 
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(200, mockVersion)
   const deno = new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     logger: testLogger,
   })
 
@@ -63,16 +63,16 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('`ensureLatestTypes` does not throw if the types URL is not available', async () => {
   const mockURL = 'https://edge.netlify'
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(500)
 
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-types-'))
   const deno = new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     logger: testLogger,
   })
 
@@ -86,5 +86,5 @@ test('`ensureLatestTypes` does not throw if the types URL is not available', asy
 
   mock.mockRestore()
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })

@@ -1,12 +1,12 @@
 import { execSync } from 'node:child_process'
 import { promises as fs } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { stderr, stdout } from 'node:process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { execa } from 'execa'
 import * as tar from 'tar'
-import tmp from 'tmp-promise'
 
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'
@@ -23,30 +23,32 @@ interface UseFixtureOptions {
   copyDirectory?: boolean
 }
 
+const removeDir = (path: string) => fs.rm(path, { force: true, recursive: true, maxRetries: 10 })
+
 export const useFixture = async (fixtureName: string, { copyDirectory }: UseFixtureOptions = {}) => {
-  const tmpDistDir = await tmp.dir({ unsafeCleanup: true })
+  const tmpDistDir = await fs.mkdtemp(join(tmpdir(), 'edge-bundler-dist-'))
   const fixtureDir = resolve(fixturesDir, fixtureName)
-  const distPath = join(tmpDistDir.path, '.netlify', 'edge-functions-dist')
+  const distPath = join(tmpDistDir, '.netlify', 'edge-functions-dist')
 
   if (copyDirectory) {
-    const tmpFixtureDir = await tmp.dir({ unsafeCleanup: true })
+    const tmpFixtureDir = await fs.realpath(await fs.mkdtemp(join(tmpdir(), 'edge-bundler-fixture-')))
 
-    await fs.cp(fixtureDir, tmpFixtureDir.path, {
+    await fs.cp(fixtureDir, tmpFixtureDir, {
       recursive: true,
       force: false,
       errorOnExist: false,
     })
 
     return {
-      basePath: tmpFixtureDir.path,
-      cleanup: () => Promise.allSettled([tmpDistDir.cleanup(), tmpFixtureDir.cleanup()]),
+      basePath: tmpFixtureDir,
+      cleanup: () => Promise.allSettled([removeDir(tmpDistDir), removeDir(tmpFixtureDir)]),
       distPath,
     }
   }
 
   return {
     basePath: fixtureDir,
-    cleanup: tmpDistDir.cleanup,
+    cleanup: () => removeDir(tmpDistDir),
     distPath,
   }
 }
@@ -106,73 +108,77 @@ export const getRouteMatcher = (manifest: Manifest) => (candidate: string) =>
   })
 
 export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
-  const tmpDir = await tmp.dir({ unsafeCleanup: true })
+  const tmpDir = await fs.mkdtemp(join(tmpdir(), 'edge-bundler-eszip-'))
 
-  // Extract ESZIP into temporary directory.
-  const extractCommand = execa('deno', [
-    'run',
-    '--allow-all',
-    '--no-lock',
-    'https://deno.land/x/eszip@v0.55.2/eszip.ts',
-    'x',
-    eszipPath,
-    tmpDir.path,
-  ])
+  try {
+    // Extract ESZIP into temporary directory.
+    const extractCommand = execa('deno', [
+      'run',
+      '--allow-all',
+      '--no-lock',
+      'https://deno.land/x/eszip@v0.55.2/eszip.ts',
+      'x',
+      eszipPath,
+      tmpDir,
+    ])
 
-  extractCommand.stderr?.pipe(stderr)
-  extractCommand.stdout?.pipe(stdout)
+    extractCommand.stderr?.pipe(stderr)
+    extractCommand.stdout?.pipe(stdout)
 
-  await extractCommand
+    await extractCommand
 
-  const virtualRootPath = join(tmpDir.path, 'source', 'root')
-  const stage2Path = join(virtualRootPath, '..', 'bootstrap-stage2')
-  const importMapPath = join(virtualRootPath, '..', 'import-map')
+    const virtualRootPath = join(tmpDir, 'source', 'root')
+    const stage2Path = join(virtualRootPath, '..', 'bootstrap-stage2')
+    const importMapPath = join(virtualRootPath, '..', 'import-map')
 
-  for (const path of [importMapPath, stage2Path]) {
-    const file = await fs.readFile(path, 'utf8')
+    for (const path of [importMapPath, stage2Path]) {
+      const file = await fs.readFile(path, 'utf8')
 
-    let normalizedFile = file.replace(/file:\/{3}root/g, pathToFileURL(virtualRootPath).toString())
+      let normalizedFile = file.replace(/file:\/{3}root/g, pathToFileURL(virtualRootPath).toString())
 
-    if (vendorDirectory !== undefined) {
-      normalizedFile = normalizedFile.replace(/file:\/{3}vendor/g, pathToFileURL(vendorDirectory).toString())
+      if (vendorDirectory !== undefined) {
+        normalizedFile = normalizedFile.replace(/file:\/{3}vendor/g, pathToFileURL(vendorDirectory).toString())
+      }
+
+      await fs.writeFile(path, normalizedFile)
     }
 
-    await fs.writeFile(path, normalizedFile)
+    await fs.rename(stage2Path, `${stage2Path}.js`)
+
+    // Run function that imports the extracted stage 2 and invokes each function.
+    const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectESZIPFunction(stage2Path)])
+
+    evalCommand.stderr?.pipe(stderr)
+
+    const result = await evalCommand
+
+    return JSON.parse(result.stdout)
+  } finally {
+    await removeDir(tmpDir)
   }
-
-  await fs.rename(stage2Path, `${stage2Path}.js`)
-
-  // Run function that imports the extracted stage 2 and invokes each function.
-  const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectESZIPFunction(stage2Path)])
-
-  evalCommand.stderr?.pipe(stderr)
-
-  const result = await evalCommand
-
-  await tmpDir.cleanup()
-
-  return JSON.parse(result.stdout)
 }
 
 export const runTarball = async (tarballPath: string) => {
-  const tmpDir = await tmp.dir({ unsafeCleanup: true })
+  const tmpDir = await fs.mkdtemp(join(tmpdir(), 'edge-bundler-tarball-'))
 
-  await tar.extract({
-    cwd: tmpDir.path,
-    file: tarballPath,
-  })
+  try {
+    await tar.extract({
+      cwd: tmpDir,
+      file: tarballPath,
+    })
 
-  const evalCommand = execa('deno', ['eval', '--vendor', inspectTarballFunction()], {
-    cwd: tmpDir.path,
-  })
+    const evalCommand = execa('deno', ['eval', '--vendor', inspectTarballFunction()], {
+      cwd: tmpDir,
+    })
 
-  evalCommand.stderr?.pipe(stderr)
+    evalCommand.stderr?.pipe(stderr)
 
-  const result = await evalCommand
+    const result = await evalCommand
 
-  await tmpDir.cleanup()
-
-  return JSON.parse(result.stdout)
+    return JSON.parse(result.stdout)
+  } finally {
+    await removeDir(tmpDir)
+  }
 }
 
 export const denoVersion = execSync('deno eval --no-lock "console.log(Deno.version.deno)"').toString()

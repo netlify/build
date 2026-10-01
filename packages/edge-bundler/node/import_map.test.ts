@@ -1,9 +1,10 @@
+import { randomUUID } from 'crypto'
 import { promises as fs } from 'fs'
+import { tmpdir } from 'os'
 import { join } from 'path'
 import { cwd } from 'process'
 import { pathToFileURL } from 'url'
 
-import tmp from 'tmp-promise'
 import { describe, test, expect } from 'vitest'
 
 import { ImportMap } from './import_map.js'
@@ -153,7 +154,7 @@ test('Throws when an import map uses a relative path to reference a file outside
 })
 
 test('Writes import map file to disk', async () => {
-  const file = await tmp.file()
+  const filePath = join(tmpdir(), randomUUID())
   const basePath = join(cwd(), 'my-cool-site', 'import-map.json')
   const inputFile1 = {
     baseURL: pathToFileURL(basePath),
@@ -164,21 +165,23 @@ test('Writes import map file to disk', async () => {
 
   const map = new ImportMap([inputFile1])
 
-  await map.writeToFile(file.path)
+  try {
+    await map.writeToFile(filePath)
 
-  const createdFile = await fs.readFile(file.path, 'utf8')
-  const { imports } = JSON.parse(createdFile)
-  const expectedPath = join(cwd(), 'my-cool-site', 'heart', 'pets', 'file.ts')
+    const createdFile = await fs.readFile(filePath, 'utf8')
+    const { imports } = JSON.parse(createdFile)
+    const expectedPath = join(cwd(), 'my-cool-site', 'heart', 'pets', 'file.ts')
 
-  await file.cleanup()
-
-  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
-  expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
-  expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
+    expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts?v=legacy')
+    expect(imports['@netlify/edge-functions']).toBe('https://edge.netlify.com/v1/index.ts')
+    expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
+  } finally {
+    await fs.rm(filePath, { force: true })
+  }
 })
 
 test('Respects import map when it has only scoped key', async () => {
-  const file = await tmp.file()
+  const filePath = join(tmpdir(), randomUUID())
   const importMap = {
     scopes: {
       './foo': {
@@ -186,21 +189,26 @@ test('Respects import map when it has only scoped key', async () => {
       },
     },
   }
-  await fs.writeFile(file.path, JSON.stringify(importMap))
-  const map = new ImportMap()
-  await map.addFile(file.path, getLogger())
 
-  expect(map.getContents()).toEqual({
-    imports: {
-      'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
-      '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
-    },
-    scopes: {
-      [pathToFileURL(join(file.path, '../foo')).href]: {
-        'alias:pets': pathToFileURL(join(file.path, '../heart/pets/file.ts')).href,
+  try {
+    await fs.writeFile(filePath, JSON.stringify(importMap))
+    const map = new ImportMap()
+    await map.addFile(filePath, getLogger())
+
+    expect(map.getContents()).toEqual({
+      imports: {
+        'netlify:edge': 'https://edge.netlify.com/v1/index.ts?v=legacy',
+        '@netlify/edge-functions': 'https://edge.netlify.com/v1/index.ts',
       },
-    },
-  })
+      scopes: {
+        [pathToFileURL(join(filePath, '../foo')).href]: {
+          'alias:pets': pathToFileURL(join(filePath, '../heart/pets/file.ts')).href,
+        },
+      },
+    })
+  } finally {
+    await fs.rm(filePath, { force: true })
+  }
 })
 
 test('Clones an import map', () => {
