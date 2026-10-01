@@ -19,7 +19,7 @@
     "@netlify/build": "*",
     "@netlify/config": "*",
     "@types/node": "^22.12.0",
-    "execa": "^8.0.0",
+    "execa": "^10.0.0",
     "fast-safe-stringify": "^2.0.7",
     "figures": "^6.0.0",
     "get-bin-path": "^11.0.0",
