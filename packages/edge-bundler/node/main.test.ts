@@ -1,12 +1,13 @@
 import { Buffer } from 'buffer'
-import { rm } from 'fs/promises'
+import { mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
 import { ZipArchive } from 'archiver'
 import nock from 'nock'
 import semver from 'semver'
-import tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
@@ -28,11 +29,11 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
     .get(`/release/v${latestVersion}/deno-${target}.zip`)
     .reply(200, () => data)
 
-  const tmpDir = await tmp.dir()
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-main-'))
   const beforeDownload = vi.fn()
   const afterDownload = vi.fn()
   const deno = new DenoBridge({
-    cacheDirectory: tmpDir.path,
+    cacheDirectory: tmpDir,
     onBeforeDownload: beforeDownload,
     onAfterDownload: afterDownload,
     useGlobal: false,
@@ -48,5 +49,5 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   expect(beforeDownload).toHaveBeenCalledTimes(1)
   expect(afterDownload).toHaveBeenCalledTimes(1)
 
-  await rm(tmpDir.path, { force: true, recursive: true, maxRetries: 10 })
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
