@@ -97,8 +97,11 @@ export const normalizeFunctionConfig = ({
   name: functionConfig.name,
   includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
+  memory: functionConfig.memory,
   nodeVersion,
+  region: functionConfig.region,
   schedule: functionConfig.schedule,
+  vcpu: functionConfig.vcpu,
 
   // When the user selects esbuild as the Node bundler, we still want to use
   // the legacy ZISI bundler as a fallback. Rather than asking the user to

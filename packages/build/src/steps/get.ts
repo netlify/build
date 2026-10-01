@@ -12,6 +12,7 @@ import { copyDbMigrations } from '../plugins_core/db_setup/migrations.js'
 import { preCleanup } from '../plugins_core/pre_cleanup/index.js'
 import { preDevCleanup } from '../plugins_core/pre_dev_cleanup/index.js'
 import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
+import { bundleServer } from '../plugins_core/server/index.js'
 import { scanForSecrets } from '../plugins_core/secrets_scanning/index.js'
 import { applySpaFallback } from '../plugins_core/spa_fallback/index.js'
 import { CoreStep, Event } from '../plugins_core/types.js'
@@ -84,6 +85,7 @@ const addCoreSteps = function (steps): CoreStep[] {
     applyDeployConfig,
     ...steps,
     bundleFunctions,
+    bundleServer,
     bundleEdgeFunctions,
     copyDbMigrations,
     applySpaFallback,

@@ -1,5 +1,21 @@
 # Changelog
 
+## [16.1.1](https://github.com/netlify/build/compare/edge-bundler-v16.1.0...edge-bundler-v16.1.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **edge-bundler:** don't double-prefix Node.js built-ins that only exist with `node:` ([#7241](https://github.com/netlify/build/issues/7241)) ([37abe93](https://github.com/netlify/build/commit/37abe93b2193d68d45066270ebd4745bf3d9f7db))
+* **edge-bundler:** parse declaration files in acorn-typescript's dts mode ([#7244](https://github.com/netlify/build/issues/7244)) ([75ab41a](https://github.com/netlify/build/commit/75ab41a4ba35ccaa5222ecb790ab3dcf6af59783))
+* **edge-bundler:** vendor acorn-typescript with unreleased parser fixes ([#7245](https://github.com/netlify/build/issues/7245)) ([c9ae6ed](https://github.com/netlify/build/commit/c9ae6ed4a119a518c3d90a1cf5fc48fe8836f8ee))
+
+## [16.1.0](https://github.com/netlify/build/compare/edge-bundler-v16.0.4...edge-bundler-v16.1.0) (2026-09-25)
+
+
+### Features
+
+* **edge-bundler:** record import map and vendor manifest usage for tarballs ([#7239](https://github.com/netlify/build/issues/7239)) ([f12cc93](https://github.com/netlify/build/commit/f12cc933d3ffa0bacb1bda1d4057b821737d51c4))
+
 ## [16.0.4](https://github.com/netlify/build/compare/edge-bundler-v16.0.3...edge-bundler-v16.0.4) (2026-08-21)
 
 

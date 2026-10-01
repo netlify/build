@@ -105,6 +105,87 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.3.3](https://github.com/netlify/build/compare/build-v37.3.2...build-v37.3.3) (2026-09-29)
+
+
+### Bug Fixes
+
+* preserve netlify.toml compute settings ([#7254](https://github.com/netlify/build/issues/7254)) ([3017c4a](https://github.com/netlify/build/commit/3017c4a22f9ea9678e7d253519ca55c8b7698e24))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.5 to ^25.2.6
+    * @netlify/functions-utils bumped from ^7.1.14 to ^7.1.15
+    * @netlify/zip-it-and-ship-it bumped from 16.2.2 to 16.2.3
+
+## [37.3.2](https://github.com/netlify/build/compare/build-v37.3.1...build-v37.3.2) (2026-09-28)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.13 to ^7.1.14
+    * @netlify/zip-it-and-ship-it bumped from 16.2.1 to 16.2.2
+
+## [37.3.1](https://github.com/netlify/build/compare/build-v37.3.0...build-v37.3.1) (2026-09-28)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.0 to 16.1.1
+    * @netlify/functions-utils bumped from ^7.1.12 to ^7.1.13
+    * @netlify/zip-it-and-ship-it bumped from 16.2.0 to 16.2.1
+
+## [37.3.0](https://github.com/netlify/build/compare/build-v37.2.0...build-v37.3.0) (2026-09-25)
+
+
+### Features
+
+* add server core step ([#7240](https://github.com/netlify/build/issues/7240)) ([e933e96](https://github.com/netlify/build/commit/e933e968cea2402cd5359229f78bcc9eb9da8b9a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.11 to ^7.1.12
+    * @netlify/zip-it-and-ship-it bumped from 16.1.0 to 16.2.0
+
+## [37.2.0](https://github.com/netlify/build/compare/build-v37.1.0...build-v37.2.0) (2026-09-25)
+
+
+### Features
+
+* **edge-bundler:** record import map and vendor manifest usage for tarballs ([#7239](https://github.com/netlify/build/issues/7239)) ([f12cc93](https://github.com/netlify/build/commit/f12cc933d3ffa0bacb1bda1d4057b821737d51c4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.4 to 16.1.0
+
+## [37.1.0](https://github.com/netlify/build/compare/build-v37.0.0...build-v37.1.0) (2026-09-24)
+
+
+### Features
+
+* support standalone server ([#7236](https://github.com/netlify/build/issues/7236)) ([10012e6](https://github.com/netlify/build/commit/10012e6439effd7b02eb62f84913e685050254e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.10 to ^7.1.11
+    * @netlify/zip-it-and-ship-it bumped from 16.0.0 to 16.1.0
+
 ## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
 
 
