@@ -359,6 +359,12 @@ import css from './styles.css' with {
     expect(result).toEqual(expectedResult)
   })
 
+  test('throws when the source cannot be parsed', () => {
+    const source = `import data from './data.json' assert { type: 'json' };\n#!`
+
+    expect(() => rewriteSourceImportAssertions(source)).toThrow(SyntaxError)
+  })
+
   describe('declaration files', () => {
     test.each([
       ['index.d.ts', true],
