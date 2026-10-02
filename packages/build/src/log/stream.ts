@@ -3,7 +3,7 @@ import { setTimeout } from 'timers/promises'
 import type { ChildProcess } from '../plugins/spawn.js'
 
 import { BufferedLogs, logsAreBuffered, Logs } from './logger.js'
-import type { OutputFlusher } from './output_flusher.js'
+import { OutputFlusher, OutputFlusherTransform } from './output_flusher.js'
 
 export type StandardStreams = {
   stderr: NodeJS.WriteStream
@@ -48,6 +48,7 @@ const pushBuildCommandOutput = function (output: string, logsArray: string[]) {
 }
 
 const pipedPluginProcesses = new WeakMap<ChildProcess, ReturnType<typeof pipePluginOutput>>()
+const pipedTransforms = new WeakMap<ChildProcess, { stdout: OutputFlusherTransform; stderr: OutputFlusherTransform }>()
 
 // Start plugin step output
 export const pipePluginOutput = function (
@@ -89,13 +90,39 @@ export const unpipePluginOutput = async function (
 
 // Usually, we stream stdout/stderr because it is more efficient
 const streamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams): undefined {
-  childProcess.stdout?.pipe(standardStreams.stdout)
-  childProcess.stderr?.pipe(standardStreams.stderr)
+  const { outputFlusher } = standardStreams
+
+  if (!outputFlusher) {
+    childProcess.stdout?.pipe(standardStreams.stdout)
+    childProcess.stderr?.pipe(standardStreams.stderr)
+    return
+  }
+
+  const transforms = {
+    stdout: new OutputFlusherTransform(outputFlusher),
+    stderr: new OutputFlusherTransform(outputFlusher),
+  }
+  pipedTransforms.set(childProcess, transforms)
+
+  childProcess.stdout?.pipe(transforms.stdout).pipe(standardStreams.stdout)
+  childProcess.stderr?.pipe(transforms.stderr).pipe(standardStreams.stderr)
 }
 
 const unstreamOutput = function (childProcess: ChildProcess, standardStreams: StandardStreams) {
-  childProcess.stdout?.unpipe(standardStreams.stdout)
-  childProcess.stderr?.unpipe(standardStreams.stderr)
+  const transforms = pipedTransforms.get(childProcess)
+
+  if (!transforms) {
+    childProcess.stdout?.unpipe(standardStreams.stdout)
+    childProcess.stderr?.unpipe(standardStreams.stderr)
+    return
+  }
+
+  pipedTransforms.delete(childProcess)
+
+  childProcess.stdout?.unpipe(transforms.stdout)
+  childProcess.stderr?.unpipe(transforms.stderr)
+  transforms.stdout.unpipe(standardStreams.stdout)
+  transforms.stderr.unpipe(standardStreams.stderr)
 }
 
 // In tests, we push to the `logs` array instead
