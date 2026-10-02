@@ -1791,6 +1791,12 @@ function tsPlugin(options) {
         }
         const oldMaybeInArrowParameters = this.maybeInArrowParameters;
         this.maybeInArrowParameters = true;
+        const oldYieldPos = this.yieldPos;
+        const oldAwaitPos = this.awaitPos;
+        const oldAwaitIdentPos = this.awaitIdentPos;
+        this.yieldPos = 0;
+        this.awaitPos = 0;
+        this.awaitIdentPos = 0;
         const res = this.tsTryParseAndCatch(() => {
           const node = this.startNodeAt(startPos, startLoc);
           node.typeParameters = this.tsParseTypeParameters(this.tsParseConstModifier);
@@ -1799,6 +1805,9 @@ function tsPlugin(options) {
           this.expect(tt.arrow);
           return node;
         });
+        this.yieldPos = oldYieldPos;
+        this.awaitPos = oldAwaitPos;
+        this.awaitIdentPos = oldAwaitIdentPos;
         this.maybeInArrowParameters = oldMaybeInArrowParameters;
         if (!res) {
           return void 0;
@@ -3974,13 +3983,6 @@ function tsPlugin(options) {
         this.semicolon();
         return this.finishNode(node, "ExportAllDeclaration");
       }
-      parseDynamicImport(node) {
-        const result = super.parseDynamicImport(node);
-        if (result.options != null) {
-          result.arguments = [result.options];
-        }
-        return result;
-      }
       parseExport(node, exports) {
         let enterHead = this.lookahead();
         if (this.ts_eatWithState(tt._import, 2, enterHead)) {
@@ -4330,7 +4332,8 @@ function tsPlugin(options) {
         return declaration;
       }
       parseClassId(node, isStatement) {
-        if (!isStatement && this.isContextual("implements")) {
+        if (isStatement !== true && this.isContextual("implements")) {
+          node.id = null;
           return;
         }
         if (isStatement && this.isAmbientContext && tokenIsIdentifier(this.type)) {
