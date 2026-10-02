@@ -1,11 +1,10 @@
 import { resolve } from 'path'
 import process from 'process'
 
-import { isDirectory } from 'path-type'
-
 import { throwUserError } from '../error.js'
 import { getBufferLogs } from '../log/logger.js'
 import { logOpts } from '../log/main.js'
+import { isDirectory } from '../utils/fs.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { getBaseOverride } from './base.js'

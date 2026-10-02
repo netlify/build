@@ -1,4 +1,4 @@
-import isPlainObj from 'is-plain-obj'
+import { isPlainObj } from './is_plain_obj.js'
 
 // Set a property deeply using an array of `keys` which can be either strings
 // (object properties) or integers (array indices).
