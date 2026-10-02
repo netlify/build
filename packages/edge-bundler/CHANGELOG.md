@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.1.2](https://github.com/netlify/build/compare/edge-bundler-v16.1.1...edge-bundler-v16.1.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **deps:** remove tmp-promise from edge bundler ([#7223](https://github.com/netlify/build/issues/7223)) ([b1fed70](https://github.com/netlify/build/commit/b1fed702614a37283b5ea8f4244dd3543cfa3d00))
+
 ## [16.1.1](https://github.com/netlify/build/compare/edge-bundler-v16.1.0...edge-bundler-v16.1.1) (2026-09-28)
 
 
