@@ -37,6 +37,8 @@ const KNOWN_DIFFERENCES: Partial<Record<string, string>> = {
 
   // Cases where the schema is deliberately stricter.
   'normalize/fixtures/function_config_ambiguous': 'rejects functions named after a functions property',
+  'validate/fixtures/function_config_schedule_array':
+    'rejects a schedule given as an array, which the cron parser accepts',
   'parse/fixtures/headers_field_error': 'rejects invalid headers, which Netlify ignores with a warning',
 }
 

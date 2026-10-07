@@ -1,0 +1,2 @@
+[functions.daily]
+schedule = ["@daily"]
