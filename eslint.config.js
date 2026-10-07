@@ -9,8 +9,6 @@ import * as importPlugin from 'eslint-plugin-import'
 import node from 'eslint-plugin-n'
 import tseslint from 'typescript-eslint'
 
-import temporarySuppressions from './eslint_temporary_suppressions.js'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -139,5 +137,28 @@ export default tseslint.config(
     },
   },
 
-  temporarySuppressions,
+  {
+    rules: {
+      // Projects are currently making use of both `interface` and `type`
+      '@typescript-eslint/consistent-type-definitions': 'off',
+
+      // The Fetch API was technically marked stable in node 21
+      'n/no-unsupported-features/node-builtins': [
+        'error',
+        {
+          ignores: ['FormData', 'Headers', 'ReadableStream', 'Response', 'Request', 'fetch'],
+        },
+      ],
+
+      // Silencing false positives
+      'import/no-unresolved': ['off'],
+    },
+  },
+  {
+    // Allow circular testing package dependency in config
+    files: ['packages/config/tests/**/*.test.js'],
+    rules: {
+      'n/no-extraneous-import': 'off',
+    },
+  },
 )

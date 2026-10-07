@@ -74,6 +74,7 @@ export async function findPackages(
     // noop
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   const foundPromises = Object.entries(content).map(async ([part, type]) => {
     const identified = await identifyPackage({ entry: part, type, packagePath: dir, directory: startDir, project })
     if (identified) {
@@ -97,6 +98,7 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
   }
 
   // perform a parallel detection of all workspace packages
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   const results = (
     await Promise.all(
       patterns.flatMap((pattern) => {

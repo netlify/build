@@ -42,6 +42,11 @@ them manually using:
 npm run format
 ```
 
+Existing ESLint violations that haven't been fixed yet are recorded in `eslint-suppressions.json`, counted per file and
+rule. The counts depend on the workspace packages being built, so run `npm run build` before linting. When you fix some
+violations, ESLint tells you to run `npx eslint --prune-suppressions` to drop them from the file. Never add to it by
+hand: a new violation should be fixed.
+
 This is a monorepo using [npm 7 (or later) workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces). You can find
 the included packages in the [packages](packages) directory.
 

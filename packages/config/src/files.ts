@@ -66,6 +66,7 @@ const resolvePaths = function ({
 }
 
 const resolvePathProp = function (config: $TSFixMe, propName: string, baseRel: string, repositoryRoot: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   const path = getProperty(config, propName) as string | undefined
 
   if (!isTruthy(path)) {

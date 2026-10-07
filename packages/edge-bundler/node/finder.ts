@@ -11,6 +11,7 @@ const ALLOWED_EXTENSIONS = ['.js', '.jsx', '.mjs', '.mts', '.ts', '.tsx']
 export const removeDuplicatesByExtension = (functions: string[]) => {
   const seen = new Map()
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   return Object.values(
     functions.reduce((acc, path) => {
       const { ext, name } = parse(path)
