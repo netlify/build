@@ -39,7 +39,7 @@ export const startServer = async (handler: ServerHandler, port = 0) => {
   return { scheme: 'http', host, requests, stopServer }
 }
 
-const getHost = (server: Server<typeof IncomingMessage, typeof ServerResponse>): string => {
+const getHost = (server: Server): string => {
   const { port } = server.address() as AddressInfo
   return `localhost:${port}`
 }

@@ -41,7 +41,8 @@ const resolvePathPreserveSymlinksForDir = function (path: string, basedir: strin
   return new Promise((resolve, reject) => {
     asyncResolve(path, { basedir, preserveSymlinks: true }, (error, resolvedLocation) => {
       if (error || resolvedLocation === undefined) {
-        return reject(error)
+        reject(error)
+        return
       }
 
       resolve(resolvedLocation)

@@ -153,7 +153,7 @@ const getAccounts = async function (api: NetlifyAPI): Promise<MinimalAccount[]> 
       // @ts-expect-error(ndhoule): This is an unpublished, internal querystring parameter
       { minimal: 'true' },
     )) as MinimalAccount[] | null
-    return Array.isArray(accounts) ? (accounts as MinimalAccount[]) : []
+    return Array.isArray(accounts) ? accounts : []
   } catch (error) {
     return throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }

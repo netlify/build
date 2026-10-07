@@ -47,7 +47,7 @@ const includedFilesToEsbuildExternals = async (includedFiles: string[], baseDir:
 
   for (const pattern of exclusions) {
     // esbuild expects modules to be passed in as module names, not paths
-    const nodeModulesMatch = pattern.match(/^\.\/node_modules\/(([^/]+)(\/[^/*]+)?)*/)
+    const nodeModulesMatch = /^\.\/node_modules\/(([^/]+)(\/[^/*]+)?)*/.exec(pattern)
 
     if (nodeModulesMatch !== null) {
       const [, moduleName] = nodeModulesMatch
@@ -245,7 +245,7 @@ const getBundlePaths = ({
 }) => {
   const bundleFilename = basename(srcFile, extname(srcFile)) + outputExtension
   const mainFileDirectory = dirname(srcFile)
-  const bundlePaths: Map<string, string> = new Map()
+  const bundlePaths = new Map<string, string>()
 
   // The paths returned by esbuild are relative to the current directory, which
   // is a problem on Windows if the target directory is in a different drive

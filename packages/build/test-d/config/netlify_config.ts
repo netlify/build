@@ -47,8 +47,8 @@ export const testNetlifyConfigRedirects: OnPreBuild = function ({
   expectType<number | undefined>(redirect.status)
   expectType<boolean | undefined>(redirect.force)
   expectType<string | undefined>(redirect.signed)
-  expectType<string | undefined>(redirect.query && redirect.query.testVar)
-  expectType<string | undefined>(redirect.headers && redirect.headers.testVar)
+  expectType<string | undefined>(redirect.query?.testVar)
+  expectType<string | undefined>(redirect.headers?.testVar)
   if (redirect.conditions !== undefined) {
     expectType<readonly string[] | undefined>(redirect.conditions.Language)
     expectType<readonly string[] | undefined>(redirect.conditions.Cookie)

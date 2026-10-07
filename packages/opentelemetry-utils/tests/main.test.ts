@@ -118,14 +118,18 @@ test('addAttributesToActiveSpan - no attributes are added', async () => {
 
   context.with(ctx, async () => {
     const attributes = {}
-    expect(() => addAttributesToActiveSpan()).not.toThrowError()
+    expect(() => {
+      addAttributesToActiveSpan()
+    }).not.toThrowError()
 
     expect(span.attributes).toStrictEqual(attributes)
   })
 })
 
 test('addAttributesToActiveSpan - does not throw without active span', async () => {
-  expect(() => addAttributesToActiveSpan()).not.toThrowError()
+  expect(() => {
+    addAttributesToActiveSpan()
+  }).not.toThrowError()
 })
 
 test('setMultiSpanAttributes - baggage is populated', async () => {

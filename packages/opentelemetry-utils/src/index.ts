@@ -4,7 +4,7 @@ import { context, type Context, propagation, trace, SpanStatusCode, type Attribu
  * Sets attributes to be propagated across child spans under the current active context. Contexts are immutable so the
  * newly returned context must be used when instantiating a new span for these new properties to be used.
  */
-export const setMultiSpanAttributes = function (attributes: { [key: string]: string }) {
+export const setMultiSpanAttributes = function (attributes: Record<string, string>) {
   const currentBaggage = propagation.getBaggage(context.active())
   // Create a baggage if there's none
   let baggage = currentBaggage === undefined ? propagation.createBaggage() : currentBaggage
@@ -58,15 +58,15 @@ export const addEventToActiveSpan = function (eventName: string, attributes?: At
  * Sets global context to be used when initialising our root span
  */
 export const setGlobalContext = function (ctx: Context) {
-  global['NETLIFY_GLOBAL_CONTEXT'] = ctx
+  global.NETLIFY_GLOBAL_CONTEXT = ctx
 }
 
 /**
  * Gets the global context to be used when initialising our root span
  */
 export const getGlobalContext = function (): Context {
-  if (global['NETLIFY_GLOBAL_CONTEXT'] === undefined) {
+  if (global.NETLIFY_GLOBAL_CONTEXT === undefined) {
     return context.active()
   }
-  return global['NETLIFY_GLOBAL_CONTEXT']
+  return global.NETLIFY_GLOBAL_CONTEXT
 }

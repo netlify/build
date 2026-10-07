@@ -47,11 +47,11 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   // transparently log if there are scanning values being omitted
-  if (envVars['SECRETS_SCAN_OMIT_KEYS'] !== undefined) {
-    log(logs, `SECRETS_SCAN_OMIT_KEYS override option set to: ${envVars['SECRETS_SCAN_OMIT_KEYS']}\n`)
+  if (envVars.SECRETS_SCAN_OMIT_KEYS !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_KEYS override option set to: ${envVars.SECRETS_SCAN_OMIT_KEYS}\n`)
   }
-  if (envVars['SECRETS_SCAN_OMIT_PATHS'] !== undefined) {
-    log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars['SECRETS_SCAN_OMIT_PATHS']}\n`)
+  if (envVars.SECRETS_SCAN_OMIT_PATHS !== undefined) {
+    log(logs, `SECRETS_SCAN_OMIT_PATHS override option set to: ${envVars.SECRETS_SCAN_OMIT_PATHS}\n`)
   }
   const enhancedScanningEnabledInEnv = isEnhancedSecretsScanningEnabled(envVars)
   const enhancedScanConfigured = enhancedSecretScan && enhancedScanningEnabledInEnv
@@ -62,10 +62,10 @@ const coreStep: CoreStepFunction = async function ({
     )
   }
 
-  if (enhancedScanConfigured && envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES'] !== undefined) {
+  if (enhancedScanConfigured && envVars.SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES !== undefined) {
     log(
       logs,
-      `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set to: ${envVars['SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES']}\n`,
+      `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES override option set to: ${envVars.SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES}\n`,
     )
   }
 
@@ -102,7 +102,7 @@ const coreStep: CoreStepFunction = async function ({
       scanResults = await scanFilesForKeyValues({
         env: envVars,
         keys: keysToSearchFor,
-        base: buildDir as string,
+        base: buildDir,
         filePaths,
         enhancedScanning: enhancedScanConfigured,
         omitValuesFromEnhancedScan: getOmitValuesFromEnhancedScanForEnhancedScanFromEnv(envVars),

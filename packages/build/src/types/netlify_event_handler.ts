@@ -1,9 +1,9 @@
 import type { PluginInputs, StringKeys } from './config/inputs.js'
 import type { NetlifyPluginOptions } from './netlify_plugin_options.js'
 
-interface NetlifyEventHandler<PluginOptions extends NetlifyPluginOptions = NetlifyPluginOptions> {
-  (options: PluginOptions): void | Promise<void>
-}
+type NetlifyEventHandler<PluginOptions extends NetlifyPluginOptions = NetlifyPluginOptions> = (
+  options: PluginOptions,
+) => void | Promise<void>
 
 // To allow interfaces to be used as generics, since they lack implicit index signatures, we have to do some type shenanigans
 // to get TypeScript to behave as we want - only letting the keys of `TInputs` through, and thus not requiring a full index

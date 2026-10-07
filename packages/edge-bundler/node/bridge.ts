@@ -38,7 +38,7 @@ export interface DenoOptions {
 }
 
 export interface ProcessRef {
-  ps?: ExecaChildProcess<string>
+  ps?: ExecaChildProcess
 }
 
 interface RunOptions {
@@ -120,7 +120,7 @@ To install Deno manually: https://ntl.fyi/install-deno`,
   ): Promise<{ version: string; error?: undefined } | { version?: undefined; error: Error }> {
     try {
       const { stdout } = await execa(binaryPath, ['--version'])
-      const version = stdout.match(/^deno ([\d.]+)/)
+      const version = /^deno ([\d.]+)/.exec(stdout)
 
       if (!version) {
         this.logger.system(`getBinaryVersion no version found. binaryPath ${binaryPath}`)

@@ -27,7 +27,7 @@ import { PluginsOptions } from './node_version.js'
 import { getSpawnInfo } from './options.js'
 import { captureStandardError } from './system_log.js'
 
-export type ChildProcess = ExecaChildProcess<string>
+export type ChildProcess = ExecaChildProcess
 
 const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 const require = createRequire(import.meta.url)

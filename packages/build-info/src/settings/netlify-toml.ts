@@ -232,9 +232,7 @@ export type BuildPlugins = {
   /**
    * Additional inputs for the build plugin
    */
-  inputs?: {
-    [k: string]: unknown
-  }
+  inputs?: Record<string, unknown>
 }
 /**
  * All deploys from the Production branch set in your site's Branches settings in the UI will inherit these settings. You can define environment variables here but we recommend using the Netlify UI for sensitive values to keep them out of your source repository.
@@ -300,9 +298,7 @@ export type Redirects = {
 /**
  * Query string parameters REQUIRED to match the redirect.
  */
-export type QueryStringParameters = {
-  [k: string]: string
-}
+export type QueryStringParameters = Record<string, string>
 /**
  * Redirect based on conditions including browser language, geolocation, identity role, and/or cookie presence.
  */
@@ -316,9 +312,7 @@ export type Conditions = {
 /**
  * Additional request headers to send in proxy redirects.
  */
-export type RequestHeaders = {
-  [k: string]: string
-}
+export type RequestHeaders = Record<string, string>
 /**
  * Define custom headers for specific paths.
  */
@@ -329,9 +323,7 @@ export type Headers = {
 /**
  * Define the actual headers.
  */
-export type Values = {
-  [k: string]: string
-}
+export type Values = Record<string, string>
 /**
  * Although there are default settings for Netlify Functions to help you get started, you can use this section for optional, custom configuration.
  */

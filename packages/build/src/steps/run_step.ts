@@ -124,7 +124,9 @@ export const runStep = async function ({
 
     const logPluginStart =
       !quiet && !coreStepQuiet
-        ? () => logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+        ? () => {
+            logStepStart({ logs, event, packageName, coreStepDescription, error, netlifyConfig })
+          }
         : () => {
             // no-op
           }

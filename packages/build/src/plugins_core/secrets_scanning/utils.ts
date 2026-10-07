@@ -593,11 +593,11 @@ const searchStreamMinimalChunks = ({
  * @returns
  */
 export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
-  secretMatches: { [key: string]: MatchResult[] }
-  enhancedSecretMatches: { [key: string]: MatchResult[] }
+  secretMatches: Record<string, MatchResult[]>
+  enhancedSecretMatches: Record<string, MatchResult[]>
 } {
-  const secretMatchesByKeys: { [key: string]: MatchResult[] } = {}
-  const enhancedSecretMatchesByKeys: { [key: string]: MatchResult[] } = {}
+  const secretMatchesByKeys: Record<string, MatchResult[]> = {}
+  const enhancedSecretMatchesByKeys: Record<string, MatchResult[]> = {}
   scanResults.matches.forEach((matchResult) => {
     if (matchResult.enhancedMatch) {
       if (!enhancedSecretMatchesByKeys[matchResult.key]) {
@@ -613,7 +613,7 @@ export function groupScanResultsByKeyAndScanType(scanResults: ScanResults): {
   })
 
   // sort results to get a consistent output and logically ordered match results
-  const sortMatches = (matchesByKeys: { [key: string]: MatchResult[] }) => {
+  const sortMatches = (matchesByKeys: Record<string, MatchResult[]>) => {
     Object.keys(matchesByKeys).forEach((key) => {
       matchesByKeys[key].sort((a, b) => {
         // sort by file name first

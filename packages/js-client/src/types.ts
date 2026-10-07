@@ -228,6 +228,6 @@ export type DynamicMethods = {
      * )
      * ```
      */
-    opts?: RequestInit | void | undefined,
+    opts?: RequestInit | void,
   ) => Promise<OperationResponse<K>>
 }

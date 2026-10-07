@@ -58,13 +58,18 @@ export const makeTestMany = <M extends string>(
   const testFns = ['fails', 'only', 'concurrent', 'skip', 'todo'] as const
 
   testFns.forEach((fn) => {
-    testBundlers[fn] = ((...args) => testBundlers(...args, testAPI[fn])) as TestMany<M>
+    testBundlers[fn] = ((...args) => {
+      testBundlers(...args, testAPI[fn])
+    }) as TestMany<M>
   })
 
   const ifFns = ['skipIf', 'runIf'] as const
 
   ifFns.forEach((fn) => {
-    testBundlers[fn] = (condition: any) => ((...args) => testBundlers(...args, testAPI[fn](condition))) as TestMany<M>
+    testBundlers[fn] = (condition: any) =>
+      ((...args) => {
+        testBundlers(...args, testAPI[fn](condition))
+      }) as TestMany<M>
   })
 
   return testBundlers as TestManyAPI<M | `todo:${M}`>

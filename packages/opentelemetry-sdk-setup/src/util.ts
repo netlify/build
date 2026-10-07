@@ -19,7 +19,9 @@ const getSystemLogger = function (
   // to the regular logger, as the intention is for them to end up in stdout.
   // For now we just use plain `console.log`, later on we can revise it
   if (debug) {
-    return (...args) => console.log(...args)
+    return (...args) => {
+      console.log(...args)
+    }
   }
 
   // If there's not a file descriptor configured for system logs and `debug`

@@ -2,12 +2,8 @@ import { execute } from 'lambda-local'
 
 interface LambdaResponse {
   statusCode: number
-  headers?: {
-    [header: string]: boolean | number | string
-  }
-  multiValueHeaders?: {
-    [header: string]: readonly (boolean | number | string)[]
-  }
+  headers?: Record<string, boolean | number | string>
+  multiValueHeaders?: Record<string, readonly (boolean | number | string)[]>
   body?: string | NodeJS.ReadableStream
   isBase64Encoded?: boolean
 }

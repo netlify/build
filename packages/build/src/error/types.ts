@@ -321,7 +321,7 @@ export type ErrorTypes = ErrorTypeMap
  *    with current filters"
  *
  */
-const TYPES: { [T in ErrorTypes]: ErrorType } = {
+const TYPES: Record<ErrorTypes, ErrorType> = {
   /**
    * Plugin called `utils.build.cancelBuild()`
    */

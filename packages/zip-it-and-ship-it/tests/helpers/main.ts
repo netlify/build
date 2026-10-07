@@ -61,8 +61,7 @@ export const zipNode = async function (fixture: MixedPaths, zipOptions: ZipOptio
   return { files: files as TestFunctionResult[], tmpDir }
 }
 
-export const getBundlerNameFromOptions = ({ config = {} }: { config?: Config }) =>
-  config['*'] && config['*'].nodeBundler
+export const getBundlerNameFromOptions = ({ config = {} }: { config?: Config }) => config['*']?.nodeBundler
 
 export const zipFixture = async function (
   fixture: MixedPaths,

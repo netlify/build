@@ -50,8 +50,12 @@ export const addZipContent = function (archive: Archiver, content: Buffer | stri
 // End zipping files
 export const endZip = async function (archive: Archiver, output: Writable): Promise<void> {
   const result = new Promise<void>((resolve, reject) => {
-    output.on('error', (error) => reject(error))
-    output.on('finish', () => resolve())
+    output.on('error', (error) => {
+      reject(error)
+    })
+    output.on('finish', () => {
+      resolve()
+    })
   })
 
   await archive.finalize()

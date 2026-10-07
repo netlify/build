@@ -190,7 +190,7 @@ const transpileESM = async ({
   name: string
 }) => {
   // Used for memoizing the check for whether a path should be transpiled.
-  const shouldCompileCache: Map<string, boolean> = new Map()
+  const shouldCompileCache = new Map<string, boolean>()
   const pathsToTranspile = [...esmPaths].filter((path) => shouldTranspile(path, shouldCompileCache, esmPaths, reasons))
   const pathsToTranspileSet = new Set(pathsToTranspile)
   const packageJsonPaths: string[] = [...reasons.entries()]

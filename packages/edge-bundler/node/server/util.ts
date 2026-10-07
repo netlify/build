@@ -12,7 +12,7 @@ const SERVER_POLL_INTERVAL = 1e3
 // 30 seconds
 const SERVER_POLL_TIMEOUT = 3e4
 
-const killProcess = (ps: ExecaChildProcess<string>) => {
+const killProcess = (ps: ExecaChildProcess) => {
   // If the process is no longer running, there's nothing left to do.
   if (ps?.exitCode !== null) {
     return
@@ -41,7 +41,7 @@ const killProcess = (ps: ExecaChildProcess<string>) => {
   })
 }
 
-const waitForServer = async (port: number, ps?: ExecaChildProcess<string>) => {
+const waitForServer = async (port: number, ps?: ExecaChildProcess) => {
   const deadline = Date.now() + SERVER_POLL_TIMEOUT
   const signal = AbortSignal.timeout(SERVER_POLL_TIMEOUT)
 

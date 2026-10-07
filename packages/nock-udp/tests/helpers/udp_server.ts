@@ -11,7 +11,9 @@ export const createServer = function ({ port }) {
         buffers = []
         return
       }
-      server.once('message', (msg) => resolve([msg]))
+      server.once('message', (msg) => {
+        resolve([msg])
+      })
     })
 
   server.on('error', (err) => {

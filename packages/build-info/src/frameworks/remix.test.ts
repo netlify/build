@@ -65,7 +65,7 @@ beforeEach((ctx) => {
       }),
     },
   ] as const,
-].forEach(([description, files]) =>
+].forEach(([description, files]) => {
   test(`detects a Remix Vite site ${description}`, async ({ fs }) => {
     const cwd = mockFileSystem(files)
     const detected = await new Project(fs, cwd).detectFrameworks()
@@ -78,8 +78,8 @@ beforeEach((ctx) => {
     expect(detected?.[0]?.build?.directory).toBe('build/client')
     expect(detected?.[0]?.dev?.command).toBe('remix vite:dev')
     expect(detected?.[0]?.dev?.port).toBe(5173)
-  }),
-)
+  })
+})
 ;[
   [
     'with origin SSR',
@@ -256,7 +256,7 @@ beforeEach((ctx) => {
       }),
     },
   ] as const,
-].forEach(([description, files]) =>
+].forEach(([description, files]) => {
   test(`detects a Remix Classic Compiler site ${description}`, async ({ fs }) => {
     const cwd = mockFileSystem(files)
     const detected = await new Project(fs, cwd).detectFrameworks()
@@ -269,5 +269,5 @@ beforeEach((ctx) => {
     expect(detected?.[0]?.build?.directory).toBe('public')
     expect(detected?.[0]?.dev?.command).toBe('remix watch')
     expect(detected?.[0]?.dev?.port).toBeUndefined()
-  }),
-)
+  })
+})

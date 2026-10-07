@@ -742,7 +742,7 @@ describe('V2 functions API', () => {
       resolve(FIXTURES_ESM_DIR, fixtureName, 'blog/post2.md'),
     ])
 
-    for (const path of includedFiles as string[]) {
+    for (const path of includedFiles!) {
       expect(await pathExists(path)).toBeTruthy()
     }
   })

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { readFileSync } from 'fs'
 import { argv, exit } from 'process'
 

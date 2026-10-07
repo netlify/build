@@ -11,7 +11,7 @@ export interface InputStatsDOptions {
 export type StatsDOptions = Required<InputStatsDOptions>
 
 export const validateStatsDOptions = function (statsdOpts: InputStatsDOptions): statsdOpts is StatsDOptions {
-  return !!(statsdOpts && statsdOpts.host && statsdOpts.port)
+  return !!(statsdOpts?.host && statsdOpts.port)
 }
 
 /**

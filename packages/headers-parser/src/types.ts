@@ -1,8 +1,6 @@
 export interface MinimalHeader {
   for: string
-  values: {
-    [key: string]: string
-  }
+  values: Record<string, string>
 }
 
 export interface Header extends MinimalHeader {

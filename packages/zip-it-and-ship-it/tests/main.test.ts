@@ -2326,7 +2326,9 @@ describe('zip-it-and-ship-it', () => {
       })
       const { files } = await zipNode(fixtureName, { opts })
 
-      files.every((file) => expect(file.schedule).toBe(schedule))
+      files.every((file) => {
+        expect(file.schedule).toBe(schedule)
+      })
 
       const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'))
 

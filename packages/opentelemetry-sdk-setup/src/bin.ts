@@ -60,6 +60,8 @@ const run = async function () {
 
 //TODO handle `stopTracing` via `process` event emitter for all the other cases such as
 //SIGINT and SIGTERM signals and potential uncaught exceptions
-process.on('beforeExit', async () => await stopTracing())
+process.on('beforeExit', async () => {
+  await stopTracing()
+})
 
 await run()
