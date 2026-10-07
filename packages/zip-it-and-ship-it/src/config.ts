@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { basename, extname, dirname, join } from 'path'
 
-import type { FunctionRegion } from '@netlify/types'
+import type { FunctionRegion, ServerRegion } from '@netlify/types'
 import isPathInside from 'is-path-inside'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
@@ -46,6 +46,20 @@ const FUNCTION_REGION_CODES = Object.keys(FUNCTION_REGION_KEYS) as [FunctionRegi
 const functionRegion = z.preprocess(
   (input) => (typeof input === 'string' ? input.toLowerCase() : input),
   z.enum(FUNCTION_REGION_CODES),
+)
+
+// Checked against `ServerRegion` the same way `FUNCTION_REGION_KEYS` is
+// against `FunctionRegion`.
+const SERVER_REGION_KEYS = {
+  fra: null,
+  iad: null,
+} as const satisfies Record<ServerRegion, null>
+
+const SERVER_REGION_CODES = Object.keys(SERVER_REGION_KEYS) as [ServerRegion, ...ServerRegion[]]
+
+export const serverRegion = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toLowerCase() : input),
+  z.enum(SERVER_REGION_CODES),
 )
 
 const FUNCTION_MEMORY_MIN_MB = 1024
