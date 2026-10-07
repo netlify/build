@@ -1721,10 +1721,10 @@
   },
   "packages/config/src/context.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 4
+      "count": 5
     },
     "@typescript-eslint/no-unsafe-assignment": {
-      "count": 7
+      "count": 8
     },
     "@typescript-eslint/no-unsafe-member-access": {
       "count": 1
@@ -1733,27 +1733,10 @@
       "count": 5
     },
     "n/no-missing-import": {
-      "count": 3
+      "count": 1
     }
   },
   "packages/config/src/default.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/edge_functions.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 8
-    },
-    "@typescript-eslint/no-unsafe-return": {
-      "count": 1
-    },
     "n/no-missing-import": {
       "count": 1
     }
@@ -1832,11 +1815,6 @@
       "count": 1
     }
   },
-  "packages/config/src/functions_config.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
   "packages/config/src/headers.js": {
     "n/no-missing-import": {
       "count": 1
@@ -1878,7 +1856,7 @@
       "count": 2
     },
     "n/no-missing-import": {
-      "count": 8
+      "count": 7
     }
   },
   "packages/config/src/merge.js": {
@@ -1888,21 +1866,18 @@
   },
   "packages/config/src/merge_normalize.ts": {
     "@typescript-eslint/no-unsafe-argument": {
-      "count": 2
+      "count": 6
     },
     "@typescript-eslint/no-unsafe-assignment": {
       "count": 2
     },
     "@typescript-eslint/no-unsafe-return": {
       "count": 2
-    },
-    "n/no-missing-import": {
-      "count": 3
     }
   },
   "packages/config/src/mutations/apply.js": {
     "n/no-missing-import": {
-      "count": 4
+      "count": 5
     }
   },
   "packages/config/src/mutations/update.js": {
@@ -1930,17 +1905,12 @@
       "count": 1
     },
     "n/no-missing-import": {
-      "count": 3
+      "count": 1
     }
   },
   "packages/config/src/options/main.js": {
     "n/no-missing-import": {
       "count": 5
-    }
-  },
-  "packages/config/src/origin.js": {
-    "n/no-missing-import": {
-      "count": 1
     }
   },
   "packages/config/src/parse.ts": {
@@ -2001,31 +1971,6 @@
       "count": 1
     },
     "@typescript-eslint/restrict-template-expressions": {
-      "count": 1
-    }
-  },
-  "packages/config/src/validate/context.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/validate/example.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/config/src/validate/identical.js": {
-    "n/no-missing-import": {
-      "count": 1
-    }
-  },
-  "packages/config/src/validate/main.js": {
-    "n/no-missing-import": {
-      "count": 2
-    }
-  },
-  "packages/config/src/validate/validations.js": {
-    "n/no-missing-import": {
       "count": 1
     }
   },
