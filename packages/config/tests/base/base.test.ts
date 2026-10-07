@@ -3,6 +3,8 @@ import { join } from 'path'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 test('Base from defaultConfig', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/default_config')
     .withFlags({ defaultConfig: { build: { base: 'base' } } })
@@ -19,10 +21,10 @@ test('Base from configuration file property', async () => {
       build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
-  } = JSON.parse(output)
+  } = asConfig(JSON.parse(output))
   expect(base).toBe(buildDir)
-  expect(functionsDirectory.startsWith(buildDir)).toBe(true)
-  expect(edgeFunctions.startsWith(buildDir)).toBe(true)
+  expect(functionsDirectory?.startsWith(buildDir)).toBe(true)
+  expect(edgeFunctions?.startsWith(buildDir)).toBe(true)
   expect(publish.startsWith(buildDir)).toBe(true)
 })
 
@@ -42,11 +44,11 @@ test('BaseRelDir feature flag', async () => {
       build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
-  } = JSON.parse(output)
+  } = asConfig(JSON.parse(output))
   expect(base).toBe(buildDir)
 
-  expect(functionsDirectory.startsWith(buildDir)).toBe(false)
-  expect(edgeFunctions.startsWith(buildDir)).toBe(false)
+  expect(functionsDirectory?.startsWith(buildDir)).toBe(false)
+  expect(edgeFunctions?.startsWith(buildDir)).toBe(false)
   expect(publish.startsWith(buildDir)).toBe(false)
 })
 
@@ -78,14 +80,13 @@ test('Monorepo with package path retrieving _redirects', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-1',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
@@ -115,14 +116,13 @@ test('Monorepo with redirects from the publish directory', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-1',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
@@ -152,14 +152,13 @@ test('Monorepo with redirects from the top should be joined', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo-with-root-files').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-2',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
@@ -198,14 +197,13 @@ test('Monorepo with package path retrieving _headers', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-2',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
     config: {
@@ -231,13 +229,12 @@ test('Monorepo with package path retrieving _headers', async () => {
 test('Monorepo with serverless functions', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-3',
     })
-    .runWithConfig()
-  const config = JSON.parse(output)
+    .runWithConfigAsObject()
 
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
@@ -265,13 +262,12 @@ test('Monorepo with custom serverless function directory', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-6',
     })
-    .runWithConfig()
-  const config = JSON.parse(output)
+    .runWithConfigAsObject()
 
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
@@ -296,13 +292,12 @@ test('Monorepo with edge functions', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-4',
     })
-    .runWithConfig()
-  const config = JSON.parse(output)
+    .runWithConfigAsObject()
 
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
@@ -330,13 +325,12 @@ test('Monorepo with custom edge function directory', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/monorepo').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       packagePath: 'apps/app-5',
     })
-    .runWithConfig()
-  const config = JSON.parse(output)
+    .runWithConfigAsObject()
 
   expect(config).toMatchObject({
     buildDir: repositoryRoot,
@@ -364,15 +358,14 @@ test('Monorepo with base field', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       base: 'monorepo',
       packagePath: 'apps/app-2',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: join(repositoryRoot, 'monorepo'),
     config: {
@@ -392,15 +385,14 @@ test('Monorepo with base field and build plugin', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures').withCopyRoot()
   const { repositoryRoot } = fixture
 
-  const output = await fixture
+  const config = await fixture
     .withFlags({
       cwd: fixture.repositoryRoot,
       base: 'monorepo',
       packagePath: 'apps/app-7',
     })
-    .runWithConfig()
+    .runWithConfigAsObject()
 
-  const config = JSON.parse(output)
   expect(config).toMatchObject({
     buildDir: join(repositoryRoot, 'monorepo'),
     configPath: join(repositoryRoot, 'monorepo/apps/app-7/netlify.toml'),

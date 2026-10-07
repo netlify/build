@@ -8,6 +8,8 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import { tmpName } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Empty configuration', async () => {
@@ -210,10 +212,11 @@ test('--cachedConfigPath CLI flag', async () => {
     await new Fixture(import.meta.url, './fixtures/cached_config')
       .withFlags({ output: cachedConfigPath })
       .runConfigBinary()
-    const { output } = await new Fixture(import.meta.url, './fixtures/cached_config')
-      .withFlags({ cachedConfigPath, context: 'test' })
-      .runConfigBinary()
-    const { config } = JSON.parse(output)
+    const { config } = asConfig(
+      await new Fixture(import.meta.url, './fixtures/cached_config')
+        .withFlags({ cachedConfigPath, context: 'test' })
+        .runConfigBinaryAsObject(),
+    )
     expect(config.build.command).toBe('echo command')
   } finally {
     await fs.unlink(cachedConfigPath)
@@ -264,12 +267,17 @@ test('--cachedConfig with a siteId', async () => {
 })
 
 test('Programmatic', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig({ repositoryRoot: `${FIXTURES_DIR}/empty` })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.environment).not.toBeUndefined()
 })
 
 test('Programmatic no options', async () => {
+  // @ts-expect-error: `resolveConfig`'s `opts` parameter is untyped and required
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `resolveConfig`'s result is untyped until its rewrite
   const { config } = await resolveConfig()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- `resolveConfig`'s result is untyped until its rewrite
   expect(config.build.environment).not.toBeUndefined()
 })
 
