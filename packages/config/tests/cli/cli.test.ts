@@ -8,9 +8,11 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import isCI from 'is-ci'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
-const getTmpName = ({ dir }) => join(tmpdir(), dir, randomUUID())
+const getTmpName = ({ dir }: { dir: string }) => join(tmpdir(), dir, randomUUID())
 
 test('--help', async () => {
   const { output } = await new Fixture().withFlags({ help: true }).runConfigBinary()
@@ -59,8 +61,8 @@ test('Write on file with the --output flag', async () => {
   const output = getTmpName({ dir: 'netlify-build-test' })
   try {
     await new Fixture(import.meta.url, './fixtures/empty').withFlags({ output }).runConfigBinary()
-    const content = await readFile(output)
-    const { context } = JSON.parse(content)
+    const content = await readFile(output, 'utf8')
+    const { context } = asConfig(JSON.parse(content))
     expect(context).toBe('production')
   } finally {
     await rm(output, { force: true, recursive: true, maxRetries: 10 })
@@ -128,6 +130,6 @@ if (isCI) {
   const BIG_NUMBER = 1e4
 }
 
-const getEnvVar = function (value, index) {
-  return `TEST${index} = ${index}`
+const getEnvVar = function (_value: unknown, index: number) {
+  return `TEST${String(index)} = ${String(index)}`
 }

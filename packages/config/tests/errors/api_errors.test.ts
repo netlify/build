@@ -11,7 +11,7 @@ const API_RESPONSES = {
   extensions: { path: '/site/test/integrations/safe', response: [] },
 }
 
-const getRejection = async (promise) => {
+const getRejection = async (promise: Promise<unknown>): Promise<Error> => {
   try {
     await promise
   } catch (error) {
@@ -20,7 +20,7 @@ const getRejection = async (promise) => {
   throw new Error('Expected the promise to reject with an Error')
 }
 
-const resolveWithFailingApiCall = async (failingCall) => {
+const resolveWithFailingApiCall = async (failingCall: keyof typeof API_RESPONSES) => {
   const handlers = Object.entries(API_RESPONSES).map(([call, handler]) =>
     call === failingCall ? { path: handler.path, status: 500, response: {} } : handler,
   )
@@ -36,7 +36,7 @@ const resolveWithFailingApiCall = async (failingCall) => {
 }
 
 // netlify-cli retries offline on user errors, and @netlify/build reports them as configuration errors.
-const expectUserError = (error) => {
+const expectUserError = (error: Error) => {
   expect(error).toHaveProperty('customErrorInfo', { type: 'resolveConfig' })
 }
 

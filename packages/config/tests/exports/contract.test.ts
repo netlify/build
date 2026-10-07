@@ -35,8 +35,10 @@ test('cleanupConfig() prints properties in a fixed order', () => {
     redirects: [{ from: '/a', to: '/b' }],
     headersOrigin: 'config',
     headers: [{ for: '/', values: { a: 'b' } }],
+    // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
     plugins: [{ package: 'plugin', origin: 'config', inputs: {} }],
     build: {
+      // @ts-expect-error: `cleanupConfig`'s types, inferred from JavaScript, miss most properties
       publishOrigin: 'config',
       publish: '/repo/dist',
       processing: { css: { bundle: true } },
@@ -47,7 +49,7 @@ test('cleanupConfig() prints properties in a fixed order', () => {
       command: 'npm run build',
       base: '/repo',
     },
-  })
+  }) as { build: object }
 
   // Current behaviour: environment and processing come last in build, and build after the other scalar properties.
   expect(Object.keys(cleaned)).toEqual([
@@ -89,8 +91,8 @@ test('applyMutations() rejects dev properties during build events', () => {
   }).toThrow('"netlifyConfig.dev.processing" cannot be modified after "onPreDev".')
 })
 
-const deepFreeze = (object) => {
-  Object.values(object).forEach((value) => {
+const deepFreeze = <T extends object>(object: T): T => {
+  Object.values(object).forEach((value: unknown) => {
     if (typeof value === 'object' && value !== null) {
       deepFreeze(value)
     }
@@ -106,6 +108,7 @@ test('applyMutations() does not mutate its argument, even deeply', () => {
   }
   const copy = structuredClone(inlineConfig)
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `applyMutations`'s result is untyped until its rewrite
   const result = applyMutations(deepFreeze(inlineConfig), [
     { keys: ['build', 'environment', 'NAME'], value: 'two', event: 'onPreBuild' },
     { keys: ['functions', 'node_bundler'], value: 'esbuild', event: 'onBuild' },
@@ -120,7 +123,7 @@ test('applyMutations() does not mutate its argument, even deeply', () => {
   })
 })
 
-let buildDir
+let buildDir: string
 
 beforeEach(async () => {
   buildDir = await mkdtemp(join(tmpdir(), 'netlify-config-'))
@@ -130,7 +133,7 @@ afterEach(async () => {
   await rm(buildDir, { recursive: true, force: true })
 })
 
-const writeSiteFiles = async (files) => {
+const writeSiteFiles = async (files: Record<string, string>) => {
   await Promise.all(Object.entries(files).map(([name, content]) => writeFile(join(buildDir, name), content)))
   return {
     buildDir,
@@ -151,6 +154,7 @@ test('updateConfig() writes the mutations to netlify.toml, over the context and 
     event: 'onPostBuild',
   }
 
+  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION, headersMutation], { ...paths, ...CONTEXT })
 
   // Current behaviour: each context entry repeats the build properties both at its top level and under build.
@@ -192,11 +196,13 @@ for = "/path"
 
 test('updateConfig() accepts and ignores unknown options such as featureFlags', async () => {
   const paths = await writeSiteFiles({})
+  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
   const withoutFeatureFlags = await readFile(paths.configPath, 'utf8')
   await rm(paths.configPath)
 
   const optionsWithFeatureFlags = { ...paths, ...CONTEXT, featureFlags: { some_flag: true } }
+  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs`
   await updateConfig([COMMAND_MUTATION], optionsWithFeatureFlags)
 
   expect(await readFile(paths.configPath, 'utf8')).toBe(withoutFeatureFlags)
@@ -216,6 +222,7 @@ test('updateConfig() backs up the site files under fixed names, whatever they ar
     redirectsPath: join(buildDir, 'custom_redirects'),
   }
 
+  // @ts-expect-error: `updateConfig`'s types, inferred from JavaScript, require `logs` and `featureFlags`
   await updateConfig([COMMAND_MUTATION], { ...paths, ...CONTEXT })
 
   const backupDir = join(buildDir, '.netlify', 'deploy')

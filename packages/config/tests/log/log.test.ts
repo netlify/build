@@ -2,6 +2,8 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import hasAnsi from 'has-ansi'
 import { expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 test('Prints some information in debug mode', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/simple').withFlags({ debug: true }).runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
@@ -48,12 +50,12 @@ test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment UI set
 })
 
 test('Prints colors', async () => {
-  const {
-    logs: { stderr },
-  } = await new Fixture(import.meta.url, './fixtures/simple')
-    .withFlags({ debug: true })
-    .withEnv({ FORCE_COLOR: '1' })
-    .runConfigBinaryAsObject()
+  const { logs } = asConfig(
+    await new Fixture(import.meta.url, './fixtures/simple')
+      .withFlags({ debug: true })
+      .withEnv({ FORCE_COLOR: '1' })
+      .runConfigBinaryAsObject(),
+  )
 
-  expect(hasAnsi(stderr.join('\n'))).toBe(true)
+  expect(hasAnsi(logs?.stderr.join('\n') ?? '')).toBe(true)
 })

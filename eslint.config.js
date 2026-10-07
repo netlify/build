@@ -35,6 +35,22 @@ export default tseslint.config(
       },
     },
   },
+  // The base tsconfig includes every file, so it would shadow a package's stricter tsconfig.
+  {
+    files: ['packages/config/tests/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: ['./packages/config/tests/tsconfig.json'],
+      },
+    },
+  },
+  {
+    // Not a declared dependency: `@netlify/testing` depends on `@netlify/config`.
+    files: ['packages/config/tests/**/*.ts'],
+    rules: {
+      'n/no-extraneous-import': ['error', { allowModules: ['@netlify/testing'] }],
+    },
+  },
 
   {
     files: ['**/*.?(c|m)js?(x)'],
@@ -160,13 +176,6 @@ export default tseslint.config(
       // util.styleText exists in 22.12.0 and works fine, it was only
       // marked stable in 22.13.0
       'n/no-unsupported-features/node-builtins': ['error', { ignores: ['util.styleText'] }],
-    },
-  },
-  {
-    // Allow circular testing package dependency in config
-    files: ['packages/config/tests/**/*.test.js'],
-    rules: {
-      'n/no-extraneous-import': 'off',
     },
   },
 )

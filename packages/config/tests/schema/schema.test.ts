@@ -64,7 +64,8 @@ const loadConfigFile = (fixtureDir: string): ConfigFile | undefined => {
 // the one being built, whereas the schema validates all of them, so we
 // resolve the configuration once per context.
 const isAcceptedByNetlify = async (fixtureDir: string, config: ConfigFile) => {
-  const contexts = config.context !== null && typeof config.context === 'object' ? Object.keys(config.context) : []
+  const { context: contextConfig } = config
+  const contexts = contextConfig !== null && typeof contextConfig === 'object' ? Object.keys(contextConfig) : []
 
   for (const context of [undefined, ...contexts]) {
     try {

@@ -1,36 +1,28 @@
 import { Fixture } from '@netlify/testing'
 import { beforeEach, expect, test } from 'vitest'
 
+import { asConfig } from '../helpers/result.js'
+
 // Mock fetch for external extension installation requests
 const originalFetch = globalThis.fetch
 const mockInstallationResponse = { success: true, mocked: true, testId: 'MOCK_RESPONSE_12345' }
 
 // Track installation requests for testing
-let installationRequests = []
+let installationRequests: { url: string; options: RequestInit | undefined }[] = []
 
-const mockFetch = async (url, options) => {
+const mockFetch: typeof fetch = async (url, options) => {
   // Convert URL object to string if needed
-  const urlString = url.toString()
+  const urlString = url instanceof Request ? url.url : url.toString()
 
   // If it's an installation request to an external extension URL
   if (urlString.includes('/.netlify/functions/handler/on-install')) {
     installationRequests.push({ url: urlString, options })
-    return {
-      ok: true,
-      status: 200,
-      json: async () => mockInstallationResponse,
-      text: async () => JSON.stringify(mockInstallationResponse),
-    }
+    return Response.json(mockInstallationResponse)
   }
 
   // If it's a request to the extension API for auto-installable extensions
   if (urlString.includes('api.netlifysdk.com/meta/auto-installable')) {
-    return {
-      ok: true,
-      status: 200,
-      json: async () => AUTO_INSTALLABLE_EXTENSIONS_RESPONSE.response,
-      text: async () => JSON.stringify(AUTO_INSTALLABLE_EXTENSIONS_RESPONSE.response),
-    }
+    return Response.json(AUTO_INSTALLABLE_EXTENSIONS_RESPONSE.response)
   }
 
   // For all other requests, use the original fetch
@@ -85,7 +77,7 @@ test('Auto-install extensions: feature flag disabled returns extensions unchange
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
 
   // Should not have attempted to install any extensions
   expect(output.includes('Installing extension')).toBe(false)
@@ -106,7 +98,7 @@ test('Auto-install extensions: gracefully handles missing package.json', async (
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
 
   // Should not have attempted to install any extensions
   expect(output.includes('Installing extension')).toBe(false)
@@ -128,7 +120,7 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
 
   // Should have found package.json in buildDir
   expect(config.integrations).toBeTruthy()
@@ -141,18 +133,16 @@ test('Auto-install extensions: correctly reads package.json from buildDir', asyn
   // Should have attempted to install the extension (mocked)
   expect(installationRequests.length > 0, 'Should have attempted to install extension').toBeTruthy()
   expect(
-    installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
+    installationRequests[0]?.url.includes('/.netlify/functions/handler/on-install'),
     'Should have called installation endpoint',
   ).toBeTruthy()
   expect(
-    installationRequests[0].url.includes('neon-extension.netlify.app'),
+    installationRequests[0]?.url.includes('neon-extension.netlify.app'),
     'Should have called correct external URL',
   ).toBeTruthy()
-  expect(installationRequests[0].options.method === 'POST', 'Should use POST method').toBeTruthy()
-  expect(
-    installationRequests[0].options.body.includes('account1'),
-    'Should include team ID in request body',
-  ).toBeTruthy()
+  expect(installationRequests[0]?.options?.method === 'POST', 'Should use POST method').toBeTruthy()
+  const body = installationRequests[0]?.options?.body
+  expect(typeof body === 'string' && body.includes('account1'), 'Should include team ID in request body').toBeTruthy()
 })
 
 test('Auto-install extensions: does not install when required packages are missing', async () => {
@@ -169,7 +159,7 @@ test('Auto-install extensions: does not install when required packages are missi
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
 
   // Should not attempt to install extensions since required packages are missing
   expect(output.includes('Installing extension')).toBe(false)
@@ -195,7 +185,7 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
     })
     .runConfigServer([SITE_INFO_DATA, TEAM_INSTALLATIONS_META_RESPONSE, FETCH_EXTENSIONS_EMPTY_RESPONSE])
 
-  const config = JSON.parse(output)
+  const config = asConfig(JSON.parse(output))
 
   // Should have found package.json in buildDir even without netlify.toml
   expect(config.integrations).toBeTruthy()
@@ -211,7 +201,7 @@ test('Auto-install extensions: correctly reads package.json when no netlify.toml
   // Should have attempted to install the extension
   expect(installationRequests.length > 0, 'Should have attempted to install extension').toBeTruthy()
   expect(
-    installationRequests[0].url.includes('/.netlify/functions/handler/on-install'),
+    installationRequests[0]?.url.includes('/.netlify/functions/handler/on-install'),
     'Should have called installation endpoint',
   ).toBeTruthy()
 })
