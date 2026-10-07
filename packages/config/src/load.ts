@@ -1,192 +1,154 @@
-import { addBase, getBase, getInitialBase } from './base.js'
-import { getBuildDir } from './build_dir.js'
-import { mergeContext, normalizeContextProps } from './context.js'
-import { resolveConfigPaths } from './files.js'
-import { addHeaders, getHeadersPath } from './headers.js'
-import { mergeConfigs } from './merge.js'
-import { normalizeAfterConfigMerge, normalizeBeforeConfigMerge } from './merge_normalize.js'
-import { CONFIG_ORIGIN, INLINE_ORIGIN, UI_ORIGIN } from './origin.js'
-import { parseConfig } from './parse.js'
-import { getConfigPath } from './path.js'
-import { addRedirects, getRedirectsPath } from './redirects.js'
-import type {
-  ConfigOrigin,
-  NormalizedNetlifyConfig,
-  PartialNetlifyConfig,
-  ResolvedNetlifyConfig,
-} from './types/config.js'
-import type { Logs } from './types/logs.js'
-import type { RawConfig } from './validate/validations.js'
+import { resolve } from 'path'
 
-type LoadConfigOptions = {
-  /** The `config` option: a path to the configuration file. */
-  configOpt: string | undefined
-  cwd: string
-  context: string
-  repositoryRoot: string
-  packagePath: string | undefined
-  branch: string
-  defaultConfig: PartialNetlifyConfig
-  inlineConfig: RawConfig
-  /** Where the config mutations come from, for error messages. */
-  configMutationsOrigin: string | undefined
-  baseRelDir: boolean
-  logs: Logs | undefined
-}
+import { isDirectory } from 'path-type'
 
-export type LoadedConfig = {
-  configPath: string | undefined
-  config: ResolvedNetlifyConfig
+import { mergeSources } from './contexts.js'
+import type { Directories } from './directories.js'
+import { prefixError, throwUserError } from './error.js'
+import { findConfigFile, readConfigFile } from './file.js'
+import { mergeHeaders, mergeRedirects } from './headers_redirects.js'
+import type { Layers } from './layers.js'
+import { normalizeConfig } from './normalize.js'
+import { spreadValue } from './normalize_values.js'
+import type { ResolvedOptions } from './options.js'
+import { resolveConfigPath, resolvePaths } from './paths.js'
+import { processSource } from './sources.js'
+import type { NetlifyConfig, RawConfig } from './types.js'
+
+export interface Loaded {
+  configPath?: string | undefined
+  config: NetlifyConfig
   buildDir: string
   headersPath: string
   redirectsPath: string
 }
 
-/**
- * Load the configuration file, merge it with the other sources, and resolve it.
- *
- * If the resulting `build.base` is a different directory than the one used to find the
- * configuration file, the configuration is loaded a second time from that directory, whose
- * `netlify.toml` may differ. This only happens with `baseRelDir`, which exists for backward
- * compatibility. The second pass doesn't use the `config` option or `packagePath`.
- */
 export const loadConfig = async function ({
-  configOpt,
-  packagePath,
-  ...options
-}: LoadConfigOptions): Promise<LoadedConfig> {
-  const initialBase = getInitialBase(options)
-  const { base, ...firstPass } = await loadConfigOnce({ ...options, configOpt, packagePath, configBase: initialBase })
-
-  if (!options.baseRelDir || base === initialBase) {
-    return firstPass
+  options,
+  directories,
+  layers,
+}: {
+  options: ResolvedOptions
+  directories: Directories
+  layers: Layers
+}): Promise<Loaded> {
+  const { repositoryRoot } = directories
+  const initialBase = getInitialBase(layers, repositoryRoot)
+  const firstPass = await loadPass({
+    options,
+    directories,
+    layers,
+    config: options.config,
+    packagePath: options.packagePath,
+    configBase: initialBase,
+    base: undefined,
+  })
+  if (!layers.baseRelDir || firstPass.base === initialBase) {
+    return firstPass.loaded
   }
 
-  const { base: _secondBase, ...secondPass } = await loadConfigOnce({ ...options, configBase: base, base })
-  return secondPass
+  // The first pass's warnings stay logged and its errors were fatal, even though its result is
+  // discarded (QUIRK). The `config` option and `packagePath` are not used.
+  const secondPass = await loadPass({
+    options,
+    directories,
+    layers,
+    config: undefined,
+    packagePath: undefined,
+    configBase: firstPass.base,
+    base: firstPass.base,
+  })
+  return secondPass.loaded
 }
 
-type LoadConfigOnceOptions = Omit<LoadConfigOptions, 'configOpt' | 'packagePath'> & {
-  configOpt?: string | undefined
-  packagePath?: string | undefined
-  /** The base directory to look for the configuration file in. */
+/** Only `inlineConfig` and `defaultConfig` can say where to look: the file is not read yet. */
+const getInitialBase = function ({ inlineConfig, defaultConfig }: Layers, repositoryRoot: string): string | undefined {
+  const inlineBase = getRawBase(inlineConfig)
+  // Not `??`: an inline `null` doesn't fall back to `defaultConfig`.
+  const base = inlineBase === undefined ? getRawBase(defaultConfig) : inlineBase
+  // Not checked yet: validation reports a base that isn't a string.
+  return typeof base === 'string' ? resolveBase(base, repositoryRoot) : undefined
+}
+
+const getRawBase = (config: RawConfig): unknown => spreadValue(config['build'])['base']
+
+const resolveBase = (base: string | undefined, repositoryRoot: string): string | undefined =>
+  resolveConfigPath(base, { baseRel: repositoryRoot, repositoryRoot, propertyName: 'build.base' })
+
+interface PassOptions {
+  options: ResolvedOptions
+  directories: Directories
+  layers: Layers
+  config: string | undefined
+  packagePath: string | undefined
   configBase: string | undefined
-  /** The base directory, if already known. Otherwise it comes from the configuration. */
-  base?: string | undefined
+  /** Known in the second pass, where the file's `build.base` is ignored. */
+  base: string | undefined
 }
 
-const loadConfigOnce = async function ({
-  configOpt,
-  cwd,
-  context,
-  repositoryRoot,
+const loadPass = async function ({
+  options,
+  directories,
+  layers,
+  config,
   packagePath,
-  branch,
-  defaultConfig,
-  inlineConfig,
-  configMutationsOrigin,
-  baseRelDir,
   configBase,
-  base,
-  logs,
-}: LoadConfigOnceOptions): Promise<LoadedConfig & { base: string | undefined }> {
-  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, packagePath, configBase })
+  base: knownBase,
+}: PassOptions): Promise<{ loaded: Loaded; base: string | undefined }> {
+  const { cwd, repositoryRoot, branch } = directories
+  const { context, logs, configMutationsOrigin } = options
+  const configPath = await findConfigFile({ config, cwd, repositoryRoot, configBase, packagePath })
+
   try {
-    const fileConfig = await parseConfig(configPath)
-    const mergedConfig = mergeAndNormalizeConfig({
-      fileConfig,
-      defaultConfig,
-      inlineConfig,
+    const fileSource = processSource(await readConfigFile(configPath), 'config')
+    const defaultSource = processSource(layers.defaultConfig, 'ui')
+    const inlineSource = processSource(layers.inlineConfig, 'inline')
+    const merged = mergeSources({
+      defaultConfig: defaultSource,
+      fileConfig: fileSource,
+      inlineConfig: inlineSource,
       context,
       branch,
       logs,
-      packagePath,
     })
-    const {
-      config: resolvedConfig,
-      buildDir,
-      base: resolvedBase,
-    } = await resolveFiles({ config: mergedConfig, repositoryRoot, base, packagePath, baseRelDir })
-    const headersPath = getHeadersPath(resolvedConfig)
-    const withHeaders = await addHeaders({ config: resolvedConfig, headersPath, logs })
-    const redirectsPath = getRedirectsPath(withHeaders)
-    const withRedirects = await addRedirects({ config: withHeaders, redirectsPath, logs })
-    return { configPath, config: withRedirects, buildDir, base: resolvedBase, headersPath, redirectsPath }
+    const normalized = normalizeConfig(merged, { packagePath, logs })
+
+    // A known base is neither resolved nor checked inside the root again (QUIRK). An undefined one
+    // comes from the second file, but can't cause a third pass.
+    const base = knownBase ?? resolveBase(normalized.build.base, repositoryRoot)
+    const buildDir = await getBuildDir(base, repositoryRoot)
+    const baseRel = layers.baseRelDir ? buildDir : repositoryRoot
+    const withPaths = await resolvePaths(normalized, { baseRel, repositoryRoot, packagePath })
+    // Set even when undefined (QUIRK): `'base' in config.build` is always true.
+    const withBase = { ...withPaths, build: { ...withPaths.build, base } }
+
+    const headersPath = resolve(withBase.build.publish, '_headers')
+    const headers = await mergeHeaders(withBase.headers, { headersPath, logs })
+    const redirectsPath = resolve(withBase.build.publish, '_redirects')
+    const redirects = await mergeRedirects(withBase.redirects, { redirectsPath, logs })
+    // `headers` and `redirects` move to the end, which shows in the JSON output.
+    const { headers: _configHeaders, redirects: _configRedirects, ...rest } = withBase
+    const resolvedConfig: NetlifyConfig = { ...rest, headers, redirects }
+
+    return { loaded: { configPath, config: resolvedConfig, buildDir, headersPath, redirectsPath }, base }
   } catch (error) {
-    throw addErrorStage(error, configPath, configMutationsOrigin)
+    throw prefixError(error, `When ${getStage(configPath, configMutationsOrigin)}`)
   }
 }
 
-// An invalid value set by a config mutation isn't in the configuration file.
-const addErrorStage = function (
-  error: unknown,
-  configPath: string | undefined,
-  configMutationsOrigin: string | undefined,
-) {
-  if (!(error instanceof Error)) {
-    return error
+// An invalid value set by a mutation isn't in the file, so its origin is named instead.
+const getStage = function (configPath: string | undefined, configMutationsOrigin: string | undefined): string {
+  if (configMutationsOrigin !== undefined) {
+    return `applying configuration from ${configMutationsOrigin}`
   }
-
-  const configName = configPath === undefined ? '' : ` file ${configPath}`
-  const stage =
-    configMutationsOrigin === undefined
-      ? `resolving config${configName}`
-      : `applying configuration from ${configMutationsOrigin}`
-  error.message = `When ${stage}:\n${error.message}`
-  return error
+  return configPath === undefined ? 'resolving config' : `resolving config file ${configPath}`
 }
 
-type MergeAndNormalizeOptions = {
-  fileConfig: RawConfig
-  defaultConfig: PartialNetlifyConfig
-  inlineConfig: RawConfig
-  context: string
-  branch: string
-  logs: Logs | undefined
-  packagePath: string | undefined
-}
-
-/**
- * Merge, in increasing priority, `defaultConfig` (UI build settings and plugins), the
- * configuration file, the matching contexts, and `inlineConfig` (for example netlify-cli flags).
- * Each source is validated and normalized before merging, and the result after.
- */
-const mergeAndNormalizeConfig = function ({
-  fileConfig,
-  defaultConfig,
-  inlineConfig,
-  context,
-  branch,
-  logs,
-  packagePath,
-}: MergeAndNormalizeOptions): NormalizedNetlifyConfig {
-  const normalizedFileConfig = normalizeSource(fileConfig, CONFIG_ORIGIN)
-  const normalizedDefaultConfig = normalizeSource(defaultConfig, UI_ORIGIN)
-  const normalizedInlineConfig = normalizeSource(inlineConfig, INLINE_ORIGIN)
-
-  const withDefaults = mergeConfigs([normalizedDefaultConfig, normalizedFileConfig])
-  const withContexts = mergeContext({ config: withDefaults, context, branch, logs })
-  const withInlineConfig = mergeConfigs([withContexts, normalizedInlineConfig])
-
-  return normalizeAfterConfigMerge(withInlineConfig, packagePath, logs)
-}
-
-const normalizeSource = function (config: RawConfig, origin: ConfigOrigin) {
-  return normalizeContextProps(normalizeBeforeConfigMerge(config, origin), origin)
-}
-
-type ResolveFilesOptions = {
-  config: NormalizedNetlifyConfig
-  repositoryRoot: string
-  base: string | undefined
-  packagePath: string | undefined
-  baseRelDir: boolean
-}
-
-/** Find the base and build directories, and make every path absolute. */
-const resolveFiles = async function ({ config, repositoryRoot, base, packagePath, baseRelDir }: ResolveFilesOptions) {
-  const resolvedBase = getBase(base, repositoryRoot, config)
-  const buildDir = await getBuildDir(repositoryRoot, resolvedBase)
-  const withPaths = resolveConfigPaths({ config, packagePath, repositoryRoot, buildDir, baseRelDir })
-  return { config: addBase(withPaths, resolvedBase), buildDir, base: resolvedBase }
+// The repository root was already checked to be a directory.
+const getBuildDir = async function (base: string | undefined, repositoryRoot: string): Promise<string> {
+  const buildDir = base ?? repositoryRoot
+  if (buildDir !== repositoryRoot && !(await isDirectory(buildDir))) {
+    throwUserError(`Base directory does not exist: ${buildDir}`)
+  }
+  return buildDir
 }

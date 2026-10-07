@@ -3,42 +3,37 @@ import { dirname } from 'path'
 import process from 'process'
 
 import fastSafeStringify from 'fast-safe-stringify'
+import { hideBin } from 'yargs/helpers'
 
 import { isUserError } from '../error.js'
-import { resolveConfig } from '../main.js'
-import type { Config } from '../types/result.js'
+import { resolveConfig } from '../resolve.js'
+import type { Config } from '../types.js'
 
 import { parseFlags } from './flags.js'
 
-const DEFAULT_OUTPUT = '-'
-
-/** Properties removed from the output. */
-const SECRET_PROPERTIES = new Set(['token'])
-
-/** Print the resolved configuration as JSON. User errors exit with 1, and bugs with 2. */
+// User errors exit with 1 and bugs with 2. `process.exitCode`, unlike `process.exit()`, lets a large output flush.
 const runCli = async function () {
   try {
-    const { stable, output = DEFAULT_OUTPUT, ...flags } = parseFlags()
+    const { stable, output, ...flags } = parseFlags(hideBin(process.argv))
     const result = await resolveConfig(flags)
-    await handleCliSuccess(result, stable, output)
+    await writeResult(serializeResult(result, stable), output)
+    process.exitCode = 0
   } catch (error) {
     handleCliError(error)
   }
 }
 
-const handleCliSuccess = async function (result: Config, stable: boolean, output: string) {
-  const serializable = Object.fromEntries(
-    Object.entries(serializeApi(result)).filter(([key]) => !SECRET_PROPERTIES.has(key)),
-  )
+/** The API client can't be serialized, so it's replaced by whether there is one. The token is secret. */
+const serializeResult = function ({ api, token: _token, ...result }: Config, stable: boolean): string {
+  const printable = api === undefined ? result : { ...result, hasApi: true }
   // The package's types describe its CommonJS export as the module object, hence `.default`.
-  const resultJson = stable
-    ? fastSafeStringify.default.stableStringify(serializable, undefined, 2)
-    : JSON.stringify(serializable, null, 2)
-  await outputResult(resultJson, output)
-  process.exitCode = 0
+  return stable
+    ? fastSafeStringify.default.stableStringify(printable, undefined, 2)
+    : JSON.stringify(printable, null, 2)
 }
 
-const outputResult = async function (resultJson: string, output: string) {
+// A relative `output` is resolved from the process's directory, not `--cwd`.
+const writeResult = async function (resultJson: string, output: string) {
   if (output === '-') {
     console.log(resultJson)
     return
@@ -46,15 +41,6 @@ const outputResult = async function (resultJson: string, output: string) {
 
   await fs.mkdir(dirname(output), { recursive: true })
   await fs.writeFile(output, resultJson)
-}
-
-// The API client can't be serialized, so it's replaced by whether there is one.
-const serializeApi = function ({ api, ...result }: Config): Omit<Config, 'api'> & { hasApi?: true } {
-  if (api === undefined) {
-    return result
-  }
-
-  return { ...result, hasApi: true }
 }
 
 const handleCliError = function (error: unknown) {
