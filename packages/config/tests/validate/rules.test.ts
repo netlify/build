@@ -1,3 +1,4 @@
+import { resolveConfig } from '@netlify/config'
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
@@ -30,14 +31,25 @@ test('edge_functions.any.generator: string, when set by another origin than netl
 })
 
 test('functions.*.memory, region, vcpu and schedule accept valid values', async () => {
-  const { config } = (await new Fixture(
-    import.meta.url,
-    './fixtures/function_config_valid_resources',
-  ).runWithConfigAsObject()) as { config: { functions: Record<string, Record<string, unknown>> } }
+  const { config } = await resolveConfig(
+    new Fixture(import.meta.url, './fixtures/function_config_valid_resources').getConfigFlags(),
+  )
 
   expect(config.functions['*']).toMatchObject({ memory: '2gb', region: 'cmh' })
   expect(config.functions['small']).toMatchObject({ memory: 1024 })
   expect(config.functions['big']).toMatchObject({ memory: 4096 })
   expect(config.functions['light']).toMatchObject({ vcpu: 0.5 })
   expect(config.functions['large']).toMatchObject({ vcpu: 2, schedule: '5 4 * * *' })
+  expect(config.functions['daily']).toMatchObject({ schedule: ['@daily'] })
+})
+
+test('functions.*.memory: Infinity, only reachable from code, is rejected', async () => {
+  // TOML's `inf`, like the printed result, goes through JSON.
+  await expect(
+    resolveConfig(
+      new Fixture(import.meta.url, './fixtures/empty')
+        .withFlags({ inlineConfig: { functions: { daily: { memory: Infinity } } } })
+        .getConfigFlags(),
+    ),
+  ).rejects.toThrow('functions.daily.memory')
 })

@@ -1,10 +1,11 @@
 import isPlainObj from 'is-plain-obj'
+import * as z from 'zod'
 
 import type { EdgeFunctionDeclaration } from './types/config.js'
-import type { Validation } from './validate/types.js'
 import { isString, validProperties } from './validate/helpers.js'
+import { checked, type createRules } from './validate/rule.js'
 
-const cacheValues = ['manual', 'off']
+const cacheValues = ['manual', 'off'] as const
 const methodValues = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 
 const isMethod = (value: unknown) => typeof value === 'string' && methodValues.includes(value.toUpperCase())
@@ -32,111 +33,81 @@ export const EDGE_FUNCTIONS_PROPERTIES = [
 /** Properties only platform-generated configuration may set, through the Frameworks API, never `netlify.toml`. */
 export const EDGE_FUNCTIONS_INTERNAL_PROPERTIES = ['generator'] as const
 
-// Earlier validations ensure each declaration is an object.
+// Earlier checks ensure each declaration is an object.
 const declaration = (value: unknown): Partial<Record<keyof EdgeFunctionDeclaration, unknown>> =>
   isPlainObj(value) ? value : {}
 
-export const validations: Validation[] = [
-  {
-    property: 'edge_functions.*',
+const allProperties = validProperties([...EDGE_FUNCTIONS_PROPERTIES, ...EDGE_FUNCTIONS_INTERNAL_PROPERTIES], [])
+
+/** Checks on the merged `edge_functions`, which are ranked after the rules already created by `rule`. */
+export const createEdgeFunctionsSchema = function (rule: ReturnType<typeof createRules>) {
+  const properties = rule({
     // This runs on the merged configuration, which may include properties from the Frameworks API,
-    // so it allows every property. `CONFIG_FILE_VALIDATIONS` restricts what users may set.
-    ...validProperties([...EDGE_FUNCTIONS_PROPERTIES, ...EDGE_FUNCTIONS_INTERNAL_PROPERTIES], []),
+    // so it allows every property. The `netlify.toml` checks restrict what users may set.
+    message: allProperties.message,
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (value) => declaration(value).path !== undefined || declaration(value).pattern !== undefined,
+  })
+  const pathOrPattern = rule({
     message: 'either "path" or "pattern" is required.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (value) => !(declaration(value).path !== undefined && declaration(value).pattern !== undefined),
+  })
+  const pathAndPattern = rule({
     message: '"path" and "pattern" are mutually exclusive.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (value) =>
-      !(declaration(value).excludedPath !== undefined && declaration(value).excludedPattern !== undefined),
+  })
+  const excludedPathAndPattern = rule({
     message: '"excludedPath" and "excludedPattern" are mutually exclusive.',
     example: () => ({ edge_functions: [{ path: '/hello/*', function: 'hello', excludedPath: '/hello/no' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (value) => declaration(value).function !== undefined,
+  })
+  const functionRequired = rule({
     message: '"function" property is required.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    check: isString,
+  })
+  const pathString = rule({
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.excludedPath',
-    check: isStringOrArrayOfStrings,
+  })
+  const excludedPath = rule({
     message: 'must be a string or array of strings.',
     example: () => ({
       edge_functions: [{ path: '/products/*', excludedPath: ['/products/*.jpg'], function: 'customise' }],
     }),
-  },
-  {
-    property: 'edge_functions.*.pattern',
-    check: isString,
+  })
+  const pattern = rule({
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ pattern: '/hello/(.*)', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.excludedPattern',
-    check: isStringOrArrayOfStrings,
+  })
+  const excludedPattern = rule({
     message: 'must be a string or array of strings.',
     example: () => ({
       edge_functions: [{ path: '/products/(.*)', excludedPattern: ['^/products/(.*)\\.jpg$'], function: 'customise' }],
     }),
-  },
-  {
-    property: 'edge_functions.*.function',
-    check: isString,
+  })
+  const functionName = rule({
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.name',
-    check: isString,
+  })
+  const name = rule({
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello', name: 'Hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.generator',
-    check: isString,
+  })
+  const generator = rule({
     message: 'must be a string.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello', generator: 'package-name@1.2.3' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    // An earlier validation ensures this is a string.
-    check: (pathName) => String(pathName).startsWith('/'),
+  })
+  const pathValid = rule({
     message: 'must be a valid path.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.cache',
-    check: (value) => cacheValues.includes(value as string),
+  })
+  const cache = rule({
     message: `must be one of: ${cacheValues.join(', ')}`,
     example: () => ({ edge_functions: [{ cache: cacheValues[0], path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.method',
-    check: (value) => isMethod(value) || (Array.isArray(value) && value.length !== 0 && value.every(isMethod)),
+  })
+  const method = rule({
     message: `must be one of or array of: ${methodValues.join(', ')}`,
     example: () => ({ edge_functions: [{ method: ['PUT', 'DELETE'], path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.header',
-    check: isValidHeaders,
+  })
+  const header = rule({
     message: 'must be an object with string keys and boolean or string values.',
     example: () => ({
       edge_functions: [
@@ -151,5 +122,40 @@ export const validations: Validation[] = [
         },
       ],
     }),
-  },
-]
+  })
+
+  const stringOrStrings = z.union([z.string(), z.array(z.string())])
+  const declarationSchema: z.ZodType<EdgeFunctionDeclaration> = checked(
+    z.looseObject({
+      path: checked(
+        z.string(),
+        [pathString, isString],
+        [pathValid, (value) => String(value).startsWith('/')],
+      ).optional(),
+      excludedPath: checked(stringOrStrings, [excludedPath, isStringOrArrayOfStrings]).optional(),
+      pattern: checked(z.string(), [pattern, isString]).optional(),
+      excludedPattern: checked(stringOrStrings, [excludedPattern, isStringOrArrayOfStrings]).optional(),
+      function: checked(z.string(), [functionName, isString]),
+      name: checked(z.string(), [name, isString]).optional(),
+      generator: checked(z.string(), [generator, isString]).optional(),
+      cache: checked(z.enum(cacheValues), [
+        cache,
+        (value) => cacheValues.includes(value as (typeof cacheValues)[number]),
+      ]).optional(),
+      method: checked(stringOrStrings, [
+        method,
+        (value) => isMethod(value) || (Array.isArray(value) && value.length !== 0 && value.every(isMethod)),
+      ]).optional(),
+      header: checked(z.record(z.string(), z.union([z.string(), z.boolean()])), [header, isValidHeaders]).optional(),
+    }),
+    [properties, allProperties.check],
+    [pathOrPattern, (value) => declaration(value).path !== undefined || declaration(value).pattern !== undefined],
+    [pathAndPattern, (value) => !(declaration(value).path !== undefined && declaration(value).pattern !== undefined)],
+    [
+      excludedPathAndPattern,
+      (value) => !(declaration(value).excludedPath !== undefined && declaration(value).excludedPattern !== undefined),
+    ],
+    [functionRequired, (value) => declaration(value).function !== undefined],
+  )
+  return z.array(declarationSchema)
+}

@@ -1,6 +1,6 @@
 import isPlainObj from 'is-plain-obj'
 
-import type { Validation } from './types.js'
+import type { Rule } from './types.js'
 
 export const isString = (value: unknown): value is string => typeof value === 'string'
 
@@ -15,10 +15,10 @@ export const isArrayOfStrings = (value: unknown): value is string[] => Array.isA
 export const validProperties = function (
   propNames: readonly string[],
   legacyPropNames: readonly string[],
-): Pick<Validation, 'check' | 'message'> {
+): Pick<Rule, 'message'> & { check: (value: unknown) => boolean } {
   const allowed = new Set([...propNames, ...legacyPropNames])
   return {
-    // Checks only run on defined values, and earlier validations ensure these are objects.
+    // Earlier checks ensure these are objects.
     check: (value) => Object.keys(value as object).every((propName) => allowed.has(propName)),
     message: `has unknown properties. Valid properties are:
 ${propNames.map((propName) => `  - ${propName}`).join('\n')}`,
@@ -26,7 +26,7 @@ ${propNames.map((propName) => `  - ${propName}`).join('\n')}`,
 }
 
 /** `functionsDirectory` comes from `functions.directory`, so errors are reported against the latter. */
-export const functionsDirectoryCheck: Pick<Validation, 'formatInvalid' | 'propertyName'> = {
+export const functionsDirectoryCheck: Pick<Rule, 'formatInvalid' | 'propertyName'> = {
   formatInvalid: (invalid) => ({
     functions: { directory: isPlainObj(invalid) ? invalid['functionsDirectory'] : undefined },
   }),
