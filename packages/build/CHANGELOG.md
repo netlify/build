@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.4.0](https://github.com/netlify/build/compare/build-v37.3.3...build-v37.4.0) (2026-10-02)
+
+
+### Features
+
+* support in-source config in server ([#7257](https://github.com/netlify/build/issues/7257)) ([c295ae8](https://github.com/netlify/build/commit/c295ae8af8687236c984e712268088b0189dcd8c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.1 to 16.1.2
+    * @netlify/functions-utils bumped from ^7.1.15 to ^7.1.16
+    * @netlify/zip-it-and-ship-it bumped from 16.2.3 to 16.3.0
+
 ## [37.3.3](https://github.com/netlify/build/compare/build-v37.3.2...build-v37.3.3) (2026-09-29)
 
 

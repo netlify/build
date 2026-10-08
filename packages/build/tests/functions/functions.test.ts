@@ -194,6 +194,26 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
   expect(manifest.server.routes?.[0].pattern).toBe('/*')
 })
 
+test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_with_config')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const manifest = await importJsonFile<ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(manifest.server.region).toBe('fra')
+  expect(manifest.server.routes).toHaveLength(1)
+  expect(manifest.server.routes?.[0].pattern).toBe('/api/*')
+  expect(manifest.server.routes?.[0].prefer_static).toBe(true)
+})
+
 test('Functions: bundles a standalone Netlify Server alongside the functions, into separate outputs', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/server_and_functions')
     .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
