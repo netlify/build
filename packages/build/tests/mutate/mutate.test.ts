@@ -225,5 +225,6 @@ test('netlifyConfig mutations fail correctly on symbols', async () => {
 
 test('netlifyConfig mutations fail if the syntax is invalid', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/invalid_syntax').runWithBuild()
+  expect(output).toContain(`When applying configuration from ./plugin`)
   expect(output).toContain(`Configuration property build.command must be a string`)
 })

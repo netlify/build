@@ -105,6 +105,169 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.4.1](https://github.com/netlify/build/compare/build-v37.4.0...build-v37.4.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.12 ([#7262](https://github.com/netlify/build/issues/7262)) ([4cecb6f](https://github.com/netlify/build/commit/4cecb6fe7b45e034e26f3187f727644622a7d5be))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.2 to 16.1.3
+
+## [37.4.0](https://github.com/netlify/build/compare/build-v37.3.3...build-v37.4.0) (2026-10-02)
+
+
+### Features
+
+* support in-source config in server ([#7257](https://github.com/netlify/build/issues/7257)) ([c295ae8](https://github.com/netlify/build/commit/c295ae8af8687236c984e712268088b0189dcd8c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.1 to 16.1.2
+    * @netlify/functions-utils bumped from ^7.1.15 to ^7.1.16
+    * @netlify/zip-it-and-ship-it bumped from 16.2.3 to 16.3.0
+
+## [37.3.3](https://github.com/netlify/build/compare/build-v37.3.2...build-v37.3.3) (2026-09-29)
+
+
+### Bug Fixes
+
+* preserve netlify.toml compute settings ([#7254](https://github.com/netlify/build/issues/7254)) ([3017c4a](https://github.com/netlify/build/commit/3017c4a22f9ea9678e7d253519ca55c8b7698e24))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.5 to ^25.2.6
+    * @netlify/functions-utils bumped from ^7.1.14 to ^7.1.15
+    * @netlify/zip-it-and-ship-it bumped from 16.2.2 to 16.2.3
+
+## [37.3.2](https://github.com/netlify/build/compare/build-v37.3.1...build-v37.3.2) (2026-09-28)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.13 to ^7.1.14
+    * @netlify/zip-it-and-ship-it bumped from 16.2.1 to 16.2.2
+
+## [37.3.1](https://github.com/netlify/build/compare/build-v37.3.0...build-v37.3.1) (2026-09-28)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.0 to 16.1.1
+    * @netlify/functions-utils bumped from ^7.1.12 to ^7.1.13
+    * @netlify/zip-it-and-ship-it bumped from 16.2.0 to 16.2.1
+
+## [37.3.0](https://github.com/netlify/build/compare/build-v37.2.0...build-v37.3.0) (2026-09-25)
+
+
+### Features
+
+* add server core step ([#7240](https://github.com/netlify/build/issues/7240)) ([e933e96](https://github.com/netlify/build/commit/e933e968cea2402cd5359229f78bcc9eb9da8b9a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.11 to ^7.1.12
+    * @netlify/zip-it-and-ship-it bumped from 16.1.0 to 16.2.0
+
+## [37.2.0](https://github.com/netlify/build/compare/build-v37.1.0...build-v37.2.0) (2026-09-25)
+
+
+### Features
+
+* **edge-bundler:** record import map and vendor manifest usage for tarballs ([#7239](https://github.com/netlify/build/issues/7239)) ([f12cc93](https://github.com/netlify/build/commit/f12cc933d3ffa0bacb1bda1d4057b821737d51c4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.0.4 to 16.1.0
+
+## [37.1.0](https://github.com/netlify/build/compare/build-v37.0.0...build-v37.1.0) (2026-09-24)
+
+
+### Features
+
+* support standalone server ([#7236](https://github.com/netlify/build/issues/7236)) ([10012e6](https://github.com/netlify/build/commit/10012e6439effd7b02eb62f84913e685050254e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.10 to ^7.1.11
+    * @netlify/zip-it-and-ship-it bumped from 16.0.0 to 16.1.0
+
+## [37.0.0](https://github.com/netlify/build/compare/build-v36.4.8...build-v37.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149))
+
+### Features
+
+* **otel:** replace EOL Honeycomb SDK with OTel v2 ([#7149](https://github.com/netlify/build/issues/7149)) ([0ba7857](https://github.com/netlify/build/commit/0ba78578502520b0e692233ff91550e33b16a37d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.9 to ^7.1.10
+    * @netlify/opentelemetry-utils bumped from ^3.1.0 to ^4.0.0
+    * @netlify/zip-it-and-ship-it bumped from 15.5.1 to 16.0.0
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.0
+
+## [36.4.8](https://github.com/netlify/build/compare/build-v36.4.7...build-v36.4.8) (2026-09-09)
+
+
+### Bug Fixes
+
+* don't swallow Frameworks API config validation errors ([#7218](https://github.com/netlify/build/issues/7218)) ([36ce357](https://github.com/netlify/build/commit/36ce3579e65c4ce21720b1a3556e790b86852969))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.4 to ^25.2.5
+
+## [36.4.7](https://github.com/netlify/build/compare/build-v36.4.6...build-v36.4.7) (2026-09-08)
+
+
+### Bug Fixes
+
+* correct buildSite return types and declare generatedFunctions ([#7213](https://github.com/netlify/build/issues/7213)) ([5531e86](https://github.com/netlify/build/commit/5531e86398ad4e12ab61b5aaabb79fffba9bfec9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.3 to ^25.2.4
+    * @netlify/functions-utils bumped from ^7.1.8 to ^7.1.9
+    * @netlify/zip-it-and-ship-it bumped from 15.5.0 to 15.5.1
+
 ## [36.4.6](https://github.com/netlify/build/compare/build-v36.4.5...build-v36.4.6) (2026-09-03)
 
 

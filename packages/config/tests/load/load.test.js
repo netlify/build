@@ -173,6 +173,23 @@ test('--configMutations cannot be applied on readonly properties', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
+test('--configMutations validation errors point at the config file when no origin is given', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/empty')
+    .withFlags({ configMutations: [{ keys: ['build', 'command'], value: false, event: 'onPreBuild' }] })
+    .runWithConfig()
+  expect(normalizeOutput(output)).toContain('When resolving config file packages/config/tests/load/fixtures/empty')
+})
+
+test('--configMutations validation errors point at the origin that made them', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/empty')
+    .withFlags({
+      configMutations: [{ keys: ['build', 'command'], value: false, event: 'onPreBuild' }],
+      configMutationsOrigin: 'the Frameworks API',
+    })
+    .runWithConfig()
+  expect(output).toContain('When applying configuration from the Frameworks API:')
+})
+
 test('--configMutations can mutate functions top-level properties', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/empty')
     .withFlags({ configMutations: [{ keys: ['functions', 'directory'], value: 'testMutation', event: 'onPreBuild' }] })

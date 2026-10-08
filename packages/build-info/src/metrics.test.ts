@@ -3,12 +3,16 @@ import { describe, expect, test, vi } from 'vitest'
 
 import { report } from './metrics.js'
 
+const noop = () => {
+  return
+}
+
 describe('metrics', () => {
   describe('normalizeError', () => {
     const mockClient = { notify: (error) => console.error(error) } as Client
 
     test('returns an error when passed a string', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report('error happened', { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
@@ -16,7 +20,7 @@ describe('metrics', () => {
     })
 
     test('returns an error when passed an error', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report(new Error('error happened'), { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
@@ -24,7 +28,7 @@ describe('metrics', () => {
     })
 
     test('returns an object when passed an object in an expected format (1)', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report({ name: 'Error', message: 'error happened' }, { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).not.toBeInstanceOf(Error)
@@ -33,7 +37,7 @@ describe('metrics', () => {
     })
 
     test('returns an object when passed an object in an expected format (2)', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report({ errorClass: 'Error', errorMessage: 'error happened' }, { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).not.toBeInstanceOf(Error)
@@ -42,7 +46,7 @@ describe('metrics', () => {
     })
 
     test('returns an error when passed an object in an unexpected format but includes a message', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report({ message: 'error happened', documentation_url: 'bar' }, { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)
@@ -50,7 +54,7 @@ describe('metrics', () => {
     })
 
     test('returns an error when passed an object in an unexpected format', async () => {
-      const errorSpy = vi.spyOn(console, 'error')
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)
       report({ foo: 'bar' }, { client: mockClient })
       expect(errorSpy).toHaveBeenCalledOnce()
       expect(errorSpy.mock.calls[0][0]).toBeInstanceOf(Error)

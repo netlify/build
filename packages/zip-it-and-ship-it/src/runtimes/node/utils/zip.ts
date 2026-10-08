@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { Stats } from 'fs'
 import { mkdir, readlink as readLink, rm, symlink, writeFile } from 'fs/promises'
 import os from 'os'
-import { basename, dirname, extname, join } from 'path'
+import { basename, dirname, extname, isAbsolute, join, posix } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
 import type { Archiver } from 'archiver'
@@ -30,6 +30,7 @@ import {
   getEntryFile,
   getTelemetryFile,
   isNamedLikeEntryFile,
+  SERVER_MARKER_FILENAME,
 } from './entry_file.js'
 import { NETLIFY_PLAY_BOOTSTRAP_VERSION, useNetlifyPlay } from './play.js'
 import { getMetadataFile } from './metadata_file.js'
@@ -53,6 +54,7 @@ interface ZipNodeParameters {
   extension: string
   featureFlags: FeatureFlags
   filename: string
+  isServer?: boolean
   mainFile: string
   moduleFormat: ModuleFormat
   name: string
@@ -135,23 +137,23 @@ const createDirectory = async function ({
 
   const symlinks = new Map<string, Set<string>>()
 
+  const statted = await Promise.all(
+    [...new Set(srcFiles)].map(async (srcFile) => ({
+      srcFile,
+      stat: await cachedLstat(cache.lstatCache, srcFile),
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+  )
+
   // Copying source files.
   await pMap(
-    srcFiles,
-    async (srcFile) => {
-      const destPath = aliases.get(srcFile) || srcFile
-      const normalizedDestPath = normalizeFilePath({
-        commonPrefix: basePath,
-        path: destPath,
-        userNamespace,
-      })
-      const absoluteDestPath = join(functionFolder, normalizedDestPath)
+    await resolveSymlinkedDestPaths(statted, { rewrites }),
+    async ({ srcFile, stat, destPath }) => {
+      const absoluteDestPath = join(functionFolder, destPath)
 
       if (rewrites.has(srcFile)) {
         return mkdirAndWriteFile(absoluteDestPath, rewrites.get(srcFile) as string)
       }
-
-      const stat = await cachedLstat(cache.lstatCache, srcFile)
 
       // If the path is a symlink, find the link target and add the link to a
       // `symlinks` map, which we'll later use to create the symlinks in the
@@ -196,6 +198,7 @@ const createZipArchive = async function ({
   extension,
   featureFlags,
   filename,
+  isServer,
   mainFile,
   moduleFormat,
   rewrites,
@@ -203,7 +206,7 @@ const createZipArchive = async function ({
   srcFiles,
   generator,
 }: ZipNodeParameters) {
-  const isPlay = useNetlifyPlay(featureFlags, mainFile)
+  const isPlay = isServer === true || useNetlifyPlay(featureFlags, mainFile)
   const format = isPlay ? ARCHIVE_FORMAT.TAR : ARCHIVE_FORMAT.ZIP
   const archiveExtension = format === ARCHIVE_FORMAT.TAR ? '.tgz' : '.zip'
   const destPath = join(destFolder, `${basename(filename, extension)}${archiveExtension}`)
@@ -250,6 +253,10 @@ const createZipArchive = async function ({
 
     addEntryFileToZip(archive, entryFile)
   }
+  if (isServer === true) {
+    addEntryFileToZip(archive, { contents: '{}', filename: SERVER_MARKER_FILENAME })
+  }
+
   const telemetryFile = getTelemetryFile(generator)
 
   if (featureFlags.zisi_add_instrumentation_loader === true) {
@@ -269,19 +276,19 @@ const createZipArchive = async function ({
 
   const deduplicatedSrcFiles = [...new Set(srcFiles)]
   const srcFilesInfos = await Promise.all(deduplicatedSrcFiles.map((file) => addStat(cache, file)))
+  const entries = await resolveSymlinkedDestPaths(
+    srcFilesInfos.map(({ srcFile, stat }) => ({
+      srcFile,
+      stat,
+      destPath: normalizeFilePath({ commonPrefix: basePath, path: aliases.get(srcFile) || srcFile, userNamespace }),
+    })),
+    { rewrites },
+  )
 
   // We ensure this is not async, so that the archive's checksum is
   // deterministic. Otherwise it depends on the order the files were added.
-  srcFilesInfos.forEach(({ srcFile, stat }) => {
-    zipJsFile({
-      aliases,
-      archive,
-      commonPrefix: basePath,
-      rewrites,
-      srcFile,
-      stat,
-      userNamespace,
-    })
+  entries.forEach(({ srcFile, stat, destPath }) => {
+    zipJsFile({ archive, destPath, rewrites, srcFile, stat })
   })
 
   await endZip(archive, output)
@@ -312,6 +319,108 @@ const addEntryFileToZip = function (archive: Archiver, { contents, filename }: E
   addZipContent(archive, contentBuffer, filename)
 }
 
+interface ArchiveEntry {
+  destPath: string
+  srcFile: string
+  stat: Stats
+}
+
+// A tracer that resolves a module through a symlinked directory reports the path
+// it walked, not where the files really live. The archive then holds a link at
+// `node_modules/<pkg>` *and* files under that same path, which cannot both exist
+// once extracted — AWS Lambda rejects the whole bundle for it.
+//
+// Put those entries back on the path the link points at, which is the layout the
+// package manager produced in the first place: files in the store, `node_modules
+// /<pkg>` a link to them. Resolution then works the way it does locally.
+//
+// A link the archive cannot contain — absolute, or reaching above the bundle
+// root — is left alone; rewriting onto it would move entries out of the bundle.
+export const resolveSymlinkedDestPaths = async function <T extends ArchiveEntry>(
+  files: T[],
+  {
+    readTarget = readLink,
+    rewrites = new Map<string, string>(),
+  }: { readTarget?: (srcFile: string) => Promise<string>; rewrites?: Map<string, string> } = {},
+): Promise<T[]> {
+  const links = files.filter(({ stat }) => stat.isSymbolicLink())
+
+  if (links.length === 0) {
+    return files
+  }
+
+  // Resolve in parallel, but record in `links` order: keying off whichever
+  // readlink finished first would make the output depend on IO timing, and the
+  // archive checksum has to be reproducible.
+  const targets = await Promise.all(links.map(({ srcFile }) => readTarget(srcFile)))
+  const realPaths = new Map<string, string>()
+
+  links.forEach(({ destPath }, index) => {
+    const target = targets[index]
+
+    if (isAbsolute(target)) {
+      return
+    }
+
+    const realPath = posix.normalize(posix.join(posix.dirname(destPath), target))
+
+    if (realPath.startsWith('..')) {
+      return
+    }
+
+    realPaths.set(destPath, realPath)
+  })
+
+  if (realPaths.size === 0) {
+    return files
+  }
+
+  // Longest first, so a link nested inside another wins over its parent.
+  const candidates = [...realPaths.entries()].sort(([a], [b]) => b.length - a.length)
+
+  // One rewrite can land under another link, so keep going until the path sits
+  // below none of them. Links that point at each other would otherwise spin
+  // here, so stop as soon as a path repeats.
+  const resolveDestPath = (destPath: string) => {
+    const visited = new Set([destPath])
+    let current = destPath
+
+    for (;;) {
+      const match = candidates.find(([link]) => current.startsWith(`${link}/`))
+
+      if (match === undefined) {
+        return current
+      }
+
+      const next = match[1] + current.slice(match[0].length)
+
+      if (visited.has(next)) {
+        return current
+      }
+
+      visited.add(next)
+      current = next
+    }
+  }
+
+  const byDestPath = new Map<string, T>()
+
+  for (const file of files) {
+    const destPath = resolveDestPath(file.destPath)
+    const resolved = destPath === file.destPath ? file : { ...file, destPath }
+    const existing = byDestPath.get(resolved.destPath)
+
+    // Two spellings of one package can now collapse onto a single path. Keep
+    // the entry whose contents were rewritten — nft patches package.json files
+    // into `rewrites`, and the unpatched twin would ship the wrong manifest.
+    if (existing === undefined || (!rewrites.has(existing.srcFile) && rewrites.has(resolved.srcFile))) {
+      byDestPath.set(resolved.destPath, resolved)
+    }
+  }
+
+  return [...byDestPath.values()]
+}
+
 const addStat = async function (cache: RuntimeCache, srcFile: string) {
   const stat = await cachedLstat(cache.lstatCache, srcFile)
 
@@ -319,28 +428,21 @@ const addStat = async function (cache: RuntimeCache, srcFile: string) {
 }
 
 const zipJsFile = function ({
-  aliases = new Map(),
   archive,
-  commonPrefix,
+  destPath,
   rewrites = new Map(),
   stat,
   srcFile,
-  userNamespace,
 }: {
-  aliases?: Map<string, string>
   archive: Archiver
-  commonPrefix: string
+  destPath: string
   rewrites?: Map<string, string>
   stat: Stats
   srcFile: string
-  userNamespace: string
 }) {
-  const destPath = aliases.get(srcFile) || srcFile
-  const normalizedDestPath = normalizeFilePath({ commonPrefix, path: destPath, userNamespace })
-
   if (rewrites.has(srcFile)) {
-    addZipContent(archive, rewrites.get(srcFile) as string, normalizedDestPath)
+    addZipContent(archive, rewrites.get(srcFile) as string, destPath)
   } else {
-    addZipFile(archive, srcFile, normalizedDestPath, stat)
+    addZipFile(archive, srcFile, destPath, stat)
   }
 }

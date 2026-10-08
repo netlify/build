@@ -4,15 +4,17 @@ import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
-import type { FunctionResult, Manifest } from '@netlify/zip-it-and-ship-it'
+import type { FunctionResult, FunctionsManifest, ServerManifest } from '@netlify/zip-it-and-ship-it'
 import semver from 'semver'
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import { trackBundleResults } from '../../lib/log/messages/core_steps.js'
+import * as serverStep from '../../lib/plugins_core/server/index.js'
 import { importJsonFile } from '../../lib/utils/json.js'
 import { pathExists } from '../../lib/utils/path_exists.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+const SERVER_ARCHIVE = 'server.tgz'
 
 interface FunctionMetadata {
   bootstrap_version: string
@@ -147,7 +149,7 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   expect(functionsDist).toContain('manifest.json')
   expect(functionsDist).toContain('___netlify-server.zip')
 
-  const { functions } = await importJsonFile<Manifest>(
+  const { functions } = await importJsonFile<FunctionsManifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
   const serverEntry = functions.find(({ name }) => name === '___netlify-server')!
@@ -157,6 +159,123 @@ test('Functions: bundles a Netlify Server entry when the feature flag is on', as
   expect(serverEntry.routes).toHaveLength(1)
   expect(serverEntry.routes?.[0].pattern).toBe('/*')
   expect(serverEntry.routes?.[0].prefer_static).toBe(true)
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server'))).toBe(false)
+})
+
+test('Functions: bundles a Netlify Server standalone when netlify_build_server_standalone is on', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  expect(output).toContain('Netlify Server detected at netlify/server/index.mjs')
+
+  // The server no longer travels as a function, so there is no shim to bundle
+  // and nothing named after it in the functions output.
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/functions/___netlify-server.zip'))).toBe(false)
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server-entry'))).toBe(false)
+
+  const serverDist = await readdir(resolve(fixture.repositoryRoot, '.netlify/server'))
+
+  expect(serverDist.sort()).toEqual(['manifest.json', SERVER_ARCHIVE])
+
+  const manifest = await importJsonFile<ServerManifest & FunctionsManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  // The server's manifest describes the server and nothing else.
+  expect(manifest.functions).toBeUndefined()
+  expect(manifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+  expect(manifest.server.routes).toHaveLength(1)
+  expect(manifest.server.routes?.[0].pattern).toBe('/*')
+})
+
+test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_with_config')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const manifest = await importJsonFile<ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(manifest.server.region).toBe('fra')
+  expect(manifest.server.routes).toHaveLength(1)
+  expect(manifest.server.routes?.[0].pattern).toBe('/api/*')
+  expect(manifest.server.routes?.[0].prefer_static).toBe(true)
+})
+
+test('Functions: bundles a standalone Netlify Server alongside the functions, into separate outputs', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_and_functions')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  // Two steps writing two manifests, so neither can drop what the other wrote.
+  const functionsManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const serverManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(functionsManifest.functions.map(({ name }) => name)).toEqual(['hello'])
+  expect(functionsManifest.server).toBeUndefined()
+  expect(serverManifest.functions).toBeUndefined()
+  expect(serverManifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+})
+
+test('Functions: builds a Netlify Server in both forms when both channels are on', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_entry: true, netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  // Each channel writes into its own step's output, so neither can drop the
+  // other's.
+  const functionsManifest = await importJsonFile<FunctionsManifest & ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const serverManifest = await importJsonFile<ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(functionsManifest.functions.find(({ name }) => name === '___netlify-server')).toBeDefined()
+  expect(functionsManifest.server).toBeUndefined()
+  expect(serverManifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
+})
+
+test('Functions: maps build feature flags for the server the way it does for the functions', async () => {
+  const zipServerSpy = vi.spyOn(serverStep.zipItAndShipIt, 'zipServer')
+
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_entry')
+    .withFlags({
+      debug: false,
+      featureFlags: { buildbot_zisi_trace_nft: true, netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const [, , options] = zipServerSpy.mock.calls[0]
+
+  expect(options?.featureFlags?.traceWithNft).toBe(true)
+
+  zipServerSpy.mockRestore()
 })
 
 test('Functions: ignores a Netlify Server entry when the feature flag is off', async () => {
@@ -178,6 +297,31 @@ test('Functions: fails the build on multiple Netlify Server entrypoints', async 
   const output = await fixture.runWithBuild()
 
   expect(output).toContain('Found multiple server entrypoints')
+})
+
+test('Functions: passes memory, vcpu and region from netlify.toml to the manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/function_resources')
+    .withFlags({ debug: false })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const { functions } = await importJsonFile<FunctionsManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const getResources = (functionName: string) => {
+    const func = functions.find(({ name }) => name === functionName)
+
+    return { memory: func?.memory, region: func?.region, vcpu: func?.vcpu }
+  }
+
+  expect(getResources('sized-by-memory')).toEqual({ memory: 2048, region: 'fra', vcpu: undefined })
+
+  // A more specific block's vcpu replaces the wildcard memory
+  expect(getResources('sized-by-vcpu')).toEqual({ memory: undefined, region: 'fra', vcpu: 1.5 })
+
+  // In-source configuration takes precedence over netlify.toml
+  expect(getResources('sized-in-source')).toEqual({ memory: undefined, region: 'fra', vcpu: 0.5 })
 })
 
 test('Functions: loads functions generated with the Frameworks API', async () => {
@@ -208,7 +352,7 @@ test('Functions: loads functions from the `.netlify/functions-internal` director
   expect(functionsDist).toContain('user.zip')
   expect(functionsDist).toContain('server-internal.zip')
 
-  const { functions } = await importJsonFile<Manifest>(
+  const { functions } = await importJsonFile<FunctionsManifest>(
     resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
   )
 
