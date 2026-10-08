@@ -6,5 +6,5 @@ export default async function setup() {
   const deno = new DenoBridge({})
   const bootstrapURL = await getURL()
 
-  await deno.run(['install', '--allow-import', '--entrypoint', bootstrapURL])
+  await deno.run(['install', '--no-config', '--allow-import', '--entrypoint', bootstrapURL])
 }
