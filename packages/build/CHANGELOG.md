@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.4.1](https://github.com/netlify/build/compare/build-v37.4.0...build-v37.4.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.81.12 ([#7262](https://github.com/netlify/build/issues/7262)) ([4cecb6f](https://github.com/netlify/build/commit/4cecb6fe7b45e034e26f3187f727644622a7d5be))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.2 to 16.1.3
+
 ## [37.4.0](https://github.com/netlify/build/compare/build-v37.3.3...build-v37.4.0) (2026-10-02)
 
 
