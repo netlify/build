@@ -1,5 +1,13 @@
 # Changelog
 
+## [16.1.3](https://github.com/netlify/build/compare/edge-bundler-v16.1.2...edge-bundler-v16.1.3) (2026-10-08)
+
+
+### Bug Fixes
+
+* **edge-bundler:** update vendored acorn-typescript ([#7261](https://github.com/netlify/build/issues/7261)) ([d3dd886](https://github.com/netlify/build/commit/d3dd88623cfac1e8b72f95d0addfdbdb0b9103d9))
+* run deno without config discovery ([#7263](https://github.com/netlify/build/issues/7263)) ([39ab24b](https://github.com/netlify/build/commit/39ab24be6e42a16d419d4a59e0dd4c4a315aa9aa))
+
 ## [16.1.2](https://github.com/netlify/build/compare/edge-bundler-v16.1.1...edge-bundler-v16.1.2) (2026-10-02)
 
 
