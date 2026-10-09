@@ -78,35 +78,24 @@ const getDefaultCwd = function (cwdOpt) {
 }
 
 // Normalize options
+/** @returns {Promise<$TSFixMe>} */
 export const normalizeOpts = async function (opts) {
-  const repositoryRoot = await getRepositoryRoot(opts)
-  const optsA = { ...opts, repositoryRoot }
+  const cwd = await normalizeDir(opts.cwd, 'cwd')
+  const rawRepositoryRoot = await getRepositoryRoot({ ...opts, cwd })
+  const repositoryRoot = await normalizeDir(rawRepositoryRoot, 'repositoryRoot')
+  const branch = await getBranch({ ...opts, repositoryRoot })
 
-  const branch = await getBranch(optsA)
-  const optsB = { ...optsA, branch }
-
-  const optsC = removeFalsy(optsB)
-  const optsD = await normalizeDirs(optsC)
-
-  const baseOverride = await getBaseOverride(optsD)
-  const optsE = { ...baseOverride, ...optsD }
-  return optsE
+  const optsA = removeFalsy({ ...opts, cwd, repositoryRoot, branch })
+  const baseOverride = await getBaseOverride(optsA)
+  return { ...baseOverride, ...optsA }
 }
 
-// Verify that options point to existing directories.
-// Also resolve them to absolute file paths.
-const normalizeDirs = async function (opts) {
-  const dirOpts = await Promise.all(DIR_OPTIONS.map((optName) => normalizeDir(opts, optName)))
-  return Object.assign({}, opts, ...dirOpts)
-}
-
-const DIR_OPTIONS = ['cwd', 'repositoryRoot']
-
-const normalizeDir = async function (opts, optName) {
-  const path = opts[optName]
+// Verify that an option points to an existing directory.
+// Also resolve it to an absolute file path.
+const normalizeDir = async function (path, optName) {
   const resolvedPath = resolve(path)
   if (!(await isDirectory(path))) {
     throwUserError(`Option '${optName}' points to a non-existing directory: ${resolvedPath}`)
   }
-  return { [optName]: resolvedPath }
+  return resolvedPath
 }
