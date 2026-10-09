@@ -1,5 +1,4 @@
-import isPlainObj from 'is-plain-obj'
-
+import { isPlainObj } from './utils/is_plain_obj.js'
 import { isDefined } from './utils/remove_falsy.js'
 
 export const bundlers = ['esbuild', 'nft', 'zisi', 'none']
