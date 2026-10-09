@@ -1,3 +1,4 @@
+// `glob` is marked experimental in 20.12.0 (our node). Fine for a script, though.
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { copyFile, glob, mkdir } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
