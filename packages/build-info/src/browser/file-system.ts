@@ -71,10 +71,13 @@ export class WebFS extends FileSystem {
   async readDir(path: string, withFileTypes?: true): Promise<Record<string, DirType> | string[]> {
     const result = await this.git.dir(this.resolve(path))
     if (!withFileTypes) {
-      return result.map(({ path }) => path)
+      return result.map(({ path }) => this.basename(path))
     }
 
-    return result.reduce((prev, cur) => ({ ...prev, [cur.path]: cur.type === 'dir' ? 'directory' : 'file' }), {})
+    return result.reduce(
+      (prev, cur) => ({ ...prev, [this.basename(cur.path)]: cur.type === 'dir' ? 'directory' : 'file' }),
+      {},
+    )
   }
 
   async readFile(path: string): Promise<string> {
