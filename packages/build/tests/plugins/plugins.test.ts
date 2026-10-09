@@ -175,39 +175,44 @@ test('Plugins can have inputs', async () => {
 
 test('Trusted plugins are passed featureflags and system log', async () => {
   const systemLogFile = await tmpName()
-  const output = await new Fixture(import.meta.url, './fixtures/feature_flags')
-    .withFlags({
-      featureFlags: { test_flag: true },
-      debug: false,
-      systemLogFile: await fs.open(systemLogFile, 'a'),
-    })
-    .runWithBuild()
+  const systemLogHandle = await fs.open(systemLogFile, 'a')
+  try {
+    const output = await new Fixture(import.meta.url, './fixtures/feature_flags')
+      .withFlags({
+        featureFlags: { test_flag: true },
+        debug: false,
+        systemLogFile: systemLogHandle.fd,
+      })
+      .runWithBuild()
 
-  // windows doesn't support the `/dev/fd/` API we're relying on for system logging.
-  if (platform !== 'win32') {
-    const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
+    // windows doesn't support the `/dev/fd/` API we're relying on for system logging.
+    if (platform !== 'win32') {
+      const systemLog = (await fs.readFile(systemLogFile, { encoding: 'utf8' })).split('\n')
 
-    const expectedSystemLogs = 'some system-facing logs'
-    expect(output).not.toContain(expectedSystemLogs)
-    expect(systemLog).toContain(expectedSystemLogs)
+      const expectedSystemLogs = 'some system-facing logs'
+      expect(output).not.toContain(expectedSystemLogs)
+      expect(systemLog).toContain(expectedSystemLogs)
+    }
+
+    const expectedFlags = {
+      ...DEFAULT_FEATURE_FLAGS,
+      test_flag: true,
+    }
+
+    expect(output).toContain(JSON.stringify(expectedFlags))
+
+    const outputUntrusted = await new Fixture(import.meta.url, './fixtures/feature_flags_untrusted')
+      .withFlags({
+        featureFlags: { test_flag: true },
+        debug: false,
+        systemLogFile: systemLogHandle.fd,
+      })
+      .runWithBuild()
+
+    expect(outputUntrusted).toContain('typeof featureflags: undefined')
+  } finally {
+    await systemLogHandle.close()
   }
-
-  const expectedFlags = {
-    ...DEFAULT_FEATURE_FLAGS,
-    test_flag: true,
-  }
-
-  expect(output).toContain(JSON.stringify(expectedFlags))
-
-  const outputUntrusted = await new Fixture(import.meta.url, './fixtures/feature_flags_untrusted')
-    .withFlags({
-      featureFlags: { test_flag: true },
-      debug: false,
-      systemLogFile: await fs.open(systemLogFile, 'a'),
-    })
-    .runWithBuild()
-
-  expect(outputUntrusted).toContain('typeof featureflags: undefined')
 })
 
 test('process.env changes are propagated to other plugins', async () => {
