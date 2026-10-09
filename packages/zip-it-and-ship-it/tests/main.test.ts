@@ -1,8 +1,7 @@
-import { mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { cp, mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
-import cpy from 'cpy'
 import decompress from 'decompress'
 import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
@@ -625,9 +624,7 @@ describe('zip-it-and-ship-it', () => {
       const opts = merge(options, {
         basePath: `${fixtureTmpDir}/symlinks`,
       })
-      await cpy('symlinks/**', `${fixtureTmpDir}/symlinks`, {
-        cwd: FIXTURES_DIR,
-      })
+      await cp(join(FIXTURES_DIR, 'symlinks'), `${fixtureTmpDir}/symlinks`, { recursive: true })
 
       const symlinkDir = `${fixtureTmpDir}/symlinks/function`
       const symlinkFile = `${symlinkDir}/file.js`
@@ -731,7 +728,7 @@ describe('zip-it-and-ship-it', () => {
       fixtureTmpDir = await tmpName({ prefix: 'many-dependencies' })
       const basePath = `${fixtureTmpDir}/many-dependencies`
 
-      await cpy('many-dependencies/**', basePath, { cwd: FIXTURES_DIR })
+      await cp(join(FIXTURES_DIR, 'many-dependencies'), basePath, { recursive: true })
 
       await execa('npm', ['install', '--no-package-lock', '--no-audit', '--prefer-offline', '--progress=false'], {
         cwd: basePath,
@@ -810,9 +807,7 @@ describe('zip-it-and-ship-it', () => {
     const opts = merge(options, {
       basePath: fixtureDir,
     })
-    await cpy('no-package-json/**', `${fixtureDir}/no-package-json`, {
-      cwd: FIXTURES_DIR,
-    })
+    await cp(join(FIXTURES_DIR, 'no-package-json'), `${fixtureDir}/no-package-json`, { recursive: true })
     await zipNode('no-package-json', { opts, fixtureDir })
   })
 
