@@ -646,6 +646,50 @@ describe('V2 functions API', () => {
     expect(manifest.functions[0].vcpu).toEqual(1.5)
   })
 
+  test('memory from the main config is parsed to MB and persisted to the manifest', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const manifestPath = join(tmpDir, 'manifest.json')
+
+    const {
+      files: [func],
+    } = await zipFixture('v2-api', {
+      fixtureDir: FIXTURES_ESM_DIR,
+      length: 1,
+      opts: { config: { '*': { memory: '2gb' as unknown as number } }, manifest: manifestPath },
+    })
+
+    expect(func.memory).toBe(2048)
+
+    const manifest = JSON.parse(await readFile(manifestPath, { encoding: 'utf8' }))
+    expect(manifest.functions[0].memory).toEqual(2048)
+  })
+
+  test('A more specific main config block replaces both memory and vcpu from a wildcard block', async () => {
+    const {
+      files: [func],
+    } = await zipFixture('v2-api', {
+      fixtureDir: FIXTURES_ESM_DIR,
+      length: 1,
+      opts: { config: { '*': { memory: 2048 }, function: { vcpu: 1 } } },
+    })
+
+    expect(func.vcpu).toBe(1)
+    expect(func.memory).toBeUndefined()
+  })
+
+  test('vcpu from ISC replaces memory from the main config', async () => {
+    const {
+      files: [func],
+    } = await zipFixture('v2-api-vcpu', {
+      fixtureDir: FIXTURES_ESM_DIR,
+      length: 1,
+      opts: { config: { '*': { memory: 2048 } } },
+    })
+
+    expect(func.vcpu).toBe(1.5)
+    expect(func.memory).toBeUndefined()
+  })
+
   testMany(
     'Bootstrap is imported before user code so it can apply side-effects before the user code runs',
     ['bundler_default', 'bundler_esbuild', 'bundler_esbuild_zisi', 'bundler_default_nft', 'bundler_nft'],

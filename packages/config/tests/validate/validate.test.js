@@ -253,6 +253,16 @@ test('functions.node_bundler: one of supported bundlers', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
+test('functions.memory: within the allowed range', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/function_config_invalid_memory').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('functions.memory and functions.vcpu: mutually exclusive', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/function_config_memory_vcpu_exclusive').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
 test('functions.directory: defined on the main functions object', async () => {
   const output = await new Fixture(
     import.meta.url,

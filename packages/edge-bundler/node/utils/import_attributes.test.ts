@@ -365,6 +365,29 @@ import css from './styles.css' with {
     expect(() => rewriteSourceImportAssertions(source)).toThrow(SyntaxError)
   })
 
+  test('handles a generic async arrow function after an await', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+
+export async function load() {
+  await Promise.resolve();
+  const settle = async <T>(work: () => Promise<T>) => await work();
+  return settle(() => Promise.resolve(data));
+}
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+
+export async function load() {
+  await Promise.resolve();
+  const settle = async <T>(work: () => Promise<T>) => await work();
+  return settle(() => Promise.resolve(data));
+}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
   describe('declaration files', () => {
     test.each([
       ['index.d.ts', true],

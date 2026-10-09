@@ -2,10 +2,10 @@ import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
 import { ARCHIVE_FORMAT } from './archive.js'
-import { NODE_BUNDLER } from './runtimes/node/bundlers/types.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
+import { parseFile } from './runtimes/node/in_source_config/index.js'
 import { RUNTIME, type RuntimeName } from './runtimes/runtime.js'
 import type { RuntimeCache } from './utils/cache.js'
 import { FunctionBundlingUserError } from './utils/error.js'
@@ -15,8 +15,7 @@ import type { getLogger } from './utils/logger.js'
 import { getRoutes } from './utils/routes.js'
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
-// A server claims every path the rest of the deploy does not.
-const SERVER_ROUTE = '/*'
+const DEFAULT_SERVER_PATHS = ['/*']
 
 // Names the server's archive. Everywhere else it is only a label, identifying
 // the server in bundling errors, since a server has no name of its own.
@@ -56,6 +55,20 @@ export const findServerEntry = async (directory: string): Promise<string | undef
   }
 
   return join(directory, candidates[0])
+}
+
+// A server always sets `preferStatic: true`.
+const toServerRoutes = (paths: string[] = DEFAULT_SERVER_PATHS): ExtendedRoute[] =>
+  getRoutes(SERVER_NAME, paths).map((route) => ({ ...route, prefer_static: true }))
+
+/**
+ * Returns the routes the server at `entryPath` claims, read from its in-source
+ * configuration, without bundling it.
+ */
+export const getServerRoutes = async (entryPath: string): Promise<ExtendedRoute[]> => {
+  const { config } = await parseFile(resolve(entryPath), { functionName: SERVER_NAME, isServer: true })
+
+  return toServerRoutes(config.path)
 }
 
 export type ServerResult = {
@@ -133,7 +146,7 @@ export const bundleServer = async (
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: { ...source.config, nodeBundler: NODE_BUNDLER.NFT },
+    config: source.config,
     destFolder,
     extension: source.extension,
     featureFlags,
@@ -169,7 +182,7 @@ export const bundleServer = async (
     memory: result.memory,
     path: result.path,
     region: result.region,
-    routes: getRoutes(SERVER_NAME, SERVER_ROUTE).map((route) => ({ ...route, prefer_static: true })),
+    routes: toServerRoutes(zipResult.staticAnalysisResult?.config.path),
     runtime: result.runtime,
     runtimeVersion: result.runtimeVersion,
     size: result.size,

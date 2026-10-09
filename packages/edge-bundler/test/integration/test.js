@@ -1,14 +1,14 @@
 import assert from 'assert'
 import childProcess from 'child_process'
-import { rm, cp } from 'fs/promises'
+import { cp, mkdtemp, rm } from 'fs/promises'
 import { createRequire } from 'module'
+import { tmpdir } from 'os'
 import { join, resolve } from 'path'
 import process from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
 import { x as tarExtract } from 'tar'
-import tmp from 'tmp-promise'
 
 const exec = promisify(childProcess.exec)
 const require = createRequire(import.meta.url)
@@ -24,7 +24,7 @@ const installPackage = async () => {
 
   console.log(`Running integration tests for ${name} v${version}...`)
 
-  const { path } = await tmp.dir()
+  const path = await mkdtemp(join(tmpdir(), 'edge-bundler-integration-'))
 
   console.log(`Creating tarball with 'npm pack'...`)
 
@@ -51,7 +51,7 @@ const bundleFunction = async (bundlerDir) => {
   const bundlerPath = require.resolve(bundlerDir)
   const bundlerURL = pathToFileURL(bundlerPath)
   const { bundle } = await import(bundlerURL)
-  const { path: basePath } = await tmp.dir()
+  const basePath = await mkdtemp(join(tmpdir(), 'edge-bundler-integration-'))
 
   console.log(`Copying test fixture to '${basePath}'...`)
 

@@ -194,6 +194,26 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
   expect(manifest.server.routes?.[0].pattern).toBe('/*')
 })
 
+test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_with_config')
+    .withFlags({
+      debug: false,
+      featureFlags: { netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const manifest = await importJsonFile<ServerManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/server/manifest.json'),
+  )
+
+  expect(manifest.server.region).toBe('fra')
+  expect(manifest.server.routes).toHaveLength(1)
+  expect(manifest.server.routes?.[0].pattern).toBe('/api/*')
+  expect(manifest.server.routes?.[0].prefer_static).toBe(true)
+})
+
 test('Functions: bundles a standalone Netlify Server alongside the functions, into separate outputs', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/server_and_functions')
     .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
@@ -277,6 +297,31 @@ test('Functions: fails the build on multiple Netlify Server entrypoints', async 
   const output = await fixture.runWithBuild()
 
   expect(output).toContain('Found multiple server entrypoints')
+})
+
+test('Functions: passes memory, vcpu and region from netlify.toml to the manifest', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/function_resources')
+    .withFlags({ debug: false })
+    .withCopyRoot()
+
+  await fixture.runWithBuild()
+
+  const { functions } = await importJsonFile<FunctionsManifest>(
+    resolve(fixture.repositoryRoot, '.netlify/functions/manifest.json'),
+  )
+  const getResources = (functionName: string) => {
+    const func = functions.find(({ name }) => name === functionName)
+
+    return { memory: func?.memory, region: func?.region, vcpu: func?.vcpu }
+  }
+
+  expect(getResources('sized-by-memory')).toEqual({ memory: 2048, region: 'fra', vcpu: undefined })
+
+  // A more specific block's vcpu replaces the wildcard memory
+  expect(getResources('sized-by-vcpu')).toEqual({ memory: undefined, region: 'fra', vcpu: 1.5 })
+
+  // In-source configuration takes precedence over netlify.toml
+  expect(getResources('sized-in-source')).toEqual({ memory: undefined, region: 'fra', vcpu: 0.5 })
 })
 
 test('Functions: loads functions generated with the Frameworks API', async () => {
