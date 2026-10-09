@@ -74,7 +74,7 @@
     "parse-imports": "^2.2.1",
     "semver": "^7.3.8",
     "tar": "^7.5.12",
-    "urlpattern-polyfill": "8.0.2"
+    "urlpattern-polyfill": "10.1.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
