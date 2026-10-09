@@ -105,6 +105,21 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.4.2](https://github.com/netlify/build/compare/build-v37.4.1...build-v37.4.2) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** drop `cpy` for native FS ([#7249](https://github.com/netlify/build/issues/7249)) ([8448500](https://github.com/netlify/build/commit/8448500fa1dc9fa2bf3a8ddabb052887d772ab96))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.16 to ^7.1.17
+    * @netlify/zip-it-and-ship-it bumped from 16.3.0 to 16.3.1
+
 ## [37.4.1](https://github.com/netlify/build/compare/build-v37.4.0...build-v37.4.1) (2026-10-08)
 
 
