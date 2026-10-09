@@ -88,7 +88,6 @@
     "@vitest/coverage-v8": "^3.0.0",
     "browserslist": "4.28.7",
     "cardinal": "2.1.1",
-    "cpy": "11.1.0",
     "decompress": "4.2.1",
     "deepmerge": "^4.3.1",
     "get-stream": "9.0.1",
