@@ -1,11 +1,11 @@
 import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { dirname, join } from 'path'
 
 import { execa } from 'execa'
 import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
-import { findServerEntry, zipFunctions, zipServer } from '../src/main.js'
+import { findServerEntry, getServerRoutes, zipFunctions, zipServer } from '../src/main.js'
 import type { FunctionBundlingUserError } from '../src/utils/error.js'
 import type { Manifest, ServerManifest } from '../src/manifest.js'
 
@@ -190,6 +190,45 @@ describe('Netlify Server', () => {
     // Left to the function heuristics this would be `zisi`, since the entry is
     // CommonJS and so reads as a v1 function.
     expect(result.bundler).toBe('nft')
+    expect(result.runtimeVersion).toBeDefined()
+  })
+
+  describe('Whichever shape the server is written in', () => {
+    // A framework server exports nothing, so the static analysis that tells a
+    // v1 function from a v2 one reads it as v1. Nothing about the bundle may
+    // follow from that.
+    const SHAPES = {
+      'framework mode': join(FIXTURES_DIR, 'netlify-server-framework'),
+      'Netlify syntax': FIXTURE,
+    }
+
+    const bundleShape = async (fixture: string) => {
+      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+      const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), tmpDir, { basePath: fixture })
+      const extractDir = join(tmpDir, 'extracted')
+
+      await mkdir(extractDir, { recursive: true })
+      await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+      return { contents: (await readdir(extractDir)).sort(), result }
+    }
+
+    test.each(Object.entries(SHAPES))('Carries the entry file the guest imports (%s)', async (_name, fixture) => {
+      const { contents } = await bundleShape(fixture)
+
+      // The guest imports a fixed path, so the bundle is only runnable if the
+      // entry file is in it.
+      expect(contents).toContain('___netlify-entry-point.mjs')
+      expect(contents).toContain('___netlify-server.json')
+    })
+
+    test('Is bundled and versioned the same either way', async () => {
+      const [framework, netlify] = await Promise.all(Object.values(SHAPES).map(bundleShape))
+
+      expect(framework.result.bundler).toBe(netlify.result.bundler)
+      expect(framework.result.runtimeVersion).toBe(netlify.result.runtimeVersion)
+      expect(framework.result.runtimeVersion).toBeDefined()
+    })
   })
 
   test('Fails the build when the server entry cannot be read, as a user error', async () => {
@@ -221,6 +260,251 @@ describe('Netlify Server', () => {
     expect(Array.isArray(results)).toBe(true)
     expect(results.map(({ name }) => name)).toEqual(['hello'])
     expect(((await readManifest(manifestPath)) as ServerManifest).server).toBeUndefined()
+  })
+})
+
+describe('Netlify Server in-source configuration', () => {
+  const FRAMEWORK_SERVER = `import { createServer } from 'node:http'
+
+createServer((_req, res) => res.end('hello')).listen(process.env.PORT)
+`
+
+  const bundleSource = async (filename: string, source: string, extraFiles: Record<string, string> = {}) => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+    const destDir = join(tmpDir, 'out')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(serverDir, filename), source)
+
+    // In-source `includedFiles` are relative to the entry file, so extra files
+    // live next to it.
+    for (const [name, contents] of Object.entries(extraFiles)) {
+      await mkdir(dirname(join(serverDir, name)), { recursive: true })
+      await writeFile(join(serverDir, name), contents)
+    }
+
+    const result = await zipServer(join(serverDir, filename), destDir, { basePath: tmpDir })
+    const manifest = (await readManifest(join(destDir, 'manifest.json'))) as ServerManifest
+
+    return { destDir, manifest, result }
+  }
+
+  test('Reads the config of a framework server that exports nothing else', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { region: 'fra' }
+`,
+    )
+
+    expect(manifest.server.region).toBe('fra')
+  })
+
+  test('Reads the config of a CommonJS framework server', async () => {
+    const { manifest } = await bundleSource(
+      'index.js',
+      `const { createServer } = require('node:http')
+
+module.exports = createServer((_req, res) => res.end('hello'))
+module.exports.config = { region: 'fra' }
+`,
+    )
+
+    expect(manifest.server.region).toBe('fra')
+  })
+
+  test('Bundles the files a framework server includes in its config', async () => {
+    const { destDir, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { includedFiles: ['data/**'] }
+`,
+      { 'data/seed.json': '{}' },
+    )
+
+    const extractDir = join(destDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+    expect(await readFile(join(extractDir, 'data', 'seed.json'), 'utf-8')).toBe('{}')
+  })
+
+  test('Reads the config of a server using the Netlify syntax', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `export default async () => new Response('hello')
+
+export const config = { region: 'fra' }
+`,
+    )
+
+    expect(manifest.server.region).toBe('fra')
+  })
+
+  test.each([
+    ['as const', `export const config = { path: '/api/*', region: 'fra' } as const`],
+    [
+      'satisfies',
+      `import type { Config } from '@netlify/server'\n\nexport const config = { path: '/api/*', region: 'fra' } satisfies Config`,
+    ],
+  ])('Reads a config written with %s', async (_name, configSource) => {
+    const { manifest } = await bundleSource('index.ts', `${FRAMEWORK_SERVER}\n${configSource}\n`)
+
+    expect(manifest.server.region).toBe('fra')
+    expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*'])
+  })
+
+  test('Reads the config property of a default export object', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `export default {
+  fetch: () => new Response('hello'),
+  config: { region: 'fra' },
+}
+`,
+    )
+
+    expect(manifest.server.region).toBe('fra')
+  })
+
+  test('Fails the build on a property servers do not support, as a user error', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { schedule: '@daily', region: 'fra' }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe("Netlify Server does not support the 'schedule' configuration property")
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
+  })
+
+  test('Narrows the paths a framework server claims', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { path: '/api/*' }
+`,
+    )
+
+    expect(manifest.server.routes).toEqual([
+      { pattern: '/api/*', expression: '^\\/api(?:\\/(.*))\\/?$', prefer_static: true },
+    ])
+  })
+
+  test('Claims every path in a list', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `export default async () => new Response('hello')
+
+export const config = { path: ['/api/*', '/auth/login'] }
+`,
+    )
+
+    expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*', '/auth/login'])
+    expect(manifest.server.routes?.every(({ prefer_static: preferStatic }) => preferStatic)).toBe(true)
+  })
+
+  test('Claims every path when the config names none', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { region: 'fra' }
+`,
+    )
+
+    expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/*'])
+  })
+
+  test('Reads the routes a server claims without bundling it', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const narrowed = join(tmpDir, 'narrowed.mjs')
+    const unconfigured = join(tmpDir, 'unconfigured.mjs')
+
+    await writeFile(narrowed, `${FRAMEWORK_SERVER}\nexport const config = { path: '/api/*' }\n`)
+    await writeFile(unconfigured, FRAMEWORK_SERVER)
+
+    const { manifest } = await bundleSource('index.mjs', await readFile(narrowed, 'utf-8'))
+
+    expect(await getServerRoutes(narrowed)).toEqual(manifest.server.routes)
+    expect((await getServerRoutes(unconfigured)).map(({ pattern }) => pattern)).toEqual(['/*'])
+  })
+
+  test('Fails the build on a path that does not start with a slash', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { path: 'api/*' }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe("Netlify Server has a configuration error on 'path': Must start with a '/'")
+  })
+
+  test('Accepts the server regions in any casing', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { region: 'IAD' }
+`,
+    )
+
+    expect(manifest.server.region).toBe('iad')
+  })
+
+  test('Fails the build on a region only functions run in', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { region: 'sfo' }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toMatch(/^Netlify Server has a configuration error on 'region': /)
+  })
+
+  test.each(['externalNodeModules', 'ignoredNodeModules'])(
+    'Fails the build on %s, which only applies to esbuild',
+    async (property) => {
+      const error = await bundleSource(
+        'index.mjs',
+        `${FRAMEWORK_SERVER}
+export const config = { ${property}: ['pg'] }
+`,
+      ).catch((err: unknown) => err)
+
+      expect((error as Error).message).toBe(`Netlify Server does not support the '${property}' configuration property`)
+    },
+  )
+
+  test('Fails the build on an invalid includedFiles', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { includedFiles: 'data/**' }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toMatch(/^Netlify Server has a configuration error on 'includedFiles': /)
+  })
+
+  test.each([
+    ['memory', '2048'],
+    ['vcpu', '1'],
+  ])('Fails the build on %s, which servers do not take', async (property, value) => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { ${property}: ${value} }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe(`Netlify Server does not support the '${property}' configuration property`)
   })
 })
 

@@ -4,4 +4,3 @@ export default {
   },
 }
 
-export const shutdown = async () => {}

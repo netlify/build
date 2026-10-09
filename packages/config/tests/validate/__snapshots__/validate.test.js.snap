@@ -1816,6 +1816,45 @@ Valid syntax
     ]"
 `;
 
+exports[`functions.memory and functions.vcpu: mutually exclusive 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_memory_vcpu_exclusive/netlify.toml:
+Configuration property functions.* "memory" and "vcpu" are mutually exclusive.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    vcpu = 1
+    memory = "2gb"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "2gb""
+`;
+
+exports[`functions.memory: within the allowed range 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_memory/netlify.toml:
+Configuration property functions.*.memory must be between 1024 and 4096 MB, as a number (in MB) or a string with a unit (e.g. "2gb").
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "8gb"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "2gb""
+`;
+
 exports[`functions.node_bundler: one of supported bundlers 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_node_bundler/netlify.toml:
 Configuration property functions.*.node_bundler must be one of: esbuild, nft, zisi, none

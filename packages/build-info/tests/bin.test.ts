@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 
-import { execa, execaNode } from 'execa'
+import { execa } from 'execa'
 import { afterEach, expect, test } from 'vitest'
 
 import { createFixture } from './helpers.js'
@@ -10,18 +10,13 @@ const FIXTURES_ABSOLUTE_PATH = fileURLToPath(new URL('fixtures', import.meta.url
 afterEach(async ({ cleanup }) => await cleanup?.())
 
 const runBinary = (...args: string[]) => {
-  if (process.env.CI) {
-    const binary = fileURLToPath(new URL('../bin.js', import.meta.url))
-    return execaNode(binary, args)
-  }
-  const binary = fileURLToPath(new URL('../src/node/bin.ts', import.meta.url))
-  return execa('node', ['--loader=ts-node/esm', '--no-warnings', binary, ...args])
+  const binary = fileURLToPath(new URL('../lib/node/bin.js', import.meta.url))
+  return execa('node', ['--no-warnings', binary, ...args])
 }
 
 test('CLI --help flag', async () => {
   const { stdout } = await runBinary('--help')
 
-  // locally we run the typescript binary but the snapshot is run in CI as well
   expect(stdout.replace(/bin\.ts/gm, 'bin.js')).toMatchSnapshot()
 })
 
