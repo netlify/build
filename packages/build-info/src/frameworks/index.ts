@@ -10,6 +10,7 @@ import { Docusaurus } from './docusaurus.js'
 import { Eleventy } from './eleventy.js'
 import { Ember } from './ember.js'
 import { Expo } from './expo.js'
+import { FarmJS } from './farmjs.js'
 import { Gatsby } from './gatsby.js'
 import { Gridsome } from './gridsome.js'
 import { Grunt } from './grunt.js'
@@ -93,6 +94,7 @@ export const frameworks = [
   Analog,
   Vike,
   Waku,
+  FarmJS,
   VitePress,
 
   // Back-end frameworks
