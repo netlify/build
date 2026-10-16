@@ -1,4 +1,4 @@
-const { version } = require('./lib/meta.js')
+const { version } = require('./helpers/meta.js')
 
 module.exports = {
   async fetch() {

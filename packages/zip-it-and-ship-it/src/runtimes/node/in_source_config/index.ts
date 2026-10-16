@@ -7,13 +7,14 @@ import type {
   ObjectExpression,
   SpreadElement,
   JSXNamespacedName,
+  Statement,
 } from '@babel/types'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfigShape } from '../../../config.js'
+import { FunctionConfig, functionConfigShape, serverRegion, withComputeResources } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
@@ -44,11 +45,16 @@ export interface StaticAnalysisResult {
 
 interface FindISCDeclarationsOptions {
   functionName: string
+  isServer?: boolean
 }
 
 const httpMethod = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE', 'HEAD'])
 const httpMethods = z.preprocess((input) => (typeof input === 'string' ? input.toUpperCase() : input), httpMethod)
 const path = z.string().startsWith('/', { message: "Must start with a '/'" })
+const paths = z
+  .union([path, z.array(path)], { error: () => ({ message: 'Must be a string or array of strings' }) })
+  .transform(ensureArray)
+  .optional()
 
 export const inSourceConfig = functionConfigShape
   .pick({
@@ -73,14 +79,8 @@ export const inSourceConfig = functionConfigShape
       })
       .transform(ensureArray)
       .optional(),
-    path: z
-      .union([path, z.array(path)], { error: () => ({ message: 'Must be a string or array of strings' }) })
-      .transform(ensureArray)
-      .optional(),
-    excludedPath: z
-      .union([path, z.array(path)], { error: () => ({ message: 'Must be a string or array of strings' }) })
-      .transform(ensureArray)
-      .optional(),
+    path: paths,
+    excludedPath: paths,
     preferStatic: z.boolean().optional().catch(undefined),
     rateLimit: rateLimit.optional().catch(undefined),
   })
@@ -90,6 +90,14 @@ export const inSourceConfig = functionConfigShape
   })
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
+
+export const serverInSourceConfig = z
+  .object({
+    includedFiles: z.array(z.string()).optional(),
+    path: paths,
+    region: serverRegion.optional(),
+  })
+  .strict()
 
 /**
  * Resolves the default export expression to an ObjectExpression if possible,
@@ -225,7 +233,7 @@ const validateScheduleFunction = (functionFound: boolean, scheduleFound: boolean
  */
 export const parseFile = async (
   sourcePath: string,
-  { functionName }: FindISCDeclarationsOptions,
+  { functionName, isServer }: FindISCDeclarationsOptions,
 ): Promise<StaticAnalysisResult> => {
   const source = await safelyReadSource(sourcePath)
 
@@ -235,7 +243,43 @@ export const parseFile = async (
     }
   }
 
-  return parseSource(source, { functionName })
+  return parseSource(source, { functionName, isServer })
+}
+
+// Reads a named `config` export wrapped in `as const` or `satisfies`, which the
+// shared export traversal doesn't unwrap.
+const getWrappedConfigExport = (nodes: Statement[], getAllBindings: BindingMethod) => {
+  for (const node of nodes) {
+    if (node.type !== 'ExportNamedDeclaration' || node.declaration?.type !== 'VariableDeclaration') {
+      continue
+    }
+
+    for (const declarator of node.declaration.declarations) {
+      if (declarator.id.type === 'Identifier' && declarator.id.name === 'config') {
+        const object = resolveObjectExpression(declarator.init ?? undefined, getAllBindings)
+
+        return object ? parseObject(object) : undefined
+      }
+    }
+  }
+}
+
+const parseServerConfig = (config: Record<string, unknown>, functionName: string): InSourceConfig => {
+  const { data, error, success } = serverInSourceConfig.safeParse(config)
+
+  if (success) {
+    return data
+  }
+
+  const [issue] = error.issues
+  const message =
+    issue.code === 'unrecognized_keys'
+      ? `Netlify Server does not support the ${issue.keys.map((key) => `'${key}'`).join(', ')} configuration ${
+          issue.keys.length === 1 ? 'property' : 'properties'
+        }`
+      : `Netlify Server has a configuration error on '${issue.path.join('.')}': ${issue.message}`
+
+  throw new FunctionBundlingUserError(message, { functionName, runtime: RUNTIME.JAVASCRIPT })
 }
 
 /**
@@ -243,7 +287,10 @@ export const parseFile = async (
  * series of data points, such as in-source configuration properties and
  * other metadata.
  */
-export const parseSource = (source: string, { functionName }: FindISCDeclarationsOptions): StaticAnalysisResult => {
+export const parseSource = (
+  source: string,
+  { functionName, isServer }: FindISCDeclarationsOptions,
+): StaticAnalysisResult => {
   const ast = safelyParseSource(source)
 
   if (ast === null) {
@@ -263,6 +310,21 @@ export const parseSource = (source: string, { functionName }: FindISCDeclaration
     ast.body,
     getAllBindings,
   )
+
+  if (isServer) {
+    const config =
+      configExport ??
+      getWrappedConfigExport(ast.body, getAllBindings) ??
+      getConfigFromDefaultExport(defaultExportExpression, getAllBindings) ??
+      {}
+
+    return {
+      config: parseServerConfig(config, functionName),
+      inputModuleFormat,
+      runtimeAPIVersion: 2,
+    }
+  }
+
   const isV2API = handlerExports.length === 0 && hasDefaultExport
 
   if (isV2API) {
@@ -374,8 +436,10 @@ export const augmentFunctionConfig = (
   tomlConfig: FunctionConfig,
   inSourceConfig: InSourceConfig = {},
 ) => {
-  const mergedConfig = mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig &
-    InSourceConfig
+  const mergedConfig = withComputeResources(
+    mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig & InSourceConfig,
+    [tomlConfig, inSourceConfig],
+  )
 
   // We can't simply merge included files from the TOML and from in-source
   // configuration because their globs are relative to different base paths.

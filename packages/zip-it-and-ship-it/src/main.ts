@@ -15,7 +15,7 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 export { Config, FunctionConfig } from './config.js'
 export { zipFunction, zipFunctions, zipServer, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
 export type { ServerOptions, ServerResult, ZipServerOptions } from './zip.js'
-export { findServerEntry } from './server.js'
+export { findServerEntry, getServerRoutes } from './server.js'
 export type { FunctionsBag, MixedPaths } from './paths.js'
 
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'

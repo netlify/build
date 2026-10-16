@@ -69,7 +69,6 @@ const SERVER_SHIM_DIR = '.netlify/server-entry'
 const getShimContents = (entryPath: string) => `import * as server from ${JSON.stringify(entryPath)}
 
 export default server.default ?? server
-export const shutdown = server.shutdown
 
 export const config = {
   name: "Netlify Server",

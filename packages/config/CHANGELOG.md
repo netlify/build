@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.6](https://github.com/netlify/build/compare/config-v25.2.5...config-v25.2.6) (2026-09-29)
+
+
+### Bug Fixes
+
+* preserve netlify.toml compute settings ([#7254](https://github.com/netlify/build/issues/7254)) ([3017c4a](https://github.com/netlify/build/commit/3017c4a22f9ea9678e7d253519ca55c8b7698e24))
+
 ## [25.2.5](https://github.com/netlify/build/compare/config-v25.2.4...config-v25.2.5) (2026-09-09)
 
 
