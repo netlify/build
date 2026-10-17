@@ -27,31 +27,31 @@ global.fetch = vi.fn(async (url): Promise<any> => {
     case 'https://api.github.com/repos/netlify/build/contents/packages?ref=main':
       return new Response(
         JSON.stringify([
-          { path: 'build-info', type: 'dir' },
-          { path: 'build', type: 'dir' },
-          { path: 'config', type: 'dir' },
-          { path: 'other', type: 'dir' }, // not a package
+          { path: 'packages/build-info', type: 'dir' },
+          { path: 'packages/build', type: 'dir' },
+          { path: 'packages/config', type: 'dir' },
+          { path: 'packages/other', type: 'dir' }, // not a package
         ]),
         {
           headers: { 'Content-Type': 'application/json' },
         },
       )
     case 'https://api.github.com/repos/netlify/build/contents/packages/build-info?ref=main':
-      return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
+      return new Response(JSON.stringify([{ path: 'packages/build-info/package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
     case 'https://api.github.com/repos/netlify/build/contents/packages/build-info/package.json?ref=main':
       return new Response(JSON.stringify({ name: '@netlify/build-info' }))
     case 'https://api.github.com/repos/netlify/build/contents/tools?ref=main':
-      return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
+      return new Response(JSON.stringify([{ path: 'tools/package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
     case 'https://api.github.com/repos/netlify/build/contents/packages/config?ref=main':
-      return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
+      return new Response(JSON.stringify([{ path: 'packages/config/package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
     case 'https://api.github.com/repos/netlify/build/contents/packages/build?ref=main':
-      return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
+      return new Response(JSON.stringify([{ path: 'packages/build/package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
     case 'https://api.github.com/repos/netlify/build/contents/packages/build/package.json?ref=main':
@@ -69,6 +69,19 @@ describe('Test with a WebFS', () => {
   beforeEach((ctx) => {
     ctx.fs = new WebFS(new GithubProvider('netlify/build', 'main'))
     ctx.fs.logger = new NoopLogger()
+  })
+
+  test('readDir returns entry names from repository-relative GitHub paths', async ({ fs }) => {
+    expect(await fs.readDir('/packages')).toEqual(['build-info', 'build', 'config', 'other'])
+    expect(await fs.readDir('/packages/build-info', true)).toEqual({ 'package.json': 'file' })
+  })
+
+  test('findUp finds the nearest package.json using GitHub directory responses', async ({ fs }) => {
+    expect(await fs.findUp('package.json', { cwd: '/packages/build-info' })).toBe('/packages/build-info/package.json')
+    expect(await fs.findUpMultiple('package.json', { cwd: '/packages/build-info' })).toEqual([
+      '/packages/build-info/package.json',
+      '/package.json',
+    ])
   })
 
   test('should detect a build system from the base', async ({ fs }) => {
