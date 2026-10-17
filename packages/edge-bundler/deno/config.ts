@@ -30,20 +30,26 @@ try {
   Deno.exit(exitCodes.ImportError)
 }
 
-if (typeof func.default !== 'function') {
+// https://fetchable.org: an object default export with a `fetch` method.
+const isFetchable = typeof func.default === 'object' && func.default !== null && typeof func.default.fetch === 'function'
+
+if (typeof func.default !== 'function' && !isFetchable) {
   Deno.exit(exitCodes.InvalidDefaultExport)
 }
 
-if (func.config === undefined) {
+// A named `config` export wins over `default.config`.
+const config = func.config ?? (isFetchable ? func.default.config : undefined)
+
+if (config === undefined) {
   Deno.exit(exitCodes.NoConfig)
 }
 
-if (typeof func.config !== 'object') {
+if (typeof config !== 'object') {
   Deno.exit(exitCodes.InvalidExport)
 }
 
 try {
-  const result = JSON.stringify(func.config)
+  const result = JSON.stringify(config)
 
   await Deno.writeTextFile(new URL(collectorURL), result)
 } catch (error) {

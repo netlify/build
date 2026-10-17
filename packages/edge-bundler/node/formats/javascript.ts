@@ -6,7 +6,7 @@ import { EdgeFunction } from '../edge_function.js'
 import type { FormatFunction } from '../server/server.js'
 
 const defaultFormatExportTypeError: FormatFunction = (name) =>
-  `The Edge Function "${name}" has failed to load. Does it have a function as the default export?`
+  `The Edge Function "${name}" has failed to load. Does it have a function, or an object with a \`fetch\` method, as the default export?`
 
 const defaultFormatImportError: FormatFunction = (name) => `There was an error with Edge Function "${name}".`
 
@@ -69,9 +69,10 @@ const getLocalEntryPoint = (
     return `
       try {
         const { default: func } = await import("${url}");
+        const handler = typeof func?.fetch === "function" ? func.fetch.bind(func) : func;
 
-        if (typeof func === "function") {
-          functions["${func.name}"] = func;
+        if (typeof handler === "function") {
+          functions["${func.name}"] = handler;
           metadata.functions["${func.name}"] = ${JSON.stringify(metadata)}
         } else {
           console.log(${JSON.stringify(formatExportTypeError(func.name))});
