@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.2.7](https://github.com/netlify/build/compare/config-v25.2.6...config-v25.2.7) (2026-10-17)
+
+
+### Bug Fixes
+
+* clean up send_build_bot_token_to_jigsaw flag ([#7268](https://github.com/netlify/build/issues/7268)) ([e9fe10f](https://github.com/netlify/build/commit/e9fe10ffee8395d604800c2953365bd3941d207d))
+
 ## [25.2.6](https://github.com/netlify/build/compare/config-v25.2.5...config-v25.2.6) (2026-09-29)
 
 
