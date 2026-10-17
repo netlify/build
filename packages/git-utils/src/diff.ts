@@ -3,29 +3,18 @@ import { git } from './exec.js'
 // Return the list of modified|created|deleted files according to git, between
 // the `base` commit and the `HEAD`
 export const getDiffFiles = function (base, head, cwd) {
-  const stdout = git(['diff', '--name-status', '--no-renames', `${base}...${head}`], cwd)
-  const files = stdout.split('\n').map(getDiffFile).filter(Boolean)
+  const stdout = git(['diff', '--name-status', '--no-renames', '-z', `${base}...${head}`], cwd)
+  const fields = stdout.split('\0')
+  const files: { type: string; filepath: string }[] = []
+  for (let index = 0; index < fields.length - 1; index += 2) {
+    files.push({ type: fields[index], filepath: fields[index + 1] })
+  }
 
   const modifiedFiles = getFilesByType(files, 'M')
   const createdFiles = getFilesByType(files, 'A')
   const deletedFiles = getFilesByType(files, 'D')
   return { modifiedFiles, createdFiles, deletedFiles }
 }
-
-// Parse each `git diff` line
-const getDiffFile = function (line) {
-  const result = DIFF_FILE_REGEXP.exec(line)
-
-  // Happens for example when `base` is invalid
-  if (result === null) {
-    return
-  }
-
-  const [, type, filepath] = result
-  return { type, filepath }
-}
-
-const DIFF_FILE_REGEXP = /([ADM])\s+(.*)/
 
 const getFilesByType = function (files, type) {
   return files.filter((file) => file.type === type).map(getFilepath)
