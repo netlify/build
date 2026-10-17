@@ -16,7 +16,6 @@ const MAIN_CONNECTION_STRING = 'postgres://main-db.netlify.app:5432/main'
 const BRANCH_CONNECTION_STRING = 'postgres://branch-db.netlify.app:5432/branch'
 const CREATE_DATABASE_RESPONSE = { connection_string: MAIN_CONNECTION_STRING }
 const CREATE_DATABASE_BRANCH_RESPONSE = { connection_string: BRANCH_CONNECTION_STRING }
-const FEATURE_FLAGS = { netlify_build_db_setup: true }
 
 const runWithMockServer = async (fixture: Fixture, { context = 'production' }: { context?: string } = {}) => {
   const { scheme, host, requests, stopServer } = await startServer([
@@ -28,7 +27,7 @@ const runWithMockServer = async (fixture: Fixture, { context = 'production' }: {
 
   try {
     const output = await fixture
-      .withFlags({ siteId: 'test', token: 'test', featureFlags: FEATURE_FLAGS, context, testOpts: { scheme, host } })
+      .withFlags({ siteId: 'test', token: 'test', context, testOpts: { scheme, host } })
       .runWithBuild()
 
     return { output, requests }
@@ -73,17 +72,6 @@ test('Runs the db_setup core step and creates a database branch for non-producti
 
 test('Does not run the db_setup core step when @netlify/database is not in dependencies', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/without_db_dependency').withCopyRoot({ git: false })
-
-  const { success, logs } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
-
-  expect(success).toBe(true)
-  expect(logs?.stdout.join('\n')).not.toContain('Netlify Database setup completed')
-})
-
-test('Does not run the db_setup core step when the feature flag is off', async () => {
-  const fixture = await new Fixture(import.meta.url, './fixtures/with_db_dependency').withCopyRoot({ git: false })
 
   const { success, logs } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
