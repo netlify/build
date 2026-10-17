@@ -105,6 +105,13 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.4.3](https://github.com/netlify/build/compare/build-v37.4.2...build-v37.4.3) (2026-10-17)
+
+
+### Bug Fixes
+
+* remove netlify_build_db_setup feature flag ([#7269](https://github.com/netlify/build/issues/7269)) ([c7f6a74](https://github.com/netlify/build/commit/c7f6a744f69e80271211244570cfef5da61ab9d8))
+
 ## [37.4.2](https://github.com/netlify/build/compare/build-v37.4.1...build-v37.4.2) (2026-10-17)
 
 
