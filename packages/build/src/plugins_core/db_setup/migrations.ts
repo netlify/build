@@ -7,11 +7,7 @@ import { CoreStep, CoreStepCondition, CoreStepFunction } from '../types.js'
 import { readMigrationEntries, getMigrationsSrc } from './utils.js'
 import { validateMigrations, formatValidationErrors } from './validation.js'
 
-const condition: CoreStepCondition = async ({ featureFlags, constants, buildDir }) => {
-  if (!featureFlags?.netlify_build_db_setup) {
-    return false
-  }
-
+const condition: CoreStepCondition = async ({ constants, buildDir }) => {
   const srcDir = await getMigrationsSrc(buildDir, constants.DB_MIGRATIONS_SRC)
   if (!srcDir) {
     return false
