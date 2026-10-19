@@ -5,7 +5,12 @@ import { ARCHIVE_FORMAT } from './archive.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
-import { parseFile } from './runtimes/node/in_source_config/index.js'
+import {
+  parseFile,
+  serverConfig,
+  type ServerConfig,
+  type ServerInSourceConfig,
+} from './runtimes/node/in_source_config/index.js'
 import { RUNTIME, type RuntimeName } from './runtimes/runtime.js'
 import type { RuntimeCache } from './utils/cache.js'
 import { FunctionBundlingUserError } from './utils/error.js'
@@ -61,34 +66,78 @@ export const findServerEntry = async (directory: string): Promise<string | undef
 const toServerRoutes = (paths: string[] = DEFAULT_SERVER_PATHS): ExtendedRoute[] =>
   getRoutes(SERVER_NAME, paths).map((route) => ({ ...route, prefer_static: true }))
 
+const toExcludedServerRoutes = (paths: string[] = []): Route[] | undefined =>
+  paths.length === 0 ? undefined : getRoutes(SERVER_NAME, paths)
+
+/**
+ * Server configuration from the `[server]` block of the Netlify configuration
+ * file. The server's in-source configuration takes precedence over it.
+ */
+export interface NetlifyServerConfig {
+  excludedPath?: string | string[]
+  path?: string | string[]
+  region?: string
+  size?: string
+}
+
+const parseNetlifyServerConfig = (config: NetlifyServerConfig = {}): ServerConfig => {
+  const { data, error, success } = serverConfig.safeParse(config)
+
+  if (success) {
+    return data
+  }
+
+  const [issue] = error.issues
+
+  throw new FunctionBundlingUserError(
+    `Netlify Server has a configuration error in the [server] block on '${issue.path.join('.')}': ${issue.message}`,
+    { functionName: SERVER_NAME, runtime: RUNTIME.JAVASCRIPT },
+  )
+}
+
+const mergeServerConfig = (inSource: ServerConfig, fromNetlifyConfig: ServerConfig): ServerConfig => ({
+  excludedPath: inSource.excludedPath ?? fromNetlifyConfig.excludedPath,
+  path: inSource.path ?? fromNetlifyConfig.path,
+  region: inSource.region ?? fromNetlifyConfig.region,
+  size: inSource.size ?? fromNetlifyConfig.size,
+})
+
 /**
  * Returns the routes the server at `entryPath` claims, read from its in-source
- * configuration, without bundling it.
+ * configuration and the `config` given, without bundling it.
  */
-export const getServerRoutes = async (entryPath: string): Promise<ExtendedRoute[]> => {
-  const { config } = await parseFile(resolve(entryPath), { functionName: SERVER_NAME, isServer: true })
+export const getServerRoutes = async (
+  entryPath: string,
+  { config }: { config?: NetlifyServerConfig } = {},
+): Promise<ExtendedRoute[]> => {
+  const fromNetlifyConfig = parseNetlifyServerConfig(config)
+  const { config: inSource } = await parseFile(resolve(entryPath), { functionName: SERVER_NAME, isServer: true })
 
-  return toServerRoutes(config.path)
+  return toServerRoutes(mergeServerConfig(inSource as ServerInSourceConfig, fromNetlifyConfig).path)
 }
 
 export type ServerResult = {
   bundler?: string
   excludedRoutes?: Route[]
+  instanceSize?: string
   mainFile: string
-  memory?: number
   path: string
   region?: string
   routes?: ExtendedRoute[]
   runtime: RuntimeName
   runtimeVersion?: string
   size?: number
-  vcpu?: number
 }
 
 /**
  * The deploy's Netlify Server, and how to bundle it.
  */
 export interface ServerOptions {
+  /**
+   * Server configuration from the Netlify configuration file.
+   */
+  config?: NetlifyServerConfig
+
   /**
    * Path of the user's server entry file.
    */
@@ -139,6 +188,7 @@ export const bundleServer = async (
     repositoryRoot?: string
   },
 ): Promise<ServerResult> => {
+  const fromNetlifyConfig = parseNetlifyServerConfig(server.config)
   const srcPath = resolve(server.path)
   const source = await readServerSource(srcPath, { cache, featureFlags })
 
@@ -175,17 +225,19 @@ export const bundleServer = async (
     runtime: source.runtime,
   })
 
+  const inSource = (zipResult.staticAnalysisResult?.config ?? {}) as ServerInSourceConfig
+  const config = mergeServerConfig(inSource, fromNetlifyConfig)
+
   return removeUndefined<ServerResult>({
     bundler: result.bundler,
-    excludedRoutes: result.excludedRoutes,
+    excludedRoutes: toExcludedServerRoutes(config.excludedPath),
+    instanceSize: config.size,
     mainFile: result.mainFile,
-    memory: result.memory,
     path: result.path,
-    region: result.region,
-    routes: toServerRoutes(zipResult.staticAnalysisResult?.config.path),
+    region: config.region,
+    routes: toServerRoutes(config.path),
     runtime: result.runtime,
     runtimeVersion: result.runtimeVersion,
     size: result.size,
-    vcpu: result.vcpu,
   })
 }

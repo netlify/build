@@ -1,0 +1,4 @@
+[server]
+path = "/api/*"
+region = "CMH"
+size = "Large"
