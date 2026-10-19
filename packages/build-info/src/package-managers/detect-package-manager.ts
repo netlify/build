@@ -177,9 +177,13 @@ export const detectPackageManager = async (
         const pkgManager: PkgManagerFields = { ...basePkgManager }
         if (pkgManager.name === PkgManager.YARN && !pkgManager.version) {
           const lockFileDir = project.fs.dirname(lockFilePath)
-          const yarnrcYml = await project.fs.gracefullyReadFile(project.fs.join(lockFileDir, '.yarnrc.yml'))
+          const yarnrcPath = await project.fs.findUp(['.yarnrc.yml', '.yarnrc.yaml'], {
+            cwd: lockFileDir,
+            stopAt: project.root,
+          })
+          const yarnrcYml = yarnrcPath ? await project.fs.gracefullyReadFile(yarnrcPath) : null
           if (yarnrcYml) {
-            const yarnPathMatch = yarnrcYml.match(/yarnPath:\s*['"]?.*?[/\\-]yarn-([0-9.]+)\.cjs/m)
+            const yarnPathMatch = /^\s*yarnPath:\s*['"]?.*?[/\\-]yarn-([0-9.]+)\.[c]?js/m.exec(yarnrcYml)
             if (yarnPathMatch) {
               pkgManager.version = parse(yarnPathMatch[1]) || undefined
             }
@@ -189,7 +193,7 @@ export const detectPackageManager = async (
             const content = await project.fs.gracefullyReadFile(lockFilePath)
             if (content) {
               if (content.includes('__metadata:')) {
-                const metadataVerMatch = content.match(/__metadata:\s*\n(?:\s+.*\n)*?\s+version:\s*['"]?([0-9]+)/m)
+                const metadataVerMatch = /__metadata:\s*\n(?:\s+.*\n)*?\s+version:\s*['"]?([0-9]+)/m.exec(content)
                 const metadataVer = metadataVerMatch ? parseInt(metadataVerMatch[1], 10) : 0
                 if (metadataVer >= 7) {
                   pkgManager.version = parse('4.0.0') || undefined

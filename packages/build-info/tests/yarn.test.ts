@@ -85,3 +85,16 @@ test('should detect exact yarn version from .yarnrc.yml yarnPath', async (ctx) =
   expect(info.packageManager?.version?.raw).toBe('3.6.4')
 })
 
+test('should detect exact yarn version with .js extension and ignore commented lines', async (ctx) => {
+  const fixture = await createFixture('yarn-project', ctx)
+  await writeFile(join(fixture.cwd, 'yarn.lock'), '__metadata:\n  version: 6\n')
+  await writeFile(
+    join(fixture.cwd, '.yarnrc.yml'),
+    '# yarnPath: .yarn/releases/yarn-2.4.0.cjs\nyarnPath: .yarn/releases/yarn-4.1.0.js\n',
+  )
+  const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
+  expect(info.packageManager?.name).toBe('yarn')
+  expect(info.packageManager?.version?.raw).toBe('4.1.0')
+})
+
+
