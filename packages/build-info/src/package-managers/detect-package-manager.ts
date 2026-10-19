@@ -147,7 +147,7 @@ export const detectPackageManager = async (
       if (packageManager) {
         const [parsed, version] = packageManager.split('@')
         if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-          const pkgManager = AVAILABLE_PACKAGE_MANAGERS[parsed] as PkgManagerFields
+          const pkgManager: PkgManagerFields = { ...AVAILABLE_PACKAGE_MANAGERS[parsed] }
           pkgManager.version = parse(version) || undefined
           return pkgManager
         }
@@ -157,7 +157,7 @@ export const detectPackageManager = async (
     // the package manager can be enforced via an environment variable as well
     for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
       if (pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'true') {
-        return pkgManager
+        return { ...pkgManager }
       }
     }
 
@@ -170,9 +170,26 @@ export const detectPackageManager = async (
     // return the found package manager
     if (lockFilePath) {
       const lockFile = project.fs.basename(lockFilePath)
-      const pkgManager = lockFileMap[lockFile]
+      const basePkgManager = lockFileMap[lockFile]
       // check if it is not got disabled
-      if (!(pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'false')) {
+      if (!(basePkgManager.forceEnvironment && project.getEnv(basePkgManager.forceEnvironment) === 'false')) {
+        const pkgManager: PkgManagerFields = { ...basePkgManager }
+        if (pkgManager.name === PkgManager.PNPM && !pkgManager.version) {
+          const content = await project.fs.gracefullyReadFile(lockFilePath)
+          if (content) {
+            const match = content.match(/^lockfileVersion:\s*['"]?([0-9.]+)/m)
+            if (match) {
+              const lockfileVer = parseFloat(match[1])
+              if (lockfileVer >= 9.0) {
+                pkgManager.version = parse('9.0.0') || undefined
+              } else if (lockfileVer >= 6.0) {
+                pkgManager.version = parse('8.0.0') || undefined
+              } else if (lockfileVer >= 5.0) {
+                pkgManager.version = parse('7.0.0') || undefined
+              }
+            }
+          }
+        }
         return pkgManager
       }
     }
@@ -180,9 +197,9 @@ export const detectPackageManager = async (
     project.report(error)
   }
   if (sniffedPkgManager) {
-    return AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager]
+    return { ...AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager] }
   }
 
   // TODO: add some reporting here to log that we fall backe to NPM
-  return AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM]
+  return { ...AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM] }
 }
