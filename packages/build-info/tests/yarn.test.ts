@@ -96,5 +96,3 @@ test('should detect exact yarn version with .js extension and ignore commented l
   expect(info.packageManager?.name).toBe('yarn')
   expect(info.packageManager?.version?.raw).toBe('4.1.0')
 })
-
-
