@@ -755,6 +755,20 @@ export const config = { excludedPath: '/app/private' }
     })
   })
 
+  test('Fails the build on a property the [server] block does not support, as a user error', async () => {
+    const error = await bundleWithConfig(FRAMEWORK_SERVER, {
+      excludedPaths: '/api/internal',
+    } as NetlifyServerConfig).catch((err: unknown) => err)
+
+    expect((error as Error).message).toMatch(
+      /^Netlify Server has a configuration error in the \[server\] block: .*excludedPaths/,
+    )
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
+  })
+
   test('Fails the build on an invalid value even when the in-source configuration overrides it', async () => {
     const error = await bundleWithConfig(
       `${FRAMEWORK_SERVER}

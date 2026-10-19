@@ -91,12 +91,14 @@ export const inSourceConfig = functionConfigShape
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
 
-export const serverConfig = z.object({
-  excludedPath: paths,
-  path: paths,
-  region: serverRegion.optional(),
-  size: serverSize.optional(),
-})
+export const serverConfig = z
+  .object({
+    excludedPath: paths,
+    path: paths,
+    region: serverRegion.optional(),
+    size: serverSize.optional(),
+  })
+  .strict()
 
 export type ServerConfig = z.infer<typeof serverConfig>
 

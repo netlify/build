@@ -88,9 +88,10 @@ const parseNetlifyServerConfig = (config: NetlifyServerConfig = {}): ServerConfi
   }
 
   const [issue] = error.issues
+  const location = issue.path.length === 0 ? '' : ` on '${issue.path.join('.')}'`
 
   throw new FunctionBundlingUserError(
-    `Netlify Server has a configuration error in the [server] block on '${issue.path.join('.')}': ${issue.message}`,
+    `Netlify Server has a configuration error in the [server] block${location}: ${issue.message}`,
     { functionName: SERVER_NAME, runtime: RUNTIME.JAVASCRIPT },
   )
 }
