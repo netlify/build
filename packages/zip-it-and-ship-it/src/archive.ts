@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { createWriteStream, Stats, readlinkSync } from 'fs'
 import { Writable } from 'stream'
 
-import type { Archiver } from 'archiver'
+import type { Archiver, ZipEntryData } from 'archiver'
 import { TarArchive, ZipArchive } from 'archiver'
 
 import { ObjectValues } from './types/utils.js'
@@ -37,7 +37,7 @@ export const addZipFile = function (archive: Archiver, file: string, name: strin
       linkname: linkContent,
       mode: stat.mode,
       date: new Date(0),
-    } as any)
+    } as unknown as ZipEntryData)
   } else {
     archive.file(file, {
       name,
