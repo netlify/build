@@ -30,7 +30,14 @@ export const addZipFile = function (archive: Archiver, file: string, name: strin
   if (stat.isSymbolicLink()) {
     const linkContent = readlinkSync(file)
 
-    archive.symlink(name, linkContent, stat.mode)
+    // Ensure sha256 stability regardless of mtime (symlink() does not accept a date)
+    archive.append(Buffer.alloc(0), {
+      name,
+      type: 'symlink',
+      linkname: linkContent,
+      mode: stat.mode,
+      date: new Date(0),
+    } as any)
   } else {
     archive.file(file, {
       name,
