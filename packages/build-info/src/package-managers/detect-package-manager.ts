@@ -146,9 +146,12 @@ export const detectPackageManager = async (
       const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
       if (packageManager) {
         const [parsed, version] = packageManager.split('@')
-        if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-          const pkgManager: PkgManagerFields = { ...AVAILABLE_PACKAGE_MANAGERS[parsed] }
-          pkgManager.version = parse(version) || undefined
+        if (parsed in AVAILABLE_PACKAGE_MANAGERS) {
+          const baseManager = AVAILABLE_PACKAGE_MANAGERS[parsed as PkgManager]
+          const pkgManager: PkgManagerFields = {
+            ...baseManager,
+            version: parse(version) || undefined,
+          }
           return pkgManager
         }
       }
