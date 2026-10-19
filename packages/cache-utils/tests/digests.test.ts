@@ -88,4 +88,3 @@ test('Should resolve relative digest paths against cwd option', async () => {
     await removeFiles([cacheDir, srcDir])
   }
 })
-
