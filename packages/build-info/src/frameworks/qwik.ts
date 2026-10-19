@@ -4,7 +4,7 @@ export class Qwik extends BaseFramework implements Framework {
   readonly id = 'qwik'
   name = 'Qwik'
   npmDependencies = ['@builder.io/qwik']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'vite',

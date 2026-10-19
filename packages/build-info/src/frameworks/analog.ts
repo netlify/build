@@ -5,7 +5,7 @@ export class Analog extends BaseFramework implements Framework {
   name = 'Analog'
   configFiles = []
   npmDependencies = ['@analogjs/platform']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     port: 5173,

@@ -4,7 +4,7 @@ export class Nuxt extends BaseFramework implements Framework {
   readonly id = 'nuxt'
   name = 'Nuxt'
   npmDependencies = ['nuxt', 'nuxt-edge', 'nuxt3']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'nuxt dev',
