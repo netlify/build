@@ -147,9 +147,10 @@ export const detectPackageManager = async (
       if (packageManager) {
         const [parsed, version] = packageManager.split('@')
         if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-          const pkgManager = AVAILABLE_PACKAGE_MANAGERS[parsed] as PkgManagerFields
-          pkgManager.version = parse(version) || undefined
-          return pkgManager
+          return {
+            ...AVAILABLE_PACKAGE_MANAGERS[parsed],
+            version: parse(version) || undefined,
+          }
         }
       }
     }
@@ -157,7 +158,7 @@ export const detectPackageManager = async (
     // the package manager can be enforced via an environment variable as well
     for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
       if (pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'true') {
-        return pkgManager
+        return { ...pkgManager }
       }
     }
 
@@ -170,9 +171,41 @@ export const detectPackageManager = async (
     // return the found package manager
     if (lockFilePath) {
       const lockFile = project.fs.basename(lockFilePath)
-      const pkgManager = lockFileMap[lockFile]
+      const basePkgManager = lockFileMap[lockFile]
       // check if it is not got disabled
-      if (!(pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'false')) {
+      if (!(basePkgManager.forceEnvironment && project.getEnv(basePkgManager.forceEnvironment) === 'false')) {
+        const pkgManager: PkgManagerFields = { ...basePkgManager }
+        if (pkgManager.name === PkgManager.YARN && !pkgManager.version) {
+          const lockFileDir = project.fs.dirname(lockFilePath)
+          const yarnrcYml = await project.fs.gracefullyReadFile(project.fs.join(lockFileDir, '.yarnrc.yml'))
+          if (yarnrcYml) {
+            const yarnPathMatch = yarnrcYml.match(/yarnPath:\s*['"]?.*?[/\\-]yarn-([0-9.]+)\.cjs/m)
+            if (yarnPathMatch) {
+              pkgManager.version = parse(yarnPathMatch[1]) || undefined
+            }
+          }
+
+          if (!pkgManager.version) {
+            const content = await project.fs.gracefullyReadFile(lockFilePath)
+            if (content) {
+              if (content.includes('__metadata:')) {
+                const metadataVerMatch = content.match(/__metadata:\s*\n(?:\s+.*\n)*?\s+version:\s*['"]?([0-9]+)/m)
+                const metadataVer = metadataVerMatch ? parseInt(metadataVerMatch[1], 10) : 0
+                if (metadataVer >= 7) {
+                  pkgManager.version = parse('4.0.0') || undefined
+                } else if (metadataVer === 6) {
+                  pkgManager.version = parse('3.0.0') || undefined
+                } else if (metadataVer === 4 || metadataVer === 5) {
+                  pkgManager.version = parse('2.0.0') || undefined
+                } else {
+                  pkgManager.version = parse('3.0.0') || undefined
+                }
+              } else if (/#\s*yarn lockfile v1/m.test(content)) {
+                pkgManager.version = parse('1.22.0') || undefined
+              }
+            }
+          }
+        }
         return pkgManager
       }
     }
@@ -180,9 +213,9 @@ export const detectPackageManager = async (
     project.report(error)
   }
   if (sniffedPkgManager) {
-    return AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager]
+    return { ...AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager] }
   }
 
   // TODO: add some reporting here to log that we fall backe to NPM
-  return AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM]
+  return { ...AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM] }
 }
