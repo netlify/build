@@ -2,6 +2,7 @@ import type { Stats } from 'fs'
 import { symlinkSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
+import type { Archiver } from 'archiver'
 import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test, vi } from 'vitest'
 
@@ -21,7 +22,7 @@ describe('addZipFile', () => {
     }
 
     const appendSpy = vi.fn()
-    const mockArchive = { append: appendSpy } as any
+    const mockArchive = { append: appendSpy } as unknown as Archiver
     const mockStat = {
       isSymbolicLink: () => true,
       mode: 0o777,
