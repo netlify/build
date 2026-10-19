@@ -71,3 +71,21 @@ test('Should ignore non-existing digests files', async () => {
     await removeFiles([cacheDir, srcDir])
   }
 })
+
+test('Should resolve relative digest paths against cwd option', async () => {
+  const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
+  try {
+    const srcFile = `${srcDir}/test`
+    const digest = `${srcDir}/digest`
+    await Promise.all([fs.writeFile(srcFile, 'test'), fs.writeFile(digest, 'digest')])
+    expect(await save('test', { cacheDir, cwd: srcDir, digests: ['digest'] })).toBe(true)
+    await fs.writeFile(srcFile, 'newTest')
+    expect(await save('test', { cacheDir, cwd: srcDir, digests: ['digest'] })).toBe(true)
+    expect(await restore('test', { cacheDir, cwd: srcDir, digests: ['digest'] })).toBe(true)
+    const content = await fs.readFile(srcFile, 'utf8')
+    expect(content).toBe('test')
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
+
