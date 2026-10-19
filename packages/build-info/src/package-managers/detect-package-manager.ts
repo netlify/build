@@ -177,7 +177,7 @@ export const detectPackageManager = async (
         if (pkgManager.name === PkgManager.PNPM && !pkgManager.version) {
           const content = await project.fs.gracefullyReadFile(lockFilePath)
           if (content) {
-            const match = content.match(/^lockfileVersion:\s*['"]?([0-9.]+)/m)
+            const match = /^lockfileVersion:\s*['"]?([0-9.]+)/m.exec(content)
             if (match) {
               const lockfileVer = parseFloat(match[1])
               if (lockfileVer >= 9.0) {
