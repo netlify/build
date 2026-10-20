@@ -14,7 +14,7 @@ import type {
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
-import { FunctionConfig, functionConfigShape, serverRegion, withComputeResources } from '../../../config.js'
+import { FunctionConfig, functionConfigShape, serverRegion, serverSize, withComputeResources } from '../../../config.js'
 import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
@@ -91,13 +91,24 @@ export const inSourceConfig = functionConfigShape
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
 
-export const serverInSourceConfig = z
+export const serverConfig = z
   .object({
-    includedFiles: z.array(z.string()).optional(),
+    excludedPath: paths,
     path: paths,
     region: serverRegion.optional(),
+    size: serverSize.optional(),
   })
   .strict()
+
+export type ServerConfig = z.infer<typeof serverConfig>
+
+export const serverInSourceConfig = serverConfig
+  .extend({
+    includedFiles: z.array(z.string()).optional(),
+  })
+  .strict()
+
+export type ServerInSourceConfig = z.infer<typeof serverInSourceConfig>
 
 /**
  * Resolves the default export expression to an ObjectExpression if possible,
