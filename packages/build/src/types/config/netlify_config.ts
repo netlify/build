@@ -40,6 +40,29 @@ interface DatabaseConfig {
   migrations?: DatabaseMigrationsConfig
 }
 
+interface ServerConfig {
+  /**
+   * One or more URL paths the server handles, each starting with `/`
+   */
+  path?: Many<`/${string}`, 'mutable'>
+
+  /**
+   * One or more URL paths within `path` that the server doesn't handle, each
+   * starting with `/`
+   */
+  excludedPath?: Many<`/${string}`, 'mutable'>
+
+  /**
+   * Airport code of the region the server runs in
+   */
+  region?: 'cmh' | 'fra'
+
+  /**
+   * Size of the instances the server runs on
+   */
+  size?: 'small' | 'medium' | 'large'
+}
+
 interface ImagesConfig {
   remote_images: string[]
 }
@@ -71,6 +94,10 @@ export interface NetlifyConfig {
    * object with options for database configuration
    */
   database?: DatabaseConfig
+  /**
+   * object with options for the Netlify Server
+   */
+  server?: ServerConfig
   /**
    * Whether the site is a single-page application (SPA). Defaults to `false`.
    */
