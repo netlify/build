@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { basename, join } from 'path'
 
-import { findUp, findUpStop, pathExists } from 'find-up'
+import { up as walkUp } from 'empathic/walk'
 
 export interface PackageJson {
   name?: string
@@ -23,21 +23,26 @@ export interface PackageJsonFile {
 }
 
 export const getClosestPackageJson = async (resolveDir: string, boundary?: string): Promise<PackageJsonFile | null> => {
-  const packageJsonPath = await findUp(
-    async (directory) => {
-      // We stop traversing if we're about to leave the boundaries of any
-      // node_modules directory.
-      if (basename(directory) === 'node_modules') {
-        return findUpStop
+  let packageJsonPath
+
+  for (const directory of walkUp(resolveDir, { last: boundary })) {
+    // We stop traversing if we're about to leave the boundaries of any
+    // node_modules directory.
+    if (basename(directory) === 'node_modules') {
+      break
+    }
+
+    const path = join(directory, 'package.json')
+    try {
+      const stats = await fs.stat(path)
+      if (stats.isFile()) {
+        packageJsonPath = path
+        break
       }
-
-      const path = join(directory, 'package.json')
-      const hasPackageJson = await pathExists(path)
-
-      return hasPackageJson ? path : undefined
-    },
-    { cwd: resolveDir, stopAt: boundary },
-  )
+    } catch {
+      // do nothing, continue searching
+    }
+  }
 
   if (packageJsonPath === undefined) {
     return null

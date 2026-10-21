@@ -1,18 +1,12 @@
 import { readFileSync } from 'fs'
-import { join } from 'path'
+import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
-import { findUpSync, pathExistsSync } from 'find-up'
+import { file as findUp } from 'empathic/find'
 
 const getPackagePath = () => {
-  const packagePath = findUpSync(
-    (directory: string) => {
-      if (pathExistsSync(join(directory, 'package.json'))) {
-        return directory
-      }
-    },
-    { cwd: fileURLToPath(import.meta.url), type: 'directory' },
-  )
+  const packageJsonPath = findUp('package.json', { cwd: fileURLToPath(import.meta.url) })
+  const packagePath = packageJsonPath ? dirname(packageJsonPath) : undefined
 
   // We should never get here, but let's show a somewhat useful error message.
   if (packagePath === undefined) {
