@@ -253,6 +253,16 @@ test('functions.node_bundler: one of supported bundlers', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
+test('functions.memory: within the allowed range', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/function_config_invalid_memory').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('functions.memory and functions.vcpu: mutually exclusive', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/function_config_memory_vcpu_exclusive').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
 test('functions.directory: defined on the main functions object', async () => {
   const output = await new Fixture(
     import.meta.url,
@@ -360,5 +370,35 @@ test('edge_functions.any.header: allowed values', async () => {
 
 test('edge_functions.any.header: disallowed values', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/edge_functions_header_disallowed').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server: object', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_not_object').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server: unknown property', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_unknown_props').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.path: paths starting with a slash', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_invalid_path').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.excludedPath: paths starting with a slash', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_invalid_excluded_path').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.region: one of the server regions', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_invalid_region').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.size: one of the server sizes', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_invalid_size').runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
