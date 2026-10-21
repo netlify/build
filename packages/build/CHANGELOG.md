@@ -105,6 +105,45 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.5.0](https://github.com/netlify/build/compare/build-v37.4.3...build-v37.5.0) (2026-10-20)
+
+
+### Features
+
+* add TOML and in-source config to server ([#7277](https://github.com/netlify/build/issues/7277)) ([b8b35b9](https://github.com/netlify/build/commit/b8b35b909529d05cbb1f61a996e430cb1ab12e03))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.7 to ^25.3.0
+    * @netlify/functions-utils bumped from ^7.1.17 to ^7.1.18
+    * @netlify/zip-it-and-ship-it bumped from 16.3.1 to 16.4.0
+
+## [37.4.3](https://github.com/netlify/build/compare/build-v37.4.2...build-v37.4.3) (2026-10-17)
+
+
+### Bug Fixes
+
+* remove netlify_build_db_setup feature flag ([#7269](https://github.com/netlify/build/issues/7269)) ([c7f6a74](https://github.com/netlify/build/commit/c7f6a744f69e80271211244570cfef5da61ab9d8))
+
+## [37.4.2](https://github.com/netlify/build/compare/build-v37.4.1...build-v37.4.2) (2026-10-17)
+
+
+### Bug Fixes
+
+* **deps:** drop `cpy` for native FS ([#7249](https://github.com/netlify/build/issues/7249)) ([8448500](https://github.com/netlify/build/commit/8448500fa1dc9fa2bf3a8ddabb052887d772ab96))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.6 to ^25.2.7
+    * @netlify/functions-utils bumped from ^7.1.16 to ^7.1.17
+    * @netlify/zip-it-and-ship-it bumped from 16.3.0 to 16.3.1
+
 ## [37.4.1](https://github.com/netlify/build/compare/build-v37.4.0...build-v37.4.1) (2026-10-08)
 
 
