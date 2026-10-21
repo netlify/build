@@ -76,6 +76,34 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.3.0](https://github.com/netlify/build/compare/config-v25.2.7...config-v25.3.0) (2026-10-20)
+
+
+### Features
+
+* add TOML and in-source config to server ([#7277](https://github.com/netlify/build/issues/7277)) ([b8b35b9](https://github.com/netlify/build/commit/b8b35b909529d05cbb1f61a996e430cb1ab12e03))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.2 to ^15.1.3
+
+## [25.2.7](https://github.com/netlify/build/compare/config-v25.2.6...config-v25.2.7) (2026-10-17)
+
+
+### Bug Fixes
+
+* clean up send_build_bot_token_to_jigsaw flag ([#7268](https://github.com/netlify/build/issues/7268)) ([e9fe10f](https://github.com/netlify/build/commit/e9fe10ffee8395d604800c2953365bd3941d207d))
+
+## [25.2.6](https://github.com/netlify/build/compare/config-v25.2.5...config-v25.2.6) (2026-09-29)
+
+
+### Bug Fixes
+
+* preserve netlify.toml compute settings ([#7254](https://github.com/netlify/build/issues/7254)) ([3017c4a](https://github.com/netlify/build/commit/3017c4a22f9ea9678e7d253519ca55c8b7698e24))
+
 ## [25.2.5](https://github.com/netlify/build/compare/config-v25.2.4...config-v25.2.5) (2026-09-09)
 
 

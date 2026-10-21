@@ -1,0 +1,5 @@
+[server]
+path = "/api/*"
+excludedPath = "/api/internal"
+region = "CMH"
+size = "large"

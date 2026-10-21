@@ -1,0 +1,3 @@
+[server]
+path = "/api/*"
+excludedPath = "internal"
