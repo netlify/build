@@ -1,10 +1,11 @@
-import { rm } from 'fs/promises'
+import { mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
 import { execa } from 'execa'
 import nock from 'nock'
-import tmp from 'tmp-promise'
 import { beforeEach, afterEach, test, expect, type TestContext as VitestTestContext, vi } from 'vitest'
 
 import { fixturesDir, testLogger } from '../test/util.js'
@@ -38,9 +39,7 @@ interface TestContext extends VitestTestContext {
 }
 
 beforeEach(async (ctx: TestContext) => {
-  const tmpDir = await tmp.dir()
-
-  ctx.tmpDir = tmpDir.path
+  ctx.tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-downloader-'))
 })
 
 afterEach(async (ctx: TestContext) => {

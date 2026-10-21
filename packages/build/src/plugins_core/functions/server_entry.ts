@@ -10,7 +10,7 @@ import { type FeatureFlags } from '../../core/feature_flags.js'
 export const SERVER_DIRECTORY = 'netlify/server'
 
 export const useServerAsFunction = (featureFlags?: FeatureFlags): boolean =>
-  featureFlags?.netlify_build_server_entry === true
+  featureFlags?.netlify_build_server_entry === true && !useServerStandalone(featureFlags)
 
 export const useServerStandalone = (featureFlags?: FeatureFlags): boolean =>
   featureFlags?.netlify_build_server_standalone === true
@@ -69,7 +69,6 @@ const SERVER_SHIM_DIR = '.netlify/server-entry'
 const getShimContents = (entryPath: string) => `import * as server from ${JSON.stringify(entryPath)}
 
 export default server.default ?? server
-export const shutdown = server.shutdown
 
 export const config = {
   name: "Netlify Server",

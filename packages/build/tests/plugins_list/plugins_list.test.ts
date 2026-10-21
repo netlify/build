@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
 import { Fixture, normalizeOutput, removeDir, startServer } from '@netlify/testing'
-import cpy from 'cpy'
 import { expect, test } from 'vitest'
 
 import type { PluginListEntry } from '../../lib/plugins/list.js'
@@ -78,7 +77,7 @@ test('Use plugins cached in .netlify/plugins/', async () => {
 test('Do not use plugins cached in .netlify/plugins/ if outdated', async () => {
   const pluginsDir = `${FIXTURES_DIR}/plugins_cache_outdated/.netlify/plugins`
   await removeDir(pluginsDir)
-  await cpy('**', '../plugins', { cwd: `${pluginsDir}-old` })
+  await fs.cp(`${pluginsDir}-old`, pluginsDir, { recursive: true })
   try {
     expect(await runWithApiMock('plugins_cache_outdated')).toMatchSnapshot()
   } finally {

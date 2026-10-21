@@ -4,14 +4,10 @@ import { join } from 'path'
 import { Fixture } from '@netlify/testing'
 import { expect, test } from 'vitest'
 
-const FEATURE_FLAGS = { netlify_build_db_setup: true }
-
 test('Copies valid migrations to internal directory', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/valid_migrations').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -23,9 +19,7 @@ test('Copies valid migrations to internal directory', async () => {
 test('Copies migrations from a custom path', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/custom_path').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -36,9 +30,7 @@ test('Copies migrations from a custom path', async () => {
 test('Silently skips directories with invalid names', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/invalid_dir_name').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -49,9 +41,7 @@ test('Silently skips directories with invalid names', async () => {
 test('Fails build for missing migration.sql', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/missing_sql_file').withCopyRoot({ git: false })
 
-  const { success, logs } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success, logs } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(false)
 
@@ -63,9 +53,7 @@ test('Fails build for missing migration.sql', async () => {
 test('Skips step when migrations directory does not exist', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/no_migrations_dir').withCopyRoot({ git: false })
 
-  const { success, logs } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success, logs } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -87,9 +75,7 @@ test('Skips step when feature flag is off', async () => {
 test('Copies loose .sql files wrapped in subdirectory format', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/loose_sql_files').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -101,9 +87,7 @@ test('Copies loose .sql files wrapped in subdirectory format', async () => {
 test('Copies mixed migrations (dirs and loose files) to internal directory', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/mixed_migrations').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
@@ -117,9 +101,7 @@ test('Fails build for duplicate migration numbers', async () => {
     git: false,
   })
 
-  const { success, logs } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success, logs } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(false)
 
@@ -130,9 +112,7 @@ test('Fails build for duplicate migration numbers', async () => {
 test('Handles Drizzle Kit migration structure (loose SQL + meta directory)', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/drizzle_kit').withCopyRoot({ git: false })
 
-  const { success } = await fixture
-    .withFlags({ cwd: fixture.repositoryRoot, featureFlags: FEATURE_FLAGS })
-    .runBuildProgrammatic()
+  const { success } = await fixture.withFlags({ cwd: fixture.repositoryRoot }).runBuildProgrammatic()
 
   expect(success).toBe(true)
 
