@@ -14,6 +14,7 @@ import type { BundlerReason, NodeBundlerName } from './node/bundlers/types.js'
 import type { StaticAnalysisResult } from './node/in_source_config/index.js'
 
 export const RUNTIME = {
+  CONTAINER: 'container',
   GO: 'go',
   JAVASCRIPT: 'js',
   RUST: 'rs',
@@ -77,6 +78,7 @@ export type ZipFunction = (
     featureFlags: FeatureFlags
     generator?: string
     isInternal: boolean
+    isServer?: boolean
     logger: Logger
     repositoryRoot?: string
     span?: Span

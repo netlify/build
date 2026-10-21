@@ -1,19 +1,29 @@
 import process from 'process'
 import { existsSync } from 'fs'
-import { execaSync } from 'execa'
 import { memoize } from 'micro-memoize'
+import { NonZeroExitError, xSync } from 'tinyexec'
+
+const MAX_BUFFER = 1e8 // 100MB
+
+// Command failure with the `stderr` included in the message, so it is human readable
+// when surfaced to users regardless of how the error is printed
+export class GitError extends Error {
+  constructor(error: NonZeroExitError) {
+    const stderr = error.output?.stderr.trim()
+    super(stderr ? `${error.message}\n${stderr}` : error.message)
+    this.name = 'GitError'
+  }
+}
 
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
   const cwdA = safeGetCwd(cwd)
   try {
-    const { stdout } = execaSync('git', args, { cwd: cwdA })
-    return stdout
+    const { stdout } = xSync('git', args, { throwOnError: true, nodeOptions: { cwd: cwdA, maxBuffer: MAX_BUFFER } })
+    // Callers split the output on newlines, so the trailing newline must be stripped
+    return stdout.replace(/\n$/, '')
   } catch (error) {
-    // The child process `error.message` includes stderr and stdout output which most of the time contains duplicate
-    // information. We rely on `error.shortMessage` instead.
-    error.message = error.shortMessage
-    throw error
+    throw error instanceof NonZeroExitError ? new GitError(error) : error
   }
 }
 

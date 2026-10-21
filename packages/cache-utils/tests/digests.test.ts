@@ -41,6 +41,23 @@ test('Should allow caching according to several potential digests files', async 
   }
 })
 
+test('Should ignore directory digests', async () => {
+  const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
+  try {
+    const srcFile = `${srcDir}/test`
+    const digestDir = `${srcDir}/digestDir`
+    await Promise.all([fs.writeFile(srcFile, 'test'), fs.mkdir(digestDir)])
+    expect(await save(srcDir, { cacheDir, digests: [digestDir] })).toBe(true)
+    await fs.writeFile(srcFile, 'newTest')
+    expect(await save(srcDir, { cacheDir, digests: [digestDir] })).toBe(true)
+    expect(await restore(srcDir, { cacheDir, digests: [digestDir] })).toBe(true)
+    const content = await fs.readFile(srcFile, 'utf8')
+    expect(content).toBe('newTest')
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
+
 test('Should ignore non-existing digests files', async () => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {

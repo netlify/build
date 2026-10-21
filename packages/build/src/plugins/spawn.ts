@@ -200,22 +200,30 @@ const stopPlugin = async function ({
   logs: BufferedLogs
 }) {
   if (childProcess.connected) {
-    // reliable stop tracing inside child processes
-    await callChild({
-      childProcess,
-      eventName: 'shutdown',
-      payload: {
-        packageName,
-        pluginPath,
-        inputs,
-        packageJson,
+    try {
+      // reliable stop tracing inside child processes
+      await callChild({
+        childProcess,
+        eventName: 'shutdown',
+        payload: {
+          packageName,
+          pluginPath,
+          inputs,
+          packageJson,
+          verbose,
+          netlifyConfig,
+        },
+        logs,
         verbose,
-        netlifyConfig,
-      },
-      logs,
-      verbose,
-    })
-    childProcess.disconnect()
+      })
+    } catch {
+      // The child process may exit before responding, e.g. when it already
+      // failed. It is being terminated anyway, so ignore the error
+    } finally {
+      if (childProcess.connected) {
+        childProcess.disconnect()
+      }
+    }
   }
 
   // On Windows with Node 21+, there's a bug where attempting to kill a child process

@@ -4,9 +4,6 @@ export const defaultFlags = {
   // Build Rust functions from source.
   buildRustSource: Boolean(env.NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE),
 
-  // Use esbuild to trace dependencies in the legacy bundler.
-  parseWithEsbuild: false,
-
   // Use NFT as the default bundler.
   traceWithNft: false,
 
@@ -24,10 +21,15 @@ export const defaultFlags = {
   // If multiple glob stars are in includedFiles, fail the build instead of warning.
   zisi_esbuild_fail_double_glob: false,
 
+  // Fail the build when a CommonJS function file sits inside a `"type": "module"`
+  // package scope, instead of producing a bundle that fails at runtime.
+  zisi_error_cjs_in_esm_scope: false,
+
   // Adds the `___netlify-telemetry.mjs` file to the function bundle.
   zisi_add_instrumentation_loader: true,
 
   zisi_netlify_play: false,
+  zisi_container_functions: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>

@@ -1,0 +1,421 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Functions: --functionsDistDir 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  functionsDistDir: /tmp-dir
+  mode: buildbot
+  repositoryRoot: packages/build/tests/functions/fixtures/simple
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/simple
+
+> Config file
+  packages/build/tests/functions/fixtures/simple/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/simple
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/simple/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - test.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"test","runtime":"js","bundler":"nft","bundlerReason":"esm-default","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions: can be a symbolic link 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/symlink
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/symlink
+
+> Config file
+  packages/build/tests/functions/fixtures/symlink/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/symlink
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/symlink/functions-link
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions-link directory:
+ - test.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"test","runtime":"js","bundler":"nft","bundlerReason":"esm-default","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions: default directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/default
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/default
+
+> Config file
+  packages/build/tests/functions/fixtures/default/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/default
+    publishOrigin: default
+
+> Context
+  production
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions: loads functions from the \`.netlify/functions-internal\` directory and the Frameworks API 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: false
+
+> Current directory
+  /tmp-dir
+
+> Config file
+  /tmp-dir/netlify.toml
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node build.mjs
+
+(build.command completed in 1ms)
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from .netlify/functions-internal directory:
+ - frameworks-internal-conflict.mjs
+ - server-internal.mjs
+
+Packaging Functions generated by your framework:
+ - frameworks-internal-conflict.mjs
+ - frameworks-user-conflict.mjs
+ - server.mjs
+
+Packaging Functions from netlify/functions directory:
+ - frameworks-user-conflict.mjs
+ - user.ts
+
+
+(Functions bundling completed in 1ms)
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)"
+`;
+
+exports[`Functions: loads functions generated with the Frameworks API 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: false
+
+> Current directory
+  /tmp-dir
+
+> Config file
+  /tmp-dir/netlify.toml
+
+> Context
+  production
+
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+
+$ node build.mjs
+
+(build.command completed in 1ms)
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions generated by your framework:
+ - server.mjs
+
+Packaging Functions from netlify/functions directory:
+ - user.ts
+
+
+(Functions bundling completed in 1ms)
+
+Edge Functions bundling                                       
+────────────────────────────────────────────────────────────────
+
+Packaging Edge Functions from .netlify/edge-functions directory:
+ - server
+
+(Edge Functions bundling completed in 1ms)
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)"
+`;
+
+exports[`Functions: missing source directory 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/missing
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/missing
+
+> Config file
+  packages/build/tests/functions/fixtures/missing/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/missing
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/missing/missing
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+The Netlify Functions setting targets a non-existing directory: missing
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions: must not be a regular file 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/regular_file
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/regular_file
+
+> Config file
+  packages/build/tests/functions/fixtures/regular_file/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/regular_file
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/regular_file/functions/test.js
+
+> Context
+  production
+
+Configuration error                                           
+────────────────────────────────────────────────────────────────
+
+  Error message
+  The Netlify Functions setting should target a directory, not a regular file: functions/test.js
+
+  Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/regular_file
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/regular_file/functions/test.js"
+`;
+
+exports[`Functions: no functions 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/none
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/none
+
+> Config file
+  packages/build/tests/functions/fixtures/none/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/none
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/none/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+No Functions were found in functions directory
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
+exports[`Functions: simple setup 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/functions/fixtures/simple
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/functions/fixtures/simple
+
+> Config file
+  packages/build/tests/functions/fixtures/simple/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/functions/fixtures/simple
+    publishOrigin: default
+  functionsDirectory: packages/build/tests/functions/fixtures/simple/functions
+
+> Context
+  production
+
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+
+Packaging Functions from functions directory:
+ - test.js
+
+{"msg":"Functions bundling completed successfully","bundlers":["nft"],"bundlerCounts":{"nft":1},"fallbackCount":0,"warningsCount":0,"functions":[{"name":"test","runtime":"js","bundler":"nft","bundlerReason":"esm-default","sizeBytes":80,"hadFallback":false,"hadWarnings":false}]}
+
+(Functions bundling completed in 1ms)
+Build step duration: Functions bundling completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;

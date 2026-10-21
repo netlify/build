@@ -4,11 +4,13 @@ Netlify Build relies on Open Telemetry tracing to emit trace data:
 
 - https://opentelemetry.io/docs/instrumentation/js/
 
-In production, trace data is exported to [Honeycomb](https://ui.honeycomb.io). Buildbot is responsible for passing over
-trace information which allows build executions to be stitched together into a single trace across Buildbot and
-`@netlify/build`. The initialisation for this tracing SDK is done
-[here](https://github.com/netlify/build/blob/main/packages/build/src/tracing/main.ts). We also use an open telemetry
-collector in production.
+In production, trace data is exported over OTLP/gRPC to an Open Telemetry collector. Buildbot is responsible for passing
+over trace information which allows build executions to be stitched together into a single trace across Buildbot and
+`@netlify/build`.
+
+`@netlify/build` itself only depends on `@opentelemetry/api`. The SDK is initialised in a separate package,
+[`@netlify/opentelemetry-sdk-setup`](../../opentelemetry-sdk-setup), which is preloaded into a process via node's
+`--import` flag. See that package's README for the available `--tracing.*` options.
 
 ## Adding more instrumentation
 
@@ -19,17 +21,18 @@ Telemetry docs for manual instrumentation:
 
 We also have some utility methods you can leverage to do this:
 
-- https://github.com/netlify/build/blob/main/packages/build/src/tracing/main.ts
+- [`@netlify/opentelemetry-utils`](../../opentelemetry-utils/src/index.ts) — helpers to add attributes, errors and
+  events to the active span, and to set baggage attributes that propagate to child spans.
+- [`packages/build/src/tracing/main.ts`](../src/tracing/main.ts) — maps build errors and step metadata onto span
+  attributes.
 
 ## Exporting data locally
 
-You can export trace data when running `@netlify/build` locally, to do so you just need to leverage the `tracing`
-[flag properties](https://github.com/netlify/build/blob/main/packages/build/src/core/flags.js#L194) to point to
-Honeycomb directly. For example:
+Tracing is off unless it is explicitly preloaded, so exporting locally means running the build through the preloader and
+pointing it at a collector. For example, against a collector listening for OTLP/gRPC on `localhost:4317`:
 
 ```
-node packages/build/bin.js --debug --tracing.enabled=true --tracing.apiKey=<honeycomb-tracing-api-key> --tracing.httpProtocol=https --tracing.host=api.honeycomb.io --tracing.port=443 ../my-site
+node --import=./packages/opentelemetry-sdk-setup/lib/bin.js packages/build/bin.js --debug --tracing.preloadingEnabled=true --tracing.httpProtocol=http --tracing.host=localhost --tracing.port=4317 ../my-site
 ```
 
-The tracing API Key should be an Honeycomb environment API key. If testing things locally you can use the `dev`
-environment.
+Add `--tracing.debug=true` to log Open Telemetry diagnostics to stdout.

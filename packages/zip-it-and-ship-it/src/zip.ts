@@ -8,7 +8,8 @@ import { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
-import { createManifest } from './manifest.js'
+import { createFunctionsManifest, createServerManifest } from './manifest.js'
+import { bundleServer, type NetlifyServerConfig, type ServerOptions, type ServerResult } from './server.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
 import { type MixedPaths, getFunctionsBag } from './paths.js'
@@ -37,6 +38,29 @@ export type ZipFunctionsOptions = ZipFunctionOptions & {
   manifest?: string
   parallelLimit?: number
 }
+
+export interface ZipServerOptions {
+  basePath?: string
+
+  /**
+   * Server configuration from the `[server]` block of the Netlify
+   * configuration file.
+   */
+  config?: NetlifyServerConfig
+
+  debug?: boolean
+  featureFlags?: FeatureFlags
+
+  /**
+   * Path of the manifest file. Defaults to `manifest.json` inside `destFolder`.
+   */
+  manifest?: string
+
+  repositoryRoot?: string
+  systemLog?: LogFunction
+}
+
+export type { NetlifyServerConfig, ServerOptions, ServerResult }
 
 const DEFAULT_PARALLEL_LIMIT = 5
 
@@ -131,9 +155,44 @@ export const zipFunctions = async function (
     }),
   )
 
-  await createManifest({ functions: formattedResults, path: resolve(manifest || join(destFolder, 'manifest.json')) })
+  await createFunctionsManifest({
+    functions: formattedResults,
+    path: resolve(manifest || join(destFolder, 'manifest.json')),
+  })
 
   return formattedResults
+}
+
+export const zipServer = async function (
+  srcPath: string,
+  destFolder: string,
+  {
+    basePath,
+    config,
+    debug,
+    featureFlags: inputFeatureFlags,
+    manifest,
+    repositoryRoot = basePath,
+    systemLog,
+  }: ZipServerOptions = {},
+): Promise<ServerResult> {
+  const logger = getLogger(systemLog, debug)
+  const cache = new RuntimeCache()
+  const featureFlags = getFlags(inputFeatureFlags)
+
+  await fs.mkdir(destFolder, { recursive: true })
+
+  const result = await bundleServer({ config, path: srcPath }, destFolder, {
+    basePath,
+    cache,
+    featureFlags,
+    logger,
+    repositoryRoot,
+  })
+
+  await createServerManifest({ path: resolve(manifest || join(destFolder, 'manifest.json')), server: result })
+
+  return result
 }
 
 export const zipFunction = async function (

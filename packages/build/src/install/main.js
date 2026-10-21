@@ -1,9 +1,9 @@
 import { homedir } from 'os'
 
 import { execa } from 'execa'
-import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../error/info.js'
+import { pathExists } from '../utils/path_exists.js'
 
 // Install Node.js dependencies in a specific directory
 export const installDependencies = function ({ packageRoot, isLocal }) {

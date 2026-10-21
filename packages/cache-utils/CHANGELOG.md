@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.2](https://github.com/netlify/build/compare/cache-utils-v7.1.1...cache-utils-v7.1.2) (2026-08-25)
+
+
+### Performance Improvements
+
+* **cache-utils:** use native fs traversal ([#7104](https://github.com/netlify/build/issues/7104)) ([48d41de](https://github.com/netlify/build/commit/48d41de368466f8d6447b9e46615177a1a5061b0))
+
 ## [7.1.1](https://github.com/netlify/build/compare/cache-utils-v7.1.0...cache-utils-v7.1.1) (2026-08-03)
 
 

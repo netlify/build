@@ -93,6 +93,7 @@ export const firePluginStep = async function ({
       systemLog,
       debug,
       source: packageName,
+      configErrorType: 'pluginValidation',
     })
     const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {

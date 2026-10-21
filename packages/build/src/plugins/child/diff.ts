@@ -1,7 +1,8 @@
 import { isDeepStrictEqual } from 'util'
 
-import isPlainObj from 'is-plain-obj'
 import rfdc from 'rfdc'
+
+import { isPlainObject } from '../../utils/is_plain_object.js'
 
 const clone = rfdc()
 
@@ -49,8 +50,8 @@ function diffObjects(objA: Record<string, unknown>, objB: Record<string, unknown
     const valueB = objB[key]
     const keys = [...parentKeys, key]
 
-    if (isPlainObj(valueA) && isPlainObj(valueB)) {
-      return diffObjects(valueA as Record<string, unknown>, valueB as Record<string, unknown>, keys)
+    if (isPlainObject(valueA) && isPlainObject(valueB)) {
+      return diffObjects(valueA, valueB, keys)
     }
 
     if (isDeepStrictEqual(valueA, valueB)) {

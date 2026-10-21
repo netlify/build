@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { rewriteSourceImportAssertions } from './import_attributes.js'
+import { isDeclarationFile, parseAST, rewriteSourceImportAssertions } from './import_attributes.js'
 
 describe('rewriteSourceImportAssertions', () => {
   test('handles static import assertions', () => {
@@ -184,6 +184,70 @@ for (var hasFlag = ('flag' in options), i = 0; i < 1; i++) {}
     expect(result).toEqual(expectedResult)
   })
 
+  test('handles scope leak from an abandoned speculative parse', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+function m() {
+  _ ? (t) : (t = (function () { t >> 5 }));
+}
+var en = 1;
+export { en as X };
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+function m() {
+  _ ? (t) : (t = (function () { t >> 5 }));
+}
+var en = 1;
+export { en as X };
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles exporting an enum declared in the same module', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+enum Direction { Up, Down }
+export { Direction };
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+enum Direction { Up, Down }
+export { Direction };
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles a type predicate on a parameter named `asserts`', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+function isString(asserts: unknown): asserts is string {
+  return typeof asserts === 'string';
+}
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+function isString(asserts: unknown): asserts is string {
+  return typeof asserts === 'string';
+}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  test('handles a dynamic import in a generic async arrow function parameter default', () => {
+    const source = `const load = async <T,>(mod = import('./data.json', { assert: { type: 'json' } })) => (await mod) as T;
+`
+    const expectedResult = `const load = async <T,>(mod = import('./data.json', { with: { type: 'json' } })) => (await mod) as T;
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
   test('complex JSX import assertion case', () => {
     const source = `<><Component prop={() => import('./foo.json', { assert: { type: 'json' } })} /></>`
     const expectedResult = `<><Component prop={() => import('./foo.json', { with: { type: 'json' } })} /></>`
@@ -293,6 +357,109 @@ import css from './styles.css' with {
     const result = rewriteSourceImportAssertions(source)
 
     expect(result).toEqual(expectedResult)
+  })
+
+  test('handles a generic async arrow function after an await', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+
+export async function load() {
+  await Promise.resolve();
+  const settle = async <T>(work: () => Promise<T>) => await work();
+  return settle(() => Promise.resolve(data));
+}
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+
+export async function load() {
+  await Promise.resolve();
+  const settle = async <T>(work: () => Promise<T>) => await work();
+  return settle(() => Promise.resolve(data));
+}
+`
+
+    const result = rewriteSourceImportAssertions(source)
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  describe('declaration files', () => {
+    test.each([
+      ['index.d.ts', true],
+      ['index.d.mts', true],
+      ['index.d.cts', true],
+      ['index.ts', false],
+      ['index.mts', false],
+      ['index.d.js', false],
+      ['types.d.ts.bak', false],
+    ])('isDeclarationFile(%s) is %s', (path, expected) => {
+      expect(isDeclarationFile(path)).toBe(expected)
+    })
+
+    test('parses ambient-only syntax in declaration mode', () => {
+      const source = `export const convert: (<T>(test: T) => T);`
+
+      expect(() => parseAST(source)).toThrow(SyntaxError)
+      expect(parseAST(source, { isDeclaration: true }).body).toHaveLength(1)
+    })
+
+    test('rewrites import assertions in a declaration file', () => {
+      const source = `import data from './data.json' assert { type: 'json' };
+export const convert: (<T>(test: T) => T);
+`
+      const expectedResult = `import data from './data.json' with { type: 'json' };
+export const convert: (<T>(test: T) => T);
+`
+
+      expect(rewriteSourceImportAssertions(source, { isDeclaration: true })).toEqual(expectedResult)
+    })
+
+    test.each([
+      ['a parenthesized generic function type (unist-util-is)', `export const convert: (<T>(test: T) => T);`],
+      [
+        'a namespace after a string literal type (unpdf)',
+        `export const Prefix: "x";\nexport namespace Kind {\n  let A: number;\n}`,
+      ],
+    ])('handles %s', (_, body) => {
+      const source = `import data from './data.json' assert { type: 'json' };
+export * from "./other.json"assert{type: 'json'};
+${body}
+`
+      const expectedResult = `import data from './data.json' with { type: 'json' };
+export * from "./other.json"with{type: 'json'};
+${body}
+`
+
+      expect(rewriteSourceImportAssertions(source, { isDeclaration: true })).toEqual(expectedResult)
+    })
+  })
+
+  test('handles a function expression named with a TypeScript contextual keyword', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+CompletionRecord.prototype.assert = function assert() {};
+`
+    const expectedResult = `import data from './data.json' with { type: 'json' };
+CompletionRecord.prototype.assert = function assert() {};
+`
+
+    expect(rewriteSourceImportAssertions(source)).toEqual(expectedResult)
+  })
+
+  test('handles an export of a merged namespace member', () => {
+    const source = `import data from './data.json' assert { type: 'json' };
+declare module "assert" {
+  function assert(v: unknown): asserts v;
+  namespace assert {
+    function strict(): void;
+  }
+  namespace assert {
+    export { strict };
+  }
+  export = assert;
+}
+`
+    const expectedResult = source.replace("assert { type: 'json' }", "with { type: 'json' }")
+
+    expect(rewriteSourceImportAssertions(source)).toEqual(expectedResult)
   })
 
   describe('dynamic imports', () => {

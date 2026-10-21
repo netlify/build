@@ -53,6 +53,7 @@ export const fireCoreStep = async function ({
     const {
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
+      configMutationsOrigin,
       tags,
       metrics,
     } = await coreStep({
@@ -106,6 +107,7 @@ export const fireCoreStep = async function ({
       logs: logsA,
       systemLog,
       debug,
+      configMutationsOrigin: configMutationsOrigin ?? coreStepName,
     })
     return {
       newEnvChanges,

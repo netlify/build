@@ -197,7 +197,7 @@ export class Fixture {
   }
 
   /** Runs @netlify/build main function programmatic with the provided flags  */
-  async runBuildProgrammatic(): Promise<object> {
+  async runBuildProgrammatic(): Promise<Awaited<ReturnType<typeof build>>> {
     return await build(this.getBuildFlags())
   }
 
