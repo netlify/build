@@ -105,6 +105,24 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.5.1](https://github.com/netlify/build/compare/build-v37.5.0...build-v37.5.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo ([#6633](https://github.com/netlify/build/issues/6633)) ([be65c1a](https://github.com/netlify/build/commit/be65c1ac257fb55ca5d381813e777bf885e871b8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.18 to ^7.1.19
+    * @netlify/opentelemetry-utils bumped from ^4.0.0 to ^4.0.1
+    * @netlify/zip-it-and-ship-it bumped from 16.4.0 to 16.4.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.1
+
 ## [37.5.0](https://github.com/netlify/build/compare/build-v37.4.3...build-v37.5.0) (2026-10-20)
 
 
