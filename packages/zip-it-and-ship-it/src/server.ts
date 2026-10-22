@@ -5,12 +5,7 @@ import { ARCHIVE_FORMAT } from './archive.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
-import {
-  parseFile,
-  serverConfig,
-  type ServerConfig,
-  type ServerInSourceConfig,
-} from './runtimes/node/in_source_config/index.js'
+import { parseFile, serverConfig, type ServerConfig } from './runtimes/node/in_source_config/index.js'
 import { RUNTIME, type RuntimeName } from './runtimes/runtime.js'
 import type { RuntimeCache } from './utils/cache.js'
 import { FunctionBundlingUserError } from './utils/error.js'
@@ -75,6 +70,7 @@ const toExcludedServerRoutes = (paths: string[] = []): Route[] | undefined =>
  */
 export interface NetlifyServerConfig {
   excludedPath?: string | string[]
+  includedFiles?: string[]
   path?: string | string[]
   region?: string
   size?: string
@@ -114,7 +110,7 @@ export const getServerRoutes = async (
   const fromNetlifyConfig = parseNetlifyServerConfig(config)
   const { config: inSource } = await parseFile(resolve(entryPath), { functionName: SERVER_NAME, isServer: true })
 
-  return toServerRoutes(mergeServerConfig(inSource as ServerInSourceConfig, fromNetlifyConfig).path)
+  return toServerRoutes(mergeServerConfig(inSource as ServerConfig, fromNetlifyConfig).path)
 }
 
 export type ServerResult = {
@@ -193,11 +189,22 @@ export const bundleServer = async (
   const srcPath = resolve(server.path)
   const source = await readServerSource(srcPath, { cache, featureFlags })
 
+  if (fromNetlifyConfig.includedFiles !== undefined && basePath === undefined) {
+    throw new Error('Netlify Server includedFiles from the [server] block need a basePath to resolve from')
+  }
+
+  // Included files from the [server] block resolve from the base path.
+  // In-source ones resolve from the entry file and replace them.
+  const functionConfig =
+    fromNetlifyConfig.includedFiles === undefined
+      ? source.config
+      : { ...source.config, includedFiles: fromNetlifyConfig.includedFiles, includedFilesBasePath: basePath }
+
   const zipResult = await source.runtime.zipFunction({
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: source.config,
+    config: functionConfig,
     destFolder,
     extension: source.extension,
     featureFlags,
@@ -226,7 +233,7 @@ export const bundleServer = async (
     runtime: source.runtime,
   })
 
-  const inSource = (zipResult.staticAnalysisResult?.config ?? {}) as ServerInSourceConfig
+  const inSource = (zipResult.staticAnalysisResult?.config ?? {}) as ServerConfig
   const config = mergeServerConfig(inSource, fromNetlifyConfig)
 
   return removeUndefined<ServerResult>({
