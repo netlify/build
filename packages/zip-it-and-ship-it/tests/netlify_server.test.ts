@@ -743,6 +743,7 @@ export const config = { excludedPath: '/app/private' }
     ['region', { region: 'iad' }],
     ['path', { path: 'api/*' }],
     ['excludedPath', { excludedPath: 'api/*' }],
+    ['includedFiles', { includedFiles: 'data/**' as unknown as string[] }],
   ])('Fails the build on an invalid %s, as a user error', async (property, config) => {
     const error = await bundleWithConfig(FRAMEWORK_SERVER, config).catch((err: unknown) => err)
 
@@ -767,6 +768,59 @@ export const config = { excludedPath: '/app/private' }
       type: 'functionsBundling',
       location: { functionName: 'server', runtime: 'js' },
     })
+  })
+
+  // Extracts a server archive and returns the contents of every file in it,
+  // keyed by its path inside the archive.
+  const extractFiles = async (archivePath: string, destDir: string) => {
+    const extractDir = join(destDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', archivePath, '-C', extractDir])
+
+    const entries = await readdir(extractDir, { recursive: true, withFileTypes: true })
+    const files: Record<string, string> = {}
+
+    for (const entry of entries.filter((entry) => entry.isFile())) {
+      const path = join(entry.parentPath, entry.name)
+
+      files[path.slice(extractDir.length + 1)] = await readFile(path, 'utf-8')
+    }
+
+    return files
+  }
+
+  test('Bundles the files the configuration includes, relative to the base path', async () => {
+    const { entryPath, tmpDir } = await writeServer(FRAMEWORK_SERVER)
+    const destDir = join(tmpDir, 'out')
+
+    await mkdir(join(tmpDir, 'data'), { recursive: true })
+    await writeFile(join(tmpDir, 'data', 'seed.json'), '{"from":"base"}')
+
+    const result = await zipServer(entryPath, destDir, { basePath: tmpDir, config: { includedFiles: ['data/**'] } })
+    const files = await extractFiles(result.path, destDir)
+
+    expect(Object.entries(files).find(([path]) => path.endsWith(join('data', 'seed.json')))?.[1]).toBe(
+      '{"from":"base"}',
+    )
+  })
+
+  test('Lets in-source included files replace the configured ones', async () => {
+    const { entryPath, tmpDir } = await writeServer(`${FRAMEWORK_SERVER}
+export const config = { includedFiles: ['own/**'] }
+`)
+    const destDir = join(tmpDir, 'out')
+
+    await mkdir(join(tmpDir, 'data'), { recursive: true })
+    await writeFile(join(tmpDir, 'data', 'seed.json'), '{"from":"base"}')
+    await mkdir(join(dirname(entryPath), 'own'), { recursive: true })
+    await writeFile(join(dirname(entryPath), 'own', 'seed.json'), '{"from":"entry"}')
+
+    const result = await zipServer(entryPath, destDir, { basePath: tmpDir, config: { includedFiles: ['data/**'] } })
+    const files = Object.entries(await extractFiles(result.path, destDir))
+
+    expect(files.find(([path]) => path.endsWith(join('own', 'seed.json')))?.[1]).toBe('{"from":"entry"}')
+    expect(files.find(([path]) => path.endsWith(join('data', 'seed.json')))).toBeUndefined()
   })
 
   test('Fails the build on an invalid value even when the in-source configuration overrides it', async () => {

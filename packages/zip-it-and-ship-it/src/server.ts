@@ -75,6 +75,7 @@ const toExcludedServerRoutes = (paths: string[] = []): Route[] | undefined =>
  */
 export interface NetlifyServerConfig {
   excludedPath?: string | string[]
+  includedFiles?: string[]
   path?: string | string[]
   region?: string
   size?: string
@@ -193,11 +194,18 @@ export const bundleServer = async (
   const srcPath = resolve(server.path)
   const source = await readServerSource(srcPath, { cache, featureFlags })
 
+  // Included files from the [server] block resolve from the base path.
+  // In-source ones resolve from the entry file and replace them.
+  const functionConfig =
+    fromNetlifyConfig.includedFiles === undefined
+      ? source.config
+      : { ...source.config, includedFiles: fromNetlifyConfig.includedFiles, includedFilesBasePath: basePath }
+
   const zipResult = await source.runtime.zipFunction({
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: source.config,
+    config: functionConfig,
     destFolder,
     extension: source.extension,
     featureFlags,

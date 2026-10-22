@@ -47,7 +47,7 @@ const isValidFunctionMemory = (value) => {
   return Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
 }
 
-const SERVER_PROPERTIES = ['excludedPath', 'path', 'region', 'size']
+const SERVER_PROPERTIES = ['excludedPath', 'includedFiles', 'path', 'region', 'size']
 const SERVER_REGIONS = ['cmh', 'fra']
 const SERVER_SIZES = ['small', 'medium', 'large']
 
@@ -398,6 +398,12 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: isServerPaths,
     message: 'must be a path starting with "/", or an array of them.',
     example: () => ({ server: { path: '/api/*', excludedPath: ['/api/internal', '/api/admin/*'] } }),
+  },
+  {
+    property: 'server.includedFiles',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: () => ({ server: { includedFiles: ['data/**', 'templates/*.html'] } }),
   },
   // Region and size are lowercased during normalization.
   {

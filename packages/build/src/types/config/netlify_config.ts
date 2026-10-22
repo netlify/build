@@ -53,6 +53,12 @@ interface ServerConfig {
   excludedPath?: Many<`/${string}`, 'mutable'>
 
   /**
+   * Glob patterns of additional files to include in the server's bundle,
+   * relative to the base directory
+   */
+  includedFiles?: string[]
+
+  /**
    * Airport code of the region the server runs in
    */
   region?: 'cmh' | 'fra'

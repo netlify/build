@@ -94,6 +94,7 @@ export type InSourceConfig = z.infer<typeof inSourceConfig>
 export const serverConfig = z
   .object({
     excludedPath: paths,
+    includedFiles: z.array(z.string()).optional(),
     path: paths,
     region: serverRegion.optional(),
     size: serverSize.optional(),
@@ -103,10 +104,6 @@ export const serverConfig = z
 export type ServerConfig = z.infer<typeof serverConfig>
 
 export const serverInSourceConfig = serverConfig
-  .extend({
-    includedFiles: z.array(z.string()).optional(),
-  })
-  .strict()
 
 export type ServerInSourceConfig = z.infer<typeof serverInSourceConfig>
 
