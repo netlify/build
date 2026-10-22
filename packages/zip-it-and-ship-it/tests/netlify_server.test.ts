@@ -805,6 +805,14 @@ export const config = { excludedPath: '/app/private' }
     )
   })
 
+  test('Fails without a base path to resolve configured included files from', async () => {
+    const { entryPath, tmpDir } = await writeServer(FRAMEWORK_SERVER)
+
+    await expect(zipServer(entryPath, join(tmpDir, 'out'), { config: { includedFiles: ['data/**'] } })).rejects.toThrow(
+      /need a basePath/,
+    )
+  })
+
   test('Lets in-source included files replace the configured ones', async () => {
     const { entryPath, tmpDir } = await writeServer(`${FRAMEWORK_SERVER}
 export const config = { includedFiles: ['own/**'] }

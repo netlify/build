@@ -103,10 +103,6 @@ export const serverConfig = z
 
 export type ServerConfig = z.infer<typeof serverConfig>
 
-export const serverInSourceConfig = serverConfig
-
-export type ServerInSourceConfig = z.infer<typeof serverInSourceConfig>
-
 /**
  * Resolves the default export expression to an ObjectExpression if possible,
  * following identifier bindings when needed.
@@ -273,7 +269,7 @@ const getWrappedConfigExport = (nodes: Statement[], getAllBindings: BindingMetho
 }
 
 const parseServerConfig = (config: Record<string, unknown>, functionName: string): InSourceConfig => {
-  const { data, error, success } = serverInSourceConfig.safeParse(config)
+  const { data, error, success } = serverConfig.safeParse(config)
 
   if (success) {
     return data
