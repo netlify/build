@@ -105,6 +105,62 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.6.0](https://github.com/netlify/build/compare/build-v37.5.1...build-v37.6.0) (2026-10-22)
+
+
+### Features
+
+* support `includedFiles` for Server in `netlify.toml` ([#7285](https://github.com/netlify/build/issues/7285)) ([62ff57b](https://github.com/netlify/build/commit/62ff57b3da328357fa0cb2a2286baf018dd2a14f))
+
+
+### Bug Fixes
+
+* **deps:** remove p-reduce and reuse state ([#7233](https://github.com/netlify/build/issues/7233)) ([f3fa4b9](https://github.com/netlify/build/commit/f3fa4b94e298136f89f0f50a1200c378a9965c19))
+* **deps:** unify process interaction around tinyps ([#7267](https://github.com/netlify/build/issues/7267)) ([50abebb](https://github.com/netlify/build/commit/50abebbcfad84ea6d517ad7062db32c521f4e884))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.3.0 to ^25.4.0
+    * @netlify/functions-utils bumped from ^7.1.19 to ^7.1.20
+    * @netlify/zip-it-and-ship-it bumped from 16.4.1 to 16.5.0
+
+## [37.5.1](https://github.com/netlify/build/compare/build-v37.5.0...build-v37.5.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js monorepo ([#6633](https://github.com/netlify/build/issues/6633)) ([be65c1a](https://github.com/netlify/build/commit/be65c1ac257fb55ca5d381813e777bf885e871b8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^7.1.18 to ^7.1.19
+    * @netlify/opentelemetry-utils bumped from ^4.0.0 to ^4.0.1
+    * @netlify/zip-it-and-ship-it bumped from 16.4.0 to 16.4.1
+  * peerDependencies
+    * @netlify/opentelemetry-sdk-setup bumped from ^3.0.0 || ^4.0.0 to ^4.0.1
+
+## [37.5.0](https://github.com/netlify/build/compare/build-v37.4.3...build-v37.5.0) (2026-10-20)
+
+
+### Features
+
+* add TOML and in-source config to server ([#7277](https://github.com/netlify/build/issues/7277)) ([b8b35b9](https://github.com/netlify/build/commit/b8b35b909529d05cbb1f61a996e430cb1ab12e03))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.2.7 to ^25.3.0
+    * @netlify/functions-utils bumped from ^7.1.17 to ^7.1.18
+    * @netlify/zip-it-and-ship-it bumped from 16.3.1 to 16.4.0
+
 ## [37.4.3](https://github.com/netlify/build/compare/build-v37.4.2...build-v37.4.3) (2026-10-17)
 
 

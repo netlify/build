@@ -2106,6 +2106,131 @@ Valid syntax
   package = "netlify-plugin-two""
 `;
 
+exports[`server.excludedPath: paths starting with a slash 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_excluded_path/netlify.toml:
+Configuration property server.excludedPath must be a path starting with "/", or an array of them.
+
+Invalid syntax
+
+  [server]
+  excludedPath = "internal"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  excludedPath = [
+    "/external/path",
+    "/external/path"
+  ]"
+`;
+
+exports[`server.includedFiles: an array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_included_files/netlify.toml:
+Configuration property server.includedFiles must be an array of strings.
+
+Invalid syntax
+
+  [server]
+  includedFiles = "data/**"
+
+Valid syntax
+
+  [server]
+  includedFiles = [
+    "data/**",
+    "templates/*.html"
+  ]"
+`;
+
+exports[`server.path: paths starting with a slash 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_path/netlify.toml:
+Configuration property server.path must be a path starting with "/", or an array of them.
+
+Invalid syntax
+
+  [server]
+  path = [
+    "/external/path",
+    "auth"
+  ]
+
+Valid syntax
+
+  [server]
+  path = [
+    "/external/path",
+    "/external/path"
+  ]"
+`;
+
+exports[`server.region: one of the server regions 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_region/netlify.toml:
+Configuration property server.region must be one of: cmh, fra
+
+Invalid syntax
+
+  [server]
+  region = "iad"
+
+Valid syntax
+
+  [server]
+  region = "cmh""
+`;
+
+exports[`server.size: one of the server sizes 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_size/netlify.toml:
+Configuration property server.size must be one of: small, medium, large
+
+Invalid syntax
+
+  [server]
+  size = "xlarge"
+
+Valid syntax
+
+  [server]
+  size = "small""
+`;
+
+exports[`server: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_not_object/netlify.toml:
+Configuration property server must be a plain object.
+
+Invalid syntax
+
+  server = "small"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  size = "small""
+`;
+
+exports[`server: unknown property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_unknown_props/netlify.toml:
+Configuration property server has unknown properties. Valid properties are:
+  - excludedPath
+  - includedFiles
+  - path
+  - region
+  - size
+
+Invalid syntax
+
+  [server]
+  memory = 2048
+  size = "small"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  size = "small""
+`;
+
 exports[`spa_fallback: boolean 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/spa_fallback_boolean/netlify.toml:
 Configuration property spa_fallback must be a boolean.

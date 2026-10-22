@@ -34,14 +34,13 @@ interface ManifestFunction {
 interface ManifestServer {
   bundler?: string
   excludedRoutes?: Route[]
+  instanceSize?: string
   mainFile: string
-  memory?: number
   path: string
   region?: string
   routes?: ExtendedRoute[]
   runtime: string
   runtimeVersion?: string
-  vcpu?: number
 }
 
 interface ManifestBase {
@@ -102,24 +101,22 @@ export const createServerManifest = async ({ path, server }: { path: string; ser
 const formatServerForManifest = ({
   bundler,
   excludedRoutes,
+  instanceSize,
   mainFile,
-  memory,
   path,
   region,
   routes,
   runtime,
   runtimeVersion,
-  vcpu,
 }: ServerResult): ManifestServer => {
   const server: ManifestServer = {
     bundler,
+    instanceSize,
     mainFile,
-    memory,
     path: resolve(path),
     region,
     runtime,
     runtimeVersion,
-    vcpu,
   }
 
   if (routes?.length) {
