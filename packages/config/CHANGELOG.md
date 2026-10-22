@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.4.0](https://github.com/netlify/build/compare/config-v25.3.0...config-v25.4.0) (2026-10-22)
+
+
+### Features
+
+* support `includedFiles` for Server in `netlify.toml` ([#7285](https://github.com/netlify/build/issues/7285)) ([62ff57b](https://github.com/netlify/build/commit/62ff57b3da328357fa0cb2a2286baf018dd2a14f))
+
 ## [25.3.0](https://github.com/netlify/build/compare/config-v25.2.7...config-v25.3.0) (2026-10-20)
 
 
