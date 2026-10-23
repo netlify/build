@@ -80,7 +80,7 @@ test('should fallback to npm if just a package.json is present there', async ({ 
   expect(pkgManager?.name).toBe('npm')
 })
 
-describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }])(
+describe.each([{ pm: 'npm' }, { pm: 'yarn' }, { pm: 'pnpm' }, { pm: 'bun' }, { pm: 'nub' }])(
   'should fallback to user agent if present',
   ({ pm }) => {
     test(`fallback ${pm}`, async ({ fs }) => {
@@ -133,6 +133,16 @@ test('should use bun if there is a bun.lock in the root', async ({ fs }) => {
   const project = new Project(fs, cwd)
   const pkgManager = await detectPackageManager(project)
   expect(pkgManager?.name).toBe('bun')
+})
+
+test('should use nub if there is a nub.lock in the root', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'nub.lock': '',
+  })
+  const project = new Project(fs, cwd)
+  const pkgManager = await detectPackageManager(project)
+  expect(pkgManager?.name).toBe('nub')
 })
 
 test('should use the `packageManager` property to detect yarn', async ({ fs }) => {

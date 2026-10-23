@@ -12,6 +12,7 @@ export const enum PkgManager {
   YARN = 'yarn',
   PNPM = 'pnpm',
   BUN = 'bun',
+  NUB = 'nub',
   NPM = 'npm',
 }
 
@@ -73,6 +74,14 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
     remotePackageCommand: ['bunx'],
     lockFiles: ['bun.lockb', 'bun.lock'],
   },
+  [PkgManager.NUB]: {
+    name: PkgManager.NUB,
+    installCommand: 'nub install',
+    runCommand: 'nub run',
+    localPackageCommand: 'nubx',
+    remotePackageCommand: ['nubx'],
+    lockFiles: ['nub.lock'],
+  },
 }
 
 /**
@@ -102,6 +111,10 @@ export function sniffUserAgent(project: Project): PkgManager | undefined {
 
   if (userAgent.includes('bun')) {
     return PkgManager.BUN
+  }
+
+  if (userAgent.includes('nub')) {
+    return PkgManager.NUB
   }
 
   // npm should come last as it is included in the user agent strings of other package managers
