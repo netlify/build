@@ -100,6 +100,10 @@ export class Project {
     return null
   }
 
+  async isCedarProject(): Promise<boolean> {
+    return await this.fs.fileExists(this.fs.resolve(this.fs.cwd, 'cedar.toml'))
+  }
+
   async isRedwoodProject(): Promise<boolean> {
     return await this.fs.fileExists(this.fs.resolve(this.fs.cwd, 'redwood.toml'))
   }
