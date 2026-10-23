@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.6.1](https://github.com/netlify/build/compare/build-v37.6.0...build-v37.6.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v9 ([#7288](https://github.com/netlify/build/issues/7288)) ([6f90347](https://github.com/netlify/build/commit/6f903478bc96d02d6aeaa41831e6a73470fd1484))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.4.0 to ^25.4.1
+    * @netlify/functions-utils bumped from ^7.1.20 to ^7.1.21
+    * @netlify/zip-it-and-ship-it bumped from 16.5.0 to 16.5.1
+
 ## [37.6.0](https://github.com/netlify/build/compare/build-v37.5.1...build-v37.6.0) (2026-10-22)
 
 
