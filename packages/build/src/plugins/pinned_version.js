@@ -1,5 +1,11 @@
+import { trace, context } from '@opentelemetry/api'
+import { wrapTracer } from '@opentelemetry/api/experimental'
+
 import { handleBuildError } from '../error/handle.js'
+import { addBuildErrorToActiveSpan } from '../tracing/main.js'
 import { getMajorVersion, isPrerelease } from '../utils/semver.js'
+
+const tracer = wrapTracer(trace.getTracer('plugins'))
 
 // Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
 // Only applies to `netlify.toml`-only installed plugins.
@@ -8,14 +14,21 @@ export const addPinnedVersions = async function ({ pluginsOptions, api, siteInfo
     return pluginsOptions
   }
 
-  const packages = pluginsOptions.filter(shouldFetchPinVersion).map(getPackageName)
-  if (packages.length === 0) {
-    return pluginsOptions
-  }
+  return await tracer.startActiveSpan('add-pinned-version', async (span) => {
+    const packages = pluginsOptions.filter(shouldFetchPinVersion).map(getPackageName)
+    if (packages.length === 0) {
+      return pluginsOptions
+    }
+    span.addAttributes({
+      'build.plugins.pinned_versions.packages': packages.join(','),
+    })
 
-  const pluginRuns = await api.getLatestPluginRuns({ site_id: siteId, packages, state: 'success' })
-  const pluginsOptionsA = pluginsOptions.map((pluginOption) => addPinnedVersion(pluginOption, pluginRuns))
-  return pluginsOptionsA
+    const pluginRuns = await api.getLatestPluginRuns({ site_id: siteId, packages, state: 'success' })
+    const pluginsOptionsA = pluginsOptions.map((pluginOption) => addPinnedVersion(pluginOption, pluginRuns))
+    span.end()
+
+    return pluginsOptionsA
+  })
 }
 
 const shouldFetchPinVersion = function ({ pinnedVersion, loadedFrom, origin }) {
@@ -27,12 +40,18 @@ const getPackageName = function ({ packageName }) {
 }
 
 const addPinnedVersion = function (pluginOptions, pluginRuns) {
-  const foundPluginRun = pluginRuns.find((pluginRun) => pluginRun.package === pluginOptions.packageName)
+  const { packageName } = pluginOptions
+  const foundPluginRun = pluginRuns.find((pluginRun) => pluginRun.package === packageName)
   if (foundPluginRun === undefined) {
     return pluginOptions
   }
 
   const pinnedVersion = getMajorVersion(foundPluginRun.version)
+  const span = trace.getActiveSpan()
+  span.addAttributes({
+    [`build.plugins.pinned_versions.${packageName}`]: pinnedVersion,
+  })
+
   return pinnedVersion === undefined ? pluginOptions : { ...pluginOptions, pinnedVersion }
 }
 
@@ -56,23 +75,26 @@ export const pinPlugins = async function ({
     return
   }
 
-  const pluginsOptionsA = pluginsOptions.filter((pluginOptions) => shouldPinVersion({ pluginOptions, failedPlugins }))
-  await Promise.all(
-    pluginsOptionsA.map((pluginOptions) =>
-      pinPlugin({
-        pluginOptions,
-        api,
-        childEnv,
-        mode,
-        netlifyConfig,
-        errorMonitor,
-        logs,
-        debug,
-        testOpts,
-        siteId,
-      }),
-    ),
-  )
+  return await tracer.startActiveSpan('pin-plugins', async (span) => {
+    const pluginsOptionsA = pluginsOptions.filter((pluginOptions) => shouldPinVersion({ pluginOptions, failedPlugins }))
+    await Promise.all(
+      pluginsOptionsA.map((pluginOptions) =>
+        pinPlugin({
+          pluginOptions,
+          api,
+          childEnv,
+          mode,
+          netlifyConfig,
+          errorMonitor,
+          logs,
+          debug,
+          testOpts,
+          siteId,
+        }),
+      ),
+    )
+    span.end()
+  })
 }
 
 // Only pin version if:
@@ -113,23 +135,31 @@ const pinPlugin = async function ({
   testOpts,
   siteId,
 }) {
-  const pinnedVersion = getMajorVersion(version)
-  try {
-    await api.updatePlugin({
-      package: encodeURIComponent(packageName),
-      site_id: siteId,
-      body: { pinned_version: pinnedVersion },
-    })
-    // Bitballoon API randomly fails with 502.
-    // Builds should be successful when this API call fails, but we still want
-    // to report the error both in logs and in error monitoring.
-  } catch (error) {
-    if (shouldIgnoreError(error)) {
-      return
-    }
+  return await tracer.startActiveSpan(`pin-plugin-${packageName}`, async (span) => {
+    const pinnedVersion = getMajorVersion(version)
+    try {
+      span.addAttributes({
+        [`build.plugins.pin_version.${packageName}`]: pinnedVersion,
+      })
+      await api.updatePlugin({
+        package: encodeURIComponent(packageName),
+        site_id: siteId,
+        body: { pinned_version: pinnedVersion },
+      })
+      // Bitballoon API randomly fails with 502.
+      // Builds should be successful when this API call fails, but we still want
+      // to report the error both in logs and in error monitoring.
+    } catch (error) {
+      addBuildErrorToActiveSpan(error)
+      if (shouldIgnoreError(error)) {
+        return
+      }
 
-    await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
-  }
+      await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
+    } finally {
+      span.end()
+    }
+  })
 }
 
 // Status is 404 if the plugin is uninstalled while the build is ongoing.
