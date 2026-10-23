@@ -17,6 +17,8 @@ test.each([
   ['wildcard_surround', '/a/*/b', /^\/a\/?(.*)\/b\/?$/iu],
   ['wildcard_multiple', '/a/*/*', /^\/a\/?(.*)\/?(.*)\/?$/iu],
   ['wildcard_inside', '/a/b*c', /^\/a\/b(.*)c\/?$/iu],
+  ['wildcard_inside_regexp_escape', '/a/*.js', /^\/a\/(.*)\.js\/?$/iu],
+  ['wildcard_inside_regexp_special', '/a/c++*', /^\/a\/c\+\+(.*)\/?$/iu],
   ['trailing_slash', '/a/', /^\/a\/?$/iu],
   ['regexp_escape', '/a.', /^\/a\.\/?$/iu],
   ['double_slash_single', '//', /^\/\/?$/iu],
