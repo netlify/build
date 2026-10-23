@@ -11,7 +11,7 @@ export const getRequestParams = function (params, requestParams, name) {
 }
 
 const getRequestParam = function (param, requestParams, name) {
-  const value = requestParams[param.name] || requestParams[camelCase(param.name)]
+  const value = requestParams[param.name] ?? requestParams[camelCase(param.name)]
 
   if (value !== undefined) {
     return { [param.name]: value }
