@@ -36,6 +36,8 @@
       "ignoreDependencies": [
         // Used in tests but can't be declared as a dependency due to a circular dependency.
         "@netlify/testing",
+        // Intentionally an optional peer dep, resolved defensively at runtime
+        "@netlify/opentelemetry-sdk-setup",
       ],
     },
     "packages/build-info": {
