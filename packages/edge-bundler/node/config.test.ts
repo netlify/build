@@ -23,7 +23,7 @@ const importMapFile = {
 }
 
 const invalidDefaultExportErr = (path: string) =>
-  `Default export in '${path}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`
+  `Default export in '${path}' must be a function or an object with a \`fetch\` method. More on the Edge Functions API at https://ntl.fyi/edge-api.`
 
 interface TestFunctions {
   error?: RegExp
@@ -389,6 +389,51 @@ test('Passes validation if default export exists and is a function', async () =>
       log: logger,
     }),
   ).resolves.not.toThrow()
+
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
+})
+
+test('Passes validation if default export is an object with a `fetch` method', async () => {
+  const tmpDir = await mkdtemp(join(tmpdir(), 'edge-bundler-config-'))
+  const deno = new DenoBridge({
+    cacheDirectory: tmpDir,
+  })
+  const logger = {
+    user: vi.fn().mockResolvedValue(null),
+    system: vi.fn().mockResolvedValue(null),
+  }
+  const getConfig = async (name: string, source: string) => {
+    const path = join(tmpDir, `${name}.ts`)
+
+    await fs.writeFile(path, source)
+
+    return getFunctionConfig({ functionPath: path, importMap: new ImportMap([importMapFile]), deno, log: logger })
+  }
+
+  await expect(getConfig('no_config', `export default { fetch: () => new Response("Hello world!") }`)).resolves.toEqual(
+    {},
+  )
+
+  await expect(
+    getConfig(
+      'inline_config',
+      `export default { fetch: () => new Response("Hello world!"), config: { path: "/inline" } }`,
+    ),
+  ).resolves.toEqual({ path: '/inline' })
+
+  await expect(
+    getConfig(
+      'named_config_wins',
+      `
+        export default { fetch: () => new Response("Hello world!"), config: { path: "/inline" } }
+        export const config = { path: "/named" }
+      `,
+    ),
+  ).resolves.toEqual({ path: '/named' })
+
+  const noFetch = getConfig('no_fetch', `export default { config: { path: "/inline" } }`)
+
+  await expect(noFetch).rejects.toThrowError(invalidDefaultExportErr(join(tmpDir, 'no_fetch.ts')))
 
   await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
