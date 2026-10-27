@@ -756,7 +756,7 @@ Configuration error
 
   Error message
   Plugin could not be found using local path: ./plugin
-  Cannot find module './plugin'
+  Cannot resolve module "./plugin" (from: packages/build/tests/plugins/fixtures/local_invalid)
 
   Resolved config
   build:
