@@ -68,12 +68,13 @@ interface ServerConfig {
    */
   scale?: {
     /**
-     * Fewest instances to keep running, an integer of 0 or more
+     * Minimum number of instances to keep running, an integer of 0 or more
      */
     min?: number
 
     /**
-     * Most instances to run, an integer of 1 or more, and no less than `min`
+     * Maximum number of instances to run, an integer of 1 or more, and no less
+     * than `min`
      */
     max?: number
   }
