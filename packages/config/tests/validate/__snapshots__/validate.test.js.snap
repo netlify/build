@@ -2179,6 +2179,144 @@ Valid syntax
   region = "cmh""
 `;
 
+exports[`server.scale.max: integer greater than or equal to 1 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_invalid_max/netlify.toml:
+Configuration property server.scale.max must be an integer greater than or equal to 1.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = 0
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3"
+`;
+
+exports[`server.scale.max: not a string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_string_max/netlify.toml:
+Configuration property server.scale.max must be an integer greater than or equal to 1.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = "3"
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3"
+`;
+
+exports[`server.scale.min: integer greater than or equal to 0 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_invalid_min/netlify.toml:
+Configuration property server.scale.min must be an integer greater than or equal to 0.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = -1
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0"
+`;
+
+exports[`server.scale.min: not a fraction 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_fractional_min/netlify.toml:
+Configuration property server.scale.min must be an integer greater than or equal to 0.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = 1.5
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0"
+`;
+
+exports[`server.scale: min less than or equal to max 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_min_above_max/netlify.toml:
+Configuration property server.scale must have a "min" less than or equal to its "max".
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = 4
+    max = 2
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
+exports[`server.scale: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_not_object/netlify.toml:
+Configuration property server.scale must be a plain object.
+
+Invalid syntax
+
+  [server]
+  scale = 3
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
+exports[`server.scale: unknown property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_unknown_props/netlify.toml:
+Configuration property server.scale has unknown properties. Valid properties are:
+  - min
+  - max
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3
+    target = 2
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
 exports[`server.size: one of the server sizes 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/server_invalid_size/netlify.toml:
 Configuration property server.size must be one of: small, medium, large
@@ -2216,6 +2354,7 @@ Configuration property server has unknown properties. Valid properties are:
   - includedFiles
   - path
   - region
+  - scale
   - size
 
 Invalid syntax

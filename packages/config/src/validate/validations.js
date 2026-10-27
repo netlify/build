@@ -47,9 +47,12 @@ const isValidFunctionMemory = (value) => {
   return Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
 }
 
-const SERVER_PROPERTIES = ['excludedPath', 'includedFiles', 'path', 'region', 'size']
+const SERVER_PROPERTIES = ['excludedPath', 'includedFiles', 'path', 'region', 'scale', 'size']
 const SERVER_REGIONS = ['cmh', 'fra']
 const SERVER_SIZES = ['small', 'medium', 'large']
+const SERVER_SCALE_PROPERTIES = ['min', 'max']
+
+const isIntegerFrom = (min) => (value) => Number.isInteger(value) && value >= min
 
 const isServerPath = (value) => isString(value) && value.startsWith('/')
 const isServerPaths = (value) => isServerPath(value) || (Array.isArray(value) && value.every(isServerPath))
@@ -417,6 +420,35 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: (value) => SERVER_SIZES.includes(value),
     message: `must be one of: ${SERVER_SIZES.join(', ')}`,
     example: () => ({ server: { size: SERVER_SIZES[0] } }),
+  },
+  {
+    property: 'server.scale',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
+  },
+  {
+    property: 'server.scale',
+    ...validProperties(SERVER_SCALE_PROPERTIES, []),
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
+  },
+  {
+    property: 'server.scale.min',
+    check: isIntegerFrom(0),
+    message: 'must be an integer greater than or equal to 0.',
+    example: () => ({ server: { scale: { min: 0 } } }),
+  },
+  {
+    property: 'server.scale.max',
+    check: isIntegerFrom(1),
+    message: 'must be an integer greater than or equal to 1.',
+    example: () => ({ server: { scale: { max: 3 } } }),
+  },
+  {
+    property: 'server.scale',
+    check: ({ min, max }) => min === undefined || max === undefined || min <= max,
+    message: 'must have a "min" less than or equal to its "max".',
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
   },
   ...edgeFunctionValidations,
 ]

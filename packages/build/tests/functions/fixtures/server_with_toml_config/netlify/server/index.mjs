@@ -5,5 +5,6 @@ createServer((_req, res) => {
 }).listen(process.env.PORT)
 
 export const config = {
+  scale: { max: 3 },
   size: 'medium',
 }
