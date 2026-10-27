@@ -64,6 +64,21 @@ interface ServerConfig {
   region?: 'cmh' | 'fra'
 
   /**
+   * How many instances the server runs
+   */
+  scale?: {
+    /**
+     * Fewest instances to keep running, an integer of 0 or more
+     */
+    min?: number
+
+    /**
+     * Most instances to run, an integer of 1 or more, and no less than `min`
+     */
+    max?: number
+  }
+
+  /**
    * Size of the instances the server runs on
    */
   size?: 'small' | 'medium' | 'large'

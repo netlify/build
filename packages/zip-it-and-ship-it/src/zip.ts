@@ -9,7 +9,13 @@ import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
 import { createFunctionsManifest, createServerManifest } from './manifest.js'
-import { bundleServer, type NetlifyServerConfig, type ServerOptions, type ServerResult } from './server.js'
+import {
+  bundleServer,
+  type NetlifyServerConfig,
+  type ServerOptions,
+  type ServerResult,
+  type ServerScale,
+} from './server.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
 import { type MixedPaths, getFunctionsBag } from './paths.js'
@@ -60,7 +66,7 @@ export interface ZipServerOptions {
   systemLog?: LogFunction
 }
 
-export type { NetlifyServerConfig, ServerOptions, ServerResult }
+export type { NetlifyServerConfig, ServerOptions, ServerResult, ServerScale }
 
 const DEFAULT_PARALLEL_LIMIT = 5
 

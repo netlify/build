@@ -62,6 +62,23 @@ export const serverSize = z.preprocess(
   z.enum(SERVER_SIZES),
 )
 
+const integerAtLeast = (min: number) => {
+  const message = `Must be an integer greater than or equal to ${String(min)}`
+
+  return z.number({ message }).int({ message }).min(min, { message }).optional()
+}
+
+export const isValidRange = ({ min, max }: { min?: number; max?: number }) =>
+  min === undefined || max === undefined || min <= max
+
+export const serverScale = z
+  .object({
+    min: integerAtLeast(0),
+    max: integerAtLeast(1),
+  })
+  .strict()
+  .refine(isValidRange, { message: "'min' cannot be greater than 'max'" })
+
 const FUNCTION_MEMORY_MIN_MB = 1024
 const FUNCTION_MEMORY_MAX_MB = 4096
 
