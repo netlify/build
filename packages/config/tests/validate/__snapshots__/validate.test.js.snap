@@ -2125,6 +2125,24 @@ Valid syntax
   ]"
 `;
 
+exports[`server.includedFiles: an array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_included_files/netlify.toml:
+Configuration property server.includedFiles must be an array of strings.
+
+Invalid syntax
+
+  [server]
+  includedFiles = "data/**"
+
+Valid syntax
+
+  [server]
+  includedFiles = [
+    "data/**",
+    "templates/*.html"
+  ]"
+`;
+
 exports[`server.path: paths starting with a slash 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/server_invalid_path/netlify.toml:
 Configuration property server.path must be a path starting with "/", or an array of them.
@@ -2195,6 +2213,7 @@ exports[`server: unknown property 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/server_unknown_props/netlify.toml:
 Configuration property server has unknown properties. Valid properties are:
   - excludedPath
+  - includedFiles
   - path
   - region
   - size

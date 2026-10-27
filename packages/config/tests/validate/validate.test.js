@@ -393,6 +393,11 @@ test('server.excludedPath: paths starting with a slash', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
+test('server.includedFiles: an array of strings', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_invalid_included_files').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
 test('server.region: one of the server regions', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/server_invalid_region').runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()

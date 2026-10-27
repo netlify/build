@@ -94,6 +94,7 @@ export type InSourceConfig = z.infer<typeof inSourceConfig>
 export const serverConfig = z
   .object({
     excludedPath: paths,
+    includedFiles: z.array(z.string()).optional(),
     path: paths,
     region: serverRegion.optional(),
     size: serverSize.optional(),
@@ -101,14 +102,6 @@ export const serverConfig = z
   .strict()
 
 export type ServerConfig = z.infer<typeof serverConfig>
-
-export const serverInSourceConfig = serverConfig
-  .extend({
-    includedFiles: z.array(z.string()).optional(),
-  })
-  .strict()
-
-export type ServerInSourceConfig = z.infer<typeof serverInSourceConfig>
 
 /**
  * Resolves the default export expression to an ObjectExpression if possible,
@@ -276,7 +269,7 @@ const getWrappedConfigExport = (nodes: Statement[], getAllBindings: BindingMetho
 }
 
 const parseServerConfig = (config: Record<string, unknown>, functionName: string): InSourceConfig => {
-  const { data, error, success } = serverInSourceConfig.safeParse(config)
+  const { data, error, success } = serverConfig.safeParse(config)
 
   if (success) {
     return data

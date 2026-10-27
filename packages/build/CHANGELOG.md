@@ -105,6 +105,44 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.6.1](https://github.com/netlify/build/compare/build-v37.6.0...build-v37.6.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v9 ([#7288](https://github.com/netlify/build/issues/7288)) ([6f90347](https://github.com/netlify/build/commit/6f903478bc96d02d6aeaa41831e6a73470fd1484))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.4.0 to ^25.4.1
+    * @netlify/functions-utils bumped from ^7.1.20 to ^7.1.21
+    * @netlify/zip-it-and-ship-it bumped from 16.5.0 to 16.5.1
+
+## [37.6.0](https://github.com/netlify/build/compare/build-v37.5.1...build-v37.6.0) (2026-10-22)
+
+
+### Features
+
+* support `includedFiles` for Server in `netlify.toml` ([#7285](https://github.com/netlify/build/issues/7285)) ([62ff57b](https://github.com/netlify/build/commit/62ff57b3da328357fa0cb2a2286baf018dd2a14f))
+
+
+### Bug Fixes
+
+* **deps:** remove p-reduce and reuse state ([#7233](https://github.com/netlify/build/issues/7233)) ([f3fa4b9](https://github.com/netlify/build/commit/f3fa4b94e298136f89f0f50a1200c378a9965c19))
+* **deps:** unify process interaction around tinyps ([#7267](https://github.com/netlify/build/issues/7267)) ([50abebb](https://github.com/netlify/build/commit/50abebbcfad84ea6d517ad7062db32c521f4e884))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.3.0 to ^25.4.0
+    * @netlify/functions-utils bumped from ^7.1.19 to ^7.1.20
+    * @netlify/zip-it-and-ship-it bumped from 16.4.1 to 16.5.0
+
 ## [37.5.1](https://github.com/netlify/build/compare/build-v37.5.0...build-v37.5.1) (2026-10-21)
 
 
