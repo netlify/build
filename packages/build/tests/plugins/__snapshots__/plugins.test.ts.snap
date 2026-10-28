@@ -718,6 +718,57 @@ Netlify Build Complete
 Build step duration: Netlify Build completed in 1ms"
 `;
 
+exports[`Local plugins directory with package.json main 1`] = `
+"
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+> Version
+  @netlify/build 1.0.0
+
+> Flags
+  debug: true
+  repositoryRoot: packages/build/tests/plugins/fixtures/local_dir_main
+  testOpts:
+    pluginsListUrl: test
+    silentLingeringProcesses: true
+
+> Current directory
+  packages/build/tests/plugins/fixtures/local_dir_main
+
+> Config file
+  packages/build/tests/plugins/fixtures/local_dir_main/netlify.toml
+
+> Resolved config
+  build:
+    publish: packages/build/tests/plugins/fixtures/local_dir_main
+    publishOrigin: default
+  plugins:
+    - inputs: {}
+      origin: config
+      package: ./plugin
+
+> Context
+  production
+
+> Loading plugins
+   - ./plugin@1.0.0 from netlify.toml
+
+./plugin (onPreBuild event)                                   
+────────────────────────────────────────────────────────────────
+
+test
+
+(./plugin onPreBuild completed in 1ms)
+Build step duration: ./plugin onPreBuild completed in 1ms
+
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+
+(Netlify Build completed in 1ms)
+Build step duration: Netlify Build completed in 1ms"
+`;
+
 exports[`Local plugins invalid path 1`] = `
 "
 Netlify Build                                                 

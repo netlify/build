@@ -1,4 +1,5 @@
-import { join } from 'path'
+import { readFile } from 'fs/promises'
+import { isAbsolute, join, resolve } from 'path'
 
 import { resolveModulePath } from 'exsolve'
 import { findUp } from 'find-up'
@@ -39,8 +40,21 @@ export const tryResolvePath = async function (
 // This throws if the package cannot be found.
 // Caching is disabled because plugins can be installed or updated between
 // resolutions within the same process.
-// eslint-disable-next-line @typescript-eslint/require-await
 export const resolvePath = async function (path: string, basedir: string): Promise<string> {
+  try {
+    return resolveModule(path, basedir)
+  } catch (error) {
+    const mainPath = await getDirectoryMain(path, basedir)
+
+    if (mainPath === undefined) {
+      throw error
+    }
+
+    return resolveModule(mainPath, basedir)
+  }
+}
+
+const resolveModule = function (path: string, basedir: string): string {
   return resolveModulePath(path, {
     from: `${basedir}/`,
     conditions: ['node', 'require'],
@@ -48,4 +62,27 @@ export const resolvePath = async function (path: string, basedir: string): Promi
     suffixes: ['', '/index'],
     cache: false,
   })
+}
+
+// This accounts for the `require` behaviour of loading `{dir}/package.json`
+// if you resolve a directory, and then loading the specified `main`.
+const getDirectoryMain = async function (path: string, basedir: string): Promise<string | undefined> {
+  if (!path.startsWith('.') && !isAbsolute(path)) {
+    return undefined
+  }
+
+  const packageDir = resolve(basedir, path)
+
+  let packageJson: { main?: unknown }
+  try {
+    packageJson = JSON.parse(await readFile(join(packageDir, 'package.json'), 'utf8')) as { main?: unknown }
+  } catch {
+    return undefined
+  }
+
+  if (typeof packageJson.main !== 'string') {
+    return undefined
+  }
+
+  return join(packageDir, packageJson.main)
 }
