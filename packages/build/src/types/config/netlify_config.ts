@@ -53,9 +53,31 @@ interface ServerConfig {
   excludedPath?: Many<`/${string}`, 'mutable'>
 
   /**
+   * Glob patterns of additional files to include in the server's bundle,
+   * relative to the base directory
+   */
+  includedFiles?: string[]
+
+  /**
    * Airport code of the region the server runs in
    */
   region?: 'cmh' | 'fra'
+
+  /**
+   * How many instances the server runs
+   */
+  scale?: {
+    /**
+     * Minimum number of instances to keep running, an integer of 0 or more
+     */
+    min?: number
+
+    /**
+     * Maximum number of instances to run, an integer of 1 or more, and no less
+     * than `min`
+     */
+    max?: number
+  }
 
   /**
    * Size of the instances the server runs on

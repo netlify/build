@@ -4,7 +4,7 @@ import { arch, platform } from 'process'
 
 import type { InvocationMode } from './function.js'
 import type { TrafficRules } from './rate_limit.js'
-import type { ServerResult } from './server.js'
+import type { ServerResult, ServerScale } from './server.js'
 import type { FunctionResult } from './utils/format_result.js'
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
@@ -41,6 +41,7 @@ interface ManifestServer {
   routes?: ExtendedRoute[]
   runtime: string
   runtimeVersion?: string
+  scale?: ServerScale
 }
 
 interface ManifestBase {
@@ -108,6 +109,7 @@ const formatServerForManifest = ({
   routes,
   runtime,
   runtimeVersion,
+  scale,
 }: ServerResult): ManifestServer => {
   const server: ManifestServer = {
     bundler,
@@ -117,6 +119,7 @@ const formatServerForManifest = ({
     region,
     runtime,
     runtimeVersion,
+    scale,
   }
 
   if (routes?.length) {

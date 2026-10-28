@@ -2,15 +2,11 @@ import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
 import { ARCHIVE_FORMAT } from './archive.js'
+import { isValidRange } from './config.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
-import {
-  parseFile,
-  serverConfig,
-  type ServerConfig,
-  type ServerInSourceConfig,
-} from './runtimes/node/in_source_config/index.js'
+import { parseFile, serverConfig, type ServerConfig } from './runtimes/node/in_source_config/index.js'
 import { RUNTIME, type RuntimeName } from './runtimes/runtime.js'
 import type { RuntimeCache } from './utils/cache.js'
 import { FunctionBundlingUserError } from './utils/error.js'
@@ -70,13 +66,23 @@ const toExcludedServerRoutes = (paths: string[] = []): Route[] | undefined =>
   paths.length === 0 ? undefined : getRoutes(SERVER_NAME, paths)
 
 /**
+ * How many instances the server runs.
+ */
+export type ServerScale = {
+  min?: number
+  max?: number
+}
+
+/**
  * Server configuration from the `[server]` block of the Netlify configuration
  * file. The server's in-source configuration takes precedence over it.
  */
 export interface NetlifyServerConfig {
   excludedPath?: string | string[]
+  includedFiles?: string[]
   path?: string | string[]
   region?: string
+  scale?: ServerScale
   size?: string
 }
 
@@ -96,10 +102,32 @@ const parseNetlifyServerConfig = (config: NetlifyServerConfig = {}): ServerConfi
   )
 }
 
+// `min` and `max` are merged separately, so each source can set one of them.
+const mergeServerScale = (inSource: ServerScale = {}, fromNetlifyConfig: ServerScale = {}): ServerScale | undefined => {
+  const scale = removeUndefined<ServerScale>({
+    min: inSource.min ?? fromNetlifyConfig.min,
+    max: inSource.max ?? fromNetlifyConfig.max,
+  })
+
+  if (scale.min === undefined && scale.max === undefined) {
+    return undefined
+  }
+
+  if (!isValidRange(scale)) {
+    throw new FunctionBundlingUserError(
+      `Netlify Server has a configuration error on 'scale': 'min' (${String(scale.min)}) cannot be greater than 'max' (${String(scale.max)}) once the in-source configuration and the [server] block are combined`,
+      { functionName: SERVER_NAME, runtime: RUNTIME.JAVASCRIPT },
+    )
+  }
+
+  return scale
+}
+
 const mergeServerConfig = (inSource: ServerConfig, fromNetlifyConfig: ServerConfig): ServerConfig => ({
   excludedPath: inSource.excludedPath ?? fromNetlifyConfig.excludedPath,
   path: inSource.path ?? fromNetlifyConfig.path,
   region: inSource.region ?? fromNetlifyConfig.region,
+  scale: mergeServerScale(inSource.scale, fromNetlifyConfig.scale),
   size: inSource.size ?? fromNetlifyConfig.size,
 })
 
@@ -114,7 +142,7 @@ export const getServerRoutes = async (
   const fromNetlifyConfig = parseNetlifyServerConfig(config)
   const { config: inSource } = await parseFile(resolve(entryPath), { functionName: SERVER_NAME, isServer: true })
 
-  return toServerRoutes(mergeServerConfig(inSource as ServerInSourceConfig, fromNetlifyConfig).path)
+  return toServerRoutes(mergeServerConfig(inSource as ServerConfig, fromNetlifyConfig).path)
 }
 
 export type ServerResult = {
@@ -127,6 +155,7 @@ export type ServerResult = {
   routes?: ExtendedRoute[]
   runtime: RuntimeName
   runtimeVersion?: string
+  scale?: ServerScale
   size?: number
 }
 
@@ -193,11 +222,22 @@ export const bundleServer = async (
   const srcPath = resolve(server.path)
   const source = await readServerSource(srcPath, { cache, featureFlags })
 
+  if (fromNetlifyConfig.includedFiles !== undefined && basePath === undefined) {
+    throw new Error('Netlify Server includedFiles from the [server] block need a basePath to resolve from')
+  }
+
+  // Included files from the [server] block resolve from the base path.
+  // In-source ones resolve from the entry file and replace them.
+  const functionConfig =
+    fromNetlifyConfig.includedFiles === undefined
+      ? source.config
+      : { ...source.config, includedFiles: fromNetlifyConfig.includedFiles, includedFilesBasePath: basePath }
+
   const zipResult = await source.runtime.zipFunction({
     archiveFormat: ARCHIVE_FORMAT.ZIP,
     basePath,
     cache,
-    config: source.config,
+    config: functionConfig,
     destFolder,
     extension: source.extension,
     featureFlags,
@@ -226,7 +266,7 @@ export const bundleServer = async (
     runtime: source.runtime,
   })
 
-  const inSource = (zipResult.staticAnalysisResult?.config ?? {}) as ServerInSourceConfig
+  const inSource = (zipResult.staticAnalysisResult?.config ?? {}) as ServerConfig
   const config = mergeServerConfig(inSource, fromNetlifyConfig)
 
   return removeUndefined<ServerResult>({
@@ -239,6 +279,7 @@ export const bundleServer = async (
     routes: toServerRoutes(config.path),
     runtime: result.runtime,
     runtimeVersion: result.runtimeVersion,
+    scale: config.scale,
     size: result.size,
   })
 }

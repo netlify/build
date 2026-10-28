@@ -228,7 +228,13 @@ test('Functions: merges the [server] block of netlify.toml with the in-source co
 
   const [, , options] = zipServerSpy.mock.calls[0]
 
-  expect(options?.config).toEqual({ path: '/api/*', excludedPath: '/api/internal', region: 'cmh', size: 'large' })
+  expect(options?.config).toEqual({
+    path: '/api/*',
+    excludedPath: '/api/internal',
+    region: 'cmh',
+    scale: { min: 0, max: 5 },
+    size: 'large',
+  })
 
   zipServerSpy.mockRestore()
 
@@ -238,6 +244,7 @@ test('Functions: merges the [server] block of netlify.toml with the in-source co
 
   expect(manifest.server.instanceSize).toBe('medium')
   expect(manifest.server.region).toBe('cmh')
+  expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
   expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*'])
   expect(manifest.server.excludedRoutes?.map(({ pattern }) => pattern)).toEqual(['/api/internal'])
 })
