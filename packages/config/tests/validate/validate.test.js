@@ -407,3 +407,38 @@ test('server.size: one of the server sizes', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/server_invalid_size').runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
+
+test('server.scale: object', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_not_object').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale: unknown property', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_unknown_props').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale.min: integer greater than or equal to 0', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_invalid_min').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale.min: not a fraction', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_fractional_min').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale.max: integer greater than or equal to 1', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_invalid_max').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale.max: not a string', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_string_max').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale: min less than or equal to max', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale_min_above_max').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})

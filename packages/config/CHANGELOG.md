@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.5.0](https://github.com/netlify/build/compare/config-v25.4.1...config-v25.5.0) (2026-10-27)
+
+
+### Features
+
+* **server:** add `scale` configuration option ([#7295](https://github.com/netlify/build/issues/7295)) ([b3899b8](https://github.com/netlify/build/commit/b3899b83e3dc88a04789d610043b855bae70b0f2))
+
 ## [25.4.1](https://github.com/netlify/build/compare/config-v25.4.0...config-v25.4.1) (2026-10-23)
 
 

@@ -105,6 +105,22 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.7.0](https://github.com/netlify/build/compare/build-v37.6.1...build-v37.7.0) (2026-10-27)
+
+
+### Features
+
+* **server:** add `scale` configuration option ([#7295](https://github.com/netlify/build/issues/7295)) ([b3899b8](https://github.com/netlify/build/commit/b3899b83e3dc88a04789d610043b855bae70b0f2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.4.1 to ^25.5.0
+    * @netlify/functions-utils bumped from ^7.1.21 to ^7.1.22
+    * @netlify/zip-it-and-ship-it bumped from 16.5.1 to 16.6.0
+
 ## [37.6.1](https://github.com/netlify/build/compare/build-v37.6.0...build-v37.6.1) (2026-10-23)
 
 
