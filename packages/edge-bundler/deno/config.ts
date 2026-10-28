@@ -37,14 +37,14 @@ if (typeof func.default !== 'function' && !isFetchable) {
   Deno.exit(exitCodes.InvalidDefaultExport)
 }
 
-// A named `config` export wins over `default.config`.
-const config = func.config ?? (isFetchable ? func.default.config : undefined)
+// A named `config` export wins over `default.config`, even when it is `null`.
+const config = func.config === undefined && isFetchable ? func.default.config : func.config
 
 if (config === undefined) {
   Deno.exit(exitCodes.NoConfig)
 }
 
-if (typeof config !== 'object') {
+if (config === null || typeof config !== 'object') {
   Deno.exit(exitCodes.InvalidExport)
 }
 

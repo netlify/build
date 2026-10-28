@@ -431,6 +431,18 @@ test('Passes validation if default export is an object with a `fetch` method', a
     ),
   ).resolves.toEqual({ path: '/named' })
 
+  const nullNamedConfig = getConfig(
+    'null_named_config',
+    `
+      export default { fetch: () => new Response("Hello world!"), config: { path: "/inline" } }
+      export const config = null
+    `,
+  )
+
+  await expect(nullNamedConfig).rejects.toThrowError(
+    `The 'config' export in edge function at '${join(tmpDir, 'null_named_config.ts')}' must be an object. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+  )
+
   const noFetch = getConfig('no_fetch', `export default { config: { path: "/inline" } }`)
 
   await expect(noFetch).rejects.toThrowError(invalidDefaultExportErr(join(tmpDir, 'no_fetch.ts')))
