@@ -3,3 +3,7 @@ path = "/api/*"
 excludedPath = "/api/internal"
 region = "CMH"
 size = "large"
+
+[server.scale]
+min = 0
+max = 5

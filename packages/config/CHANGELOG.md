@@ -76,6 +76,29 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.5.0](https://github.com/netlify/build/compare/config-v25.4.1...config-v25.5.0) (2026-10-27)
+
+
+### Features
+
+* **server:** add `scale` configuration option ([#7295](https://github.com/netlify/build/issues/7295)) ([b3899b8](https://github.com/netlify/build/commit/b3899b83e3dc88a04789d610043b855bae70b0f2))
+
+## [25.4.1](https://github.com/netlify/build/compare/config-v25.4.0...config-v25.4.1) (2026-10-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.3 to ^15.1.4
+
+## [25.4.0](https://github.com/netlify/build/compare/config-v25.3.0...config-v25.4.0) (2026-10-22)
+
+
+### Features
+
+* support `includedFiles` for Server in `netlify.toml` ([#7285](https://github.com/netlify/build/issues/7285)) ([62ff57b](https://github.com/netlify/build/commit/62ff57b3da328357fa0cb2a2286baf018dd2a14f))
+
 ## [25.3.0](https://github.com/netlify/build/compare/config-v25.2.7...config-v25.3.0) (2026-10-20)
 
 

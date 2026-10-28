@@ -14,7 +14,7 @@ import type { ExtendedRoute, Route } from './utils/routes.js'
 
 export { Config, FunctionConfig } from './config.js'
 export { zipFunction, zipFunctions, zipServer, ZipFunctionOptions, ZipFunctionsOptions } from './zip.js'
-export type { NetlifyServerConfig, ServerOptions, ServerResult, ZipServerOptions } from './zip.js'
+export type { NetlifyServerConfig, ServerOptions, ServerResult, ServerScale, ZipServerOptions } from './zip.js'
 export { findServerEntry, getServerRoutes } from './server.js'
 export type { FunctionsBag, MixedPaths } from './paths.js'
 

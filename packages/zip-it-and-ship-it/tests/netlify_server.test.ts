@@ -574,6 +574,77 @@ export const config = { includedFiles: 'data/**' }
     expect((error as Error).message).toMatch(/^Netlify Server has a configuration error on 'includedFiles': /)
   })
 
+  test('Writes the scale bounds to the manifest', async () => {
+    const { manifest, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { min: 0, max: 3 } }
+`,
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+    expect(result.scale).toEqual({ min: 0, max: 3 })
+  })
+
+  test('Writes only the scale bound the config sets', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 5 } }
+`,
+    )
+
+    expect(manifest.server.scale).toEqual({ max: 5 })
+  })
+
+  test.each([
+    ['the config sets no scale', '{ size: "small" }'],
+    ['the scale sets no bounds', '{ scale: {} }'],
+  ])('Leaves the scale to the deploy backend when %s', async (_, config) => {
+    const { manifest, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = ${config}
+`,
+    )
+
+    expect(manifest.server).not.toHaveProperty('scale')
+    expect(result).not.toHaveProperty('scale')
+  })
+
+  test.each([
+    ['scale.min', '{ min: 1.5 }', 'Must be an integer greater than or equal to 0'],
+    ['scale.min', '{ min: "1" }', 'Must be an integer greater than or equal to 0'],
+    ['scale.max', '{ max: 0 }', 'Must be an integer greater than or equal to 1'],
+    ['scale.max', '{ max: 2.5 }', 'Must be an integer greater than or equal to 1'],
+    ['scale', '{ min: 4, max: 2 }', "'min' cannot be greater than 'max'"],
+    ['scale', '3', 'Invalid input: expected object, received number'],
+  ])('Fails the build on an invalid %s, as a user error', async (property, scale, message) => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: ${scale} }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe(`Netlify Server has a configuration error on '${property}': ${message}`)
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
+  })
+
+  test('Fails the build on a scale property servers do not support', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3, target: 2 } }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe("Netlify Server does not support the 'scale.target' configuration property")
+  })
+
   test.each([
     ['memory', '2048'],
     ['vcpu', '1'],
@@ -682,6 +753,12 @@ createServer((_req, res) => res.end('hello')).listen(process.env.PORT)
     expect(manifest.server.excludedRoutes?.map(({ pattern }) => pattern)).toEqual(['/api/internal'])
   })
 
+  test('Applies the scale from the configuration', async () => {
+    const { manifest } = await bundleWithConfig(FRAMEWORK_SERVER, { scale: { min: 0, max: 3 } })
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+  })
+
   test('Takes a single path', async () => {
     const { manifest } = await bundleWithConfig(FRAMEWORK_SERVER, { path: '/api/*' })
 
@@ -699,6 +776,45 @@ export const config = { size: 'small' }
     expect(manifest.server.instanceSize).toBe('small')
     expect(manifest.server.region).toBe('cmh')
     expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*'])
+  })
+
+  test('Lets the in-source configuration win scale bound by scale bound', async () => {
+    const { manifest } = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3 } }
+`,
+      { scale: { min: 1, max: 10 } },
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 1, max: 3 })
+  })
+
+  test('Combines a scale bound from each source', async () => {
+    const { manifest } = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3 } }
+`,
+      { scale: { min: 0 } },
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+  })
+
+  test('Fails the build when the combined scale bounds are out of order, as a user error', async () => {
+    const error = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 2 } }
+`,
+      { scale: { min: 4 } },
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe(
+      "Netlify Server has a configuration error on 'scale': 'min' (4) cannot be greater than 'max' (2) once the in-source configuration and the [server] block are combined",
+    )
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
   })
 
   test('Lets an in-source path replace the configured paths', async () => {
@@ -743,6 +859,11 @@ export const config = { excludedPath: '/app/private' }
     ['region', { region: 'iad' }],
     ['path', { path: 'api/*' }],
     ['excludedPath', { excludedPath: 'api/*' }],
+    ['includedFiles', { includedFiles: 'data/**' as unknown as string[] }],
+    ['scale.min', { scale: { min: -1 } }],
+    ['scale.max', { scale: { max: 0 } }],
+    ['scale', { scale: { min: 3, max: 1 } }],
+    ['scale', { scale: { max: 3, target: 2 } as NetlifyServerConfig['scale'] }],
   ])('Fails the build on an invalid %s, as a user error', async (property, config) => {
     const error = await bundleWithConfig(FRAMEWORK_SERVER, config).catch((err: unknown) => err)
 
@@ -767,6 +888,67 @@ export const config = { excludedPath: '/app/private' }
       type: 'functionsBundling',
       location: { functionName: 'server', runtime: 'js' },
     })
+  })
+
+  // Extracts a server archive and returns the contents of every file in it,
+  // keyed by its path inside the archive.
+  const extractFiles = async (archivePath: string, destDir: string) => {
+    const extractDir = join(destDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', archivePath, '-C', extractDir])
+
+    const entries = await readdir(extractDir, { recursive: true, withFileTypes: true })
+    const files: Record<string, string> = {}
+
+    for (const entry of entries.filter((entry) => entry.isFile())) {
+      const path = join(entry.parentPath, entry.name)
+
+      files[path.slice(extractDir.length + 1)] = await readFile(path, 'utf-8')
+    }
+
+    return files
+  }
+
+  test('Bundles the files the configuration includes, relative to the base path', async () => {
+    const { entryPath, tmpDir } = await writeServer(FRAMEWORK_SERVER)
+    const destDir = join(tmpDir, 'out')
+
+    await mkdir(join(tmpDir, 'data'), { recursive: true })
+    await writeFile(join(tmpDir, 'data', 'seed.json'), '{"from":"base"}')
+
+    const result = await zipServer(entryPath, destDir, { basePath: tmpDir, config: { includedFiles: ['data/**'] } })
+    const files = await extractFiles(result.path, destDir)
+
+    expect(Object.entries(files).find(([path]) => path.endsWith(join('data', 'seed.json')))?.[1]).toBe(
+      '{"from":"base"}',
+    )
+  })
+
+  test('Fails without a base path to resolve configured included files from', async () => {
+    const { entryPath, tmpDir } = await writeServer(FRAMEWORK_SERVER)
+
+    await expect(zipServer(entryPath, join(tmpDir, 'out'), { config: { includedFiles: ['data/**'] } })).rejects.toThrow(
+      /need a basePath/,
+    )
+  })
+
+  test('Lets in-source included files replace the configured ones', async () => {
+    const { entryPath, tmpDir } = await writeServer(`${FRAMEWORK_SERVER}
+export const config = { includedFiles: ['own/**'] }
+`)
+    const destDir = join(tmpDir, 'out')
+
+    await mkdir(join(tmpDir, 'data'), { recursive: true })
+    await writeFile(join(tmpDir, 'data', 'seed.json'), '{"from":"base"}')
+    await mkdir(join(dirname(entryPath), 'own'), { recursive: true })
+    await writeFile(join(dirname(entryPath), 'own', 'seed.json'), '{"from":"entry"}')
+
+    const result = await zipServer(entryPath, destDir, { basePath: tmpDir, config: { includedFiles: ['data/**'] } })
+    const files = Object.entries(await extractFiles(result.path, destDir))
+
+    expect(files.find(([path]) => path.endsWith(join('own', 'seed.json')))?.[1]).toBe('{"from":"entry"}')
+    expect(files.find(([path]) => path.endsWith(join('data', 'seed.json')))).toBeUndefined()
   })
 
   test('Fails the build on an invalid value even when the in-source configuration overrides it', async () => {
