@@ -158,3 +158,13 @@ test('Context-specific plugins config is last in merged array', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/merge_netlify_toml_context_last').runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
+
+test('server.region and server.size can be capitalized', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_case').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('server.scale is kept as is, including a min of 0', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/server_scale').runWithConfig()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})

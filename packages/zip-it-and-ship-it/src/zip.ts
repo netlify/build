@@ -9,7 +9,13 @@ import { Config } from './config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { FunctionSource } from './function.js'
 import { createFunctionsManifest, createServerManifest } from './manifest.js'
-import { bundleServer, type ServerOptions, type ServerResult } from './server.js'
+import {
+  bundleServer,
+  type NetlifyServerConfig,
+  type ServerOptions,
+  type ServerResult,
+  type ServerScale,
+} from './server.js'
 import { getFunctionsFromPaths } from './runtimes/index.js'
 import { MODULE_FORMAT } from './runtimes/node/utils/module_format.js'
 import { type MixedPaths, getFunctionsBag } from './paths.js'
@@ -41,6 +47,13 @@ export type ZipFunctionsOptions = ZipFunctionOptions & {
 
 export interface ZipServerOptions {
   basePath?: string
+
+  /**
+   * Server configuration from the `[server]` block of the Netlify
+   * configuration file.
+   */
+  config?: NetlifyServerConfig
+
   debug?: boolean
   featureFlags?: FeatureFlags
 
@@ -53,7 +66,7 @@ export interface ZipServerOptions {
   systemLog?: LogFunction
 }
 
-export type { ServerOptions, ServerResult }
+export type { NetlifyServerConfig, ServerOptions, ServerResult, ServerScale }
 
 const DEFAULT_PARALLEL_LIMIT = 5
 
@@ -161,6 +174,7 @@ export const zipServer = async function (
   destFolder: string,
   {
     basePath,
+    config,
     debug,
     featureFlags: inputFeatureFlags,
     manifest,
@@ -174,7 +188,7 @@ export const zipServer = async function (
 
   await fs.mkdir(destFolder, { recursive: true })
 
-  const result = await bundleServer({ path: srcPath }, destFolder, {
+  const result = await bundleServer({ config, path: srcPath }, destFolder, {
     basePath,
     cache,
     featureFlags,

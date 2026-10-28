@@ -72,7 +72,7 @@
     },
     "packageManager": {
       "name": "npm",
-      "version": ">=11",
+      "version": ">=11.17.0",
       "onFail": "warn"
     }
   },
@@ -80,7 +80,7 @@
     "esbuild@0.27.7": true,
     "esbuild@0.28.1": true,
     "nx@22.7.6": true,
-    "protobufjs@7.6.4": true,
+    "protobufjs@7.6.6": true,
     "unix-dgram@2.0.7": true,
     "yarn@1.22.22": true
   }

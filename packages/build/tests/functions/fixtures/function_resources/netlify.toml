@@ -1,0 +1,6 @@
+[functions]
+memory = "2gb"
+region = "fra"
+
+[functions.sized-by-vcpu]
+vcpu = 1.5

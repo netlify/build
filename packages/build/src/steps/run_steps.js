@@ -1,5 +1,3 @@
-import pReduce from 'p-reduce'
-
 import { addErrorInfo } from '../error/info.js'
 import { addStatus } from '../status/add.js'
 
@@ -48,184 +46,151 @@ export const runSteps = async function ({
   enhancedSecretScan,
   edgeFunctionsBootstrapURL,
 }) {
-  const {
-    index: stepsCount,
-    error: errorA,
-    netlifyConfig: netlifyConfigC,
-    statuses: statusesB,
-    failedPlugins: failedPluginsA,
-    timers: timersC,
-    configMutations: configMutationsB,
-    metrics: metricsC,
-    returnValues,
-    deployEnvVars,
-  } = await pReduce(
-    steps,
-    async (
-      {
-        deployEnvVars,
-        index,
-        error,
-        failedPlugins,
-        envChanges,
-        netlifyConfig: netlifyConfigA,
-        configMutations,
-        headersPath: headersPathA,
-        redirectsPath: redirectsPathA,
-        statuses,
-        timers: timersA,
-        metrics: metricsA,
-        returnValues,
-      },
-      {
-        event,
-        childProcess,
-        packageName,
-        extensionMetadata,
-        coreStep,
-        coreStepId,
-        coreStepName,
-        coreStepDescription,
-        pluginPackageJson,
-        loadedFrom,
-        origin,
-        condition,
-        quiet: coreStepQuiet,
-      },
-    ) => {
-      const {
-        newIndex = index,
-        newError = error,
-        deployEnvVars: newDeployEnvVars = [],
-        failedPlugin = [],
-        newEnvChanges = {},
-        netlifyConfig: netlifyConfigB = netlifyConfigA,
-        configMutations: configMutationsA = configMutations,
-        headersPath: headersPathB = headersPathA,
-        redirectsPath: redirectsPathB = redirectsPathA,
-        newStatus,
-        timers: timersB = timersA,
-        metrics: metricsB = [],
-        returnValue,
-      } = await runStep({
-        deployEnvVars,
-        event,
-        childProcess,
-        packageName,
-        extensionMetadata,
-        coreStep,
-        coreStepId,
-        coreStepName,
-        coreStepDescription,
-        coreStepQuiet,
-        pluginPackageJson,
-        loadedFrom,
-        origin,
-        condition,
-        configPath,
-        outputConfigPath,
-        buildDir,
-        packagePath,
-        repositoryRoot,
-        nodePath,
-        index,
-        childEnv,
-        context,
-        branch,
-        envChanges,
-        constants,
-        steps,
-        buildbotServerSocket,
-        events,
-        mode,
-        api,
-        errorMonitor,
-        deployId,
-        errorParams,
-        error,
-        returnValues,
-        failedPlugins,
-        configOpts,
-        defaultConfig,
-        netlifyConfig: netlifyConfigA,
-        configMutations,
-        headersPath: headersPathA,
-        redirectsPath: redirectsPathA,
-        logs,
-        debug,
-        systemLog,
-        verbose,
-        saveConfig,
-        timers: timersA,
-        testOpts,
-        featureFlags,
-        quiet,
-        userNodeVersion,
-        explicitSecretKeys,
-        enhancedSecretScan,
-        edgeFunctionsBootstrapURL,
-      })
+  let index = 0
+  let error
+  const deployEnvVarsByKey = new Map()
+  let deployEnvVars = []
+  const failedPlugins = []
+  const envChanges = {}
+  let configMutations = []
+  let statuses = []
+  const metrics = []
+  const returnValues = {}
 
-      const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
-
-      /** @type import('../steps/return_values.js').ReturnValue */
-      const augmentedReturnValue = returnValue
-        ? {
-            ...returnValue,
-            displayName: extensionMetadata?.name || extensionMetadata?.slug || packageName,
-            generatorType: extensionMetadata ? 'extension' : 'build plugin',
-          }
-        : undefined
-
-      return {
-        index: newIndex,
-        error: newError,
-        deployEnvVars: Array.from(
-          [...deployEnvVars, ...newDeployEnvVars].reduce((acc, env) => acc.set(env.key, env), new Map()).values(),
-        ),
-        failedPlugins: [...failedPlugins, ...failedPlugin],
-        envChanges: { ...envChanges, ...newEnvChanges },
-        netlifyConfig: netlifyConfigB,
-        configMutations: configMutationsA,
-        headersPath: headersPathB,
-        redirectsPath: redirectsPathB,
-        statuses: statusesA,
-        timers: timersB,
-        metrics: [...metricsA, ...metricsB],
-        returnValues: augmentedReturnValue ? { ...returnValues, [packageName]: augmentedReturnValue } : returnValues,
-      }
-    },
-    {
-      index: 0,
-      deployEnvVars: [],
-      failedPlugins: [],
-      envChanges: {},
+  for (const {
+    event,
+    childProcess,
+    packageName,
+    extensionMetadata,
+    coreStep,
+    coreStepId,
+    coreStepName,
+    coreStepDescription,
+    pluginPackageJson,
+    loadedFrom,
+    origin,
+    condition,
+    quiet: coreStepQuiet,
+  } of steps) {
+    const {
+      newIndex = index,
+      newError = error,
+      deployEnvVars: newDeployEnvVars = [],
+      failedPlugin = [],
+      newEnvChanges = {},
+      netlifyConfig: newNetlifyConfig = netlifyConfig,
+      configMutations: newConfigMutations = configMutations,
+      headersPath: newHeadersPath = headersPath,
+      redirectsPath: newRedirectsPath = redirectsPath,
+      newStatus,
+      timers: newTimers = timers,
+      metrics: newMetrics = [],
+      returnValue,
+    } = await runStep({
+      deployEnvVars,
+      event,
+      childProcess,
+      packageName,
+      extensionMetadata,
+      coreStep,
+      coreStepId,
+      coreStepName,
+      coreStepDescription,
+      coreStepQuiet,
+      pluginPackageJson,
+      loadedFrom,
+      origin,
+      condition,
+      configPath,
+      outputConfigPath,
+      buildDir,
+      packagePath,
+      repositoryRoot,
+      nodePath,
+      index,
+      childEnv,
+      context,
+      branch,
+      envChanges,
+      constants,
+      steps,
+      buildbotServerSocket,
+      events,
+      mode,
+      api,
+      errorMonitor,
+      deployId,
+      errorParams,
+      error,
+      returnValues,
+      failedPlugins,
+      configOpts,
+      defaultConfig,
       netlifyConfig,
-      configMutations: [],
+      configMutations,
       headersPath,
       redirectsPath,
-      statuses: [],
+      logs,
+      debug,
+      systemLog,
+      verbose,
+      saveConfig,
       timers,
-      metrics: [],
-      returnValues: {},
-    },
-  )
+      testOpts,
+      featureFlags,
+      quiet,
+      userNodeVersion,
+      explicitSecretKeys,
+      enhancedSecretScan,
+      edgeFunctionsBootstrapURL,
+    })
+
+    index = newIndex
+    error = newError
+    netlifyConfig = newNetlifyConfig
+    headersPath = newHeadersPath
+    redirectsPath = newRedirectsPath
+    timers = newTimers
+    statuses = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
+
+    if (newDeployEnvVars.length !== 0) {
+      for (const env of deployEnvVars) {
+        deployEnvVarsByKey.set(env.key, env)
+      }
+      for (const env of newDeployEnvVars) {
+        deployEnvVarsByKey.set(env.key, env)
+      }
+      deployEnvVars = Array.from(deployEnvVarsByKey.values())
+    }
+    failedPlugins.push(...failedPlugin)
+    Object.assign(envChanges, newEnvChanges)
+    configMutations = newConfigMutations
+    metrics.push(...newMetrics)
+
+    if (returnValue) {
+      returnValues[packageName] = /** @type {import('../steps/return_values.js').ReturnValue} */ ({
+        ...returnValue,
+        displayName: extensionMetadata?.name || extensionMetadata?.slug || packageName,
+        generatorType: extensionMetadata ? 'extension' : 'build plugin',
+      })
+    }
+  }
 
   // Instead of throwing any build failure right away, we wait for `onError`,
   // etc. to complete. This is why we are throwing only now.
-  if (errorA !== undefined) {
-    addErrorInfo(errorA, { statuses: statusesB })
-    throw errorA
+  if (error !== undefined) {
+    addErrorInfo(error, { statuses })
+    throw error
   }
 
   return {
-    stepsCount,
-    netlifyConfig: netlifyConfigC,
-    statuses: statusesB,
-    failedPlugins: failedPluginsA,
-    timers: timersC,
-    configMutations: configMutationsB,
-    metrics: metricsC,
+    stepsCount: index,
+    netlifyConfig,
+    statuses,
+    failedPlugins,
+    timers,
+    configMutations,
+    metrics,
     returnValues,
     deployEnvVars,
   }
