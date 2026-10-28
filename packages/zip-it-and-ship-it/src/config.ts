@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { basename, extname, dirname, join } from 'path'
 
-import type { FunctionRegion, ServerRegion } from '@netlify/types'
+import type { FunctionRegion } from '@netlify/types'
 import isPathInside from 'is-path-inside'
 // @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
 // this dependency.
@@ -48,19 +48,36 @@ const functionRegion = z.preprocess(
   z.enum(FUNCTION_REGION_CODES),
 )
 
-// Checked against `ServerRegion` the same way `FUNCTION_REGION_KEYS` is
-// against `FunctionRegion`.
-const SERVER_REGION_KEYS = {
-  fra: null,
-  iad: null,
-} as const satisfies Record<ServerRegion, null>
-
-const SERVER_REGION_CODES = Object.keys(SERVER_REGION_KEYS) as [ServerRegion, ...ServerRegion[]]
+const SERVER_REGION_CODES = ['cmh', 'fra'] as const
 
 export const serverRegion = z.preprocess(
   (input) => (typeof input === 'string' ? input.toLowerCase() : input),
   z.enum(SERVER_REGION_CODES),
 )
+
+const SERVER_SIZES = ['small', 'medium', 'large'] as const
+
+export const serverSize = z.preprocess(
+  (input) => (typeof input === 'string' ? input.toLowerCase() : input),
+  z.enum(SERVER_SIZES),
+)
+
+const integerAtLeast = (min: number) => {
+  const message = `Must be an integer greater than or equal to ${String(min)}`
+
+  return z.number({ message }).int({ message }).min(min, { message }).optional()
+}
+
+export const isValidRange = ({ min, max }: { min?: number; max?: number }) =>
+  min === undefined || max === undefined || min <= max
+
+export const serverScale = z
+  .object({
+    min: integerAtLeast(0),
+    max: integerAtLeast(1),
+  })
+  .strict()
+  .refine(isValidRange, { message: "'min' cannot be greater than 'max'" })
 
 const FUNCTION_MEMORY_MIN_MB = 1024
 const FUNCTION_MEMORY_MAX_MB = 4096

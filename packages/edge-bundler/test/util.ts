@@ -146,7 +146,13 @@ export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
     await fs.rename(stage2Path, `${stage2Path}.js`)
 
     // Run function that imports the extracted stage 2 and invokes each function.
-    const evalCommand = execa('deno', ['eval', '--import-map', importMapPath, inspectESZIPFunction(stage2Path)])
+    const evalCommand = execa('deno', [
+      'eval',
+      '--no-config',
+      '--import-map',
+      importMapPath,
+      inspectESZIPFunction(stage2Path),
+    ])
 
     evalCommand.stderr?.pipe(stderr)
 
