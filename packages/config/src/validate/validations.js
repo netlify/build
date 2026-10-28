@@ -47,6 +47,16 @@ const isValidFunctionMemory = (value) => {
   return Number.isInteger(megabytes) && megabytes >= FUNCTION_MEMORY_MIN_MB && megabytes <= FUNCTION_MEMORY_MAX_MB
 }
 
+const SERVER_PROPERTIES = ['excludedPath', 'includedFiles', 'path', 'region', 'scale', 'size']
+const SERVER_REGIONS = ['cmh', 'fra']
+const SERVER_SIZES = ['small', 'medium', 'large']
+const SERVER_SCALE_PROPERTIES = ['min', 'max']
+
+const isIntegerFrom = (min) => (value) => Number.isInteger(value) && value >= min
+
+const isServerPath = (value) => isString(value) && value.startsWith('/')
+const isServerPaths = (value) => isServerPath(value) || (Array.isArray(value) && value.every(isServerPath))
+
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
 // Each validation is an object with the following properties:
@@ -170,6 +180,12 @@ export const PRE_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be a plain object.',
     example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
+  },
+  {
+    property: 'server',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ server: { path: '/api/*', size: 'small' } }),
   },
 ]
 
@@ -368,6 +384,71 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: isString,
     message: 'must be a string.',
     example: () => ({ database: { migrations: { path: 'netlify/database/migrations' } } }),
+  },
+  {
+    property: 'server',
+    ...validProperties(SERVER_PROPERTIES, []),
+    example: () => ({ server: { path: '/api/*', size: 'small' } }),
+  },
+  {
+    property: 'server.path',
+    check: isServerPaths,
+    message: 'must be a path starting with "/", or an array of them.',
+    example: () => ({ server: { path: ['/api/*', '/auth/callback'] } }),
+  },
+  {
+    property: 'server.excludedPath',
+    check: isServerPaths,
+    message: 'must be a path starting with "/", or an array of them.',
+    example: () => ({ server: { path: '/api/*', excludedPath: ['/api/internal', '/api/admin/*'] } }),
+  },
+  {
+    property: 'server.includedFiles',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: () => ({ server: { includedFiles: ['data/**', 'templates/*.html'] } }),
+  },
+  // Region and size are lowercased during normalization.
+  {
+    property: 'server.region',
+    check: (value) => SERVER_REGIONS.includes(value),
+    message: `must be one of: ${SERVER_REGIONS.join(', ')}`,
+    example: () => ({ server: { region: SERVER_REGIONS[0] } }),
+  },
+  {
+    property: 'server.size',
+    check: (value) => SERVER_SIZES.includes(value),
+    message: `must be one of: ${SERVER_SIZES.join(', ')}`,
+    example: () => ({ server: { size: SERVER_SIZES[0] } }),
+  },
+  {
+    property: 'server.scale',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
+  },
+  {
+    property: 'server.scale',
+    ...validProperties(SERVER_SCALE_PROPERTIES, []),
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
+  },
+  {
+    property: 'server.scale.min',
+    check: isIntegerFrom(0),
+    message: 'must be an integer greater than or equal to 0.',
+    example: () => ({ server: { scale: { min: 0 } } }),
+  },
+  {
+    property: 'server.scale.max',
+    check: isIntegerFrom(1),
+    message: 'must be an integer greater than or equal to 1.',
+    example: () => ({ server: { scale: { max: 3 } } }),
+  },
+  {
+    property: 'server.scale',
+    check: ({ min, max }) => min === undefined || max === undefined || min <= max,
+    message: 'must have a "min" less than or equal to its "max".',
+    example: () => ({ server: { scale: { min: 0, max: 3 } } }),
   },
   ...edgeFunctionValidations,
 ]

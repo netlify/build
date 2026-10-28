@@ -64,6 +64,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.8 to ^9.8.9
 
+## [11.3.1](https://github.com/netlify/build/compare/build-info-v11.3.0...build-info-v11.3.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v9 ([#7288](https://github.com/netlify/build/issues/7288)) ([6f90347](https://github.com/netlify/build/commit/6f903478bc96d02d6aeaa41831e6a73470fd1484))
+
 ## [11.3.0](https://github.com/netlify/build/compare/build-info-v11.2.0...build-info-v11.3.0) (2026-08-06)
 
 
