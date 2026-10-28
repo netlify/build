@@ -1,4 +1,4 @@
-import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Framework, mergeDetections } from './framework.js'
 
 const CLASSIC_COMPILER_CONFIG_FILES = ['remix.config.js']
 const CLASSIC_COMPILER_DEV = {
@@ -32,7 +32,10 @@ export class Hydrogen extends BaseFramework implements Framework {
   readonly id = 'hydrogen'
   name = 'Hydrogen'
   npmDependencies = ['@shopify/hydrogen']
-  configFiles = [...VITE_CONFIG_FILES, ...CLASSIC_COMPILER_CONFIG_FILES]
+  // Vite config files are deliberately not detection signals: they're too generic and led to
+  // false positives (any repo with a vite.config.* was detected as Hydrogen). They're only used
+  // below to pick the Vite vs Classic Compiler commands once Hydrogen is actually detected.
+  configFiles = CLASSIC_COMPILER_CONFIG_FILES
   category = Category.SSG
 
   logo = {
@@ -45,15 +48,20 @@ export class Hydrogen extends BaseFramework implements Framework {
     await super.detect()
 
     if (this.detected) {
-      if (this.detected.configName && VITE_CONFIG_FILES.includes(this.detected.configName)) {
-        this.dev = VITE_DEV
-        this.build = VITE_BUILD
-        return this as DetectedFramework
-      } else {
-        this.dev = CLASSIC_COMPILER_DEV
-        this.build = CLASSIC_COMPILER_BUILD
-        return this as DetectedFramework
+      // A classic compiler config takes precedence over a vite config (e.g. mid-migration repos)
+      if (this.detected.configName == null || !CLASSIC_COMPILER_CONFIG_FILES.includes(this.detected.configName)) {
+        const viteDetection = await this.detectConfigFile(VITE_CONFIG_FILES)
+        if (viteDetection) {
+          this.detected = mergeDetections([this.detected, viteDetection])
+          this.dev = VITE_DEV
+          this.build = VITE_BUILD
+          return this as DetectedFramework
+        }
       }
+
+      this.dev = CLASSIC_COMPILER_DEV
+      this.build = CLASSIC_COMPILER_BUILD
+      return this as DetectedFramework
     }
   }
 }

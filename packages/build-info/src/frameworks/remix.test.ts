@@ -271,3 +271,60 @@ beforeEach((ctx) => {
     expect(detected?.[0]?.dev?.port).toBeUndefined()
   }),
 )
+
+test('detects a Remix Classic Compiler site with a vite config file (e.g. for Vitest)', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'remix.config.js': '',
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({
+      dependencies: {
+        '@remix-run/node': '^2.9.2',
+        '@remix-run/react': '^2.9.2',
+        react: '^18.2.0',
+        'react-dom': '^18.2.0',
+      },
+      devDependencies: {
+        '@remix-run/dev': '^2.9.2',
+        vitest: '^1.6.0',
+      },
+    }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  expect(detected?.[0]?.id).toBe('remix')
+  expect(detected?.[0]?.build?.command).toBe('remix build')
+  expect(detected?.[0]?.build?.directory).toBe('public')
+})
+
+test('does not detect Remix for a non-Remix site with a vite config file', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({
+      // no `vite` dependency here either (e.g. hoisted in a monorepo or run through npx),
+      // so nothing outranks a would-be Remix config file match
+      dependencies: {
+        vue: '^3.4.0',
+      },
+    }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
+  expect(detectedFrameworks).not.toContain('remix')
+  expect(detectedFrameworks).not.toContain('hydrogen')
+})
+
+test('does not detect Remix or Hydrogen in a monorepo with a root vite config file', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({ private: true, workspaces: ['packages/*'] }),
+    'packages/site/package.json': JSON.stringify({ devDependencies: { vite: '^5.0.0' } }),
+    'packages/lib/package.json': JSON.stringify({ dependencies: { lodash: '^4.17.0' } }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
+  expect(detectedFrameworks).not.toContain('remix')
+  expect(detectedFrameworks).not.toContain('hydrogen')
+  expect(detectedFrameworks).toContain('vite')
+})

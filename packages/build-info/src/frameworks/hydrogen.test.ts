@@ -85,6 +85,49 @@ test('detects a Hydrogen v2 site using Remix Vite', async ({ fs }) => {
   expect(detected?.[0]?.dev?.port).toBe(5173)
 })
 
+test('detects a Hydrogen site using the Remix Classic Compiler with a vite config file (e.g. for Vitest)', async ({
+  fs,
+}) => {
+  const cwd = mockFileSystem({
+    'remix.config.js': '',
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({
+      dependencies: {
+        '@remix-run/react': '^2.2.0',
+        '@shopify/hydrogen': '^2023.10.0',
+        react: '^18.2.0',
+        'react-dom': '^18.2.0',
+      },
+      devDependencies: {
+        '@remix-run/dev': '^2.2.0',
+        vitest: '^1.6.0',
+      },
+    }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  expect(detected?.[0]?.id).toBe('hydrogen')
+  expect(detected?.[0]?.build?.command).toBe('remix build')
+  expect(detected?.[0]?.build?.directory).toBe('public')
+})
+
+test('does not detect Hydrogen for a non-Hydrogen site with a vite config file', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'vite.config.ts': '',
+    'package.json': JSON.stringify({
+      // no `vite` dependency here either (e.g. hoisted in a monorepo or run through npx),
+      // so nothing outranks a would-be Hydrogen config file match
+      dependencies: {
+        vue: '^3.4.0',
+      },
+    }),
+  })
+  const detected = await new Project(fs, cwd).detectFrameworks()
+
+  const detectedFrameworks = (detected ?? []).map((framework) => framework.id)
+  expect(detectedFrameworks).not.toContain('hydrogen')
+})
+
 test('should not detect React Router', async ({ fs }) => {
   const cwd = mockFileSystem({
     'react-router.config.ts': '',
