@@ -66,10 +66,12 @@ const getLocalEntryPoint = (
       url,
     }
 
+    // Like the bootstrap, use a function default export as the handler even
+    // when it also has a `fetch` property. Bind `fetch` only for an object.
     return `
       try {
         const { default: func } = await import("${url}");
-        const handler = typeof func?.fetch === "function" ? func.fetch.bind(func) : func;
+        const handler = typeof func === "function" ? func : typeof func?.fetch === "function" ? func.fetch.bind(func) : func;
 
         if (typeof handler === "function") {
           functions["${func.name}"] = handler;

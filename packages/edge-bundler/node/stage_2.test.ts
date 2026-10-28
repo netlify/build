@@ -44,13 +44,18 @@ test.each(['serve', 'boot'])('`getLocalEntryPoint` boots a bootstrap exporting `
   const functions = [
     { name: 'func1', path: join(tmpDir, 'func1.mjs'), response: 'Hello from function 1' },
     { name: 'func2', path: join(tmpDir, 'func2.mjs'), response: 'Hello from function 2' },
-    { name: 'func3', path: join(tmpDir, 'func3.mjs'), response: 'Hello from function 3', fetchable: true },
+    { name: 'func3', path: join(tmpDir, 'func3.mjs'), response: 'Hello from function 3', shape: 'fetchable' },
+    { name: 'func4', path: join(tmpDir, 'func4.mjs'), response: 'Hello from function 4', shape: 'function-with-fetch' },
   ]
 
   for (const func of functions) {
-    const contents = func.fetchable
-      ? `export default { response: ${JSON.stringify(func.response)}, fetch() { return this.response } }`
-      : `export default () => ${JSON.stringify(func.response)}`
+    const response = JSON.stringify(func.response)
+    const contents =
+      func.shape === 'fetchable'
+        ? `export default { response: ${response}, fetch() { return this.response } }`
+        : func.shape === 'function-with-fetch'
+          ? `const func = () => ${response}; func.fetch = () => "Wrong handler"; export default func`
+          : `export default () => ${response}`
 
     await writeFile(func.path, contents)
   }
