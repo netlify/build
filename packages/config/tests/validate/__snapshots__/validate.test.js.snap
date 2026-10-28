@@ -1816,6 +1816,45 @@ Valid syntax
     ]"
 `;
 
+exports[`functions.memory and functions.vcpu: mutually exclusive 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_memory_vcpu_exclusive/netlify.toml:
+Configuration property functions.* "memory" and "vcpu" are mutually exclusive.
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    vcpu = 1
+    memory = "2gb"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "2gb""
+`;
+
+exports[`functions.memory: within the allowed range 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_memory/netlify.toml:
+Configuration property functions.*.memory must be between 1024 and 4096 MB, as a number (in MB) or a string with a unit (e.g. "2gb").
+
+Invalid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "8gb"
+
+Valid syntax
+
+  [functions]
+
+    [functions."*"]
+    memory = "2gb""
+`;
+
 exports[`functions.node_bundler: one of supported bundlers 1`] = `
 "When resolving config file packages/config/tests/validate/fixtures/function_config_invalid_node_bundler/netlify.toml:
 Configuration property functions.*.node_bundler must be one of: esbuild, nft, zisi, none
@@ -2065,6 +2104,270 @@ Valid syntax
 
   [[plugins]]
   package = "netlify-plugin-two""
+`;
+
+exports[`server.excludedPath: paths starting with a slash 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_excluded_path/netlify.toml:
+Configuration property server.excludedPath must be a path starting with "/", or an array of them.
+
+Invalid syntax
+
+  [server]
+  excludedPath = "internal"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  excludedPath = [
+    "/external/path",
+    "/external/path"
+  ]"
+`;
+
+exports[`server.includedFiles: an array of strings 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_included_files/netlify.toml:
+Configuration property server.includedFiles must be an array of strings.
+
+Invalid syntax
+
+  [server]
+  includedFiles = "data/**"
+
+Valid syntax
+
+  [server]
+  includedFiles = [
+    "data/**",
+    "templates/*.html"
+  ]"
+`;
+
+exports[`server.path: paths starting with a slash 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_path/netlify.toml:
+Configuration property server.path must be a path starting with "/", or an array of them.
+
+Invalid syntax
+
+  [server]
+  path = [
+    "/external/path",
+    "auth"
+  ]
+
+Valid syntax
+
+  [server]
+  path = [
+    "/external/path",
+    "/external/path"
+  ]"
+`;
+
+exports[`server.region: one of the server regions 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_region/netlify.toml:
+Configuration property server.region must be one of: cmh, fra
+
+Invalid syntax
+
+  [server]
+  region = "iad"
+
+Valid syntax
+
+  [server]
+  region = "cmh""
+`;
+
+exports[`server.scale.max: integer greater than or equal to 1 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_invalid_max/netlify.toml:
+Configuration property server.scale.max must be an integer greater than or equal to 1.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = 0
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3"
+`;
+
+exports[`server.scale.max: not a string 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_string_max/netlify.toml:
+Configuration property server.scale.max must be an integer greater than or equal to 1.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = "3"
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3"
+`;
+
+exports[`server.scale.min: integer greater than or equal to 0 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_invalid_min/netlify.toml:
+Configuration property server.scale.min must be an integer greater than or equal to 0.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = -1
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0"
+`;
+
+exports[`server.scale.min: not a fraction 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_fractional_min/netlify.toml:
+Configuration property server.scale.min must be an integer greater than or equal to 0.
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = 1.5
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0"
+`;
+
+exports[`server.scale: min less than or equal to max 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_min_above_max/netlify.toml:
+Configuration property server.scale must have a "min" less than or equal to its "max".
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    min = 4
+    max = 2
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
+exports[`server.scale: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_not_object/netlify.toml:
+Configuration property server.scale must be a plain object.
+
+Invalid syntax
+
+  [server]
+  scale = 3
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
+exports[`server.scale: unknown property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_scale_unknown_props/netlify.toml:
+Configuration property server.scale has unknown properties. Valid properties are:
+  - min
+  - max
+
+Invalid syntax
+
+  [server]
+
+    [server.scale]
+    max = 3
+    target = 2
+
+Valid syntax
+
+  [server]
+
+    [server.scale]
+    min = 0
+    max = 3"
+`;
+
+exports[`server.size: one of the server sizes 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_invalid_size/netlify.toml:
+Configuration property server.size must be one of: small, medium, large
+
+Invalid syntax
+
+  [server]
+  size = "xlarge"
+
+Valid syntax
+
+  [server]
+  size = "small""
+`;
+
+exports[`server: object 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_not_object/netlify.toml:
+Configuration property server must be a plain object.
+
+Invalid syntax
+
+  server = "small"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  size = "small""
+`;
+
+exports[`server: unknown property 1`] = `
+"When resolving config file packages/config/tests/validate/fixtures/server_unknown_props/netlify.toml:
+Configuration property server has unknown properties. Valid properties are:
+  - excludedPath
+  - includedFiles
+  - path
+  - region
+  - scale
+  - size
+
+Invalid syntax
+
+  [server]
+  memory = 2048
+  size = "small"
+
+Valid syntax
+
+  [server]
+  path = "/external/path"
+  size = "small""
 `;
 
 exports[`spa_fallback: boolean 1`] = `

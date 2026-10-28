@@ -25,6 +25,7 @@ packages/*/lib/
 **/**/secrets_scanning/fixtures/**/dist
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
+**/fixtures/**/plugins_cache*/.netlify/build
 !**/fixtures/**/pin_*/.netlify
 !**/fixtures/with_preexisting_blobs/**/.netlify
 !**/fixtures/**/functions_*/.netlify

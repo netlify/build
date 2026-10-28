@@ -10,11 +10,7 @@ const NPM_PACKAGE_NAME = '@netlify/database'
 // TODO: Remove once we stop supporting the legacy `@netlify/db` package name.
 const NPM_PACKAGE_NAME_LEGACY = '@netlify/db'
 
-const condition: CoreStepCondition = async ({ buildDir, packagePath, featureFlags }) => {
-  if (!featureFlags?.netlify_build_db_setup) {
-    return false
-  }
-
+const condition: CoreStepCondition = async ({ buildDir, packagePath }) => {
   const { packageJson } = await getPackageJson(buildDir)
 
   if (hasDBPackage(packageJson)) {

@@ -10,6 +10,7 @@ export const DEFAULT_API_HOST = 'api.netlify.com'
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
+const DEFAULT_SERVER_DIST = '.netlify/server/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125
 
@@ -25,6 +26,7 @@ export type ResolvedFlags = {
   verbose: boolean
   /** The dist directory of the functions @default `.netlify/functions/` */
   functionsDistDir: string
+  serverDistDir: string
   /** The dist directory of the edge functions @default `.netlify/edge-functions-dist/` */
   edgeFunctionsDistDir: string
   /** The directory that is used for storing the cache @default `.netlify/cache/` */
@@ -84,6 +86,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     telemetry: false,
     verbose: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
+    serverDistDir: DEFAULT_SERVER_DIST,
     edgeFunctionsDistDir: DEFAULT_EDGE_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,

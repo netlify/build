@@ -1,4 +1,4 @@
-import psList from 'ps-list'
+import { listProcesses } from 'tinyps'
 
 import { logLingeringProcesses } from '../log/messages/core.js'
 
@@ -27,7 +27,7 @@ export const warnOnLingeringProcesses = async function ({
     return
   }
 
-  const processes = await psList()
+  const processes = await listProcesses()
 
   const commands = processes.map(getCommand).filter(isNotIgnoredCommand)
 
@@ -38,9 +38,8 @@ export const warnOnLingeringProcesses = async function ({
   logLingeringProcesses(logs, commands)
 }
 
-// `cmd` is only available on Unix. Unlike `name`, it includes the arguments.
-const getCommand = function ({ name, cmd = name }) {
-  return cmd
+const getCommand = function ({ command }) {
+  return command
 }
 
 // We ignore any command known to be internal to the buildbot.

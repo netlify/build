@@ -1330,6 +1330,7 @@ onPreBuild:
   CONFIG_PATH: 'netlify.toml',
   FUNCTIONS_DIST: '.netlify/functions/',
   EDGE_FUNCTIONS_DIST: '.netlify/edge-functions-dist/',
+  SERVER_DIST: '.netlify/server/',
   CACHE_DIR: '.netlify/cache',
   IS_LOCAL: true,
   NETLIFY_BUILD_VERSION: '1.0.0',

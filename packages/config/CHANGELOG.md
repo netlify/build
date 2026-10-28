@@ -76,6 +76,57 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.5.0](https://github.com/netlify/build/compare/config-v25.4.1...config-v25.5.0) (2026-10-27)
+
+
+### Features
+
+* **server:** add `scale` configuration option ([#7295](https://github.com/netlify/build/issues/7295)) ([b3899b8](https://github.com/netlify/build/commit/b3899b83e3dc88a04789d610043b855bae70b0f2))
+
+## [25.4.1](https://github.com/netlify/build/compare/config-v25.4.0...config-v25.4.1) (2026-10-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.3 to ^15.1.4
+
+## [25.4.0](https://github.com/netlify/build/compare/config-v25.3.0...config-v25.4.0) (2026-10-22)
+
+
+### Features
+
+* support `includedFiles` for Server in `netlify.toml` ([#7285](https://github.com/netlify/build/issues/7285)) ([62ff57b](https://github.com/netlify/build/commit/62ff57b3da328357fa0cb2a2286baf018dd2a14f))
+
+## [25.3.0](https://github.com/netlify/build/compare/config-v25.2.7...config-v25.3.0) (2026-10-20)
+
+
+### Features
+
+* add TOML and in-source config to server ([#7277](https://github.com/netlify/build/issues/7277)) ([b8b35b9](https://github.com/netlify/build/commit/b8b35b909529d05cbb1f61a996e430cb1ab12e03))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.2 to ^15.1.3
+
+## [25.2.7](https://github.com/netlify/build/compare/config-v25.2.6...config-v25.2.7) (2026-10-17)
+
+
+### Bug Fixes
+
+* clean up send_build_bot_token_to_jigsaw flag ([#7268](https://github.com/netlify/build/issues/7268)) ([e9fe10f](https://github.com/netlify/build/commit/e9fe10ffee8395d604800c2953365bd3941d207d))
+
+## [25.2.6](https://github.com/netlify/build/compare/config-v25.2.5...config-v25.2.6) (2026-09-29)
+
+
+### Bug Fixes
+
+* preserve netlify.toml compute settings ([#7254](https://github.com/netlify/build/issues/7254)) ([3017c4a](https://github.com/netlify/build/commit/3017c4a22f9ea9678e7d253519ca55c8b7698e24))
+
 ## [25.2.5](https://github.com/netlify/build/compare/config-v25.2.4...config-v25.2.5) (2026-09-09)
 
 

@@ -1,0 +1,3 @@
+[functions]
+memory = "2gb"
+vcpu = 1

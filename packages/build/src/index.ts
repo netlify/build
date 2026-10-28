@@ -15,6 +15,7 @@ export type { ListedFunction, ListedFunctionFile } from './types/options/netlify
 // actual main types
 export { startDev } from './core/dev.js'
 export { runCoreSteps } from './steps/run_core_steps.js'
+export { SERVER_DIRECTORY } from './plugins_core/functions/server_entry.js'
 
 // default export the buildSite function
 export default buildSite

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "25.2.5",
+  "version": "25.5.0",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/index.js",
@@ -58,7 +58,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/api": "^15.1.2",
+    "@netlify/api": "^15.1.4",
     "@netlify/headers-parser": "^10.1.1",
     "@netlify/redirect-parser": "^16.1.1",
     "chalk": "^6.0.0",

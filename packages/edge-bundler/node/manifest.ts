@@ -55,7 +55,7 @@ interface BundlingTiming {
 
 interface Manifest {
   bundler_version: string
-  bundles: { asset: string; format: string }[]
+  bundles: { asset: string; format: string; custom_import_map?: boolean; vendor_manifest?: boolean }[]
   bundling_timing?: BundlingTiming
   import_map?: string
   layers: { name: string; flag: string }[]
@@ -301,9 +301,11 @@ const generateManifest = ({
           ...rest,
         })
 
-  const manifestBundles = bundles.map(({ extension, format, hash }) => ({
+  const manifestBundles = bundles.map(({ customImportMap, extension, format, hash, vendorManifest }) => ({
     asset: hash + extension,
     format,
+    ...(customImportMap === undefined ? {} : { custom_import_map: customImportMap }),
+    ...(vendorManifest === undefined ? {} : { vendor_manifest: vendorManifest }),
   }))
   const manifest: Manifest = {
     bundles: manifestBundles,

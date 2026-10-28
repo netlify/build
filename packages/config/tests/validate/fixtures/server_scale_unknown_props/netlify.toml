@@ -1,0 +1,3 @@
+[server.scale]
+max = 3
+target = 2
