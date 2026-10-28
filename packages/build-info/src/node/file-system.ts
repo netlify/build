@@ -69,10 +69,10 @@ export class NodeFS extends FileSystem {
   }
 
   /** Node implementation of finding a file or directory by walking up parent directories. */
-  async findUp(name: string | string[], options: findUpOptions = {}): Promise<string | undefined> {
+  findUp(name: string | string[], options: findUpOptions = {}): Promise<string | undefined> {
     const names = typeof name === 'string' ? [name] : name
     const type = options.type === 'directory' ? 'dir' : 'file'
-    return findAny(names, { cwd: options.cwd, last: options.stopAt, type })
+    return Promise.resolve(findAny(names, { cwd: options.cwd, last: options.stopAt, type }))
   }
 
   /** Node implementation of finding files or directories by walking up parent directories. */
