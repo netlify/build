@@ -44,7 +44,7 @@ export class Remix extends BaseFramework implements Framework {
   ]
   excludedNpmDependencies = ['@shopify/hydrogen']
   configFiles = [...VITE_CONFIG_FILES, ...CLASSIC_COMPILER_CONFIG_FILES]
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   logo = {
     default: '/logos/remix/default.svg',

@@ -5,7 +5,7 @@ export class RedwoodJS extends BaseFramework implements Framework {
   name = 'RedwoodJS'
   npmDependencies = ['@redwoodjs/core']
   configFiles = ['redwood.toml']
-  category = Category.SSG
+  category = Category.FullstackFramework
   staticAssetsDirectory = 'public'
 
   dev = {

@@ -4,7 +4,7 @@ export class Blitz extends BaseFramework implements Framework {
   readonly id = 'blitz'
   name = 'Blitz.js'
   npmDependencies = ['blitz']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'blitz dev',

@@ -11,7 +11,7 @@ export class ReactRouter extends BaseFramework implements Framework {
   npmDependencies = ['@react-router/dev']
   excludedNpmDependencies = ['@shopify/hydrogen']
   configFiles = ['react-router.config.ts', 'react-router.config.js']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     port: 5173,
