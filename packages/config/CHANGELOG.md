@@ -76,6 +76,15 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.5.2](https://github.com/netlify/build/compare/config-v25.5.1...config-v25.5.2) (2026-10-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/api bumped from ^15.1.5 to ^15.1.6
+
 ## [25.5.1](https://github.com/netlify/build/compare/config-v25.5.0...config-v25.5.1) (2026-10-29)
 
 
