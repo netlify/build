@@ -5,11 +5,10 @@ import process from 'process'
 import { pathToFileURL } from 'url'
 
 import { lt } from 'semver'
-import * as tar from 'tar'
 import { test, expect, vi, describe } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { denoVersion, runESZIP, runTarball, useFixture } from '../test/util.js'
+import { denoVersion, extractTarball, listTarball, runESZIP, runTarball, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -868,14 +867,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       // Verify key files are present (vendor directory may contain additional files)
       expect(entries).toContain('./___netlify-edge-functions.json')
@@ -905,14 +897,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       // without recording it in `vendor/manifest.json`.
       expect(manifest.bundles[0]).toMatchObject({ format: 'tar', custom_import_map: false, vendor_manifest: true })
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: join(distPath, manifest.bundles[0].asset),
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(join(distPath, manifest.bundles[0].asset))
 
       expect(entries).toContain('./vendor/manifest.json')
 
@@ -1028,7 +1013,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       // Extract tarball and verify vendored npm imports were rewritten
       const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
-      await tar.extract({ cwd: tmpDir, file: tarballPath })
+      await extractTarball(tarballPath, tmpDir)
 
       // Get the function path from the manifest
       const manifestContent = await readFile(join(tmpDir, '___netlify-edge-functions.json'), 'utf8')
@@ -1091,14 +1076,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       // Verify that sibling directory files are included in the tarball
       expect(entries).toContain('./___netlify-edge-functions.json')
@@ -1135,7 +1113,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       // Extract tarball and verify source file has been rewritten
       const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
-      await tar.extract({ cwd: tmpDir, file: tarballPath })
+      await extractTarball(tarballPath, tmpDir)
 
       const sourceContent = await readFile(join(tmpDir, 'func1.ts'), 'utf8')
 
@@ -1175,7 +1153,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
 
       // Extract tarball and verify source file has been rewritten
       const tmpDir = await mkdtemp(join(tmpdir(), 'tarball-gen-'))
-      await tar.extract({ cwd: tmpDir, file: tarballPath })
+      await extractTarball(tarballPath, tmpDir)
 
       const sourceContent = await readFile(join(tmpDir, 'func1.ts'), 'utf8')
 
@@ -1311,14 +1289,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       // Verify key files are present (vendor directory may contain additional files)
       expect(entries).toContain('./___netlify-edge-functions.json')
@@ -1353,13 +1324,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballPath = join(distPath, manifest.bundles[0].asset)
 
       // Verify the @ prefixed file is actually in the tarball
-      const entries: string[] = []
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
       expect(entries.some((e) => e.includes('@file_prefixed_with_the_at_symbol.ts'))).toBe(true)
 
       // Verify the function actually runs correctly
@@ -1406,14 +1371,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       expect(entries).toContain('./___netlify-edge-functions.json')
       expect(entries).toContain('./deno.json')
@@ -1465,14 +1423,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       expect(entries).toContain('./___netlify-edge-functions.json')
       expect(entries).toContain('./deno.json')
@@ -1520,13 +1471,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       // The directory itself must not be present as an entry in the tarball.
       expect(entries).toContain('./func1.ts')
@@ -1568,13 +1513,7 @@ describe.skipIf(lt(denoVersion, '2.4.2'))(
       const tarballResult = await runTarball(tarballPath)
       expect(tarballResult).toStrictEqual(expectedOutput)
 
-      const entries: string[] = []
-      await tar.list({
-        file: tarballPath,
-        onReadEntry: (entry) => {
-          entries.push(entry.path)
-        },
-      })
+      const entries = await listTarball(tarballPath)
 
       expect(entries).toContain('./___netlify-edge-functions.json')
       expect(entries).toContain('./deno.json')
