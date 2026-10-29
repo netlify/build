@@ -1,6 +1,4 @@
-import isPlainObj from 'is-plain-obj'
-import mapObj from 'map-obj'
-
+import { isPlainObj } from './utils/is_plain_obj.js'
 import { removeFalsy } from './utils/remove_falsy.js'
 
 // Removes default values (empty objects and arrays) from the configuration.
@@ -46,7 +44,9 @@ const simplifyEnvironment = function (environment) {
 }
 
 const simplifyContexts = function (contextProps) {
-  return mapObj(contextProps, simplifyContextProps)
+  return Object.fromEntries(
+    Object.entries(contextProps).map(([context, contextConfig]) => simplifyContextProps(context, contextConfig)),
+  )
 }
 
 const simplifyContextProps = function (context, contextConfig) {
