@@ -7,10 +7,22 @@ import { getHash } from './hash.js'
 
 // Retrieve cache manifest of a file to cache, which contains the file/directory
 // contents hash and the `expires` date.
-export const getManifestInfo = async function ({ cachePath, move, ttl, digests }) {
+export const getManifestInfo = async function ({
+  cachePath,
+  move,
+  ttl,
+  digests,
+  cwdOpt,
+}: {
+  cachePath: string
+  move: boolean
+  ttl?: number
+  digests?: string[]
+  cwdOpt?: string
+}) {
   const manifestPath = getManifestPath(cachePath)
   const expires = getExpires(ttl)
-  const hash = await getHash(digests, move)
+  const hash = await getHash(digests, move, cwdOpt)
   const manifest = { expires, hash }
   const manifestString = `${JSON.stringify(manifest, null, 2)}\n`
   const identical = await isIdentical({ hash, manifestPath, manifestString })

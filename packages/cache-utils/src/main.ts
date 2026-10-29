@@ -32,7 +32,7 @@ const saveOne = async function (
     return false
   }
 
-  const { manifestInfo, identical } = await getManifestInfo({ cachePath, move, ttl, digests })
+  const { manifestInfo, identical } = await getManifestInfo({ cachePath, move, ttl, digests, cwdOpt })
   if (identical) {
     return true
   }
