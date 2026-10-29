@@ -144,5 +144,14 @@ export async function getBuildSettings(project: Project, packagePath?: string): 
   }
 
   const settings = await Promise.all(settingsPromises)
-  return settings.filter(Boolean) as Settings[]
+  return settings.filter((setting) => {
+    // filter out settings that are not matching the packagePath
+    // for example we have a monorepo (where on the repository root is a site)
+    //   - in this case the package path would be an empty '' string.
+    //   - so we need to filter out the settings that are not matching the packagePath
+    if (!setting || (packagePath !== undefined && setting.packagePath !== packagePath)) {
+      return false
+    }
+    return true
+  })
 }
