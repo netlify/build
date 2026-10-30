@@ -105,6 +105,38 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.7.3](https://github.com/netlify/build/compare/build-v37.7.2...build-v37.7.3) (2026-10-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.5.1 to ^25.5.2
+
+## [37.7.2](https://github.com/netlify/build/compare/build-v37.7.1...build-v37.7.2) (2026-10-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.5.0 to ^25.5.1
+
+## [37.7.1](https://github.com/netlify/build/compare/build-v37.7.0...build-v37.7.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* unpipe output flusher when unstreaming output ([#7230](https://github.com/netlify/build/issues/7230)) ([0de1bd1](https://github.com/netlify/build/commit/0de1bd1799c77ce58199c070f61db3d28afab718))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.3 to 16.2.0
+
 ## [37.7.0](https://github.com/netlify/build/compare/build-v37.6.1...build-v37.7.0) (2026-10-27)
 
 
