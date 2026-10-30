@@ -50,7 +50,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "get-stream": "^9.0.0",
     "junk": "^4.0.0"
   },
   "devDependencies": {
