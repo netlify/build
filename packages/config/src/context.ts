@@ -1,8 +1,6 @@
-import isPlainObj from 'is-plain-obj'
-import mapObj from 'map-obj'
-
 import { mergeConfigs } from './merge.js'
 import { normalizeBeforeConfigMerge } from './merge_normalize.js'
+import { isPlainObj } from './utils/is_plain_obj.js'
 import { validateContextsPluginsConfig } from './validate/context.js'
 import { validatePreContextConfig } from './validate/main.js'
 
@@ -14,11 +12,15 @@ export const normalizeContextProps = function ({ config, config: { context: cont
 
   validatePreContextConfig(config)
 
-  const allContextProps = mapObj(contextProps, (key: string, contextConfig) => [key, addNamespace(contextConfig)])
-  const normalizedContextProps = mapObj(allContextProps, (key, contextConfig) => [
-    key,
-    normalizeBeforeConfigMerge(contextConfig, origin),
-  ])
+  const allContextProps = Object.fromEntries(
+    Object.entries(contextProps).map(([key, contextConfig]) => [key, addNamespace(contextConfig)]),
+  )
+  const normalizedContextProps = Object.fromEntries(
+    Object.entries(allContextProps).map(([key, contextConfig]) => [
+      key,
+      normalizeBeforeConfigMerge(contextConfig, origin),
+    ]),
+  )
   return { ...config, context: normalizedContextProps }
 }
 

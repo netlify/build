@@ -1585,6 +1585,14 @@ export default [
     },
   },
   {
+    files: ['packages/config/src/log/theme.js'],
+    rules: {
+      // util.styleText exists in 22.12.0 and works fine, it was only
+      // marked stable in 22.13.0
+      'n/no-unsupported-features/node-builtins': ['error', { ignores: ['util.styleText'] }],
+    },
+  },
+  {
     files: ['packages/config/src/main.ts'],
     rules: {
       'n/no-missing-import': 'off',
@@ -1698,6 +1706,18 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['packages/config/src/utils/set.js'],
+    rules: {
+      'n/no-missing-import': 'off',
+    },
+  },
+  {
+    files: ['packages/config/src/validate/helpers.js'],
+    rules: {
+      'n/no-missing-import': 'off',
     },
   },
   {

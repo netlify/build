@@ -1,6 +1,5 @@
 import process from 'process'
 
-import { includeKeys } from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
@@ -16,7 +15,7 @@ export const parseFlags = function () {
     .parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   const flagsA = { ...flags, featureFlags }
-  const flagsB = includeKeys(flagsA, isUserFlag)
+  const flagsB = Object.fromEntries(Object.entries(flagsA).filter(([key, value]) => isUserFlag(key, value)))
   return flagsB
 }
 
