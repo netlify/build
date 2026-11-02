@@ -1,6 +1,17 @@
-import { dirname, extname, resolve } from 'path'
+import { readFile } from 'fs/promises'
+import { dirname, extname, relative, resolve, sep } from 'path'
 
-import { build, BuildOptions } from 'esbuild'
+import { parse } from '@babel/parser'
+import {
+  isIdentifier,
+  isMemberExpression,
+  isMetaProperty,
+  type Identifier,
+  type MemberExpression,
+  type Node,
+  type Program,
+} from '@babel/types'
+import { build, BuildOptions, type Loader, type Plugin } from 'esbuild'
 
 import type { FunctionConfig } from '../../../../config.js'
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
@@ -91,15 +102,122 @@ export const getTransformer = async (
   return transformer
 }
 
+const IMPORT_META_REPLACEMENTS: Record<string, string> = {
+  dirname: '___nfyModulePathDirname(___nfyModuleFileURLToPath(___nfyModuleURL))',
+  filename: '___nfyModuleFileURLToPath(___nfyModuleURL)',
+  url: '___nfyModuleURL',
+}
+
+const LOADERS: Record<string, Loader> = {
+  '.cts': 'ts',
+  '.jsx': 'jsx',
+  '.mts': 'ts',
+  '.ts': 'ts',
+  '.tsx': 'tsx',
+}
+
+const isImportMetaPath = (node: Node): node is MemberExpression =>
+  isMemberExpression(node) &&
+  !node.computed &&
+  isMetaProperty(node.object) &&
+  node.object.meta.name === 'import' &&
+  isIdentifier(node.property) &&
+  node.property.name in IMPORT_META_REPLACEMENTS
+
+const findImportMetaPaths = (value: unknown, found: MemberExpression[] = []): MemberExpression[] => {
+  if (Array.isArray(value)) {
+    value.forEach((item) => findImportMetaPaths(item, found))
+  } else if (value !== null && typeof value === 'object' && 'type' in value) {
+    if (isImportMetaPath(value as Node)) {
+      found.push(value as MemberExpression)
+    } else {
+      Object.entries(value).forEach(([key, child]) => key !== 'loc' && findImportMetaPaths(child, found))
+    }
+  }
+
+  return found
+}
+
+// Returns `source` with each `import.meta` path expression replaced, or null
+// when it cannot be parsed.
+const replaceImportMetaPaths = (source: string, path: string): string | null => {
+  let program: Program
+
+  try {
+    program = parse(source, {
+      plugins: ['.jsx', '.tsx'].includes(extname(path)) ? ['typescript', 'jsx'] : ['typescript'],
+      sourceType: 'module',
+    }).program
+  } catch {
+    return null
+  }
+
+  return findImportMetaPaths(program)
+    .sort((a, b) => (b.start ?? 0) - (a.start ?? 0))
+    .reduce(
+      (result, node) =>
+        result.slice(0, node.start ?? 0) +
+        IMPORT_META_REPLACEMENTS[(node.property as Identifier).name] +
+        result.slice(node.end ?? 0),
+      source,
+    )
+}
+
+/**
+ * An esbuild plugin that makes `import.meta.url`, `import.meta.dirname` and
+ * `import.meta.filename` in each local module bundled into `mainFile` describe
+ * that module's own path, as if it still ran from its own file. The archive
+ * keeps the source layout, so the module's path relative to `mainFile` holds at
+ * runtime.
+ */
+const getModulePathsPlugin = (mainFile: string): Plugin => ({
+  name: 'netlify-module-paths',
+  setup(build) {
+    build.onLoad({ filter: /\.[cm]?[jt]sx?$/ }, async ({ path }) => {
+      if (path === mainFile || path.split(sep).includes('node_modules')) {
+        return
+      }
+
+      const source = await readFile(path, 'utf-8')
+
+      if (!source.includes('import.meta.')) {
+        return
+      }
+
+      const replaced = replaceImportMetaPaths(source, path)
+
+      if (replaced === null || replaced === source) {
+        return
+      }
+
+      const relativeURL = relative(dirname(mainFile), path).split(sep).map(encodeURIComponent).join('/')
+
+      // On the module's first line, so the line numbers in stack traces hold.
+      // Not `new URL(path, import.meta.url)`: NFT would trace the module's
+      // source as an asset of the bundle.
+      const prelude =
+        'import {fileURLToPath as ___nfyModuleFileURLToPath} from "url";' +
+        'import {dirname as ___nfyModulePathDirname} from "path";' +
+        `const ___nfyModuleURL=new URL(import.meta.url.slice(0,import.meta.url.lastIndexOf("/")+1)+${JSON.stringify(relativeURL)}).href;`
+
+      return {
+        contents: prelude + replaced,
+        loader: LOADERS[extname(path)] ?? 'js',
+      }
+    })
+  },
+})
+
 interface TransformOptions {
   bundle?: boolean
   config: FunctionConfig
   format?: ModuleFormat
+  isServer?: boolean
   name: string
   path: string
 }
 
-export const transform = async ({ bundle = false, config, format, name, path }: TransformOptions) => {
+export const transform = async ({ bundle = false, config, format, isServer, name, path }: TransformOptions) => {
   // The version of ECMAScript to use as the build target. This will determine
   // whether certain features are transpiled down or left untransformed.
   const nodeTarget = getBundlerTarget(config.nodeVersion)
@@ -113,6 +231,10 @@ export const transform = async ({ bundle = false, config, format, name, path }: 
 
     if (format === MODULE_FORMAT.ESM) {
       bundleOptions.banner = { js: CJS_SHIM }
+
+      if (isServer) {
+        bundleOptions.plugins = [getModulePathsPlugin(path)]
+      }
     }
   }
 
