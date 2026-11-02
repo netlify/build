@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 import { dirname, extname, relative, resolve, sep } from 'path'
 
-import { parse } from '@babel/parser'
+import { parse, type ParserPlugin } from '@babel/parser'
 import {
   isIdentifier,
   isMemberExpression,
@@ -138,17 +138,32 @@ const findImportMetaPaths = (value: unknown, found: MemberExpression[] = []): Me
   return found
 }
 
+// Each accepts a decorator form the other rejects: `export @dec class` and
+// parameter decorators.
+const DECORATOR_PLUGINS: ParserPlugin[] = ['decorators', 'decorators-legacy']
+
+const parseModule = (source: string, path: string): Program | null => {
+  const syntaxPlugins: ParserPlugin[] = ['.jsx', '.tsx'].includes(extname(path))
+    ? ['typescript', 'jsx']
+    : ['typescript']
+
+  for (const decoratorPlugin of DECORATOR_PLUGINS) {
+    try {
+      return parse(source, { plugins: [...syntaxPlugins, decoratorPlugin], sourceType: 'module' }).program
+    } catch {
+      // Try the next decorator syntax.
+    }
+  }
+
+  return null
+}
+
 // Returns `source` with each `import.meta` path expression replaced, or null
 // when it cannot be parsed.
 const replaceImportMetaPaths = (source: string, path: string): string | null => {
-  let program: Program
+  const program = parseModule(source, path)
 
-  try {
-    program = parse(source, {
-      plugins: ['.jsx', '.tsx'].includes(extname(path)) ? ['typescript', 'jsx'] : ['typescript'],
-      sourceType: 'module',
-    }).program
-  } catch {
+  if (program === null) {
     return null
   }
 
@@ -180,7 +195,7 @@ const getModulePathsPlugin = (mainFile: string): Plugin => ({
 
       const source = await readFile(path, 'utf-8')
 
-      if (!source.includes('import.meta.')) {
+      if (!source.includes('import.meta')) {
         return
       }
 
@@ -192,16 +207,17 @@ const getModulePathsPlugin = (mainFile: string): Plugin => ({
 
       const relativeURL = relative(dirname(mainFile), path).split(sep).map(encodeURIComponent).join('/')
 
-      // On the module's first line, so the line numbers in stack traces hold.
-      // Not `new URL(path, import.meta.url)`: NFT would trace the module's
-      // source as an asset of the bundle.
+      // On the module's first line after any hashbang, so the line numbers in
+      // stack traces hold. Not `new URL(path, import.meta.url)`: NFT would
+      // trace the module's source as an asset of the bundle.
+      const hashbang = /^#!.*\n?/.exec(replaced)?.[0] ?? ''
       const prelude =
         'import {fileURLToPath as ___nfyModuleFileURLToPath} from "url";' +
         'import {dirname as ___nfyModulePathDirname} from "path";' +
         `const ___nfyModuleURL=new URL(import.meta.url.slice(0,import.meta.url.lastIndexOf("/")+1)+${JSON.stringify(relativeURL)}).href;`
 
       return {
-        contents: prelude + replaced,
+        contents: hashbang + prelude + replaced.slice(hashbang.length),
         loader: LOADERS[extname(path)] ?? 'js',
       }
     })

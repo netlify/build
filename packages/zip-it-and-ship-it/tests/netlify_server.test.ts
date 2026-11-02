@@ -341,10 +341,16 @@ export const config = { includedFiles: ['data/**'] }
   })
 
   describe.each([
-    { entry: 'index.mjs', reader: 'lib/reader.mjs' },
-    { entry: 'index.mts', reader: 'lib/reader.ts' },
-  ])('With a module in $reader', ({ entry, reader }) => {
-    const READER = `import { readFileSync } from 'node:fs'
+    { entry: 'index.mjs', reader: 'lib/reader.mjs', prefix: '' },
+    { entry: 'index.mts', reader: 'lib/reader.ts', prefix: '' },
+    { entry: 'index.mjs', reader: 'lib/hashbang.mjs', prefix: '#!/usr/bin/env node\n' },
+    {
+      entry: 'index.mts',
+      reader: 'lib/decorated.ts',
+      prefix: 'const sealed = (target: unknown) => target\n\n@sealed\nclass Reader {}\n\n',
+    },
+  ])('With a module in $reader', ({ entry, prefix, reader }) => {
+    const READER = `${prefix}import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 const read = (path${reader.endsWith('.ts') ? ': string | URL' : ''}) => JSON.parse(readFileSync(path, 'utf-8')).from
