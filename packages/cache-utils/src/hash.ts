@@ -1,7 +1,6 @@
 import { createHash } from 'crypto'
 import { createReadStream, promises as fs } from 'fs'
-
-import getStream from 'get-stream'
+import { pipeline } from 'stream/promises'
 
 // We need a hashing algorithm that's as fast as possible.
 // Userland CRC32 implementations are actually slower than Node.js SHA1.
@@ -40,9 +39,7 @@ export const getHash = async function (digests: string[], move: boolean) {
 
 // Hash a file's contents
 const hashFile = async function (path: string) {
-  const contentStream = createReadStream(path, 'utf8')
-  const hashStream = createHash(HASH_ALGO, { encoding: 'hex' })
-  contentStream.pipe(hashStream)
-  const hash = await getStream(hashStream)
-  return hash
+  const hash = createHash(HASH_ALGO)
+  await pipeline(createReadStream(path), hash)
+  return hash.digest('hex')
 }
