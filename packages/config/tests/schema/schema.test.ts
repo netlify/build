@@ -2,11 +2,11 @@ import { existsSync, readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 
-import { Ajv } from 'ajv'
+import { Ajv, type SchemaObject } from 'ajv'
 import { parse as loadToml } from 'smol-toml'
 import { describe, expect, test } from 'vitest'
 
-import { resolveConfig } from '../../lib/main.js'
+import { resolveConfig } from '../../src/main.js'
 
 // The JSON schema published for `netlify.toml` must agree with the validation
 // that `@netlify/config` performs. Every `netlify.toml` used by the tests of
@@ -19,7 +19,7 @@ const TESTS_DIR = fileURLToPath(new URL('..', import.meta.url))
 // Fixtures on which the schema and the validation are expected to disagree,
 // with the reason why. Each entry is checked to still disagree, so that it is
 // removed once it no longer applies.
-const KNOWN_DIFFERENCES = {
+const KNOWN_DIFFERENCES: Partial<Record<string, string>> = {
   // Rules that depend on the file system, which a schema cannot see.
   'base/fixtures/base_invalid': 'checks that the base directory exists',
   'load/fixtures/merge_base': 'checks that the base directory exists',
@@ -46,19 +46,22 @@ const getFixtures = () =>
     )
     .filter((fixture) => existsSync(join(TESTS_DIR, fixture, 'netlify.toml')))
 
-const loadConfigFile = (fixtureDir) => {
+type ConfigFile = Record<string, unknown>
+
+const loadConfigFile = (fixtureDir: string): ConfigFile | undefined => {
   try {
     // Convert `null` prototype objects to normal plain objects
-    return JSON.parse(JSON.stringify(loadToml(readFileSync(join(fixtureDir, 'netlify.toml'), 'utf8'))))
+    return JSON.parse(JSON.stringify(loadToml(readFileSync(join(fixtureDir, 'netlify.toml'), 'utf8')))) as ConfigFile
   } catch {
     // Files with TOML syntax errors are covered by the parse tests.
+    return undefined
   }
 }
 
 // Most properties set in a context are only validated when that context is
 // the one being built, whereas the schema validates all of them, so we
 // resolve the configuration once per context.
-const isAcceptedByNetlify = async (fixtureDir, config) => {
+const isAcceptedByNetlify = async (fixtureDir: string, config: ConfigFile) => {
   const contexts = config.context !== null && typeof config.context === 'object' ? Object.keys(config.context) : []
 
   for (const context of [undefined, ...contexts]) {
@@ -72,7 +75,7 @@ const isAcceptedByNetlify = async (fixtureDir, config) => {
   return true
 }
 
-const schema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8'))
+const schema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as SchemaObject & { $id: string }
 const validateSchema = new Ajv({ allErrors: true, allowUnionTypes: true, strict: true, strictRequired: false }).compile(
   schema,
 )
