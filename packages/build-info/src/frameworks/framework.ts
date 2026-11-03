@@ -1,4 +1,4 @@
-import type { PackageJson } from 'read-pkg'
+import type { PackageJson } from 'pkg-types'
 import { SemVer, coerce, parse } from 'semver'
 
 import { Environment } from '../file-system.js'

@@ -1,24 +1,32 @@
-import { minimatch, Minimatch } from 'minimatch'
-import { type PackageJson } from 'read-pkg'
+import { type PackageJson } from 'pkg-types'
+import picomatch from 'picomatch'
 
 import { DirType } from '../file-system.js'
 import type { Project } from '../project.js'
 
 import type { WorkspacePackage } from './detect-workspace.js'
 
+const negatedPattern = /^!*/
+
+/** Split a workspace pattern into its negation flag and the pattern without a leading `!` or `./` */
+function parseNegatedPattern(pattern: string): { negate: boolean; pattern: string } {
+  const negations = negatedPattern.exec(pattern)?.[0].length ?? 0
+  return { negate: negations % 2 === 1, pattern: pattern.slice(negations).replace(/^\.\//, '') }
+}
+
 /** Get the base directory out of a glob pattern */
-function getDirFromPattern(pattern: Minimatch): {
+function getDirFromPattern(pattern: string): {
   dir: string
   /** @example '**' | '*' */
   depth?: string
 } {
   const dir: string[] = []
-  const parts = pattern.globParts[0]
+  const parts = pattern.split('/')
 
   for (let i = 0, max = parts.length; i < max; i++) {
-    if (parts[i].includes('*')) {
+    if (picomatch.scan(parts[i]).isGlob) {
       // skip the rest
-      return { dir: dir.join('/'), depth: parts[i] }
+      return { dir: dir.join('/'), depth: i < max - 1 ? '**' : parts[i] }
     }
     dir.push(parts[i])
   }
@@ -96,16 +104,16 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
     return []
   }
 
+  const parsed = patterns.map(parseNegatedPattern)
+
   // perform a parallel detection of all workspace packages
   const results = (
     await Promise.all(
-      patterns.flatMap((pattern) => {
-        const cleanedPattern = pattern.replace(/^!?(\.\/)/, (match, p1) => match.replace(p1, ''))
-        const matcher = new Minimatch(cleanedPattern)
-        if (matcher.negate) {
+      parsed.flatMap(({ negate, pattern }) => {
+        if (negate) {
           return []
         }
-        const { dir, depth } = getDirFromPattern(matcher)
+        const { dir, depth } = getDirFromPattern(pattern)
         return [findPackages(project, dir, defaultIdentifyPackage, depth)]
       }),
     )
@@ -116,14 +124,13 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
   // initially add all results to the set
   // and filter out then the negated patterns
   const filtered = new Map<string, WorkspacePackage>()
+  const matchers = parsed.map(({ negate, pattern }) => ({ negate, isMatch: picomatch(pattern) }))
 
   for (const result of results) {
-    for (const pattern of patterns) {
-      const cleanedPattern = pattern.replace(/^!?(\.\/)/, (match, p1) => match.replace(p1, ''))
-      const matcher = new Minimatch(cleanedPattern)
-      if (minimatch(result.path, matcher.pattern)) {
+    for (const { negate, isMatch } of matchers) {
+      if (isMatch(result.path)) {
         filtered.set(project.fs.join(result.path), result)
-        if (matcher.negate) {
+        if (negate) {
           filtered.delete(project.fs.join(result.path))
         }
       }

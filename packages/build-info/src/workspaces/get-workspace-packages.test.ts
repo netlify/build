@@ -120,3 +120,17 @@ test('should match deep packages with a globstar expression and a leading ./', a
     { path: join('apps/deep/c'), name: 'c' },
   ])
 })
+
+test('should map brace alternations across multiple directories', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': '{}',
+    'apps/a/package.json': JSON.stringify({ name: 'a' }),
+    'packages/b/package.json': JSON.stringify({ name: 'b' }),
+    'packages/b/deep/package.json': '{}',
+    'tools/c/package.json': '{}',
+  })
+  expect(await getWorkspacePackages(new Project(fs, cwd), ['{apps,packages}/*'])).toMatchObject([
+    { path: join('apps/a'), name: 'a' },
+    { path: join('packages/b'), name: 'b' },
+  ])
+})
