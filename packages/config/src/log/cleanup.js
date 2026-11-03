@@ -1,5 +1,3 @@
-import { includeKeys } from 'filter-obj'
-
 import { simplifyConfig } from '../simplify.js'
 
 // Make sure we are not printing secret values. Use an allow list.
@@ -72,11 +70,11 @@ const BUILDBOT_ENVIRONMENT = new Set([
 ])
 
 const cleanupPlugin = function ({ package: packageName, origin, inputs = {} }) {
-  const inputsA = includeKeys(inputs, isPublicInput)
+  const inputsA = Object.fromEntries(Object.entries(inputs).filter(([, input]) => isPublicInput(input)))
   return { package: packageName, origin, inputs: inputsA }
 }
 
-const isPublicInput = function (key, input) {
+const isPublicInput = function (input) {
   return typeof input === 'boolean'
 }
 

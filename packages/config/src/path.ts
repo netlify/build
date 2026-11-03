@@ -2,7 +2,6 @@ import { existsSync } from 'fs'
 import { join, resolve } from 'path'
 
 import { findUp } from 'find-up'
-import pLocate from 'p-locate'
 
 const FILENAME = 'netlify.toml'
 
@@ -27,16 +26,20 @@ export const getConfigPath = async function ({
   configOpt?: string
   packagePath?: string
 }) {
-  const configPath = await pLocate<string | undefined>(
-    [
-      searchConfigOpt(cwd, configOpt),
-      searchBaseConfigFile(repositoryRoot, configBase, packagePath),
-      searchConfigFile(repositoryRoot),
-      findUp(FILENAME, { cwd }),
-    ],
-    Boolean,
-  )
-  return configPath
+  // Returns the first path that exists, preserving the priority order above.
+  const candidates = [
+    searchConfigOpt(cwd, configOpt),
+    searchBaseConfigFile(repositoryRoot, configBase, packagePath),
+    searchConfigFile(repositoryRoot),
+    findUp(FILENAME, { cwd }),
+  ]
+  for (const candidate of candidates) {
+    const configPath = await candidate
+    if (configPath) {
+      return configPath
+    }
+  }
+  return undefined
 }
 
 /** --config CLI flag */

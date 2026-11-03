@@ -1,7 +1,7 @@
 import deepmerge from 'deepmerge'
-import isPlainObj from 'is-plain-obj'
 
 import { groupBy } from './utils/group.js'
+import { isPlainObj } from './utils/is_plain_obj.js'
 import { removeUndefined } from './utils/remove_falsy.js'
 
 // Merge an array of configuration objects.
