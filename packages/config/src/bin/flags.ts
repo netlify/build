@@ -176,6 +176,26 @@ Default: false`,
     describe: 'Buffer output instead of streaming it',
     hidden: true,
   },
+  traceId: {
+    string: true,
+    describe: 'Trace ID passed by Buildbot to stitch this process into its parent trace.',
+    hidden: true,
+  },
+  traceParentSpanId: {
+    string: true,
+    describe: 'Parent span ID passed by Buildbot to stitch this process into its parent trace.',
+    hidden: true,
+  },
+  traceFlags: {
+    number: true,
+    describe: 'W3C trace flags passed by Buildbot for the parent trace.',
+    hidden: true,
+  },
+  tracingBaggageFilePath: {
+    string: true,
+    describe: 'Path to a file containing W3C baggage to load into the trace, passed by Buildbot.',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-config [OPTIONS...]
