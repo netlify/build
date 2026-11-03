@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://open-api.netlify.com/netlify.toml.json",
+  "$id": "https://open-api.netlify.com/netlify.schema.json",
   "title": "Netlify configuration",
   "description": "Configuration for a Netlify project, set in the `netlify.toml` file, which specifies how Netlify builds and deploys your site. See https://docs.netlify.com/build/configure-builds/file-based-configuration/.",
   "type": "object",
