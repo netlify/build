@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.6.1](https://github.com/netlify/build/compare/config-v25.6.0...config-v25.6.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* rename schema file name ([#7310](https://github.com/netlify/build/issues/7310)) ([1260118](https://github.com/netlify/build/commit/126011874e1e1bcb95268eb166b212e649379317))
+
 ## [25.6.0](https://github.com/netlify/build/compare/config-v25.5.2...config-v25.6.0) (2026-11-03)
 
 
