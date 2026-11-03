@@ -1,5 +1,6 @@
 import { type PackageJson } from 'pkg-types'
 import picomatch from 'picomatch'
+import { explodeStart } from 'zeptomatch-explode'
 
 import { DirType } from '../file-system.js'
 import type { Project } from '../project.js'
@@ -14,23 +15,17 @@ function parseNegatedPattern(pattern: string): { negate: boolean; pattern: strin
   return { negate: negations % 2 === 1, pattern: pattern.slice(negations).replace(/^\.\//, '') }
 }
 
-/** Get the base directory out of a glob pattern */
-function getDirFromPattern(pattern: string): {
-  dir: string
+/** Get the base directories out of a glob pattern */
+function getDirsFromPattern(pattern: string): {
+  dirs: string[]
   /** @example '**' | '*' */
   depth?: string
 } {
-  const dir: string[] = []
-  const parts = pattern.split('/')
-
-  for (let i = 0, max = parts.length; i < max; i++) {
-    if (picomatch.scan(parts[i]).isGlob) {
-      // skip the rest
-      return { dir: dir.join('/'), depth: i < max - 1 ? '**' : parts[i] }
-    }
-    dir.push(parts[i])
+  const { statics, dynamic } = explodeStart(pattern)
+  if (!picomatch.scan(dynamic).isGlob) {
+    return { dirs: statics.length ? statics.map((dir) => `${dir}/${dynamic}`) : [dynamic] }
   }
-  return { dir: dir.join('/') }
+  return { dirs: statics.length ? statics : [''], depth: dynamic.includes('/') ? '**' : dynamic }
 }
 
 export type identifyPackageFn = (options: {
@@ -113,8 +108,8 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
         if (negate) {
           return []
         }
-        const { dir, depth } = getDirFromPattern(pattern)
-        return [findPackages(project, dir, defaultIdentifyPackage, depth)]
+        const { dirs, depth } = getDirsFromPattern(pattern)
+        return dirs.map((dir) => findPackages(project, dir, defaultIdentifyPackage, depth))
       }),
     )
   )
@@ -124,7 +119,7 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
   // initially add all results to the set
   // and filter out then the negated patterns
   const filtered = new Map<string, WorkspacePackage>()
-  const matchers = parsed.map(({ negate, pattern }) => ({ negate, isMatch: picomatch(pattern) }))
+  const matchers = parsed.map(({ negate, pattern }) => ({ negate, isMatch: picomatch(pattern, { windows: true }) }))
 
   for (const result of results) {
     for (const { negate, isMatch } of matchers) {
