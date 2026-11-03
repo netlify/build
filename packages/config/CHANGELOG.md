@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.6.0](https://github.com/netlify/build/compare/config-v25.5.2...config-v25.6.0) (2026-11-03)
+
+
+### Features
+
+* add JSON schema for `netlify.toml` ([#7309](https://github.com/netlify/build/issues/7309)) ([4a24a47](https://github.com/netlify/build/commit/4a24a477f610401c1f4ddcb3b1c66763beb3f717))
+
 ## [25.5.2](https://github.com/netlify/build/compare/config-v25.5.1...config-v25.5.2) (2026-10-29)
 
 
