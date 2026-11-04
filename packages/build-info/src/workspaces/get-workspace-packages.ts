@@ -1,6 +1,5 @@
 import { type PackageJson } from 'pkg-types'
 import picomatch from 'picomatch'
-import { explodeStart } from 'zeptomatch-explode'
 
 import { DirType } from '../file-system.js'
 import type { Project } from '../project.js'
@@ -15,17 +14,34 @@ function parseNegatedPattern(pattern: string): { negate: boolean; pattern: strin
   return { negate: negations % 2 === 1, pattern: pattern.slice(negations).replace(/^\.\//, '') }
 }
 
-/** Get the base directories out of a glob pattern */
-function getDirsFromPattern(pattern: string): {
-  dirs: string[]
+// Loose match of any glob characters
+const globSegment = /[*?[{(]/
+// Matches {foo,bar}
+const commaBraces = /\{([^{}]*,[^{}]*)\}/
+
+function expandBraces(pattern: string): string[] {
+  const match = commaBraces.exec(pattern)
+  if (!match) {
+    return [pattern]
+  }
+  const [full, list] = match
+  const parts = list.split(',')
+  return [...new Set(parts.flatMap((item) => expandBraces(pattern.replace(full, item))))]
+}
+
+/** Get the base directory out of a glob pattern */
+function getDirFromPattern(pattern: string): {
+  dir: string
   /** @example '**' | '*' */
   depth?: string
 } {
-  const { statics, dynamic } = explodeStart(pattern)
-  if (!picomatch.scan(dynamic).isGlob) {
-    return { dirs: statics.length ? statics.map((dir) => `${dir}/${dynamic}`) : [dynamic] }
+  const parts = pattern.split('/').filter(Boolean)
+  const index = parts.findIndex((part) => globSegment.test(part))
+  if (index === -1) {
+    return { dir: pattern }
   }
-  return { dirs: statics.length ? statics : [''], depth: dynamic.includes('/') ? '**' : dynamic }
+  const depth = index < parts.length - 1 || parts[index] === '**' ? '**' : '*'
+  return { dir: parts.slice(0, index).join('/'), depth }
 }
 
 export type identifyPackageFn = (options: {
@@ -108,8 +124,10 @@ export async function getWorkspacePackages(project: Project, patterns: string[] 
         if (negate) {
           return []
         }
-        const { dirs, depth } = getDirsFromPattern(pattern)
-        return dirs.map((dir) => findPackages(project, dir, defaultIdentifyPackage, depth))
+        return expandBraces(pattern).map((expanded) => {
+          const { dir, depth } = getDirFromPattern(expanded)
+          return findPackages(project, dir, defaultIdentifyPackage, depth)
+        })
       }),
     )
   )
