@@ -26,7 +26,7 @@ function expandBraces(pattern: string): string[] {
   }
   const [full, list] = match
   const parts = list.split(',')
-  return [...new Set(parts.flatMap((item) => expandBraces(pattern.replace(full, item))))]
+  return [...new Set(parts.flatMap((item) => expandBraces(pattern.replace(full, () => item))))]
 }
 
 /** Get the base directory out of a glob pattern */
