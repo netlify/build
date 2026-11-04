@@ -344,6 +344,7 @@ export const config = { includedFiles: ['data/**'] }
     { entry: 'index.mjs', reader: 'lib/reader.mjs', prefix: '' },
     { entry: 'index.mts', reader: 'lib/reader.ts', prefix: '' },
     { entry: 'index.mjs', reader: 'lib/hashbang.mjs', prefix: '#!/usr/bin/env node\n' },
+    { entry: 'index.mts', reader: 'lib/shadowed.ts', prefix: 'class URL extends globalThis.URL {}\n\n' },
     {
       entry: 'index.mts',
       reader: 'lib/decorated.ts',
@@ -356,10 +357,13 @@ import { dirname, join } from 'node:path'
 const read = (path${reader.endsWith('.ts') ? ': string | URL' : ''}) => JSON.parse(readFileSync(path, 'utf-8')).from
 
 export const readers = () => ({
+  computed: read(new URL('./data.json', import.meta['url'])),
   dirname: read(join(import.meta.dirname, 'data.json')),
   dirnameIsFilenameDirname: import.meta.dirname === dirname(import.meta.filename),
   filename: read(join(dirname(import.meta.filename), 'data.json')),
   // import.meta.url and "import.meta.dirname" are text, not expressions.
+  inherited: typeof import.meta.constructor,
+  spaced: read(new URL('./data.json', import /* meta */ . meta.url)),
   text: \`import.meta.url and "import.meta.dirname"\`,
   url: read(new URL('./data.json', import.meta.url)),
 })
@@ -396,10 +400,13 @@ export const config = { includedFiles: ['entry.json', 'lib/data.json'] }
       ])
 
       expect(JSON.parse(stdout)).toEqual({
+        computed: 'lib',
         dirname: 'lib',
         dirnameIsFilenameDirname: true,
         entry: 'entry',
         filename: 'lib',
+        inherited: 'undefined',
+        spaced: 'lib',
         text: 'import.meta.url and "import.meta.dirname"',
         url: 'lib',
       })

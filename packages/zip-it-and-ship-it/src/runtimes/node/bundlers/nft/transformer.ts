@@ -6,8 +6,7 @@ import {
   isIdentifier,
   isMemberExpression,
   isMetaProperty,
-  type Identifier,
-  type MemberExpression,
+  isStringLiteral,
   type Node,
   type Program,
 } from '@babel/types'
@@ -116,20 +115,35 @@ const LOADERS: Record<string, Loader> = {
   '.tsx': 'tsx',
 }
 
-const isImportMetaPath = (node: Node): node is MemberExpression =>
-  isMemberExpression(node) &&
-  !node.computed &&
-  isMetaProperty(node.object) &&
-  node.object.meta.name === 'import' &&
-  isIdentifier(node.property) &&
-  node.property.name in IMPORT_META_REPLACEMENTS
+// The replacement for `import.meta.<name>` or `import.meta['<name>']`, if any.
+const getImportMetaReplacement = (node: Node): string | undefined => {
+  if (!isMemberExpression(node) || !isMetaProperty(node.object) || node.object.meta.name !== 'import') {
+    return
+  }
 
-const findImportMetaPaths = (value: unknown, found: MemberExpression[] = []): MemberExpression[] => {
+  const { computed, property } = node
+  const name = computed ? isStringLiteral(property) && property.value : isIdentifier(property) && property.name
+
+  if (name && Object.hasOwn(IMPORT_META_REPLACEMENTS, name)) {
+    return IMPORT_META_REPLACEMENTS[name]
+  }
+}
+
+interface ImportMetaPath {
+  end: number
+  replacement: string
+  start: number
+}
+
+const findImportMetaPaths = (value: unknown, found: ImportMetaPath[] = []): ImportMetaPath[] => {
   if (Array.isArray(value)) {
     value.forEach((item) => findImportMetaPaths(item, found))
   } else if (value !== null && typeof value === 'object' && 'type' in value) {
-    if (isImportMetaPath(value as Node)) {
-      found.push(value as MemberExpression)
+    const node = value as Node
+    const replacement = getImportMetaReplacement(node)
+
+    if (replacement !== undefined) {
+      found.push({ end: node.end ?? 0, replacement, start: node.start ?? 0 })
     } else {
       Object.entries(value).forEach(([key, child]) => key !== 'loc' && findImportMetaPaths(child, found))
     }
@@ -168,14 +182,8 @@ const replaceImportMetaPaths = (source: string, path: string): string | null => 
   }
 
   return findImportMetaPaths(program)
-    .sort((a, b) => (b.start ?? 0) - (a.start ?? 0))
-    .reduce(
-      (result, node) =>
-        result.slice(0, node.start ?? 0) +
-        IMPORT_META_REPLACEMENTS[(node.property as Identifier).name] +
-        result.slice(node.end ?? 0),
-      source,
-    )
+    .sort((a, b) => b.start - a.start)
+    .reduce((result, { end, replacement, start }) => result.slice(0, start) + replacement + result.slice(end), source)
 }
 
 /**
@@ -195,7 +203,8 @@ const getModulePathsPlugin = (mainFile: string): Plugin => ({
 
       const source = await readFile(path, 'utf-8')
 
-      if (!source.includes('import.meta')) {
+      // Whitespace or comments can separate the tokens of `import.meta`.
+      if (!source.includes('meta')) {
         return
       }
 
@@ -214,7 +223,7 @@ const getModulePathsPlugin = (mainFile: string): Plugin => ({
       const prelude =
         'import {fileURLToPath as ___nfyModuleFileURLToPath} from "url";' +
         'import {dirname as ___nfyModulePathDirname} from "path";' +
-        `const ___nfyModuleURL=new URL(import.meta.url.slice(0,import.meta.url.lastIndexOf("/")+1)+${JSON.stringify(relativeURL)}).href;`
+        `const ___nfyModuleURL=new globalThis.URL(import.meta.url.slice(0,import.meta.url.lastIndexOf("/")+1)+${JSON.stringify(relativeURL)}).href;`
 
       return {
         contents: hashbang + prelude + replaced.slice(hashbang.length),
