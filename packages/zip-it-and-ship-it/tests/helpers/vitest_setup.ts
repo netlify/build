@@ -1,5 +1,6 @@
-import { pathExists } from 'path-exists'
 import { expect } from 'vitest'
+
+import { pathExists } from '../../src/utils/fs.js'
 
 expect.extend({
   async toPathExist(received) {

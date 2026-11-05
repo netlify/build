@@ -1,8 +1,9 @@
 import { createRequire } from 'module'
 
 import { findUp } from 'find-up'
-import { pathExists } from 'path-exists'
 import { async as asyncResolve } from 'resolve'
+
+import { pathExists } from '../../../../utils/fs.js'
 
 const require = createRequire(import.meta.url)
 

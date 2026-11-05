@@ -1,4 +1,5 @@
 import { cp, mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { tmpdir } from 'os'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
@@ -6,10 +7,7 @@ import decompress from 'decompress'
 import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
 import glob from 'fast-glob'
-import isCI from 'is-ci'
-import { pathExists } from 'path-exists'
 import semver from 'semver'
-import { dir as getTmpDir, tmpName } from 'tmp-promise'
 import unixify from 'unixify'
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
@@ -19,6 +17,7 @@ import { NODE_BUNDLER } from '../src/runtimes/node/bundlers/types.js'
 import { detectEsModule } from '../src/runtimes/node/utils/detect_es_module.js'
 import { MODULE_FORMAT } from '../src/runtimes/node/utils/module_format.js'
 import { FunctionBundlingUserError } from '../src/utils/error.js'
+import { pathExists } from '../src/utils/fs.js'
 import { shellUtils } from '../src/utils/shell.js'
 import type { ZipFunctionsOptions } from '../src/zip.js'
 import { zipFunctions } from '../src/zip.js'
@@ -30,6 +29,7 @@ import {
   getBundlerNameFromOptions,
   getFunctionResultsByName,
   getRequires,
+  getTmpDir,
   importFunctionFile,
   unzipFiles,
   zipCheckFunctions,
@@ -568,7 +568,7 @@ describe('zip-it-and-ship-it', () => {
 
       // With no `package.json` in the bundle, Node falls back to loading the
       // `.js` main file as CJS.
-      expect(await pathExists(join(unzipPath, 'package.json'))).toBe(false)
+      await expect(join(unzipPath, 'package.json')).not.toPathExist()
 
       const func = await importFunctionFile(join(unzipPath, 'function.js'))
       const { body, statusCode } = await func.handler()
@@ -620,7 +620,7 @@ describe('zip-it-and-ship-it', () => {
   // committed on Windows
   if (platform !== 'win32') {
     testMany('Can require symlinks', [...allBundleConfigs], async (options) => {
-      const fixtureTmpDir = await tmpName({ prefix: 'zip-it-test' })
+      const fixtureTmpDir = await getTmpDir()
       const opts = merge(options, {
         basePath: `${fixtureTmpDir}/symlinks`,
       })
@@ -725,7 +725,7 @@ describe('zip-it-and-ship-it', () => {
     let fixtureTmpDir: string
 
     beforeAll(async () => {
-      fixtureTmpDir = await tmpName({ prefix: 'many-dependencies' })
+      fixtureTmpDir = await getTmpDir('many-dependencies')
       const basePath = `${fixtureTmpDir}/many-dependencies`
 
       await cp(join(FIXTURES_DIR, 'many-dependencies'), basePath, { recursive: true })
@@ -737,7 +737,7 @@ describe('zip-it-and-ship-it', () => {
 
     afterAll(async () => {
       // No need to cleanup on CI
-      if (isCI) return
+      if (process.env.CI) return
 
       await rm(fixtureTmpDir, { recursive: true, force: true, maxRetries: 10 })
     })
@@ -803,7 +803,7 @@ describe('zip-it-and-ship-it', () => {
   })
 
   testMany('Works when no package.json is present', [...allBundleConfigs], async (options) => {
-    const fixtureDir = await tmpName({ prefix: 'zip-it-test' })
+    const fixtureDir = await getTmpDir()
     const opts = merge(options, {
       basePath: fixtureDir,
     })
@@ -812,7 +812,7 @@ describe('zip-it-and-ship-it', () => {
   })
 
   testMany('Copies already zipped files', [...allBundleConfigs, 'bundler_none'], async () => {
-    const tmpDir = await tmpName({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const { files } = await zipCheckFunctions('keep-zip', { tmpDir })
 
     expect(files[0].runtime).toBe('js')
@@ -1248,7 +1248,7 @@ describe('zip-it-and-ship-it', () => {
   )
 
   test('Limits the amount of log lines produced by esbuild', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const fixturePath = join(FIXTURES_DIR, 'esbuild-log-limit')
 
     try {
@@ -1824,7 +1824,7 @@ describe('zip-it-and-ship-it', () => {
   })
 
   test('Zips Go function binaries if the `zipGo` config property is set', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const fixtureName = 'go-simple'
@@ -1868,7 +1868,7 @@ describe('zip-it-and-ship-it', () => {
       return {} as any
     })
 
-    const { path: manifestTmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const manifestTmpDir = await getTmpDir()
     const manifestPath = join(manifestTmpDir, 'manifest.json')
 
     const fixtureName = 'go-source'
@@ -2007,8 +2007,8 @@ describe('zip-it-and-ship-it', () => {
   })
 
   test('Builds Rust functions from source if the `buildRustSource` feature flag is enabled', async () => {
-    const targetDirectory = await tmpName({ prefix: `zip-it-test-rust-function-[name]` })
-    const tmpDirectory = await tmpName({ prefix: `zip-it-test` })
+    const targetDirectory = join(tmpdir(), 'zip-it-test-rust-function-[name]')
+    const tmpDirectory = join(tmpdir(), 'zip-it-test')
 
     vi.mocked(shellUtils.runCommand).mockImplementation(async (...args) => {
       const [rootCommand, , { cwd = undefined, env: environment = undefined } = {}] = args
@@ -2211,7 +2211,7 @@ describe('zip-it-and-ship-it', () => {
 
   test('Creates a manifest file with the list of created functions if the `manifest` property is supplied', async () => {
     const FUNCTIONS_COUNT = 6
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
     const { files } = await zipNode('many-functions', {
       length: FUNCTIONS_COUNT,
@@ -2308,7 +2308,7 @@ describe('zip-it-and-ship-it', () => {
     async (options) => {
       const schedule = '* * * * *'
       const fixtureName = 'with-schedule'
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const manifestPath = join(tmpDir, 'manifest.json')
       const opts = merge(options, {
         basePath: join(FIXTURES_DIR, fixtureName),
@@ -2517,7 +2517,7 @@ describe('zip-it-and-ship-it', () => {
     'Loads function configuration properties from a JSON file if the function is inside one of `configFileDirectories` and writes to manifest file',
     [...allBundleConfigs],
     async (options) => {
-      const { path: tmpManifestDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpManifestDir = await getTmpDir()
       const manifestPath = join(tmpManifestDir, 'manifest.json')
       const fixtureName = 'config-files-select-directories'
       const pathInternal = join(fixtureName, '.netlify', 'functions-internal')
@@ -2939,7 +2939,7 @@ describe('zip-it-and-ship-it', () => {
 })
 
 test('Adds a `priority` field to the generated manifest file', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const fixtureName = 'multiple-src-directories'
   const manifestPath = join(tmpDir, 'manifest.json')
   const paths = {
@@ -2976,7 +2976,7 @@ test('Adds a `priority` field to the generated manifest file', async () => {
 })
 
 test('Adds a `ratelimit` field to the generated manifest file', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const fixtureName = 'ratelimit'
   const manifestPath = join(tmpDir, 'manifest.json')
   const path = `${fixtureName}/netlify/functions`
@@ -3012,7 +3012,7 @@ test('Adds a `ratelimit` field to the generated manifest file', async () => {
 })
 
 test('Writes event subscriptions to the manifest', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const manifestPath = join(tmpDir, 'manifest.json')
 
   await zipFixture('v2-api-event-handlers', {
@@ -3029,10 +3029,7 @@ test('Writes event subscriptions to the manifest', async () => {
 })
 
 test('Supports both files and directories and ignores files that are not functions', async () => {
-  const tmpDir = await getTmpDir({
-    // Cleanup the folder even if there are still files in them
-    unsafeCleanup: true,
-  })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
   const files = await zipFunctions(
     {
@@ -3049,7 +3046,7 @@ test('Supports both files and directories and ignores files that are not functio
         ],
       },
     },
-    tmpDir.path,
+    tmpDir,
     {
       basePath,
     },
@@ -3060,28 +3057,28 @@ test('Supports both files and directories and ignores files that are not functio
   const unzippedFunctions = await unzipFiles(files)
   const functions = getFunctionResultsByName(unzippedFunctions)
 
-  const func1 = await importFunctionFile(`${tmpDir.path}/${functions.func1.name}/${functions.func1.entryFilename}`)
+  const func1 = await importFunctionFile(`${tmpDir}/${functions.func1.name}/${functions.func1.entryFilename}`)
   const func1Result = await invokeLambda(func1)
   expect(func1Result.statusCode).toBe(200)
   expect(await readAsBuffer(func1Result.body)).toStrictEqual(
     JSON.stringify({ func: 1, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2 = await importFunctionFile(`${tmpDir}/${functions.func2.name}/${functions.func2.entryFilename}`)
   const func2Result = await invokeLambda(func2)
   expect(func2Result.statusCode).toBe(200)
   expect(await readAsBuffer(func2Result.body)).toStrictEqual(
     JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3 = await importFunctionFile(`${tmpDir}/${functions.func3.name}/${functions.func3.entryFilename}`)
   const func3Result = await invokeLambda(func3)
   expect(func3Result.statusCode).toBe(200)
   expect(await readAsBuffer(func3Result.body)).toStrictEqual(
     JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4 = await importFunctionFile(`${tmpDir}/${functions.func4.name}/${functions.func4.entryFilename}`)
   const func4Result = await invokeLambda(func4)
   expect(func4Result.statusCode).toBe(200)
   expect(await readAsBuffer(func4Result.body)).toStrictEqual(
@@ -3089,27 +3086,24 @@ test('Supports both files and directories and ignores files that are not functio
   )
 
   const extension1 = await importFunctionFile(
-    `${tmpDir.path}/${functions.extension1.name}/${functions.extension1.entryFilename}`,
+    `${tmpDir}/${functions.extension1.name}/${functions.extension1.entryFilename}`,
   )
   const extension1Result = await invokeLambda(extension1)
   expect(extension1Result.statusCode).toBe(200)
   expect(await readAsBuffer(extension1Result.body)).toStrictEqual('Hello from extension')
 
   const framework1 = await importFunctionFile(
-    `${tmpDir.path}/${functions.framework1.name}/${functions.framework1.entryFilename}`,
+    `${tmpDir}/${functions.framework1.name}/${functions.framework1.entryFilename}`,
   )
   const framework1Result = await invokeLambda(framework1)
   expect(framework1Result.statusCode).toBe(200)
   expect(await readAsBuffer(framework1Result.body)).toStrictEqual('Hello from framework')
 
-  await tmpDir.cleanup()
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Supports functions inside the plugins modules path', async () => {
-  const tmpDir = await getTmpDir({
-    // Cleanup the folder even if there are still files in them
-    unsafeCleanup: true,
-  })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-isolated')
   const files = await zipFunctions(
     {
@@ -3123,7 +3117,7 @@ test('Supports functions inside the plugins modules path', async () => {
         directories: [join(basePath, 'netlify/functions')],
       },
     },
-    tmpDir.path,
+    tmpDir,
     {
       basePath,
     },
@@ -3134,7 +3128,7 @@ test('Supports functions inside the plugins modules path', async () => {
 
   // extension-func1 should work because all modules are in scope.
   const extensionFunc1 = await importFunctionFile(
-    `${tmpDir.path}/${functions['extension-func1'].name}/${functions['extension-func1'].entryFilename}`,
+    `${tmpDir}/${functions['extension-func1'].name}/${functions['extension-func1'].entryFilename}`,
   )
   const extensionFunc1Result = await invokeLambda(extensionFunc1)
   expect(extensionFunc1Result.statusCode).toBe(200)
@@ -3146,7 +3140,7 @@ test('Supports functions inside the plugins modules path', async () => {
 
   // extension-func2 should error because module-4 isn't in scope.
   const extensionFunc2 = await importFunctionFile(
-    `${tmpDir.path}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
+    `${tmpDir}/${functions['extension-func2'].name}/${functions['extension-func2'].entryFilename}`,
   )
   await expect(invokeLambda(extensionFunc2)).rejects.toThrowError()
   expect(functions['extension-func2'].generator).toBe('internalFunc')
@@ -3154,7 +3148,7 @@ test('Supports functions inside the plugins modules path', async () => {
 
   // user-func1 should work because all modules are in scope.
   const userFunc1 = await importFunctionFile(
-    `${tmpDir.path}/${functions['user-func1'].name}/${functions['user-func1'].entryFilename}`,
+    `${tmpDir}/${functions['user-func1'].name}/${functions['user-func1'].entryFilename}`,
   )
   const userFunc1Result = await invokeLambda(userFunc1)
   expect(userFunc1Result.statusCode).toBe(200)
@@ -3164,14 +3158,11 @@ test('Supports functions inside the plugins modules path', async () => {
   expect(functions['user-func1'].generator).toBeUndefined()
   expect(functions['user-func1'].priority).toBe(10)
 
-  await tmpDir.cleanup()
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })
 
 test('Supports individual functions even when none of the given function directories exist', async () => {
-  const tmpDir = await getTmpDir({
-    // Cleanup the folder even if there are still files in them
-    unsafeCleanup: true,
-  })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api-files-and-directories')
   const files = await zipFunctions(
     {
@@ -3188,7 +3179,7 @@ test('Supports individual functions even when none of the given function directo
         directories: [join(basePath, 'does-not-exist-either/functions')],
       },
     },
-    tmpDir.path,
+    tmpDir,
     {
       basePath,
     },
@@ -3199,26 +3190,26 @@ test('Supports individual functions even when none of the given function directo
   const unzippedFunctions = await unzipFiles(files)
   const functions = getFunctionResultsByName(unzippedFunctions)
 
-  const func2 = await importFunctionFile(`${tmpDir.path}/${functions.func2.name}/${functions.func2.entryFilename}`)
+  const func2 = await importFunctionFile(`${tmpDir}/${functions.func2.name}/${functions.func2.entryFilename}`)
   const func2Result = await invokeLambda(func2)
   expect(func2Result.statusCode).toBe(200)
   expect(await readAsBuffer(func2Result.body)).toStrictEqual(
     JSON.stringify({ func: 2, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  const func3 = await importFunctionFile(`${tmpDir.path}/${functions.func3.name}/${functions.func3.entryFilename}`)
+  const func3 = await importFunctionFile(`${tmpDir}/${functions.func3.name}/${functions.func3.entryFilename}`)
   const func3Result = await invokeLambda(func3)
   expect(func3Result.statusCode).toBe(200)
   expect(await readAsBuffer(func3Result.body)).toStrictEqual(
     JSON.stringify({ func: 3, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  const func4 = await importFunctionFile(`${tmpDir.path}/${functions.func4.name}/${functions.func4.entryFilename}`)
+  const func4 = await importFunctionFile(`${tmpDir}/${functions.func4.name}/${functions.func4.entryFilename}`)
   const func4Result = await invokeLambda(func4)
   expect(func4Result.statusCode).toBe(200)
   expect(await readAsBuffer(func4Result.body)).toStrictEqual(
     JSON.stringify({ func: 4, mod3: 'module-3', mod4: 'module-4' }),
   )
 
-  await tmpDir.cleanup()
+  await rm(tmpDir, { force: true, recursive: true, maxRetries: 10 })
 })

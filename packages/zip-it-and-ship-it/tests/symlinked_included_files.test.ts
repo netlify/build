@@ -3,12 +3,11 @@ import { platform } from 'os'
 import { join, sep } from 'path'
 
 import decompress from 'decompress'
-import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { ARCHIVE_FORMAT, zipFunction } from '../src/main.js'
 
-import { FIXTURES_ESM_DIR } from './helpers/main.js'
+import { FIXTURES_ESM_DIR, getTmpDir } from './helpers/main.js'
 
 /** Small helper function, reading a directory recursively and returning a record with the files and if it is a symlink or not */
 const readDirWithType = async (dir: string, readFiles?: Record<string, boolean>, parent = '') => {
@@ -27,7 +26,7 @@ const readDirWithType = async (dir: string, readFiles?: Record<string, boolean>,
 }
 
 test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` are preserved', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'symlinked-included-files')
   const mainFile = join(basePath, 'function.mjs')
 
@@ -68,7 +67,7 @@ test.skipIf(platform() === 'win32')('Symlinked directories from `includedFiles` 
 
 // Regression test for https://github.com/netlify/build/pull/5836
 test('preserves multiple symlinks that link to the same target', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'symlinked-deps')
   const mainFile = join(basePath, 'function.mjs')
 
@@ -123,7 +122,7 @@ test('preserves multiple symlinks that link to the same target', async () => {
 })
 
 test('symlinks in subdir of `includedFiles` are copied over successfully', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'symlinked-bin')
   const mainFile = join(basePath, 'function.ts')
 
