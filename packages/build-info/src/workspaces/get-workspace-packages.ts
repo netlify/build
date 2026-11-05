@@ -40,7 +40,7 @@ function getDirFromPattern(pattern: string): {
   if (index === -1) {
     return { dir: pattern }
   }
-  const depth = index < parts.length - 1 || parts[index] === '**' ? '**' : '*'
+  const depth = parts[index] === '**' ? '**' : '*'
   return { dir: parts.slice(0, index).join('/'), depth }
 }
 
