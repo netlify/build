@@ -1,0 +1,594 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://open-api.netlify.com/netlify.schema.json",
+  "title": "Netlify configuration",
+  "description": "Configuration for a Netlify project, set in the `netlify.toml` file, which specifies how Netlify builds and deploys your site. See https://docs.netlify.com/build/configure-builds/file-based-configuration/.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of the JSON schema that describes this file, which editors use to validate it and suggest properties. Netlify does not use it."
+    },
+    "build": {
+      "$ref": "#/definitions/build"
+    },
+    "context": {
+      "type": "object",
+      "description": "Settings that apply to a kind of deploy. Any property in `[context.production]`, `[context.deploy-preview]`, `[context.branch-deploy]`, or `[context.dev]` will override less specific contexts, and any property in `[context.branchname]`, for a given branchname, is the most specific. A branch name that ends in `*` matches branches by prefix. See https://docs.netlify.com/build/configure-builds/file-based-configuration/#deploy-contexts.",
+      "additionalProperties": {
+        "$ref": "#/definitions/contextConfig"
+      }
+    },
+    "database": {
+      "$ref": "#/definitions/database"
+    },
+    "dev": {
+      "type": "object",
+      "description": "Optional configuration for Netlify Dev, the local development environment. Note that `[dev]` doesn't run in the Bash shell, so you won't be able to use Bash-compatible syntax with the command. To set environment variables for local development, use `[context.dev.environment]` instead. See https://docs.netlify.com/build/configure-builds/file-based-configuration/#netlify-dev."
+    },
+    "edge_functions": {
+      "$ref": "#/definitions/edgeFunctions"
+    },
+    "functions": {
+      "$ref": "#/definitions/functions"
+    },
+    "headers": {
+      "type": "array",
+      "description": "Custom headers. By default, headers set in the `netlify.toml` are global for all builds and cannot be scoped for specific branches or deploy contexts. See https://docs.netlify.com/manage/routing/headers/.",
+      "items": {
+        "$ref": "#/definitions/header"
+      }
+    },
+    "images": {
+      "type": "object",
+      "description": "Settings for Netlify Image CDN. See https://docs.netlify.com/build/image-cdn/overview/.",
+      "properties": {
+        "remote_images": {
+          "type": "array",
+          "description": "Allowed domains for remote source images, as an array of regex. In the regex, escape literal dots (`\\.`); forward slashes don't need escaping.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "plugins": {
+      "$ref": "#/definitions/plugins"
+    },
+    "redirects": {
+      "type": "array",
+      "description": "Redirect and rewrite rules. Redirects are global for all builds and do not get scoped to deploy contexts. See https://docs.netlify.com/manage/routing/redirects/overview/#syntax-for-the-netlify-configuration-file.",
+      "items": {
+        "$ref": "#/definitions/redirect"
+      }
+    },
+    "server": {
+      "$ref": "#/definitions/server"
+    },
+    "spa_fallback": {
+      "type": "boolean",
+      "description": "Whether to add a catch-all rule that rewrites every path to `/index.html` with a `200` status, for single-page apps that handle routing internally. It is not added if a rule for `/*` already exists."
+    }
+  },
+  "definitions": {
+    "build": {
+      "type": "object",
+      "description": "Build settings. Settings for the `[build]` key are global and are applied to all deploy contexts unless overridden by a context-specific setting.",
+      "properties": {
+        "base": {
+          "$ref": "#/definitions/buildProperties/properties/base"
+        },
+        "command": {
+          "$ref": "#/definitions/buildProperties/properties/command"
+        },
+        "edge_functions": {
+          "$ref": "#/definitions/buildProperties/properties/edge_functions"
+        },
+        "environment": {
+          "$ref": "#/definitions/buildProperties/properties/environment"
+        },
+        "functions": {
+          "$ref": "#/definitions/buildProperties/properties/functions"
+        },
+        "ignore": {
+          "$ref": "#/definitions/buildProperties/properties/ignore"
+        },
+        "publish": {
+          "$ref": "#/definitions/buildProperties/properties/publish"
+        }
+      }
+    },
+    "buildProperties": {
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "Directory where Netlify checks for dependency management files such as `package.json` or `.nvmrc`, installs dependencies, and runs your build command. If not set, the base directory defaults to the root of the repository."
+        },
+        "command": {
+          "type": "string",
+          "description": "The command to run to build your site if you are using a static site generator or other build tool. For example, `npm run build`. The build command runs in the Bash shell, allowing you to add Bash-compatible syntax to the command."
+        },
+        "edge_functions": {
+          "type": "string",
+          "description": "Custom edge functions directory, as an absolute path relative to the site's base directory. The default edge functions directory is `YOUR_BASE_DIRECTORY/netlify/edge-functions`."
+        },
+        "environment": {
+          "type": "object",
+          "description": "Build environment variables. We recommend that you use the Netlify UI instead, to avoid storing sensitive values in your repository.",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean"]
+          }
+        },
+        "functions": {
+          "type": "string",
+          "description": "Directory that contains function files and optional subdirectories for organizing function files. The functions directory is relative to the base directory. `functions.directory` takes precedence over this setting."
+        },
+        "ignore": {
+          "type": "string",
+          "description": "A Node.js or Bash command that runs from the base directory and determines whether or not the site needs rebuilding. An exit code of `1` indicates the contents have changed and the build process continues as usual. An exit code of `0` indicates that there are no changes and the build should stop."
+        },
+        "publish": {
+          "type": "string",
+          "description": "Directory that contains the deploy-ready HTML files and assets generated by the build. The directory is relative to the base directory, which is root by default (`/`)."
+        }
+      }
+    },
+    "contextConfig": {
+      "type": "object",
+      "description": "Settings for this deploy context or branch. Build settings can be set directly, as in `[context.production]`, or under `build`.",
+      "properties": {
+        "base": {
+          "$ref": "#/definitions/buildProperties/properties/base"
+        },
+        "build": {
+          "$ref": "#/definitions/build"
+        },
+        "command": {
+          "$ref": "#/definitions/buildProperties/properties/command"
+        },
+        "database": {
+          "$ref": "#/definitions/database"
+        },
+        "edge_functions": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/buildProperties/properties/edge_functions"
+            },
+            {
+              "$ref": "#/definitions/edgeFunctions"
+            }
+          ],
+          "description": "A string sets the edge functions directory for this context, as `build.edge_functions` does. An array of tables declares edge functions for this context, as `[[edge_functions]]` does."
+        },
+        "environment": {
+          "$ref": "#/definitions/buildProperties/properties/environment"
+        },
+        "functions": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/buildProperties/properties/functions"
+            },
+            {
+              "$ref": "#/definitions/functions"
+            }
+          ],
+          "description": "A string sets the functions directory for this context, as `build.functions` does. A table sets functions settings for this context, as `[functions]` does."
+        },
+        "ignore": {
+          "$ref": "#/definitions/buildProperties/properties/ignore"
+        },
+        "plugins": {
+          "$ref": "#/definitions/plugins"
+        },
+        "publish": {
+          "$ref": "#/definitions/buildProperties/properties/publish"
+        },
+        "server": {
+          "$ref": "#/definitions/server"
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "description": "Settings for Netlify Database.",
+      "properties": {
+        "migrations": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Directory with the migrations that Netlify applies automatically. Defaults to `netlify/database/migrations`."
+            }
+          },
+          "description": "Settings for Netlify Database's native migration system."
+        }
+      }
+    },
+    "edgeFunctions": {
+      "type": "array",
+      "description": "Edge function declarations. Declaring edge functions in `netlify.toml` instead of inline in the function file lets you run multiple edge functions on the same path and customize the order they run in. See https://docs.netlify.com/build/edge-functions/declarations/#declare-edge-functions-in-netlifytoml.",
+      "items": {
+        "$ref": "#/definitions/edgeFunction"
+      }
+    },
+    "edgeFunction": {
+      "type": "object",
+      "properties": {
+        "cache": {
+          "enum": ["manual", "off"],
+          "description": "Optional setting to opt in to response caching, by setting it to `manual`."
+        },
+        "excludedPath": {
+          "$ref": "#/definitions/stringOrStrings",
+          "description": "Optional `URLPattern` exclusion to limit the routes matched by `path`. Accepts a single string or an array of strings."
+        },
+        "excludedPattern": {
+          "$ref": "#/definitions/stringOrStrings",
+          "description": "Optional regex exclusion to limit the routes matched by `pattern`. Accepts a single regex or an array of regex."
+        },
+        "function": {
+          "type": "string",
+          "description": "Name of the edge function you're configuring."
+        },
+        "header": {
+          "type": "object",
+          "description": "Optional conditions on HTTP headers that must be met for the edge function to run. Each key is the name of an HTTP header, and the value is `true` to match only if the header is present in the request, `false` to match only if it is not present, or a string to match only if the header value matches the regular expression represented in the string.",
+          "additionalProperties": {
+            "type": ["boolean", "string"]
+          }
+        },
+        "method": {
+          "description": "Optional HTTP methods that should run the edge function. Accepts a string or an array of strings.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/httpMethod"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/httpMethod"
+              }
+            }
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-friendly name of the edge function."
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/",
+          "description": "`URLPattern` expression on which paths to run the edge function. Must start with `/`, for example `path = \"/*\"`."
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Alternative to the `path` property that allows for regex path matching."
+        }
+      },
+      "required": ["function"],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["path"]
+        },
+        {
+          "required": ["pattern"]
+        }
+      ],
+      "allOf": [
+        {
+          "not": {
+            "required": ["path", "pattern"]
+          }
+        },
+        {
+          "not": {
+            "required": ["excludedPath", "excludedPattern"]
+          }
+        }
+      ]
+    },
+    "functionConfig": {
+      "type": "object",
+      "properties": {
+        "deno_import_map": {
+          "type": "string",
+          "description": "Path to an import map file for edge functions, which maps module URLs to names so you can use module names in your import statements."
+        },
+        "external_node_modules": {
+          "type": "array",
+          "description": "List of Node.js modules that are copied to the bundled artifact without adjusting their source or references during the bundling process; only applies when `node_bundler` is set to `esbuild`. This property helps handle dependencies that can't be inlined, such as modules with native add-ons.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ignored_node_modules": {
+          "type": "array",
+          "description": "List of Node.js modules to leave out of the function bundle.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "included_files": {
+          "type": "array",
+          "description": "List of additional paths to include in the function bundle. Although our build system includes statically referenced files (like `require(\"./some-file.js\")`) by default, `included_files` lets you specify additional files or directories and reference them dynamically in function code. You can use `*` to match any character or prefix an entry with `!` to exclude files. Paths are absolute paths relative to the base directory.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memory": {
+          "description": "Memory for the function, as a number of megabytes or a human-friendly string with a unit (`\"2gb\"`, `\"1024mb\"`, case-insensitive). Allowed range: 1024 to 4096 MB. Memory and vCPU scale together, and the two are mutually exclusive; set one, not both.",
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 4096
+            },
+            {
+              "type": "string",
+              "pattern": "^\\s*(?:(?:102[4-9]|10[3-9]\\d|1[1-9]\\d{2}|[23]\\d{3}|40[0-8]\\d|409[0-6])(?:\\.0+)?\\s*(?:[mM][bB])?|(?:[1-3](?:\\.\\d+)?|4(?:\\.0+)?)\\s*[gG][bB])\\s*$"
+            }
+          ]
+        },
+        "node_bundler": {
+          "enum": ["esbuild", "nft", "zisi", "none"],
+          "description": "Function bundling method used in @netlify/zip-it-and-ship-it. `esbuild` leverages esbuild to bundle functions, resulting in shorter bundling times and smaller artifacts, and TypeScript functions always use it. `zisi` is the default function bundling method for JavaScript functions."
+        },
+        "region": {
+          "type": "string",
+          "description": "Region the function runs in, identified by airport code, such as `dub`. The function-level region takes precedence over the site-level region set in the UI."
+        },
+        "schedule": {
+          "type": "string",
+          "description": "Cron expression for a scheduled function, in the format used by tools like crontab, executed according to the UTC timezone. For example, `0 0 * * *` runs every day at midnight UTC, and can also be written as `@daily`. The `@reboot` and `@annually` extensions are not supported."
+        },
+        "vcpu": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 2,
+          "description": "vCPUs for the function, as a number between 0.5 and 2.0. Memory and vCPU scale together, and the two are mutually exclusive; set one, not both."
+        }
+      },
+      "not": {
+        "required": ["memory", "vcpu"]
+      }
+    },
+    "functions": {
+      "description": "Optional, custom configuration for Netlify Functions. Settings at the top of `[functions]` apply to all functions in your project, and you can filter them by function name, including using glob patterns, as in `[functions.\"api_*\"]`. If a function matches several configuration blocks containing one of these properties, the values are concatenated. See https://docs.netlify.com/build/configure-builds/file-based-configuration/#functions.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/functionConfig"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "*": {
+              "$ref": "#/definitions/functionConfig"
+            },
+            "deno_import_map": true,
+            "directory": {
+              "type": "string",
+              "description": "Custom absolute path to your functions. The default location is `YOUR_BASE_DIRECTORY/netlify/functions`."
+            },
+            "external_node_modules": true,
+            "ignored_node_modules": true,
+            "included_files": true,
+            "memory": true,
+            "node_bundler": true,
+            "region": true,
+            "schedule": true,
+            "vcpu": true
+          },
+          "additionalProperties": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/functionConfig"
+              },
+              {
+                "not": {
+                  "type": "object",
+                  "required": ["directory"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "header": {
+      "type": "object",
+      "properties": {
+        "for": {
+          "type": "string",
+          "description": "The path or URL where the headers will be added. Paths can contain wildcards (`*`), which match any character, and placeholders (`:placeholder`), which can only be used at the start of a path segment and match any character except `/`."
+        },
+        "values": {
+          "type": "object",
+          "description": "A map of values to add to the response headers. Multi-value headers are expressed with multi-line strings.",
+          "additionalProperties": {
+            "$ref": "#/definitions/stringOrStrings"
+          }
+        }
+      },
+      "required": ["for"]
+    },
+    "httpMethod": {
+      "type": "string",
+      "pattern": "^(?:[gG][eE][tT]|[pP][oO][sS][tT]|[pP][uU][tT]|[pP][aA][tT][cC][hH]|[dD][eE][lL][eE][tT][eE]|[oO][pP][tT][iI][oO][nN][sS])$",
+      "examples": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+    },
+    "plugins": {
+      "type": "array",
+      "description": "Build plugins, which extend the functionality of the build process. See https://docs.netlify.com/extend/install-and-use/build-plugins/#file-based-installation.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "description": "Custom settings that the plugin author may specify as required or available for configuring the plugin."
+          },
+          "package": {
+            "type": "string",
+            "description": "For a plugin installed from npm, the npm package name of the plugin. For a local plugin, the absolute path to a directory containing the plugin's `index.js` and `manifest.yml` files. The `package` value for a local plugin must start with `.` or `/`.",
+            "pattern": "^(?:[./].*|(?:@[^@/\\s:]+/)?[^@/\\s:]+)$"
+          },
+          "pinned_version": {
+            "type": "string",
+            "description": "Major version of the plugin to use, such as `\"1\"`. When not set, Netlify pins the major version automatically."
+          }
+        },
+        "required": ["package"],
+        "additionalProperties": false
+      }
+    },
+    "redirect": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "object",
+          "description": "Conditions to match the redirect, including country, role, and cookie presence conditions.",
+          "properties": {
+            "Country": {
+              "$ref": "#/definitions/stringOrStrings",
+              "description": "ISO 3166-1 alpha-2 country codes to match, based on GeoIP data."
+            },
+            "Language": {
+              "$ref": "#/definitions/stringOrStrings",
+              "description": "Standard browser language identification codes, and locale codes that combine language and country, to match against the browser's language configuration."
+            },
+            "Role": {
+              "$ref": "#/definitions/stringOrStrings",
+              "description": "Roles to match, as authorized by Netlify Identity or any authentication provider that supports JSON Web Tokens (JWT)."
+            }
+          }
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Whether to override any existing content in the path or not; `false` by default."
+        },
+        "from": {
+          "type": "string",
+          "description": "The case-sensitive path you want to redirect. Special characters must be url-encoded."
+        },
+        "headers": {
+          "type": "object",
+          "description": "Additional request headers to send in proxy redirects.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "query": {
+          "type": "object",
+          "description": "Query string parameters required to match the redirect, each mapped to a placeholder such as `:path`.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "rate_limit": {
+          "type": "object",
+          "description": "Rate limit for requests that match the redirect, set with `window_limit`, `window_size` (in seconds, at most 180) and `aggregate_by` (`ip`, `domain` or both). See https://docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/#set-limits-for-redirects."
+        },
+        "signed": {
+          "type": "string",
+          "description": "Name of an environment variable for signed proxy redirects."
+        },
+        "status": {
+          "type": "integer",
+          "description": "The HTTP status code you want to use in that redirect; `301` by default."
+        },
+        "to": {
+          "type": "string",
+          "description": "The URL or path you want to redirect to. Special characters must be url-encoded."
+        }
+      },
+      "anyOf": [
+        {
+          "required": ["from"]
+        },
+        {
+          "required": ["origin"]
+        }
+      ]
+    },
+    "server": {
+      "type": "object",
+      "description": "Settings for your project's Netlify Server. If your entry file also sets a property, the entry file takes precedence.",
+      "properties": {
+        "excludedPath": {
+          "$ref": "#/definitions/serverPaths",
+          "description": "One or more URL paths that the server doesn't handle, using the same syntax as `path`. Requests for them go on to the rest of your project as if the server didn't exist."
+        },
+        "includedFiles": {
+          "type": "array",
+          "description": "Glob patterns for additional files to include in the server's bundle, such as data files your server reads at runtime. In `netlify.toml`, they're relative to your project's base directory. If the entry file also sets `includedFiles`, its patterns replace these.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "path": {
+          "$ref": "#/definitions/serverPaths",
+          "description": "One or more URL paths that the server handles. Paths must begin with a forward slash, and use the same syntax as function paths. Defaults to `/*`, which is every path that nothing else on your project handles."
+        },
+        "region": {
+          "type": "string",
+          "description": "Airport code of the region the server runs in: `cmh` for US East (Ohio) or `fra` for EU (Frankfurt). Defaults to `cmh`.",
+          "pattern": "^(?:[cC][mM][hH]|[fF][rR][aA])$",
+          "examples": ["cmh", "fra"]
+        },
+        "scale": {
+          "type": "object",
+          "description": "How many instances your server runs. Netlify starts and stops instances as traffic changes, within these bounds.",
+          "properties": {
+            "max": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "The most instances that run at once. Defaults to the highest your plan allows."
+            },
+            "min": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "The number of instances that keep running at all times, regardless of traffic. Defaults to `0`, so your server scales to zero when nothing is using it."
+            }
+          },
+          "additionalProperties": false
+        },
+        "size": {
+          "type": "string",
+          "description": "Size of the instances the server runs on: `small` (1 GB of memory, 1 shared vCPU), `medium` (2 GB, 1 vCPU) or `large` (4 GB, 2 vCPUs). Defaults to `small`.",
+          "pattern": "^(?:[sS][mM][aA][lL][lL]|[mM][eE][dD][iI][uU][mM]|[lL][aA][rR][gG][eE])$",
+          "examples": ["small", "medium", "large"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "serverPaths": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^/"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          }
+        }
+      ]
+    },
+    "stringOrStrings": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  }
+}

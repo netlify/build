@@ -244,7 +244,7 @@ const handleConfigError = (functionPath: string, exitCode: number, stderr: strin
     case ConfigExitCode.InvalidDefaultExport:
       throw new BundleError(
         new Error(
-          `Default export in '${functionPath}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+          `Default export in '${functionPath}' must be a function or an object with a \`fetch\` method. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
         ),
       )
 

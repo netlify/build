@@ -1,8 +1,7 @@
 import { createServer, Server, IncomingMessage, ServerResponse } from 'http'
 import type { AddressInfo } from 'net'
+import { text } from 'stream/consumers'
 import { promisify } from 'util'
-
-import getStream from 'get-stream'
 
 type Handler = { path: string; response?: object | string; status?: number; wait?: number }
 export type ServerHandler = Handler | Handler[]
@@ -81,7 +80,7 @@ const getHandler = function (handlers: Handler[], url?: string) {
 }
 
 const getRequestBody = async (req: IncomingMessage): Promise<string | object> => {
-  const rawBody = await getStream(req)
+  const rawBody = await text(req)
   try {
     return JSON.parse(rawBody)
   } catch {
