@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
-import { readdir, rm, stat, writeFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { mkdir, readdir, rm, stat, writeFile } from 'fs/promises'
+import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir, getTempName, unzipFile } from '@netlify/testing'
@@ -15,7 +15,7 @@ import { pathExists } from '../../lib/utils/path_exists.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const SERVER_ARCHIVE = 'server.tgz'
-const SERVER_PUBLISH_DIR = '.netlify/server-publish'
+const SERVER_PUBLISH_DIR = join('.netlify', 'server-publish')
 
 interface FunctionMetadata {
   bootstrap_version: string
@@ -199,6 +199,10 @@ test('Functions: publishes an empty directory for a Netlify Server without a pub
   const fixture = await new Fixture(import.meta.url, './fixtures/server_default_publish')
     .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
     .withCopyRoot()
+  const staleFile = resolve(fixture.repositoryRoot, SERVER_PUBLISH_DIR, 'stale.html')
+
+  await mkdir(dirname(staleFile), { recursive: true })
+  await writeFile(staleFile, '')
 
   const output = await fixture.runWithBuild()
 

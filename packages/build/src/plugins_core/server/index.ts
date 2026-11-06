@@ -1,4 +1,4 @@
-import { mkdir } from 'fs/promises'
+import { mkdir, rm } from 'fs/promises'
 import { join, resolve } from 'path'
 
 import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
@@ -46,6 +46,7 @@ const coreStep: CoreStepFunction = async function ({
   // server's source and package.json as static files.
   const emptyPublishDir = join(packagePath ?? '', EMPTY_PUBLISH_DIRECTORY)
 
+  await rm(resolve(buildDir, emptyPublishDir), { recursive: true, force: true })
   await mkdir(resolve(buildDir, emptyPublishDir), { recursive: true })
 
   const keys = ['build', 'publish']
