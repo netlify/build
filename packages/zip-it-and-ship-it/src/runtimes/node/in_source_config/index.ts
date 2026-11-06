@@ -98,8 +98,8 @@ export const inSourceConfig = functionConfigShape
     message: '`memory` and `vcpu` cannot both be set.',
     path: ['vcpu'],
   })
-  .refine((cfg) => cfg.access === undefined || Boolean(cfg.path?.length), {
-    message: 'Must be set together with `path`',
+  .refine((cfg) => cfg.access === undefined || cfg.access === 'public' || Boolean(cfg.path?.length), {
+    message: "Must be 'public' on a function without `path`",
     path: ['access'],
   })
 

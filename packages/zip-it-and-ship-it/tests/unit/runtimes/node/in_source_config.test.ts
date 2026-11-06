@@ -872,10 +872,20 @@ describe('V2 API', () => {
     })
 
     test.each(['{ access: "public" }', '{ path: [], access: "public" }'])(
-      'Rejects `access` on a function without a `path`: %s',
+      'Makes the default URL of a function without a `path` public: %s',
+      (value) => {
+        const { access, routes } = parseSource(withConfig(value), options)
+
+        expect(access).toEqual({ public: true })
+        expect(routes).toEqual([])
+      },
+    )
+
+    test.each(['{ access: { "/x": "public" } }', '{ path: [], access: { "/x": "public" } }'])(
+      'Rejects the map form on a function without a `path`: %s',
       (value) => {
         expect(() => parseSource(withConfig(value), options)).toThrow(
-          "Function func1 has a configuration error on 'access': Must be set together with `path`",
+          "Function func1 has a configuration error on 'access': Must be 'public' on a function without `path`",
         )
       },
     )
