@@ -809,6 +809,78 @@ describe('V2 API', () => {
     })
   })
 
+  describe('`access` property', () => {
+    const withConfig = (config: string) => `export default async () => new Response("Hello!")
+    export const config = ${config}`
+
+    test('Makes every route public', () => {
+      const { access } = parseSource(withConfig(`{ path: "/hooks/*", access: "public" }`), options)
+
+      expect(access).toEqual({ public: true })
+    })
+
+    test('Turns the paths of the map form into routes', () => {
+      const { access } = parseSource(
+        withConfig(`{ path: "/api/*", access: { "/api/slack/*": "public", "/api/health": "public" } }`),
+        options,
+      )
+
+      expect(access).toEqual({
+        public_routes: [
+          { pattern: '/api/slack/*', expression: '^\\/api\\/slack(?:\\/(.*))\\/?$' },
+          { pattern: '/api/health', literal: '/api/health' },
+        ],
+      })
+    })
+
+    test('Accepts the map form on a server', () => {
+      const { config } = parseSource(withConfig(`{ access: { "/api/slack/*": "public" } }`), {
+        functionName: 'server',
+        isServer: true,
+      })
+
+      expect(config.access).toEqual({ '/api/slack/*': 'public' })
+    })
+
+    test.each([
+      ['"private"', "Must be 'public' or an object that maps paths to 'public'"],
+      ['true', "Must be 'public' or an object that maps paths to 'public'"],
+      ['{ "/api/slack": "private" }', "Must be 'public' or an object that maps paths to 'public'"],
+      ['{}', 'Must list at least one path'],
+      ['{ "api/slack": "public" }', "Every path must start with a '/'"],
+    ])('Rejects %s', (value, message) => {
+      expect(() => parseSource(withConfig(`{ path: "/api/*", access: ${value} }`), options)).toThrow(
+        `Function func1 has a configuration error on 'access': ${message}`,
+      )
+    })
+
+    test('Rejects a path that is not a valid URLPattern', () => {
+      expect(() => parseSource(withConfig(`{ path: "/api/*", access: { "/api/slack(": "public" } }`), options)).toThrow(
+        `'/api/slack(' is not a valid path according to the URLPattern specification`,
+      )
+    })
+
+    test.each([
+      ['"public"', "on 'access': Must be an object that maps paths to 'public'"],
+      ['{ "/api/slack": "private" }', "on 'access./api/slack': Must be 'public'"],
+      ['{}', "on 'access': Must list at least one path"],
+      ['{ "api/slack": "public" }', "on 'access': Every path must start with a '/'"],
+    ])('Rejects %s on a server', (value, message) => {
+      expect(() => parseSource(withConfig(`{ access: ${value} }`), { functionName: 'server', isServer: true })).toThrow(
+        `Netlify Server has a configuration error ${message}`,
+      )
+    })
+
+    test.each(['{ access: "public" }', '{ path: [], access: "public" }'])(
+      'Rejects `access` on a function without a `path`: %s',
+      (value) => {
+        expect(() => parseSource(withConfig(value), options)).toThrow(
+          "Function func1 has a configuration error on 'access': Must be set together with `path`",
+        )
+      },
+    )
+  })
+
   test('Understands name and generator', () => {
     const source = `
     export default async () => new Response("Hello!")

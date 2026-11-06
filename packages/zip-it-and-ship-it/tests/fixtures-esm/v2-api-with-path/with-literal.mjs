@@ -8,4 +8,5 @@ export default async () =>
 export const config = {
   path: '/products',
   method: ['GET', 'POST'],
+  access: 'public',
 }
