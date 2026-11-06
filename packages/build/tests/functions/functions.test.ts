@@ -221,6 +221,21 @@ test('Functions: keeps the publish directory a Netlify Server project sets', asy
   expect(await pathExists(resolve(fixture.repositoryRoot, SERVER_PUBLISH_DIR))).toBe(false)
 })
 
+test.each([
+  ['the project root', 'server_root_publish'],
+  ['a parent of the server directory', 'server_parent_publish'],
+])('Functions: fails the build when the publish directory set to %s contains a Netlify Server', async (_, name) => {
+  const fixture = await new Fixture(import.meta.url, `./fixtures/${name}`)
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
+    .withCopyRoot()
+
+  const { success, output } = await fixture.runWithBuildAndIntrospect()
+
+  expect(success).toBe(false)
+  expect(output).toContain('The publish directory contains the Netlify Server source')
+  expect(await pathExists(resolve(fixture.repositoryRoot, '.netlify/server'))).toBe(false)
+})
+
 test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/server_with_config')
     .withFlags({

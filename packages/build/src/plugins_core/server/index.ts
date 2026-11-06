@@ -1,9 +1,10 @@
 import { mkdir, rm } from 'fs/promises'
-import { join, resolve } from 'path'
+import { isAbsolute, join, relative, resolve, sep } from 'path'
 
 import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
 
 import type { FeatureFlags } from '../../core/feature_flags.js'
+import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
 import { pathExists } from '../../utils/path_exists.js'
 import { getZisiFeatureFlags } from '../functions/feature_flags.js'
@@ -28,6 +29,23 @@ const coreStep: CoreStepFunction = async function ({
 
   log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
 
+  const serverInPublishDir = relative(
+    resolve(buildDir, netlifyConfig.build.publish),
+    resolve(serverEntry.packageRoot, SERVER_DIRECTORY),
+  )
+  const publishesServerSource = !isAbsolute(serverInPublishDir) && serverInPublishDir.split(sep)[0] !== '..'
+  const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
+
+  if (publishesServerSource && publishOrigin !== 'default') {
+    const error = new Error(
+      `The publish directory contains the Netlify Server source in ${SERVER_DIRECTORY}, which would be deployed as static files. Set build.publish to a directory that contains only static files.`,
+    )
+
+    addErrorInfo(error, { type: 'resolveConfig' })
+
+    throw error
+  }
+
   await zipItAndShipIt.zipServer(serverEntry.entryPath, resolve(buildDir, SERVER_DIST), {
     basePath: buildDir,
     config: netlifyConfig.server,
@@ -36,14 +54,10 @@ const coreStep: CoreStepFunction = async function ({
     systemLog,
   })
 
-  const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
-
-  if (publishOrigin !== 'default') {
+  if (!publishesServerSource) {
     return {}
   }
 
-  // The default publish directory is the package root, which would serve the
-  // server's source and package.json as static files.
   const emptyPublishDir = join(packagePath ?? '', EMPTY_PUBLISH_DIRECTORY)
 
   await rm(resolve(buildDir, emptyPublishDir), { recursive: true, force: true })
