@@ -19,7 +19,7 @@ export class SolidStart extends BaseFramework implements Framework {
     // Renamed starting at 0.4.0
     '@solidjs/start',
   ]
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'vite dev',

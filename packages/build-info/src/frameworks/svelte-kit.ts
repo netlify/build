@@ -4,7 +4,7 @@ export class SvelteKit extends BaseFramework implements Framework {
   readonly id = 'svelte-kit'
   name = 'SvelteKit'
   npmDependencies = ['@sveltejs/kit']
-  category = Category.FrontendFramework
+  category = Category.FullstackFramework
   staticAssetsDirectory = 'static'
 
   dev = {

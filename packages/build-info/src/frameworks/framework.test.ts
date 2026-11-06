@@ -9,6 +9,7 @@ import { Project } from '../project.js'
 
 import {
   Accuracy,
+  Category,
   type DetectedFramework,
   VersionAccuracy,
   mergeDetections,
@@ -373,6 +374,22 @@ describe('framework sorting based on accuracy and type', () => {
     expect(sorted[0].id).toBe('grunt')
     expect(sorted[1].id).toBe('gulp')
     expect(sorted[2].id).toBe('vite')
+  })
+
+  test('should categorize fullstack frameworks under Category.FullstackFramework', () => {
+    expect(Category.FullstackFramework).toBe('fullstack_framework')
+    expect(new Next(project).category).toBe(Category.FullstackFramework)
+    expect(new Hydrogen(project).category).toBe(Category.FullstackFramework)
+  })
+
+  test('should prefer fullstack frameworks over build tools and frontend frameworks when accuracy matches', () => {
+    const sorted: DetectedFramework[] = [
+      new Vite(project).setDetected(Accuracy.NPM, { name: 'vite' }),
+      new Next(project).setDetected(Accuracy.NPM, { name: 'next' }),
+    ].sort(sortFrameworksBasedOnAccuracy)
+
+    expect(sorted[0].id).toBe('next')
+    expect(sorted[1].id).toBe('vite')
   })
 })
 
