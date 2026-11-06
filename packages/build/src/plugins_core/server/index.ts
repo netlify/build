@@ -1,4 +1,5 @@
-import { resolve } from 'path'
+import { mkdir } from 'fs/promises'
+import { join, resolve } from 'path'
 
 import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
 
@@ -35,8 +36,26 @@ const coreStep: CoreStepFunction = async function ({
     systemLog,
   })
 
-  return {}
+  const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
+
+  if (publishOrigin !== 'default') {
+    return {}
+  }
+
+  // The default publish directory is the package root, which would serve the
+  // server's source and package.json as static files.
+  const emptyPublishDir = join(packagePath ?? '', EMPTY_PUBLISH_DIRECTORY)
+
+  await mkdir(resolve(buildDir, emptyPublishDir), { recursive: true })
+
+  const keys = ['build', 'publish']
+
+  return {
+    configMutations: [{ keys, keysString: keys.join('.'), value: emptyPublishDir, event: 'onBuild' }],
+  }
 }
+
+const EMPTY_PUBLISH_DIRECTORY = '.netlify/server-publish'
 
 // The directory can be created by the build command or by a plugin, so this is
 // checked when the step is about to run rather than when it is scheduled.

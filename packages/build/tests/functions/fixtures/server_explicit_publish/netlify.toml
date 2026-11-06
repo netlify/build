@@ -1,0 +1,5 @@
+[build]
+publish = "public"
+
+[[plugins]]
+package = "./plugin"

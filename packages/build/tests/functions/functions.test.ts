@@ -15,6 +15,7 @@ import { pathExists } from '../../lib/utils/path_exists.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const SERVER_ARCHIVE = 'server.tgz'
+const SERVER_PUBLISH_DIR = '.netlify/server-publish'
 
 interface FunctionMetadata {
   bootstrap_version: string
@@ -192,6 +193,28 @@ test('Functions: bundles a Netlify Server standalone when netlify_build_server_s
   expect(manifest.server.path.endsWith(SERVER_ARCHIVE)).toBe(true)
   expect(manifest.server.routes).toHaveLength(1)
   expect(manifest.server.routes?.[0].pattern).toBe('/*')
+})
+
+test('Functions: publishes an empty directory for a Netlify Server without a publish directory', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_default_publish')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  expect(output).toContain(`PUBLISH_DIR=${SERVER_PUBLISH_DIR}`)
+  expect(await readdir(resolve(fixture.repositoryRoot, SERVER_PUBLISH_DIR))).toEqual([])
+})
+
+test('Functions: keeps the publish directory a Netlify Server project sets', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_explicit_publish')
+    .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })
+    .withCopyRoot()
+
+  const output = await fixture.runWithBuild()
+
+  expect(output).toContain('PUBLISH_DIR=public')
+  expect(await pathExists(resolve(fixture.repositoryRoot, SERVER_PUBLISH_DIR))).toBe(false)
 })
 
 test('Functions: writes the in-source config of a Netlify Server to its manifest', async () => {
