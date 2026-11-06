@@ -102,6 +102,14 @@ export const inSourceConfig = functionConfigShape
     message: "Must be 'public' on a function without `path`",
     path: ['access'],
   })
+  .refine(
+    (cfg) =>
+      cfg.access === undefined || Boolean(cfg.path?.length) || (!cfg.method?.length && !cfg.excludedPath?.length),
+    {
+      message: 'Cannot be set with `method` or `excludedPath` on a function without `path`',
+      path: ['access'],
+    },
+  )
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
 

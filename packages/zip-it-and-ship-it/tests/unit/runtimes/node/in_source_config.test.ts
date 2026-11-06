@@ -889,6 +889,25 @@ describe('V2 API', () => {
         )
       },
     )
+
+    test.each([
+      '{ access: "public", method: "POST" }',
+      '{ access: "public", excludedPath: "/.netlify/functions/func1/admin" }',
+    ])('Rejects `method` and `excludedPath` with `access` on a function without a `path`: %s', (value) => {
+      expect(() => parseSource(withConfig(value), options)).toThrow(
+        "Function func1 has a configuration error on 'access': Cannot be set with `method` or `excludedPath` on a function without `path`",
+      )
+    })
+
+    test('Accepts `method` and `excludedPath` with `access` on a function with a `path`', () => {
+      const { access, routes } = parseSource(
+        withConfig(`{ path: "/hooks/*", excludedPath: "/hooks/admin", method: "POST", access: "public" }`),
+        options,
+      )
+
+      expect(access).toEqual({ public: true })
+      expect(routes).toHaveLength(1)
+    })
   })
 
   test('Understands name and generator', () => {
