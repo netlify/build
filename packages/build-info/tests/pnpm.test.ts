@@ -1,3 +1,4 @@
+import { writeFile } from 'node:fs/promises'
 import { join } from 'path'
 
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
@@ -40,6 +41,30 @@ test('should detect a regular pnpm project with a lock file in the root', async 
   const fixture = await createFixture('pnpm-simple', ctx)
   const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('pnpm')
+})
+
+test('should detect pnpm 7 from lockfileVersion 5.4', async (ctx) => {
+  const fixture = await createFixture('pnpm-simple', ctx)
+  await writeFile(join(fixture.cwd, 'pnpm-lock.yaml'), 'lockfileVersion: 5.4\n')
+  const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
+  expect(info.packageManager?.name).toBe('pnpm')
+  expect(info.packageManager?.version?.major).toBe(7)
+})
+
+test('should detect pnpm 8 from lockfileVersion 6.0', async (ctx) => {
+  const fixture = await createFixture('pnpm-simple', ctx)
+  await writeFile(join(fixture.cwd, 'pnpm-lock.yaml'), "lockfileVersion: '6.0'\n")
+  const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
+  expect(info.packageManager?.name).toBe('pnpm')
+  expect(info.packageManager?.version?.major).toBe(8)
+})
+
+test('should detect pnpm 9 from lockfileVersion 9.0', async (ctx) => {
+  const fixture = await createFixture('pnpm-simple', ctx)
+  await writeFile(join(fixture.cwd, 'pnpm-lock.yaml'), "lockfileVersion: '9.0'\n")
+  const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
+  expect(info.packageManager?.name).toBe('pnpm')
+  expect(info.packageManager?.version?.major).toBe(9)
 })
 
 test('should detect a regular pnpm project that is nested in a sub-folder', async (ctx) => {
