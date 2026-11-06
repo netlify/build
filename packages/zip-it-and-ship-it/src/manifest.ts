@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import { resolve } from 'path'
 import { arch, platform } from 'process'
 
+import type { Access } from './access.js'
 import type { InvocationMode } from './function.js'
 import type { TrafficRules } from './rate_limit.js'
 import type { ServerResult, ServerScale } from './server.js'
@@ -9,6 +10,7 @@ import type { FunctionResult } from './utils/format_result.js'
 import type { ExtendedRoute, Route } from './utils/routes.js'
 
 interface ManifestFunction {
+  access?: Access
   buildData?: Record<string, unknown>
   bundler?: string
   displayName?: string
@@ -32,6 +34,7 @@ interface ManifestFunction {
 }
 
 interface ManifestServer {
+  access?: Access
   bundler?: string
   excludedRoutes?: Route[]
   instanceSize?: string
@@ -100,6 +103,7 @@ export const createServerManifest = async ({ path, server }: { path: string; ser
 }
 
 const formatServerForManifest = ({
+  access,
   bundler,
   excludedRoutes,
   instanceSize,
@@ -112,6 +116,7 @@ const formatServerForManifest = ({
   scale,
 }: ServerResult): ManifestServer => {
   const server: ManifestServer = {
+    access,
     bundler,
     instanceSize,
     mainFile,
@@ -134,6 +139,7 @@ const formatServerForManifest = ({
 }
 
 const formatFunctionForManifest = ({
+  access,
   bootstrapVersion,
   bundler,
   displayName,
@@ -157,6 +163,7 @@ const formatFunctionForManifest = ({
   vcpu,
 }: FunctionResult): ManifestFunction => {
   const manifestFunction: ManifestFunction = {
+    access,
     bundler,
     displayName,
     generator,

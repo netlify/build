@@ -436,6 +436,37 @@ export const config = { path: '/api/*', excludedPath: ['/api/internal', '/api/ad
     expect(manifest.server.excludedRoutes).toBeUndefined()
   })
 
+  test('Writes the paths the config makes public to the manifest', async () => {
+    const { manifest, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { access: { '/api/slack/*': 'public', '/health': 'public' } }
+`,
+    )
+    const access = {
+      public_routes: [
+        { pattern: '/api/slack/*', expression: '^\\/api\\/slack(?:\\/(.*))\\/?$' },
+        { pattern: '/health', literal: '/health' },
+      ],
+    }
+
+    expect(result.access).toEqual(access)
+    expect(manifest.server.access).toEqual(access)
+  })
+
+  test('Fails the build on a public path that is not a valid URLPattern', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { access: { '/api/slack(': 'public' } }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toContain(
+      `'/api/slack(' is not a valid path according to the URLPattern specification`,
+    )
+  })
+
   test('Claims every path when the config names none', async () => {
     const { manifest } = await bundleSource(
       'index.mjs',
@@ -888,6 +919,16 @@ export const config = { excludedPath: '/app/private' }
       type: 'functionsBundling',
       location: { functionName: 'server', runtime: 'js' },
     })
+  })
+
+  test('Fails the build on `access`, which only the in-source configuration can set', async () => {
+    const error = await bundleWithConfig(FRAMEWORK_SERVER, {
+      access: { '/api/*': 'public' },
+    } as NetlifyServerConfig).catch((err: unknown) => err)
+
+    expect((error as Error).message).toMatch(
+      /^Netlify Server has a configuration error in the \[server\] block: .*access/,
+    )
   })
 
   // Extracts a server archive and returns the contents of every file in it,
