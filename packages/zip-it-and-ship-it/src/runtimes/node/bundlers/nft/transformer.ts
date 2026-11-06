@@ -3,6 +3,7 @@ import { dirname, extname, resolve } from 'path'
 import { build, BuildOptions } from 'esbuild'
 
 import type { FunctionConfig } from '../../../../config.js'
+import type { FeatureFlags } from '../../../../feature_flags.js'
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
 import { getPathWithExtension } from '../../../../utils/fs.js'
 import { RUNTIME } from '../../../runtime.js'
@@ -94,12 +95,15 @@ export const getTransformer = async (
 interface TransformOptions {
   bundle?: boolean
   config: FunctionConfig
+  featureFlags: FeatureFlags
   format?: ModuleFormat
   name: string
   path: string
 }
 
-export const transform = async ({ bundle = false, config, format, name, path }: TransformOptions) => {
+const CJS_VARIABLE_IN_ESM_WARNING = 'commonjs-variable-in-esm'
+
+export const transform = async ({ bundle = false, config, featureFlags, format, name, path }: TransformOptions) => {
   // The version of ECMAScript to use as the build target. This will determine
   // whether certain features are transpiled down or left untransformed.
   const nodeTarget = getBundlerTarget(config.nodeVersion)
@@ -128,6 +132,20 @@ export const transform = async ({ bundle = false, config, format, name, path }: 
       target: [nodeTarget],
       write: false,
     })
+
+    if (featureFlags.zisi_error_cjs_in_esm_scope) {
+      const cjsInESM = transpiled.warnings.find((warning) => warning.id === CJS_VARIABLE_IN_ESM_WARNING)
+
+      if (cjsInESM !== undefined) {
+        const file = cjsInESM.location?.file ?? path
+
+        throw new FunctionBundlingUserError(
+          `The file '${file}' is a CommonJS module, but the closest 'package.json' declares '"type": "module"', so Node.js will fail to load it at runtime. Either use ESM syntax ('import'/'export'), rename the file extension to '.cjs', or remove '"type": "module"' from the 'package.json'.`,
+          { functionName: name, runtime: RUNTIME.JAVASCRIPT, bundler: NODE_BUNDLER.NFT },
+        )
+      }
+    }
+
     const bundledPaths = bundle ? Object.keys(transpiled.metafile.inputs).map((inputPath) => resolve(inputPath)) : []
 
     return { bundledPaths, transpiled: transpiled.outputFiles[0].text }

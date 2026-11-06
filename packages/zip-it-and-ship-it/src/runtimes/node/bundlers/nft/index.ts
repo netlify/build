@@ -154,6 +154,7 @@ const traceFilesAndTranspile = async function ({
           const { bundledPaths, transpiled } = await transform({
             bundle: transformer?.bundle,
             config,
+            featureFlags,
             name,
             format: transformer?.format,
             path,
