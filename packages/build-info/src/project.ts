@@ -1,5 +1,5 @@
 import type { Client, NotifiableError } from '@bugsnag/js'
-import type { PackageJson } from 'read-pkg'
+import type { PackageJson } from 'pkg-types'
 import { SemVer, coerce, parse } from 'semver'
 
 import type { BuildSystem } from './build-systems/build-system.js'

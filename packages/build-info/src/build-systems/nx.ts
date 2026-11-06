@@ -1,4 +1,4 @@
-import type { PackageJson } from 'read-pkg'
+import type { PackageJson } from 'pkg-types'
 
 import { FrameworkName } from '../frameworks/index.js'
 import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
