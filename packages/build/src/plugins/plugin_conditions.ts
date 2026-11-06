@@ -4,7 +4,7 @@ import { type PackageJson } from 'read-package-up'
 import semver from 'semver'
 
 import { importJsonFile } from '../utils/json.js'
-import { resolvePath } from '../utils/resolve.js'
+import { resolvePackage } from '../utils/resolve.js'
 
 import { type PluginVersion } from './list.js'
 
@@ -84,7 +84,7 @@ const siteDependencyTest = async function ({
 
   try {
     // if this is a range we need to get the exact version
-    const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, join(buildDir, packagePath ?? ''))
+    const packageJsonPath = await resolvePackage(dependencyName, [join(buildDir, packagePath ?? '')])
     const { version } = await importJsonFile<PackageJson>(packageJsonPath)
     if (!version) {
       return false

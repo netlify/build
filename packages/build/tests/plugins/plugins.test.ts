@@ -53,6 +53,11 @@ test('Local plugins directory', async () => {
   expect(normalizeOutput(output)).toMatchSnapshot()
 })
 
+test('Local plugins directory with package.json main', async () => {
+  const output = await new Fixture(import.meta.url, './fixtures/local_dir_main').runWithBuild()
+  expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
 test('Local plugins absolute path', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/local_absolute').runWithBuild()
   expect(normalizeOutput(output)).toMatchSnapshot()
