@@ -2,16 +2,14 @@ import { promises as fs } from 'fs'
 import { basename, extname, dirname, join } from 'path'
 
 import type { FunctionRegion } from '@netlify/types'
-import isPathInside from 'is-path-inside'
-// @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
-// this dependency.
-import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
 import { FunctionSource } from './function.js'
 import { nodeBundler } from './runtimes/node/bundlers/types.js'
 import { moduleFormat } from './runtimes/node/utils/module_format.js'
+import { isPathInside } from './utils/fs.js'
 import { minimatch } from './utils/matching.js'
+import { mergeConfig } from './utils/merge_config.js'
 import { parseMemoryMB } from './utils/parse_memory.js'
 
 // We only need the list of valid region codes here (to feed into Zod's
@@ -191,10 +189,7 @@ const getFromMainConfig = ({
     .sort(({ weight: weightA }, { weight: weightB }) => weightA - weightB)
     .map(({ expression }) => config[expression])
 
-  const merged = withComputeResources(
-    mergeOptions.apply({ concatArrays: true, ignoreUndefined: true }, matches) as FunctionConfig,
-    matches,
-  )
+  const merged = withComputeResources(mergeConfig<FunctionConfig>(...matches), matches)
 
   const memory = merged.memory as number | string | undefined
 

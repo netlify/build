@@ -2,17 +2,16 @@ import { readFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 import { execa } from 'execa'
-import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
 import { zipFunction } from '../src/main.js'
 import { NETLIFY_PLAY_BOOTSTRAP_VERSION } from '../src/runtimes/node/utils/play.js'
 
-import { FIXTURES_DIR, FIXTURES_ESM_DIR } from './helpers/main.js'
+import { FIXTURES_DIR, FIXTURES_ESM_DIR, getTmpDir } from './helpers/main.js'
 
 describe('Netlify Play', () => {
   test('Creates tgz archive without bootstrap and with play bootstrapVersion', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const mainFile = join(FIXTURES_ESM_DIR, 'netlify-play', 'function-netlify-play.mjs')
 
     const result = await zipFunction(mainFile, tmpDir, {
@@ -35,7 +34,7 @@ describe('Netlify Play', () => {
   })
 
   test('Creates a regular zip when zisi_netlify_play is disabled', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const mainFile = join(FIXTURES_ESM_DIR, 'netlify-play', 'function-netlify-play.mjs')
 
     const result = await zipFunction(mainFile, tmpDir, {
@@ -49,7 +48,7 @@ describe('Netlify Play', () => {
   })
 
   test('Creates a regular zip when function does not end with -netlify-play', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const mainFile = join(FIXTURES_DIR, 'simple', 'function.js')
 
     const result = await zipFunction(mainFile, tmpDir, {

@@ -3,7 +3,6 @@ import { normalize } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
-import isCI from 'is-ci'
 import { tmpName as getTmpName } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
@@ -98,7 +97,7 @@ test('Check --config for toml', async () => {
 })
 
 // This test is too slow in local development
-if (isCI) {
+if (process.env.CI) {
   test('Handles big outputs', async () => {
     const fixturesDir = normalize(`${fileURLToPath(import.meta.url)}/../fixtures`)
     const bigNetlify = `${fixturesDir}/big/netlify.toml`

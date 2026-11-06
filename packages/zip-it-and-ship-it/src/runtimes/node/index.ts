@@ -1,6 +1,6 @@
+import { cp } from 'fs/promises'
 import { dirname, extname, join } from 'path'
 
-import { copyFile } from 'copy-file'
 import { type Span, trace } from '@opentelemetry/api'
 import { wrapTracer } from '@opentelemetry/api/experimental'
 
@@ -65,7 +65,7 @@ const zipFunction: ZipFunction = async function ({
   if (extension === '.zip') {
     const destPath = join(destFolder, filename)
 
-    await copyFile(srcPath, destPath)
+    await cp(srcPath, destPath)
 
     return { config, path: destPath, entryFilename: '' }
   }

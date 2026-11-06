@@ -1,7 +1,7 @@
-import { mkdir } from 'fs/promises'
+import { mkdir, mkdtemp } from 'fs/promises'
+import { tmpdir } from 'os'
 import { basename, join } from 'path'
 
-import tmp from 'tmp-promise'
 import toml from 'toml'
 
 import type { FunctionConfig } from '../../config.js'
@@ -109,9 +109,7 @@ const getTargetDirectory = async ({ config, name }: { config: FunctionConfig; na
   }
 
   // If the directory hasn't been configured, we'll use a temporary directory.
-  const { path } = await tmp.dir()
-
-  return path
+  return mkdtemp(join(tmpdir(), 'zisi-rust-'))
 }
 
 let toolchainInstallation: Promise<void>
