@@ -63,6 +63,11 @@ const coreStep: CoreStepFunction = async function ({
   await rm(resolve(buildDir, emptyPublishDir), { recursive: true, force: true })
   await mkdir(resolve(buildDir, emptyPublishDir), { recursive: true })
 
+  log(
+    logs,
+    'No publish directory is set, so no static files were deployed and Netlify Server handles every path. To serve static files, put them in a directory such as public/ and set build.publish to it.',
+  )
+
   const keys = ['build', 'publish']
 
   return {

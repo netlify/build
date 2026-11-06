@@ -206,6 +206,7 @@ test('Functions: publishes an empty directory for a Netlify Server without a pub
 
   const output = await fixture.runWithBuild()
 
+  expect(output).toContain('No publish directory is set, so no static files were deployed')
   expect(output).toContain(`PUBLISH_DIR=${SERVER_PUBLISH_DIR}`)
   expect(await readdir(resolve(fixture.repositoryRoot, SERVER_PUBLISH_DIR))).toEqual([])
 })
