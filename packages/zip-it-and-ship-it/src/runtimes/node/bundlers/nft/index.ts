@@ -24,6 +24,7 @@ const bundle: BundleFunction = async ({
   cache,
   config,
   featureFlags,
+  isServer,
   mainFile,
   name,
   pluginsModulesPath,
@@ -66,6 +67,7 @@ const bundle: BundleFunction = async ({
     cache,
     config,
     featureFlags,
+    isServer,
     mainFile,
     pluginsModulesPath,
     name,
@@ -113,6 +115,7 @@ const traceFilesAndTranspile = async function ({
   cache,
   config,
   featureFlags,
+  isServer,
   mainFile,
   pluginsModulesPath,
   name,
@@ -123,6 +126,7 @@ const traceFilesAndTranspile = async function ({
   cache: RuntimeCache
   config: FunctionConfig
   featureFlags: FeatureFlags
+  isServer?: boolean
   mainFile: string
   pluginsModulesPath?: string
   name: string
@@ -156,6 +160,7 @@ const traceFilesAndTranspile = async function ({
             config,
             name,
             format: transformer?.format,
+            isServer,
             path,
           })
 

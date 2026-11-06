@@ -1,6 +1,16 @@
-import { dirname, extname, resolve } from 'path'
+import { readFile } from 'fs/promises'
+import { dirname, extname, relative, resolve, sep } from 'path'
 
-import { build, BuildOptions } from 'esbuild'
+import { parse, type ParserPlugin } from '@babel/parser'
+import {
+  isIdentifier,
+  isMemberExpression,
+  isMetaProperty,
+  isStringLiteral,
+  type Node,
+  type Program,
+} from '@babel/types'
+import { build, BuildOptions, type Loader, type Plugin } from 'esbuild'
 
 import type { FunctionConfig } from '../../../../config.js'
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
@@ -91,15 +101,148 @@ export const getTransformer = async (
   return transformer
 }
 
+const IMPORT_META_REPLACEMENTS: Record<string, string> = {
+  dirname: '___nfyModulePathDirname(___nfyModuleFileURLToPath(___nfyModuleURL))',
+  filename: '___nfyModuleFileURLToPath(___nfyModuleURL)',
+  url: '___nfyModuleURL',
+}
+
+const LOADERS: Record<string, Loader> = {
+  '.cts': 'ts',
+  '.jsx': 'jsx',
+  '.mts': 'ts',
+  '.ts': 'ts',
+  '.tsx': 'tsx',
+}
+
+// The replacement for `import.meta.<name>` or `import.meta['<name>']`, if any.
+const getImportMetaReplacement = (node: Node): string | undefined => {
+  if (!isMemberExpression(node) || !isMetaProperty(node.object) || node.object.meta.name !== 'import') {
+    return
+  }
+
+  const { computed, property } = node
+  const name = computed ? isStringLiteral(property) && property.value : isIdentifier(property) && property.name
+
+  if (name && Object.hasOwn(IMPORT_META_REPLACEMENTS, name)) {
+    return IMPORT_META_REPLACEMENTS[name]
+  }
+}
+
+interface ImportMetaPath {
+  end: number
+  replacement: string
+  start: number
+}
+
+const findImportMetaPaths = (value: unknown, found: ImportMetaPath[] = []): ImportMetaPath[] => {
+  if (Array.isArray(value)) {
+    value.forEach((item) => findImportMetaPaths(item, found))
+  } else if (value !== null && typeof value === 'object' && 'type' in value) {
+    const node = value as Node
+    const replacement = getImportMetaReplacement(node)
+
+    if (replacement !== undefined) {
+      found.push({ end: node.end ?? 0, replacement, start: node.start ?? 0 })
+    } else {
+      Object.entries(value).forEach(([key, child]) => key !== 'loc' && findImportMetaPaths(child, found))
+    }
+  }
+
+  return found
+}
+
+// Each accepts a decorator form the other rejects: `export @dec class` and
+// parameter decorators.
+const DECORATOR_PLUGINS: ParserPlugin[] = ['decorators', 'decorators-legacy']
+
+const parseModule = (source: string, path: string): Program | null => {
+  const syntaxPlugins: ParserPlugin[] = ['.jsx', '.tsx'].includes(extname(path))
+    ? ['typescript', 'jsx']
+    : ['typescript']
+
+  for (const decoratorPlugin of DECORATOR_PLUGINS) {
+    try {
+      return parse(source, { plugins: [...syntaxPlugins, decoratorPlugin], sourceType: 'module' }).program
+    } catch {
+      // Try the next decorator syntax.
+    }
+  }
+
+  return null
+}
+
+// Returns `source` with each `import.meta` path expression replaced, or null
+// when it cannot be parsed.
+const replaceImportMetaPaths = (source: string, path: string): string | null => {
+  const program = parseModule(source, path)
+
+  if (program === null) {
+    return null
+  }
+
+  return findImportMetaPaths(program)
+    .sort((a, b) => b.start - a.start)
+    .reduce((result, { end, replacement, start }) => result.slice(0, start) + replacement + result.slice(end), source)
+}
+
+/**
+ * An esbuild plugin that makes `import.meta.url`, `import.meta.dirname` and
+ * `import.meta.filename` in each local module bundled into `mainFile` describe
+ * that module's own path, as if it still ran from its own file. The archive
+ * keeps the source layout, so the module's path relative to `mainFile` holds at
+ * runtime.
+ */
+const getModulePathsPlugin = (mainFile: string): Plugin => ({
+  name: 'netlify-module-paths',
+  setup(build) {
+    build.onLoad({ filter: /\.[cm]?[jt]sx?$/ }, async ({ path }) => {
+      if (path === mainFile || path.split(sep).includes('node_modules')) {
+        return
+      }
+
+      const source = await readFile(path, 'utf-8')
+
+      // Whitespace or comments can separate the tokens of `import.meta`.
+      if (!source.includes('meta')) {
+        return
+      }
+
+      const replaced = replaceImportMetaPaths(source, path)
+
+      if (replaced === null || replaced === source) {
+        return
+      }
+
+      const relativeURL = relative(dirname(mainFile), path).split(sep).map(encodeURIComponent).join('/')
+
+      // On the module's first line after any hashbang, so the line numbers in
+      // stack traces hold. Not `new URL(path, import.meta.url)`: NFT would
+      // trace the module's source as an asset of the bundle.
+      const hashbang = /^#!.*\n?/.exec(replaced)?.[0] ?? ''
+      const prelude =
+        'import {fileURLToPath as ___nfyModuleFileURLToPath} from "url";' +
+        'import {dirname as ___nfyModulePathDirname} from "path";' +
+        `const ___nfyModuleURL=new globalThis.URL(import.meta.url.slice(0,import.meta.url.lastIndexOf("/")+1)+${JSON.stringify(relativeURL)}).href;`
+
+      return {
+        contents: hashbang + prelude + replaced.slice(hashbang.length),
+        loader: LOADERS[extname(path)] ?? 'js',
+      }
+    })
+  },
+})
+
 interface TransformOptions {
   bundle?: boolean
   config: FunctionConfig
   format?: ModuleFormat
+  isServer?: boolean
   name: string
   path: string
 }
 
-export const transform = async ({ bundle = false, config, format, name, path }: TransformOptions) => {
+export const transform = async ({ bundle = false, config, format, isServer, name, path }: TransformOptions) => {
   // The version of ECMAScript to use as the build target. This will determine
   // whether certain features are transpiled down or left untransformed.
   const nodeTarget = getBundlerTarget(config.nodeVersion)
@@ -113,6 +256,10 @@ export const transform = async ({ bundle = false, config, format, name, path }: 
 
     if (format === MODULE_FORMAT.ESM) {
       bundleOptions.banner = { js: CJS_SHIM }
+
+      if (isServer) {
+        bundleOptions.plugins = [getModulePathsPlugin(path)]
+      }
     }
   }
 

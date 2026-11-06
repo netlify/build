@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
+import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
 import { dir as getTmpDir } from 'tmp-promise'
@@ -337,6 +338,79 @@ export const config = { includedFiles: ['data/**'] }
     await execa('tar', ['-xzf', result.path, '-C', extractDir])
 
     expect(await readFile(join(extractDir, 'data', 'seed.json'), 'utf-8')).toBe('{}')
+  })
+
+  describe.each([
+    { entry: 'index.mjs', reader: 'lib/reader.mjs', prefix: '' },
+    { entry: 'index.mts', reader: 'lib/reader.ts', prefix: '' },
+    { entry: 'index.mjs', reader: 'lib/hashbang.mjs', prefix: '#!/usr/bin/env node\n' },
+    { entry: 'index.mts', reader: 'lib/shadowed.ts', prefix: 'class URL extends globalThis.URL {}\n\n' },
+    {
+      entry: 'index.mts',
+      reader: 'lib/decorated.ts',
+      prefix: 'const sealed = (target: unknown) => target\n\n@sealed\nclass Reader {}\n\n',
+    },
+  ])('With a module in $reader', ({ entry, prefix, reader }) => {
+    const READER = `${prefix}import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+
+const read = (path${reader.endsWith('.ts') ? ': string | URL' : ''}) => JSON.parse(readFileSync(path, 'utf-8')).from
+
+export const readers = () => ({
+  computed: read(new URL('./data.json', import.meta['url'])),
+  dirname: read(join(import.meta.dirname, 'data.json')),
+  dirnameIsFilenameDirname: import.meta.dirname === dirname(import.meta.filename),
+  filename: read(join(dirname(import.meta.filename), 'data.json')),
+  // import.meta.url and "import.meta.dirname" are text, not expressions.
+  inherited: typeof import.meta.constructor,
+  spaced: read(new URL('./data.json', import /* meta */ . meta.url)),
+  text: \`import.meta.url and "import.meta.dirname"\`,
+  url: read(new URL('./data.json', import.meta.url)),
+})
+`
+    const SERVER = `import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
+import { readers } from './${reader}'
+
+export default async () => ({
+  ...readers(),
+  entry: JSON.parse(readFileSync(join(import.meta.dirname, 'entry.json'), 'utf-8')).from,
+})
+
+export const config = { includedFiles: ['entry.json', 'lib/data.json'] }
+`
+
+    test('Resolves import.meta against the module, not the entry file it is bundled into', async () => {
+      const { destDir, result } = await bundleSource(entry, SERVER, {
+        'entry.json': '{"from":"entry"}',
+        'lib/data.json': '{"from":"lib"}',
+        [reader]: READER,
+      })
+      const extractDir = join(destDir, 'extracted')
+
+      await mkdir(extractDir, { recursive: true })
+      await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+      const entryPoint = pathToFileURL(join(extractDir, '___netlify-entry-point.mjs')).href
+      const { stdout } = await execa('node', [
+        '--input-type=module',
+        '-e',
+        `const { func } = await import(${JSON.stringify(entryPoint)}); console.log(JSON.stringify(await func.default()))`,
+      ])
+
+      expect(JSON.parse(stdout)).toEqual({
+        computed: 'lib',
+        dirname: 'lib',
+        dirnameIsFilenameDirname: true,
+        entry: 'entry',
+        filename: 'lib',
+        inherited: 'undefined',
+        spaced: 'lib',
+        text: 'import.meta.url and "import.meta.dirname"',
+        url: 'lib',
+      })
+    })
   })
 
   test('Reads the config of a server using the Netlify syntax', async () => {

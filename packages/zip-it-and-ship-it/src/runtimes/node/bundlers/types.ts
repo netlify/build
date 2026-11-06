@@ -48,6 +48,7 @@ export type BundleFunction = (
     cache: RuntimeCache
     config: FunctionConfig
     featureFlags: FeatureFlags
+    isServer?: boolean
     logger: Logger
     pluginsModulesPath?: string
     repositoryRoot?: string
