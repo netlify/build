@@ -1,14 +1,16 @@
+import { randomUUID } from 'crypto'
 import { readFile, rm, writeFile } from 'fs/promises'
-import { normalize } from 'path'
+import { tmpdir } from 'os'
+import { join, normalize } from 'path'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import isCI from 'is-ci'
-import { tmpName as getTmpName } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+const getTmpName = ({ dir }) => join(tmpdir(), dir, randomUUID())
 
 test('--help', async () => {
   const { output } = await new Fixture().withFlags({ help: true }).runConfigBinary()
@@ -54,7 +56,7 @@ test('Does not stabilitize output without the --stable flag', async () => {
 })
 
 test('Write on file with the --output flag', async () => {
-  const output = await getTmpName({ dir: 'netlify-build-test' })
+  const output = getTmpName({ dir: 'netlify-build-test' })
   try {
     await new Fixture(import.meta.url, './fixtures/empty').withFlags({ output }).runConfigBinary()
     const content = await readFile(output)
@@ -66,7 +68,7 @@ test('Write on file with the --output flag', async () => {
 })
 
 test('Do not write on stdout with the --output flag', async () => {
-  const output = await getTmpName({ dir: 'netlify-build-test' })
+  const output = getTmpName({ dir: 'netlify-build-test' })
   try {
     const result = await new Fixture(import.meta.url, './fixtures/empty').withFlags({ output }).runConfigBinary()
     expect(result.output).toBe('')
