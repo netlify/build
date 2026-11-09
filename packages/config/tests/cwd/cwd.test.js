@@ -1,9 +1,13 @@
-import { relative } from 'path'
+import { mkdtemp, mkdir, rm, writeFile } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join, relative, resolve } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import { expect, test } from 'vitest'
+
+import { getRepositoryRoot } from '../../src/options/repository_root.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -48,6 +52,35 @@ test('No .git', async () => {
     .withCopyRoot({ git: false, cwd: true })
     .then((fixture) => fixture.runWithConfig())
   expect(normalizeOutput(output)).toMatchSnapshot()
+})
+
+test('git worktree .git file is treated as repository root', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'netlify-config-worktree-'))
+  try {
+    await writeFile(join(root, '.git'), 'gitdir: /tmp/main/.git/worktrees/wt\n')
+    const nested = join(root, 'apps', 'site')
+    await mkdir(nested, { recursive: true })
+    const repositoryRoot = await getRepositoryRoot({ cwd: nested })
+    expect(resolve(repositoryRoot)).toBe(resolve(root))
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test('nearest worktree .git file wins over a parent .git directory', async () => {
+  const parent = await mkdtemp(join(tmpdir(), 'netlify-config-nested-wt-'))
+  try {
+    await mkdir(join(parent, '.git'))
+    const worktree = join(parent, 'wt')
+    await mkdir(worktree)
+    await writeFile(join(worktree, '.git'), 'gitdir: /tmp/main/.git/worktrees/wt\n')
+    const nested = join(worktree, 'apps', 'site')
+    await mkdir(nested, { recursive: true })
+    const repositoryRoot = await getRepositoryRoot({ cwd: nested })
+    expect(resolve(repositoryRoot)).toBe(resolve(worktree))
+  } finally {
+    await rm(parent, { recursive: true, force: true })
+  }
 })
 
 test('--cwd non-existing', async () => {
