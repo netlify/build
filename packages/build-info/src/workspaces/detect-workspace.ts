@@ -1,4 +1,4 @@
-import type { PackageJson } from 'read-pkg'
+import type { PackageJson } from 'pkg-types'
 import { parse } from 'yaml'
 
 import { FrameworkName } from '../frameworks/index.js'
