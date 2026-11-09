@@ -25,7 +25,7 @@ const getPartRegExp = function (part: string): string {
 
   // Non-standalone catch-all wildcard like `/segment/hello*world/test`
   if (part.includes('*')) {
-    return part.replaceAll('*', '(.*)')
+    return part.split('*').map(escapeStringRegExp).join('(.*)')
   }
 
   return escapeStringRegExp(part)
