@@ -4,7 +4,7 @@ export class Vike extends BaseFramework implements Framework {
   readonly id = 'vike'
   name = 'Vike'
   npmDependencies = ['vike']
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'vike dev',

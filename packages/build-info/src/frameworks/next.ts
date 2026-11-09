@@ -5,7 +5,7 @@ import { BaseFramework, Category, DetectedFramework, Framework } from './framewo
 export class Next extends BaseFramework implements Framework {
   readonly id = 'next'
   name = 'Next.js'
-  category = Category.SSG
+  category = Category.FullstackFramework
   npmDependencies = ['next']
   excludedNpmDependencies = ['@nrwl/next']
   configFiles = ['next.config.js', 'next.config.mjs', 'next.config.ts']

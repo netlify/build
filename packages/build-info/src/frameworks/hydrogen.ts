@@ -33,7 +33,7 @@ export class Hydrogen extends BaseFramework implements Framework {
   name = 'Hydrogen'
   npmDependencies = ['@shopify/hydrogen']
   configFiles = [...VITE_CONFIG_FILES, ...CLASSIC_COMPILER_CONFIG_FILES]
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   logo = {
     default: '/logos/hydrogen/default.svg',

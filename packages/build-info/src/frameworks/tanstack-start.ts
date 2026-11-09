@@ -11,7 +11,7 @@ export class TanStackStart extends BaseFramework implements Framework {
     '@tanstack/react-start',
     '@tanstack/solid-start',
   ]
-  category = Category.SSG
+  category = Category.FullstackFramework
 
   dev = {
     command: 'vite dev',
