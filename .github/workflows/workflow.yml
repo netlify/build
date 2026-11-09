@@ -52,7 +52,7 @@ jobs:
         node-version: ['24']
         # Maximum supported deno version from the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
         # If there is no upper band - this should be set to whatever is the latest deno version at the time of updating this workflow.
-        deno-version: ['v2.8.0']
+        deno-version: ['v2.9.0']
         # We test on the oldest supported Node.js + Deno versions, but only on Linux
         include:
           - os: ubuntu-24.04
