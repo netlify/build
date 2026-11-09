@@ -396,7 +396,10 @@ describe('V2 functions API', () => {
     })
 
     const expectedRoutes = {
-      'with-literal': { routes: [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }] },
+      'with-literal': {
+        routes: [{ pattern: '/products', literal: '/products', methods: ['GET', 'POST'] }],
+        access: { public: true },
+      },
       'with-named-group': {
         routes: [
           {
@@ -405,6 +408,9 @@ describe('V2 functions API', () => {
             methods: [],
           },
         ],
+        access: {
+          public_routes: [{ pattern: '/products/:id', expression: '^\\/products(?:\\/([^\\/]+?))\\/?$' }],
+        },
       },
       'with-regex': {
         routes: [
@@ -472,6 +478,7 @@ describe('V2 functions API', () => {
 
     for (const file of files) {
       expect(file.routes).toEqual(expectedRoutes[file.name].routes)
+      expect(file.access).toEqual(expectedRoutes[file.name].access)
 
       if (expectedRoutes[file.name].excludedRoutes) {
         expect(file.excludedRoutes).toEqual(expectedRoutes[file.name].excludedRoutes)
@@ -490,6 +497,7 @@ describe('V2 functions API', () => {
       const expected = expectedRoutes[match!]
 
       expect(entry.routes).toEqual(expected.routes)
+      expect(entry.access).toEqual(expected.access)
       expect(entry.buildData.runtimeAPIVersion).toEqual(2)
 
       if (expected.excludedRoutes) {

@@ -14,6 +14,7 @@ import type {
 import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
+import { type Access, functionAccess, getAccess, serverAccess } from '../../../access.js'
 import {
   FunctionConfig,
   functionConfigShape,
@@ -41,6 +42,7 @@ import { parse as parseSchedule } from './properties/schedule.js'
 export const IN_SOURCE_CONFIG_MODULE = '@netlify/functions'
 
 export interface StaticAnalysisResult {
+  access?: Access
   config: InSourceConfig
   eventSubscriptions?: string[]
   excludedRoutes?: Route[]
@@ -80,6 +82,7 @@ export const inSourceConfig = functionConfigShape
     vcpu: true,
   })
   .extend({
+    access: functionAccess.optional(),
     method: z
       .union([httpMethods, z.array(httpMethods)], {
         error: () => ({ message: 'Must be a string or array of strings' }),
@@ -95,11 +98,24 @@ export const inSourceConfig = functionConfigShape
     message: '`memory` and `vcpu` cannot both be set.',
     path: ['vcpu'],
   })
+  .refine((cfg) => cfg.access === undefined || cfg.access === 'public' || Boolean(cfg.path?.length), {
+    message: "Must be 'public' on a function without `path`",
+    path: ['access'],
+  })
+  .refine(
+    (cfg) =>
+      cfg.access === undefined || Boolean(cfg.path?.length) || (!cfg.method?.length && !cfg.excludedPath?.length),
+    {
+      message: 'Cannot be set with `method` or `excludedPath` on a function without `path`',
+      path: ['access'],
+    },
+  )
 
 export type InSourceConfig = z.infer<typeof inSourceConfig>
 
 export const serverConfig = z
   .object({
+    access: serverAccess.optional(),
     excludedPath: paths,
     includedFiles: z.array(z.string()).optional(),
     path: paths,
@@ -367,6 +383,10 @@ export const parseSource = (
         methods: data.method ?? [],
         prefer_static: data.preferStatic || undefined,
       }))
+
+      if (data.access) {
+        result.access = getAccess(functionName, data.access)
+      }
 
       if (data.background) {
         result.invocationMode = INVOCATION_MODE.Background
