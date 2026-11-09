@@ -100,8 +100,22 @@ test('should not add the plugin if NETLIFY_SKIP_GATSBY_BUILD_PLUGIN is set', asy
     'gatsby-config.js': '',
   })
   fs.cwd = cwd
-  vi.stubEnv('NETLIFY_SKIP_GATSBY_BUILD_PLUGIN', 'true')
-  const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
+  const detected = await new Project(fs, cwd)
+    .setEnvironment({ NETLIFY_SKIP_GATSBY_BUILD_PLUGIN: 'true' })
+    .setNodeVersion('12.13.0')
+    .detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
   expect(detected?.[0].plugins).toHaveLength(0)
+})
+
+test('should ignore the ambient Gatsby skip setting when the project does not set it', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
+    'gatsby-config.js': '',
+  })
+  fs.cwd = cwd
+  vi.stubEnv('NETLIFY_SKIP_GATSBY_BUILD_PLUGIN', 'true')
+  const detected = await new Project(fs, cwd).setEnvironment({}).setNodeVersion('12.13.0').detectFrameworks()
+  expect(detected?.[0].id).toBe('gatsby')
+  expect(detected?.[0].plugins).toEqual(['@netlify/plugin-gatsby'])
 })
