@@ -1,5 +1,6 @@
-import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
+import { mkdir, readdir, readFile, realpath, stat, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
+import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
 import { dir as getTmpDir } from 'tmp-promise'
@@ -126,6 +127,45 @@ describe('Netlify Server', () => {
     expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toMatch(
       /export \* as func from '\.\//,
     )
+  })
+
+  const extractServer = async (fixture: string) => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), join(tmpDir, 'server'), {
+      basePath: fixture,
+    })
+    const extractDir = join(tmpDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+    return realpath(extractDir)
+  }
+
+  test.each([
+    { format: 'CommonJS', fixture: FIXTURE, serverFile: 'netlify/server/index.cjs' },
+    { format: 'ESM', fixture: join(FIXTURES_DIR, 'netlify-server-esm'), serverFile: 'netlify/server/index.mjs' },
+  ])(
+    'Keeps a $format server at its path under the base path, whatever else it includes',
+    async ({ fixture, serverFile }) => {
+      const extractDir = await extractServer(fixture)
+
+      expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
+        `export * as func from './${serverFile}'`,
+      )
+      expect((await stat(join(extractDir, serverFile))).isFile()).toBe(true)
+    },
+  )
+
+  test('Runs a server that declares the CommonJS globals itself', async () => {
+    const extractDir = await extractServer(join(FIXTURES_DIR, 'netlify-server-esm'))
+    const serverFile = join(extractDir, 'netlify', 'server', 'index.mjs')
+
+    const { func } = (await import(pathToFileURL(join(extractDir, '___netlify-entry-point.mjs')).href)) as {
+      func: { paths: unknown }
+    }
+
+    expect(func.paths).toEqual({ filename: serverFile, dirname: dirname(serverFile), requiredJoin: 'function' })
   })
 
   test('Builds for Play even when the functions are not archived', async () => {
@@ -336,7 +376,7 @@ export const config = { includedFiles: ['data/**'] }
     await mkdir(extractDir, { recursive: true })
     await execa('tar', ['-xzf', result.path, '-C', extractDir])
 
-    expect(await readFile(join(extractDir, 'data', 'seed.json'), 'utf-8')).toBe('{}')
+    expect(await readFile(join(extractDir, 'netlify', 'server', 'data', 'seed.json'), 'utf-8')).toBe('{}')
   })
 
   test('Reads the config of a server using the Netlify syntax', async () => {

@@ -6,7 +6,7 @@ import type { FunctionConfig } from '../../../../config.js'
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
 import { getPathWithExtension } from '../../../../utils/fs.js'
 import { RUNTIME } from '../../../runtime.js'
-import { CJS_SHIM } from '../../utils/esm_cjs_compat.js'
+import { CJS_SHIM, CJS_SHIM_DEFINE } from '../../utils/esm_cjs_compat.js'
 import { MODULE_FORMAT, MODULE_FILE_EXTENSION, ModuleFormat } from '../../utils/module_format.js'
 import { getClosestPackageJson } from '../../utils/package_json.js'
 import { getBundlerTarget } from '../esbuild/bundler_target.js'
@@ -113,6 +113,7 @@ export const transform = async ({ bundle = false, config, format, name, path }: 
 
     if (format === MODULE_FORMAT.ESM) {
       bundleOptions.banner = { js: CJS_SHIM }
+      bundleOptions.define = CJS_SHIM_DEFINE
     }
   }
 

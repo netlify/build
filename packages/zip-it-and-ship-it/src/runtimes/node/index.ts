@@ -14,6 +14,7 @@ import { getBundler, getBundlerName } from './bundlers/index.js'
 import { NODE_BUNDLER } from './bundlers/types.js'
 import { findFunctionsInPaths, findFunctionInPath } from './finder.js'
 import { augmentFunctionConfig, parseFile } from './in_source_config/index.js'
+import { getBasePath } from './utils/base_path.js'
 import { MODULE_FORMAT, MODULE_FILE_EXTENSION } from './utils/module_format.js'
 import { getNodeRuntime, getNodeRuntimeForV2 } from './utils/node_runtime.js'
 import { createAliases as createPluginsModulesPathAliases, getPluginsModulesPath } from './utils/plugin_modules_path.js'
@@ -144,7 +145,13 @@ const zipFunction: ZipFunction = async function ({
   // base path to be that directory. If not, we'll run the logic that finds the
   // common path prefix and that will break module resolution, as the modules
   // will no longer be inside a `node_modules` directory.
-  const finalBasePath = isInPluginsModulesPath ? basePath! : basePathFromBundler
+  let finalBasePath = isInPluginsModulesPath ? basePath! : basePathFromBundler
+
+  // A server keeps its path under the base path however few files it includes,
+  // so where its code runs from does not depend on what the trace found.
+  if (isServer === true && basePath !== undefined && finalBasePath !== undefined) {
+    finalBasePath = getBasePath([basePath, finalBasePath])
+  }
 
   const zipResult = await zipNodeJs({
     aliases,

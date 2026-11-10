@@ -10,7 +10,7 @@ import { FunctionBundlingUserError } from '../../../../utils/error.js'
 import { getPathWithExtension, safeUnlink } from '../../../../utils/fs.js'
 import { glob } from '../../../../utils/matching.js'
 import { RUNTIME } from '../../../runtime.js'
-import { CJS_SHIM } from '../../utils/esm_cjs_compat.js'
+import { CJS_SHIM, CJS_SHIM_DEFINE } from '../../utils/esm_cjs_compat.js'
 import { getFileExtensionForFormat, MODULE_FORMAT } from '../../utils/module_format.js'
 import { NODE_BUNDLER } from '../types.js'
 
@@ -142,6 +142,7 @@ export const bundleJsFile = async function ({
     const { metafile = { inputs: {}, outputs: {} }, warnings } = await build({
       banner: moduleFormat === MODULE_FORMAT.ESM ? { js: CJS_SHIM } : undefined,
       bundle: true,
+      define: moduleFormat === MODULE_FORMAT.ESM ? CJS_SHIM_DEFINE : undefined,
       entryPoints: [srcFile],
       external,
       format: moduleFormat,

@@ -478,6 +478,27 @@ describe('zip-it-and-ship-it', () => {
   )
 
   testMany(
+    'Runs a native ESM function that declares the CommonJS globals itself',
+    ['bundler_default', 'bundler_nft', 'bundler_esbuild'],
+    async (options) => {
+      const fixtureName = 'node-esm-cjs-globals'
+      const opts = merge(options, {
+        basePath: join(FIXTURES_DIR, fixtureName),
+        featureFlags: { zisi_pure_esm: true },
+      })
+      const { files } = await zipFixture(fixtureName, { opts })
+
+      const [{ unzipPath }] = await unzipFiles(files)
+      const func = await importFunctionFile(join(unzipPath, 'func.js'))
+      const result = func.handler()
+
+      expect(result.filename).toBe(join(unzipPath, 'func.js'))
+      expect(result.dirname).toBe(unzipPath)
+      expect(result.requiredJoin).toBe('function')
+    },
+  )
+
+  testMany(
     'Can bundle ESM functions and transpile them to CJS when the Node version is >=14 and the `zisi_pure_esm` flag is off',
     ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
     async (options) => {

@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises'
-import { join, resolve } from 'path'
+import { basename, dirname, join, resolve } from 'path'
 import { platform } from 'process'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
@@ -48,6 +48,32 @@ describe('V2 functions API', () => {
       expect(body).toBe('<h1>Hello world</h1>')
       expect(multiValueHeaders['content-type']).toEqual(['text/html'])
       expect(statusCode).toBe(200)
+    },
+  )
+
+  testMany(
+    'Runs a function that declares the CommonJS globals itself',
+    ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
+    async (options) => {
+      const { files } = await zipFixture('v2-api-cjs-globals', {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: options,
+      })
+
+      const unzippedFunctions = await unzipFiles(files)
+
+      const func = await importFunctionFile(`${unzippedFunctions[0].unzipPath}/${files[0].entryFilename}`)
+      const { body: bodyStream, statusCode } = await invokeLambda(func)
+      const body = JSON.parse(await readAsBuffer(bodyStream)) as {
+        dirname: string
+        filename: string
+        requiredJoin: string
+      }
+
+      expect(statusCode).toBe(200)
+      expect(basename(body.filename)).toBe('function.mjs')
+      expect(body.dirname).toBe(dirname(body.filename))
+      expect(body.requiredJoin).toBe('function')
     },
   )
 
