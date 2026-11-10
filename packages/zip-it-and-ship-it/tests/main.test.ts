@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, rm, symlink, writeFile } from 'fs/promises'
+import { cp, mkdir, readFile, realpath, rm, symlink, writeFile } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { arch, version as nodeVersion, platform } from 'process'
 
@@ -492,8 +492,12 @@ describe('zip-it-and-ship-it', () => {
       const func = await importFunctionFile(join(unzipPath, 'func.js'))
       const result = func.handler()
 
-      expect(result.filename).toBe(join(unzipPath, 'func.js'))
-      expect(result.dirname).toBe(unzipPath)
+      // The module's own URL is resolved, while the temporary directory can be
+      // a Windows 8.3 short name.
+      const resolvedPath = await realpath(unzipPath)
+
+      expect(result.filename).toBe(join(resolvedPath, 'func.js'))
+      expect(result.dirname).toBe(resolvedPath)
       expect(result.requiredJoin).toBe('function')
     },
   )
