@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, realpath, rm, symlink, writeFile } from 'fs/promises'
 import { dirname, isAbsolute, join, resolve } from 'path'
-import { arch, version as nodeVersion, platform } from 'process'
+import { arch, execPath, version as nodeVersion, platform } from 'process'
+import { pathToFileURL } from 'url'
 
 import decompress from 'decompress'
 import merge from 'deepmerge'
@@ -502,7 +503,8 @@ describe('zip-it-and-ship-it', () => {
     },
   )
 
-  // Only esbuild bundles a V1 function and gives it the CommonJS globals.
+  // Only esbuild bundles a V1 function and gives it the CommonJS globals. It
+  // runs in a Node process of its own, since Vitest can define those globals.
   testMany(
     'Gives a native ESM function the CommonJS globals it uses without declaring them',
     ['bundler_esbuild'],
@@ -515,8 +517,14 @@ describe('zip-it-and-ship-it', () => {
       const { files } = await zipFixture(fixtureName, { opts })
 
       const [{ unzipPath }] = await unzipFiles(files)
-      const func = await importFunctionFile(join(unzipPath, 'func.js'))
-      const result = func.handler()
+      const functionFile = join(unzipPath, 'func.js')
+      const { stdout } = await execa(execPath, [
+        '--input-type=module',
+        '--eval',
+        `const { handler } = await import(${JSON.stringify(pathToFileURL(functionFile).href)})
+console.log(JSON.stringify(handler()))`,
+      ])
+      const result = JSON.parse(stdout) as { dirname: string; filename: string; requiredJoin: string }
       const resolvedPath = await realpath(unzipPath)
 
       expect(result.filename).toBe(join(resolvedPath, 'func.js'))
