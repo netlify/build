@@ -1,4 +1,4 @@
-import { dirname, extname, join } from 'path'
+import { dirname, extname, join, resolve } from 'path'
 
 import { copyFile } from 'copy-file'
 import { type Span, trace } from '@opentelemetry/api'
@@ -150,7 +150,7 @@ const zipFunction: ZipFunction = async function ({
   // A server keeps its path under the base path however few files it includes,
   // so where its code runs from does not depend on what the trace found.
   if (isServer === true && basePath !== undefined && finalBasePath !== undefined) {
-    finalBasePath = getBasePath([basePath, finalBasePath])
+    finalBasePath = getBasePath([resolve(basePath), finalBasePath])
   }
 
   const zipResult = await zipNodeJs({

@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, realpath, stat, writeFile } from 'fs/promises'
-import { dirname, join } from 'path'
+import { dirname, join, relative } from 'path'
+import { cwd } from 'process'
 import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
@@ -129,10 +130,10 @@ describe('Netlify Server', () => {
     )
   })
 
-  const extractServer = async (fixture: string) => {
+  const extractServer = async (fixture: string, basePath = fixture) => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
     const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), join(tmpDir, 'server'), {
-      basePath: fixture,
+      basePath,
     })
     const extractDir = join(tmpDir, 'extracted')
 
@@ -156,6 +157,16 @@ describe('Netlify Server', () => {
       expect((await stat(join(extractDir, serverFile))).isFile()).toBe(true)
     },
   )
+
+  test('Keeps the server at its path under a base path given relative to the working directory', async () => {
+    const serverFile = 'netlify/server/index.cjs'
+    const extractDir = await extractServer(FIXTURE, relative(cwd(), FIXTURE))
+
+    expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
+      `export * as func from './${serverFile}'`,
+    )
+    expect((await stat(join(extractDir, serverFile))).isFile()).toBe(true)
+  })
 
   test('Runs a server that declares the CommonJS globals itself', async () => {
     const extractDir = await extractServer(join(FIXTURES_DIR, 'netlify-server-esm'))
