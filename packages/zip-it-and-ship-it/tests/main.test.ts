@@ -525,10 +525,11 @@ describe('zip-it-and-ship-it', () => {
 console.log(JSON.stringify(handler()))`,
       ])
       const result = JSON.parse(stdout) as { dirname: string; filename: string; requiredJoin: string }
-      const resolvedPath = await realpath(unzipPath)
 
-      expect(result.filename).toBe(join(resolvedPath, 'func.js'))
-      expect(result.dirname).toBe(resolvedPath)
+      // Both sides are resolved: whether Node reports a Windows 8.3 short name
+      // depends on how the module was loaded.
+      expect(await realpath(result.filename)).toBe(await realpath(functionFile))
+      expect(await realpath(result.dirname)).toBe(await realpath(unzipPath))
       expect(result.requiredJoin).toBe('function')
     },
   )

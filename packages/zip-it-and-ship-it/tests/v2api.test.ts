@@ -100,11 +100,12 @@ const response = await handler()
 console.log(JSON.stringify({ status: response.status, ...(await response.json()) }))`,
       ])
       const body = JSON.parse(stdout) as { dirname: string; filename: string; requiredJoin: string; status: number }
-      const resolvedPath = await realpath(unzipPath)
 
+      // Both sides are resolved: whether Node reports a Windows 8.3 short name
+      // depends on how the module was loaded.
       expect(body.status).toBe(200)
-      expect(body.filename).toBe(join(resolvedPath, 'function.mjs'))
-      expect(body.dirname).toBe(resolvedPath)
+      expect(await realpath(body.filename)).toBe(await realpath(functionFile))
+      expect(await realpath(body.dirname)).toBe(await realpath(unzipPath))
       expect(body.requiredJoin).toBe('function')
     },
   )
