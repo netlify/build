@@ -86,7 +86,7 @@
     "keep-func-props": "^6.0.0",
     "log-process-errors": "^11.0.0",
     "memoize-one": "^6.0.0",
-    "minimatch": "^10.2.4",
+    "minimatch": "^11.0.0",
     "os-name": "^6.0.0",
     "package-directory": "^8.0.0",
     "pretty-ms": "^9.0.0",
