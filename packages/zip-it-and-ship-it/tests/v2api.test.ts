@@ -1,9 +1,11 @@
-import { readFile } from 'fs/promises'
+import { readFile, realpath } from 'fs/promises'
 import { basename, dirname, join, resolve } from 'path'
-import { platform } from 'process'
+import { execPath, platform } from 'process'
+import { pathToFileURL } from 'url'
 
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
+import { execa } from 'execa'
 import glob from 'fast-glob'
 import { pathExists } from 'path-exists'
 import { dir as getTmpDir } from 'tmp-promise'
@@ -73,6 +75,36 @@ describe('V2 functions API', () => {
       expect(statusCode).toBe(200)
       expect(basename(body.filename)).toBe('function.mjs')
       expect(body.dirname).toBe(dirname(body.filename))
+      expect(body.requiredJoin).toBe('function')
+    },
+  )
+
+  // Run in a Node process of its own: Vitest's module runner defines
+  // `__filename` and `__dirname` itself, which would hide a missing mapping.
+  testMany(
+    'Gives a function the CommonJS globals it uses without declaring them',
+    ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
+    async (options) => {
+      const { files } = await zipFixture('v2-api-cjs-globals-undeclared', {
+        fixtureDir: FIXTURES_ESM_DIR,
+        opts: options,
+      })
+
+      const [{ unzipPath }] = await unzipFiles(files)
+      const functionFile = join(unzipPath, 'function.mjs')
+      const { stdout } = await execa(execPath, [
+        '--input-type=module',
+        '--eval',
+        `const { default: handler } = await import(${JSON.stringify(pathToFileURL(functionFile).href)})
+const response = await handler()
+console.log(JSON.stringify({ status: response.status, ...(await response.json()) }))`,
+      ])
+      const body = JSON.parse(stdout) as { dirname: string; filename: string; requiredJoin: string; status: number }
+      const resolvedPath = await realpath(unzipPath)
+
+      expect(body.status).toBe(200)
+      expect(body.filename).toBe(join(resolvedPath, 'function.mjs'))
+      expect(body.dirname).toBe(resolvedPath)
       expect(body.requiredJoin).toBe('function')
     },
   )

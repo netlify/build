@@ -502,6 +502,29 @@ describe('zip-it-and-ship-it', () => {
     },
   )
 
+  // Only esbuild bundles a V1 function and gives it the CommonJS globals.
+  testMany(
+    'Gives a native ESM function the CommonJS globals it uses without declaring them',
+    ['bundler_esbuild'],
+    async (options) => {
+      const fixtureName = 'node-esm-cjs-globals-undeclared'
+      const opts = merge(options, {
+        basePath: join(FIXTURES_DIR, fixtureName),
+        featureFlags: { zisi_pure_esm: true },
+      })
+      const { files } = await zipFixture(fixtureName, { opts })
+
+      const [{ unzipPath }] = await unzipFiles(files)
+      const func = await importFunctionFile(join(unzipPath, 'func.js'))
+      const result = func.handler()
+      const resolvedPath = await realpath(unzipPath)
+
+      expect(result.filename).toBe(join(resolvedPath, 'func.js'))
+      expect(result.dirname).toBe(resolvedPath)
+      expect(result.requiredJoin).toBe('function')
+    },
+  )
+
   testMany(
     'Can bundle ESM functions and transpile them to CJS when the Node version is >=14 and the `zisi_pure_esm` flag is off',
     ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
