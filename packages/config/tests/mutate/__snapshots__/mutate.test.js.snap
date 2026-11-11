@@ -3,6 +3,7 @@
 exports[`updateConfig() has higher priority than context properties 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/mutate/fixtures/context",
   "config": {
@@ -138,6 +139,7 @@ exports[`updateConfig() has higher priority than context properties 1`] = `
 exports[`updateConfig() merges with the existing netlify.toml 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/mutate/fixtures/merge",
   "config": {
@@ -274,6 +276,7 @@ exports[`updateConfig() merges with the existing netlify.toml 1`] = `
 exports[`updateConfig() updates the configuration so it can be read again 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/mutate/fixtures/update",
   "config": {

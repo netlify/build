@@ -50,6 +50,15 @@ test('BaseRelDir feature flag', async () => {
   expect(publish.startsWith(buildDir)).toBe(false)
 })
 
+test.each([
+  ['defaults to true', {}, true],
+  ['is true when the flag is true', { baseRelDir: true }, true],
+  ['is false when the flag is false', { baseRelDir: false }, false],
+])('The resolved baseRelDir %s', async (_, flags, expected) => {
+  const output = await new Fixture(import.meta.url, './fixtures/prop_config').withFlags(flags).runWithConfig()
+  expect(JSON.parse(output).baseRelDir).toBe(expected)
+})
+
 test('Base directory does not exist', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/base_invalid').runWithConfig()
   expect(normalizeOutput(output)).toMatchSnapshot()

@@ -8,6 +8,7 @@ Base directory does not exist: packages/config/tests/base/fixtures/base_invalid/
 exports[`Base from configuration file property 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/prop_config/base",
   "config": {
@@ -148,6 +149,7 @@ exports[`Base from configuration file property 1`] = `
 exports[`Base from defaultConfig 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/default_config/base",
   "config": {
@@ -284,6 +286,7 @@ exports[`Base from defaultConfig 1`] = `
 exports[`Base logic is not recursive 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/recursive/base",
   "config": {
@@ -420,6 +423,7 @@ exports[`Base logic is not recursive 1`] = `
 exports[`BaseRelDir feature flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": false,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/prop_config/base",
   "config": {
@@ -560,6 +564,7 @@ exports[`BaseRelDir feature flag 1`] = `
 exports[`Use "base" as "publish" when it is / 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/base_without_publish/base",
   "config": {
@@ -694,6 +699,7 @@ exports[`Use "base" as "publish" when it is / 1`] = `
 exports[`Use "base" as "publish" when it is an empty string 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/base_without_publish/base",
   "config": {
@@ -828,6 +834,7 @@ exports[`Use "base" as "publish" when it is an empty string 1`] = `
 exports[`Use "base" as default value for "publish" 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/base/fixtures/base_without_publish/base",
   "config": {

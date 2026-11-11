@@ -46,6 +46,7 @@ exports[`--version 1`] = `"1.0.0"`;
 exports[`CLI flags 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "test",
   "buildDir": "packages/config/tests/cli/fixtures/empty",
   "config": {
@@ -183,6 +184,7 @@ exports[`CLI flags 1`] = `
 exports[`Check --config for toml 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/toml",
   "config": {
@@ -427,6 +429,7 @@ exports[`Does not stabilitize output without the --stable flag 1`] = `
   "headersPath": "packages/config/tests/cli/fixtures/empty/_headers",
   "buildDir": "packages/config/tests/cli/fixtures/empty",
   "repositoryRoot": "packages/config/tests/cli/fixtures/empty",
+  "baseRelDir": true,
   "config": {
     "functions": {
       "*": {}
@@ -459,6 +462,7 @@ exports[`Does not stabilitize output without the --stable flag 1`] = `
 exports[`Ignores empty config 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/toml",
   "config": {
@@ -598,6 +602,7 @@ exports[`Ignores empty config 1`] = `
 exports[`Ignores nonspecified config 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/toml",
   "config": {
@@ -738,6 +743,7 @@ exports[`Ignores nonspecified config 1`] = `
 exports[`Stabilitize output with the --stable flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/empty",
   "config": {
@@ -875,6 +881,7 @@ exports[`Stabilitize output with the --stable flag 1`] = `
 exports[`Success 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/empty",
   "config": {
@@ -1017,6 +1024,7 @@ Configuration file does not exist"
 exports[`Write on stdout with the --output=- flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cli/fixtures/empty",
   "config": {

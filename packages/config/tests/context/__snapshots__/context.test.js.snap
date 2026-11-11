@@ -3,6 +3,7 @@
 exports[`Can use context properties for build.edge_functions 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_edge_functions_build",
   "config": {
@@ -137,6 +138,7 @@ exports[`Can use context properties for build.edge_functions 1`] = `
 exports[`Can use context properties for edge_functions 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_edge_functions_top",
   "config": {
@@ -276,6 +278,7 @@ exports[`Can use context properties for edge_functions 1`] = `
 exports[`Context array merge 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/array_merge",
   "config": {
@@ -415,6 +418,7 @@ exports[`Context array merge 1`] = `
 exports[`Context deep merge 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/deep_merge",
   "config": {
@@ -566,6 +570,7 @@ exports[`Context deep merge 1`] = `
 exports[`Context default value 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_default",
   "config": {
@@ -703,6 +708,7 @@ exports[`Context default value 1`] = `
 exports[`Context environment variable 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_flag",
   "config": {
@@ -840,6 +846,7 @@ exports[`Context environment variable 1`] = `
 exports[`Context merge priority 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "testBranch",
   "buildDir": "packages/config/tests/context/fixtures/priority_merge",
   "config": {
@@ -979,6 +986,7 @@ exports[`Context merge priority 1`] = `
 exports[`Context with branch CLI flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "testBranch",
   "buildDir": "packages/config/tests/context/fixtures/branch",
   "config": {
@@ -1116,6 +1124,7 @@ exports[`Context with branch CLI flag 1`] = `
 exports[`Context with branch environment variable 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "testBranch",
   "buildDir": "packages/config/tests/context/fixtures/branch",
   "config": {
@@ -1253,6 +1262,7 @@ exports[`Context with branch environment variable 1`] = `
 exports[`Context with branch exact match takes precedence over wildcard 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "feat/special",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -1388,6 +1398,7 @@ exports[`Context with branch exact match takes precedence over wildcard 1`] = `
 exports[`Context with branch fallback 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "master",
   "buildDir": "/tmp-dir",
   "config": {
@@ -1513,6 +1524,7 @@ exports[`Context with branch fallback 1`] = `
 exports[`Context with branch git 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "testBranch",
   "buildDir": "/tmp-dir",
   "config": {
@@ -1644,6 +1656,7 @@ exports[`Context with branch git 1`] = `
 exports[`Context with branch that does not match wildcard falls back to default 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "main",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -1779,6 +1792,7 @@ exports[`Context with branch that does not match wildcard falls back to default 
 exports[`Context with branch wildcard pattern feat* without slash 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "featawesome",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -1914,6 +1928,7 @@ exports[`Context with branch wildcard pattern feat* without slash 1`] = `
 exports[`Context with branch wildcard pattern feat/* 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "feat/test-wildcard",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -2049,6 +2064,7 @@ exports[`Context with branch wildcard pattern feat/* 1`] = `
 exports[`Context with branch wildcard pattern feature/* 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "feature/new-feature",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -2184,6 +2200,7 @@ exports[`Context with branch wildcard pattern feature/* 1`] = `
 exports[`Context with context CLI flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_flag",
   "config": {
@@ -2321,6 +2338,7 @@ exports[`Context with context CLI flag 1`] = `
 exports[`Context with nested branch wildcard pattern feat/nested/* 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "feat/nested/deep-branch",
   "buildDir": "packages/config/tests/context/fixtures/branch_wildcard",
   "config": {
@@ -2456,6 +2474,7 @@ exports[`Context with nested branch wildcard pattern feat/nested/* 1`] = `
 exports[`Using context does not reset plugins 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/context/fixtures/context_reset",
   "config": {

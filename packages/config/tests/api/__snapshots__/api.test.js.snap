@@ -3,6 +3,7 @@
 exports[`--site-id 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -144,6 +145,7 @@ exports[`--site-id 1`] = `
 exports[`--token 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -279,6 +281,7 @@ exports[`--token 1`] = `
 exports[`--token in CLI 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -417,6 +420,7 @@ exports[`--token in CLI 1`] = `
 exports[`Build settings are not used in CI 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/base",
   "config": {
@@ -457,6 +461,7 @@ exports[`Build settings are not used in CI 1`] = `
 exports[`Build settings are not used without a siteId 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/base",
   "config": {
@@ -592,6 +597,7 @@ exports[`Build settings are not used without a siteId 1`] = `
 exports[`Build settings are not used without a token 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/base",
   "config": {
@@ -733,6 +739,7 @@ exports[`Build settings are not used without a token 1`] = `
 exports[`Build settings can be null 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": false,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -898,6 +905,7 @@ exports[`Build settings can be null 1`] = `
 exports[`Build settings have low merging priority 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/build_settings/other_base",
   "config": {
@@ -1100,6 +1108,7 @@ exports[`Environment variable siteInfo API error 1`] = `"Failed retrieving site 
 exports[`Environment variable siteInfo CI 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1140,6 +1149,7 @@ exports[`Environment variable siteInfo CI 1`] = `
 exports[`Environment variable siteInfo no siteId 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1275,6 +1285,7 @@ exports[`Environment variable siteInfo no siteId 1`] = `
 exports[`Environment variable siteInfo no token 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1416,6 +1427,7 @@ exports[`Environment variable siteInfo no token 1`] = `
 exports[`Environment variable siteInfo offline 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1558,6 +1570,7 @@ exports[`Environment variable siteInfo offline 1`] = `
 exports[`Environment variable siteInfo success 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": false,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1724,6 +1737,7 @@ exports[`Environment variable siteInfo success 1`] = `
 exports[`NETLIFY_AUTH_TOKEN environment variable 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -1859,6 +1873,7 @@ exports[`NETLIFY_AUTH_TOKEN environment variable 1`] = `
 exports[`NETLIFY_SITE_ID environment variable 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/empty",
   "config": {
@@ -2000,6 +2015,7 @@ exports[`NETLIFY_SITE_ID environment variable 1`] = `
 exports[`Use build settings if a siteId and token are provided 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": false,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/base/base",
   "config": {
@@ -2197,6 +2213,7 @@ exports[`Use build settings if a siteId and token are provided 1`] = `
 exports[`baseRelDir is true if build.base is overridden 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/api/fixtures/build_base_override/subdir",
   "config": {

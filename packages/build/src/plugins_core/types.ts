@@ -19,6 +19,12 @@ export type CoreStepFunctionArgs = {
    */
   packagePath?: string
   repositoryRoot: string
+  /**
+   * Whether relative paths in the configuration resolve against `buildDir`
+   * (`true`) or `repositoryRoot` (`false`). `undefined` when the configuration
+   * was cached by a version of `@netlify/config` that did not return it.
+   */
+  baseRelDir?: boolean
   deployId: string
   /**
    * The deploy context (e.g. 'production', 'deploy-preview', 'branch-deploy')

@@ -7,6 +7,7 @@ exports[`--cwd points to a non-directory file 1`] = `"Option 'cwd' points to a n
 exports[`--cwd with a relative path config 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config",
   "config": {
@@ -141,6 +142,7 @@ exports[`--cwd with a relative path config 1`] = `
 exports[`--cwd with no config 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/empty",
   "config": {
@@ -275,6 +277,7 @@ exports[`--cwd with no config 1`] = `
 exports[`--repository-root 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/empty",
   "config": {
@@ -408,6 +411,7 @@ exports[`--repository-root 1`] = `
 exports[`--repository-root with cwd 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/empty",
   "config": {
@@ -549,6 +553,7 @@ exports[`--repositoryRoot points to a non-directory file 1`] = `"Option 'reposit
 exports[`No .git 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "/tmp-dir",
   "config": {
@@ -670,6 +675,7 @@ exports[`No .git 1`] = `
 exports[`build.base current directory 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/build_base_cwd/base",
   "config": {
@@ -804,6 +810,7 @@ exports[`build.base current directory 1`] = `
 exports[`build.base override 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/build_base_override/subdir",
   "config": {
@@ -938,6 +945,7 @@ exports[`build.base override 1`] = `
 exports[`should detect base directory using package.json in sub dir 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/cwd/fixtures/build_base_package_json/subdir",
   "config": {

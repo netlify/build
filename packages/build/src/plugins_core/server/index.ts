@@ -1,5 +1,5 @@
 import { mkdir, rm } from 'fs/promises'
-import { isAbsolute, join, relative, resolve, sep } from 'path'
+import { isAbsolute, relative, resolve, sep } from 'path'
 
 import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
 
@@ -12,6 +12,7 @@ import { getServerEntry, SERVER_DIRECTORY, useServerStandalone } from '../functi
 import type { CoreStepFunction } from '../types.js'
 
 const coreStep: CoreStepFunction = async function ({
+  baseRelDir,
   buildDir,
   constants: { SERVER_DIST },
   featureFlags,
@@ -29,13 +30,14 @@ const coreStep: CoreStepFunction = async function ({
 
   log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
 
+  // A missing `baseRelDir` comes from an older cached config, where it defaulted to `true`.
+  const configRoot = resolve(baseRelDir === false ? repositoryRoot : buildDir)
   const publishDir = resolve(buildDir, netlifyConfig.build.publish)
   const serverInPublishDir = relative(publishDir, resolve(serverEntry.packageRoot, SERVER_DIRECTORY))
   const publishesServerSource = !isAbsolute(serverInPublishDir) && serverInPublishDir.split(sep)[0] !== '..'
   const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
-  // The UI sends the project root (`/`) when no publish directory was chosen.
-  const isUnsetInUI =
-    publishOrigin === 'ui' && (publishDir === resolve(buildDir) || publishDir === resolve(serverEntry.packageRoot))
+  // The UI sends `/` when no publish directory was chosen, which resolves to the configuration root.
+  const isUnsetInUI = publishOrigin === 'ui' && publishDir === configRoot
 
   if (publishesServerSource && publishOrigin !== 'default' && !isUnsetInUI) {
     const error = new Error(
@@ -59,10 +61,10 @@ const coreStep: CoreStepFunction = async function ({
     return {}
   }
 
-  const emptyPublishDir = join(packagePath ?? '', EMPTY_PUBLISH_DIRECTORY)
+  const emptyPublishDir = resolve(serverEntry.packageRoot, EMPTY_PUBLISH_DIRECTORY)
 
-  await rm(resolve(buildDir, emptyPublishDir), { recursive: true, force: true })
-  await mkdir(resolve(buildDir, emptyPublishDir), { recursive: true })
+  await rm(emptyPublishDir, { recursive: true, force: true })
+  await mkdir(emptyPublishDir, { recursive: true })
 
   log(
     logs,
@@ -72,7 +74,9 @@ const coreStep: CoreStepFunction = async function ({
   const keys = ['build', 'publish']
 
   return {
-    configMutations: [{ keys, keysString: keys.join('.'), value: emptyPublishDir, event: 'onBuild' }],
+    configMutations: [
+      { keys, keysString: keys.join('.'), value: relative(configRoot, emptyPublishDir), event: 'onBuild' },
+    ],
   }
 }
 

@@ -60,6 +60,7 @@ exports[`--apiHost is used to set Netlify API host 2`] = `
 exports[`--baseRelDir 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": false,
   "branch": "branch",
   "buildDir": "packages/build/tests/core/fixtures/basereldir/base",
   "config": {

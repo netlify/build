@@ -3,6 +3,7 @@
 exports[`--cachedConfig 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/cached_config",
   "config": {
@@ -138,6 +139,7 @@ exports[`--cachedConfig 1`] = `
 exports[`--cachedConfig CLI flags 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/cached_config",
   "config": {
@@ -273,6 +275,7 @@ exports[`--cachedConfig CLI flags 1`] = `
 exports[`--cachedConfig with a siteId 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/cached_config",
   "config": {
@@ -416,6 +419,7 @@ exports[`--cachedConfig with a siteId 1`] = `
 exports[`--cachedConfig with a token 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/cached_config",
   "config": {
@@ -553,6 +557,7 @@ exports[`--cachedConfig with a token 1`] = `
 exports[`--cachedConfigPath 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/cached_config",
   "config": {
@@ -688,6 +693,7 @@ exports[`--cachedConfigPath 1`] = `
 exports[`--config with a relative path 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config",
   "config": {
@@ -822,6 +828,7 @@ exports[`--config with a relative path 1`] = `
 exports[`--config with an absolute path 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config",
   "config": {
@@ -961,6 +968,7 @@ Configuration file does not exist"
 exports[`--configMutations can mutate functions top-level properties 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -1097,6 +1105,7 @@ exports[`--configMutations can mutate functions top-level properties 1`] = `
 exports[`--configMutations can override properties 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -1234,6 +1243,7 @@ exports[`--configMutations cannot be applied on readonly properties 1`] = `""net
 exports[`--configMutations cannot be overridden by contexts 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -1371,6 +1381,7 @@ exports[`--configMutations events are validated 1`] = `""netlifyConfig.build.com
 exports[`--defaultConfig CLI flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_merge",
   "config": {
@@ -1510,6 +1521,7 @@ exports[`--defaultConfig CLI flag 1`] = `
 exports[`--defaultConfig can specify pinned versions 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -1650,6 +1662,7 @@ exports[`--defaultConfig can specify pinned versions 1`] = `
 exports[`--defaultConfig ignores pinned versions that are empty strings 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -1789,6 +1802,7 @@ exports[`--defaultConfig ignores pinned versions that are empty strings 1`] = `
 exports[`--defaultConfig merge 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_merge",
   "config": {
@@ -1924,6 +1938,7 @@ exports[`--defaultConfig merge 1`] = `
 exports[`--defaultConfig merges UI plugins with config plugins 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/plugins_merge",
   "config": {
@@ -2072,6 +2087,7 @@ exports[`--defaultConfig merges UI plugins with config plugins 1`] = `
 exports[`--defaultConfig priority 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -2207,6 +2223,7 @@ exports[`--defaultConfig priority 1`] = `
 exports[`--inlineConfig CLI flag 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_merge",
   "config": {
@@ -2346,6 +2363,7 @@ exports[`--inlineConfig CLI flag 1`] = `
 exports[`--inlineConfig can override the "base" 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/merge_base/base",
   "config": {
@@ -2480,6 +2498,7 @@ exports[`--inlineConfig can override the "base" 1`] = `
 exports[`--inlineConfig cannot be overridden by contexts 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -2615,6 +2634,7 @@ exports[`--inlineConfig cannot be overridden by contexts 1`] = `
 exports[`--inlineConfig cannot use contexts 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -2758,6 +2778,7 @@ exports[`--inlineConfig cannot use contexts 1`] = `
 exports[`--inlineConfig falsy values are ignored 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -2893,6 +2914,7 @@ exports[`--inlineConfig falsy values are ignored 1`] = `
 exports[`--inlineConfig is merged 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_merge",
   "config": {
@@ -3028,6 +3050,7 @@ exports[`--inlineConfig is merged 1`] = `
 exports[`--inlineConfig is merged with priority 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/default_priority",
   "config": {
@@ -3163,6 +3186,7 @@ exports[`--inlineConfig is merged with priority 1`] = `
 exports[`Empty configuration 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -3296,6 +3320,7 @@ exports[`Empty configuration 1`] = `
 exports[`No --config but none found 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "/tmp-dir",
   "config": {
@@ -3457,6 +3482,7 @@ build:
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -3590,6 +3616,7 @@ build:
 exports[`featureFlags can be used in the CLI 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {
@@ -3727,6 +3754,7 @@ exports[`featureFlags can be used in the CLI 1`] = `
 exports[`featureFlags can be used programmatically 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/load/fixtures/empty",
   "config": {

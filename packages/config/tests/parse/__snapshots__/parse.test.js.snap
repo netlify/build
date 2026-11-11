@@ -3,6 +3,7 @@
 exports[`Configuration file - detecting invalid backslash sequences in TOML does not misinterpret equal signs 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/parse_backslash_equal",
   "config": {
@@ -149,6 +150,7 @@ The following should be used instead: /q"
 exports[`Configuration file - invalid backslash sequences in multiline single quote strings in TOML should not fail 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/parse_backslash_single_multiline",
   "config": {
@@ -283,6 +285,7 @@ exports[`Configuration file - invalid backslash sequences in multiline single qu
 exports[`Configuration file - invalid backslash sequences in single quote strings in TOML should not fail 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/parse_backslash_single",
   "config": {
@@ -417,6 +420,7 @@ exports[`Configuration file - invalid backslash sequences in single quote string
 exports[`Configuration file - netlify.toml 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/toml",
   "config": {
@@ -576,6 +580,7 @@ The following should be used instead: /
 exports[`Configuration file - trailing backslashes in multiline double quotes strings in TOML should not fail 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/parse_backslash_trailing_double_multiline",
   "config": {
@@ -712,6 +717,7 @@ exports[`Configuration file - trailing backslashes in multiline double quotes st
 exports[`Configuration file - valid backslash sequences in TOML should not fail 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/parse_backslash_valid",
   "config": {
@@ -846,6 +852,7 @@ exports[`Configuration file - valid backslash sequences in TOML should not fail 
 exports[`Headers - add headersOrigin 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/empty",
   "config": {
@@ -979,6 +986,7 @@ exports[`Headers - add headersOrigin 1`] = `
 exports[`Headers - does not use headers file when using inlineConfig with identical headers 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_file",
   "config": {
@@ -1123,6 +1131,7 @@ Warning: the same header is set twice with different cases: "Test" and "test"
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_duplicate_case_different",
   "config": {
@@ -1271,6 +1280,7 @@ Warning: the same header is set twice with different cases for "/external/path":
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_duplicate_case_same",
   "config": {
@@ -1411,6 +1421,7 @@ Warning: the same header is set twice with different cases for "/external/path":
 exports[`Headers - field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_field",
   "config": {
@@ -1563,6 +1574,7 @@ Header "test" value must be a string not: false
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_field_error",
   "config": {
@@ -1704,6 +1716,7 @@ Header "test" value must be a string not: false
 exports[`Headers - file 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_file",
   "config": {
@@ -1844,6 +1857,7 @@ exports[`Headers - file 1`] = `
 exports[`Headers - file and field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_both",
   "config": {
@@ -2010,6 +2024,7 @@ Missing header name
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_file_error",
   "config": {
@@ -2185,6 +2200,7 @@ headersOrigin: ui
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/empty",
   "config": {
@@ -2318,6 +2334,7 @@ headersOrigin: ui
 exports[`Headers - no publish field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/headers_no_publish",
   "config": {
@@ -2457,6 +2474,7 @@ exports[`Headers - no publish field 1`] = `
 exports[`Redirects - add redirectsOrigin 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/empty",
   "config": {
@@ -2590,6 +2608,7 @@ exports[`Redirects - add redirectsOrigin 1`] = `
 exports[`Redirects - does not use redirects file when using inlineConfig with identical redirects 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_file",
   "config": {
@@ -2768,6 +2787,7 @@ redirectsOrigin: ui
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/empty",
   "config": {
@@ -2901,6 +2921,7 @@ redirectsOrigin: ui
 exports[`Redirects - no publish field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_no_publish",
   "config": {
@@ -3042,6 +3063,7 @@ exports[`Redirects - no publish field 1`] = `
 exports[`Redirects - redirects field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_field",
   "config": {
@@ -3196,6 +3218,7 @@ Missing "to" field
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_field_error",
   "config": {
@@ -3339,6 +3362,7 @@ Missing "to" field
 exports[`Redirects - redirects file 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_file",
   "config": {
@@ -3481,6 +3505,7 @@ exports[`Redirects - redirects file 1`] = `
 exports[`Redirects - redirects file and redirects field 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_both",
   "config": {
@@ -3651,6 +3676,7 @@ Missing destination path/URL
 
 {
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/parse/fixtures/redirects_file_error",
   "config": {

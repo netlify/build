@@ -229,6 +229,43 @@ test.each(['/', '.'])(
   },
 )
 
+test.each([true, false])(
+  'Functions: publishes an empty directory in the base directory for a Netlify Server whose publish directory in the UI is the base root (baseRelDir: %s)',
+  async (baseRelDir) => {
+    const fixture = await new Fixture(import.meta.url, './fixtures/server_base_directory')
+      .withFlags({
+        baseRelDir,
+        debug: false,
+        defaultConfig: { build: { base: 'app', publish: '/' } },
+        featureFlags: { netlify_build_server_standalone: true },
+      })
+      .withCopyRoot()
+    const emptyPublishDir = resolve(fixture.repositoryRoot, 'app', SERVER_PUBLISH_DIR)
+
+    const { success, netlifyConfig } = await fixture.runWithBuildAndIntrospect()
+
+    expect(success).toBe(true)
+    expect(netlifyConfig?.build.publish).toBe(emptyPublishDir)
+    expect(await readdir(emptyPublishDir)).toEqual([])
+  },
+)
+
+test('Functions: fails the build when the publish directory in the UI is a parent of the base directory', async () => {
+  const fixture = await new Fixture(import.meta.url, './fixtures/server_base_directory')
+    .withFlags({
+      baseRelDir: true,
+      debug: false,
+      defaultConfig: { build: { base: 'app', publish: '..' } },
+      featureFlags: { netlify_build_server_standalone: true },
+    })
+    .withCopyRoot()
+
+  const { success, output } = await fixture.runWithBuildAndIntrospect()
+
+  expect(success).toBe(false)
+  expect(output).toContain('The publish directory contains the Netlify Server source')
+})
+
 test('Functions: keeps the publish directory a Netlify Server project sets', async () => {
   const fixture = await new Fixture(import.meta.url, './fixtures/server_explicit_publish')
     .withFlags({ debug: false, featureFlags: { netlify_build_server_standalone: true } })

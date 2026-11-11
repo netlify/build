@@ -29,6 +29,7 @@ import { handleAutoInstallExtensions } from './utils/extensions/auto-install-ext
 export type Config = {
   accounts: MinimalAccount[] | undefined
   api: any
+  baseRelDir: boolean
   branch: any
   buildDir: any
   config: any
@@ -206,6 +207,7 @@ export const resolveConfig = async function (opts): Promise<Config> {
     headersPath,
     buildDir,
     repositoryRoot,
+    baseRelDir: baseRelDirA,
     config: configA,
     context,
     branch,

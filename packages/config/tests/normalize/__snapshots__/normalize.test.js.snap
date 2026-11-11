@@ -3,6 +3,7 @@
 exports[`Add build.commandOrigin config if it came from contexts 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/command_origin_context",
   "config": {
@@ -138,6 +139,7 @@ exports[`Add build.commandOrigin config if it came from contexts 1`] = `
 exports[`Add build.commandOrigin config if it came from netlify.toml 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/command_origin_config",
   "config": {
@@ -273,6 +275,7 @@ exports[`Add build.commandOrigin config if it came from netlify.toml 1`] = `
 exports[`Add build.commandOrigin ui if it came from defaultConfig 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/empty",
   "config": {
@@ -407,6 +410,7 @@ exports[`Add build.commandOrigin ui if it came from defaultConfig 1`] = `
 exports[`Assign default edge-functions if build.edge_functions is not defined 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_edge_functions_not_defined",
   "config": {
@@ -540,6 +544,7 @@ exports[`Assign default edge-functions if build.edge_functions is not defined 1`
 exports[`Assign default functions if functions.directory is not defined and default directory exists 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_not_defined",
   "config": {
@@ -675,6 +680,7 @@ exports[`Assign default functions if functions.directory is not defined and defa
 exports[`Assign default functions if functions.directory is not defined and the legacy default directory exists 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/legacy_default_functions_not_defined",
   "config": {
@@ -810,6 +816,7 @@ exports[`Assign default functions if functions.directory is not defined and the 
 exports[`Collects paths from \`included_files\` defined at different levels 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/function_config_included_files",
   "config": {
@@ -959,6 +966,7 @@ exports[`Collects paths from \`included_files\` defined at different levels 1`] 
 exports[`Context-specific plugins config is last in merged array 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/merge_netlify_toml_context_last",
   "config": {
@@ -1103,6 +1111,7 @@ exports[`Context-specific plugins config is last in merged array 1`] = `
 exports[`Does not add build.commandOrigin config if command is empty 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/command_empty",
   "config": {
@@ -1236,6 +1245,7 @@ exports[`Does not add build.commandOrigin config if command is empty 1`] = `
 exports[`Does not add build.commandOrigin config if there are none 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/empty",
   "config": {
@@ -1368,6 +1378,7 @@ exports[`Does not add build.commandOrigin config if there are none 1`] = `
 exports[`Does not assign default edge-functions if build.edge_functions is defined 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_edge_functions_defined",
   "config": {
@@ -1502,6 +1513,7 @@ exports[`Does not assign default edge-functions if build.edge_functions is defin
 exports[`Does not assign default functions if build.functions is defined 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_defined_legacy",
   "config": {
@@ -1638,6 +1650,7 @@ exports[`Does not assign default functions if build.functions is defined 1`] = `
 exports[`Does not assign default functions if default functions directory does not exist 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_not_defined_directory_not_found",
   "config": {
@@ -1770,6 +1783,7 @@ exports[`Does not assign default functions if default functions directory does n
 exports[`Does not assign default functions if functions.directory is defined 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_defined",
   "config": {
@@ -1906,6 +1920,7 @@ exports[`Does not assign default functions if functions.directory is defined 1`]
 exports[`Gives priority to functions.star over functions when defined first 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_star_priority_first",
   "config": {
@@ -2049,6 +2064,7 @@ exports[`Gives priority to functions.star over functions when defined first 1`] 
 exports[`Gives priority to functions.star over functions when defined last 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/default_functions_star_priority_last",
   "config": {
@@ -2192,6 +2208,7 @@ exports[`Gives priority to functions.star over functions when defined last 1`] =
 exports[`Handles function configuration objects for functions with the same name as one of the configuration properties 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/function_config_ambiguous",
   "config": {
@@ -2330,6 +2347,7 @@ exports[`Handles function configuration objects for functions with the same name
 exports[`Merges context-specific plugins 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/merge_netlify_toml_context",
   "config": {
@@ -2487,6 +2505,7 @@ exports[`Merges context-specific plugins 1`] = `
 exports[`Merges plugins in netlify.toml and defaultConfig 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/merge_netlify_toml_default",
   "config": {
@@ -2644,6 +2663,7 @@ exports[`Merges plugins in netlify.toml and defaultConfig 1`] = `
 exports[`Normalizes function configurations defined at different levels 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/function_config_all_levels",
   "config": {
@@ -2797,6 +2817,7 @@ exports[`Normalizes function configurations defined at different levels 1`] = `
 exports[`Normalizes function configurations defined at the top level 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/function_config_top_level",
   "config": {
@@ -2936,6 +2957,7 @@ exports[`Normalizes function configurations defined at the top level 1`] = `
 exports[`Some properties can be capitalized 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/props_case/base",
   "config": {
@@ -3087,6 +3109,7 @@ exports[`Some properties can be capitalized 1`] = `
 exports[`Some properties can be capitalized even when merged with defaultConfig 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/props_case_default_config/base",
   "config": {
@@ -3237,6 +3260,7 @@ exports[`Some properties can be capitalized even when merged with defaultConfig 
 exports[`build.command empty 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/command_empty",
   "config": {
@@ -3370,6 +3394,7 @@ exports[`build.command empty 1`] = `
 exports[`server.region and server.size can be capitalized 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/server_case",
   "config": {
@@ -3508,6 +3533,7 @@ exports[`server.region and server.size can be capitalized 1`] = `
 exports[`server.scale is kept as is, including a min of 0 1`] = `
 "{
   "accounts": [],
+  "baseRelDir": true,
   "branch": "branch",
   "buildDir": "packages/config/tests/normalize/fixtures/server_scale",
   "config": {
