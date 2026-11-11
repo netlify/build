@@ -29,14 +29,15 @@ const coreStep: CoreStepFunction = async function ({
 
   log(logs, `Netlify Server detected at ${serverEntry.relativeEntryPath}`)
 
-  const serverInPublishDir = relative(
-    resolve(buildDir, netlifyConfig.build.publish),
-    resolve(serverEntry.packageRoot, SERVER_DIRECTORY),
-  )
+  const publishDir = resolve(buildDir, netlifyConfig.build.publish)
+  const serverInPublishDir = relative(publishDir, resolve(serverEntry.packageRoot, SERVER_DIRECTORY))
   const publishesServerSource = !isAbsolute(serverInPublishDir) && serverInPublishDir.split(sep)[0] !== '..'
   const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
+  // The UI sends the project root (`/`) when no publish directory was chosen.
+  const isUnsetInUI =
+    publishOrigin === 'ui' && (publishDir === resolve(buildDir) || publishDir === resolve(serverEntry.packageRoot))
 
-  if (publishesServerSource && publishOrigin !== 'default') {
+  if (publishesServerSource && publishOrigin !== 'default' && !isUnsetInUI) {
     const error = new Error(
       `The publish directory contains the Netlify Server source in ${SERVER_DIRECTORY}, which would be deployed as static files. Set build.publish to a directory that contains only static files.`,
     )
