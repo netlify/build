@@ -100,7 +100,7 @@
     "terminal-link": "^4.0.0",
     "tinyps": "^0.5.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.0",
+    "typescript": "^7.0.0",
     "yaml": "^2.8.0",
     "yargs": "^17.6.0",
     "zod": "^4.0.5"
