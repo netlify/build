@@ -1,6 +1,5 @@
-import { isDirectory } from 'path-type'
-
 import { throwUserError } from './error.js'
+import { isDirectory } from './utils/fs.js'
 
 /**
  * Retrieve the build directory used to resolve most paths.

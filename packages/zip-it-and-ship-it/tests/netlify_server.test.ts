@@ -574,6 +574,77 @@ export const config = { includedFiles: 'data/**' }
     expect((error as Error).message).toMatch(/^Netlify Server has a configuration error on 'includedFiles': /)
   })
 
+  test('Writes the scale bounds to the manifest', async () => {
+    const { manifest, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { min: 0, max: 3 } }
+`,
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+    expect(result.scale).toEqual({ min: 0, max: 3 })
+  })
+
+  test('Writes only the scale bound the config sets', async () => {
+    const { manifest } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 5 } }
+`,
+    )
+
+    expect(manifest.server.scale).toEqual({ max: 5 })
+  })
+
+  test.each([
+    ['the config sets no scale', '{ size: "small" }'],
+    ['the scale sets no bounds', '{ scale: {} }'],
+  ])('Leaves the scale to the deploy backend when %s', async (_, config) => {
+    const { manifest, result } = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = ${config}
+`,
+    )
+
+    expect(manifest.server).not.toHaveProperty('scale')
+    expect(result).not.toHaveProperty('scale')
+  })
+
+  test.each([
+    ['scale.min', '{ min: 1.5 }', 'Must be an integer greater than or equal to 0'],
+    ['scale.min', '{ min: "1" }', 'Must be an integer greater than or equal to 0'],
+    ['scale.max', '{ max: 0 }', 'Must be an integer greater than or equal to 1'],
+    ['scale.max', '{ max: 2.5 }', 'Must be an integer greater than or equal to 1'],
+    ['scale', '{ min: 4, max: 2 }', "'min' cannot be greater than 'max'"],
+    ['scale', '3', 'Invalid input: expected object, received number'],
+  ])('Fails the build on an invalid %s, as a user error', async (property, scale, message) => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: ${scale} }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe(`Netlify Server has a configuration error on '${property}': ${message}`)
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
+  })
+
+  test('Fails the build on a scale property servers do not support', async () => {
+    const error = await bundleSource(
+      'index.mjs',
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3, target: 2 } }
+`,
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe("Netlify Server does not support the 'scale.target' configuration property")
+  })
+
   test.each([
     ['memory', '2048'],
     ['vcpu', '1'],
@@ -682,6 +753,12 @@ createServer((_req, res) => res.end('hello')).listen(process.env.PORT)
     expect(manifest.server.excludedRoutes?.map(({ pattern }) => pattern)).toEqual(['/api/internal'])
   })
 
+  test('Applies the scale from the configuration', async () => {
+    const { manifest } = await bundleWithConfig(FRAMEWORK_SERVER, { scale: { min: 0, max: 3 } })
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+  })
+
   test('Takes a single path', async () => {
     const { manifest } = await bundleWithConfig(FRAMEWORK_SERVER, { path: '/api/*' })
 
@@ -699,6 +776,45 @@ export const config = { size: 'small' }
     expect(manifest.server.instanceSize).toBe('small')
     expect(manifest.server.region).toBe('cmh')
     expect(manifest.server.routes?.map(({ pattern }) => pattern)).toEqual(['/api/*'])
+  })
+
+  test('Lets the in-source configuration win scale bound by scale bound', async () => {
+    const { manifest } = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3 } }
+`,
+      { scale: { min: 1, max: 10 } },
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 1, max: 3 })
+  })
+
+  test('Combines a scale bound from each source', async () => {
+    const { manifest } = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 3 } }
+`,
+      { scale: { min: 0 } },
+    )
+
+    expect(manifest.server.scale).toEqual({ min: 0, max: 3 })
+  })
+
+  test('Fails the build when the combined scale bounds are out of order, as a user error', async () => {
+    const error = await bundleWithConfig(
+      `${FRAMEWORK_SERVER}
+export const config = { scale: { max: 2 } }
+`,
+      { scale: { min: 4 } },
+    ).catch((err: unknown) => err)
+
+    expect((error as Error).message).toBe(
+      "Netlify Server has a configuration error on 'scale': 'min' (4) cannot be greater than 'max' (2) once the in-source configuration and the [server] block are combined",
+    )
+    expect((error as FunctionBundlingUserError).customErrorInfo).toEqual({
+      type: 'functionsBundling',
+      location: { functionName: 'server', runtime: 'js' },
+    })
   })
 
   test('Lets an in-source path replace the configured paths', async () => {
@@ -744,6 +860,10 @@ export const config = { excludedPath: '/app/private' }
     ['path', { path: 'api/*' }],
     ['excludedPath', { excludedPath: 'api/*' }],
     ['includedFiles', { includedFiles: 'data/**' as unknown as string[] }],
+    ['scale.min', { scale: { min: -1 } }],
+    ['scale.max', { scale: { max: 0 } }],
+    ['scale', { scale: { min: 3, max: 1 } }],
+    ['scale', { scale: { max: 3, target: 2 } as NetlifyServerConfig['scale'] }],
   ])('Fails the build on an invalid %s, as a user error', async (property, config) => {
     const error = await bundleWithConfig(FRAMEWORK_SERVER, config).catch((err: unknown) => err)
 

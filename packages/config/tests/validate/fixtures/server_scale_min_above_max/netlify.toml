@@ -1,0 +1,3 @@
+[server.scale]
+min = 4
+max = 2

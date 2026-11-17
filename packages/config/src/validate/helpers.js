@@ -1,4 +1,4 @@
-import isPlainObj from 'is-plain-obj'
+import { isPlainObj } from '../utils/is_plain_obj.js'
 
 export const isArrayOfObjects = function (value) {
   return Array.isArray(value) && value.every(isPlainObj)

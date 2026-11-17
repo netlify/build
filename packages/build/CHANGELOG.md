@@ -105,6 +105,103 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.7.6](https://github.com/netlify/build/compare/build-v37.7.5...build-v37.7.6) (2026-11-06)
+
+
+### Bug Fixes
+
+* publish nothing static for a Netlify Server without a publish directory ([#7316](https://github.com/netlify/build/issues/7316)) ([5abd0b8](https://github.com/netlify/build/commit/5abd0b8c47837f6da48d1b2cb339f61d12cf040d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.6.1 to ^25.6.2
+
+## [37.7.5](https://github.com/netlify/build/compare/build-v37.7.4...build-v37.7.5) (2026-11-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.6.0 to ^25.6.1
+
+## [37.7.4](https://github.com/netlify/build/compare/build-v37.7.3...build-v37.7.4) (2026-11-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^7.1.2 to ^7.1.3
+    * @netlify/config bumped from ^25.5.2 to ^25.6.0
+
+## [37.7.3](https://github.com/netlify/build/compare/build-v37.7.2...build-v37.7.3) (2026-10-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.5.1 to ^25.5.2
+
+## [37.7.2](https://github.com/netlify/build/compare/build-v37.7.1...build-v37.7.2) (2026-10-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.5.0 to ^25.5.1
+
+## [37.7.1](https://github.com/netlify/build/compare/build-v37.7.0...build-v37.7.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* unpipe output flusher when unstreaming output ([#7230](https://github.com/netlify/build/issues/7230)) ([0de1bd1](https://github.com/netlify/build/commit/0de1bd1799c77ce58199c070f61db3d28afab718))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/edge-bundler bumped from 16.1.3 to 16.2.0
+
+## [37.7.0](https://github.com/netlify/build/compare/build-v37.6.1...build-v37.7.0) (2026-10-27)
+
+
+### Features
+
+* **server:** add `scale` configuration option ([#7295](https://github.com/netlify/build/issues/7295)) ([b3899b8](https://github.com/netlify/build/commit/b3899b83e3dc88a04789d610043b855bae70b0f2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.4.1 to ^25.5.0
+    * @netlify/functions-utils bumped from ^7.1.21 to ^7.1.22
+    * @netlify/zip-it-and-ship-it bumped from 16.5.1 to 16.6.0
+
+## [37.6.1](https://github.com/netlify/build/compare/build-v37.6.0...build-v37.6.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @bugsnag/js to v9 ([#7288](https://github.com/netlify/build/issues/7288)) ([6f90347](https://github.com/netlify/build/commit/6f903478bc96d02d6aeaa41831e6a73470fd1484))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.4.0 to ^25.4.1
+    * @netlify/functions-utils bumped from ^7.1.20 to ^7.1.21
+    * @netlify/zip-it-and-ship-it bumped from 16.5.0 to 16.5.1
+
 ## [37.6.0](https://github.com/netlify/build/compare/build-v37.5.1...build-v37.6.0) (2026-10-22)
 
 

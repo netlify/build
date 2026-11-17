@@ -1,0 +1,6 @@
+[server]
+path = "/api/*"
+
+[server.scale]
+min = 0
+max = 3

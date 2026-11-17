@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
 import { ARCHIVE_FORMAT } from './archive.js'
+import { isValidRange } from './config.js'
 import type { FeatureFlags } from './feature_flags.js'
 import type { FunctionSource } from './function.js'
 import { getFunctionFromPath } from './runtimes/index.js'
@@ -65,6 +66,14 @@ const toExcludedServerRoutes = (paths: string[] = []): Route[] | undefined =>
   paths.length === 0 ? undefined : getRoutes(SERVER_NAME, paths)
 
 /**
+ * How many instances the server runs.
+ */
+export type ServerScale = {
+  min?: number
+  max?: number
+}
+
+/**
  * Server configuration from the `[server]` block of the Netlify configuration
  * file. The server's in-source configuration takes precedence over it.
  */
@@ -73,6 +82,7 @@ export interface NetlifyServerConfig {
   includedFiles?: string[]
   path?: string | string[]
   region?: string
+  scale?: ServerScale
   size?: string
 }
 
@@ -92,10 +102,32 @@ const parseNetlifyServerConfig = (config: NetlifyServerConfig = {}): ServerConfi
   )
 }
 
+// `min` and `max` are merged separately, so each source can set one of them.
+const mergeServerScale = (inSource: ServerScale = {}, fromNetlifyConfig: ServerScale = {}): ServerScale | undefined => {
+  const scale = removeUndefined<ServerScale>({
+    min: inSource.min ?? fromNetlifyConfig.min,
+    max: inSource.max ?? fromNetlifyConfig.max,
+  })
+
+  if (scale.min === undefined && scale.max === undefined) {
+    return undefined
+  }
+
+  if (!isValidRange(scale)) {
+    throw new FunctionBundlingUserError(
+      `Netlify Server has a configuration error on 'scale': 'min' (${String(scale.min)}) cannot be greater than 'max' (${String(scale.max)}) once the in-source configuration and the [server] block are combined`,
+      { functionName: SERVER_NAME, runtime: RUNTIME.JAVASCRIPT },
+    )
+  }
+
+  return scale
+}
+
 const mergeServerConfig = (inSource: ServerConfig, fromNetlifyConfig: ServerConfig): ServerConfig => ({
   excludedPath: inSource.excludedPath ?? fromNetlifyConfig.excludedPath,
   path: inSource.path ?? fromNetlifyConfig.path,
   region: inSource.region ?? fromNetlifyConfig.region,
+  scale: mergeServerScale(inSource.scale, fromNetlifyConfig.scale),
   size: inSource.size ?? fromNetlifyConfig.size,
 })
 
@@ -123,6 +155,7 @@ export type ServerResult = {
   routes?: ExtendedRoute[]
   runtime: RuntimeName
   runtimeVersion?: string
+  scale?: ServerScale
   size?: number
 }
 
@@ -246,6 +279,7 @@ export const bundleServer = async (
     routes: toServerRoutes(config.path),
     runtime: result.runtime,
     runtimeVersion: result.runtimeVersion,
+    scale: config.scale,
     size: result.size,
   })
 }
