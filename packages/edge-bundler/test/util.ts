@@ -1,12 +1,15 @@
 import { execSync } from 'node:child_process'
-import { promises as fs } from 'node:fs'
+import { createReadStream, promises as fs } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { stderr, stdout } from 'node:process'
+import { pipeline } from 'node:stream/promises'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { createGunzip, gunzipSync } from 'node:zlib'
 
 import { execa } from 'execa'
-import * as tar from 'tar'
+import { unpackTar } from 'modern-tar'
+import { unpackTar as unpackTarToDir } from 'modern-tar/fs'
 
 import { getLogger } from '../node/logger.js'
 import type { Manifest } from '../node/manifest.js'
@@ -164,14 +167,21 @@ export const runESZIP = async (eszipPath: string, vendorDirectory?: string) => {
   }
 }
 
+export const extractTarball = async (tarballPath: string, destination: string) => {
+  await pipeline(createReadStream(tarballPath), createGunzip(), unpackTarToDir(destination))
+}
+
+export const listTarball = async (tarballPath: string) => {
+  const entries = await unpackTar(gunzipSync(await fs.readFile(tarballPath)))
+
+  return entries.map((entry) => entry.header.name)
+}
+
 export const runTarball = async (tarballPath: string) => {
   const tmpDir = await fs.mkdtemp(join(tmpdir(), 'edge-bundler-tarball-'))
 
   try {
-    await tar.extract({
-      cwd: tmpDir,
-      file: tarballPath,
-    })
+    await extractTarball(tarballPath, tmpDir)
 
     const evalCommand = execa('deno', ['eval', '--vendor', inspectTarballFunction()], {
       cwd: tmpDir,
