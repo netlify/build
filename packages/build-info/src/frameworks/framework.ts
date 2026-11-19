@@ -8,6 +8,7 @@ import { Project } from '../project.js'
 export enum Category {
   BackendFramework = 'backend_framework',
   FrontendFramework = 'frontend_framework',
+  FullstackFramework = 'fullstack_framework',
   SSG = 'static_site_generator',
   BuildTool = 'build_tool',
 }
@@ -148,7 +149,13 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
 
   // Secondary sorting on Category
   if (sort === 0) {
-    const categoryRanking = [Category.BackendFramework, Category.FrontendFramework, Category.BuildTool, Category.SSG]
+    const categoryRanking = [
+      Category.BackendFramework,
+      Category.FrontendFramework,
+      Category.BuildTool,
+      Category.SSG,
+      Category.FullstackFramework,
+    ]
     return categoryRanking.indexOf(b.category) - categoryRanking.indexOf(a.category)
   }
 
