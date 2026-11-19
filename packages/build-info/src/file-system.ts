@@ -113,46 +113,15 @@ export abstract class FileSystem {
 
   /** returns the relative path from to based on the current working directory */
   relative(from: string, to: string): string {
-    const absoluteFrom = this.isAbsolute(from) ? from : this.join(this.cwd, from)
-    const absoluteTo = this.isAbsolute(to) ? to : this.join(this.cwd, to)
+    const fromParts = this.resolve(from).split('/').filter(Boolean)
+    const toParts = this.resolve(to).split('/').filter(Boolean)
+    let matching = 0
 
-    // if the paths are equal return an empty string
-    if (absoluteFrom === absoluteTo) {
-      return ''
+    while (matching < fromParts.length && matching < toParts.length && fromParts[matching] === toParts[matching]) {
+      matching++
     }
 
-    const matching: string[] = []
-
-    if (absoluteTo.startsWith(absoluteFrom)) {
-      // lazily matches a slash afterwards if it's a directory
-      return absoluteTo.substring(absoluteFrom.length).replace(/^\//, '')
-    }
-
-    const fromParts = this.join(absoluteFrom).split('/')
-    const toParts = this.join(absoluteTo).split('/')
-    for (let i = 0, max = toParts.length; i < max; i++) {
-      if (toParts[i] === fromParts?.[i]) {
-        matching.push(toParts[i])
-      } else {
-        break
-      }
-    }
-
-    // calculate how many dirs we need to go up from the to path
-    const toUp = toParts.length - matching.length
-    const fromUp = fromParts.length - matching.length
-    // the max we have to go up
-    const up = Math.max(toUp, fromUp)
-
-    // if we have something from the 'from' to go up the max difference
-    const result = fromUp > 0 ? Array<string>(up).fill('..') : []
-
-    // if we have some parts left add them to the going up
-    if (toUp > 0) {
-      result.push(...toParts.slice(-toUp))
-    }
-
-    return result.join('/')
+    return [...Array<string>(fromParts.length - matching).fill('..'), ...toParts.slice(matching)].join('/')
   }
 
   /** returns the directory name of a path */
@@ -208,12 +177,7 @@ export abstract class FileSystem {
       const entries = await this.readDir(startDir, true)
       const found = Object.entries(entries).find(([entry, dirType]) => {
         if ((typeof name === 'string' && entry === name) || (Array.isArray(name) && name.includes(entry))) {
-          if (options.type) {
-            if (options.type === dirType) {
-              return entry
-            }
-          }
-          return entry
+          return !options.type || options.type === dirType
         }
       })
 
