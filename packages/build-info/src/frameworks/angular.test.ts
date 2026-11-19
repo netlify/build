@@ -89,8 +89,18 @@ test('should not install plugin when NETLIFY_ANGULAR_PLUGIN_SKIP is set', async 
       },
     }),
   })
-  vi.stubEnv('NETLIFY_ANGULAR_PLUGIN_SKIP', 'true')
-  const detected = await new Project(fs, cwd).detectFrameworks()
+  const detected = await new Project(fs, cwd).setEnvironment({ NETLIFY_ANGULAR_PLUGIN_SKIP: 'true' }).detectFrameworks()
   expect(detected?.[0].id).toBe('angular')
   expect(detected?.[0].plugins).toHaveLength(0)
+})
+
+test('should ignore the ambient Angular skip setting when the project does not set it', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ dependencies: { '@angular/cli': '17.0.0' } }),
+    'angular.json': '',
+  })
+  vi.stubEnv('NETLIFY_ANGULAR_PLUGIN_SKIP', 'true')
+  const detected = await new Project(fs, cwd).setEnvironment({}).detectFrameworks()
+  expect(detected?.[0].id).toBe('angular')
+  expect(detected?.[0].plugins).toEqual(['@netlify/angular-runtime'])
 })
