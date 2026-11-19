@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import { extname, join, resolve } from 'path'
 
+import { type Access, getAccess } from './access.js'
 import { ARCHIVE_FORMAT } from './archive.js'
 import { isValidRange } from './config.js'
 import type { FeatureFlags } from './feature_flags.js'
@@ -86,8 +87,10 @@ export interface NetlifyServerConfig {
   size?: string
 }
 
+const netlifyServerConfig = serverConfig.omit({ access: true })
+
 const parseNetlifyServerConfig = (config: NetlifyServerConfig = {}): ServerConfig => {
-  const { data, error, success } = serverConfig.safeParse(config)
+  const { data, error, success } = netlifyServerConfig.safeParse(config)
 
   if (success) {
     return data
@@ -124,6 +127,7 @@ const mergeServerScale = (inSource: ServerScale = {}, fromNetlifyConfig: ServerS
 }
 
 const mergeServerConfig = (inSource: ServerConfig, fromNetlifyConfig: ServerConfig): ServerConfig => ({
+  access: inSource.access,
   excludedPath: inSource.excludedPath ?? fromNetlifyConfig.excludedPath,
   path: inSource.path ?? fromNetlifyConfig.path,
   region: inSource.region ?? fromNetlifyConfig.region,
@@ -146,6 +150,7 @@ export const getServerRoutes = async (
 }
 
 export type ServerResult = {
+  access?: Access
   bundler?: string
   excludedRoutes?: Route[]
   instanceSize?: string
@@ -270,6 +275,7 @@ export const bundleServer = async (
   const config = mergeServerConfig(inSource, fromNetlifyConfig)
 
   return removeUndefined<ServerResult>({
+    access: config.access === undefined ? undefined : getAccess(SERVER_NAME, config.access),
     bundler: result.bundler,
     excludedRoutes: toExcludedServerRoutes(config.excludedPath),
     instanceSize: config.size,
