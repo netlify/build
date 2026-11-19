@@ -21,6 +21,7 @@ export class Vite extends BaseFramework implements Framework {
     '@analogjs/platform',
     '@react-router/dev',
     'vike',
+    '@farm.js/core',
   ]
   category = Category.BuildTool
 
