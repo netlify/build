@@ -55,6 +55,26 @@ export class Vite extends BaseFramework implements Framework {
       this.build.command = 'vp build'
     }
 
+    // Without a Vite config, Vite is only Nitro's bundler (driven by `nitro dev` and `nitro build`)
+    if (detected && deps.nitro && !(await hasViteConfig(this))) {
+      this.detected = undefined
+      return
+    }
+
     return detected
   }
+}
+
+const VITE_CONFIG_FILES = ['ts', 'mts', 'cts', 'js', 'mjs', 'cjs'].map((ext) => `vite.config.${ext}`)
+
+/** Whether the directory of the detected `package.json` has a Vite config */
+export async function hasViteConfig(framework: BaseFramework): Promise<boolean> {
+  const { fs } = framework.project
+  const dir = framework.path ?? framework.project.baseDirectory
+  for (const file of VITE_CONFIG_FILES) {
+    if (await fs.fileExists(fs.join(dir, file))) {
+      return true
+    }
+  }
+  return false
 }
