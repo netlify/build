@@ -1,7 +1,7 @@
 import { existsSync } from 'fs'
 import { join, resolve } from 'path'
 
-import { findUp } from 'find-up'
+import { file as findUp } from 'empathic/find'
 
 const FILENAME = 'netlify.toml'
 
