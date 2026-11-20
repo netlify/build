@@ -1,12 +1,11 @@
 import { Buffer } from 'buffer'
 import { Stats } from 'fs'
-import { mkdir, readlink as readLink, rm, symlink, writeFile } from 'fs/promises'
+import { cp, mkdir, readlink as readLink, rm, symlink, writeFile } from 'fs/promises'
 import os from 'os'
 import { basename, dirname, extname, isAbsolute, join, posix } from 'path'
 
 import { getPath as getV2APIPath } from '@netlify/serverless-functions-api'
 import type { Archiver } from 'archiver'
-import { copyFile } from 'copy-file'
 import pMap from 'p-map'
 
 import {
@@ -168,7 +167,7 @@ const createDirectory = async function ({
         return
       }
 
-      return copyFile(srcFile, absoluteDestPath)
+      return cp(srcFile, absoluteDestPath)
     },
     { concurrency: COPY_FILE_CONCURRENCY },
   )

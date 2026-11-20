@@ -2,7 +2,6 @@ import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import merge from 'deepmerge'
-import { dir as getTmpDir } from 'tmp-promise'
 import unixify from 'unixify'
 import { describe, expect, test, vi } from 'vitest'
 
@@ -12,6 +11,7 @@ import {
   FIXTURES_DIR,
   FIXTURES_ESM_DIR,
   getBundlerNameFromOptions,
+  getTmpDir,
   importFunctionFile,
   unzipFiles,
 } from './helpers/main.js'
@@ -23,7 +23,7 @@ describe('zipFunction', () => {
       'Resolves dependencies from .netlify/plugins/node_modules when using `zipFunction()`',
       [...allBundleConfigs],
       async (options) => {
-        const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+        const tmpDir = await getTmpDir()
         const mainFile = join(FIXTURES_DIR, 'node-module-next-image', 'function', 'function.js')
         const result = (await zipFunction(mainFile, tmpDir, options))!
 
@@ -41,7 +41,7 @@ describe('zipFunction', () => {
       'Includes includedFiles in the response of zipFunction',
       [...allBundleConfigs, 'bundler_none'],
       async (options) => {
-        const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+        const tmpDir = await getTmpDir()
         const mainFile = join(FIXTURES_DIR, 'node-module-next-image', 'function', 'function.js')
         const result = (await zipFunction(mainFile, tmpDir, {
           ...options,
@@ -62,7 +62,7 @@ describe('zipFunction', () => {
 
     testMany('Can use zipFunction()', [...allBundleConfigs, 'bundler_none'], async (options, variation) => {
       const bundler = getBundlerNameFromOptions(options)
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const mainFile = join(FIXTURES_DIR, 'simple', 'function.js')
       const result = (await zipFunction(mainFile, tmpDir, options))!
 
@@ -81,7 +81,7 @@ describe('zipFunction', () => {
     })
 
     test('When generating a directory for a function with `archiveFormat: "none"`, it empties the directory before copying any files', async () => {
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const functionDirectory = join(tmpDir, 'function')
 
       await mkdir(functionDirectory, { recursive: true })
@@ -102,7 +102,7 @@ describe('zipFunction', () => {
     })
 
     test('Creates dynamic import shims for functions using `zipFunction`', async () => {
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const fixtureDir = join(FIXTURES_DIR, 'node-module-dynamic-import-2')
       const result = (await zipFunction(join(fixtureDir, 'function.js'), tmpDir, {
         basePath: fixtureDir,
@@ -124,7 +124,7 @@ describe('zipFunction', () => {
       'Can find Node modules in the `repositoryRoot` path, even if it is a parent directory of `basePath`',
       ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
       async (options) => {
-        const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+        const tmpDir = await getTmpDir()
         const fixtureDir = join(FIXTURES_DIR, 'node-monorepo')
         const basePath = join(fixtureDir, 'packages', 'site-1', 'netlify', 'functions')
         const opts = merge(options, {
@@ -151,7 +151,7 @@ describe('zipFunction', () => {
       'Can populate the configured properties for functions',
       ['bundler_default', 'bundler_esbuild', 'bundler_nft'],
       async (options) => {
-        const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+        const tmpDir = await getTmpDir()
         const basePath = join(FIXTURES_DIR, 'node-configs')
         const opts = merge(options, {
           config: { 'function-1': { name: 'Function One', generator: '@netlify/mock-plugin@1.0.0' } },
@@ -167,7 +167,7 @@ describe('zipFunction', () => {
   describe('v2', () => {
     testMany('Can use zipFunction()', [...allBundleConfigs, 'bundler_none'], async (options, variation) => {
       const bundler = getBundlerNameFromOptions(options)
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const mainFile = join(FIXTURES_ESM_DIR, 'v2-api', 'function.js')
       const result = (await zipFunction(mainFile, tmpDir, {
         ...options,
@@ -189,7 +189,7 @@ describe('zipFunction', () => {
     })
 
     test('Does not log to systemlog for v1', async () => {
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+      const tmpDir = await getTmpDir()
       const mainFile = join(FIXTURES_DIR, 'simple', 'function.js')
       const systemLog = vi.fn()
 

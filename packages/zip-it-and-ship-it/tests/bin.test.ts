@@ -2,10 +2,9 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 
 import { execaNode, type NodeOptions } from 'execa'
-import { tmpName } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
-import { FIXTURES_DIR, BINARY_PATH } from './helpers/main.js'
+import { FIXTURES_DIR, BINARY_PATH, getTmpDir } from './helpers/main.js'
 
 const ROOT_PACKAGE_JSON = new URL('../package.json', import.meta.url)
 
@@ -25,7 +24,7 @@ describe('CLI', () => {
   })
 
   test('Normal execution', async () => {
-    const tmpDir = await tmpName({ prefix: 'zip-it-bin-test' })
+    const tmpDir = await getTmpDir('zip-it-bin-test')
     const { stdout } = await exec([join(FIXTURES_DIR, 'simple'), tmpDir])
     const zipped = JSON.parse(stdout)
 
@@ -34,7 +33,7 @@ describe('CLI', () => {
   })
 
   test('Error execution', async () => {
-    const tmpDir = await tmpName({ prefix: 'zip-it-bin-test' })
+    const tmpDir = await getTmpDir('zip-it-bin-test')
     const { stdout } = await exec(['doesNotExist', join(tmpDir, 'destFolder')], { reject: false })
     const zipped = JSON.parse(stdout)
 
@@ -57,7 +56,7 @@ describe('CLI', () => {
   })
 
   test('--config', async () => {
-    const tmpDir = await tmpName({ prefix: 'zip-it-bin-test' })
+    const tmpDir = await getTmpDir('zip-it-bin-test')
     const { stdout } = await exec([
       join(FIXTURES_DIR, 'simple'),
       tmpDir,

@@ -2,15 +2,14 @@ import { join } from 'path'
 
 import decompress from 'decompress'
 import glob from 'fast-glob'
-import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { ARCHIVE_FORMAT, zipFunction } from '../src/main.js'
 
-import { FIXTURES_ESM_DIR } from './helpers/main.js'
+import { FIXTURES_ESM_DIR, getTmpDir } from './helpers/main.js'
 
 test('The telemetry file should be added by default to the function bundle', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api')
   const mainFile = join(basePath, 'function.js')
 
@@ -43,7 +42,7 @@ test('The telemetry file should be added by default to the function bundle', asy
 })
 
 test('The telemetry file should be added if bundler is none', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api')
   const mainFile = join(basePath, 'function.js')
 
@@ -71,7 +70,7 @@ test('The telemetry file should be added if bundler is none', async () => {
 })
 
 test('The telemetry file should not be added to the bundle if the feature flag is explicitly turned off', async () => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+  const tmpDir = await getTmpDir()
   const basePath = join(FIXTURES_ESM_DIR, 'v2-api')
   const mainFile = join(basePath, 'function.js')
 

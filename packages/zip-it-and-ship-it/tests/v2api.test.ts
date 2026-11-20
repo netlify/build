@@ -5,15 +5,20 @@ import { platform } from 'process'
 import { getPath as getBootstrapPath } from '@netlify/serverless-functions-api'
 import merge from 'deepmerge'
 import glob from 'fast-glob'
-import { pathExists } from 'path-exists'
-import { dir as getTmpDir } from 'tmp-promise'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { ARCHIVE_FORMAT } from '../src/archive.js'
 import { DEFAULT_NODE_VERSION } from '../src/runtimes/node/utils/node_version.js'
 
 import { invokeLambda, readAsBuffer } from './helpers/lambda.js'
-import { zipFixture, unzipFiles, importFunctionFile, FIXTURES_ESM_DIR, FIXTURES_DIR } from './helpers/main.js'
+import {
+  zipFixture,
+  unzipFiles,
+  importFunctionFile,
+  FIXTURES_ESM_DIR,
+  FIXTURES_DIR,
+  getTmpDir,
+} from './helpers/main.js'
 import { testMany } from './helpers/test_many.js'
 
 vi.mock('../src/utils/shell.js', () => ({ shellUtils: { runCommand: vi.fn() } }))
@@ -384,7 +389,7 @@ describe('V2 functions API', () => {
   })
 
   test('Extracts routes and excluded routes from the `path` and `excludedPath` properties', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const { files } = await zipFixture('v2-api-with-path', {
@@ -592,7 +597,7 @@ describe('V2 functions API', () => {
   })
 
   test('Name, Generator, Timeout, Region and Memory are taken from ISC and take precedence over deploy config', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const fixtureName = 'v2-api-name-generator'
@@ -627,7 +632,7 @@ describe('V2 functions API', () => {
   })
 
   test('vcpu from ISC is surfaced on FunctionResult and persisted to the manifest', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const {
@@ -647,7 +652,7 @@ describe('V2 functions API', () => {
   })
 
   test('memory from the main config is parsed to MB and persisted to the manifest', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const {
@@ -743,7 +748,7 @@ describe('V2 functions API', () => {
     ])
 
     for (const path of includedFiles as string[]) {
-      expect(await pathExists(path)).toBeTruthy()
+      await expect(path).toPathExist()
     }
   })
 
@@ -816,7 +821,7 @@ describe('V2 functions API', () => {
     const bootstrapPackageJson = await readFile(resolve(bootstrapPath, '..', '..', 'package.json'), 'utf8')
     const { version: bootstrapVersion } = JSON.parse(bootstrapPackageJson)
 
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test' })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
 
     const { files } = await zipFixture('v2-api', {

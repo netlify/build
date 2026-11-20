@@ -1,5 +1,5 @@
 import { promises as fs, PathLike, Stats } from 'fs'
-import { dirname, format, join, parse, resolve } from 'path'
+import { dirname, format, join, parse, relative, resolve, sep } from 'path'
 
 import { FileCache, LstatCache, ReaddirCache } from './cache.js'
 import { nonNullable } from './non_nullable.js'
@@ -104,3 +104,16 @@ export const mkdirAndWriteFile: typeof fs.writeFile = async (
 
   return fs.writeFile(path, ...params)
 }
+
+// Whether `childPath` is strictly inside `parentPath` (the same path is not).
+export const isPathInside = (childPath: string, parentPath: string): boolean => {
+  const relation = relative(parentPath, childPath)
+
+  return Boolean(relation && relation !== '..' && !relation.startsWith(`..${sep}`) && relation !== resolve(childPath))
+}
+
+export const pathExists = (path: string): Promise<boolean> =>
+  fs.access(path).then(
+    () => true,
+    () => false,
+  )

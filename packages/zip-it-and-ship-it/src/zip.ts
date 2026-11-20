@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 
-import isPathInside from 'is-path-inside'
 import pMap from 'p-map'
 
 import { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
@@ -22,7 +21,7 @@ import { type MixedPaths, getFunctionsBag } from './paths.js'
 import { addArchiveSize } from './utils/archive_size.js'
 import { RuntimeCache } from './utils/cache.js'
 import { formatZipResult, FunctionResult } from './utils/format_result.js'
-import { listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
+import { isPathInside, listFunctionsDirectories, resolveFunctionsDirectories } from './utils/fs.js'
 import { getLogger, LogFunction } from './utils/logger.js'
 import { nonNullable } from './utils/non_nullable.js'
 
