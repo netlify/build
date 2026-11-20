@@ -27,7 +27,7 @@ const DEFAULT_OUTPUT = '-'
 // The result is output as JSON on success (exit code 0)
 const handleCliSuccess = async function (result, stable, output) {
   const resultA = serializeApi(result)
-  const resultB = Object.fromEntries(Object.entries(resultA).filter(([key]) => !SECRET_PROPERTIES.includes(key)))
+  const resultB = Object.fromEntries(Object.entries(resultA).filter(([key]) => !SECRET_PROPERTIES.has(key)))
   const stringifyFunc = stable ? fastSafeStringify.stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultB, null, 2)
   await outputResult(resultJson, output)
@@ -54,7 +54,7 @@ const serializeApi = function ({ api, ...result }) {
   return { ...result, hasApi: true }
 }
 
-const SECRET_PROPERTIES = ['token']
+const SECRET_PROPERTIES = new Set(['token'])
 
 const handleCliError = function (error) {
   // Errors caused by users do not show stack traces and have exit code 1

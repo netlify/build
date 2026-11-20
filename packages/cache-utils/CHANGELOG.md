@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.3](https://github.com/netlify/build/compare/cache-utils-v7.1.2...cache-utils-v7.1.3) (2026-11-03)
+
+
+### Bug Fixes
+
+* **deps:** use built-in stream pipelines ([#7299](https://github.com/netlify/build/issues/7299)) ([c330151](https://github.com/netlify/build/commit/c330151eca10a84204195e55a697e9f2a5073361))
+
 ## [7.1.2](https://github.com/netlify/build/compare/cache-utils-v7.1.1...cache-utils-v7.1.2) (2026-08-25)
 
 

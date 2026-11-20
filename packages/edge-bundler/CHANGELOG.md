@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.2.0](https://github.com/netlify/build/compare/edge-bundler-v16.1.3...edge-bundler-v16.2.0) (2026-10-28)
+
+
+### Features
+
+* **edge-bundler:** accept a Fetchable default export ([#7259](https://github.com/netlify/build/issues/7259)) ([9959df7](https://github.com/netlify/build/commit/9959df7de6c529b0077ffc580f087a5a15e32779))
+
 ## [16.1.3](https://github.com/netlify/build/compare/edge-bundler-v16.1.2...edge-bundler-v16.1.3) (2026-10-08)
 
 

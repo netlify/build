@@ -213,10 +213,10 @@ const getConfigFileEnv = function ({
 
 // Some environment variables cannot be overridden by configuration
 const cleanUserEnv = function (userEnv) {
-  return Object.fromEntries(Object.entries(userEnv ?? {}).filter(([key]) => !READONLY_ENV.includes(key)))
+  return Object.fromEntries(Object.entries(userEnv ?? {}).filter(([key]) => !READONLY_ENV.has(key)))
 }
 
-const READONLY_ENV = [
+const READONLY_ENV = new Set([
   // Set in local builds
   'BRANCH',
   'CACHED_COMMIT_REF',
@@ -240,4 +240,4 @@ const READONLY_ENV = [
   'NETLIFY_IMAGES_CDN_DOMAIN',
   'PULL_REQUEST',
   'REVIEW_ID',
-]
+])
