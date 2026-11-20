@@ -1,0 +1,8 @@
+[build]
+command = "node build.mjs"
+
+[server]
+region = "cmh"
+
+[server.scale]
+max = 3

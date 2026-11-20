@@ -1,0 +1,8 @@
+import { mkdir, writeFile } from "node:fs/promises"
+
+await mkdir(".netlify/v1/server", { recursive: true })
+
+await writeFile(
+  ".netlify/v1/server/index.mjs",
+  `export default async () => new Response("hello from the framework server")`,
+)

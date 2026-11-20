@@ -8,6 +8,7 @@ export const FRAMEWORKS_API_CONFIG_PATH = `${FRAMEWORKS_API_PATH}/config.json`
 export const FRAMEWORKS_API_EDGE_FUNCTIONS_PATH = `${FRAMEWORKS_API_PATH}/edge-functions`
 export const FRAMEWORKS_API_EDGE_FUNCTIONS_IMPORT_MAP = 'import_map.json'
 export const FRAMEWORKS_API_FUNCTIONS_PATH = `${FRAMEWORKS_API_PATH}/functions`
+export const FRAMEWORKS_API_SERVER_PATH = `${FRAMEWORKS_API_PATH}/server`
 export const FRAMEWORKS_API_SKEW_PROTECTION_PATH = `${FRAMEWORKS_API_PATH}/skew-protection.json`
 
 export const DEPLOY_CONFIG_DIST_PATH = '.netlify/deploy-config/deploy-config.json'

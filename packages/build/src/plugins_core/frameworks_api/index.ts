@@ -23,6 +23,8 @@ const ALLOWED_PROPERTIES = [
   ['headers'],
   ['images', 'remote_images'],
   ['redirects'],
+  ['server', '*'],
+  ['server', '*', '*'],
   ['spa_fallback'],
 ]
 

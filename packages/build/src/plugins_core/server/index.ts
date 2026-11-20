@@ -6,9 +6,8 @@ import { type ServerResult, zipServer } from '@netlify/zip-it-and-ship-it'
 import type { FeatureFlags } from '../../core/feature_flags.js'
 import { addErrorInfo } from '../../error/info.js'
 import { log } from '../../log/logger.js'
-import { pathExists } from '../../utils/path_exists.js'
 import { getZisiFeatureFlags } from '../functions/feature_flags.js'
-import { getServerEntry, SERVER_DIRECTORY, useServerStandalone } from '../functions/server_entry.js'
+import { getServerEntry, hasServerDirectory, useServerStandalone } from '../functions/server_entry.js'
 import type { CoreStepFunction } from '../types.js'
 
 const coreStep: CoreStepFunction = async function ({
@@ -31,14 +30,14 @@ const coreStep: CoreStepFunction = async function ({
 
   const serverInPublishDir = relative(
     resolve(buildDir, netlifyConfig.build.publish),
-    resolve(serverEntry.packageRoot, SERVER_DIRECTORY),
+    resolve(serverEntry.packageRoot, serverEntry.relativeDirectory),
   )
   const publishesServerSource = !isAbsolute(serverInPublishDir) && serverInPublishDir.split(sep)[0] !== '..'
   const { publishOrigin } = netlifyConfig.build as { publishOrigin?: string }
 
   if (publishesServerSource && publishOrigin !== 'default') {
     const error = new Error(
-      `The publish directory contains the Netlify Server source in ${SERVER_DIRECTORY}, which would be deployed as static files. Set build.publish to a directory that contains only static files.`,
+      `The publish directory contains the Netlify Server source in ${serverEntry.relativeDirectory}, which would be deployed as static files. Set build.publish to a directory that contains only static files.`,
     )
 
     addErrorInfo(error, { type: 'resolveConfig' })
@@ -77,9 +76,7 @@ const coreStep: CoreStepFunction = async function ({
 
 const EMPTY_PUBLISH_DIRECTORY = '.netlify/server-publish'
 
-// The directory can be created by the build command or by a plugin, so this is
-// checked when the step is about to run rather than when it is scheduled.
-const hasServerDirectory = async function ({
+const shouldBundleServer = async function ({
   buildDir,
   featureFlags,
   packagePath,
@@ -88,11 +85,7 @@ const hasServerDirectory = async function ({
   featureFlags?: FeatureFlags
   packagePath?: string
 }) {
-  if (!useServerStandalone(featureFlags)) {
-    return false
-  }
-
-  return await pathExists(resolve(buildDir, packagePath ?? '', SERVER_DIRECTORY))
+  return useServerStandalone(featureFlags) && (await hasServerDirectory({ buildDir, packagePath }))
 }
 
 export const bundleServer = {
@@ -101,7 +94,7 @@ export const bundleServer = {
   coreStepId: 'server_bundling',
   coreStepName: 'Server bundling',
   coreStepDescription: () => 'Server bundling',
-  condition: hasServerDirectory,
+  condition: shouldBundleServer,
 }
 
 // Named imports with ES modules cannot be mocked (unlike CommonJS) because they
