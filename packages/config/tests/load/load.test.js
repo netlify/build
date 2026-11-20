@@ -1,15 +1,17 @@
+import { randomUUID } from 'crypto'
 import { promises as fs } from 'fs'
-import { relative } from 'path'
+import { tmpdir } from 'os'
+import { join, relative } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
-import { tmpName } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
 import { resolveConfig } from '../../lib/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
+const getTmpName = () => join(tmpdir(), randomUUID())
 
 test('Empty configuration', async () => {
   const output = await new Fixture(import.meta.url, './fixtures/empty').runWithConfig()
@@ -206,7 +208,7 @@ test('--cachedConfig CLI flags', async () => {
 })
 
 test('--cachedConfigPath CLI flag', async () => {
-  const cachedConfigPath = await tmpName()
+  const cachedConfigPath = getTmpName()
   try {
     await new Fixture(import.meta.url, './fixtures/cached_config')
       .withFlags({ output: cachedConfigPath })
@@ -230,7 +232,7 @@ test('--cachedConfig', async () => {
 })
 
 test('--cachedConfigPath', async () => {
-  const cachedConfigPath = await tmpName()
+  const cachedConfigPath = getTmpName()
   try {
     const returnValue = await new Fixture(import.meta.url, './fixtures/cached_config').runWithConfig()
     await fs.writeFile(cachedConfigPath, returnValue)
