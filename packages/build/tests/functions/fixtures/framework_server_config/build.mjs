@@ -9,7 +9,7 @@ await writeFile(
 
 const config = {
   server: {
-    path: "/app/*",
+    path: ["/app/*", "/api/*"],
     region: "fra",
     scale: { min: 1, max: 10 },
     size: "large",

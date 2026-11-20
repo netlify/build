@@ -2,6 +2,7 @@
 command = "node build.mjs"
 
 [server]
+path = ["/web/*"]
 region = "cmh"
 
 [server.scale]

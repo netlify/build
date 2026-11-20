@@ -98,12 +98,18 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   // Filtering out any properties that can't be mutated using this API.
-  const filteredConfig = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
+  const { server, ...filteredConfig } = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
 
   // Merging the config extracted from the API with the initial config.
   const newConfig = mergeConfigs([filteredConfig, netlifyConfig, configOverrides], {
     concatenateArrays: true,
   }) as Partial<NetlifyConfig>
+
+  // Each server setting in the user's config replaces the framework's, arrays
+  // such as `path` included.
+  if (server !== undefined) {
+    newConfig.server = (mergeConfigs([{ server }, { server: netlifyConfig.server }]) as Partial<NetlifyConfig>).server
+  }
 
   // Diffing the initial and the new configs to compute the mutations (what
   // changed between them).
