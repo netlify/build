@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.6.2](https://github.com/netlify/build/compare/config-v25.6.1...config-v25.6.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* **deps:** remove micro-utilities from config ([#7251](https://github.com/netlify/build/issues/7251)) ([aedc169](https://github.com/netlify/build/commit/aedc1697c304ae5de1a2f8e427391c664cd144ea))
+
 ## [25.6.1](https://github.com/netlify/build/compare/config-v25.6.0...config-v25.6.1) (2026-11-03)
 
 

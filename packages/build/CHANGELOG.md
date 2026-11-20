@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.7.6](https://github.com/netlify/build/compare/build-v37.7.5...build-v37.7.6) (2026-11-06)
+
+
+### Bug Fixes
+
+* publish nothing static for a Netlify Server without a publish directory ([#7316](https://github.com/netlify/build/issues/7316)) ([5abd0b8](https://github.com/netlify/build/commit/5abd0b8c47837f6da48d1b2cb339f61d12cf040d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.6.1 to ^25.6.2
+
 ## [37.7.5](https://github.com/netlify/build/compare/build-v37.7.4...build-v37.7.5) (2026-11-03)
 
 
