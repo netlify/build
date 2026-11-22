@@ -24,7 +24,7 @@ type Transformer = {
 /**
  * Returns the module format that should be used for a given function file.
  */
-const getModuleFormat = async (
+export const getModuleFormat = async (
   mainFile: string,
   runtimeAPIVersion: number,
   repositoryRoot?: string,

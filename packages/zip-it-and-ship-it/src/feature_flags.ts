@@ -30,6 +30,9 @@ export const defaultFlags = {
 
   zisi_netlify_play: false,
   zisi_container_functions: false,
+
+  // Ship the files of a Netlify Server without bundling them.
+  zisi_server_unbundled: false,
 } as const
 
 export type FeatureFlags = Partial<Record<keyof typeof defaultFlags, boolean>>

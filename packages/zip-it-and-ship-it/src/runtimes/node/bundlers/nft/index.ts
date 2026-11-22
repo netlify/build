@@ -15,7 +15,8 @@ import type { GetSrcFilesFunction, BundleFunction } from '../types.js'
 
 import { processESM } from './es_modules.js'
 import { getSideFiles } from './side_files.js'
-import { transform, getTransformer } from './transformer.js'
+import { getModuleFormat, getTransformer, transform } from './transformer.js'
+import { getStrippedFiles, readSource, type StrippedSource } from './type_stripping.js'
 
 const appearsToBeModuleName = (name: string) => !name.startsWith('.')
 
@@ -24,6 +25,7 @@ const bundle: BundleFunction = async ({
   cache,
   config,
   featureFlags,
+  isServer,
   mainFile,
   name,
   pluginsModulesPath,
@@ -33,6 +35,7 @@ const bundle: BundleFunction = async ({
   stat,
 }) => {
   const { includedFiles = [], includedFilesBasePath, nodeBundler } = config
+  const preserveFilePaths = isServer === true && featureFlags.zisi_server_unbundled === true
 
   // In the legacy `zisi` bundler, functions defined in a sub-directory had any
   // side files automatically added to the bundle. We replicate this behavior
@@ -71,10 +74,19 @@ const bundle: BundleFunction = async ({
     name,
     repositoryRoot,
     runtimeAPIVersion,
+    preserveFilePaths,
   })
   const includedPaths = filterExcludedPaths(includedFilePaths, excludePatterns)
   const filteredIncludedPaths = [...filterExcludedPaths(tracedPaths, excludePatterns), ...includedPaths]
-  const dirnames = filteredIncludedPaths.map((filePath) => normalize(dirname(filePath))).sort()
+  const dirnames = filteredIncludedPaths.map((filePath) => normalize(dirname(filePath)))
+
+  // Add the base path, so files keep their paths under it no matter which files
+  // the trace finds.
+  if (preserveFilePaths && basePath !== undefined) {
+    dirnames.push(resolve(basePath))
+  }
+
+  dirnames.sort()
 
   // Sorting the array to make the checksum deterministic.
   const srcFiles = [...filteredIncludedPaths].sort()
@@ -118,6 +130,7 @@ const traceFilesAndTranspile = async function ({
   name,
   repositoryRoot,
   runtimeAPIVersion,
+  preserveFilePaths,
 }: {
   basePath?: string
   cache: RuntimeCache
@@ -128,10 +141,12 @@ const traceFilesAndTranspile = async function ({
   name: string
   repositoryRoot?: string
   runtimeAPIVersion: number
+  preserveFilePaths: boolean
 }) {
   const isTSFunction = tsExtensions.has(extname(mainFile))
   const transformer =
     runtimeAPIVersion === 2 || isTSFunction ? await getTransformer(runtimeAPIVersion, mainFile, repositoryRoot) : null
+  const possibleRewrites = new Map<string, StrippedSource>()
   const {
     fileList: dependencyPaths,
     esmFileList,
@@ -144,6 +159,20 @@ const traceFilesAndTranspile = async function ({
     ignore: getIgnoreFunction(config),
     readFile: async (path: string) => {
       try {
+        if (preserveFilePaths) {
+          const { rewrite, tracedSource } = await readSource({
+            name,
+            path,
+            source: await cachedReadFile(cache.fileCache, path),
+          })
+
+          if (rewrite !== undefined) {
+            possibleRewrites.set(path, rewrite)
+          }
+
+          return tracedSource
+        }
+
         const isMainFile = path === mainFile
 
         // Transform this file if this is the main file and we're processing a
@@ -205,6 +234,16 @@ const traceFilesAndTranspile = async function ({
     },
   })
   const normalizedTracedPaths = [...dependencyPaths].map((path) => (basePath ? resolve(basePath, path) : resolve(path)))
+
+  if (preserveFilePaths) {
+    const stripped = getStrippedFiles({ mainFile, name, possibleRewrites, tracedPaths: normalizedTracedPaths })
+
+    return {
+      ...stripped,
+      moduleFormat: await getModuleFormat(stripped.mainFile, runtimeAPIVersion, repositoryRoot),
+      tracedPaths: normalizedTracedPaths,
+    }
+  }
 
   if (transformer) {
     return {
