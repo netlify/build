@@ -11,7 +11,8 @@ const config = {
   server: {
     path: ["/app/*", "/api/*"],
     region: "fra",
-    scale: { min: 1, max: 10 },
+    scale: { burst: 5, min: 1, max: 10 },
+    timeout: 30,
     size: "large",
   },
 }
