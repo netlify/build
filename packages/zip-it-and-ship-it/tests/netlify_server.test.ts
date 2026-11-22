@@ -1008,7 +1008,7 @@ console.log(JSON.stringify(await response.json()))`,
       "export * as func from './netlify/server/index.js'",
     )
 
-    for (const path of ['index.js', 'lib/seed.js', 'lib/seed.json']) {
+    for (const path of ['index.js', 'utils/seed.js', 'utils/seed.json']) {
       expect(await readFile(join(extractDir, 'netlify', 'server', path), 'utf-8')).toBe(
         await readFile(join(ESM_FIXTURE, 'netlify', 'server', path), 'utf-8'),
       )
@@ -1018,7 +1018,7 @@ console.log(JSON.stringify(await response.json()))`,
       filename: serverFile,
       dirname: dirname(serverFile),
       requiredJoin: 'function',
-      seed: { from: 'lib' },
+      seed: { from: 'utils' },
     })
   })
 
@@ -1039,7 +1039,7 @@ console.log(JSON.stringify(await response.json()))`,
     expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
       "export * as func from './netlify/server/index.js'",
     )
-    expect(serverFiles).toEqual(['greeting.js', 'index.js', 'loader.js', 'punctuation.js'])
+    expect(serverFiles).toEqual(['greeting.js', 'index.js', 'loader.js', 'punctuation.js', 'suffix.js'])
     expect(entry).toMatch(/from ["']\.\/greeting\.js["']/)
     expect(entry).not.toContain('Greeting')
     expect(loader).toMatch(/import\(["']\.\/punctuation\.js["']\)/)
@@ -1047,6 +1047,26 @@ console.log(JSON.stringify(await response.json()))`,
       await readFile(join(TS_FIXTURE, 'node_modules', 'shout', 'index.js'), 'utf-8'),
     )
     expect(await fetchFromServer(extractDir)).toEqual({ message: 'HELLO SERVER!' })
+  })
+
+  test('Ships a TypeScript file that keeps its name without its types', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      "import { Tone } from './bridge.cjs'\nexport default { tone: Tone.Warm }\n",
+    )
+    await writeFile(join(serverDir, 'bridge.cjs'), "module.exports = require('./tone.cts')\n")
+    await writeFile(join(serverDir, 'tone.cts'), "enum Tone { Warm = 'warm' }\nmodule.exports = { Tone }\n")
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+    const tone = await readFile(join(extractDir, 'netlify', 'server', 'tone.cts'), 'utf-8')
+
+    expect(tone).not.toContain('enum')
+    expect(tone).toContain('module.exports = { Tone }')
   })
 
   test('Fails the build when a TypeScript file would take the path of another file', async () => {
@@ -1062,6 +1082,25 @@ console.log(JSON.stringify(await response.json()))`,
     await expect(
       zipServer(join(serverDir, 'index.ts'), join(tmpDir, 'out'), {
         basePath: tmpDir,
+        featureFlags: { zisi_server_unbundled: true },
+      }),
+    ).rejects.toThrow(/Cannot strip the types from .+helper\.ts, because .+helper\.js is also included/)
+  })
+
+  test('Fails the build when a TypeScript file would take the path of an included file', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(join(serverDir, 'index.ts'), "import './helper.ts'\nexport default {}\n")
+    await writeFile(join(serverDir, 'helper.ts'), 'export const a: number = 1\n')
+    await writeFile(join(serverDir, 'helper.js'), 'export const b = 2\n')
+
+    await expect(
+      zipServer(join(serverDir, 'index.ts'), join(tmpDir, 'out'), {
+        basePath: tmpDir,
+        config: { includedFiles: ['netlify/server/helper.js'] },
         featureFlags: { zisi_server_unbundled: true },
       }),
     ).rejects.toThrow(/Cannot strip the types from .+helper\.ts, because .+helper\.js is also included/)

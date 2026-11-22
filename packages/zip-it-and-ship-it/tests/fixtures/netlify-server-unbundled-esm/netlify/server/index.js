@@ -2,7 +2,7 @@ import { createRequire } from 'module'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-import { seed } from './lib/seed.js'
+import { seed } from './utils/seed.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

@@ -4,7 +4,6 @@ import { init, parse } from 'es-module-lexer'
 import { transform } from 'esbuild'
 
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
-import { getPathWithExtension } from '../../../../utils/fs.js'
 import { RUNTIME } from '../../../runtime.js'
 import { tsExtensions } from '../../utils/module_format.js'
 import { NODE_BUNDLER } from '../types.js'
@@ -12,20 +11,23 @@ import { NODE_BUNDLER } from '../types.js'
 // Maps each TypeScript extension to the resulting JavaScript extension.
 const JS_EXTENSIONS: Partial<Record<string, string>> = { '.ts': '.js', '.mts': '.mjs', '.cts': '.cjs' }
 
-// Matches a string that ends in `.ts`, `.mts` or `.cts`, like `'./file.ts'`.
-const TS_SPECIFIER = /\.[cm]?ts['"]/
+// Matches a string that ends in `.js`, `.ts`, `.mts` or `.cts`, like `'./file.ts'`.
+const LOCAL_SPECIFIER = /\.(js|[cm]?ts)['"]/
 
 /**
  * Returns the JavaScript path for a TypeScript file.
  */
 const getStrippedPath = (path: string) => {
-  const extension = JS_EXTENSIONS[extname(path)]
+  const extension = extname(path)
+  const jsExtension = JS_EXTENSIONS[extension]
 
-  if (extension === undefined) {
+  if (jsExtension === undefined) {
     return path
   }
 
-  return getPathWithExtension(path, extension)
+  // Import specifiers must keep their forward slashes, so we can't use
+  // `path.format` on Windows.
+  return path.slice(0, -extension.length) + jsExtension
 }
 
 /**
@@ -51,6 +53,9 @@ const stripTypes = async ({ name, path, source }: { name: string; path: string; 
 }
 
 export interface StrippedSource {
+  // Files this file imports by a relative path that ends in `.js`.
+  importedJavaScript: string[]
+
   // TypeScript files this file imports by a relative path.
   importedTypeScript: string[]
 
@@ -60,17 +65,18 @@ export interface StrippedSource {
 
 /**
  * Points relative imports of TypeScript files at the JavaScript files they
- * become. Returns the new source and the TypeScript files it imports.
+ * become. Returns the new source and the files it imports.
  *
  * For example, `import { greet } from './greeting.ts'` becomes
  * `import { greet } from './greeting.js'`.
  */
 const renameTypeScriptImports = async (path: string, source: string): Promise<StrippedSource> => {
+  const importedJavaScript: string[] = []
   const importedTypeScript: string[] = []
 
-  // Skip parsing files that don't mention a TypeScript file.
-  if (!TS_SPECIFIER.test(source)) {
-    return { importedTypeScript, source }
+  // Skip parsing files that don't mention a JavaScript or TypeScript file.
+  if (!LOCAL_SPECIFIER.test(source)) {
+    return { importedJavaScript, importedTypeScript, source }
   }
 
   await init
@@ -82,6 +88,14 @@ const renameTypeScriptImports = async (path: string, source: string): Promise<St
   for (const { d: dynamicStart, e: end, n: specifier, s: start } of imports) {
     // Skip package imports, and dynamic imports with a computed path.
     if (!specifier?.startsWith('.')) {
+      continue
+    }
+
+    const importedPath = resolve(dirname(path), specifier)
+
+    if (extname(specifier) === '.js') {
+      importedJavaScript.push(importedPath)
+
       continue
     }
 
@@ -99,10 +113,10 @@ const renameTypeScriptImports = async (path: string, source: string): Promise<St
 
     renamedSource += source.slice(position, specifierStart) + renamed
     position = specifierEnd
-    importedTypeScript.push(resolve(dirname(path), specifier))
+    importedTypeScript.push(importedPath)
   }
 
-  return { importedTypeScript, source: renamedSource + source.slice(position) }
+  return { importedJavaScript, importedTypeScript, source: renamedSource + source.slice(position) }
 }
 
 /**
@@ -132,8 +146,8 @@ export const readSource = async ({
   // NFT still gets the original import paths, since those are the files on disk.
   const rewrite = await renameTypeScriptImports(path, tracedSource)
 
-  // A JavaScript file that doesn't import any TypeScript ships unchanged.
-  if (!isTypeScript && rewrite.importedTypeScript.length === 0) {
+  // A JavaScript file that doesn't import any local files ships unchanged.
+  if (!isTypeScript && rewrite.importedJavaScript.length === 0 && rewrite.importedTypeScript.length === 0) {
     return { tracedSource }
   }
 
@@ -145,11 +159,13 @@ export const readSource = async ({
  * files in the archive.
  */
 export const getStrippedFiles = ({
+  includedPaths,
   mainFile,
   name,
   possibleRewrites,
   tracedPaths,
 }: {
+  includedPaths: string[]
   mainFile: string
   name: string
   possibleRewrites: Map<string, StrippedSource>
@@ -157,19 +173,32 @@ export const getStrippedFiles = ({
 }) => {
   const aliases = new Map<string, string>()
   const rewrites = new Map<string, string>()
-  const traced = new Set(tracedPaths)
-  const imported = new Set([...possibleRewrites.values()].flatMap(({ importedTypeScript }) => importedTypeScript))
+  const archived = new Set([...tracedPaths, ...includedPaths])
+  const imported = new Set<string>()
+
+  for (const { importedJavaScript, importedTypeScript } of possibleRewrites.values()) {
+    importedTypeScript.forEach((path) => imported.add(path))
+
+    // NFT traces `./file.js` to `./file.ts` when only the TypeScript file exists.
+    for (const path of importedJavaScript) {
+      if (!archived.has(path)) {
+        imported.add(`${path.slice(0, -'.js'.length)}.ts`)
+      }
+    }
+  }
 
   for (const [path, { importedTypeScript, source }] of possibleRewrites) {
-    // We only rename files whose imports we update. A file that's only reached
-    // through a package's entry point keeps its name, since its `package.json`
-    // points to it.
-    const shouldRename = tsExtensions.has(extname(path)) && (path === mainFile || imported.has(path))
+    const isTypeScript = tsExtensions.has(extname(path))
+
+    // We only rename TypeScript files that other files import by a relative
+    // path. A file that's only reached through a package's entry point keeps
+    // its name, since its `package.json` points to it.
+    const shouldRename = isTypeScript && (path === mainFile || imported.has(path))
 
     if (shouldRename) {
       const strippedPath = getStrippedPath(path)
 
-      if (traced.has(strippedPath)) {
+      if (archived.has(strippedPath)) {
         throw new FunctionBundlingUserError(
           `Cannot strip the types from ${path}, because ${strippedPath} is also included.`,
           { functionName: name, runtime: RUNTIME.JAVASCRIPT, bundler: NODE_BUNDLER.NFT },
@@ -179,8 +208,8 @@ export const getStrippedFiles = ({
       aliases.set(path, strippedPath)
     }
 
-    // A file that keeps its name still needs the new source if its imports changed.
-    if (shouldRename || importedTypeScript.length !== 0) {
+    // A TypeScript file that keeps its name still ships without its types.
+    if (isTypeScript || importedTypeScript.length !== 0) {
       rewrites.set(path, source)
     }
   }

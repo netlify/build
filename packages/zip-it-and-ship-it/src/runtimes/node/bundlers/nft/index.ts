@@ -57,6 +57,7 @@ const bundle: BundleFunction = async ({
     includedFiles,
     includedFilesBasePath || basePath,
   )
+  const includedPaths = filterExcludedPaths(includedFilePaths, excludePatterns)
   const {
     aliases,
     bundledPaths = [],
@@ -69,6 +70,7 @@ const bundle: BundleFunction = async ({
     cache,
     config,
     featureFlags,
+    includedPaths,
     mainFile,
     pluginsModulesPath,
     name,
@@ -76,7 +78,6 @@ const bundle: BundleFunction = async ({
     runtimeAPIVersion,
     preserveFilePaths,
   })
-  const includedPaths = filterExcludedPaths(includedFilePaths, excludePatterns)
   const filteredIncludedPaths = [...filterExcludedPaths(tracedPaths, excludePatterns), ...includedPaths]
   const dirnames = filteredIncludedPaths.map((filePath) => normalize(dirname(filePath)))
 
@@ -125,6 +126,7 @@ const traceFilesAndTranspile = async function ({
   cache,
   config,
   featureFlags,
+  includedPaths,
   mainFile,
   pluginsModulesPath,
   name,
@@ -136,6 +138,7 @@ const traceFilesAndTranspile = async function ({
   cache: RuntimeCache
   config: FunctionConfig
   featureFlags: FeatureFlags
+  includedPaths: string[]
   mainFile: string
   pluginsModulesPath?: string
   name: string
@@ -236,7 +239,13 @@ const traceFilesAndTranspile = async function ({
   const normalizedTracedPaths = [...dependencyPaths].map((path) => (basePath ? resolve(basePath, path) : resolve(path)))
 
   if (preserveFilePaths) {
-    const stripped = getStrippedFiles({ mainFile, name, possibleRewrites, tracedPaths: normalizedTracedPaths })
+    const stripped = getStrippedFiles({
+      includedPaths,
+      mainFile,
+      name,
+      possibleRewrites,
+      tracedPaths: normalizedTracedPaths,
+    })
 
     return {
       ...stripped,
