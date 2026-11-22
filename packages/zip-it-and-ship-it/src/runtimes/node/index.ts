@@ -126,6 +126,7 @@ const zipFunction: ZipFunction = async function ({
     extension,
     featureFlags,
     filename,
+    isServer,
     logger,
     mainFile,
     name,

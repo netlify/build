@@ -1,5 +1,7 @@
 import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
+import { execPath } from 'process'
+import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
 import { dir as getTmpDir } from 'tmp-promise'
@@ -126,6 +128,34 @@ describe('Netlify Server', () => {
     expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toMatch(
       /export \* as func from '\.\//,
     )
+  })
+
+  test('Ships the AWS SDK, which Play does not include', async () => {
+    const fixture = join(FIXTURES_DIR, 'netlify-server-aws-sdk')
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), join(tmpDir, 'server'), {
+      basePath: fixture,
+    })
+    const extractDir = join(tmpDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+    expect(await readFile(join(extractDir, 'node_modules', '@aws-sdk', 'client-s3', 'index.js'), 'utf-8')).toContain(
+      'S3Client',
+    )
+
+    // Runs in a Node.js process of its own, so the module resolves from the archive.
+    const entryURL = pathToFileURL(join(extractDir, '___netlify-entry-point.mjs')).href
+    const { stdout } = await execa(execPath, [
+      '--input-type=module',
+      '--eval',
+      `const { func } = await import(${JSON.stringify(entryURL)})
+const response = await func.default.fetch()
+console.log(JSON.stringify(await response.json()))`,
+    ])
+
+    expect(JSON.parse(stdout)).toEqual({ client: 'fake-s3' })
   })
 
   test('Builds for Play even when the functions are not archived', async () => {
