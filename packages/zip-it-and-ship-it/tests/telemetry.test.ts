@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 import decompress from 'decompress'
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import { dir as getTmpDir } from 'tmp-promise'
 import { expect, test } from 'vitest'
 
@@ -31,7 +31,7 @@ test('The telemetry file should be added by default to the function bundle', asy
 
   await decompress(result!.path, unzippedPath)
 
-  const files = await glob('**/*', { cwd: unzippedPath })
+  const files = await glob('**/*', { cwd: unzippedPath, expandDirectories: false })
   expect(files.sort()).toEqual([
     '___netlify-bootstrap.mjs',
     '___netlify-entry-point.mjs',
