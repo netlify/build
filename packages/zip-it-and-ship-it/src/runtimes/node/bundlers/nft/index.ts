@@ -165,6 +165,7 @@ const traceFilesAndTranspile = async function ({
         if (preserveFilePaths) {
           const { rewrite, tracedSource } = await readSource({
             name,
+            nodeVersion: config.nodeVersion,
             path,
             source: await cachedReadFile(cache.fileCache, path),
           })

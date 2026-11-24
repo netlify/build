@@ -1069,6 +1069,84 @@ console.log(JSON.stringify(await response.json()))`,
     expect(tone).toContain('module.exports = { Tone }')
   })
 
+  test('Compiles the syntax that Node.js does not support, like decorators and auto-accessors', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      `const named = (value: unknown, context: ClassDecoratorContext) => {
+  context.addInitializer(function () {
+    this.label = String(context.name)
+  })
+}
+
+@named
+class Counter {
+  static label: string
+  accessor count = 1
+}
+
+export default {
+  async fetch(): Promise<Response> {
+    return Response.json({ count: new Counter().count, label: Counter.label })
+  },
+}
+`,
+    )
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+
+    expect(await fetchFromServer(extractDir)).toEqual({ count: 1, label: 'Counter' })
+  })
+
+  test("Follows the project's tsconfig.json", async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(join(tmpDir, 'tsconfig.json'), '{"compilerOptions":{"experimentalDecorators":true}}')
+    await writeFile(join(serverDir, 'types.ts'), 'export interface Reply { calls: number }\n')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      `import { Reply } from './types.ts'
+
+let calls = 0
+
+const counted = (target: object, key: string, descriptor: PropertyDescriptor) => {
+  const method = descriptor.value
+
+  descriptor.value = function (...args: unknown[]) {
+    calls++
+    return method.apply(this, args)
+  }
+}
+
+class Handler {
+  constructor(private readonly prefix: string) {}
+
+  @counted
+  reply(): Reply {
+    return { calls }
+  }
+}
+
+export default {
+  async fetch(): Promise<Response> {
+    return Response.json(new Handler('server').reply())
+  },
+}
+`,
+    )
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+
+    expect(await fetchFromServer(extractDir)).toEqual({ calls: 1 })
+  })
+
   test('Fails the build when a TypeScript file would take the path of another file', async () => {
     const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
     const serverDir = join(tmpDir, 'netlify', 'server')

@@ -1,11 +1,12 @@
 import { dirname, extname, resolve, sep } from 'path'
 
 import { init, parse } from 'es-module-lexer'
-import { transform } from 'esbuild'
+import { build } from 'esbuild'
 
 import { FunctionBundlingUserError } from '../../../../utils/error.js'
 import { RUNTIME } from '../../../runtime.js'
 import { tsExtensions } from '../../utils/module_format.js'
+import { getBundlerTarget } from '../esbuild/bundler_target.js'
 import { NODE_BUNDLER } from '../types.js'
 
 // Maps each TypeScript extension to the resulting JavaScript extension.
@@ -31,18 +32,21 @@ const getStrippedPath = (path: string) => {
 }
 
 /**
- * Removes the types from a TypeScript file.
+ * Removes the types from a TypeScript file and compiles the syntax that the
+ * target Node.js version doesn't support, using the project's `tsconfig.json`.
  */
-const stripTypes = async ({ name, path, source }: { name: string; path: string; source: string }) => {
+const stripTypes = async ({ name, nodeVersion, path }: { name: string; nodeVersion?: string; path: string }) => {
   try {
-    const { code } = await transform(source, {
-      loader: 'ts',
-      sourcefile: path,
-      // Keep every import that isn't marked with `type`, like Node.js does.
-      tsconfigRaw: { compilerOptions: { verbatimModuleSyntax: true } },
+    const { outputFiles } = await build({
+      bundle: false,
+      entryPoints: [path],
+      logLevel: 'silent',
+      platform: 'node',
+      target: [getBundlerTarget(nodeVersion)],
+      write: false,
     })
 
-    return code
+    return outputFiles[0].text
   } catch (error) {
     throw FunctionBundlingUserError.addCustomErrorInfo(error as Error, {
       functionName: name,
@@ -125,17 +129,19 @@ const renameTypeScriptImports = async (path: string, source: string): Promise<St
  */
 export const readSource = async ({
   name,
+  nodeVersion,
   path,
   source,
 }: {
   name: string
+  nodeVersion?: string
   path: string
   source: string
 }): Promise<{ rewrite?: StrippedSource; tracedSource: string }> => {
   const isTypeScript = tsExtensions.has(extname(path))
 
   // NFT can only parse JavaScript.
-  const tracedSource = isTypeScript ? await stripTypes({ name, path, source }) : source
+  const tracedSource = isTypeScript ? await stripTypes({ name, nodeVersion, path }) : source
 
   // Node.js doesn't load TypeScript from `node_modules`, so we ship those files
   // as they are.
