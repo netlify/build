@@ -337,7 +337,7 @@ test('Functions: merges the [server] block of netlify.toml over the server confi
   expect(options?.config).toEqual({
     path: ['/web/*'],
     region: 'cmh',
-    scale: { min: 1, max: 3 },
+    scale: { max: 3 },
     size: 'large',
   })
 

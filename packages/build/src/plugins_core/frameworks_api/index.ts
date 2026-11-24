@@ -114,6 +114,11 @@ const coreStep: CoreStepFunction = async function ({
   // such as `path` included.
   if (server !== undefined) {
     newConfig.server = (mergeConfigs([{ server }, { server: netlifyConfig.server }]) as Partial<NetlifyConfig>).server
+
+    // We replace `scale` as a whole, so `min` and `max` come from the same source.
+    if (newConfig.server !== undefined && netlifyConfig.server?.scale !== undefined) {
+      newConfig.server.scale = netlifyConfig.server.scale
+    }
   }
 
   // Diffing the initial and the new configs to compute the mutations (what
