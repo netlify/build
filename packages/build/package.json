@@ -118,7 +118,7 @@
     "micro-memoize": "^5.1.1",
     "tmp-promise": "^3.0.2",
     "tsd": "^0.33.0",
-    "vitest": "^3.0.0",
+    "vitest": "^5.0.0",
     "yarn": "^1.22.22"
   },
   "peerDependencies": {
