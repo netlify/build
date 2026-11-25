@@ -1,3 +1,4 @@
+import type { Access } from '../access.js'
 import { FunctionArchive } from '../function.js'
 import { RuntimeName } from '../runtimes/runtime.js'
 
@@ -10,6 +11,7 @@ export interface BuildData {
 }
 
 export type FunctionResult = Omit<FunctionArchive, 'runtime'> & {
+  access?: Access
   bootstrapVersion?: string
   buildData?: BuildData
   eventSubscriptions?: string[]
@@ -41,6 +43,7 @@ export const formatZipResult = (archive: FunctionArchive) => {
   const functionResult: FunctionResult = {
     ...archive,
     staticAnalysisResult: undefined,
+    access: archive.staticAnalysisResult?.access,
     eventSubscriptions: archive.staticAnalysisResult?.eventSubscriptions,
     routes: archive.staticAnalysisResult?.routes,
     excludedRoutes: archive.staticAnalysisResult?.excludedRoutes,

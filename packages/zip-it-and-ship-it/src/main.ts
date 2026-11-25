@@ -18,6 +18,7 @@ export type { NetlifyServerConfig, ServerOptions, ServerResult, ServerScale, Zip
 export { findServerEntry, getServerRoutes } from './server.js'
 export type { FunctionsBag, MixedPaths } from './paths.js'
 
+export type { Access } from './access.js'
 export { ArchiveFormat, ARCHIVE_FORMAT } from './archive.js'
 export type { TrafficRules } from './rate_limit.js'
 export type { ExtendedRoute, Route } from './utils/routes.js'
