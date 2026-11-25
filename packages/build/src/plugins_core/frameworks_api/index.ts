@@ -23,6 +23,13 @@ const ALLOWED_PROPERTIES = [
   ['headers'],
   ['images', 'remote_images'],
   ['redirects'],
+  ['server', 'excludedPath'],
+  ['server', 'includedFiles'],
+  ['server', 'path'],
+  ['server', 'region'],
+  ['server', 'scale', 'max'],
+  ['server', 'scale', 'min'],
+  ['server', 'size'],
   ['spa_fallback'],
 ]
 
@@ -96,12 +103,23 @@ const coreStep: CoreStepFunction = async function ({
   }
 
   // Filtering out any properties that can't be mutated using this API.
-  const filteredConfig = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
+  const { server, ...filteredConfig } = filterConfig(config, [], ALLOWED_PROPERTIES, systemLog)
 
   // Merging the config extracted from the API with the initial config.
   const newConfig = mergeConfigs([filteredConfig, netlifyConfig, configOverrides], {
     concatenateArrays: true,
   }) as Partial<NetlifyConfig>
+
+  // Each server setting in the user's config replaces the framework's, arrays
+  // such as `path` included.
+  if (server !== undefined) {
+    newConfig.server = (mergeConfigs([{ server }, { server: netlifyConfig.server }]) as Partial<NetlifyConfig>).server
+
+    // We replace `scale` as a whole, so `min` and `max` come from the same source.
+    if (newConfig.server !== undefined && netlifyConfig.server?.scale !== undefined) {
+      newConfig.server.scale = netlifyConfig.server.scale
+    }
+  }
 
   // Diffing the initial and the new configs to compute the mutations (what
   // changed between them).
