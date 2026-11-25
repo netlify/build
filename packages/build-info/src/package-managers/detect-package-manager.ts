@@ -146,9 +146,12 @@ export const detectPackageManager = async (
       const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
       if (packageManager) {
         const [parsed, version] = packageManager.split('@')
-        if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-          const pkgManager = AVAILABLE_PACKAGE_MANAGERS[parsed] as PkgManagerFields
-          pkgManager.version = parse(version) || undefined
+        if (parsed in AVAILABLE_PACKAGE_MANAGERS) {
+          const baseManager = AVAILABLE_PACKAGE_MANAGERS[parsed as PkgManager]
+          const pkgManager: PkgManagerFields = {
+            ...baseManager,
+            version: parse(version) || undefined,
+          }
           return pkgManager
         }
       }
@@ -157,7 +160,7 @@ export const detectPackageManager = async (
     // the package manager can be enforced via an environment variable as well
     for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
       if (pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'true') {
-        return pkgManager
+        return { ...pkgManager }
       }
     }
 
@@ -170,9 +173,45 @@ export const detectPackageManager = async (
     // return the found package manager
     if (lockFilePath) {
       const lockFile = project.fs.basename(lockFilePath)
-      const pkgManager = lockFileMap[lockFile]
+      const basePkgManager = lockFileMap[lockFile]
       // check if it is not got disabled
-      if (!(pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'false')) {
+      if (!(basePkgManager.forceEnvironment && project.getEnv(basePkgManager.forceEnvironment) === 'false')) {
+        const pkgManager: PkgManagerFields = { ...basePkgManager }
+        if (pkgManager.name === PkgManager.YARN && !pkgManager.version) {
+          const lockFileDir = project.fs.dirname(lockFilePath)
+          const yarnrcPath = await project.fs.findUp(['.yarnrc.yml', '.yarnrc.yaml'], {
+            cwd: lockFileDir,
+            stopAt: project.root,
+          })
+          const yarnrcYml = yarnrcPath ? await project.fs.gracefullyReadFile(yarnrcPath) : null
+          if (yarnrcYml) {
+            const yarnPathMatch = /^\s*yarnPath:\s*['"]?.*?[/\\-]yarn-([0-9.]+)\.[c]?js/m.exec(yarnrcYml)
+            if (yarnPathMatch) {
+              pkgManager.version = parse(yarnPathMatch[1]) || undefined
+            }
+          }
+
+          if (!pkgManager.version) {
+            const content = await project.fs.gracefullyReadFile(lockFilePath)
+            if (content) {
+              if (content.includes('__metadata:')) {
+                const metadataVerMatch = /__metadata:\s*\n(?:\s+.*\n)*?\s+version:\s*['"]?([0-9]+)/m.exec(content)
+                const metadataVer = metadataVerMatch ? parseInt(metadataVerMatch[1], 10) : 0
+                if (metadataVer >= 7) {
+                  pkgManager.version = parse('4.0.0') || undefined
+                } else if (metadataVer === 6) {
+                  pkgManager.version = parse('3.0.0') || undefined
+                } else if (metadataVer === 4 || metadataVer === 5) {
+                  pkgManager.version = parse('2.0.0') || undefined
+                } else {
+                  pkgManager.version = parse('3.0.0') || undefined
+                }
+              } else if (/#\s*yarn lockfile v1/m.test(content)) {
+                pkgManager.version = parse('1.22.0') || undefined
+              }
+            }
+          }
+        }
         return pkgManager
       }
     }
@@ -180,9 +219,9 @@ export const detectPackageManager = async (
     project.report(error)
   }
   if (sniffedPkgManager) {
-    return AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager]
+    return { ...AVAILABLE_PACKAGE_MANAGERS[sniffedPkgManager] }
   }
 
   // TODO: add some reporting here to log that we fall backe to NPM
-  return AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM]
+  return { ...AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM] }
 }
