@@ -24,6 +24,7 @@ import { Mastra } from './mastra.js'
 import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
 import { Next } from './next.js'
+import { Nitro } from './nitro.js'
 import { Nuxt } from './nuxt.js'
 import { Observable } from './observable.js'
 import { Parcel } from './parcel.js'
@@ -96,6 +97,7 @@ export const frameworks = [
   VitePress,
 
   // Back-end frameworks
+  Nitro,
   Hono,
   Mastra,
 
