@@ -1,5 +1,7 @@
-import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
+import { mkdir, readdir, readFile, realpath, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
+import { execPath } from 'process'
+import { pathToFileURL } from 'url'
 
 import { execa } from 'execa'
 import { dir as getTmpDir } from 'tmp-promise'
@@ -962,5 +964,231 @@ export const config = { size: 'small' }
     expect((error as Error).message).toMatch(
       /^Netlify Server has a configuration error in the \[server\] block on 'size': /,
     )
+  })
+})
+
+describe('Netlify Server without bundling', () => {
+  const ESM_FIXTURE = join(FIXTURES_DIR, 'netlify-server-unbundled-esm')
+  const TS_FIXTURE = join(FIXTURES_DIR, 'netlify-server-unbundled-ts')
+
+  const extractServer = async (fixture: string, entryFilename: string, unbundled = true) => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const result = await zipServer(join(fixture, 'netlify', 'server', entryFilename), join(tmpDir, 'server'), {
+      basePath: fixture,
+      featureFlags: { zisi_server_unbundled: unbundled },
+    })
+    const extractDir = join(tmpDir, 'extracted')
+
+    await mkdir(extractDir, { recursive: true })
+    await execa('tar', ['-xzf', result.path, '-C', extractDir])
+
+    return realpath(extractDir)
+  }
+
+  // Runs in a Node.js process of its own, since Vitest defines `__filename` and
+  // `__dirname` itself.
+  const fetchFromServer = async (extractDir: string) => {
+    const entryURL = pathToFileURL(join(extractDir, '___netlify-entry-point.mjs')).href
+    const { stdout } = await execa(execPath, [
+      '--input-type=module',
+      '--eval',
+      `const { func } = await import(${JSON.stringify(entryURL)})
+const response = await func.default.fetch()
+console.log(JSON.stringify(await response.json()))`,
+    ])
+
+    return JSON.parse(stdout) as Record<string, unknown>
+  }
+
+  test('Ships the files of an ESM server as they are and runs each one from its own path', async () => {
+    const extractDir = await extractServer(ESM_FIXTURE, 'index.js')
+    const serverFile = join(extractDir, 'netlify', 'server', 'index.js')
+
+    expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
+      "export * as func from './netlify/server/index.js'",
+    )
+
+    for (const path of ['index.js', 'utils/seed.js', 'utils/seed.json']) {
+      expect(await readFile(join(extractDir, 'netlify', 'server', path), 'utf-8')).toBe(
+        await readFile(join(ESM_FIXTURE, 'netlify', 'server', path), 'utf-8'),
+      )
+    }
+
+    expect(await fetchFromServer(extractDir)).toEqual({
+      filename: serverFile,
+      dirname: dirname(serverFile),
+      requiredJoin: 'function',
+      seed: { from: 'utils' },
+    })
+  })
+
+  test('Keeps a server that includes no other file at its path under the base path', async () => {
+    const extractDir = await extractServer(FIXTURE, 'index.js')
+
+    expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
+      "export * as func from './netlify/server/index.js'",
+    )
+  })
+
+  test('Ships each TypeScript file of a server as a JavaScript file in the same directory', async () => {
+    const extractDir = await extractServer(TS_FIXTURE, 'index.ts')
+    const serverFiles = (await readdir(join(extractDir, 'netlify', 'server'))).sort()
+    const entry = await readFile(join(extractDir, 'netlify', 'server', 'index.js'), 'utf-8')
+    const loader = await readFile(join(extractDir, 'netlify', 'server', 'loader.js'), 'utf-8')
+
+    expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toContain(
+      "export * as func from './netlify/server/index.js'",
+    )
+    expect(serverFiles).toEqual(['greeting.js', 'index.js', 'loader.js', 'punctuation.js', 'suffix.js'])
+    expect(entry).toMatch(/from ["']\.\/greeting\.js["']/)
+    expect(entry).not.toContain('Greeting')
+    expect(loader).toMatch(/import\(["']\.\/punctuation\.js["']\)/)
+    expect(await readFile(join(extractDir, 'node_modules', 'shout', 'index.js'), 'utf-8')).toBe(
+      await readFile(join(TS_FIXTURE, 'node_modules', 'shout', 'index.js'), 'utf-8'),
+    )
+    expect(await fetchFromServer(extractDir)).toEqual({ message: 'HELLO SERVER!' })
+  })
+
+  test('Ships a TypeScript file that keeps its name without its types', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      "import { Tone } from './bridge.cjs'\nexport default { tone: Tone.Warm }\n",
+    )
+    await writeFile(join(serverDir, 'bridge.cjs'), "module.exports = require('./tone.cts')\n")
+    await writeFile(join(serverDir, 'tone.cts'), "enum Tone { Warm = 'warm' }\nmodule.exports = { Tone }\n")
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+    const tone = await readFile(join(extractDir, 'netlify', 'server', 'tone.cts'), 'utf-8')
+
+    expect(tone).not.toContain('enum')
+    expect(tone).toContain('module.exports = { Tone }')
+  })
+
+  test('Compiles the syntax that Node.js does not support, like decorators and auto-accessors', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      `const named = (value: unknown, context: ClassDecoratorContext) => {
+  context.addInitializer(function () {
+    this.label = String(context.name)
+  })
+}
+
+@named
+class Counter {
+  static label: string
+  accessor count = 1
+}
+
+export default {
+  async fetch(): Promise<Response> {
+    return Response.json({ count: new Counter().count, label: Counter.label })
+  },
+}
+`,
+    )
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+
+    expect(await fetchFromServer(extractDir)).toEqual({ count: 1, label: 'Counter' })
+  })
+
+  test("Follows the project's tsconfig.json", async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(join(tmpDir, 'tsconfig.json'), '{"compilerOptions":{"experimentalDecorators":true}}')
+    await writeFile(join(serverDir, 'types.ts'), 'export interface Reply { calls: number }\n')
+    await writeFile(
+      join(serverDir, 'index.ts'),
+      `import { Reply } from './types.ts'
+
+let calls = 0
+
+const counted = (target: object, key: string, descriptor: PropertyDescriptor) => {
+  const method = descriptor.value
+
+  descriptor.value = function (...args: unknown[]) {
+    calls++
+    return method.apply(this, args)
+  }
+}
+
+class Handler {
+  constructor(private readonly prefix: string) {}
+
+  @counted
+  reply(): Reply {
+    return { calls }
+  }
+}
+
+export default {
+  async fetch(): Promise<Response> {
+    return Response.json(new Handler('server').reply())
+  },
+}
+`,
+    )
+
+    const extractDir = await extractServer(tmpDir, 'index.ts')
+
+    expect(await fetchFromServer(extractDir)).toEqual({ calls: 1 })
+  })
+
+  test('Fails the build when a TypeScript file would take the path of another file', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(join(serverDir, 'index.ts'), "import './helper.ts'\nimport './helper.js'\nexport default {}\n")
+    await writeFile(join(serverDir, 'helper.ts'), 'export const a: number = 1\n')
+    await writeFile(join(serverDir, 'helper.js'), 'export const b = 2\n')
+
+    await expect(
+      zipServer(join(serverDir, 'index.ts'), join(tmpDir, 'out'), {
+        basePath: tmpDir,
+        featureFlags: { zisi_server_unbundled: true },
+      }),
+    ).rejects.toThrow(/Cannot strip the types from .+helper\.ts, because .+helper\.js is also included/)
+  })
+
+  test('Fails the build when a TypeScript file would take the path of an included file', async () => {
+    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const serverDir = join(tmpDir, 'netlify', 'server')
+
+    await mkdir(serverDir, { recursive: true })
+    await writeFile(join(tmpDir, 'package.json'), '{"type":"module"}')
+    await writeFile(join(serverDir, 'index.ts'), "import './helper.ts'\nexport default {}\n")
+    await writeFile(join(serverDir, 'helper.ts'), 'export const a: number = 1\n')
+    await writeFile(join(serverDir, 'helper.js'), 'export const b = 2\n')
+
+    await expect(
+      zipServer(join(serverDir, 'index.ts'), join(tmpDir, 'out'), {
+        basePath: tmpDir,
+        config: { includedFiles: ['netlify/server/helper.js'] },
+        featureFlags: { zisi_server_unbundled: true },
+      }),
+    ).rejects.toThrow(/Cannot strip the types from .+helper\.ts, because .+helper\.js is also included/)
+  })
+
+  test('Bundles the local imports into the entry file without the feature flag', async () => {
+    const extractDir = await extractServer(ESM_FIXTURE, 'index.js', false)
+    const files = await readdir(extractDir, { recursive: true })
+
+    expect(await readFile(join(extractDir, '___netlify-entry-point.mjs'), 'utf-8')).toMatch(/index\.mjs'$/)
+    expect(files.some((path) => path.endsWith('seed.js'))).toBe(false)
   })
 })
