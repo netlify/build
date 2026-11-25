@@ -24,6 +24,7 @@ const bundle: BundleFunction = async ({
   cache,
   config,
   featureFlags,
+  isServer,
   mainFile,
   name,
   pluginsModulesPath,
@@ -66,6 +67,7 @@ const bundle: BundleFunction = async ({
     cache,
     config,
     featureFlags,
+    isServer,
     mainFile,
     pluginsModulesPath,
     name,
@@ -95,7 +97,12 @@ const bundle: BundleFunction = async ({
   }
 }
 
-const getIgnoreFunction = (config: FunctionConfig) => {
+const getIgnoreFunction = (config: FunctionConfig, isServer?: boolean) => {
+  // Servers run on Play, which doesn't include the AWS SDK like Lambda does.
+  if (isServer === true) {
+    return () => false
+  }
+
   const nodeSupport = getNodeSupportMatrix(config.nodeVersion)
 
   // Paths that will be excluded from the tracing process.
@@ -113,6 +120,7 @@ const traceFilesAndTranspile = async function ({
   cache,
   config,
   featureFlags,
+  isServer,
   mainFile,
   pluginsModulesPath,
   name,
@@ -123,6 +131,7 @@ const traceFilesAndTranspile = async function ({
   cache: RuntimeCache
   config: FunctionConfig
   featureFlags: FeatureFlags
+  isServer?: boolean
   mainFile: string
   pluginsModulesPath?: string
   name: string
@@ -141,7 +150,7 @@ const traceFilesAndTranspile = async function ({
     fileIOConcurrency: 2048,
     base: basePath,
     cache: cache.nftCache,
-    ignore: getIgnoreFunction(config),
+    ignore: getIgnoreFunction(config, isServer),
     readFile: async (path: string) => {
       try {
         const isMainFile = path === mainFile
