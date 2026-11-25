@@ -1,11 +1,10 @@
-import { mkdir, rm } from 'fs/promises'
+import { mkdir, mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
 import { dirname, resolve, join, basename, relative } from 'path'
 import { env, platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import { execa } from 'execa'
-import isCI from 'is-ci'
-import { dir as getTmpDir } from 'tmp-promise'
 import { afterAll, expect } from 'vitest'
 
 import type { Config } from '../../src/config.js'
@@ -38,12 +37,12 @@ interface ZipNodeReturn extends ZipReturn {
   files: TestFunctionResult[]
 }
 
+export const getTmpDir = (prefix = 'zip-it-test') => mkdtemp(join(tmpdir(), `${prefix}-`))
+
 // Accumulator of temporary directories that need to be cleaned up afterwards.
 let cleanupDirectories: string[] = []
 
 // We have to manually clean up all the created temp directories.
-// `tmp-promise` usually does this on process.exit(), but vitest runs the test files
-// in worker threads which do not emit the exit event
 afterAll(async () => {
   await Promise.all(cleanupDirectories.map((dir) => rm(dir, { force: true, recursive: true, maxRetries: 10 })))
 
@@ -69,16 +68,11 @@ export const zipFixture = async function (
   { length, fixtureDir, opts = {} }: ZipOptions = {},
 ): Promise<ZipReturn> {
   const bundlerString = getBundlerNameFromOptions(opts) || 'default'
-  const { path: tmpDir } = await getTmpDir({
-    prefix: `zip-it-test-bundler-${bundlerString}`,
-    // Cleanup the folder even if there are still files in them
-    unsafeCleanup: true,
-    keep: keepTempDirs,
-  })
+  const tmpDir = await getTmpDir(`zip-it-test-bundler-${bundlerString}`)
 
   if (keepTempDirs) {
     console.log(tmpDir)
-  } else if (!isCI) {
+  } else if (!process.env.CI) {
     // We only do the cleanup locally
     cleanupDirectories.push(tmpDir)
   }

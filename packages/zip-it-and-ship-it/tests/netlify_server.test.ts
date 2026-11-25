@@ -2,14 +2,13 @@ import { mkdir, readdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 
 import { execa } from 'execa'
-import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
 import { findServerEntry, getServerRoutes, zipFunctions, zipServer, type NetlifyServerConfig } from '../src/main.js'
 import type { FunctionBundlingUserError } from '../src/utils/error.js'
 import type { Manifest, ServerManifest } from '../src/manifest.js'
 
-import { FIXTURES_DIR } from './helpers/main.js'
+import { FIXTURES_DIR, getTmpDir } from './helpers/main.js'
 
 const FIXTURE = join(FIXTURES_DIR, 'netlify-server')
 const FUNCTIONS_DIR = join(FIXTURE, 'functions')
@@ -21,7 +20,7 @@ const readManifest = async (path: string): Promise<Manifest> => JSON.parse(await
 // The two halves are built the way the two build steps build them: one call
 // each, into a destination of its own.
 const bundleFixture = async (server?: { path: string }) => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+  const tmpDir = await getTmpDir()
   const functionsDest = join(tmpDir, 'functions')
   const serverDest = join(tmpDir, 'server')
 
@@ -70,7 +69,7 @@ describe('Netlify Server', () => {
   })
 
   test('Writes the server and the functions into the destinations they are given', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const functionsDest = join(tmpDir, 'functions')
     const serverDest = join(tmpDir, 'server')
 
@@ -84,7 +83,7 @@ describe('Netlify Server', () => {
   })
 
   test('Describes each destination in its own manifest', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const functionsDest = join(tmpDir, 'functions')
     const serverDest = join(tmpDir, 'server')
 
@@ -129,7 +128,7 @@ describe('Netlify Server', () => {
   })
 
   test('Builds for Play even when the functions are not archived', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
 
     await zipFunctions({ user: { directories: [FUNCTIONS_DIR] } }, join(tmpDir, 'functions'), {
       archiveFormat: 'none',
@@ -142,7 +141,7 @@ describe('Netlify Server', () => {
   })
 
   test('Takes no function configuration at all', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
 
     // The server is built by a call of its own, which has nowhere to put
     // function configuration: no `[functions.server]` block, no `[functions."*"]`
@@ -168,7 +167,7 @@ describe('Netlify Server', () => {
   })
 
   test('Bundles a deploy that has a server and no functions', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
     const result = await zipServer(SERVER_ENTRY, tmpDir, { basePath: FIXTURE, manifest: manifestPath })
 
@@ -186,7 +185,7 @@ describe('Netlify Server', () => {
 
   test('Traces a CommonJS server with NFT rather than the legacy bundler', async () => {
     const fixture = join(FIXTURES_DIR, 'netlify-server-cjs')
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
 
     const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), tmpDir, { basePath: fixture })
 
@@ -206,7 +205,7 @@ describe('Netlify Server', () => {
     }
 
     const bundleShape = async (fixture: string) => {
-      const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+      const tmpDir = await getTmpDir()
       const result = await zipServer(join(fixture, 'netlify', 'server', 'index.js'), tmpDir, { basePath: fixture })
       const extractDir = join(tmpDir, 'extracted')
 
@@ -235,7 +234,7 @@ describe('Netlify Server', () => {
   })
 
   test('Fails the build when the server entry cannot be read, as a user error', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
 
     const error = await zipServer(join(FIXTURE, 'netlify', 'server', 'nope.js'), tmpDir, {
       basePath: FIXTURE,
@@ -253,7 +252,7 @@ describe('Netlify Server', () => {
   })
 
   test('zipFunctions bundles only functions and still returns an array', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const manifestPath = join(tmpDir, 'manifest.json')
     const results = await zipFunctions({ user: { directories: [FUNCTIONS_DIR] } }, tmpDir, {
       basePath: FIXTURE,
@@ -278,7 +277,7 @@ createServer((_req, res) => res.end('hello')).listen(process.env.PORT)
     extraFiles: Record<string, string> = {},
     config?: NetlifyServerConfig,
   ) => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const serverDir = join(tmpDir, 'netlify', 'server')
     const destDir = join(tmpDir, 'out')
 
@@ -448,7 +447,7 @@ export const config = { region: 'fra' }
   })
 
   test('Reads the routes a server claims without bundling it', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const narrowed = join(tmpDir, 'narrowed.mjs')
     const unconfigured = join(tmpDir, 'unconfigured.mjs')
 
@@ -662,7 +661,7 @@ export const config = { ${property}: ${value} }
 
 describe('findServerEntry', () => {
   const inTmpDir = async (files: string[]) => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const serverDir = join(tmpDir, 'netlify', 'server')
 
     await mkdir(serverDir, { recursive: true })
@@ -684,7 +683,7 @@ describe('findServerEntry', () => {
   })
 
   test('Returns undefined when the directory does not exist', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
 
     expect(await findServerEntry(join(tmpDir, 'nope'))).toBeUndefined()
   })
@@ -696,7 +695,7 @@ describe('findServerEntry', () => {
   })
 
   test('Returns undefined when the path is not a directory', async () => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const filePath = join(tmpDir, 'server')
 
     await writeFile(filePath, '')
@@ -720,7 +719,7 @@ createServer((_req, res) => res.end('hello')).listen(process.env.PORT)
 `
 
   const writeServer = async (source: string) => {
-    const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+    const tmpDir = await getTmpDir()
     const serverDir = join(tmpDir, 'netlify', 'server')
 
     await mkdir(serverDir, { recursive: true })

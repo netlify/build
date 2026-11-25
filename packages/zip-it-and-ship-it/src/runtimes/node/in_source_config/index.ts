@@ -9,9 +9,6 @@ import type {
   JSXNamespacedName,
   Statement,
 } from '@babel/types'
-// @ts-expect-error(serhalp) -- Remove once https://github.com/schnittstabil/merge-options/pull/28 is merged, or replace
-// this dependency.
-import mergeOptions from 'merge-options'
 import { z } from 'zod'
 
 import {
@@ -26,6 +23,7 @@ import { InvocationMode, INVOCATION_MODE } from '../../../function.js'
 import { rateLimit } from '../../../rate_limit.js'
 import { ensureArray } from '../../../utils/ensure_array.js'
 import { FunctionBundlingUserError } from '../../../utils/error.js'
+import { mergeConfig } from '../../../utils/merge_config.js'
 import { ExtendedRoute, Route, getRoutes } from '../../../utils/routes.js'
 import { RUNTIME } from '../../runtime.js'
 import type { BindingMethod } from '../parser/bindings.js'
@@ -448,10 +446,10 @@ export const augmentFunctionConfig = (
   tomlConfig: FunctionConfig,
   inSourceConfig: InSourceConfig = {},
 ) => {
-  const mergedConfig = withComputeResources(
-    mergeOptions.call({ concatArrays: true }, tomlConfig, inSourceConfig) as FunctionConfig & InSourceConfig,
-    [tomlConfig, inSourceConfig],
-  )
+  const mergedConfig = withComputeResources(mergeConfig<FunctionConfig & InSourceConfig>(tomlConfig, inSourceConfig), [
+    tomlConfig,
+    inSourceConfig,
+  ])
 
   // We can't simply merge included files from the TOML and from in-source
   // configuration because their globs are relative to different base paths.

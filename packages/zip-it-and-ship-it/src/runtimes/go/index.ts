@@ -1,7 +1,6 @@
 import type { Stats } from 'fs'
+import { cp } from 'fs/promises'
 import { basename, dirname, extname, join } from 'path'
-
-import { copyFile } from 'copy-file'
 
 import { SourceFile } from '../../function.js'
 import type { RuntimeCache } from '../../utils/cache.js'
@@ -162,7 +161,7 @@ const zipFunction: ZipFunction = async function ({
   // We do this only if we're not building from source, as otherwise the build
   // step already handled that.
   if (!isSource) {
-    await copyFile(binary.path, destPath)
+    await cp(binary.path, destPath)
   }
 
   return {

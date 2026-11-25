@@ -1,13 +1,13 @@
 import { writeFile } from 'fs/promises'
 import { join } from 'path'
 
-import { dir as getTmpDir } from 'tmp-promise'
 import { describe, expect, test } from 'vitest'
 
 import { FunctionWithoutConfig, getConfigForFunction } from '../../src/config.js'
+import { getTmpDir } from '../helpers/main.js'
 
 const setupFunctionWithConfigFile = async (config: Record<string, unknown>) => {
-  const { path: tmpDir } = await getTmpDir({ prefix: 'zip-it-test', unsafeCleanup: true })
+  const tmpDir = await getTmpDir()
   const mainFile = join(tmpDir, 'my-function.js')
 
   await writeFile(mainFile, 'export const handler = () => {}')

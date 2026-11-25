@@ -1,6 +1,5 @@
+import { cp } from 'fs/promises'
 import { basename, dirname, extname } from 'path'
-
-import { copyFile } from 'copy-file'
 
 import { SourceFile } from '../../function.js'
 import type { RuntimeCache } from '../../utils/cache.js'
@@ -60,7 +59,7 @@ const processArchive = async ({ cache, path }: { cache: RuntimeCache; path: stri
 const zipFunction: ZipFunction = async function ({ config, destFolder, filename, srcPath, isInternal }) {
   const destPath = `${destFolder}/${filename}`
 
-  await copyFile(srcPath, destPath)
+  await cp(srcPath, destPath)
 
   return {
     config,
