@@ -71,7 +71,7 @@
     "find-up": "^7.0.0",
     "node-stream-zip": "^1.15.0",
     "p-retry": "^6.0.0",
-    "parse-imports": "^2.2.1",
+    "parse-imports": "^3.0.0",
     "semver": "^7.3.8",
     "tar": "^7.5.12",
     "urlpattern-polyfill": "8.0.2"
