@@ -5,7 +5,7 @@ import { FeatureFlags } from '../core/feature_flags.js'
 import { addErrorInfo } from '../error/info.js'
 import { SystemLogger } from '../plugins_core/types.js'
 import { importJsonFile } from '../utils/json.js'
-import { resolvePath } from '../utils/resolve.js'
+import { resolvePackage } from '../utils/resolve.js'
 
 import { getExpectedVersion } from './compatibility.js'
 import { PluginList, PluginVersion, getPluginsList } from './list.js'
@@ -144,7 +144,7 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
 }
 
 const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
-  const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
+  const packageJsonPath = await resolvePackage(packageName, [autoPluginsDir])
   const { version } = await importJsonFile<PackageJson>(packageJsonPath)
   if (!version) {
     // this should never happen
