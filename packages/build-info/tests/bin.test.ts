@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 
-import { execa } from 'execa'
+import { x } from 'tinyexec'
 import { afterEach, expect, test } from 'vitest'
 
 import { createFixture } from './helpers.js'
@@ -9,9 +9,10 @@ const FIXTURES_ABSOLUTE_PATH = fileURLToPath(new URL('fixtures', import.meta.url
 
 afterEach(async ({ cleanup }) => await cleanup?.())
 
-const runBinary = (...args: string[]) => {
+const runBinary = async (...args: string[]) => {
   const binary = fileURLToPath(new URL('../lib/node/bin.js', import.meta.url))
-  return execa('node', ['--no-warnings', binary, ...args])
+  const { stdout } = await x('node', ['--no-warnings', binary, ...args])
+  return { stdout: stdout.trim() }
 }
 
 test('CLI --help flag', async () => {

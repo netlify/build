@@ -1,5 +1,5 @@
 import { parse, type PackageJsonLike } from 'lockparse'
-import type { PackageJson } from 'read-pkg'
+import type { PackageJson } from 'pkg-types'
 
 import { NPM_BUILD_SCRIPTS, NPM_DEV_SCRIPTS } from '../get-commands.js'
 

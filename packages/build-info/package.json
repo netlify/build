@@ -46,23 +46,24 @@
   "author": "Netlify Inc.",
   "dependencies": {
     "@bugsnag/js": "^9.0.0",
-    "smol-toml": "^1.5.2",
     "dot-prop": "^9.0.0",
     "find-up": "^7.0.0",
     "lockparse": "^0.5.2",
-    "minimatch": "^10.2.4",
-    "read-pkg": "^9.0.0",
+    "picomatch": "^4.0.3",
+    "pkg-types": "^2.4.0",
     "semver": "^7.3.8",
+    "smol-toml": "^1.5.2",
     "yaml": "^2.8.0",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1",
     "@types/node": "^22.12.0",
+    "@types/picomatch": "^4.0.3",
     "@types/semver": "^7.3.13",
     "@vitest/ui": "^3.0.0",
-    "execa": "^8.0.0",
     "memfs": "^4.0.0",
+    "tinyexec": "^1.3.0",
     "unionfs": "^4.4.0",
     "vitest": "^3.0.0"
   },
