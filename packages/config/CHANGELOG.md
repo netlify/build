@@ -76,6 +76,13 @@
   * dependencies
     * netlify bumped from ^13.1.8 to ^13.1.9
 
+## [25.7.0](https://github.com/netlify/build/compare/config-v25.6.2...config-v25.7.0) (2026-11-25)
+
+
+### Features
+
+* support Netlify Server in the Frameworks API ([#7321](https://github.com/netlify/build/issues/7321)) ([abc0a97](https://github.com/netlify/build/commit/abc0a978869ddc1075162d0309fc7cb4a56ddc61))
+
 ## [25.6.2](https://github.com/netlify/build/compare/config-v25.6.1...config-v25.6.2) (2026-11-06)
 
 

@@ -105,6 +105,20 @@
   * dependencies
     * @netlify/config bumped from ^20.8.0 to ^20.8.1
 
+## [37.8.0](https://github.com/netlify/build/compare/build-v37.7.6...build-v37.8.0) (2026-11-25)
+
+
+### Features
+
+* support Netlify Server in the Frameworks API ([#7321](https://github.com/netlify/build/issues/7321)) ([abc0a97](https://github.com/netlify/build/commit/abc0a978869ddc1075162d0309fc7cb4a56ddc61))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^25.6.2 to ^25.7.0
+
 ## [37.7.6](https://github.com/netlify/build/compare/build-v37.7.5...build-v37.7.6) (2026-11-06)
 
 
