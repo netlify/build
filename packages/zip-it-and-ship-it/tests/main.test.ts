@@ -5,10 +5,10 @@ import { arch, version as nodeVersion, platform } from 'process'
 import decompress from 'decompress'
 import merge from 'deepmerge'
 import { execa, execaNode } from 'execa'
-import glob from 'fast-glob'
 import isCI from 'is-ci'
 import { pathExists } from 'path-exists'
 import semver from 'semver'
+import { glob } from 'tinyglobby'
 import { dir as getTmpDir, tmpName } from 'tmp-promise'
 import unixify from 'unixify'
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
@@ -2932,7 +2932,7 @@ describe('zip-it-and-ship-it', () => {
 
     await decompress(files[0].path, unzipPath)
 
-    const fileNames: string[] = await glob('**', { dot: true, cwd: unzipPath })
+    const fileNames: string[] = await glob('**', { dot: true, cwd: unzipPath, expandDirectories: false })
     const duplicates = fileNames.filter((item, index) => fileNames.indexOf(item) !== index)
     expect(duplicates).toHaveLength(0)
   })
