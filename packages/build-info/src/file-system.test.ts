@@ -25,16 +25,16 @@ global.fetch = vi.fn(async (url): Promise<any> => {
     case 'https://api.github.com/repos/netlify/build/contents/packages?ref=main':
       return new Response(
         JSON.stringify([
-          { path: 'build-info', type: 'dir' },
-          { path: 'build', type: 'dir' },
-          { path: 'config', type: 'dir' },
+          { path: 'packages/build-info', type: 'dir' },
+          { path: 'packages/build', type: 'dir' },
+          { path: 'packages/config', type: 'dir' },
         ]),
         {
           headers: { 'Content-Type': 'application/json' },
         },
       )
     case 'https://api.github.com/repos/netlify/build/contents/packages/build-info?ref=main':
-      return new Response(JSON.stringify([{ path: 'package.json', type: 'file' }]), {
+      return new Response(JSON.stringify([{ path: 'packages/build-info/package.json', type: 'file' }]), {
         headers: { 'Content-Type': 'application/json' },
       })
     case 'https://api.github.com/repos/netlify/build/contents/package.json?ref=main':
@@ -126,6 +126,24 @@ describe.concurrent('Test the platform independent base functionality', () => {
     expect(fs.dirname('/')).toBe('/')
   })
 
+  test.each([
+    ['/apps/web', '/apps/website', '../website'],
+    ['/apps/web', '/apps/website/src', '../website/src'],
+    ['/a/b', '/a/c/d/e', '../c/d/e'],
+    ['/a/b/c/d', '/a/e', '../../../e'],
+    ['/a/b/', '/a/b', ''],
+    ['/a/./b', '/a/b/c', 'c'],
+    ['/a/b/../c', '/a/c/d', 'd'],
+    ['apps/web', 'apps/website/src', '../website/src'],
+    ['', 'apps/web', 'apps/web'],
+    ['apps/web', '', '../..'],
+  ])('relative(%s, %s) matches POSIX paths', (from, to, expected) => {
+    const fs = new WebFS(new GithubProvider('netlify/build', 'main'))
+    fs.cwd = '/repo'
+    expect(fs.relative(from, to)).toBe(expected)
+    expect(posix.relative(posix.resolve('/repo', from), posix.resolve('/repo', to))).toBe(expected)
+  })
+
   test('relative should return the relative path between two paths', ({ fs }) => {
     // always do a double test of the real path.relative and the independent implementation
     // The own implementation does not need a `join` as it's done in a webFS and therefore on windows it's still unix paths
@@ -184,6 +202,19 @@ describe.concurrent('Test findUp functionality', () => {
     // should not find a file as we have the stopAt parameter
     expect(await fs.findUp('nx.json', { cwd: 'packages/build-info', stopAt: 'packages' })).toBeUndefined()
     expect(await fs.findUp('nx.json', { cwd: 'packages/build-info', stopAt: '/packages' })).toBeUndefined()
+  })
+
+  test('findUp rejects entries of the wrong type', async ({ fs }) => {
+    expect(await fs.findUp('package.json', { cwd: '/packages/build-info', type: 'directory' })).toBeUndefined()
+    expect(await fs.findUp('build-info', { cwd: '/packages', type: 'file' })).toBeUndefined()
+    expect(await fs.findUp(['package.json', 'packages'], { cwd: '/', type: 'directory' })).toBe('/packages')
+  })
+
+  test('findUp continues past a wrong-type match to the matching ancestor', async ({ fs }) => {
+    const readDir = vi.spyOn(fs, 'readDir')
+    readDir.mockResolvedValueOnce({ config: 'file' }).mockResolvedValueOnce({ config: 'directory' })
+
+    expect(await fs.findUp('config', { cwd: '/packages/build-info', type: 'directory' })).toBe('/packages/config')
   })
 
   test('findUpMultiple', async ({ fs }) => {
