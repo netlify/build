@@ -18,6 +18,7 @@ import { getPlatformTarget } from './platform.js'
 // factor 2 -> 1
 // This reduces the wait time in the tests from `2s, 4s, 8s` to `10ms, 10ms, 10ms` for 3 retries
 vi.mock('p-retry', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   const pRetry = (await importOriginal()) as typeof import('p-retry')
   type Params = Parameters<typeof pRetry.default>
 

@@ -12,6 +12,7 @@ import { type TestContext, vi } from 'vitest'
  */
 export const createFixture = async (fixture: string, ctx: TestContext) => {
   // we mocked the fs with unionfs but in this case we want the actual fs
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint sees a looser type than tsc here
   const { promises: fs } = (await vi.importActual('fs')) as typeof import('fs')
   const cwd = await fs.mkdtemp(join(tmpdir(), 'build-info-'))
   const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(cwd)

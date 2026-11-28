@@ -16,6 +16,7 @@
     "packages/edge-bundler/*/vendor/**",
     "packages/edge-bundler/vendor/**",
     "CHANGELOG.md",
+    "eslint-suppressions.json",
     "coverage"
   ]
 }
