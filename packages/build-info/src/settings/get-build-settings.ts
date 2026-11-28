@@ -144,5 +144,5 @@ export async function getBuildSettings(project: Project, packagePath?: string): 
   }
 
   const settings = await Promise.all(settingsPromises)
-  return settings.filter(Boolean) as Settings[]
+  return settings.filter(Boolean)
 }

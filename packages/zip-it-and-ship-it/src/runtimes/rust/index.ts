@@ -1,4 +1,3 @@
-import type { Stats } from 'fs'
 import { join, extname, dirname, basename } from 'path'
 
 import { FeatureFlags } from '../../feature_flags.js'
@@ -74,7 +73,7 @@ const findFunctionInPath: FindFunctionInPathFunction = async function ({ cache, 
 }
 
 const processBinary = async ({ cache, path }: { cache: RuntimeCache; path: string }): Promise<SourceFile> => {
-  const stat = (await cachedLstat(cache.lstatCache, path)) as Stats
+  const stat = await cachedLstat(cache.lstatCache, path)
   const filename = basename(path)
   const extension = extname(path)
   const name = basename(path, extension)
@@ -103,7 +102,7 @@ const processSource = async ({
   // the `FunctionSource` interface. We should revisit whether `stat` should be
   // part of that interface in the first place, or whether we could compute it
   // downstream when needed (maybe using the FS cache as an optimisation).
-  const stat = (await cachedLstat(cache.lstatCache, path)) as Stats
+  const stat = await cachedLstat(cache.lstatCache, path)
   const filename = basename(path)
   const extension = extname(path)
   const name = basename(path, extension)

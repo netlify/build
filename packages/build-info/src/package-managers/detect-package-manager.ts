@@ -114,9 +114,9 @@ export function sniffUserAgent(project: Project): PkgManager | undefined {
  * generate a map out of key is lock file and value the package manager
  * this is to reduce the complexity in loops
  */
-const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
+const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce<Record<string, PkgManagerFields>>(
   (cur, pkgManager) => pkgManager.lockFiles.reduce((cur, lockFile) => ({ ...cur, [lockFile]: pkgManager }), cur),
-  {} as Record<string, PkgManagerFields>,
+  {},
 )
 
 /**

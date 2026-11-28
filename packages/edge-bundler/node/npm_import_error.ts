@@ -14,13 +14,13 @@ class NPMImportError extends Error {
 
 const wrapNpmImportError = (input: unknown) => {
   if (input instanceof Error) {
-    const match = input.message.match(/Relative import path "(.*)" not prefixed with/)
+    const match = /Relative import path "(.*)" not prefixed with/.exec(input.message)
     if (match !== null) {
       const [, moduleName] = match
       return new NPMImportError(input, moduleName)
     }
 
-    const schemeMatch = input.message.match(/Error: Module not found "npm:(.*)"/)
+    const schemeMatch = /Error: Module not found "npm:(.*)"/.exec(input.message)
     if (schemeMatch !== null) {
       const [, moduleName] = schemeMatch
       return new NPMImportError(input, moduleName)

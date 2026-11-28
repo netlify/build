@@ -88,7 +88,7 @@ const processSource = async ({
   // the `FunctionSource` interface. We should revisit whether `stat` should be
   // part of that interface in the first place, or whether we could compute it
   // downstream when needed (maybe using the FS cache as an optimisation).
-  const stat = (await cachedLstat(cache.lstatCache, path)) as Stats
+  const stat = await cachedLstat(cache.lstatCache, path)
   const filename = basename(path)
   const extension = extname(mainFile)
   const name = basename(path, extname(path))

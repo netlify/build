@@ -44,7 +44,9 @@ test('Produces an ESZIP bundle', async () => {
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  expect(() => validateManifest(manifest)).not.toThrowError()
+  expect(() => {
+    validateManifest(manifest)
+  }).not.toThrowError()
   const { bundles, import_map: importMapURL } = manifest
 
   expect(bundles.length).toBe(1)
@@ -88,7 +90,9 @@ test('Excludes functions with no route from the bundle when `edge_bundler_exclud
 
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile) as Manifest
-  expect(() => validateManifest(manifest)).not.toThrowError()
+  expect(() => {
+    validateManifest(manifest)
+  }).not.toThrowError()
   expect(manifest.routes.map((route) => route.function)).toEqual(['func1'])
 
   const bundlePath = join(distPath, manifest.bundles[0].asset)
@@ -487,7 +491,9 @@ test('Handles imports with the `node:` prefix', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
 
-  expect(() => validateManifest(manifest)).not.toThrowError()
+  expect(() => {
+    validateManifest(manifest)
+  }).not.toThrowError()
 
   const { bundles, import_map: importMapURL, routes } = manifest
 
@@ -523,7 +529,9 @@ test('Handles Node builtin imports without the `node:` prefix', async () => {
   const manifestFile = await readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
 
-  expect(() => validateManifest(manifest)).not.toThrowError()
+  expect(() => {
+    validateManifest(manifest)
+  }).not.toThrowError()
 
   const { bundles, import_map: importMapURL, routes } = manifest
 

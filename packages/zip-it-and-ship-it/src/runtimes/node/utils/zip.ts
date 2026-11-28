@@ -152,7 +152,7 @@ const createDirectory = async function ({
       const absoluteDestPath = join(functionFolder, destPath)
 
       if (rewrites.has(srcFile)) {
-        return mkdirAndWriteFile(absoluteDestPath, rewrites.get(srcFile) as string)
+        return mkdirAndWriteFile(absoluteDestPath, rewrites.get(srcFile)!)
       }
 
       // If the path is a symlink, find the link target and add the link to a
@@ -441,7 +441,7 @@ const zipJsFile = function ({
   srcFile: string
 }) {
   if (rewrites.has(srcFile)) {
-    addZipContent(archive, rewrites.get(srcFile) as string, destPath)
+    addZipContent(archive, rewrites.get(srcFile)!, destPath)
   } else {
     addZipFile(archive, srcFile, destPath, stat)
   }

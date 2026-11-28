@@ -335,7 +335,7 @@ export const serve = async ({
     flags.push('--quiet')
   }
 
-  if (inspectSettings && inspectSettings.enabled) {
+  if (inspectSettings?.enabled) {
     if (inspectSettings.pause) {
       flags.push(inspectSettings.address ? `--inspect-brk=${inspectSettings.address}` : '--inspect-brk')
     } else {

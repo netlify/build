@@ -31,7 +31,8 @@ export const detectBinaryRuntime = async function ({ path }: { path: string }): 
     )
 
     if (!isValidFunctionBinary(binaryInfo)) {
-      return warnIncompatibleBinary(path, binaryInfo)
+      warnIncompatibleBinary(path, binaryInfo)
+      return
     }
 
     switch (binaryInfo.runtime) {

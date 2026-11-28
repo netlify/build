@@ -56,7 +56,7 @@ export const log = function (
   const stringB = stringA.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   const stringC = color === undefined ? stringB : color(stringB)
 
-  if (logs && logs.outputFlusher) {
+  if (logs?.outputFlusher) {
     logs.outputFlusher.flush()
   }
 
@@ -187,7 +187,9 @@ export const getSystemLogger = function (
   // If the `debug` flag is used, we return a function that pipes system logs
   // to the regular logger, as the intention is for them to end up in stdout.
   if (debug) {
-    return (...args) => log(logs, reduceLogLines(args))
+    return (...args) => {
+      log(logs, reduceLogLines(args))
+    }
   }
 
   // If there's not a file descriptor configured for system logs and `debug`

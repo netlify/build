@@ -76,7 +76,7 @@ const getLatestVersion = async () => {
     const data = await response.text()
 
     // We want to extract <VERSION> from the format `v<VERSION>`.
-    const version = data.match(/^v?(\d+\.\d+\.\d+)/)
+    const version = /^v?(\d+\.\d+\.\d+)/.exec(data)
 
     if (version === null) {
       return

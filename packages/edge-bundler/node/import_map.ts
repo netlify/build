@@ -63,7 +63,7 @@ export class ImportMap {
   async addFile(path: string, logger: Logger) {
     const source = await ImportMap.readFile(path, logger)
 
-    return this.add(source)
+    this.add(source)
   }
 
   async addFiles(paths: (string | undefined)[], logger: Logger) {
@@ -93,22 +93,22 @@ export class ImportMap {
   }
 
   static convertImportsToURLObjects(imports: Imports) {
-    return Object.entries(imports).reduce(
+    return Object.entries(imports).reduce<Record<string, URL>>(
       (acc, [key, value]) => ({
         ...acc,
         [key]: new URL(value),
       }),
-      {} as Record<string, URL>,
+      {},
     )
   }
 
   static convertScopesToURLObjects(scopes: Record<string, Imports>) {
-    return Object.entries(scopes).reduce(
+    return Object.entries(scopes).reduce<Record<string, Record<string, URL>>>(
       (acc, [key, value]) => ({
         ...acc,
         [key]: ImportMap.convertImportsToURLObjects(value),
       }),
-      {} as Record<string, Record<string, URL>>,
+      {},
     )
   }
 

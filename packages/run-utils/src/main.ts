@@ -38,7 +38,7 @@ const parseArgs = function (args, options) {
 /**
  * Redirect output by default, unless specified otherwise
  * */
-const redirectOutput = (childProcess: ExecaChildProcess<string>, options: CommonOptions) => {
+const redirectOutput = (childProcess: ExecaChildProcess, options: CommonOptions) => {
   if (options.stdio !== undefined || options.stdout !== undefined || options.stderr !== undefined) {
     return
   }

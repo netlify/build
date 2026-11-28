@@ -22,7 +22,7 @@ export const getEnvelope = async function ({
       .sort((left, right) => (left.key.toLowerCase() < right.key.toLowerCase() ? -1 : 1))
       .reduce((acc, cur) => {
         const envVar = cur.values.find((val) => ['all', context].includes(val.context))
-        if (envVar && envVar.value) {
+        if (envVar?.value) {
           return {
             ...acc,
             [cur.key]: envVar.value,

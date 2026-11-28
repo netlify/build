@@ -9,7 +9,11 @@ const noop = () => {
 
 describe('metrics', () => {
   describe('normalizeError', () => {
-    const mockClient = { notify: (error) => console.error(error) } as Client
+    const mockClient = {
+      notify: (error) => {
+        console.error(error)
+      },
+    } as Client
 
     test('returns an error when passed a string', async () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(noop)

@@ -114,7 +114,7 @@ export const getSpawnInfo = (): {
 } => {
   // we know that this package.json has a name as it's ours
 
-  const packageName = ROOT_PACKAGE_JSON.name!
+  const packageName = ROOT_PACKAGE_JSON.name
   return {
     plugin: { packageName, pluginPackageJson: ROOT_PACKAGE_JSON },
     location: { event: 'load', packageName, loadedFrom: 'core', origin: 'core' },

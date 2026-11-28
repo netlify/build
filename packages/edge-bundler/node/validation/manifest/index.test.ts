@@ -37,12 +37,18 @@ const getBaseManifest = (): Record<string, any> => ({
 })
 
 test('should not throw on valid manifest', () => {
-  expect(() => validateManifest(getBaseManifest())).not.toThrowError()
+  expect(() => {
+    validateManifest(getBaseManifest())
+  }).not.toThrowError()
 })
 
 test('should throw ManifestValidationError with correct message', () => {
-  expect(() => validateManifest('manifest')).toThrowError(ManifestValidationError)
-  expect(() => validateManifest('manifest')).toThrowError(/^Validation of Edge Functions manifest failed/)
+  expect(() => {
+    validateManifest('manifest')
+  }).toThrowError(ManifestValidationError)
+  expect(() => {
+    validateManifest('manifest')
+  }).toThrowError(/^Validation of Edge Functions manifest failed/)
 })
 
 test('should throw ManifestValidationError with customErrorInfo', () => {
@@ -64,7 +70,9 @@ test('should throw on additional property on root level', () => {
   const manifest = getBaseManifest()
   manifest.foo = 'bar'
 
-  expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  expect(() => {
+    validateManifest(manifest)
+  }).toThrowErrorMatchingSnapshot()
 })
 
 test('should show multiple errors', () => {
@@ -72,7 +80,9 @@ test('should show multiple errors', () => {
   manifest.foo = 'bar'
   manifest.baz = 'bar'
 
-  expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  expect(() => {
+    validateManifest(manifest)
+  }).toThrowErrorMatchingSnapshot()
 })
 
 describe('bundle', () => {
@@ -80,28 +90,36 @@ describe('bundle', () => {
     const manifest = getBaseManifest()
     manifest.bundles[0].foo = 'bar'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing asset', () => {
     const manifest = getBaseManifest()
     delete manifest.bundles[0].asset
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing format', () => {
     const manifest = getBaseManifest()
     delete manifest.bundles[0].format
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on invalid format', () => {
     const manifest = getBaseManifest()
     manifest.bundles[0].format = 'foo'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 })
 
@@ -110,28 +128,36 @@ describe('route', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].foo = 'bar'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on invalid pattern', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].pattern = '/^/hello/?$/'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing function', () => {
     const manifest = getBaseManifest()
     delete manifest.routes[0].function
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing pattern', () => {
     const manifest = getBaseManifest()
     delete manifest.routes[0].pattern
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 })
 
@@ -142,21 +168,27 @@ describe('layers', () => {
     const manifest = getBaseManifest()
     manifest.layers[0].foo = 'bar'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing name', () => {
     const manifest = getBaseManifest()
     delete manifest.layers[0].name
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing flag', () => {
     const manifest = getBaseManifest()
     delete manifest.layers[0].flag
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 })
 
@@ -165,14 +197,18 @@ describe('import map URL', () => {
     const manifest = getBaseManifest()
     manifest.import_map = 'file:///root/.netlify/edge-functions-dist/import_map.json'
 
-    expect(() => validateManifest(manifest)).not.toThrowError()
+    expect(() => {
+      validateManifest(manifest)
+    }).not.toThrowError()
   })
 
   test('should throw on wrong type', () => {
     const manifest = getBaseManifest()
     manifest.import_map = ['file:///root/.netlify/edge-functions-dist/import_map.json']
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 })
 
@@ -185,7 +221,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).not.toThrowError()
+    expect(() => {
+      validateManifest(manifest)
+    }).not.toThrowError()
   })
 
   test('should accept valid headers with missing matcher', () => {
@@ -196,7 +234,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).not.toThrowError()
+    expect(() => {
+      validateManifest(manifest)
+    }).not.toThrowError()
   })
 
   test('should accept valid headers with regex matcher and pattern', () => {
@@ -208,7 +248,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).not.toThrowError()
+    expect(() => {
+      validateManifest(manifest)
+    }).not.toThrowError()
   })
 
   test('should throw on missing matcher property', () => {
@@ -219,7 +261,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on invalid matcher value', () => {
@@ -230,7 +274,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw when matcher is regex but pattern is missing', () => {
@@ -241,7 +287,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on invalid pattern format', () => {
@@ -253,7 +301,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on additional property in headers', () => {
@@ -265,7 +315,9 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => {
+      validateManifest(manifest)
+    }).toThrowErrorMatchingSnapshot()
   })
 
   test('should accept multiple headers with different matchers', () => {
@@ -283,6 +335,8 @@ describe('route headers', () => {
       },
     }
 
-    expect(() => validateManifest(manifest)).not.toThrowError()
+    expect(() => {
+      validateManifest(manifest)
+    }).not.toThrowError()
   })
 })

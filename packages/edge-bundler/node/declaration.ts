@@ -34,7 +34,7 @@ export const mergeDeclarations = (
   deployConfigDeclarations: Declaration[],
   _featureFlags: FeatureFlags = {},
 ) => {
-  const functionsVisited: Set<string> = new Set()
+  const functionsVisited = new Set<string>()
 
   const declarations: Declaration[] = [
     // INTEGRATIONS
